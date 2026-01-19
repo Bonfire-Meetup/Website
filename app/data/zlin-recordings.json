@@ -28,7 +28,7 @@
       "description": null,
       "episode": "Beyond the Frame",
       "episodeNumber": 5,
-      "tags": ["Tech", "3D"],
+      "tags": ["Tech", "Art"],
       "featureHeroThumbnail": "/library/featured/qk5pzk.webp"
     },
     {
@@ -43,7 +43,7 @@
       "description": null,
       "episode": "Beyond the Frame",
       "episodeNumber": 5,
-      "tags": ["Rendering", "Shaders"],
+      "tags": ["Rendering"],
       "featureHeroThumbnail": "/library/featured/zhwojo.webp"
     },
     {
@@ -58,7 +58,7 @@
       "description": null,
       "episode": "The Boundless Expedition",
       "episodeNumber": 4,
-      "tags": ["History"],
+      "tags": ["Tech"],
       "featureHeroThumbnail": ""
     },
     {
@@ -88,7 +88,7 @@
       "description": null,
       "episode": "The Boundless Expedition",
       "episodeNumber": 4,
-      "tags": ["Tech", "Engines", "Godot"],
+      "tags": ["Tech", "Godot"],
       "featureHeroThumbnail": ""
     },
     {
@@ -103,7 +103,7 @@
       "description": null,
       "episode": "The Infinite Wanderers",
       "episodeNumber": 3,
-      "tags": ["Studio"],
+      "tags": ["Production"],
       "featureHeroThumbnail": ""
     },
     {
@@ -118,7 +118,7 @@
       "description": null,
       "episode": "The Infinite Wanderers",
       "episodeNumber": 3,
-      "tags": ["Marketing", "Godot"],
+      "tags": ["Production", "Godot"],
       "featureHeroThumbnail": ""
     },
     {
@@ -133,7 +133,7 @@
       "description": null,
       "episode": "The Infinite Wanderers",
       "episodeNumber": 3,
-      "tags": ["AI", "ChatGPT", "Godot"],
+      "tags": ["Tech", "Godot"],
       "featureHeroThumbnail": ""
     },
     {
@@ -163,7 +163,7 @@
       "description": null,
       "episode": "The Horizon Seekers",
       "episodeNumber": 2,
-      "tags": ["Tools", "Tech"],
+      "tags": ["Tech"],
       "featureHeroThumbnail": ""
     },
     {
@@ -178,7 +178,7 @@
       "description": null,
       "episode": "The Horizon Seekers",
       "episodeNumber": 2,
-      "tags": ["Art", "ConceptArt"],
+      "tags": ["Art"],
       "featureHeroThumbnail": ""
     },
     {
@@ -223,7 +223,7 @@
       "description": null,
       "episode": "The Pioneers",
       "episodeNumber": 1,
-      "tags": ["Art", "VisualStyle"],
+      "tags": ["Art", "Design"],
       "featureHeroThumbnail": ""
     }
   ]

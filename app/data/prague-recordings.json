@@ -13,7 +13,7 @@
       "description": null,
       "episode": "Whispers of the Void",
       "episodeNumber": 7,
-      "tags": ["Discussion", "Podcast Quest", "Podcast"],
+      "tags": ["Podcast"],
       "featureHeroThumbnail": "/library/featured/x7q4b1.webp"
     },
     {
@@ -88,7 +88,7 @@
       "description": null,
       "episode": "Knights of the Digital Age",
       "episodeNumber": 5,
-      "tags": ["Tech", "Performance", "Unity"],
+      "tags": ["Tech", "Rendering", "Unity"],
       "featureHeroThumbnail": ""
     },
     {
@@ -103,7 +103,7 @@
       "description": null,
       "episode": "Knights of the Digital Age",
       "episodeNumber": 5,
-      "tags": ["Lighting", "Art"],
+      "tags": ["Rendering", "Art"],
       "featureHeroThumbnail": ""
     },
     {
@@ -118,7 +118,7 @@
       "description": null,
       "episode": "Knights of the Digital Age",
       "episodeNumber": 5,
-      "tags": ["Interview", "Podcast Modrák & Friends", "Podcast"],
+      "tags": ["Interview", "Podcast"],
       "featureHeroThumbnail": ""
     },
     {
@@ -133,7 +133,7 @@
       "description": null,
       "episode": "The Mystic Voyagers",
       "episodeNumber": 4,
-      "tags": ["Discussion", "Podcast Quest", "Podcast"],
+      "tags": ["Podcast"],
       "featureHeroThumbnail": ""
     },
     {
@@ -148,7 +148,7 @@
       "description": null,
       "episode": "The Mystic Voyagers",
       "episodeNumber": 4,
-      "tags": ["Narrative", "Design"],
+      "tags": ["Design"],
       "featureHeroThumbnail": ""
     },
     {
@@ -163,7 +163,7 @@
       "description": null,
       "episode": "The Mystic Voyagers",
       "episodeNumber": 4,
-      "tags": ["Engineering", "Unity"],
+      "tags": ["Tech", "Unity"],
       "featureHeroThumbnail": ""
     },
     {
@@ -208,7 +208,7 @@
       "description": null,
       "episode": "The Convergence",
       "episodeNumber": 3,
-      "tags": ["Tech", "Unreal"],
+      "tags": ["Tech"],
       "featureHeroThumbnail": ""
     }
   ]
