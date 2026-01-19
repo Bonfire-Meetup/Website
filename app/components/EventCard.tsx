@@ -1,6 +1,14 @@
 import { LOCATIONS, type LocationValue } from "../lib/constants";
 import { AccentBar } from "./AccentBar";
 import { Card } from "./Card";
+import {
+  CalendarIcon,
+  ClockIcon,
+  EventbriteIcon,
+  FacebookIcon,
+  LumaIcon,
+  MapPinIcon,
+} from "./icons";
 import { LocationPill } from "./LocationPill";
 import { MetaRow } from "./MetaRow";
 import { Pill } from "./Pill";
@@ -38,89 +46,6 @@ interface EventCardProps {
   links?: EventLinks;
   labels: EventCardLabels;
   locale: string;
-}
-
-function CalendarIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
-      />
-    </svg>
-  );
-}
-
-function ClockIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-      />
-    </svg>
-  );
-}
-
-function MapPinIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-      />
-    </svg>
-  );
-}
-
-function LumaIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-3.5l6-4.5-6-4.5v9z" />
-    </svg>
-  );
-}
-
-function FacebookIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-    </svg>
-  );
-}
-
-function EventbriteIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M18.157 13.463c-.751-.062-1.614-.062-2.477-.062-.863 0-1.726 0-2.477.062-.751.062-1.502.185-2.14.37-.639.185-1.165.432-1.578.741-.413.309-.751.679-1.014 1.11a4.44 4.44 0 00-.526 1.358c-.112.494-.168 1.049-.168 1.666 0 .617.056 1.172.168 1.666.112.494.28.926.526 1.358.263.432.601.802 1.014 1.11.413.309.939.556 1.578.741.639.185 1.39.309 2.14.37.751.062 1.614.062 2.477.062.863 0 1.726 0 2.477-.062.751-.062 1.502-.185 2.14-.37.639-.185 1.165-.432 1.578-.741.413-.309.751-.679 1.014-1.11.246-.432.414-.864.526-1.358.112-.494.168-1.049.168-1.666 0-.617-.056-1.172-.168-1.666a4.44 4.44 0 00-.526-1.358c-.263-.432-.601-.802-1.014-1.11-.413-.309-.939-.556-1.578-.741-.638-.185-1.389-.309-2.14-.37zm-5.346 5.39c-.863 0-1.614-.309-2.252-.926-.639-.617-.958-1.358-.958-2.222 0-.864.319-1.605.958-2.222.638-.617 1.389-.926 2.252-.926.862 0 1.614.309 2.252.926.639.617.958 1.358.958 2.222 0 .864-.319 1.605-.958 2.222-.638.617-1.39.926-2.252.926zM12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" />
-    </svg>
-  );
 }
 
 export function EventCard({

@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Button } from "./Button";
+import { ArrowRightIcon } from "./icons";
 
 export async function TalkBanner() {
   const t = await getTranslations("sections.talkBanner");
@@ -33,19 +34,7 @@ export async function TalkBanner() {
                   <span className="text-sm font-medium opacity-90">{t("cta")}</span>
                   <span className="text-lg font-bold">{email}</span>
                 </div>
-                <svg
-                  className="h-6 w-6 transition-transform duration-300 group-hover:translate-x-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                  />
-                </svg>
+                <ArrowRightIcon className="h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </div>
           </div>

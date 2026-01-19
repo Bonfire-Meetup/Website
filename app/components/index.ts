@@ -19,3 +19,4 @@ export { ThemeProvider, useTheme } from "./ThemeProvider";
 export { LanguageToggle } from "./LanguageToggle";
 export { TalkBanner } from "./TalkBanner";
 export { LocationsSection } from "./LocationsSection";
+export * from "./icons";

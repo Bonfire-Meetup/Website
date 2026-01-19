@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { LOCATIONS, type LocationValue } from "../lib/constants";
+import { FireIcon, MapPinIcon } from "./icons";
 
 interface LocationCardProps {
   name: string;
@@ -10,52 +11,6 @@ interface LocationCardProps {
   sponsorsTitle: string;
   sponsors: { name: string; logo: string; url: string; logoClassName?: string }[];
   nextEvent?: string;
-}
-
-function MapPinIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-      />
-    </svg>
-  );
-}
-
-function FireIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z"
-      />
-    </svg>
-  );
 }
 
 export async function LocationCard({

@@ -1,20 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-function ChevronDownIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={2}
-      stroke="currentColor"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-    </svg>
-  );
-}
+import { ChevronDownIcon } from "./icons";
 
 export function ScrollChevron({ label, scrollLabel }: { label: string; scrollLabel: string }) {
   const [isVisible, setIsVisible] = useState(true);

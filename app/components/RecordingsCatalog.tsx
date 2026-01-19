@@ -8,52 +8,11 @@ import type { Recording } from "../lib/recordings";
 import { AccentBar } from "./AccentBar";
 import { Button } from "./Button";
 import { EmptyState } from "./EmptyState";
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon } from "./icons";
 import { Pill } from "./Pill";
 import { Skeleton } from "./Skeletons";
 
 import { LOCATIONS, type LocationValue } from "../lib/constants";
-
-function ChevronDownIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={2}
-      stroke="currentColor"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-    </svg>
-  );
-}
-
-function ChevronLeftIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={2}
-      stroke="currentColor"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 19.5-7.5-7.5 7.5-7.5" />
-    </svg>
-  );
-}
-
-function ChevronRightIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={2}
-      stroke="currentColor"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-    </svg>
-  );
-}
 
 type LocationFilter = "all" | LocationValue;
 
@@ -1071,19 +1030,7 @@ export function RecordingsCatalog({
         <div className="mt-20 flex justify-center">
           <div className="glass-card relative inline-flex items-center gap-4 px-6 py-4 transition-none hover:scale-100!">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/10 text-brand-500 dark:bg-brand-500/20 dark:text-brand-400">
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                />
-              </svg>
+              <InfoIcon className="h-5 w-5" />
             </div>
             <p className="max-w-4xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
               <span className="mr-1.5 font-semibold text-neutral-900 dark:text-white">
