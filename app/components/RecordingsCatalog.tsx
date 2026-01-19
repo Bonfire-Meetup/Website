@@ -296,6 +296,11 @@ export function RecordingsCatalog({
   const [viewMode, setViewMode] = useState<"rows" | "grid">("rows");
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [isFeaturedPaused, setIsFeaturedPaused] = useState(false);
+  const [canHover, setCanHover] = useState(false);
+
+  useEffect(() => {
+    setCanHover(window.matchMedia("(hover: hover)").matches);
+  }, []);
   const featuredStartRef = useRef(0);
   const featuredRemainingRef = useRef(FEATURED_INTERVAL_MS);
 
@@ -735,8 +740,8 @@ export function RecordingsCatalog({
                     }
                   }}
                   aria-label={featured.title}
-                  onMouseEnter={() => setIsFeaturedPaused(true)}
-                  onMouseLeave={() => setIsFeaturedPaused(false)}
+                  onMouseEnter={canHover ? () => setIsFeaturedPaused(true) : undefined}
+                  onMouseLeave={canHover ? () => setIsFeaturedPaused(false) : undefined}
                   className={`group recording-card-enter relative mb-12 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10 ${
                     hasFeaturedHero ? "min-h-[420px] sm:min-h-0" : ""
                   }`}
