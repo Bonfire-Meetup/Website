@@ -11,6 +11,7 @@ export type Recording = {
   speaker: string[];
   date: string;
   thumbnail: string;
+  featureHeroThumbnail?: string;
   url: string;
   description: string | null;
   tags: string[];

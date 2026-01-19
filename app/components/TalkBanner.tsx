@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { Button } from "./Button";
 
 export async function TalkBanner() {
   const t = await getTranslations("sections.talkBanner");
@@ -22,9 +23,11 @@ export async function TalkBanner() {
             </div>
 
             <div className="flex shrink-0">
-              <a
+              <Button
                 href={`mailto:${email}`}
-                className="glass-button group flex items-center gap-3 px-8 py-4"
+                variant="glass"
+                external
+                className="group flex items-center gap-3 px-8 py-4"
               >
                 <div className="flex flex-col items-center md:items-start">
                   <span className="text-sm font-medium opacity-90">{t("cta")}</span>
@@ -43,7 +46,7 @@ export async function TalkBanner() {
                     d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
                   />
                 </svg>
-              </a>
+              </Button>
             </div>
           </div>
         </div>

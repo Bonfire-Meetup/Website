@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { IconButton } from "./IconButton";
 
 interface LanguageToggleProps {
   locale: string;
@@ -27,13 +28,16 @@ export function LanguageToggle({ locale, labels }: LanguageToggleProps) {
   };
 
   return (
-    <button
+    <IconButton
       onClick={toggleLocale}
       disabled={isPending}
-      className="glass flex h-10 items-center justify-center rounded-xl px-3 text-sm font-medium transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-      aria-label={locale === "en" ? labels.switchToCs : labels.switchToEn}
+      ariaLabel={locale === "en" ? labels.switchToCs : labels.switchToEn}
+      size="pill"
+      shape="rounded"
+      variant="glass"
+      className="text-sm font-medium hover:scale-105 active:scale-95 disabled:opacity-50"
     >
       <span className="uppercase">{locale === "en" ? labels.csLabel : labels.enLabel}</span>
-    </button>
+    </IconButton>
   );
 }

@@ -13,7 +13,8 @@
       "description": null,
       "episode": "Beyond the Frame",
       "episodeNumber": 5,
-      "tags": ["Production"]
+      "tags": ["Production"],
+      "featureHeroThumbnail": "/library/featured/nyb4xq.webp"
     },
     {
       "youtubeId": "qokkUusopzk",
@@ -27,7 +28,8 @@
       "description": null,
       "episode": "Beyond the Frame",
       "episodeNumber": 5,
-      "tags": ["Tech", "3D"]
+      "tags": ["Tech", "3D"],
+      "featureHeroThumbnail": "/library/featured/qk5pzk.webp"
     },
     {
       "youtubeId": "ZHWQOs_OWjo",
@@ -41,7 +43,8 @@
       "description": null,
       "episode": "Beyond the Frame",
       "episodeNumber": 5,
-      "tags": ["Rendering", "Shaders"]
+      "tags": ["Rendering", "Shaders"],
+      "featureHeroThumbnail": "/library/featured/zhwojo.webp"
     },
     {
       "youtubeId": "XdYHbIsBRj4",
@@ -55,7 +58,8 @@
       "description": null,
       "episode": "The Boundless Expedition",
       "episodeNumber": 4,
-      "tags": ["History"]
+      "tags": ["History"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "HikPxAi-Ns0",
@@ -69,7 +73,8 @@
       "description": null,
       "episode": "The Boundless Expedition",
       "episodeNumber": 4,
-      "tags": ["Tech", "Unity"]
+      "tags": ["Tech", "Unity"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "ffk5whEGqYg",
@@ -83,7 +88,8 @@
       "description": null,
       "episode": "The Boundless Expedition",
       "episodeNumber": 4,
-      "tags": ["Tech", "Engines", "Godot"]
+      "tags": ["Tech", "Engines", "Godot"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "Qr8Al12x-vY",
@@ -97,7 +103,8 @@
       "description": null,
       "episode": "The Infinite Wanderers",
       "episodeNumber": 3,
-      "tags": ["Studio"]
+      "tags": ["Studio"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "r4KxBMACzn8",
@@ -111,7 +118,8 @@
       "description": null,
       "episode": "The Infinite Wanderers",
       "episodeNumber": 3,
-      "tags": ["Marketing", "Godot"]
+      "tags": ["Marketing", "Godot"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "YcH_Z-_U3zM",
@@ -125,7 +133,8 @@
       "description": null,
       "episode": "The Infinite Wanderers",
       "episodeNumber": 3,
-      "tags": ["AI", "ChatGPT", "Godot"]
+      "tags": ["AI", "ChatGPT", "Godot"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "k6UXHO92MN4",
@@ -139,7 +148,8 @@
       "description": null,
       "episode": "The Horizon Seekers",
       "episodeNumber": 2,
-      "tags": ["Interview"]
+      "tags": ["Interview"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "7U0F8S6mfa0",
@@ -153,7 +163,8 @@
       "description": null,
       "episode": "The Horizon Seekers",
       "episodeNumber": 2,
-      "tags": ["Tools", "Tech"]
+      "tags": ["Tools", "Tech"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "YvDnyzXflg0",
@@ -167,7 +178,8 @@
       "description": null,
       "episode": "The Horizon Seekers",
       "episodeNumber": 2,
-      "tags": ["Art", "ConceptArt"]
+      "tags": ["Art", "ConceptArt"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "unzkHMdEJF4",
@@ -181,7 +193,8 @@
       "description": null,
       "episode": "The Pioneers",
       "episodeNumber": 1,
-      "tags": ["Design", "Career"]
+      "tags": ["Design", "Career"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "JWIBXf-p1qs",
@@ -195,7 +208,8 @@
       "description": null,
       "episode": "The Pioneers",
       "episodeNumber": 1,
-      "tags": ["Tech", "Career"]
+      "tags": ["Tech", "Career"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "-68TpoQCfIU",
@@ -209,7 +223,8 @@
       "description": null,
       "episode": "The Pioneers",
       "episodeNumber": 1,
-      "tags": ["Art", "VisualStyle"]
+      "tags": ["Art", "VisualStyle"],
+      "featureHeroThumbnail": ""
     }
   ]
 }

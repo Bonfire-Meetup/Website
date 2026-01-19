@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { HeroBackground } from "./HeroBackground";
 import { NeonText } from "./NeonText";
 import { ScrollChevron } from "./ScrollChevron";
+import { Button } from "./Button";
 
 function Ember({ style }: { style: CSSProperties }) {
   return (
@@ -89,19 +90,22 @@ export async function Hero({
           </p>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:gap-8">
-            <a
+            <Button
               href="#events"
-              className="glass-button group relative px-5 py-3 text-sm sm:px-10 sm:py-5 sm:text-lg"
+              variant="glass"
+              external
+              className="group relative px-5 py-3 text-sm sm:px-10 sm:py-5 sm:text-lg"
             >
               <span className="relative z-10">{t("cta.events")}</span>
               <div className="absolute inset-0 -z-10 bg-brand-500 opacity-40 blur-xl transition-opacity group-hover:opacity-60" />
-            </a>
-            <a
+            </Button>
+            <Button
               href="/library"
-              className="glass-button-secondary px-5 py-3 text-sm sm:px-10 sm:py-5 sm:text-lg"
+              variant="glass-secondary"
+              className="px-5 py-3 text-sm sm:px-10 sm:py-5 sm:text-lg"
             >
               {t("cta.recordings")}
-            </a>
+            </Button>
           </div>
 
           <div className="mt-10 grid grid-cols-3 gap-4 border-t border-neutral-200 pt-8 sm:mt-20 sm:gap-20 sm:pt-12 dark:border-white/5">

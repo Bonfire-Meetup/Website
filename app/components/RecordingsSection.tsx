@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import dynamic from "next/dynamic";
 import type { Recording } from "../lib/recordings";
+import { SectionHeader } from "./SectionHeader";
 import { getProxiedThumbnailUrl } from "../lib/thumbnail";
 
 const RecordingsSectionClient = dynamic(() =>
@@ -28,14 +29,12 @@ export async function RecordingsSection({ recordings }: RecordingsSectionProps) 
   return (
     <section className="relative px-4 py-28 sm:px-6 lg:px-8">
       <div className="relative mx-auto max-w-7xl">
-        <div id="recordings" className="mb-12 scroll-mt-24 text-center">
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
-            {t("title")}
-          </h2>
-          <p className="mx-auto max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">
-            {t("subtitle")}
-          </p>
-        </div>
+        <SectionHeader
+          id="recordings"
+          title={t("title")}
+          subtitle={t("subtitle")}
+          className="mb-12"
+        />
 
         <RecordingsSectionClient
           recordings={homepageRecordings}

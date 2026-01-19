@@ -13,7 +13,8 @@
       "description": null,
       "episode": "Whispers of the Void",
       "episodeNumber": 7,
-      "tags": ["Discussion", "Podcast Quest", "Podcast"]
+      "tags": ["Discussion", "Podcast Quest", "Podcast"],
+      "featureHeroThumbnail": "/library/featured/x7q4b1.webp"
     },
     {
       "youtubeId": "y8baeWYeoZQ",
@@ -27,7 +28,8 @@
       "description": null,
       "episode": "Whispers of the Void",
       "episodeNumber": 7,
-      "tags": ["Audio", "Music"]
+      "tags": ["Audio", "Music"],
+      "featureHeroThumbnail": "/library/featured/y8bwzq.webp"
     },
     {
       "youtubeId": "mxKJaivKieA",
@@ -41,7 +43,8 @@
       "description": null,
       "episode": "The Shape of Echoes",
       "episodeNumber": 6,
-      "tags": ["Interview"]
+      "tags": ["Interview"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "pi0DNGFPqXY",
@@ -55,7 +58,8 @@
       "description": null,
       "episode": "The Shape of Echoes",
       "episodeNumber": 6,
-      "tags": ["Tech", "Rendering"]
+      "tags": ["Tech", "Rendering"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "ID-KKu_9s5A",
@@ -69,7 +73,8 @@
       "description": null,
       "episode": "The Shape of Echoes",
       "episodeNumber": 6,
-      "tags": ["Audio", "Music"]
+      "tags": ["Audio", "Music"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "VIuvhmpaBQQ",
@@ -83,7 +88,8 @@
       "description": null,
       "episode": "Knights of the Digital Age",
       "episodeNumber": 5,
-      "tags": ["Tech", "Performance", "Unity"]
+      "tags": ["Tech", "Performance", "Unity"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "6ydELWEEKIo",
@@ -97,7 +103,8 @@
       "description": null,
       "episode": "Knights of the Digital Age",
       "episodeNumber": 5,
-      "tags": ["Lighting", "Art"]
+      "tags": ["Lighting", "Art"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "9ZrsH-Kigk4",
@@ -111,7 +118,8 @@
       "description": null,
       "episode": "Knights of the Digital Age",
       "episodeNumber": 5,
-      "tags": ["Interview", "Podcast Modrák & Friends", "Podcast"]
+      "tags": ["Interview", "Podcast Modrák & Friends", "Podcast"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "f8tcy-xxZ6Q",
@@ -125,7 +133,8 @@
       "description": null,
       "episode": "The Mystic Voyagers",
       "episodeNumber": 4,
-      "tags": ["Discussion", "Podcast Quest", "Podcast"]
+      "tags": ["Discussion", "Podcast Quest", "Podcast"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "ACPfXVpCpk4",
@@ -139,7 +148,8 @@
       "description": null,
       "episode": "The Mystic Voyagers",
       "episodeNumber": 4,
-      "tags": ["Narrative", "Design"]
+      "tags": ["Narrative", "Design"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "VM5-DMsPPvY",
@@ -153,7 +163,8 @@
       "description": null,
       "episode": "The Mystic Voyagers",
       "episodeNumber": 4,
-      "tags": ["Engineering", "Unity"]
+      "tags": ["Engineering", "Unity"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "QJjI0RTNYHU",
@@ -167,7 +178,8 @@
       "description": null,
       "episode": "The Convergence",
       "episodeNumber": 3,
-      "tags": ["Design", "Production"]
+      "tags": ["Design", "Production"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "zfytc8rlt3Y",
@@ -181,7 +193,8 @@
       "description": null,
       "episode": "The Convergence",
       "episodeNumber": 3,
-      "tags": ["Interview"]
+      "tags": ["Interview"],
+      "featureHeroThumbnail": ""
     },
     {
       "youtubeId": "NaakC4squcA",
@@ -195,7 +208,8 @@
       "description": null,
       "episode": "The Convergence",
       "episodeNumber": 3,
-      "tags": ["Tech", "Unreal"]
+      "tags": ["Tech", "Unreal"],
+      "featureHeroThumbnail": ""
     }
   ]
 }

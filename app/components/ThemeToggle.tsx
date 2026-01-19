@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "./ThemeProvider";
+import { IconButton } from "./IconButton";
 
 function SunIcon({ className }: { className?: string }) {
   return (
@@ -67,17 +68,20 @@ export function ThemeToggle() {
   };
 
   return (
-    <button
+    <IconButton
       onClick={cycleTheme}
-      className="glass flex h-10 w-10 items-center justify-center rounded-xl transition-all hover:scale-105 active:scale-95"
-      aria-label={`Current theme: ${theme}. Click to change.`}
+      ariaLabel={`Current theme: ${theme}. Click to change.`}
       title={`Theme: ${theme}`}
+      size="md"
+      shape="rounded"
+      variant="glass"
+      className="hover:scale-105 active:scale-95"
     >
       {theme === "light" && <SunIcon className="h-5 w-5 text-amber-500 transition-transform" />}
       {theme === "dark" && <MoonIcon className="h-5 w-5 text-blue-400 transition-transform" />}
       {theme === "system" && (
         <SystemIcon className="h-5 w-5 text-neutral-500 transition-transform" />
       )}
-    </button>
+    </IconButton>
   );
 }

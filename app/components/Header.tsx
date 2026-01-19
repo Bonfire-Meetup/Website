@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import { MobileBackButton } from "./MobileBackButton";
+import { Button } from "./Button";
 
 export async function Header() {
   const t = await getTranslations("header");
@@ -12,8 +13,8 @@ export async function Header() {
 
   return (
     <header className="glass fixed top-0 right-0 left-0 z-50">
-      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4">
+        <div className="flex items-center gap-3 md:justify-self-start">
           <MobileBackButton label={t("back")} />
           <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
             <Image
@@ -35,27 +36,18 @@ export async function Header() {
           </Link>
         </div>
 
-        <nav className="hidden items-center gap-2 md:flex">
-          <Link
-            href="/#top"
-            className="rounded-xl px-4 py-2 text-sm font-medium text-neutral-600 transition-all duration-300 hover:bg-brand-100/60 hover:text-brand-700 dark:text-neutral-400 dark:hover:bg-brand-500/10 dark:hover:text-brand-400"
-          >
+        <nav className="hidden items-center gap-2 md:flex md:justify-self-center">
+          <Button href="/#top" variant="ghost" size="sm">
             {t("home")}
-          </Link>
-          <Link
-            href="/#events"
-            className="rounded-xl px-4 py-2 text-sm font-medium text-neutral-600 transition-all duration-300 hover:bg-brand-100/60 hover:text-brand-700 dark:text-neutral-400 dark:hover:bg-brand-500/10 dark:hover:text-brand-400"
-          >
+          </Button>
+          <Button href="/#events" variant="ghost" size="sm">
             {t("events")}
-          </Link>
-          <Link
-            href="/#locations"
-            className="rounded-xl px-4 py-2 text-sm font-medium text-neutral-600 transition-all duration-300 hover:bg-brand-100/60 hover:text-brand-700 dark:text-neutral-400 dark:hover:bg-brand-500/10 dark:hover:text-brand-400"
-          >
+          </Button>
+          <Button href="/#locations" variant="ghost" size="sm">
             {t("locations")}
-          </Link>
+          </Button>
         </nav>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 md:justify-self-end">
           <LanguageToggle
             locale={locale}
             labels={{
@@ -66,18 +58,12 @@ export async function Header() {
             }}
           />
           <ThemeToggle />
-          <Link
-            href="/library"
-            className="hidden rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-500 md:inline-flex dark:bg-brand-500 dark:shadow-brand-500/30 dark:hover:bg-brand-400"
-          >
+          <Button href="/library" variant="primary" className="hidden md:inline-flex">
             {t("library")}
-          </Link>
-          <Link
-            href="/library"
-            className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-500 md:hidden dark:bg-brand-500 dark:shadow-brand-500/30 dark:hover:bg-brand-400"
-          >
+          </Button>
+          <Button href="/library" variant="primary" className="md:hidden">
             {t("library")}
-          </Link>
+          </Button>
         </div>
       </div>
     </header>

@@ -103,6 +103,20 @@
     "eyebrow": "Stream the sessions",
     "title": "Talk Library",
     "subtitle": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
+    "rows": {
+      "latest": "Latest uploads",
+      "prague": "Prague sessions",
+      "zlin": "Zlin sessions",
+      "topic": "Topic: {tag}"
+    },
+    "view": {
+      "all": "Browse all",
+      "rows": "Back to picks"
+    },
+    "search": {
+      "label": "Search recordings",
+      "placeholder": "Search talks, speakers, tags..."
+    },
     "filters": {
       "title": "Filters",
       "location": "Location",

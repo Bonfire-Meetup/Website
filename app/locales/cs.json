@@ -103,6 +103,20 @@
     "eyebrow": "Pusť si to zpětně",
     "title": "Knihovna přednášek",
     "subtitle": "Projdi si kompletní archiv Bonfire přednášek o techu, artu i produkci, plus záznamy z live podcastů a rozhovorů.",
+    "rows": {
+      "latest": "Nejnovější záznamy",
+      "prague": "Pražské přednášky",
+      "zlin": "Zlínské přednášky",
+      "topic": "Téma: {tag}"
+    },
+    "view": {
+      "all": "Procházet vše",
+      "rows": "Zpět na výběr"
+    },
+    "search": {
+      "label": "Hledat záznamy",
+      "placeholder": "Hledej přednášky, speakery, tagy..."
+    },
     "filters": {
       "title": "Filtry",
       "location": "Lokace",

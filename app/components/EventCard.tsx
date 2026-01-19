@@ -1,4 +1,9 @@
 import { LOCATIONS, type LocationValue } from "../lib/constants";
+import { AccentBar } from "./AccentBar";
+import { Card } from "./Card";
+import { LocationPill } from "./LocationPill";
+import { MetaRow } from "./MetaRow";
+import { Pill } from "./Pill";
 
 export interface EventCardLabels {
   locationLabel: string;
@@ -173,55 +178,56 @@ export function EventCard({
 
   if (isTba) {
     return (
-      <article className="glass-card fire-glow group relative p-7 sm:p-9">
-        <div
-          className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full blur-3xl ${
-            location === LOCATIONS.PRAGUE
-              ? "bg-gradient-to-br from-red-400/25 to-rose-500/15"
-              : "bg-gradient-to-br from-blue-400/25 to-indigo-500/15"
-          }`}
-        />
-
+      <Card as="article" className="group relative overflow-hidden p-7 sm:p-9">
         <div className="relative">
           <div className="mb-5 flex items-start justify-between">
-            <span
-              className={`location-badge ${location.toLowerCase()} text-xs`}
-              aria-label={labels.locationLabel.replace("{location}", location)}
-            >
-              <MapPinIcon className="h-4 w-4" />
-              {location}
-            </span>
+            <div className="flex items-start gap-3">
+              <AccentBar className="mt-1" />
+              <div>
+                <h3 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
+                  {title}
+                </h3>
+                {episode && (
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
+                    {labels.episodeLabel}: {episode}
+                  </p>
+                )}
+              </div>
+            </div>
+            <LocationPill
+              location={location}
+              ariaLabel={labels.locationLabel.replace("{location}", location)}
+              icon={<MapPinIcon className="h-4 w-4" />}
+              className="text-xs"
+            />
           </div>
-
-          <h3 className="mb-3 text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
-            {title}
-          </h3>
-          {episode && (
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
-              {labels.episodeLabel}: {episode}
-            </p>
-          )}
 
           <p className="mb-6 leading-relaxed text-neutral-600 dark:text-neutral-300">
             {description}
           </p>
 
-          <div className="mb-6 flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-gradient-to-r from-brand-500/15 via-brand-400/15 to-brand-500/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-brand-700 ring-1 ring-brand-500/20 dark:from-brand-400/10 dark:via-brand-300/10 dark:to-brand-400/10 dark:text-brand-200 dark:ring-brand-400/20">
+          <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
+            <Pill
+              size="md"
+              className="bg-neutral-900/5 font-semibold uppercase tracking-[0.25em] text-neutral-600 dark:bg-white/10 dark:text-neutral-300"
+            >
               {labels.tba}
+            </Pill>
+            <span className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
+              Details soon
             </span>
-            <div className="flex items-center gap-2 rounded-full bg-neutral-900/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-600 dark:bg-white/10 dark:text-neutral-300">
-              <MapPinIcon className="h-3 w-3" />
-              {venue}
-            </div>
+          </div>
+          <div className="flex items-center gap-3 rounded-2xl bg-white/70 px-3 py-2.5 text-sm text-neutral-600 dark:bg-white/5 dark:text-neutral-300">
+            <MapPinIcon className="h-4 w-4 text-neutral-400 dark:text-neutral-500" />
+            <span className="font-medium truncate">{venue}</span>
           </div>
         </div>
-      </article>
+      </Card>
     );
   }
 
   return (
-    <article className="glass-card fire-glow group relative p-7 sm:p-9">
+    <Card as="article" className="fire-glow group relative p-7 sm:p-9">
       <div
         className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full blur-3xl ${
           location === LOCATIONS.PRAGUE
@@ -232,13 +238,11 @@ export function EventCard({
 
       <div className="relative">
         <div className="mb-5 flex items-start justify-between">
-          <span
-            className={`location-badge ${location.toLowerCase()}`}
-            aria-label={labels.locationLabel.replace("{location}", location)}
-          >
-            <MapPinIcon className="h-4 w-4" />
-            {location}
-          </span>
+          <LocationPill
+            location={location}
+            ariaLabel={labels.locationLabel.replace("{location}", location)}
+            icon={<MapPinIcon className="h-4 w-4" />}
+          />
         </div>
 
         <h3 className="mb-3 text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
@@ -253,24 +257,18 @@ export function EventCard({
         <p className="mb-7 leading-relaxed text-neutral-600 dark:text-neutral-300">{description}</p>
 
         <div className="mb-8 space-y-3.5">
-          <div className="flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-100/80 dark:bg-brand-500/10">
-              <CalendarIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />
-            </div>
-            <span className="font-medium">{formattedDate}</span>
-          </div>
-          <div className="flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-100/80 dark:bg-brand-500/10">
-              <ClockIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />
-            </div>
-            <span className="font-medium">{time}</span>
-          </div>
-          <div className="flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-100/80 dark:bg-brand-500/10">
-              <MapPinIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />
-            </div>
-            <span className="font-medium">{venue}</span>
-          </div>
+          <MetaRow
+            icon={<CalendarIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
+            text={formattedDate}
+          />
+          <MetaRow
+            icon={<ClockIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
+            text={time}
+          />
+          <MetaRow
+            icon={<MapPinIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
+            text={venue}
+          />
         </div>
 
         {hasSpeakers && (
@@ -314,6 +312,6 @@ export function EventCard({
           ))}
         </div>
       </div>
-    </article>
+    </Card>
   );
 }

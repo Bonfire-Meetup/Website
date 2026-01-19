@@ -25,7 +25,12 @@ export function getHomepageRecordings() {
   const latestRecordings = (location: LocationValue) =>
     allRecordings.filter((recording) => recording.location === location).slice(0, 3);
 
-  return [...latestRecordings(LOCATIONS.PRAGUE), ...latestRecordings(LOCATIONS.ZLIN)].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  const selections = [...latestRecordings(LOCATIONS.PRAGUE), ...latestRecordings(LOCATIONS.ZLIN)];
+
+  for (let i = selections.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [selections[i], selections[j]] = [selections[j], selections[i]];
+  }
+
+  return selections;
 }

@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { Recording } from "../lib/recordings";
+import { AccentBar } from "./AccentBar";
+import { Button } from "./Button";
+import { EmptyState } from "./EmptyState";
+import { Pill } from "./Pill";
+import { Skeleton } from "./Skeletons";
 
 import { LOCATIONS, type LocationValue } from "../lib/constants";
 
@@ -22,6 +27,34 @@ function ChevronDownIcon({ className }: { className?: string }) {
   );
 }
 
+function ChevronLeftIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 19.5-7.5-7.5 7.5-7.5" />
+    </svg>
+  );
+}
+
+function ChevronRightIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+    </svg>
+  );
+}
+
 type LocationFilter = "all" | LocationValue;
 
 type CatalogRecording = Pick<
@@ -32,6 +65,7 @@ type CatalogRecording = Pick<
   | "speaker"
   | "date"
   | "thumbnail"
+  | "featureHeroThumbnail"
   | "description"
   | "tags"
   | "location"
@@ -43,6 +77,20 @@ interface RecordingsCatalogLabels {
   eyebrow: string;
   title: string;
   subtitle: string;
+  rows: {
+    latest: string;
+    prague: string;
+    zlin: string;
+    topic: string;
+  };
+  view: {
+    all: string;
+    rows: string;
+  };
+  search: {
+    label: string;
+    placeholder: string;
+  };
   filters: {
     title: string;
     location: string;
@@ -78,16 +126,199 @@ function formatDate(date: string, locale: string) {
   });
 }
 
+const FEATURED_INTERVAL_MS = 6000;
+
+function RailSkeleton() {
+  return (
+    <div className="space-y-4">
+      <Skeleton className="h-6 w-40" />
+      <div className="flex gap-5 overflow-hidden pb-4 pt-1">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div key={index} className="w-[75vw] shrink-0 sm:w-[45vw] lg:w-[280px] xl:w-[300px]">
+            <Skeleton className="aspect-video w-full !rounded-none" />
+            <div className="space-y-3 bg-white/85 px-4 pb-5 pt-4 dark:bg-black/75">
+              <Skeleton className="h-3 w-32" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-2/3" />
+              <div className="flex gap-2">
+                <Skeleton className="h-5 w-16 rounded-full" />
+                <Skeleton className="h-5 w-12 rounded-full" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function GridSkeleton() {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {Array.from({ length: 8 }).map((_, index) => (
+        <div key={index} className="overflow-hidden rounded-[28px]">
+          <Skeleton className="aspect-video w-full !rounded-none" />
+          <div className="space-y-3 bg-white/85 px-5 pb-6 pt-5 dark:bg-black/75">
+            <Skeleton className="h-3 w-32" />
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-2/3" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RecordingRailCard({
+  recording,
+  locale,
+  labels,
+}: {
+  recording: CatalogRecording;
+  locale: string;
+  labels: RecordingsCatalogLabels;
+}) {
+  return (
+    <Link
+      href={`/watch/${recording.slug}-${recording.shortId}`}
+      className="group relative flex w-[75vw] shrink-0 snap-start flex-col overflow-hidden rounded-[24px] bg-white/90 text-neutral-900 shadow-lg shadow-black/5 ring-1 ring-black/5 transition-all hover:-translate-y-1 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10 sm:w-[45vw] lg:w-[280px] xl:w-[300px]"
+      aria-label={recording.title}
+    >
+      <div className="relative aspect-video w-full overflow-hidden">
+        <Image
+          src={recording.thumbnail}
+          alt={recording.title}
+          fill
+          className="object-cover transition duration-700 group-hover:scale-105"
+          sizes="(max-width: 640px) 75vw, (max-width: 1024px) 45vw, 300px"
+        />
+      </div>
+      <div className="flex flex-1 flex-col space-y-3 bg-white/85 px-4 pb-5 pt-4 text-neutral-900 dark:bg-black/75 dark:text-white">
+        <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-white/70">
+          <Pill
+            size="xxs"
+            className="bg-black/5 text-neutral-700 dark:bg-white/10 dark:text-white/80"
+          >
+            {recording.location}
+          </Pill>
+          <span className="text-neutral-400 dark:text-white/50">•</span>
+          <span>{formatDate(recording.date, locale)}</span>
+        </div>
+        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-neutral-900 dark:text-white">
+          {recording.title}
+        </h3>
+        <div className="flex flex-col gap-1.5">
+          {recording.speaker.map((name) => (
+            <div key={name} className="flex items-center gap-2">
+              <span className="h-1 w-1 shrink-0 rounded-full bg-brand-500 shadow-[0_0_6px_rgba(59,130,246,0.4)] dark:bg-brand-400" />
+              <span className="text-[11px] font-medium text-neutral-700 dark:text-neutral-300">
+                {name}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {recording.tags.slice(0, 3).map((tag) => (
+            <Pill
+              key={tag}
+              size="xxs"
+              className="bg-black/5 font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:bg-white/10 dark:text-white/70"
+            >
+              {tag}
+            </Pill>
+          ))}
+        </div>
+      </div>
+      {recording.episode && (
+        <Pill
+          size="xxs"
+          className="absolute right-3 top-3 bg-black/60 font-semibold uppercase tracking-[0.18em] text-white shadow"
+        >
+          {recording.episodeNumber
+            ? `${labels.epShort} ${recording.episodeNumber}`
+            : recording.episode}
+        </Pill>
+      )}
+    </Link>
+  );
+}
+
+function RecordingRail({
+  title,
+  recordings,
+  locale,
+  labels,
+}: {
+  title: string;
+  recordings: CatalogRecording[];
+  locale: string;
+  labels: RecordingsCatalogLabels;
+}) {
+  const railRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollByAmount = (direction: number) => {
+    if (!railRef.current) return;
+    railRef.current.scrollBy({
+      left: direction * railRef.current.clientWidth * 0.85,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <AccentBar />
+          <h3 className="text-lg font-semibold tracking-tight text-neutral-900 dark:text-white sm:text-xl">
+            {title}
+          </h3>
+        </div>
+        <div className="hidden items-center gap-2 md:flex">
+          <button
+            type="button"
+            onClick={() => scrollByAmount(-1)}
+            aria-label="Scroll left"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollByAmount(1)}
+            aria-label="Scroll right"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
+          >
+            <ChevronRightIcon className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+      <div className="relative rounded-[28px] bg-white/60 px-2 pt-2 pb-2 dark:bg-neutral-950/60">
+        <div
+          ref={railRef}
+          className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 pt-1 scroll-smooth"
+        >
+          {recordings.map((recording) => (
+            <RecordingRailCard
+              key={`${recording.shortId}-${title}`}
+              recording={recording}
+              locale={locale}
+              labels={labels}
+            />
+          ))}
+        </div>
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-10 rounded-[28px] bg-gradient-to-r from-white/60 to-transparent dark:from-neutral-950/60" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-10 rounded-[28px] bg-gradient-to-l from-white/60 to-transparent dark:from-neutral-950/60" />
+      </div>
+    </div>
+  );
+}
+
 export function RecordingsCatalog({
   recordings,
-  title,
-  subtitle,
   labels,
   locale,
 }: {
   recordings: CatalogRecording[];
-  title: string;
-  subtitle: string;
   labels: RecordingsCatalogLabels;
   locale: string;
 }) {
@@ -96,6 +327,11 @@ export function RecordingsCatalog({
   const [activeLocation, setActiveLocation] = useState<LocationFilter>("all");
   const [activeTag, setActiveTag] = useState("all");
   const [activeEpisode, setActiveEpisode] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFiltering, setIsFiltering] = useState(false);
+  const isFirstFilter = useRef(true);
+  const [viewMode, setViewMode] = useState<"rows" | "grid">("rows");
+  const [featuredIndex, setFeaturedIndex] = useState(0);
 
   const tagOptions = useMemo(() => {
     const filteredForTags = recordings.filter(
@@ -153,6 +389,7 @@ export function RecordingsCatalog({
     const locationParam = searchParams.get("location") ?? "all";
     const tagParam = searchParams.get("tag") ?? "all";
     const episodeParam = searchParams.get("episode") ?? "all";
+    const queryParam = searchParams.get("q") ?? "";
     const normalizedLocation =
       locationParam === LOCATIONS.PRAGUE || locationParam === LOCATIONS.ZLIN
         ? locationParam
@@ -161,12 +398,14 @@ export function RecordingsCatalog({
     const normalizedEpisode = episodeOptions.some((option) => option.value === episodeParam)
       ? episodeParam
       : "all";
+    const normalizedQuery = queryParam.trim();
     setActiveLocation(normalizedLocation);
     setActiveTag(normalizedTag);
     setActiveEpisode(normalizedEpisode);
+    setSearchQuery(normalizedQuery);
   }, [searchParams, tagOptions, episodeOptions]);
 
-  const updateFilters = (location: LocationFilter, tag: string, episode: string) => {
+  const updateFilters = (location: LocationFilter, tag: string, episode: string, search = "") => {
     const params = new URLSearchParams(searchParams.toString());
     if (location === "all") {
       params.delete("location");
@@ -183,172 +422,323 @@ export function RecordingsCatalog({
     } else {
       params.set("episode", episode);
     }
-    const query = params.toString();
-    router.replace(query ? `/library?${query}` : "/library");
+    if (!search.trim()) {
+      params.delete("q");
+    } else {
+      params.set("q", search.trim());
+    }
+    const queryString = params.toString();
+    router.replace(queryString ? `/library?${queryString}` : "/library");
   };
 
   const filteredRecordings = useMemo(() => {
+    const loweredQuery = searchQuery.trim().toLowerCase();
     return recordings.filter((recording) => {
       const matchesLocation = activeLocation === "all" || recording.location === activeLocation;
       const matchesTag = activeTag === "all" || recording.tags.includes(activeTag);
       const matchesEpisode = activeEpisode === "all" || recording.episode === activeEpisode;
-      return matchesLocation && matchesTag && matchesEpisode;
+      const matchesQuery =
+        loweredQuery.length === 0 ||
+        recording.title.toLowerCase().includes(loweredQuery) ||
+        recording.speaker.some((name) => name.toLowerCase().includes(loweredQuery)) ||
+        recording.tags.some((tag) => tag.toLowerCase().includes(loweredQuery)) ||
+        recording.location.toLowerCase().includes(loweredQuery) ||
+        (recording.episode?.toLowerCase().includes(loweredQuery) ?? false) ||
+        (recording.description?.toLowerCase().includes(loweredQuery) ?? false);
+      return matchesLocation && matchesTag && matchesEpisode && matchesQuery;
     });
-  }, [recordings, activeLocation, activeTag, activeEpisode]);
+  }, [recordings, activeLocation, activeTag, activeEpisode, searchQuery]);
 
-  const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}`;
+  const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${searchQuery}`;
+  const hasActiveFilters =
+    activeLocation !== "all" ||
+    activeTag !== "all" ||
+    activeEpisode !== "all" ||
+    searchQuery.trim() !== "";
 
-  const featured = filteredRecordings[0];
+  useEffect(() => {
+    if (isFirstFilter.current) {
+      isFirstFilter.current = false;
+      return;
+    }
+    setIsFiltering(true);
+    const timer = setTimeout(() => setIsFiltering(false), 200);
+    return () => clearTimeout(timer);
+  }, [filterKey]);
+
+  useEffect(() => {
+    if (hasActiveFilters) {
+      setViewMode("grid");
+    }
+  }, [hasActiveFilters]);
+
+  useEffect(() => {
+    setFeaturedIndex(0);
+  }, [filterKey, viewMode]);
+
+  const handleBrowseAll = () => {
+    setViewMode("grid");
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  };
+
+  type RailRow = {
+    key: string;
+    title: string;
+    items: CatalogRecording[];
+  };
+
+  const featuredCandidates = filteredRecordings.slice(0, 5);
+  const featured = featuredCandidates[featuredIndex] ?? featuredCandidates[0];
+  const hasFeaturedHero = Boolean(featured?.featureHeroThumbnail);
+  const featuredThumbnail = hasFeaturedHero ? featured?.featureHeroThumbnail : featured?.thumbnail;
   const gridRecordings = featured
     ? filteredRecordings.filter((recording) => recording.shortId !== featured.shortId)
     : filteredRecordings;
 
+  const latestRecordings = useMemo(() => {
+    return filteredRecordings.slice(0, 12);
+  }, [filteredRecordings]);
+
+  const locationRows = useMemo(() => {
+    const rows: RailRow[] = [];
+    const pragueItems = filteredRecordings.filter((r) => r.location === LOCATIONS.PRAGUE);
+    const zlinItems = filteredRecordings.filter((r) => r.location === LOCATIONS.ZLIN);
+
+    if (activeLocation === "all") {
+      if (pragueItems.length > 0) {
+        rows.push({ key: "location-prague", title: labels.rows.prague, items: pragueItems });
+      }
+      if (zlinItems.length > 0) {
+        rows.push({ key: "location-zlin", title: labels.rows.zlin, items: zlinItems });
+      }
+      return rows;
+    }
+
+    if (activeLocation === LOCATIONS.PRAGUE && pragueItems.length > 0) {
+      rows.push({ key: "location-prague", title: labels.rows.prague, items: pragueItems });
+    }
+    if (activeLocation === LOCATIONS.ZLIN && zlinItems.length > 0) {
+      rows.push({ key: "location-zlin", title: labels.rows.zlin, items: zlinItems });
+    }
+
+    return rows;
+  }, [activeLocation, filteredRecordings, labels.rows.prague, labels.rows.zlin]);
+
+  useEffect(() => {
+    if (viewMode !== "rows" || featuredCandidates.length <= 1) return;
+    const timer = setInterval(() => {
+      setFeaturedIndex((prev) => (prev + 1) % featuredCandidates.length);
+    }, FEATURED_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, [featuredCandidates.length, viewMode]);
+
+  const tagRows = useMemo(() => {
+    if (activeTag !== "all") {
+      return [];
+    }
+
+    const counts = new Map<string, number>();
+    filteredRecordings.forEach((recording) => {
+      recording.tags.forEach((tag) => {
+        counts.set(tag, (counts.get(tag) ?? 0) + 1);
+      });
+    });
+
+    const topTags = Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([tag]) => tag);
+
+    return topTags
+      .map((tag) => ({
+        key: `tag-${tag}`,
+        title: labels.rows.topic.replace("{tag}", tag),
+        items: filteredRecordings.filter((recording) => recording.tags.includes(tag)),
+      }))
+      .filter((row) => row.items.length > 0);
+  }, [activeTag, filteredRecordings, labels.rows.topic]);
+
+  const rows = useMemo(() => {
+    const nextRows: RailRow[] = [];
+    if (latestRecordings.length > 0) {
+      nextRows.push({ key: "latest", title: labels.rows.latest, items: latestRecordings });
+    }
+    return [...nextRows, ...locationRows, ...tagRows];
+  }, [latestRecordings, locationRows, tagRows, labels.rows.latest]);
+
   return (
     <section className="relative px-4 pb-24 sm:px-6 lg:px-8">
       <div className="relative mx-auto max-w-7xl">
-        <div className="mb-10 text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.35em] text-brand-500/80">
-            {labels.eyebrow}
-          </p>
-          <h1 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
-            {title}
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
-            {subtitle}
-          </p>
-        </div>
+        <div className="mb-2 sm:mb-6" />
 
-        <div className="glass mb-8 rounded-2xl px-4 py-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2">
-              {locationOptions.map((option) => {
-                const hasResults =
-                  option.value === "all" ||
-                  recordings.some(
-                    (r) =>
-                      r.location === option.value &&
-                      (activeTag === "all" || r.tags.includes(activeTag)) &&
-                      (activeEpisode === "all" || r.episode === activeEpisode),
+        {viewMode === "grid" ? (
+          <div className="glass mb-8 rounded-2xl px-4 py-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                {locationOptions.map((option) => {
+                  const hasResults =
+                    option.value === "all" ||
+                    recordings.some(
+                      (r) =>
+                        r.location === option.value &&
+                        (activeTag === "all" || r.tags.includes(activeTag)) &&
+                        (activeEpisode === "all" || r.episode === activeEpisode),
+                    );
+
+                  return (
+                    <Button
+                      key={option.value}
+                      onClick={() => {
+                        if (!hasResults && activeLocation !== option.value) return;
+                        updateFilters(option.value, activeTag, activeEpisode, searchQuery);
+                      }}
+                      variant="plain"
+                      size="sm"
+                      className={`rounded-full font-medium transition ${
+                        activeLocation === option.value
+                          ? option.value === LOCATIONS.PRAGUE
+                            ? "bg-red-500 text-white shadow-sm shadow-red-500/25"
+                            : option.value === LOCATIONS.ZLIN
+                              ? "bg-blue-500 text-white shadow-sm shadow-blue-500/25"
+                              : "bg-brand-500 text-white shadow-sm shadow-brand-500/25"
+                          : !hasResults
+                            ? "cursor-not-allowed bg-neutral-100 text-neutral-400 opacity-50 dark:bg-white/5 dark:text-neutral-600"
+                            : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/15"
+                      }`}
+                    >
+                      {labels.filters[option.labelKey]}
+                    </Button>
                   );
+                })}
+              </div>
 
-                return (
-                  <button
-                    key={option.value}
-                    onClick={() => {
-                      if (!hasResults && activeLocation !== option.value) return;
-                      setActiveLocation(option.value);
-                      updateFilters(option.value, activeTag, activeEpisode);
-                    }}
-                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
-                      activeLocation === option.value
-                        ? option.value === LOCATIONS.PRAGUE
-                          ? "bg-red-500 text-white shadow-sm shadow-red-500/25"
-                          : option.value === LOCATIONS.ZLIN
-                            ? "bg-blue-500 text-white shadow-sm shadow-blue-500/25"
-                            : "bg-brand-500 text-white shadow-sm shadow-brand-500/25"
-                        : !hasResults
-                          ? "cursor-not-allowed bg-neutral-100 text-neutral-400 opacity-50 dark:bg-white/5 dark:text-neutral-600"
-                          : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/15"
-                    }`}
-                  >
-                    {labels.filters[option.labelKey]}
-                  </button>
-                );
-              })}
-            </div>
+              <div className="hidden h-5 w-px bg-neutral-300/60 sm:block dark:bg-white/10" />
 
-            <div className="hidden h-5 w-px bg-neutral-300/60 sm:block dark:bg-white/10" />
-
-            <div className="relative">
-              <select
-                value={activeTag}
-                onChange={(e) => {
-                  setActiveTag(e.target.value);
-                  updateFilters(activeLocation, e.target.value, activeEpisode);
-                }}
-                className={`w-40 appearance-none rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-8 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
-                  activeTag !== "all"
-                    ? "text-brand-600 dark:text-brand-300"
-                    : "text-neutral-600 dark:text-neutral-300"
-                }`}
-              >
-                <option value="all">{labels.filters.allTags}</option>
-                {tagOptions
-                  .filter((tag) => tag !== "all")
-                  .map((tag) => (
-                    <option key={tag} value={tag}>
-                      {tag}
-                    </option>
-                  ))}
-              </select>
-              <ChevronDownIcon className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-neutral-400" />
-            </div>
-
-            <div className="relative">
-              <select
-                value={activeEpisode}
-                onChange={(e) => {
-                  setActiveEpisode(e.target.value);
-                  updateFilters(activeLocation, activeTag, e.target.value);
-                }}
-                className={`w-64 appearance-none rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-8 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
-                  activeEpisode !== "all"
-                    ? "text-brand-600 dark:text-brand-300"
-                    : "text-neutral-600 dark:text-neutral-300"
-                }`}
-              >
-                <option value="all">{labels.filters.allEpisodes}</option>
-                {groupedEpisodes.map((group) => (
-                  <optgroup
-                    key={group.label}
-                    label={group.label}
-                    className="font-semibold text-neutral-900 dark:text-white"
-                  >
-                    {group.options.map((episode) => (
-                      <option
-                        key={episode.value}
-                        value={episode.value}
-                        className="font-normal text-neutral-600 dark:text-neutral-300"
-                      >
-                        {episode.label}
+              <div className="relative">
+                <select
+                  value={activeTag}
+                  onChange={(e) => {
+                    updateFilters(activeLocation, e.target.value, activeEpisode, searchQuery);
+                  }}
+                  className={`w-40 appearance-none rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-8 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
+                    activeTag !== "all"
+                      ? "text-brand-600 dark:text-brand-300"
+                      : "text-neutral-600 dark:text-neutral-300"
+                  }`}
+                >
+                  <option value="all">{labels.filters.allTags}</option>
+                  {tagOptions
+                    .filter((tag) => tag !== "all")
+                    .map((tag) => (
+                      <option key={tag} value={tag}>
+                        {tag}
                       </option>
                     ))}
-                  </optgroup>
-                ))}
-              </select>
-              <ChevronDownIcon className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-neutral-400" />
-            </div>
+                </select>
+                <ChevronDownIcon className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-neutral-400" />
+              </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                setActiveLocation("all");
-                setActiveTag("all");
-                setActiveEpisode("all");
-                updateFilters("all", "all", "all");
-              }}
-              disabled={activeLocation === "all" && activeTag === "all" && activeEpisode === "all"}
-              className={`ml-auto rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-                activeLocation === "all" && activeTag === "all" && activeEpisode === "all"
-                  ? "cursor-not-allowed text-neutral-400 dark:text-neutral-500"
-                  : "text-neutral-600 hover:bg-white/80 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white"
-              }`}
-            >
-              {labels.filters.reset}
-            </button>
+              <div className="relative">
+                <select
+                  value={activeEpisode}
+                  onChange={(e) => {
+                    updateFilters(activeLocation, activeTag, e.target.value, searchQuery);
+                  }}
+                  className={`w-64 appearance-none rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-8 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
+                    activeEpisode !== "all"
+                      ? "text-brand-600 dark:text-brand-300"
+                      : "text-neutral-600 dark:text-neutral-300"
+                  }`}
+                >
+                  <option value="all">{labels.filters.allEpisodes}</option>
+                  {groupedEpisodes.map((group) => (
+                    <optgroup
+                      key={group.label}
+                      label={group.label}
+                      className="font-semibold text-neutral-900 dark:text-white"
+                    >
+                      {group.options.map((episode) => (
+                        <option
+                          key={episode.value}
+                          value={episode.value}
+                          className="font-normal text-neutral-600 dark:text-neutral-300"
+                        >
+                          {episode.label}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+                <ChevronDownIcon className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-neutral-400" />
+              </div>
+
+              <div className="relative flex-1">
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    const next = e.target.value;
+                    setSearchQuery(next);
+                    updateFilters(activeLocation, activeTag, activeEpisode, next);
+                  }}
+                  placeholder={labels.search.placeholder}
+                  aria-label={labels.search.label}
+                  className="w-full min-w-[220px] rounded-lg border-0 bg-white/90 px-3 py-1.5 text-xs font-medium text-neutral-700 shadow-sm ring-1 ring-black/5 transition placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:placeholder:text-neutral-500 dark:focus:ring-brand-400/50"
+                />
+              </div>
+
+              <Button
+                onClick={() => {
+                  updateFilters("all", "all", "all", "");
+                }}
+                disabled={
+                  activeLocation === "all" &&
+                  activeTag === "all" &&
+                  activeEpisode === "all" &&
+                  searchQuery === ""
+                }
+                variant="plain"
+                size="sm"
+                className={`rounded-lg font-medium transition ${
+                  activeLocation === "all" &&
+                  activeTag === "all" &&
+                  activeEpisode === "all" &&
+                  searchQuery === ""
+                    ? "cursor-not-allowed text-neutral-400 dark:text-neutral-500"
+                    : "text-neutral-600 hover:bg-white/80 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white"
+                }`}
+              >
+                {labels.filters.reset}
+              </Button>
+              <Button
+                onClick={() => {
+                  setViewMode("rows");
+                  updateFilters("all", "all", "all", "");
+                }}
+                variant="plain"
+                size="sm"
+                className="ml-auto w-full rounded-lg bg-white/80 font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white sm:w-auto dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/15"
+              >
+                {labels.view.rows}
+              </Button>
+            </div>
           </div>
-        </div>
+        ) : null}
 
-        <div className="min-h-[800px] transition-all duration-500">
+        <div
+          className={`min-h-[700px] transition-opacity duration-300 ${
+            isFiltering ? "opacity-70" : "opacity-100"
+          }`}
+        >
           {filteredRecordings.length === 0 ? (
-            <div className="glass-card mx-auto max-w-lg p-12 text-center recording-card-enter">
-              <p className="text-lg font-medium text-neutral-600 dark:text-neutral-300">
-                {labels.empty}
-              </p>
-            </div>
+            <EmptyState
+              message={labels.empty}
+              className="max-w-lg p-12 recording-card-enter"
+              messageClassName="text-lg text-neutral-600 dark:text-neutral-300"
+            />
           ) : (
             <>
-              {featured && (
+              {viewMode === "rows" && featured && (
                 <article
                   key={`featured-${featured.shortId}-${filterKey}`}
                   role="link"
@@ -361,53 +751,162 @@ export function RecordingsCatalog({
                     }
                   }}
                   aria-label={featured.title}
-                  className="group recording-card-enter relative mb-12 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-2xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10"
+                  className={`group recording-card-enter relative mb-12 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10 ${
+                    hasFeaturedHero ? "min-h-[420px] sm:min-h-0" : ""
+                  }`}
                 >
-                  <div className="relative aspect-[16/7] w-full">
+                  <div
+                    className={
+                      hasFeaturedHero
+                        ? "absolute inset-0 z-0 sm:relative sm:aspect-[16/7] sm:w-full"
+                        : "relative aspect-[16/7] w-full"
+                    }
+                  >
                     <Image
-                      src={featured.thumbnail}
+                      src={featuredThumbnail ?? featured.thumbnail}
                       alt={featured.title}
                       fill
                       className="object-cover transition duration-700 group-hover:scale-105"
                       sizes="(max-width: 1024px) 100vw, 70vw"
                       priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/60 to-transparent dark:from-black/90 dark:via-black/50" />
+                    {viewMode === "rows" && featuredCandidates.length > 1 ? (
+                      <div className="absolute inset-0 z-10 pointer-events-none">
+                        <button
+                          type="button"
+                          aria-label="Previous featured"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setFeaturedIndex(
+                              (prev) =>
+                                (prev - 1 + featuredCandidates.length) % featuredCandidates.length,
+                            );
+                          }}
+                          className="pointer-events-auto absolute inset-y-0 left-0 w-1/5 cursor-pointer"
+                        />
+                        <button
+                          type="button"
+                          aria-label="Next featured"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setFeaturedIndex((prev) => (prev + 1) % featuredCandidates.length);
+                          }}
+                          className="pointer-events-auto absolute inset-y-0 right-0 w-1/5 cursor-pointer"
+                        />
+                      </div>
+                    ) : null}
+                    {viewMode === "rows" && featuredCandidates.length > 1 ? (
+                      <div className="absolute top-4 left-6 right-6 z-10 flex gap-2">
+                        {featuredCandidates.map((item, index) => {
+                          const isActive = index === featuredIndex;
+                          return (
+                            <div
+                              key={`progress-${item.shortId}`}
+                              className="h-0.5 flex-1 overflow-hidden rounded-full bg-white/40 dark:bg-white/20"
+                            >
+                              <span
+                                key={
+                                  isActive
+                                    ? `active-${item.shortId}-${featuredIndex}`
+                                    : `inactive-${item.shortId}`
+                                }
+                                className={`block h-full rounded-full ${
+                                  isActive
+                                    ? "hero-progress-fill"
+                                    : index < featuredIndex
+                                      ? "bg-white"
+                                      : "bg-white/20"
+                                }`}
+                                style={
+                                  isActive
+                                    ? { animationDuration: `${FEATURED_INTERVAL_MS}ms` }
+                                    : index < featuredIndex
+                                      ? { width: "100%" }
+                                      : { width: "0%" }
+                                }
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : null}
                   </div>
-                  <div className="relative sm:absolute sm:inset-0 sm:flex sm:items-end">
-                    <div className="p-6 sm:p-10 lg:p-12">
-                      <div className="mb-4 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-neutral-600 dark:text-white/70">
-                        <span className="rounded-full bg-black/5 px-3 py-1 text-neutral-700 dark:bg-white/10 dark:text-white/80">
+                  <div className="absolute bottom-4 left-4 right-4 z-20 sm:bottom-6 sm:left-6 sm:right-6">
+                    <div
+                      className={`flex max-w-2xl flex-col gap-2 rounded-3xl px-4 py-4 sm:px-5 sm:py-4 ${
+                        hasFeaturedHero
+                          ? "bg-black/60 text-white ring-1 ring-white/10 sm:bg-white/90 sm:text-neutral-900 sm:ring-black/5 dark:sm:bg-black/60 dark:sm:text-white dark:sm:ring-white/10"
+                          : "bg-white/85 text-neutral-900 ring-1 ring-black/5 dark:bg-black/60 dark:text-white dark:ring-white/10"
+                      }`}
+                    >
+                      <div
+                        className={`flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] ${
+                          hasFeaturedHero
+                            ? "text-white/80 sm:text-neutral-600 dark:sm:text-white/70"
+                            : "text-neutral-600 dark:text-white/70"
+                        }`}
+                      >
+                        <Pill
+                          size="xs"
+                          className={`${
+                            hasFeaturedHero
+                              ? "bg-white/15 text-white/90 sm:bg-black/5 sm:text-neutral-700 dark:sm:bg-white/10 dark:sm:text-white/80"
+                              : "bg-black/5 text-neutral-700 dark:bg-white/10 dark:text-white/80"
+                          }`}
+                        >
                           {featured.location}
-                        </span>
+                        </Pill>
                         <span>{formatDate(featured.date, locale)}</span>
                       </div>
-                      <h2 className="max-w-2xl break-words text-2xl font-semibold leading-tight text-neutral-900 dark:text-white sm:text-3xl lg:text-4xl">
+                      <h2
+                        className={`break-words text-xl font-semibold leading-tight line-clamp-2 sm:text-3xl lg:text-4xl ${
+                          hasFeaturedHero
+                            ? "text-white sm:text-neutral-900 dark:sm:text-white"
+                            : "text-neutral-900 dark:text-white"
+                        }`}
+                      >
                         {featured.title}
                       </h2>
-                      <div className="mt-4 flex flex-col gap-2">
+                      <div className="flex flex-col gap-1.5">
                         {featured.speaker.map((name) => (
-                          <div key={name} className="flex items-center gap-2.5">
+                          <div key={name} className="flex items-center gap-2">
                             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(59,130,246,0.4)] dark:bg-brand-400" />
-                            <span className="text-sm font-medium text-neutral-900/80 dark:text-white/80">
+                            <span
+                              className={`text-xs font-medium sm:text-sm ${
+                                hasFeaturedHero
+                                  ? "text-white/90 sm:text-neutral-900/80 dark:sm:text-white/80"
+                                  : "text-neutral-900/80 dark:text-white/80"
+                              }`}
+                            >
                               {name}
                             </span>
                           </div>
                         ))}
                       </div>
-                      <p className="mt-3 max-w-2xl text-sm text-neutral-600 dark:text-white/70 sm:text-base">
+                      <p
+                        className={`text-xs sm:text-base ${
+                          hasFeaturedHero
+                            ? "text-white/70 sm:text-neutral-600 dark:sm:text-white/70"
+                            : "text-neutral-600 dark:text-white/70"
+                        }`}
+                      >
                         {featured.description}
                       </p>
-                      <div className="mt-5 flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1.5">
                         {featured.tags.map((tag) => (
-                          <Link
+                          <Pill
                             key={tag}
                             href={`/library?tag=${encodeURIComponent(tag)}`}
                             onClick={(event) => event.stopPropagation()}
-                            className="rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-neutral-600 transition hover:text-neutral-900 dark:bg-white/10 dark:text-white/70 dark:hover:text-white"
+                            size="xs"
+                            className={`font-semibold transition hover:text-neutral-900 dark:hover:text-white ${
+                              hasFeaturedHero
+                                ? "bg-white/10 text-white/75 sm:bg-black/5 sm:text-neutral-600 dark:sm:bg-white/10 dark:sm:text-white/70"
+                                : "bg-black/5 text-neutral-600 dark:bg-white/10 dark:text-white/70"
+                            }`}
                           >
                             {tag}
-                          </Link>
+                          </Pill>
                         ))}
                       </div>
                     </div>
@@ -415,69 +914,118 @@ export function RecordingsCatalog({
                 </article>
               )}
 
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {gridRecordings.map((recording, index) => (
-                  <article
-                    key={`${recording.shortId}-${filterKey}`}
-                    role="link"
-                    tabIndex={0}
-                    onClick={() => router.push(`/watch/${recording.slug}-${recording.shortId}`)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        router.push(`/watch/${recording.slug}-${recording.shortId}`);
-                      }
-                    }}
-                    aria-label={recording.title}
-                    className={`group recording-card-enter opacity-0 stagger-${(index % 8) + 1} relative flex flex-col cursor-pointer overflow-hidden rounded-[28px] bg-white/90 text-neutral-900 shadow-xl shadow-black/5 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10`}
-                  >
-                    <div className="relative aspect-video shrink-0">
-                      <Image
-                        src={recording.thumbnail}
-                        alt={recording.title}
-                        fill
-                        className="object-cover transition duration-700 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              {viewMode === "rows" ? (
+                isFiltering ? (
+                  <div className="space-y-12">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <RailSkeleton key={index} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-12">
+                    <div className="flex justify-center">
+                      <Button
+                        onClick={handleBrowseAll}
+                        variant="primary"
+                        size="xs"
+                        className="rounded-full bg-neutral-900 text-white shadow-lg shadow-black/20 hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+                      >
+                        {labels.view.all}
+                        <ChevronRightIcon className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                    {rows.map((row) => (
+                      <RecordingRail
+                        key={`${row.key}-${filterKey}`}
+                        title={row.title}
+                        recordings={row.items}
+                        locale={locale}
+                        labels={labels}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/50 to-transparent dark:from-black/90 dark:via-black/40" />
+                    ))}
+                    <div className="flex justify-center">
+                      <Button
+                        onClick={handleBrowseAll}
+                        variant="primary"
+                        size="xs"
+                        className="rounded-full bg-neutral-900 text-white shadow-lg shadow-black/20 hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+                      >
+                        {labels.view.all}
+                        <ChevronRightIcon className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
-                    <div className="flex flex-1 flex-col space-y-3 bg-white/85 px-5 pb-6 pt-5 text-neutral-900 backdrop-blur dark:bg-black/75 dark:text-white">
-                      <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-neutral-600 dark:text-white/70">
-                        <span className="rounded-full bg-black/5 px-2.5 py-1 text-neutral-700 dark:bg-white/10 dark:text-white/80">
-                          {recording.location}
-                        </span>
-                        <span className="text-neutral-400 dark:text-white/50">•</span>
-                        <span>{formatDate(recording.date, locale)}</span>
+                  </div>
+                )
+              ) : isFiltering ? (
+                <GridSkeleton />
+              ) : (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {gridRecordings.map((recording) => (
+                    <article
+                      key={`${recording.shortId}-${filterKey}`}
+                      role="link"
+                      tabIndex={0}
+                      onClick={() => router.push(`/watch/${recording.slug}-${recording.shortId}`)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          router.push(`/watch/${recording.slug}-${recording.shortId}`);
+                        }
+                      }}
+                      aria-label={recording.title}
+                      className="group relative flex flex-col cursor-pointer overflow-hidden rounded-[28px] bg-white/90 text-neutral-900 shadow-lg shadow-black/5 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10"
+                    >
+                      <div className="relative aspect-video shrink-0">
+                        <Image
+                          src={recording.thumbnail}
+                          alt={recording.title}
+                          fill
+                          className="object-cover transition duration-700 group-hover:scale-105"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        />
                       </div>
-                      <h3 className="line-clamp-2 text-base font-semibold leading-snug text-neutral-900 dark:text-white">
-                        {recording.title}
-                      </h3>
-                      <div className="flex flex-col gap-1.5">
-                        {recording.speaker.map((name) => (
-                          <div key={name} className="flex items-center gap-2">
-                            <span className="h-1 w-1 shrink-0 rounded-full bg-brand-500 shadow-[0_0_6px_rgba(59,130,246,0.4)] dark:bg-brand-400" />
-                            <span className="text-[11px] font-medium text-neutral-700 dark:text-neutral-300">
-                              {name}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {recording.tags.map((tag) => (
-                          <Link
-                            key={tag}
-                            href={`/library?tag=${encodeURIComponent(tag)}`}
-                            onClick={(event) => event.stopPropagation()}
-                            className="rounded-full bg-black/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-600 transition hover:text-neutral-900 dark:bg-white/10 dark:text-white/70 dark:hover:text-white"
+                      <div className="flex flex-1 flex-col space-y-3 bg-white/85 px-5 pb-6 pt-5 text-neutral-900 dark:bg-black/75 dark:text-white">
+                        <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-neutral-600 dark:text-white/70">
+                          <Pill
+                            size="xxs"
+                            className="bg-black/5 text-neutral-700 dark:bg-white/10 dark:text-white/80"
                           >
-                            {tag}
-                          </Link>
-                        ))}
+                            {recording.location}
+                          </Pill>
+                          <span className="text-neutral-400 dark:text-white/50">•</span>
+                          <span>{formatDate(recording.date, locale)}</span>
+                        </div>
+                        <h3 className="line-clamp-2 text-base font-semibold leading-snug text-neutral-900 dark:text-white">
+                          {recording.title}
+                        </h3>
+                        <div className="flex flex-col gap-1.5">
+                          {recording.speaker.map((name) => (
+                            <div key={name} className="flex items-center gap-2">
+                              <span className="h-1 w-1 shrink-0 rounded-full bg-brand-500 shadow-[0_0_6px_rgba(59,130,246,0.4)] dark:bg-brand-400" />
+                              <span className="text-[11px] font-medium text-neutral-700 dark:text-neutral-300">
+                                {name}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {recording.tags.map((tag) => (
+                            <Pill
+                              key={tag}
+                              href={`/library?tag=${encodeURIComponent(tag)}`}
+                              onClick={(event) => event.stopPropagation()}
+                              size="xxs"
+                              className="bg-black/5 font-semibold uppercase tracking-[0.2em] text-neutral-600 transition hover:text-neutral-900 dark:bg-white/10 dark:text-white/70 dark:hover:text-white"
+                            >
+                              {tag}
+                            </Pill>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
+                    </article>
+                  ))}
+                </div>
+              )}
             </>
           )}
         </div>

@@ -4,6 +4,10 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import type { Recording } from "../lib/recordings";
 import { getProxiedThumbnailUrl } from "../lib/thumbnail";
+import { AccentBar } from "./AccentBar";
+import { Pill } from "./Pill";
+import { Button } from "./Button";
+import { LocationPill } from "./LocationPill";
 
 function ArrowLeftIcon({ className }: { className?: string }) {
   return (
@@ -144,9 +148,11 @@ export function RecordingPlayer({
   locale: string;
 }) {
   const [cinemaMode, setCinemaMode] = useState(false);
+  const [isPlayerLoading, setIsPlayerLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    setIsPlayerLoading(true);
   }, [recording.youtubeId]);
 
   useEffect(() => {
@@ -189,11 +195,17 @@ export function RecordingPlayer({
           }`}
           onClick={(e) => e.stopPropagation()}
         >
+          {isPlayerLoading && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-black/60">
+              <div className="h-12 w-12 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+            </div>
+          )}
           <iframe
             src={`https://www.youtube.com/embed/${recording.youtubeId}?rel=0&modestbranding=1`}
             title={recording.title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            onLoad={() => setIsPlayerLoading(false)}
             className="absolute inset-0 h-full w-full rounded-lg"
           />
         </div>
@@ -203,14 +215,15 @@ export function RecordingPlayer({
           <div className="min-w-0 space-y-8">
             <div className="glass-card no-hover-pop overflow-hidden">
               <div className="flex items-center justify-between border-b border-neutral-200/30 px-4 py-3 dark:border-neutral-700/30">
-                <Link
-                  href={`/library?location=${recording.location}`}
-                  className="group inline-flex items-center gap-2 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
+                <Button
+                  href="/library"
+                  variant="ghost"
+                  size="sm"
+                  className="group hidden items-center gap-2 sm:inline-flex"
                 >
                   <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-                  <span className="hidden sm:inline">{labels.backToLibrary}</span>
-                  <span className="sm:hidden">{labels.back}</span>
-                </Link>
+                  <span>{labels.backToLibrary}</span>
+                </Button>
 
                 <div className="flex items-center gap-3">
                   <button
@@ -225,11 +238,17 @@ export function RecordingPlayer({
               </div>
 
               <div className="relative w-full bg-black aspect-video">
+                {isPlayerLoading && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
+                    <div className="h-12 w-12 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                  </div>
+                )}
                 <iframe
                   src={`https://www.youtube.com/embed/${recording.youtubeId}?rel=0&modestbranding=1`}
                   title={recording.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
+                  onLoad={() => setIsPlayerLoading(false)}
                   className="absolute inset-0 h-full w-full"
                 />
               </div>
@@ -238,39 +257,52 @@ export function RecordingPlayer({
                 <div className="px-5 py-5 sm:px-6 sm:py-6">
                   <div className="mb-4 flex flex-col items-start gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="flex-1">
-                      <h1 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl lg:text-[1.75rem] dark:text-white">
-                        {recording.title}
-                      </h1>
+                      <div className="flex items-start gap-3">
+                        <AccentBar className="mt-1" />
+                        <h1 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl lg:text-[1.75rem] dark:text-white">
+                          {recording.title}
+                        </h1>
+                      </div>
                     </div>
                     {recording.episode && (
-                      <Link
+                      <Pill
                         href={`/library?episode=${encodeURIComponent(recording.episode)}`}
-                        className="shrink-0 rounded-full bg-neutral-900/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 transition hover:bg-neutral-900/10 hover:text-neutral-700 dark:bg-white/5 dark:text-neutral-400 dark:hover:bg-white/10 dark:hover:text-white"
+                        size="xxs"
+                        className="shrink-0 bg-neutral-900/5 font-semibold uppercase tracking-[0.15em] text-neutral-600 transition hover:bg-neutral-900/10 hover:text-neutral-800 dark:bg-white/10 dark:text-neutral-200 dark:hover:bg-white/20 dark:hover:text-white"
                       >
                         {recording.episodeNumber
                           ? `${labels.epShort} ${recording.episodeNumber} · ${recording.episode}`
                           : recording.episode}
-                      </Link>
+                      </Pill>
                     )}
                   </div>
 
-                  <div className="mb-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-neutral-500 dark:text-neutral-400">
-                    <div className="flex items-center gap-2">
-                      <UserIcon className="h-4 w-4 text-brand-500 dark:text-brand-400" />
-                      <span className="font-medium text-neutral-700 dark:text-neutral-200">
-                        {recording.speaker.join(" & ")}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CalendarIcon className="h-4 w-4 text-brand-500 dark:text-brand-400" />
-                      <span>{formattedDate}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPinIcon className="h-4 w-4 text-brand-500 dark:text-brand-400" />
-                      <span className="font-medium text-neutral-700 dark:text-neutral-200">
-                        {recording.location}
-                      </span>
-                    </div>
+                  <div className="mb-5 flex flex-wrap items-center gap-2 text-xs text-neutral-600 dark:text-neutral-300">
+                    {recording.speaker.map((name) => (
+                      <Pill
+                        key={name}
+                        size="sm"
+                        className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10"
+                      >
+                        <UserIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
+                        {name}
+                      </Pill>
+                    ))}
+                    <Pill
+                      size="sm"
+                      className="gap-2 bg-white font-semibold text-neutral-600 shadow-sm ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-300 dark:ring-white/10"
+                    >
+                      <CalendarIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
+                      {formattedDate}
+                    </Pill>
+                    <Pill
+                      href={`/library?location=${recording.location}`}
+                      size="sm"
+                      className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/20"
+                    >
+                      <MapPinIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
+                      {recording.location}
+                    </Pill>
                   </div>
 
                   <div className="border-t border-neutral-200/40 pt-5 dark:border-neutral-700/40">
@@ -279,15 +311,16 @@ export function RecordingPlayer({
                     </p>
 
                     {recording.tags.length > 0 && (
-                      <div className="mt-4 flex flex-wrap gap-1.5">
+                      <div className="mt-4 flex flex-wrap gap-2">
                         {recording.tags.map((tag) => (
-                          <Link
+                          <Pill
                             key={tag}
                             href={`/library?tag=${encodeURIComponent(tag)}`}
-                            className="rounded-md bg-brand-50 px-2 py-1 text-[11px] font-medium text-brand-600 transition-colors hover:bg-brand-100 hover:text-brand-700 dark:bg-brand-500/10 dark:text-brand-300 dark:hover:bg-brand-500/20 dark:hover:text-brand-200"
+                            size="xs"
+                            className="bg-brand-50 font-semibold uppercase tracking-[0.18em] text-brand-700 transition-colors hover:bg-brand-100 hover:text-brand-800 dark:bg-brand-500/10 dark:text-brand-200 dark:hover:bg-brand-500/20 dark:hover:text-brand-100"
                           >
-                            {tag}
-                          </Link>
+                            #{tag}
+                          </Pill>
                         ))}
                       </div>
                     )}
@@ -351,11 +384,11 @@ export function RecordingPlayer({
                             : related.episode
                           : labels.special}
                       </span>
-                      <span
-                        className={`location-badge ${related.location.toLowerCase()} !py-0.5 !px-1.5 !text-[9px]`}
-                      >
-                        {related.location}
-                      </span>
+                      <LocationPill
+                        location={related.location}
+                        size="xxs"
+                        className="!text-[9px]"
+                      />
                     </div>
                   </div>
                 </Link>

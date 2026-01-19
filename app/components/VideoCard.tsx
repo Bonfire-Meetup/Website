@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { type LocationValue } from "../lib/constants";
+import { LocationPill } from "./LocationPill";
 
 interface VideoCardProps {
   shortId: string;
@@ -71,16 +72,12 @@ export function VideoCard({
         />
 
         <div className="absolute bottom-4 left-4 z-10">
-          <span
-            className={`location-badge ${location.toLowerCase()}`}
-            aria-label={ariaLocationLabel || locationLabel || location}
-          >
-            <MapPinIcon className="h-3.5 w-3.5" />
-            {location}
-          </span>
+          <LocationPill
+            location={location}
+            ariaLabel={ariaLocationLabel || locationLabel || location}
+            icon={<MapPinIcon className="h-3.5 w-3.5" />}
+          />
         </div>
-
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </div>
 
       <div className="flex flex-1 flex-col p-6">

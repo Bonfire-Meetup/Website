@@ -2,6 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { EventCard, type EventCardLabels } from "./EventCard";
+import { Button } from "./Button";
+import { EmptyState } from "./EmptyState";
+import { Pill } from "./Pill";
+import { SectionHeader } from "./SectionHeader";
 import { type LocationValue } from "../lib/constants";
 
 export type EventItem = {
@@ -58,44 +62,42 @@ export function EventsSection({
   return (
     <section className="relative px-4 py-28 sm:px-6 lg:px-8">
       <div className="relative mx-auto max-w-7xl">
-        <div id="events" className="mb-16 scroll-mt-24 text-center">
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
-            {labels.title}
-          </h2>
-          <p className="mx-auto max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">
-            {labels.subtitle}
-          </p>
-        </div>
+        <SectionHeader id="events" title={labels.title} subtitle={labels.subtitle} />
 
         {episodes.length > 0 && (
           <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
-            <span className="rounded-full bg-neutral-900/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:bg-white/10 dark:text-neutral-300">
+            <Pill
+              size="sm"
+              className="bg-neutral-900/5 font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:bg-white/10 dark:text-neutral-300"
+            >
               {labels.filterLabel}
-            </span>
-            <button
-              type="button"
+            </Pill>
+            <Button
               onClick={() => setActiveEpisode("all")}
-              className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${
+              variant="plain"
+              size="xs"
+              className={`rounded-full font-semibold ${
                 activeEpisode === "all"
                   ? "bg-brand-500 text-white shadow-lg shadow-brand-500/25"
                   : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20"
               }`}
             >
               {labels.filterAll}
-            </button>
+            </Button>
             {episodes.map((episode) => (
-              <button
+              <Button
                 key={episode}
-                type="button"
                 onClick={() => setActiveEpisode(episode)}
-                className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${
+                variant="plain"
+                size="xs"
+                className={`rounded-full font-semibold ${
                   activeEpisode === episode
                     ? "bg-neutral-900 text-white shadow-lg shadow-neutral-900/20 dark:bg-white dark:text-neutral-900"
                     : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20"
                 }`}
               >
                 {episode}
-              </button>
+              </Button>
             ))}
           </div>
         )}
@@ -122,12 +124,12 @@ export function EventsSection({
             ))}
           </div>
         ) : (
-          <div className="glass-card border-gradient mx-auto max-w-2xl p-16 text-center">
-            <div className="mb-4 text-5xl">🔥</div>
-            <p className="text-lg font-medium text-neutral-600 dark:text-neutral-400">
-              {labels.noEvents}
-            </p>
-          </div>
+          <EmptyState
+            icon="🔥"
+            message={labels.noEvents}
+            className="border-gradient max-w-2xl p-16"
+            messageClassName="text-lg text-neutral-600 dark:text-neutral-400"
+          />
         )}
       </div>
     </section>

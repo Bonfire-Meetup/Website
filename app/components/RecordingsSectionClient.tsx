@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { VideoCard } from "./VideoCard";
+import { EmptyState } from "./EmptyState";
+import { Button } from "./Button";
 import type { Recording } from "../lib/recordings";
 import { LOCATIONS, type LocationValue } from "../lib/constants";
 
@@ -70,10 +71,12 @@ export function RecordingsSectionClient({
       <div className="mb-10 flex justify-center">
         <div className="glass inline-flex items-center gap-1 rounded-2xl p-1.5">
           {filterOptions.map((option) => (
-            <button
+            <Button
               key={option.key}
               onClick={() => setActiveFilter(option.key)}
-              className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all duration-300 ${
+              variant="plain"
+              size="lg"
+              className={`flex items-center gap-2 rounded-xl font-medium transition-all duration-300 ${
                 activeFilter === option.key
                   ? option.color === "red"
                     ? "bg-red-500 text-white shadow-lg shadow-red-500/25"
@@ -85,7 +88,7 @@ export function RecordingsSectionClient({
             >
               {option.key !== "all" && <MapPinIcon className="h-4 w-4" />}
               {option.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -109,15 +112,17 @@ export function RecordingsSectionClient({
       </div>
 
       {filteredRecordings.length === 0 && (
-        <div className="glass-card mx-auto max-w-md p-12 text-center">
-          <p className="text-neutral-600 dark:text-neutral-400">{labels.empty}</p>
-        </div>
+        <EmptyState
+          message={labels.empty}
+          className="max-w-md p-12"
+          messageClassName="text-neutral-600 dark:text-neutral-400"
+        />
       )}
 
       <div className="mt-16 text-center">
-        <Link href="/library" className="glass-button inline-flex items-center gap-3">
+        <Button href="/library" variant="glass" className="inline-flex items-center gap-3">
           {labels.viewAll}
-        </Link>
+        </Button>
       </div>
     </>
   );

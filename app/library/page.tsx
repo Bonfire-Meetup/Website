@@ -20,6 +20,11 @@ export default async function LibraryPage() {
     speaker: recording.speaker,
     date: recording.date,
     thumbnail: getProxiedThumbnailUrl(recording.thumbnail),
+    featureHeroThumbnail: recording.featureHeroThumbnail
+      ? recording.featureHeroThumbnail.startsWith("/library/featured/")
+        ? recording.featureHeroThumbnail
+        : getProxiedThumbnailUrl(recording.featureHeroThumbnail)
+      : undefined,
     description: recording.description,
     tags: recording.tags,
     location: recording.location,
@@ -31,6 +36,20 @@ export default async function LibraryPage() {
     eyebrow: t("eyebrow"),
     title: t("title"),
     subtitle: t("subtitle"),
+    rows: {
+      latest: t("rows.latest"),
+      prague: t("rows.prague"),
+      zlin: t("rows.zlin"),
+      topic: t.raw("rows.topic"),
+    },
+    view: {
+      all: t("view.all"),
+      rows: t("view.rows"),
+    },
+    search: {
+      label: t("search.label"),
+      placeholder: t("search.placeholder"),
+    },
     filters: {
       title: t("filters.title"),
       location: t("filters.location"),
@@ -53,13 +72,7 @@ export default async function LibraryPage() {
     <>
       <Header />
       <main className="gradient-bg min-h-screen pt-24">
-        <RecordingsCatalog
-          recordings={recordings}
-          title={t("title")}
-          subtitle={t("subtitle")}
-          labels={labels}
-          locale={locale}
-        />
+        <RecordingsCatalog recordings={recordings} labels={labels} locale={locale} />
       </main>
       <Footer />
     </>
