@@ -737,8 +737,6 @@ export function RecordingsCatalog({
                   aria-label={featured.title}
                   onMouseEnter={() => setIsFeaturedPaused(true)}
                   onMouseLeave={() => setIsFeaturedPaused(false)}
-                  onTouchStart={() => setIsFeaturedPaused(true)}
-                  onTouchEnd={() => setIsFeaturedPaused(false)}
                   className={`group recording-card-enter relative mb-12 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10 ${
                     hasFeaturedHero ? "min-h-[420px] sm:min-h-0" : ""
                   }`}
