@@ -2,14 +2,36 @@
 
 import { useEffect, useState } from "react";
 
-export function HeroBackground({ images }: { images: Array<{ src: string; alt: string }> }) {
+type HeroImage = {
+  src: string;
+  alt: string;
+  fallbackSrc?: string;
+  fallbackType?: "image/jpeg" | "image/png";
+};
+
+export function HeroBackground({ images }: { images: HeroImage[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [supportsImageSet, setSupportsImageSet] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !("CSS" in window)) return;
+    setSupportsImageSet(
+      CSS.supports(
+        "background-image",
+        'image-set(url("data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAQAcJaQAA3AA/vsAAA==") 1x)',
+      ),
+    );
+  }, []);
 
   useEffect(() => {
     const nextIndex = (currentIndex + 1) % images.length;
+    const nextImage = images[nextIndex];
     const img = new Image();
-    img.src = images[nextIndex].src;
-  }, [currentIndex, images]);
+    img.src =
+      supportsImageSet && nextImage.fallbackSrc
+        ? nextImage.src
+        : (nextImage.fallbackSrc ?? nextImage.src);
+  }, [currentIndex, images, supportsImageSet]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -27,6 +49,11 @@ export function HeroBackground({ images }: { images: Array<{ src: string; alt: s
         const isPrev = index === prevIndex;
         const isVisible = isActive || isPrev;
 
+        const backgroundImage =
+          supportsImageSet && image.fallbackSrc
+            ? `image-set(url(${image.src}) type("image/webp"), url(${image.fallbackSrc}) type("${image.fallbackType ?? "image/jpeg"}"))`
+            : `url(${image.fallbackSrc ?? image.src})`;
+
         return (
           <div
             key={image.src}
@@ -34,7 +61,7 @@ export function HeroBackground({ images }: { images: Array<{ src: string; alt: s
               isActive ? "opacity-60" : "opacity-0"
             }`}
             style={{
-              backgroundImage: `url(${image.src})`,
+              backgroundImage,
               transform: isVisible ? "scale(1.15)" : "scale(1)",
               transition: isVisible
                 ? "opacity 2000ms ease-in-out, transform 20s linear"

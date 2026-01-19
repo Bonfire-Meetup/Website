@@ -318,6 +318,8 @@ export function RecordingPlayer({
                     <img
                       src={related.thumbnail}
                       alt={related.title}
+                      loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
