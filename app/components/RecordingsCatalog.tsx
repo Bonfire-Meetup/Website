@@ -332,6 +332,9 @@ export function RecordingsCatalog({
   const isFirstFilter = useRef(true);
   const [viewMode, setViewMode] = useState<"rows" | "grid">("rows");
   const [featuredIndex, setFeaturedIndex] = useState(0);
+  const [isFeaturedPaused, setIsFeaturedPaused] = useState(false);
+  const featuredStartRef = useRef(0);
+  const featuredRemainingRef = useRef(FEATURED_INTERVAL_MS);
 
   const tagOptions = useMemo(() => {
     const filteredForTags = recordings.filter(
@@ -491,9 +494,13 @@ export function RecordingsCatalog({
   const featured = featuredCandidates[featuredIndex] ?? featuredCandidates[0];
   const hasFeaturedHero = Boolean(featured?.featureHeroThumbnail);
   const featuredThumbnail = hasFeaturedHero ? featured?.featureHeroThumbnail : featured?.thumbnail;
-  const gridRecordings = featured
-    ? filteredRecordings.filter((recording) => recording.shortId !== featured.shortId)
-    : filteredRecordings;
+  const gridRecordings = filteredRecordings;
+
+  useEffect(() => {
+    if (viewMode !== "rows" || featuredCandidates.length <= 1) return;
+    featuredRemainingRef.current = FEATURED_INTERVAL_MS;
+    featuredStartRef.current = performance.now();
+  }, [featuredIndex, viewMode, featuredCandidates.length]);
 
   const latestRecordings = useMemo(() => {
     return filteredRecordings.slice(0, 12);
@@ -526,11 +533,23 @@ export function RecordingsCatalog({
 
   useEffect(() => {
     if (viewMode !== "rows" || featuredCandidates.length <= 1) return;
-    const timer = setInterval(() => {
+
+    if (isFeaturedPaused) {
+      const elapsed = performance.now() - featuredStartRef.current;
+      featuredRemainingRef.current = Math.max(FEATURED_INTERVAL_MS - elapsed, 0);
+      return;
+    }
+
+    featuredStartRef.current =
+      performance.now() - (FEATURED_INTERVAL_MS - featuredRemainingRef.current);
+
+    const timer = setTimeout(() => {
+      featuredRemainingRef.current = FEATURED_INTERVAL_MS;
       setFeaturedIndex((prev) => (prev + 1) % featuredCandidates.length);
-    }, FEATURED_INTERVAL_MS);
-    return () => clearInterval(timer);
-  }, [featuredCandidates.length, viewMode]);
+    }, featuredRemainingRef.current);
+
+    return () => clearTimeout(timer);
+  }, [featuredIndex, featuredCandidates.length, viewMode, isFeaturedPaused]);
 
   const tagRows = useMemo(() => {
     if (activeTag !== "all") {
@@ -751,6 +770,10 @@ export function RecordingsCatalog({
                     }
                   }}
                   aria-label={featured.title}
+                  onMouseEnter={() => setIsFeaturedPaused(true)}
+                  onMouseLeave={() => setIsFeaturedPaused(false)}
+                  onTouchStart={() => setIsFeaturedPaused(true)}
+                  onTouchEnd={() => setIsFeaturedPaused(false)}
                   className={`group recording-card-enter relative mb-12 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10 ${
                     hasFeaturedHero ? "min-h-[420px] sm:min-h-0" : ""
                   }`}
@@ -819,7 +842,10 @@ export function RecordingsCatalog({
                                 }`}
                                 style={
                                   isActive
-                                    ? { animationDuration: `${FEATURED_INTERVAL_MS}ms` }
+                                    ? {
+                                        animationDuration: `${FEATURED_INTERVAL_MS}ms`,
+                                        animationPlayState: isFeaturedPaused ? "paused" : "running",
+                                      }
                                     : index < featuredIndex
                                       ? { width: "100%" }
                                       : { width: "0%" }
