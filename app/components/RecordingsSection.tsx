@@ -1,5 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import type { Recording } from "../lib/recordings";
+import { getProxiedThumbnailUrl } from "../lib/thumbnail";
 import { RecordingsSectionClient } from "./RecordingsSectionClient";
 
 interface RecordingsSectionProps {
@@ -16,7 +17,7 @@ export async function RecordingsSection({ recordings }: RecordingsSectionProps) 
     title: recording.title,
     speaker: recording.speaker,
     date: recording.date,
-    thumbnail: recording.thumbnail,
+    thumbnail: getProxiedThumbnailUrl(recording.thumbnail),
     location: recording.location,
   }));
 

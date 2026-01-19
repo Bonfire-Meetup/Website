@@ -13,6 +13,11 @@ const nextConfig = {
     turbopackFileSystemCacheForDev: true,
   },
   images: {
+    localPatterns: [
+      {
+        pathname: "/**",
+      },
+    ],
     remotePatterns: [
       {
         protocol: "https",

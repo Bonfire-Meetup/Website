@@ -11,14 +11,14 @@ type HeroImage = {
 
 export function HeroBackground({ images }: { images: HeroImage[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [supportsImageSet, setSupportsImageSet] = useState(false);
+  const [supportsWebp, setSupportsWebp] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined" || !("CSS" in window)) return;
-    setSupportsImageSet(
+    setSupportsWebp(
       CSS.supports(
         "background-image",
-        'image-set(url("data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAQAcJaQAA3AA/vsAAA==") 1x)',
+        'url("data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAQAcJaQAA3AA/vsAAA==")',
       ),
     );
   }, []);
@@ -28,10 +28,10 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
     const nextImage = images[nextIndex];
     const img = new Image();
     img.src =
-      supportsImageSet && nextImage.fallbackSrc
+      supportsWebp && nextImage.fallbackSrc
         ? nextImage.src
         : (nextImage.fallbackSrc ?? nextImage.src);
-  }, [currentIndex, images, supportsImageSet]);
+  }, [currentIndex, images, supportsWebp]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -50,8 +50,8 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
         const isVisible = isActive || isPrev;
 
         const backgroundImage =
-          supportsImageSet && image.fallbackSrc
-            ? `image-set(url(${image.src}) type("image/webp"), url(${image.fallbackSrc}) type("${image.fallbackType ?? "image/jpeg"}"))`
+          supportsWebp && image.fallbackSrc
+            ? `url(${image.src})`
             : `url(${image.fallbackSrc ?? image.src})`;
 
         return (

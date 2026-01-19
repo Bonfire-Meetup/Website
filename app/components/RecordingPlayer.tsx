@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import type { Recording } from "../lib/recordings";
+import { getProxiedThumbnailUrl } from "../lib/thumbnail";
 
 function ArrowLeftIcon({ className }: { className?: string }) {
   return (
@@ -316,7 +317,7 @@ export function RecordingPlayer({
                 >
                   <div className="relative aspect-video w-full overflow-hidden">
                     <img
-                      src={related.thumbnail}
+                      src={getProxiedThumbnailUrl(related.thumbnail)}
                       alt={related.title}
                       loading="lazy"
                       decoding="async"

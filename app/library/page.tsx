@@ -4,6 +4,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { RecordingsCatalog } from "../components/RecordingsCatalog";
 import { getAllRecordings } from "../lib/recordings";
+import { getProxiedThumbnailUrl } from "../lib/thumbnail";
 
 export default async function LibraryPage() {
   const t = await getTranslations("libraryPage");
@@ -14,7 +15,7 @@ export default async function LibraryPage() {
     title: recording.title,
     speaker: recording.speaker,
     date: recording.date,
-    thumbnail: recording.thumbnail,
+    thumbnail: getProxiedThumbnailUrl(recording.thumbnail),
     description: recording.description,
     tags: recording.tags,
     location: recording.location,
