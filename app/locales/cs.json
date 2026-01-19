@@ -1,0 +1,144 @@
+{
+  "header": {
+    "events": "Akce",
+    "recordings": "Zaznamy",
+    "locations": "Lokace",
+    "logoAlt": "Logo Bonfire Events"
+  },
+  "hero": {
+    "eyebrow": "Bonfire komunita",
+    "photoAlt": "Fotka komunity Bonfire",
+    "title": {
+      "part1": "Kde se",
+      "highlight": "Game Devs",
+      "part2": "Potkavaji"
+    },
+    "subtitle": "Pripojte se k ceske komunite vyvojaru her na nasich setkanich v Praze a Zline. Prednasky a networking.",
+    "cta": {
+      "events": "Nadchazejici Akce",
+      "recordings": "Sledovat Zaznamy"
+    },
+    "stats": {
+      "locations": "Lokace",
+      "talks": "Prednasek",
+      "attendees": "Ucastniku"
+    },
+    "scroll": "Rolovat"
+  },
+  "sections": {
+    "events": {
+      "title": "Nadchazejici Akce",
+      "subtitle": "Pripojte se k nasemu dalsimu setkani! Registrujte se vcas.",
+      "noEvents": "Zadne nadchazejici akce nejsou naplanovany. Vratte se brzy!",
+      "filter": {
+        "label": "Epizoda",
+        "all": "Vsechny epizody"
+      }
+    },
+    "recordings": {
+      "title": "Minule Zaznamy",
+      "subtitle": "Nestihli jste setkani? Doplnte si zaznamy prednasek z minulych akci.",
+      "viewAll": "Zobrazit vsechny zaznamy",
+      "empty": "Zadne zaznamy pro tuto lokaci.",
+      "filter": {
+        "all": "Vse",
+        "prague": "Praha",
+        "zlin": "Zlin"
+      }
+    },
+    "locations": {
+      "title": "Nase Lokace",
+      "subtitle": "Bonfire spojuje vyvojare her ve dvou mestech Ceske republiky.",
+      "country": "Ceska republika",
+      "eventsHosted": "Usporadano {count} akci",
+      "sponsorsTitle": "Partneri",
+      "prague": {
+        "name": "Bonfire@Prague",
+        "description": "Nase hlavni lokace v srdci hlavniho mesta Ceske republiky. Setkani s prednaskami od mistnich i zahranicnich vyvojaru her."
+      },
+      "zlin": {
+        "name": "Bonfire@Zlin",
+        "description": "Prinasime komunitu vyvojaru her na Moravu. Pravidelná setkani na UTB univerzite se zamerenim na indie vyvoj a studentske projekty."
+      }
+    }
+  },
+  "events": {
+    "speakers": "Prednasejici",
+    "tba": "Bude upresneno",
+    "locationLabel": "Lokace: {location}",
+    "episodeLabel": "Epizoda",
+    "platforms": {
+      "luma": "Lu.ma",
+      "facebook": "Facebook",
+      "eventbrite": "Eventbrite"
+    },
+    "register": "Registrace pres:"
+  },
+  "recordings": {
+    "backToRecordings": "Zpet na zaznamy",
+    "cinema": "Kino rezim",
+    "exitCinema": "Zrusit kino",
+    "locationLabel": "Lokace: {location}",
+    "speaker": "Prednasejici",
+    "date": "Datum",
+    "about": "O teto prednasce"
+  },
+  "recordingsPage": {
+    "eyebrow": "Streamujte setkani",
+    "title": "Knihovna zaznamu",
+    "subtitle": "Projdete si cely archiv Bonfire prednasek o technologiich, artu a produkci, plus zaznamy z live podcastu a rozhovoru.",
+    "filters": {
+      "title": "Filtry",
+      "location": "Lokace",
+      "tag": "Tema",
+      "episode": "Epizoda",
+      "reset": "Reset",
+      "allLocations": "Vsechny lokace",
+      "allTags": "Vsechna temata",
+      "allEpisodes": "Vsechny epizody",
+      "prague": "Praha",
+      "zlin": "Zlin"
+    },
+    "empty": "Zadne zaznamy neodpovidaji zvolenym filtrum."
+  },
+  "footer": {
+    "tagline": "Game Dev Setkani v Ceske republice",
+    "brandName": "Bonfire Events",
+    "vibes": "Neformalni setkani, velke napady a dobra atmosfera. 🔥🎮",
+    "emailLabel": "Email",
+    "youtubeLabel": "YouTube",
+    "facebookLabel": "Facebook",
+    "discordLabel": "Discord",
+    "copyright": "© {year} Bonfire Events. Vytvoreno s laskou pro gamedev komunitu."
+  },
+  "meta": {
+    "siteTitle": "Bonfire Events - Game Dev setkani",
+    "siteDescription": "Bonfire Events je komunita vyvojaru her, ktera porada setkani v Praze a Zline.",
+    "homeTitle": "Bonfire Events - Game Dev setkani",
+    "homeDescription": "Bonfire Events je komunita vyvojaru her, ktera porada setkani v Praze a Zline. Prijedte na prednasky a networking.",
+    "recordingsTitle": "Zaznamy | Bonfire Events",
+    "recordingsDescription": "Projdete si archiv Bonfire prednasek o technologiich, artu a produkci, plus zaznamy z live podcastu a rozhovoru.",
+    "recordingNotFound": "Zaznam nebyl nalezen",
+    "siteName": "Bonfire Events",
+    "author": "Bonfire Events",
+    "keywords": [
+      "vyvoj her",
+      "gamedev",
+      "setkani",
+      "Praha",
+      "Zlin",
+      "Ceska republika",
+      "indie hry",
+      "unity",
+      "unreal",
+      "godot"
+    ]
+  },
+  "language": {
+    "switchTo": "Prepnout na {language}",
+    "czech": "cestinu",
+    "english": "anglictinu",
+    "csLabel": "CS",
+    "enLabel": "EN"
+  }
+}

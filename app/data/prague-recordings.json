@@ -1,0 +1,44 @@
+{
+  "location": "Prague",
+  "recordings": [
+    {
+      "id": "dQw4w9WgXcQ",
+      "slug": "building-indie-games-in-czech-republic",
+      "title": "Building Indie Games in Czech Republic",
+      "speaker": "Jan Novak",
+      "date": "2024-11-15",
+      "thumbnail": "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "description": "A journey through the indie game development scene in Czech Republic",
+      "episode": "Whispers of the Void",
+      "episodeNumber": 7,
+      "tags": ["Indie", "Community", "Studio"]
+    },
+    {
+      "id": "L_jWHffIx5E",
+      "slug": "unity-performance-optimization-tips",
+      "title": "Unity Performance Optimization Tips",
+      "speaker": "Petra Svobodova",
+      "date": "2024-10-20",
+      "thumbnail": "https://img.youtube.com/vi/L_jWHffIx5E/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=L_jWHffIx5E",
+      "description": "Deep dive into optimizing Unity games for better performance",
+      "episode": "The Shape of Echoes",
+      "episodeNumber": 6,
+      "tags": ["Unity", "Performance", "Optimization"]
+    },
+    {
+      "id": "9bZkp7q19f0",
+      "slug": "from-prototype-to-launch",
+      "title": "From Prototype to Launch",
+      "speaker": "Martin Kovar",
+      "date": "2024-09-18",
+      "thumbnail": "https://img.youtube.com/vi/9bZkp7q19f0/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=9bZkp7q19f0",
+      "description": "Practical guide to shipping your first indie game",
+      "episode": "The Mystic Voyagers",
+      "episodeNumber": 4,
+      "tags": ["Production", "Indie", "Launch"]
+    }
+  ]
+}

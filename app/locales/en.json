@@ -1,0 +1,144 @@
+{
+  "header": {
+    "events": "Events",
+    "recordings": "Recordings",
+    "locations": "Locations",
+    "logoAlt": "Bonfire Events logo"
+  },
+  "hero": {
+    "eyebrow": "Bonfire Community",
+    "photoAlt": "Bonfire community photo",
+    "title": {
+      "part1": "Where",
+      "highlight": "Game Devs",
+      "part2": "Meet"
+    },
+    "subtitle": "Join the Czech game development community at our meetups in Prague and Zlin. Talks and networking.",
+    "cta": {
+      "events": "Upcoming Events",
+      "recordings": "Watch Recordings"
+    },
+    "stats": {
+      "locations": "Locations",
+      "talks": "Talks",
+      "attendees": "Attendees"
+    },
+    "scroll": "Scroll"
+  },
+  "sections": {
+    "events": {
+      "title": "Upcoming Events",
+      "subtitle": "Join us at our next meetup! Register early to secure your spot.",
+      "noEvents": "No upcoming events scheduled. Check back soon!",
+      "filter": {
+        "label": "Episode",
+        "all": "All episodes"
+      }
+    },
+    "recordings": {
+      "title": "Past Recordings",
+      "subtitle": "Missed a meetup? Catch up with our talk recordings from previous events.",
+      "viewAll": "View all recordings",
+      "empty": "No recordings found for this location.",
+      "filter": {
+        "all": "All",
+        "prague": "Prague",
+        "zlin": "Zlin"
+      }
+    },
+    "locations": {
+      "title": "Our Locations",
+      "subtitle": "Bonfire brings game developers together in two cities across Czech Republic.",
+      "country": "Czech Republic",
+      "eventsHosted": "{count} events hosted",
+      "sponsorsTitle": "Partners",
+      "prague": {
+        "name": "Bonfire@Prague",
+        "description": "Our flagship location in the heart of Czech Republic's capital. Meetups featuring talks from local and international game developers."
+      },
+      "zlin": {
+        "name": "Bonfire@Zlin",
+        "description": "Bringing the game dev community to Moravia. Regular meetups at UTB university with focus on indie development and student projects."
+      }
+    }
+  },
+  "events": {
+    "speakers": "Speakers",
+    "tba": "To be announced",
+    "locationLabel": "Location: {location}",
+    "episodeLabel": "Episode",
+    "platforms": {
+      "luma": "Lu.ma",
+      "facebook": "Facebook",
+      "eventbrite": "Eventbrite"
+    },
+    "register": "Register via:"
+  },
+  "recordings": {
+    "backToRecordings": "Back to Recordings",
+    "cinema": "Cinema mode",
+    "exitCinema": "Exit cinema",
+    "locationLabel": "Location: {location}",
+    "speaker": "Speaker",
+    "date": "Date",
+    "about": "About this talk"
+  },
+  "recordingsPage": {
+    "eyebrow": "Stream the sessions",
+    "title": "Recordings Library",
+    "subtitle": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
+    "filters": {
+      "title": "Filters",
+      "location": "Location",
+      "tag": "Topic",
+      "episode": "Episode",
+      "reset": "Reset",
+      "allLocations": "All Locations",
+      "allTags": "All Topics",
+      "allEpisodes": "All Episodes",
+      "prague": "Prague",
+      "zlin": "Zlin"
+    },
+    "empty": "No recordings match your filters yet."
+  },
+  "footer": {
+    "tagline": "Game Dev Meetups in Czech Republic",
+    "brandName": "Bonfire Events",
+    "vibes": "Casual meetups, big ideas, and good vibes. 🔥🎮",
+    "emailLabel": "Email",
+    "youtubeLabel": "YouTube",
+    "facebookLabel": "Facebook",
+    "discordLabel": "Discord",
+    "copyright": "© {year} Bonfire Events. Made with love for the gamedev community."
+  },
+  "meta": {
+    "siteTitle": "Bonfire Events - Game Dev Meetups",
+    "siteDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlin, Czech Republic.",
+    "homeTitle": "Bonfire Events - Game Dev Meetups",
+    "homeDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlin, Czech Republic. Join us for talks and networking.",
+    "recordingsTitle": "Recordings | Bonfire Events",
+    "recordingsDescription": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
+    "recordingNotFound": "Recording Not Found",
+    "siteName": "Bonfire Events",
+    "author": "Bonfire Events",
+    "keywords": [
+      "game development",
+      "gamedev",
+      "meetup",
+      "Prague",
+      "Zlin",
+      "Czech Republic",
+      "indie games",
+      "unity",
+      "unreal",
+      "godot"
+    ]
+  },
+  "language": {
+    "switchTo": "Switch to {language}",
+    "czech": "Czech",
+    "english": "English",
+    "csLabel": "CS",
+    "enLabel": "EN"
+  }
+}

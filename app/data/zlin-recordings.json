@@ -1,0 +1,57 @@
+{
+  "location": "Zlin",
+  "recordings": [
+    {
+      "id": "xvFZjo5PgG0",
+      "slug": "procedural-generation-in-games",
+      "title": "Procedural Generation in Games",
+      "speaker": "Tomas Malik",
+      "date": "2024-12-10",
+      "thumbnail": "https://img.youtube.com/vi/xvFZjo5PgG0/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=xvFZjo5PgG0",
+      "description": "Creating infinite worlds with procedural generation techniques",
+      "episode": "Beyond the Frame",
+      "episodeNumber": 5,
+      "tags": ["Procedural", "Design", "Tech"]
+    },
+    {
+      "id": "QH2-TGUlwu4",
+      "slug": "game-audio-design-workshop",
+      "title": "Game Audio Design Workshop",
+      "speaker": "Eva Horakova",
+      "date": "2024-11-05",
+      "thumbnail": "https://img.youtube.com/vi/QH2-TGUlwu4/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=QH2-TGUlwu4",
+      "description": "Creating immersive soundscapes for your games",
+      "episode": "The Boundless Expedition",
+      "episodeNumber": 4,
+      "tags": ["Audio", "Sound", "Workshop"]
+    },
+    {
+      "id": "hY7m5jjJ9mM",
+      "slug": "pixel-art-masterclass",
+      "title": "Pixel Art Masterclass",
+      "speaker": "David Cerny",
+      "date": "2024-10-12",
+      "thumbnail": "https://img.youtube.com/vi/hY7m5jjJ9mM/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=hY7m5jjJ9mM",
+      "description": "Tips and techniques for creating stunning pixel art",
+      "episode": "The Infinite Wanderers",
+      "episodeNumber": 3,
+      "tags": ["Art", "Pixel", "Workshop"]
+    },
+    {
+      "id": "kJQP7kiw5Fk",
+      "slug": "networking-in-multiplayer-games",
+      "title": "Networking in Multiplayer Games",
+      "speaker": "Lukas Dvorak",
+      "date": "2024-09-08",
+      "thumbnail": "https://img.youtube.com/vi/kJQP7kiw5Fk/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=kJQP7kiw5Fk",
+      "description": "Building robust multiplayer systems from scratch",
+      "episode": "The Horizon Seekers",
+      "episodeNumber": 2,
+      "tags": ["Multiplayer", "Networking", "Systems"]
+    }
+  ]
+}

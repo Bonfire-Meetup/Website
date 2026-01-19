@@ -1,0 +1,44 @@
+{
+  "events": [
+    {
+      "id": "prague-2025-02",
+      "title": "Bonfire@Prague #8",
+      "location": "Prague",
+      "date": "TBA",
+      "time": "18:00",
+      "venue": "Space Break, Rytířská 406/10, 110 00 Staré Město",
+      "description": "Join us for an evening of game dev talks and networking!",
+      "speakers": [
+        {
+          "name": "TBA",
+          "topic": "To be announced"
+        }
+      ],
+      "links": {
+        "luma": "https://lu.ma/bonfire-prague-8",
+        "facebook": "https://facebook.com/events/bonfire-prague-8",
+        "eventbrite": "https://eventbrite.com/e/bonfire-prague-8"
+      }
+    },
+    {
+      "id": "zlin-2025-02",
+      "title": "Bonfire@Zlin #6",
+      "location": "Zlin",
+      "date": "TBA",
+      "time": "17:00",
+      "venue": "Studentsky klub U7, Štefánikova 150, 760 01 Zlín",
+      "description": "Game dev meetup in Zlin with talks and community discussion.",
+      "speakers": [
+        {
+          "name": "TBA",
+          "topic": "To be announced"
+        }
+      ],
+      "links": {
+        "luma": "https://lu.ma/bonfire-zlin-6",
+        "facebook": "https://facebook.com/events/bonfire-zlin-6",
+        "eventbrite": "https://eventbrite.com/e/bonfire-zlin-6"
+      }
+    }
+  ]
+}
