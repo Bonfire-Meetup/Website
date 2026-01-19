@@ -1,14 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
-import { EventCard } from "./EventCard";
+import { EventCard, type EventCardLabels } from "./EventCard";
+import { type LocationValue } from "../lib/constants";
 
-type EventItem = {
+export type EventItem = {
   id: string;
   title: string;
-  episode: string;
-  location: "Prague" | "Zlin";
+  episode?: string;
+  location: LocationValue;
   date: string;
   time: string;
   venue: string;
@@ -22,8 +22,22 @@ type EventItem = {
   };
 };
 
-export function EventsSection({ events }: { events: EventItem[] }) {
-  const t = useTranslations("sections.events");
+type EventsSectionLabels = {
+  title: string;
+  subtitle: string;
+  filterLabel: string;
+  filterAll: string;
+  noEvents: string;
+  eventCard: EventCardLabels;
+};
+
+export function EventsSection({
+  events,
+  labels,
+}: {
+  events: EventItem[];
+  labels: EventsSectionLabels;
+}) {
   const [activeEpisode, setActiveEpisode] = useState("all");
 
   const episodes = useMemo(() => {
@@ -44,17 +58,17 @@ export function EventsSection({ events }: { events: EventItem[] }) {
       <div className="relative mx-auto max-w-7xl">
         <div id="events" className="mb-16 scroll-mt-24 text-center">
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
-            {t("title")}
+            {labels.title}
           </h2>
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">
-            {t("subtitle")}
+            {labels.subtitle}
           </p>
         </div>
 
         {episodes.length > 0 && (
           <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
             <span className="rounded-full bg-neutral-900/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:bg-white/10 dark:text-neutral-300">
-              {t("filter.label")}
+              {labels.filterLabel}
             </span>
             <button
               type="button"
@@ -65,7 +79,7 @@ export function EventsSection({ events }: { events: EventItem[] }) {
                   : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20"
               }`}
             >
-              {t("filter.all")}
+              {labels.filterAll}
             </button>
             {episodes.map((episode) => (
               <button
@@ -100,6 +114,7 @@ export function EventsSection({ events }: { events: EventItem[] }) {
                 registrationUrl={event.registrationUrl ?? ""}
                 speakers={event.speakers}
                 links={event.links}
+                labels={labels.eventCard}
               />
             ))}
           </div>
@@ -107,7 +122,7 @@ export function EventsSection({ events }: { events: EventItem[] }) {
           <div className="glass-card border-gradient mx-auto max-w-2xl p-16 text-center">
             <div className="mb-4 text-5xl">🔥</div>
             <p className="text-lg font-medium text-neutral-600 dark:text-neutral-400">
-              {t("noEvents")}
+              {labels.noEvents}
             </p>
           </div>
         )}

@@ -1,12 +1,19 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-export function LanguageToggle() {
-  const locale = useLocale();
-  const t = useTranslations("language");
+interface LanguageToggleProps {
+  locale: string;
+  labels: {
+    csLabel: string;
+    enLabel: string;
+    switchToCs: string;
+    switchToEn: string;
+  };
+}
+
+export function LanguageToggle({ locale, labels }: LanguageToggleProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -24,11 +31,9 @@ export function LanguageToggle() {
       onClick={toggleLocale}
       disabled={isPending}
       className="glass flex h-10 items-center justify-center rounded-xl px-3 text-sm font-medium transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-      aria-label={t("switchTo", {
-        language: locale === "en" ? t("czech") : t("english"),
-      })}
+      aria-label={locale === "en" ? labels.switchToCs : labels.switchToEn}
     >
-      <span className="uppercase">{locale === "en" ? t("csLabel") : t("enLabel")}</span>
+      <span className="uppercase">{locale === "en" ? labels.csLabel : labels.enLabel}</span>
     </button>
   );
 }

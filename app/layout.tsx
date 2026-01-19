@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/next";
@@ -45,7 +44,6 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
-  const messages = await getMessages();
 
   return (
     <html
@@ -73,9 +71,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased transition-colors duration-300 dark:bg-neutral-950 dark:text-neutral-100">
         <ThemeProvider>
-          <NextIntlClientProvider messages={messages}>
-            <div className="relative flex min-h-screen flex-col">{children}</div>
-          </NextIntlClientProvider>
+          <div className="relative flex min-h-screen flex-col">{children}</div>
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

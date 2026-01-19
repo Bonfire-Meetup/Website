@@ -3,10 +3,12 @@ import { getTranslations } from "next-intl/server";
 import { RecordingPlayer } from "../../../components/RecordingPlayer";
 import { getAllRecordings } from "../../../lib/recordings";
 
+import { LOCATIONS } from "../../../lib/constants";
+
 function normalizeLocation(value: string) {
   const lower = value.toLowerCase();
-  if (lower === "prague") return "Prague";
-  if (lower === "zlin") return "Zlin";
+  if (lower === LOCATIONS.PRAGUE.toLowerCase()) return LOCATIONS.PRAGUE;
+  if (lower === LOCATIONS.ZLIN.toLowerCase()) return LOCATIONS.ZLIN;
   return null;
 }
 
@@ -93,5 +95,15 @@ export default async function VideoPage({
     notFound();
   }
 
-  return <RecordingPlayer recording={recording} />;
+  const t = await getTranslations("recordings");
+  const labels = {
+    backToRecordings: t("backToRecordings"),
+    exitCinema: t("exitCinema"),
+    cinema: t("cinema"),
+    speaker: t("speaker"),
+    date: t("date"),
+    about: t("about"),
+  };
+
+  return <RecordingPlayer recording={recording} labels={labels} />;
 }

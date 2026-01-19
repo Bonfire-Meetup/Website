@@ -4,8 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { VideoCard } from "./VideoCard";
 import type { Recording } from "../lib/recordings";
+import { LOCATIONS, type LocationValue } from "../lib/constants";
 
-type FilterOption = "all" | "Prague" | "Zlin";
+type FilterOption = "all" | LocationValue;
 
 type Labels = {
   all: string;
@@ -52,8 +53,8 @@ export function RecordingsSectionClient({
 
   const filterOptions: { key: FilterOption; label: string; color?: string }[] = [
     { key: "all", label: labels.all },
-    { key: "Prague", label: labels.prague, color: "red" },
-    { key: "Zlin", label: labels.zlin, color: "blue" },
+    { key: LOCATIONS.PRAGUE, label: labels.prague, color: "red" },
+    { key: LOCATIONS.ZLIN, label: labels.zlin, color: "blue" },
   ];
 
   return (
@@ -94,6 +95,7 @@ export function RecordingsSectionClient({
             url={recording.url}
             description={recording.description}
             location={recording.location}
+            locationLabel={recording.location === LOCATIONS.PRAGUE ? labels.prague : labels.zlin}
           />
         ))}
       </div>

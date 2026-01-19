@@ -1,4 +1,17 @@
-import { useTranslations } from "next-intl";
+import { LOCATIONS, type LocationValue } from "../lib/constants";
+
+export interface EventCardLabels {
+  locationLabel: string;
+  episodeLabel: string;
+  tba: string;
+  speakers: string;
+  register: string;
+  platforms: {
+    luma: string;
+    facebook: string;
+    eventbrite: string;
+  };
+}
 
 interface EventLinks {
   luma?: string;
@@ -10,7 +23,7 @@ interface EventCardProps {
   id: string;
   title: string;
   episode?: string;
-  location: "Prague" | "Zlin";
+  location: LocationValue;
   date: string;
   time: string;
   venue: string;
@@ -18,6 +31,7 @@ interface EventCardProps {
   registrationUrl: string;
   speakers: Array<{ name: string; topic: string }>;
   links?: EventLinks;
+  labels: EventCardLabels;
 }
 
 function CalendarIcon({ className }: { className?: string }) {
@@ -114,8 +128,8 @@ export function EventCard({
   links,
   registrationUrl,
   speakers,
+  labels,
 }: EventCardProps) {
-  const t = useTranslations("events");
   const isTba = date.trim().toUpperCase() === "TBA";
   const hasSpeakers = speakers.some((speaker) => speaker.name.trim().length > 0);
 
@@ -133,7 +147,7 @@ export function EventCard({
       key: "luma",
       url: links?.luma || registrationUrl,
       icon: LumaIcon,
-      label: t("platforms.luma"),
+      label: labels.platforms.luma,
       colors:
         "bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 shadow-violet-500/25",
     },
@@ -141,7 +155,7 @@ export function EventCard({
       key: "facebook",
       url: links?.facebook,
       icon: FacebookIcon,
-      label: t("platforms.facebook"),
+      label: labels.platforms.facebook,
       colors:
         "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-blue-500/25",
     },
@@ -149,7 +163,7 @@ export function EventCard({
       key: "eventbrite",
       url: links?.eventbrite,
       icon: EventbriteIcon,
-      label: t("platforms.eventbrite"),
+      label: labels.platforms.eventbrite,
       colors:
         "bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 shadow-brand-500/25",
     },
@@ -160,7 +174,7 @@ export function EventCard({
       <article className="glass-card fire-glow group relative p-7 sm:p-9">
         <div
           className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full blur-3xl ${
-            location === "Prague"
+            location === LOCATIONS.PRAGUE
               ? "bg-gradient-to-br from-red-400/25 to-rose-500/15"
               : "bg-gradient-to-br from-blue-400/25 to-indigo-500/15"
           }`}
@@ -170,7 +184,7 @@ export function EventCard({
           <div className="mb-5 flex items-start justify-between">
             <span
               className={`location-badge ${location.toLowerCase()} text-xs`}
-              aria-label={t("locationLabel", { location })}
+              aria-label={labels.locationLabel.replace("{location}", location)}
             >
               <MapPinIcon className="h-4 w-4" />
               {location}
@@ -182,7 +196,7 @@ export function EventCard({
           </h3>
           {episode && (
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
-              {t("episodeLabel")}: {episode}
+              {labels.episodeLabel}: {episode}
             </p>
           )}
 
@@ -192,7 +206,7 @@ export function EventCard({
 
           <div className="mb-6 flex flex-wrap items-center gap-3">
             <span className="rounded-full bg-gradient-to-r from-brand-500/15 via-brand-400/15 to-brand-500/15 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-brand-700 ring-1 ring-brand-500/20 dark:from-brand-400/10 dark:via-brand-300/10 dark:to-brand-400/10 dark:text-brand-200 dark:ring-brand-400/20">
-              {t("tba")}
+              {labels.tba}
             </span>
             <div className="flex items-center gap-2 rounded-full bg-neutral-900/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-600 dark:bg-white/10 dark:text-neutral-300">
               <MapPinIcon className="h-3 w-3" />
@@ -208,7 +222,7 @@ export function EventCard({
     <article className="glass-card fire-glow group relative p-7 sm:p-9">
       <div
         className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full blur-3xl ${
-          location === "Prague"
+          location === LOCATIONS.PRAGUE
             ? "bg-gradient-to-br from-red-400/25 to-rose-500/15"
             : "bg-gradient-to-br from-blue-400/25 to-indigo-500/15"
         }`}
@@ -218,7 +232,7 @@ export function EventCard({
         <div className="mb-5 flex items-start justify-between">
           <span
             className={`location-badge ${location.toLowerCase()}`}
-            aria-label={t("locationLabel", { location })}
+            aria-label={labels.locationLabel.replace("{location}", location)}
           >
             <MapPinIcon className="h-4 w-4" />
             {location}
@@ -230,7 +244,7 @@ export function EventCard({
         </h3>
         {episode && (
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
-            {t("episodeLabel")}: {episode}
+            {labels.episodeLabel}: {episode}
           </p>
         )}
 
@@ -260,7 +274,7 @@ export function EventCard({
         {hasSpeakers && (
           <div className="mb-6">
             <p className="mb-3 text-sm font-medium text-neutral-500 dark:text-neutral-400">
-              {t("speakers")}
+              {labels.speakers}
             </p>
             <div className="space-y-3">
               {speakers.map((speaker) => (
@@ -280,7 +294,7 @@ export function EventCard({
         )}
 
         <p className="mb-3 text-sm font-medium text-neutral-500 dark:text-neutral-400">
-          {t("register")}
+          {labels.register}
         </p>
 
         <div className="flex flex-wrap gap-3">

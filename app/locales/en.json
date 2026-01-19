@@ -140,5 +140,37 @@
     "english": "English",
     "csLabel": "CS",
     "enLabel": "EN"
+  },
+  "legal": {
+    "title": "Legal & Code of Conduct",
+    "subtitle": "Ensuring a safe and welcoming space for all.",
+    "intro": "Bonfire is a community built on respect. We are dedicated to providing a harassment-free experience for everyone, regardless of gender identity, sexual orientation, disability, physical appearance, age, race, ethnicity, nationality, or religion. We do not tolerate harassment of participants in any form.",
+    "scope": {
+      "title": "Scope",
+      "content": "This Code of Conduct applies to all Bonfire spaces, including our in-person meetups, online communities (Discord, social media), and any related events or gatherings. It applies to all participants, including attendees, speakers, sponsors, volunteers, and organizers."
+    },
+    "community": {
+      "title": "Our Values",
+      "content": "Our events are open to anyone interested in game development. We strive to create an inviting, friendly, and respectful environment where professionals, students, and hobbyists can connect. We encourage participants to assume good intent, be patient with newcomers, and offer constructive feedback rather than criticism. We expect all participants to be professional, considerate, and respectful of fellow attendees' boundaries and perspectives."
+    },
+    "rules": {
+      "title": "Prohibited Conduct",
+      "content": "The following behaviors are strictly prohibited at all Bonfire events and spaces:\n\n<bullet><bold>Verbal Harassment</bold>: Offensive comments related to gender, sexual orientation, disability, physical appearance, age, race, ethnicity, nationality, or religion. This includes slurs, insults, and unwelcome comments about someone's identity or appearance.</bullet>\n<bullet><bold>Physical Harassment</bold>: Unwanted physical contact, blocking someone's path, or invading personal space. Always ask before initiating physical contact such as handshakes or hugs.</bullet>\n<bullet><bold>Sexual Harassment</bold>: Unwelcome sexual attention, inappropriate imagery, sexualized comments or jokes, and unwanted advances.</bullet>\n<bullet><bold>Intimidation & Stalking</bold>: Threatening behavior, following someone without consent, or persistent unwanted contact both during and after events.</bullet>\n<bullet><bold>Online Harassment</bold>: Harassing behavior in our Discord server, social media, or any digital communication related to Bonfire.</bullet>\n<bullet><bold>Disruption</bold>: Sustained disruption of talks, presentations, or other activities.</bullet>\n<bullet><bold>Privacy Violations</bold>: Recording or photographing individuals without consent, or sharing private conversations.</bullet>"
+    },
+    "consequences": {
+      "title": "Consequences",
+      "content": "Participants asked to stop any harassing or inappropriate behavior are expected to comply immediately. If a participant engages in prohibited conduct, event organizers may take any action they deem appropriate, including:\n\n<bullet>A verbal warning</bullet>\n<bullet>Removal from the event or online space without refund</bullet>\n<bullet>A ban from future Bonfire events</bullet>\n<bullet>Reporting to local authorities when applicable</bullet>\n\nEvent organizers retain sole discretion in determining the appropriate response to any situation."
+    },
+    "photos": {
+      "title": "Media Policy",
+      "content": "We love capturing the energy of our community! By attending our events, you agree that your image may be used in our social media, website, or marketing materials. We respect your privacy—if you would prefer not to be photographed, please inform our staff at check-in. If you would like a specific photo of yourself removed from our platforms, contact us and we will accommodate your request."
+    },
+    "contact": {
+      "title": "Reporting & Support",
+      "content": "If you experience or witness a breach of this code of conduct, please report it immediately. All reports will be handled with discretion and confidentiality. You can reach our team by:",
+      "methods": "<bullet>Speaking directly to any Bonfire staff member at the event (they will be clearly identifiable)</bullet>\n<bullet>Emailing us (reports are monitored before, during, and after events)</bullet>",
+      "email": "hello+coc@bnf.events",
+      "closing": "We take all reports seriously and are committed to addressing concerns promptly. You will not face retaliation for making a good-faith report."
+    }
   }
 }

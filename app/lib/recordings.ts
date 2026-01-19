@@ -1,3 +1,4 @@
+import { LOCATIONS, type LocationValue } from "./constants";
 import pragueRecordingsData from "../data/prague-recordings.json";
 import zlinRecordingsData from "../data/zlin-recordings.json";
 
@@ -11,7 +12,7 @@ export type Recording = {
   url: string;
   description: string;
   tags: string[];
-  location: "Prague" | "Zlin";
+  location: LocationValue;
   episode?: string;
   episodeNumber?: number;
 };
@@ -21,12 +22,12 @@ export function getAllRecordings(): Recording[] {
     ...pragueRecordingsData.recordings.map((recording) => ({
       ...recording,
       tags: recording.tags.map((tag) => tag.toLowerCase()),
-      location: "Prague" as const,
+      location: LOCATIONS.PRAGUE,
     })),
     ...zlinRecordingsData.recordings.map((recording) => ({
       ...recording,
       tags: recording.tags.map((tag) => tag.toLowerCase()),
-      location: "Zlin" as const,
+      location: LOCATIONS.ZLIN,
     })),
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }

@@ -1,8 +1,6 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { type LocationValue } from "../lib/constants";
 
 interface VideoCardProps {
   id: string;
@@ -13,15 +11,8 @@ interface VideoCardProps {
   thumbnail: string;
   url: string;
   description: string;
-  location: "Prague" | "Zlin";
-}
-
-function PlayIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M8 5v14l11-7z" />
-    </svg>
-  );
+  location: LocationValue;
+  locationLabel?: string;
 }
 
 function MapPinIcon({ className }: { className?: string }) {
@@ -47,8 +38,15 @@ function MapPinIcon({ className }: { className?: string }) {
   );
 }
 
-export function VideoCard({ slug, title, speaker, date, thumbnail, location }: VideoCardProps) {
-  const t = useTranslations("recordings");
+export function VideoCard({
+  slug,
+  title,
+  speaker,
+  date,
+  thumbnail,
+  location,
+  locationLabel,
+}: VideoCardProps) {
   const formattedDate = new Date(date).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -56,7 +54,10 @@ export function VideoCard({ slug, title, speaker, date, thumbnail, location }: V
   });
 
   return (
-    <Link href={`/recordings/${location.toLowerCase()}/${slug}`} className="glass-card group block">
+    <Link
+      href={`/recordings/${location.toLowerCase()}/${slug}`}
+      className="glass-card group block cursor-pointer"
+    >
       <div className="video-overlay relative aspect-video overflow-hidden rounded-t-3xl">
         <Image
           src={thumbnail}
@@ -66,14 +67,10 @@ export function VideoCard({ slug, title, speaker, date, thumbnail, location }: V
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
 
-        <div className="play-button">
-          <PlayIcon className="h-7 w-7 text-brand-600" />
-        </div>
-
         <div className="absolute bottom-4 left-4 z-10">
           <span
             className={`location-badge ${location.toLowerCase()}`}
-            aria-label={t("locationLabel", { location })}
+            aria-label={locationLabel || `Location: ${location}`}
           >
             <MapPinIcon className="h-3.5 w-3.5" />
             {location}

@@ -1,5 +1,7 @@
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import type { CSSProperties } from "react";
+import { HeroBackground } from "./HeroBackground";
+import { NeonText } from "./NeonText";
 
 function ChevronDownIcon({ className }: { className?: string }) {
   return (
@@ -15,6 +17,15 @@ function ChevronDownIcon({ className }: { className?: string }) {
   );
 }
 
+function Ember({ style }: { style: CSSProperties }) {
+  return (
+    <div
+      className="animate-rise absolute rounded-full bg-gradient-to-t from-brand-500 to-rose-500 blur-md"
+      style={style}
+    />
+  );
+}
+
 function shuffleImages<T>(items: T[]) {
   const array = [...items];
   for (let i = array.length - 1; i > 0; i -= 1) {
@@ -27,131 +38,106 @@ function shuffleImages<T>(items: T[]) {
 export async function Hero({ images }: { images: Array<{ src: string; alt: string }> }) {
   const t = await getTranslations("hero");
   const uniqueImages = Array.from(new Map(images.map((image) => [image.src, image])).values());
-  const collageImages = shuffleImages(uniqueImages).slice(0, 4);
+  const heroImages = shuffleImages(uniqueImages).slice(0, 3);
+
+  // Generate deterministic embers
+  const embers = Array.from({ length: 15 }).map(() => ({
+    width: Math.random() * 6 + 2 + "px",
+    height: Math.random() * 6 + 2 + "px",
+    left: Math.random() * 100 + "%",
+    animationDuration: Math.random() * 10 + 10 + "s",
+    animationDelay: Math.random() * -20 + "s",
+    opacity: Math.random() * 0.5 + 0.2,
+  }));
 
   return (
-    <section className="gradient-bg relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 pt-24">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-70 dark:hidden"
-        style={{
-          backgroundImage: `linear-gradient(135deg, rgba(244, 196, 91, 0.12) 0%, rgba(224, 77, 58, 0.06) 38%, rgba(10, 10, 10, 0) 60%), linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.15) 30%, rgba(255, 255, 255, 0) 65%)`,
-        }}
-      />
-      <div
-        className="pointer-events-none absolute inset-0 hidden opacity-80 dark:block"
-        style={{
-          backgroundImage: `linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(224, 77, 58, 0.08) 42%, rgba(10, 10, 10, 0) 70%), linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 35%, rgba(255, 255, 255, 0) 70%)`,
-        }}
-      />
+    <section className="relative flex min-h-[110vh] flex-col items-center justify-center overflow-hidden bg-[#fafafa] dark:bg-[#050505] px-4 pt-20 transition-colors duration-500">
+      {/* Background Image Slider */}
+      <HeroBackground images={heroImages} />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="text-center lg:text-left">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-brand-500/80">
+      {/* Background Gradients */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(139,92,246,0.1),transparent_60%)] dark:bg-[radial-gradient(circle_at_50%_40%,rgba(139,92,246,0.15),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(244,63,94,0.08),transparent_50%)] dark:bg-[radial-gradient(circle_at_80%_20%,rgba(244,63,94,0.1),transparent_50%)]" />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#fafafa] to-transparent dark:from-[#050505] z-20" />
+
+      {/* Embers Layer */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        {embers.map((style, i) => (
+          <Ember key={i} style={style} />
+        ))}
+      </div>
+
+      {/* Massive Background Typography */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none">
+        <span className="text-outline block text-[18vw] font-black leading-none opacity-[0.04] dark:opacity-[0.03] sm:text-[22vw]">
+          BONFIRE
+        </span>
+      </div>
+
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
+        {/* Main Content */}
+        <div className="relative z-10 flex flex-col items-center text-center">
+          <p className="mb-8 flex items-center gap-3 text-sm font-bold uppercase tracking-[0.5em] text-brand-600 dark:text-brand-300">
+            <span className="h-px w-8 bg-gradient-to-r from-transparent to-brand-400" />
             {t("eyebrow")}
+            <span className="h-px w-8 bg-gradient-to-l from-transparent to-brand-400" />
           </p>
-          <h1 className="mb-6 text-4xl font-bold tracking-tight text-neutral-900 sm:text-5xl md:text-6xl dark:text-white">
-            {t("title.part1")} <span className="text-gradient">{t("title.highlight")}</span>{" "}
-            {t("title.part2")}
+          <h1 className="mb-10 flex flex-col items-center">
+            <span className="text-outline mx-auto text-6xl font-black uppercase tracking-tighter opacity-70 sm:text-8xl md:text-9xl">
+              {t("title.part1")}
+            </span>
+            <span className="text-gradient -mt-4 text-7xl font-black uppercase tracking-tighter sm:-mt-8 sm:text-9xl md:text-[10rem]">
+              {t("title.highlight")}
+            </span>
+            <NeonText className="text-outline-bold -mt-2 text-6xl font-black uppercase tracking-tighter sm:-mt-6 sm:text-8xl md:text-9xl">
+              {t("title.part2")}
+            </NeonText>
           </h1>
 
-          <p className="mb-10 max-w-xl text-lg leading-relaxed text-neutral-600 sm:text-xl dark:text-neutral-300">
+          <p className="mb-12 max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-400 sm:text-xl md:text-2xl">
             {t("subtitle")}
           </p>
 
-          <div className="flex flex-col gap-4 sm:flex-row sm:gap-5">
-            <a href="#events" className="glass-button">
-              {t("cta.events")}
+          <div className="flex flex-col gap-6 sm:flex-row sm:gap-8">
+            <a href="#events" className="glass-button group relative px-10 py-5 text-lg">
+              <span className="relative z-10">{t("cta.events")}</span>
+              <div className="absolute inset-0 -z-10 bg-brand-500 blur-xl opacity-40 transition-opacity group-hover:opacity-60" />
             </a>
-            <a
-              href="/recordings"
-              className="glass-button-secondary flex items-center justify-center gap-2"
-            >
+            <a href="/recordings" className="glass-button-secondary px-10 py-5 text-lg">
               {t("cta.recordings")}
             </a>
           </div>
 
-          <div className="mt-12 flex flex-wrap justify-center gap-6 lg:justify-start">
-            <div className="stat-card min-w-[120px] text-center lg:text-left">
-              <p className="text-gradient text-4xl font-bold sm:text-5xl">2</p>
-              <p className="mt-1 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+          <div className="mt-20 grid grid-cols-3 gap-8 border-t border-neutral-200 dark:border-white/5 pt-12 sm:gap-20">
+            <div className="text-center">
+              <p className="text-gradient block text-4xl font-black sm:text-5xl">2</p>
+              <p className="text-xs uppercase tracking-widest text-neutral-500">
                 {t("stats.locations")}
               </p>
             </div>
-            <div className="stat-card min-w-[120px] text-center lg:text-left">
-              <p className="text-gradient text-4xl font-bold sm:text-5xl">30+</p>
-              <p className="mt-1 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+            <div className="text-center">
+              <p className="text-gradient block text-4xl font-black sm:text-5xl">30+</p>
+              <p className="text-xs uppercase tracking-widest text-neutral-500">
                 {t("stats.talks")}
               </p>
             </div>
-            <div className="stat-card min-w-[120px] text-center lg:text-left">
-              <p className="text-gradient text-4xl font-bold sm:text-5xl">500+</p>
-              <p className="mt-1 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+            <div className="text-center">
+              <p className="text-gradient block text-4xl font-black sm:text-5xl">500+</p>
+              <p className="text-xs uppercase tracking-widest text-neutral-500">
                 {t("stats.attendees")}
               </p>
             </div>
           </div>
         </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6 lg:gap-5">
-          {collageImages[0] && (
-            <div className="glass-card relative col-span-2 aspect-[4/3] overflow-hidden sm:col-span-1 sm:aspect-[5/4] lg:col-span-4 lg:row-span-2 lg:aspect-auto lg:min-h-[420px]">
-              <Image
-                src={collageImages[0].src}
-                alt={collageImages[0].alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 55vw"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-transparent" />
-            </div>
-          )}
-          {collageImages[1] && (
-            <div className="glass-card relative col-span-1 aspect-[4/3] overflow-hidden sm:col-span-1 lg:col-span-2 lg:aspect-[4/5]">
-              <Image
-                src={collageImages[1].src}
-                alt={collageImages[1].alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 50vw, 20vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-            </div>
-          )}
-          {collageImages[2] && (
-            <div className="glass-card relative col-span-1 aspect-[4/3] overflow-hidden sm:col-span-1 lg:col-span-2 lg:aspect-[4/5]">
-              <Image
-                src={collageImages[2].src}
-                alt={collageImages[2].alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 50vw, 20vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-transparent" />
-            </div>
-          )}
-          {collageImages[3] && (
-            <div className="glass-card relative col-span-2 aspect-[16/9] overflow-hidden sm:col-span-2 lg:col-span-6">
-              <Image
-                src={collageImages[3].src}
-                alt={collageImages[3].alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 45vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/35 via-transparent to-transparent" />
-            </div>
-          )}
-        </div>
       </div>
 
       <a
         href="#events"
-        className="absolute bottom-10 flex flex-col items-center gap-2 text-neutral-400 transition-all duration-300 hover:text-brand-500"
+        className="absolute bottom-10 z-20 flex flex-col items-center gap-3 text-neutral-500 transition-colors hover:text-brand-400"
         aria-label="Scroll to events"
       >
-        <span className="text-xs font-medium uppercase tracking-widest">{t("scroll")}</span>
-        <ChevronDownIcon className="h-5 w-5 animate-bounce" />
+        <span className="text-[10px] font-bold uppercase tracking-[0.3em]">{t("scroll")}</span>
+        <ChevronDownIcon className="h-6 w-6 animate-bounce opacity-70" />
       </a>
     </section>
   );

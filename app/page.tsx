@@ -3,14 +3,13 @@ import type { Metadata } from "next";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
-import { EventsSection } from "./components/EventsSection";
+import { EventsSection, type EventItem } from "./components/EventsSection";
 import { LocationCard } from "./components/LocationCard";
 import { RecordingsSection } from "./components/RecordingsSection";
 
-import path from "path";
-import { promises as fs } from "fs";
 import upcomingEventsData from "./data/upcoming-events.json";
-import { getAllRecordings } from "./lib/recordings";
+import { getHeroImages, getHomepageRecordings } from "./lib/data";
+import { LOCATIONS } from "./lib/constants";
 
 function SectionHeader({ title, subtitle, id }: { title: string; subtitle: string; id: string }) {
   return (
@@ -28,23 +27,29 @@ function SectionHeader({ title, subtitle, id }: { title: string; subtitle: strin
 export default async function HomePage() {
   const t = await getTranslations();
   const photoAlt = t("hero.photoAlt");
-  const heroDir = path.join(process.cwd(), "public", "hero");
-  const heroFiles = await fs.readdir(heroDir);
-  const heroImages = heroFiles
-    .filter((file) => /\.(png|jpe?g|webp)$/i.test(file))
-    .map((file) => {
-      return {
-        src: `/hero/${file}`,
-        alt: photoAlt,
-      };
-    });
 
-  const allRecordings = getAllRecordings();
-  const latestRecordings = (location: "Prague" | "Zlin") =>
-    allRecordings.filter((recording) => recording.location === location).slice(0, 3);
-  const homepageRecordings = [...latestRecordings("Prague"), ...latestRecordings("Zlin")].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  const heroImages = await getHeroImages(photoAlt);
+  const homepageRecordings = getHomepageRecordings();
+
+  const eventsLabels = {
+    title: t("sections.events.title"),
+    subtitle: t("sections.events.subtitle"),
+    filterLabel: t("sections.events.filter.label"),
+    filterAll: t("sections.events.filter.all"),
+    noEvents: t("sections.events.noEvents"),
+    eventCard: {
+      locationLabel: t("events.locationLabel", { location: "{location}" }),
+      episodeLabel: t("events.episodeLabel"),
+      tba: t("events.tba"),
+      speakers: t("events.speakers"),
+      register: t("events.register"),
+      platforms: {
+        luma: t("events.platforms.luma"),
+        facebook: t("events.platforms.facebook"),
+        eventbrite: t("events.platforms.eventbrite"),
+      },
+    },
+  };
 
   return (
     <>
@@ -53,7 +58,10 @@ export default async function HomePage() {
       <main className="relative">
         <Hero images={heroImages} />
 
-        <EventsSection events={upcomingEventsData.events} />
+        <EventsSection
+          events={upcomingEventsData.events as unknown as EventItem[]}
+          labels={eventsLabels}
+        />
 
         <div className="section-divider mx-auto max-w-4xl" />
 
@@ -72,7 +80,7 @@ export default async function HomePage() {
             <div className="grid gap-8 md:grid-cols-2">
               <LocationCard
                 name={t("sections.locations.prague.name")}
-                city="Prague"
+                city={LOCATIONS.PRAGUE}
                 description={t("sections.locations.prague.description")}
                 eventCount={12}
                 sponsorsTitle={t("sections.locations.sponsorsTitle")}
@@ -97,7 +105,7 @@ export default async function HomePage() {
               />
               <LocationCard
                 name={t("sections.locations.zlin.name")}
-                city="Zlin"
+                city={LOCATIONS.ZLIN}
                 description={t("sections.locations.zlin.description")}
                 eventCount={8}
                 sponsorsTitle={t("sections.locations.sponsorsTitle")}

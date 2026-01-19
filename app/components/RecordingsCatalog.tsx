@@ -4,15 +4,52 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
 import type { Recording } from "../lib/recordings";
 
-type LocationFilter = "all" | "Prague" | "Zlin";
+import { LOCATIONS, type LocationValue } from "../lib/constants";
 
-const locationOptions: { value: LocationFilter; labelKey: string }[] = [
-  { value: "all", labelKey: "filters.allLocations" },
-  { value: "Prague", labelKey: "filters.prague" },
-  { value: "Zlin", labelKey: "filters.zlin" },
+function ChevronDownIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+    </svg>
+  );
+}
+
+type LocationFilter = "all" | LocationValue;
+
+interface RecordingsCatalogLabels {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  filters: {
+    title: string;
+    location: string;
+    tag: string;
+    episode: string;
+    reset: string;
+    allLocations: string;
+    allTags: string;
+    allEpisodes: string;
+    prague: string;
+    zlin: string;
+  };
+  empty: string;
+}
+
+const locationOptions: {
+  value: LocationFilter;
+  labelKey: keyof RecordingsCatalogLabels["filters"];
+}[] = [
+  { value: "all", labelKey: "allLocations" },
+  { value: LOCATIONS.PRAGUE, labelKey: "prague" },
+  { value: LOCATIONS.ZLIN, labelKey: "zlin" },
 ];
 
 function formatDate(date: string) {
@@ -27,12 +64,13 @@ export function RecordingsCatalog({
   recordings,
   title,
   subtitle,
+  labels,
 }: {
   recordings: Recording[];
   title: string;
   subtitle: string;
+  labels: RecordingsCatalogLabels;
 }) {
-  const t = useTranslations("recordingsPage");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeLocation, setActiveLocation] = useState<LocationFilter>("all");
@@ -56,20 +94,22 @@ export function RecordingsCatalog({
       }
     });
     const episodes = Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
-    return [{ value: "all", label: t("filters.allEpisodes") }].concat(
+    return [{ value: "all", label: labels.filters.allEpisodes }].concat(
       episodes.map(([episode, number]) => ({
         value: episode,
         label: number ? `Ep. ${number} — ${episode}` : episode,
       })),
     );
-  }, [recordings, t]);
+  }, [recordings, labels.filters.allEpisodes]);
 
   useEffect(() => {
     const locationParam = searchParams.get("location") ?? "all";
     const tagParam = searchParams.get("tag") ?? "all";
     const episodeParam = searchParams.get("episode") ?? "all";
     const normalizedLocation =
-      locationParam === "Prague" || locationParam === "Zlin" ? locationParam : "all";
+      locationParam === LOCATIONS.PRAGUE || locationParam === LOCATIONS.ZLIN
+        ? locationParam
+        : "all";
     const normalizedTag = tagOptions.includes(tagParam) ? tagParam : "all";
     const normalizedEpisode = episodeOptions.some((option) => option.value === episodeParam)
       ? episodeParam
@@ -119,7 +159,7 @@ export function RecordingsCatalog({
       <div className="relative mx-auto max-w-7xl">
         <div className="mb-10 text-center">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.35em] text-brand-500/80">
-            {t("eyebrow")}
+            {labels.eyebrow}
           </p>
           <h1 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
             {title}
@@ -129,11 +169,86 @@ export function RecordingsCatalog({
           </p>
         </div>
 
-        <div className="glass mb-10 rounded-3xl p-3 sm:p-4">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-neutral-500 dark:text-neutral-400">
-              {t("filters.title")}
-            </span>
+        {/* Compact Inline Filters */}
+        <div className="glass mb-8 rounded-2xl px-4 py-3">
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Location Pills */}
+            <div className="flex items-center gap-2">
+              {locationOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => {
+                    setActiveLocation(option.value);
+                    updateFilters(option.value, activeTag, activeEpisode);
+                  }}
+                  className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                    activeLocation === option.value
+                      ? option.value === LOCATIONS.PRAGUE
+                        ? "bg-red-500 text-white shadow-sm shadow-red-500/25"
+                        : option.value === LOCATIONS.ZLIN
+                          ? "bg-blue-500 text-white shadow-sm shadow-blue-500/25"
+                          : "bg-brand-500 text-white shadow-sm shadow-brand-500/25"
+                      : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/15"
+                  }`}
+                >
+                  {labels.filters[option.labelKey]}
+                </button>
+              ))}
+            </div>
+
+            {/* Divider */}
+            <div className="hidden h-5 w-px bg-neutral-300/60 sm:block dark:bg-white/10" />
+
+            {/* Topic Dropdown */}
+            <div className="relative">
+              <select
+                value={activeTag}
+                onChange={(e) => {
+                  setActiveTag(e.target.value);
+                  updateFilters(activeLocation, e.target.value, activeEpisode);
+                }}
+                className={`appearance-none rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-8 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
+                  activeTag !== "all"
+                    ? "text-brand-600 dark:text-brand-300"
+                    : "text-neutral-600 dark:text-neutral-300"
+                }`}
+              >
+                <option value="all">{labels.filters.allTags}</option>
+                {tagOptions
+                  .filter((tag) => tag !== "all")
+                  .map((tag) => (
+                    <option key={tag} value={tag}>
+                      {tag}
+                    </option>
+                  ))}
+              </select>
+              <ChevronDownIcon className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-neutral-400" />
+            </div>
+
+            {/* Episode Dropdown */}
+            <div className="relative">
+              <select
+                value={activeEpisode}
+                onChange={(e) => {
+                  setActiveEpisode(e.target.value);
+                  updateFilters(activeLocation, activeTag, e.target.value);
+                }}
+                className={`appearance-none rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-8 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
+                  activeEpisode !== "all"
+                    ? "text-brand-600 dark:text-brand-300"
+                    : "text-neutral-600 dark:text-neutral-300"
+                }`}
+              >
+                {episodeOptions.map((episode) => (
+                  <option key={episode.value} value={episode.value}>
+                    {episode.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDownIcon className="pointer-events-none absolute right-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-neutral-400" />
+            </div>
+
+            {/* Reset Button - pushed to the right on desktop */}
             <button
               type="button"
               onClick={() => {
@@ -143,104 +258,21 @@ export function RecordingsCatalog({
                 updateFilters("all", "all", "all");
               }}
               disabled={activeLocation === "all" && activeTag === "all" && activeEpisode === "all"}
-              className={`rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] transition ${
+              className={`ml-auto rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                 activeLocation === "all" && activeTag === "all" && activeEpisode === "all"
-                  ? "cursor-not-allowed bg-black/5 text-neutral-400 dark:bg-white/5 dark:text-neutral-500"
-                  : "bg-neutral-900 text-white shadow-lg shadow-neutral-900/15 hover:shadow-neutral-900/25 dark:bg-white dark:text-neutral-900"
+                  ? "cursor-not-allowed text-neutral-400 dark:text-neutral-500"
+                  : "text-neutral-600 hover:bg-white/80 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white"
               }`}
             >
-              {t("filters.reset")}
+              {labels.filters.reset}
             </button>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl bg-white/70 p-3 ring-1 ring-black/5 shadow-sm shadow-black/5 dark:bg-white/5 dark:ring-white/10 dark:shadow-black/30">
-              <div className="mb-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
-                  {t("filters.location")}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {locationOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => {
-                      setActiveLocation(option.value);
-                      updateFilters(option.value, activeTag, activeEpisode);
-                    }}
-                    className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] transition ${
-                      activeLocation === option.value
-                        ? option.value === "Prague"
-                          ? "bg-red-500 text-white shadow-lg shadow-red-500/25"
-                          : option.value === "Zlin"
-                            ? "bg-blue-500 text-white shadow-lg shadow-blue-500/25"
-                            : "bg-brand-500 text-white shadow-lg shadow-brand-500/25"
-                        : "bg-white text-neutral-600 hover:bg-neutral-50 dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20"
-                    }`}
-                  >
-                    {t(option.labelKey)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-2xl bg-white/70 p-3 ring-1 ring-black/5 shadow-sm shadow-black/5 dark:bg-white/5 dark:ring-white/10 dark:shadow-black/30">
-              <div className="mb-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
-                  {t("filters.tag")}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {tagOptions.map((tag) => (
-                  <button
-                    key={tag}
-                    onClick={() => {
-                      setActiveTag(tag);
-                      updateFilters(activeLocation, tag, activeEpisode);
-                    }}
-                    className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] transition ${
-                      activeTag === tag
-                        ? "bg-neutral-900 text-white shadow-lg shadow-neutral-900/20 dark:bg-white dark:text-neutral-900"
-                        : "bg-white text-neutral-600 hover:bg-neutral-50 dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20"
-                    }`}
-                  >
-                    {tag === "all" ? t("filters.allTags") : tag}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-2xl bg-white/70 p-3 ring-1 ring-black/5 shadow-sm shadow-black/5 dark:bg-white/5 dark:ring-white/10 dark:shadow-black/30">
-              <div className="mb-3">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
-                  {t("filters.episode")}
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {episodeOptions.map((episode) => (
-                  <button
-                    key={episode.value}
-                    onClick={() => {
-                      setActiveEpisode(episode.value);
-                      updateFilters(activeLocation, activeTag, episode.value);
-                    }}
-                    className={`rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] transition ${
-                      activeEpisode === episode.value
-                        ? "bg-neutral-900 text-white shadow-lg shadow-neutral-900/20 dark:bg-white dark:text-neutral-900"
-                        : "bg-white text-neutral-600 hover:bg-neutral-50 dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20"
-                    }`}
-                  >
-                    {episode.label}
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
 
         {filteredRecordings.length === 0 ? (
           <div className="glass-card mx-auto max-w-lg p-12 text-center">
             <p className="text-lg font-medium text-neutral-600 dark:text-neutral-300">
-              {t("empty")}
+              {labels.empty}
             </p>
           </div>
         ) : (
@@ -259,7 +291,7 @@ export function RecordingsCatalog({
                   }
                 }}
                 aria-label={featured.title}
-                className="group relative mb-12 block overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-2xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10"
+                className="group relative mb-12 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-2xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10"
               >
                 <div className="relative aspect-[16/7] w-full">
                   <Image
@@ -321,7 +353,7 @@ export function RecordingsCatalog({
                     }
                   }}
                   aria-label={recording.title}
-                  className="group relative overflow-hidden rounded-[28px] bg-white/90 text-neutral-900 shadow-xl shadow-black/5 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10"
+                  className="group relative cursor-pointer overflow-hidden rounded-[28px] bg-white/90 text-neutral-900 shadow-xl shadow-black/5 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10"
                 >
                   <div className="relative aspect-video">
                     <Image

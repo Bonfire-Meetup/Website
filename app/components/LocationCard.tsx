@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { LOCATIONS, type LocationValue } from "../lib/constants";
 
 interface LocationCardProps {
   name: string;
-  city: string;
+  city: LocationValue;
   description: string;
   eventCount: number;
   sponsorsTitle: string;
@@ -67,15 +68,15 @@ export async function LocationCard({
 }: LocationCardProps) {
   const t = await getTranslations("sections.locations");
   const logoDark =
-    city === "Prague" ? "/bonfire_prague_logo_dark.png" : "/bonfire_zlin_logo_dark.png";
+    city === LOCATIONS.PRAGUE ? "/bonfire_prague_logo_dark.png" : "/bonfire_zlin_logo_dark.png";
   const logoLight =
-    city === "Prague" ? "/bonfire_prague_logo_light.png" : "/bonfire_zlin_logo_light.png";
+    city === LOCATIONS.PRAGUE ? "/bonfire_prague_logo_light.png" : "/bonfire_zlin_logo_light.png";
 
   return (
     <div className="glass-card group relative p-8 sm:p-10">
       <div
         className={`pointer-events-none absolute top-0 right-0 h-56 w-56 translate-x-16 -translate-y-16 rounded-full blur-3xl transition-opacity duration-500 group-hover:opacity-70 ${
-          city === "Prague"
+          city === LOCATIONS.PRAGUE
             ? "bg-gradient-to-br from-red-400/30 to-rose-500/20 opacity-50"
             : "bg-gradient-to-br from-blue-400/30 to-indigo-500/20 opacity-50"
         }`}
@@ -102,13 +103,13 @@ export async function LocationCard({
         <div className="mb-5 flex items-center gap-2.5">
           <div
             className={`flex h-9 w-9 items-center justify-center rounded-xl ${
-              city === "Prague"
+              city === LOCATIONS.PRAGUE
                 ? "bg-red-100/80 dark:bg-red-500/10"
                 : "bg-blue-100/80 dark:bg-blue-500/10"
             }`}
           >
             <MapPinIcon
-              className={`h-5 w-5 ${city === "Prague" ? "text-red-600 dark:text-red-400" : "text-blue-600 dark:text-blue-400"}`}
+              className={`h-5 w-5 ${city === LOCATIONS.PRAGUE ? "text-red-600 dark:text-red-400" : "text-blue-600 dark:text-blue-400"}`}
             />
           </div>
           <span className="text-lg font-semibold text-neutral-900 dark:text-white">
@@ -121,7 +122,7 @@ export async function LocationCard({
         <div className="flex items-center gap-3">
           <div
             className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium ${
-              city === "Prague"
+              city === LOCATIONS.PRAGUE
                 ? "bg-red-100/80 text-red-700 dark:bg-red-500/15 dark:text-red-300"
                 : "bg-blue-100/80 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300"
             }`}

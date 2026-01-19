@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 function YouTubeIcon({ className }: { className?: string }) {
   return (
@@ -42,8 +42,8 @@ function MailIcon({ className }: { className?: string }) {
   );
 }
 
-export function Footer() {
-  const t = useTranslations("footer");
+export async function Footer() {
+  const t = await getTranslations("footer");
 
   return (
     <footer className="glass relative mt-auto overflow-hidden">
@@ -93,11 +93,17 @@ export function Footer() {
                 <DiscordIcon className="h-4 w-4" />
               </a>
             </div>
-
-            <p className="text-[11px] text-neutral-400 dark:text-neutral-500">
-              {t("copyright", { year: new Date().getFullYear() })}
-            </p>
           </div>
+        </div>
+
+        <div className="mt-4 flex flex-col items-center justify-between gap-4 border-t border-neutral-200 pt-4 text-center text-xs text-neutral-500 sm:flex-row sm:text-left dark:border-white/10 dark:text-neutral-500">
+          <p>{t("copyright", { year: new Date().getFullYear() })}</p>
+          <a
+            href="/legal"
+            className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
+          >
+            Code of Conduct & Legal
+          </a>
         </div>
       </div>
     </footer>

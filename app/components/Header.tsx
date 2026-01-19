@@ -1,10 +1,12 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 
 export async function Header() {
   const t = await getTranslations("header");
+  const tLang = await getTranslations("language");
+  const locale = await getLocale();
 
   return (
     <header className="glass fixed top-0 right-0 left-0 z-50">
@@ -50,7 +52,15 @@ export async function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <LanguageToggle />
+          <LanguageToggle
+            locale={locale}
+            labels={{
+              csLabel: tLang("csLabel"),
+              enLabel: tLang("enLabel"),
+              switchToCs: tLang("switchTo", { language: tLang("czech") }),
+              switchToEn: tLang("switchTo", { language: tLang("english") }),
+            }}
+          />
           <ThemeToggle />
         </div>
       </div>

@@ -1,133 +1,133 @@
 {
   "header": {
     "events": "Akce",
-    "recordings": "Zaznamy",
+    "recordings": "Záznamy",
     "locations": "Lokace",
     "logoAlt": "Logo Bonfire Events"
   },
   "hero": {
-    "eyebrow": "Bonfire komunita",
+    "eyebrow": "BONFIRE KOMUNITA",
     "photoAlt": "Fotka komunity Bonfire",
     "title": {
       "part1": "Kde se",
       "highlight": "Game Devs",
-      "part2": "Potkavaji"
+      "part2": "Potkávají"
     },
-    "subtitle": "Pripojte se k ceske komunite vyvojaru her na nasich setkanich v Praze a Zline. Prednasky a networking.",
+    "subtitle": "Přidej se k české gamedev komunitě na našich meetupech v Praze a Zlíně. Přednášky, pivo a networking.",
     "cta": {
-      "events": "Nadchazejici Akce",
-      "recordings": "Sledovat Zaznamy"
+      "events": "Mrkni na akce",
+      "recordings": "Pusť si záznamy"
     },
     "stats": {
       "locations": "Lokace",
-      "talks": "Prednasek",
-      "attendees": "Ucastniku"
+      "talks": "Přednášek",
+      "attendees": "Účastníků"
     },
-    "scroll": "Rolovat"
+    "scroll": "Roluj dolů"
   },
   "sections": {
     "events": {
-      "title": "Nadchazejici Akce",
-      "subtitle": "Pripojte se k nasemu dalsimu setkani! Registrujte se vcas.",
-      "noEvents": "Zadne nadchazejici akce nejsou naplanovany. Vratte se brzy!",
+      "title": "Co se chystá",
+      "subtitle": "Doraž na náš další meetup! Registruj se včas, ať máš místo.",
+      "noEvents": "Zatím nic neplánujeme. Zkus to zčeknout později!",
       "filter": {
         "label": "Epizoda",
-        "all": "Vsechny epizody"
+        "all": "Všechny epizody"
       }
     },
     "recordings": {
-      "title": "Minule Zaznamy",
-      "subtitle": "Nestihli jste setkani? Doplnte si zaznamy prednasek z minulych akci.",
-      "viewAll": "Zobrazit vsechny zaznamy",
-      "empty": "Zadne zaznamy pro tuto lokaci.",
+      "title": "Archiv záznamů",
+      "subtitle": "Nestihl jsi meetup? Nevadí, pusť si záznamy z proběhlých akcí.",
+      "viewAll": "Všechny záznamy",
+      "empty": "Z téhle lokace tu zatím nic není.",
       "filter": {
-        "all": "Vse",
+        "all": "Vše",
         "prague": "Praha",
-        "zlin": "Zlin"
+        "zlin": "Zlín"
       }
     },
     "locations": {
-      "title": "Nase Lokace",
-      "subtitle": "Bonfire spojuje vyvojare her ve dvou mestech Ceske republiky.",
-      "country": "Ceska republika",
-      "eventsHosted": "Usporadano {count} akci",
-      "sponsorsTitle": "Partneri",
+      "title": "Kde nás najdeš",
+      "subtitle": "Bonfire propojuje herní vývojáře v Praze i Zlíně.",
+      "country": "Česká republika",
+      "eventsHosted": "Proběhlo {count} akcí",
+      "sponsorsTitle": "Partneři",
       "prague": {
         "name": "Bonfire@Prague",
-        "description": "Nase hlavni lokace v srdci hlavniho mesta Ceske republiky. Setkani s prednaskami od mistnich i zahranicnich vyvojaru her."
+        "description": "Naše hlavní základna v srdci Prahy. Meetupy s přednáškami od lokálních i zahraničních hostů."
       },
       "zlin": {
         "name": "Bonfire@Zlin",
-        "description": "Prinasime komunitu vyvojaru her na Moravu. Pravidelná setkani na UTB univerzite se zamerenim na indie vyvoj a studentske projekty."
+        "description": "Tvoříme gamedev komunitu i na Moravě. Pravidelné akce na UTB se zaměřením na indie scenu a studentské projekty."
       }
     }
   },
   "events": {
-    "speakers": "Prednasejici",
-    "tba": "Bude upresneno",
-    "locationLabel": "Lokace: {location}",
+    "speakers": "Kdo bude mluvit",
+    "tba": "Doplníme brzy",
+    "locationLabel": "Kde: {location}",
     "episodeLabel": "Epizoda",
     "platforms": {
       "luma": "Lu.ma",
       "facebook": "Facebook",
       "eventbrite": "Eventbrite"
     },
-    "register": "Registrace pres:"
+    "register": "Registrace přes:"
   },
   "recordings": {
-    "backToRecordings": "Zpet na zaznamy",
-    "cinema": "Kino rezim",
-    "exitCinema": "Zrusit kino",
-    "locationLabel": "Lokace: {location}",
-    "speaker": "Prednasejici",
+    "backToRecordings": "Zpátky na záznamy",
+    "cinema": "Kino režim",
+    "exitCinema": "Zrušit kino",
+    "locationLabel": "Místo: {location}",
+    "speaker": "Mluvčí",
     "date": "Datum",
-    "about": "O teto prednasce"
+    "about": "O přednášce"
   },
   "recordingsPage": {
-    "eyebrow": "Streamujte setkani",
-    "title": "Knihovna zaznamu",
-    "subtitle": "Projdete si cely archiv Bonfire prednasek o technologiich, artu a produkci, plus zaznamy z live podcastu a rozhovoru.",
+    "eyebrow": "Pusť si to zpětně",
+    "title": "Knihovna záznamů",
+    "subtitle": "Projdi si kompletní archiv Bonfire přednášek o techu, artu i produkci, plus záznamy z live podcastů a rozhovorů.",
     "filters": {
       "title": "Filtry",
       "location": "Lokace",
-      "tag": "Tema",
+      "tag": "Téma",
       "episode": "Epizoda",
-      "reset": "Reset",
-      "allLocations": "Vsechny lokace",
-      "allTags": "Vsechna temata",
-      "allEpisodes": "Vsechny epizody",
+      "reset": "Vyčistit",
+      "allLocations": "Všechny lokace",
+      "allTags": "Všechna témata",
+      "allEpisodes": "Všechny epizody",
       "prague": "Praha",
-      "zlin": "Zlin"
+      "zlin": "Zlín"
     },
-    "empty": "Zadne zaznamy neodpovidaji zvolenym filtrum."
+    "empty": "Filtruješ moc přísně, nic tu není."
   },
   "footer": {
-    "tagline": "Game Dev Setkani v Ceske republice",
+    "tagline": "Game Dev Meetupy v Česku",
     "brandName": "Bonfire Events",
-    "vibes": "Neformalni setkani, velke napady a dobra atmosfera. 🔥🎮",
+    "vibes": "Neformální pivo, velké nápady a super vibes. 🔥🎮",
     "emailLabel": "Email",
     "youtubeLabel": "YouTube",
     "facebookLabel": "Facebook",
     "discordLabel": "Discord",
-    "copyright": "© {year} Bonfire Events. Vytvoreno s laskou pro gamedev komunitu."
+    "copyright": "© {year} Bonfire Events. Ukuchtěno s láskou pro gamedev komunitu."
   },
   "meta": {
-    "siteTitle": "Bonfire Events - Game Dev setkani",
-    "siteDescription": "Bonfire Events je komunita vyvojaru her, ktera porada setkani v Praze a Zline.",
-    "homeTitle": "Bonfire Events - Game Dev setkani",
-    "homeDescription": "Bonfire Events je komunita vyvojaru her, ktera porada setkani v Praze a Zline. Prijedte na prednasky a networking.",
-    "recordingsTitle": "Zaznamy | Bonfire Events",
-    "recordingsDescription": "Projdete si archiv Bonfire prednasek o technologiich, artu a produkci, plus zaznamy z live podcastu a rozhovoru.",
-    "recordingNotFound": "Zaznam nebyl nalezen",
+    "siteTitle": "Bonfire Events - Game Dev Meetupy",
+    "siteDescription": "Bonfire Events je gamedev komunita pořádající meetupy v Praze a Zlíně.",
+    "homeTitle": "Bonfire Events - Game Dev Meetupy",
+    "homeDescription": "Bonfire Events je komunita herních vývojářů. Pořádáme meetupy v Praze a Zlíně. Doraž na přednášku a pokec.",
+    "recordingsTitle": "Záznamy | Bonfire Events",
+    "recordingsDescription": "Archiv Bonfire přednášek o techu, artu a produkci, včetně live podcastů.",
+    "recordingNotFound": "Záznam nenalezen",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",
     "keywords": [
-      "vyvoj her",
+      "vývoj her",
       "gamedev",
-      "setkani",
+      "meetup",
       "Praha",
-      "Zlin",
-      "Ceska republika",
+      "Zlín",
+      "Česká republika",
       "indie hry",
       "unity",
       "unreal",
@@ -135,10 +135,42 @@
     ]
   },
   "language": {
-    "switchTo": "Prepnout na {language}",
-    "czech": "cestinu",
-    "english": "anglictinu",
-    "csLabel": "CS",
+    "switchTo": "Přepnout na {language}",
+    "czech": "češtinu",
+    "english": "angličtinu",
+    "csLabel": "CZ",
     "enLabel": "EN"
+  },
+  "legal": {
+    "title": "Právní info & Etický kodex",
+    "subtitle": "Chceme, aby Bonfire byl bezpečný prostor pro každého.",
+    "intro": "Bonfire stojí na vzájemném respektu. Chceme, aby se u nás každý cítil v pohodě a vítaný, bez ohledu na pohlaví, orientaci, vzhled, věk, rasu, národnost, etnicitu nebo náboženství. Jakékoliv obtěžování u nás nemá místo a nebude tolerováno.",
+    "scope": {
+      "title": "Platnost kodexu",
+      "content": "Tento Etický kodex platí pro všechny prostory Bonfire, včetně našich osobních setkání, online komunit (Discord, sociální sítě) a souvisejících akcí. Vztahuje se na všechny účastníky – návštěvníky, přednášející, sponzory, dobrovolníky i organizátory."
+    },
+    "community": {
+      "title": "Naše hodnoty",
+      "content": "Naše akce jsou otevřené pro každého, koho zajímá vývoj her. Snažíme se budovat přátelské prostředí, kde se mohou potkávat profíci, studenti i hobby vývojáři. Povzbuzujeme účastníky, aby předpokládali dobré úmysly, byli trpěliví k nováčkům a poskytovali konstruktivní zpětnou vazbu místo kritiky. Od všech čekáme profesionální přístup a ohleduplnost k hranicím a názorům ostatních."
+    },
+    "rules": {
+      "title": "Zakázané chování",
+      "content": "Následující chování je na všech akcích a v prostorách Bonfire přísně zakázáno:\n\n<bullet><bold>Slovní obtěžování</bold>: Urážlivé komentáře týkající se pohlaví, sexuální orientace, postižení, fyzického vzhledu, věku, rasy, etnicity, národnosti nebo náboženství. Zahrnuje nadávky, urážky a nevyžádané komentáře o identitě nebo vzhledu.</bullet>\n<bullet><bold>Fyzické obtěžování</bold>: Nevyžádaný fyzický kontakt, blokování cesty nebo narušování osobního prostoru. Před jakýmkoli fyzickým kontaktem jako je podání ruky nebo objetí se vždy zeptej.</bullet>\n<bullet><bold>Sexuální obtěžování</bold>: Nevyžádaná sexuální pozornost, nevhodné obrázky, sexualizované komentáře nebo vtipy a nevyžádané návrhy.</bullet>\n<bullet><bold>Zastrašování a pronásledování</bold>: Vyhrožování, sledování někoho bez souhlasu nebo přetrvávající nevyžádaný kontakt během i po akcích.</bullet>\n<bullet><bold>Online obtěžování</bold>: Obtěžující chování na našem Discord serveru, sociálních sítích nebo v jakékoli digitální komunikaci související s Bonfire.</bullet>\n<bullet><bold>Rušení</bold>: Soustavné rušení přednášek, prezentací nebo jiných aktivit.</bullet>\n<bullet><bold>Porušení soukromí</bold>: Nahrávání nebo fotografování jednotlivců bez souhlasu nebo sdílení soukromých rozhovorů.</bullet>"
+    },
+    "consequences": {
+      "title": "Důsledky",
+      "content": "Účastníci, kteří jsou požádáni o ukončení obtěžujícího nebo nevhodného chování, musí okamžitě poslechout. Pokud se účastník dopustí zakázaného chování, organizátoři mohou podniknout kroky, které uznají za vhodné, včetně:\n\n<bullet>Slovního varování</bullet>\n<bullet>Vyloučení z akce nebo online prostoru bez náhrady</bullet>\n<bullet>Zákazu účasti na budoucích akcích Bonfire</bullet>\n<bullet>Nahlášení příslušným orgánům, pokud je to relevantní</bullet>\n\nOrganizátoři akcí mají výhradní pravomoc rozhodnout o vhodné reakci na jakoukoli situaci."
+    },
+    "photos": {
+      "title": "Focení a záznamy",
+      "content": "Rádi zachycujeme atmosféru a energii našich akcí! Účastí na Bonfire souhlasíš s tím, že se tvoje fotka nebo záznam může objevit na našem webu, sociálních sítích nebo v marketingu. Respektujeme ale tvoje soukromí – pokud nechceš být fotografován/a, dej nám vědět při příchodu. Pokud budeš chtít nějaký konkrétní záběr smazat, stačí nám napsat a vyhovíme ti."
+    },
+    "contact": {
+      "title": "Podpora a hlášení",
+      "content": "Pokud zažiješ nebo uvidíš porušení tohoto kodexu, okamžitě nám to nahlás. Všechna hlášení zpracujeme diskrétně a důvěrně. Na náš tým se můžeš obrátit takto:",
+      "methods": "<bullet>Oslov přímo kteréhokoliv člena týmu Bonfire na akci (budou jasně označeni)</bullet>\n<bullet>Napiš nám e-mail (zprávy sledujeme před, během i po akcích)</bullet>",
+      "email": "hello+coc@bnf.events",
+      "closing": "Všechna hlášení bereme vážně a zavazujeme se je řešit bez prodlení. Nebudeš čelit odvetě za podání hlášení v dobré víře."
+    }
   }
 }
