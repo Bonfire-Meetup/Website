@@ -38,8 +38,8 @@
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "oxfmt": "^0.24.0",
-    "oxlint": "^1.39.0",
+    "oxfmt": "^0.25.0",
+    "oxlint": "^1.40.0",
     "typescript": "^5.9.3"
   },
   "next-intl": {

@@ -17,6 +17,11 @@ type Labels = {
   ariaLocationLabel: string;
 };
 
+type HomepageRecording = Pick<
+  Recording,
+  "shortId" | "slug" | "title" | "speaker" | "date" | "thumbnail" | "location"
+>;
+
 function MapPinIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -45,7 +50,7 @@ export function RecordingsSectionClient({
   labels,
   locale,
 }: {
-  recordings: Recording[];
+  recordings: HomepageRecording[];
   labels: Labels;
   locale: string;
 }) {
@@ -95,8 +100,6 @@ export function RecordingsSectionClient({
             speaker={recording.speaker}
             date={recording.date}
             thumbnail={recording.thumbnail}
-            url={recording.url}
-            description={recording.description ?? ""}
             location={recording.location}
             locationLabel={recording.location === LOCATIONS.PRAGUE ? labels.prague : labels.zlin}
             ariaLocationLabel={labels.ariaLocationLabel.replace("{location}", recording.location)}

@@ -24,6 +24,21 @@ function ChevronDownIcon({ className }: { className?: string }) {
 
 type LocationFilter = "all" | LocationValue;
 
+type CatalogRecording = Pick<
+  Recording,
+  | "shortId"
+  | "slug"
+  | "title"
+  | "speaker"
+  | "date"
+  | "thumbnail"
+  | "description"
+  | "tags"
+  | "location"
+  | "episode"
+  | "episodeNumber"
+>;
+
 interface RecordingsCatalogLabels {
   eyebrow: string;
   title: string;
@@ -70,7 +85,7 @@ export function RecordingsCatalog({
   labels,
   locale,
 }: {
-  recordings: Recording[];
+  recordings: CatalogRecording[];
   title: string;
   subtitle: string;
   labels: RecordingsCatalogLabels;

@@ -9,8 +9,6 @@ interface VideoCardProps {
   speaker: string[];
   date: string;
   thumbnail: string;
-  url: string;
-  description: string;
   location: LocationValue;
   locationLabel?: string;
   ariaLocationLabel?: string;

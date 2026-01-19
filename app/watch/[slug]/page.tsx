@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { RecordingPlayer } from "../../components/RecordingPlayer";
-import { getAllRecordings } from "../../lib/recordings";
+import { getAllRecordings, getRelatedRecordings } from "../../lib/recordings";
 
 function getWatchSlug(recording: { slug: string; shortId: string }) {
   return `${recording.slug}-${recording.shortId}`;
@@ -73,11 +73,12 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
   };
 
   const allRecordings = getAllRecordings();
+  const relatedRecordings = getRelatedRecordings(recording, allRecordings);
 
   return (
     <RecordingPlayer
       recording={recording}
-      allRecordings={allRecordings}
+      relatedRecordings={relatedRecordings}
       labels={labels}
       locale={locale}
     />

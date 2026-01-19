@@ -10,6 +10,15 @@ export async function RecordingsSection({ recordings }: RecordingsSectionProps) 
   const t = await getTranslations("sections.recordings");
   const tRec = await getTranslations("recordings");
   const locale = await getLocale();
+  const homepageRecordings = recordings.map((recording) => ({
+    shortId: recording.shortId,
+    slug: recording.slug,
+    title: recording.title,
+    speaker: recording.speaker,
+    date: recording.date,
+    thumbnail: recording.thumbnail,
+    location: recording.location,
+  }));
 
   return (
     <section className="relative px-4 py-28 sm:px-6 lg:px-8">
@@ -24,7 +33,7 @@ export async function RecordingsSection({ recordings }: RecordingsSectionProps) 
         </div>
 
         <RecordingsSectionClient
-          recordings={recordings}
+          recordings={homepageRecordings}
           labels={{
             all: t("filter.all"),
             prague: t("filter.prague"),

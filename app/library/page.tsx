@@ -8,7 +8,19 @@ import { getAllRecordings } from "../lib/recordings";
 export default async function LibraryPage() {
   const t = await getTranslations("libraryPage");
   const locale = await getLocale();
-  const recordings = getAllRecordings();
+  const recordings = getAllRecordings().map((recording) => ({
+    shortId: recording.shortId,
+    slug: recording.slug,
+    title: recording.title,
+    speaker: recording.speaker,
+    date: recording.date,
+    thumbnail: recording.thumbnail,
+    description: recording.description,
+    tags: recording.tags,
+    location: recording.location,
+    episode: recording.episode,
+    episodeNumber: recording.episodeNumber,
+  }));
 
   const labels = {
     eyebrow: t("eyebrow"),

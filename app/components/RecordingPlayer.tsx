@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import type { Recording } from "../lib/recordings";
 
 function ArrowLeftIcon({ className }: { className?: string }) {
@@ -126,14 +126,19 @@ interface RecordingPlayerLabels {
   special: string;
 }
 
+type RelatedRecording = Pick<
+  Recording,
+  "shortId" | "slug" | "title" | "thumbnail" | "speaker" | "episode" | "episodeNumber" | "location"
+>;
+
 export function RecordingPlayer({
   recording,
-  allRecordings,
+  relatedRecordings,
   labels,
   locale,
 }: {
   recording: Recording;
-  allRecordings: Recording[];
+  relatedRecordings: RelatedRecording[];
   labels: RecordingPlayerLabels;
   locale: string;
 }) {
@@ -152,20 +157,6 @@ export function RecordingPlayer({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [cinemaMode]);
-
-  const relatedRecordings = useMemo(() => {
-    const getScore = (r: Recording) => {
-      let score = 0;
-      if (r.location === recording.location) score += 2;
-      score += r.tags.filter((tag) => recording.tags.includes(tag)).length * 3;
-      return score;
-    };
-
-    return allRecordings
-      .filter((r) => r.youtubeId !== recording.youtubeId)
-      .sort((a, b) => getScore(b) - getScore(a))
-      .slice(0, 4);
-  }, [allRecordings, recording]);
 
   const formattedDate = new Date(recording.date).toLocaleDateString(locale, {
     month: "short",

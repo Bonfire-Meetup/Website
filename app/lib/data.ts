@@ -1,9 +1,10 @@
 import path from "path";
 import { promises as fs } from "fs";
+import { cache } from "react";
 import { getAllRecordings } from "./recordings";
 import { LOCATIONS, type LocationValue } from "./constants";
 
-export async function getHeroImages(altText: string) {
+export const getHeroImages = cache(async (altText: string) => {
   const heroDir = path.join(process.cwd(), "public", "hero");
   const heroFiles = await fs.readdir(heroDir);
   return heroFiles
@@ -12,7 +13,7 @@ export async function getHeroImages(altText: string) {
       src: `/hero/${file}`,
       alt: altText,
     }));
-}
+});
 
 export function getHomepageRecordings() {
   const allRecordings = getAllRecordings();
