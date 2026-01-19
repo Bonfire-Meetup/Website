@@ -67,7 +67,7 @@ export async function Hero({
 
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <div className="relative z-10 flex flex-col items-center text-center">
-          <p className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.4em] text-brand-600 sm:mb-8 sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-brand-300">
+          <p className="mb-4 hidden items-center gap-2 text-xs font-bold uppercase tracking-[0.4em] text-brand-600 sm:mb-8 sm:flex sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-brand-300">
             <span className="h-px w-6 bg-gradient-to-r from-transparent to-brand-400 sm:w-8" />
             {t("eyebrow")}
             <span className="h-px w-6 bg-gradient-to-l from-transparent to-brand-400 sm:w-8" />
@@ -88,17 +88,17 @@ export async function Hero({
             {t("subtitle")}
           </p>
 
-          <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:gap-8">
             <a
               href="#events"
-              className="glass-button group relative px-8 py-4 text-base sm:px-10 sm:py-5 sm:text-lg"
+              className="glass-button group relative px-5 py-3 text-sm sm:px-10 sm:py-5 sm:text-lg"
             >
               <span className="relative z-10">{t("cta.events")}</span>
               <div className="absolute inset-0 -z-10 bg-brand-500 opacity-40 blur-xl transition-opacity group-hover:opacity-60" />
             </a>
             <a
               href="/library"
-              className="glass-button-secondary px-8 py-4 text-base sm:px-10 sm:py-5 sm:text-lg"
+              className="glass-button-secondary px-5 py-3 text-sm sm:px-10 sm:py-5 sm:text-lg"
             >
               {t("cta.recordings")}
             </a>
