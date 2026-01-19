@@ -800,6 +800,7 @@ export function RecordingsCatalog({
                           aria-label="Previous featured"
                           onClick={(event) => {
                             event.stopPropagation();
+                            setIsFeaturedPaused(false);
                             setFeaturedIndex(
                               (prev) =>
                                 (prev - 1 + featuredCandidates.length) % featuredCandidates.length,
@@ -812,6 +813,7 @@ export function RecordingsCatalog({
                           aria-label="Next featured"
                           onClick={(event) => {
                             event.stopPropagation();
+                            setIsFeaturedPaused(false);
                             setFeaturedIndex((prev) => (prev + 1) % featuredCandidates.length);
                           }}
                           className="pointer-events-auto absolute inset-y-0 right-0 w-1/5 cursor-pointer"
