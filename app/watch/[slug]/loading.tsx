@@ -25,19 +25,15 @@ export default function WatchLoading() {
     <div className="gradient-bg min-h-screen">
       <div className="relative mx-auto max-w-[85rem] px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-12">
-          {/* Main player card */}
           <div className="min-w-0 space-y-8">
             <div className="overflow-hidden rounded-3xl bg-white/90 shadow-xl shadow-black/5 ring-1 ring-black/5 dark:bg-neutral-950 dark:shadow-black/10 dark:ring-white/10">
-              {/* Header bar */}
               <div className="flex items-center justify-between border-b border-neutral-200/30 px-4 py-3 dark:border-neutral-700/30">
                 <Skeleton className="h-5 w-36" />
                 <Skeleton className="h-7 w-24 rounded-lg" />
               </div>
 
-              {/* Video player skeleton */}
               <Skeleton className="aspect-video w-full !rounded-none" />
 
-              {/* Info section */}
               <div className="px-5 py-5 sm:px-6 sm:py-6 space-y-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <Skeleton className="h-7 w-3/4" />
@@ -65,7 +61,6 @@ export default function WatchLoading() {
             </div>
           </div>
 
-          {/* Related talks section */}
           <section className="space-y-8">
             <div className="flex items-center gap-4">
               <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10" />

@@ -98,7 +98,10 @@
     "relatedTitle": "Related Talks",
     "back": "Back",
     "epShort": "Ep.",
-    "special": "Special"
+    "special": "Special",
+    "share": "Share",
+    "copyLink": "Copy link",
+    "copied": "Copied!"
   },
   "libraryPage": {
     "eyebrow": "Stream the sessions",

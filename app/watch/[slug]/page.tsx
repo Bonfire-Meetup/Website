@@ -12,7 +12,6 @@ function getWatchSlug(recording: { slug: string; shortId: string }) {
 }
 
 function parseShortId(slug: string) {
-  // Short IDs are 6 characters, extract from end of slug
   return slug.slice(-6);
 }
 
@@ -74,6 +73,9 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
     back: t("back"),
     epShort: t("epShort"),
     special: t("special"),
+    share: t("share"),
+    copyLink: t("copyLink"),
+    copied: t("copied"),
   };
 
   const allRecordings = getAllRecordings();

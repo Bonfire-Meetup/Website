@@ -279,12 +279,10 @@ function MemberCard({
         className={`relative overflow-hidden rounded-2xl border bg-gradient-to-br p-4 transition-all duration-300 ${themeClasses} ${glowTheme}`}
       >
         <div className="relative flex items-center gap-4">
-          {/* Avatar with initials */}
           <div
             className={`relative flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${avatarTheme} shadow-lg transition-transform duration-300 group-hover:scale-110`}
           >
             <span className="text-lg font-bold text-white">{getInitials(member.name)}</span>
-            {/* Floating role icon */}
             <span className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg dark:bg-white/10">
               <RoleIcon role={member.role} className="h-3.5 w-3.5" />
             </span>
@@ -321,7 +319,6 @@ function CitySection({
   return (
     <section className="relative">
       <div className="relative">
-        {/* City header */}
         <div className="mb-8 flex items-end gap-4">
           <div className="flex-1">
             <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500 dark:text-neutral-400">
@@ -338,7 +335,6 @@ function CitySection({
           </p>
         </div>
 
-        {/* Members grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {city.members.map((member, index) => (
             <MemberCard
@@ -362,23 +358,19 @@ export default async function TeamPage() {
     <>
       <Header />
       <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
-        {/* Hero Section */}
         <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-4 pb-16 pt-28 sm:min-h-[80vh] sm:pb-24">
-          {/* Static gradient background */}
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -top-24 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(124,58,237,0.15),transparent_60%)]" />
             <div className="absolute left-0 top-1/3 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,rgba(217,70,239,0.1),transparent_60%)]" />
             <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.1),transparent_60%)]" />
           </div>
 
-          {/* Huge background text */}
           <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap">
             <span className="text-outline block text-[20vw] font-black leading-none opacity-[0.03] sm:text-[18vw] dark:opacity-[0.02]">
               THE CREW
             </span>
           </div>
 
-          {/* Content */}
           <div className="relative z-10 mx-auto max-w-4xl text-center">
             <p className="mb-6 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.4em] text-brand-600 sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-brand-300">
               <span className="h-px w-8 bg-gradient-to-r from-transparent to-brand-400 sm:w-12" />
@@ -392,11 +384,9 @@ export default async function TeamPage() {
               <span className="block">crew</span>
             </h1>
 
-            {/* Stats */}
             <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("stats")}</p>
           </div>
 
-          {/* Scroll indicator */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
             <div className="flex flex-col items-center gap-2 text-neutral-500">
               <span className="text-xs uppercase tracking-widest">scroll</span>
@@ -405,21 +395,16 @@ export default async function TeamPage() {
           </div>
         </section>
 
-        {/* Cities sections */}
         <div className="relative mx-auto max-w-6xl space-y-24 px-4 pb-24">
-          {/* Prague */}
           {cities[0] && <CitySection city={cities[0]} theme="prague" t={t} />}
 
-          {/* Divider */}
           <div className="relative py-8">
             <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-brand-500/30 to-transparent" />
             <div className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-sm bg-brand-500/50" />
           </div>
 
-          {/* Zlin */}
           {cities[1] && <CitySection city={cities[1]} theme="zlin" t={t} />}
 
-          {/* Join callout */}
           <div className="text-center">
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
               {t("joinCallout")}{" "}
@@ -432,7 +417,6 @@ export default async function TeamPage() {
             </p>
           </div>
 
-          {/* Founder section */}
           <section className="relative mx-auto max-w-3xl">
             <div className="relative overflow-hidden rounded-2xl border border-brand-500/10 bg-gradient-to-br from-brand-500/5 via-transparent to-rose-500/5 px-6 py-8">
               <div className="relative text-center">

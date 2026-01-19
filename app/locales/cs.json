@@ -98,7 +98,10 @@
     "relatedTitle": "Mohlo by tě zajímat",
     "back": "Zpět",
     "epShort": "Ep.",
-    "special": "Speciál"
+    "special": "Speciál",
+    "share": "Sdílet",
+    "copyLink": "Kopírovat odkaz",
+    "copied": "Zkopírováno!"
   },
   "libraryPage": {
     "eyebrow": "Pusť si to zpětně",

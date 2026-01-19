@@ -197,7 +197,11 @@ function RecordingRailCard({
         <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-white/70">
           <Pill
             size="xxs"
-            className="bg-black/5 text-neutral-700 dark:bg-white/10 dark:text-white/80"
+            className={
+              recording.location === "Prague"
+                ? "bg-rose-500/10 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300"
+                : "bg-blue-500/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
+            }
           >
             {recording.location}
           </Pill>
@@ -744,6 +748,8 @@ export function RecordingsCatalog({
           </div>
         ) : null}
 
+        {viewMode === "grid" && <div className="section-divider mb-8" />}
+
         <div
           className={`min-h-[700px] transition-opacity duration-300 ${
             isFiltering ? "opacity-70" : "opacity-100"
@@ -956,7 +962,7 @@ export function RecordingsCatalog({
                         onClick={handleBrowseAll}
                         variant="primary"
                         size="xs"
-                        className="rounded-full bg-neutral-900 text-white shadow-lg shadow-black/20 hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+                        className="rounded-full bg-gradient-to-r from-brand-500 to-rose-500 text-white shadow-lg shadow-brand-500/20"
                       >
                         {labels.view.all}
                         <ChevronRightIcon className="h-3.5 w-3.5" />
@@ -976,7 +982,7 @@ export function RecordingsCatalog({
                         onClick={handleBrowseAll}
                         variant="primary"
                         size="xs"
-                        className="rounded-full bg-neutral-900 text-white shadow-lg shadow-black/20 hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+                        className="rounded-full bg-gradient-to-r from-brand-500 to-rose-500 text-white shadow-lg shadow-brand-500/20"
                       >
                         {labels.view.all}
                         <ChevronRightIcon className="h-3.5 w-3.5" />
@@ -1016,7 +1022,11 @@ export function RecordingsCatalog({
                         <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-neutral-600 dark:text-white/70">
                           <Pill
                             size="xxs"
-                            className="bg-black/5 text-neutral-700 dark:bg-white/10 dark:text-white/80"
+                            className={
+                              recording.location === "Prague"
+                                ? "bg-rose-500/10 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300"
+                                : "bg-blue-500/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
+                            }
                           >
                             {recording.location}
                           </Pill>
