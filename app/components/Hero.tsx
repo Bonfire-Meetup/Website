@@ -25,7 +25,12 @@ function shuffleImages<T>(items: T[]) {
 export async function Hero({
   images,
 }: {
-  images: Array<{ src: string; alt: string; fallbackSrc?: string; fallbackType?: string }>;
+  images: Array<{
+    src: string;
+    alt: string;
+    fallbackSrc?: string;
+    fallbackType?: "image/jpeg" | "image/png";
+  }>;
 }) {
   const t = await getTranslations("hero");
   const uniqueImages = Array.from(new Map(images.map((image) => [image.src, image])).values());
