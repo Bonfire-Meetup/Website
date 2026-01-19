@@ -46,7 +46,7 @@ export async function Hero({
   }));
 
   return (
-    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-[#fafafa] px-4 pb-20 pt-16 transition-colors duration-500 sm:min-h-[110vh] sm:pb-0 sm:pt-20 dark:bg-[#050505]">
+    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-[#fafafa] px-4 pb-20 pt-20 transition-colors duration-500 sm:min-h-[110vh] sm:pb-0 sm:pt-20 dark:bg-[#050505]">
       <HeroBackground images={heroImages} />
 
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(139,92,246,0.1),transparent_60%)] dark:bg-[radial-gradient(circle_at_50%_40%,rgba(139,92,246,0.15),transparent_60%)]" />

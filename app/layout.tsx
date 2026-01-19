@@ -49,6 +49,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang={locale}
       className={`${GeistSans.variable} ${GeistMono.variable}`}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <head>

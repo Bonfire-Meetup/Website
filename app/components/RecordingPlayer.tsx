@@ -235,7 +235,7 @@ export function RecordingPlayer({
 
               <div>
                 <div className="px-5 py-5 sm:px-6 sm:py-6">
-                  <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                  <div className="mb-4 flex flex-col items-start gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="flex-1">
                       <h1 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl lg:text-[1.75rem] dark:text-white">
                         {recording.title}

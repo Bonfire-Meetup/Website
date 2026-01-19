@@ -374,15 +374,15 @@ export function RecordingsCatalog({
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/60 to-transparent dark:from-black/90 dark:via-black/50" />
                   </div>
-                  <div className="absolute inset-0 flex items-end">
-                    <div className="p-8 sm:p-10 lg:p-12">
+                  <div className="relative sm:absolute sm:inset-0 sm:flex sm:items-end">
+                    <div className="p-6 sm:p-10 lg:p-12">
                       <div className="mb-4 flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-neutral-600 dark:text-white/70">
                         <span className="rounded-full bg-black/5 px-3 py-1 text-neutral-700 dark:bg-white/10 dark:text-white/80">
                           {featured.location}
                         </span>
                         <span>{formatDate(featured.date, locale)}</span>
                       </div>
-                      <h2 className="max-w-2xl text-2xl font-semibold leading-tight text-neutral-900 dark:text-white sm:text-3xl lg:text-4xl">
+                      <h2 className="max-w-2xl break-words text-2xl font-semibold leading-tight text-neutral-900 dark:text-white sm:text-3xl lg:text-4xl">
                         {featured.title}
                       </h2>
                       <div className="mt-4 flex flex-col gap-2">
