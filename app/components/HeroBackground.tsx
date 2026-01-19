@@ -5,33 +5,17 @@ import { useEffect, useState } from "react";
 type HeroImage = {
   src: string;
   alt: string;
-  fallbackSrc?: string;
-  fallbackType?: "image/jpeg" | "image/png";
 };
 
 export function HeroBackground({ images }: { images: HeroImage[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [supportsWebp, setSupportsWebp] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !("CSS" in window)) return;
-    setSupportsWebp(
-      CSS.supports(
-        "background-image",
-        'url("data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAQAcJaQAA3AA/vsAAA==")',
-      ),
-    );
-  }, []);
 
   useEffect(() => {
     const nextIndex = (currentIndex + 1) % images.length;
     const nextImage = images[nextIndex];
     const img = new Image();
-    img.src =
-      supportsWebp && nextImage.fallbackSrc
-        ? nextImage.src
-        : (nextImage.fallbackSrc ?? nextImage.src);
-  }, [currentIndex, images, supportsWebp]);
+    img.src = nextImage.src;
+  }, [currentIndex, images]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -49,10 +33,7 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
         const isPrev = index === prevIndex;
         const isVisible = isActive || isPrev;
 
-        const backgroundImage =
-          supportsWebp && image.fallbackSrc
-            ? `url(${image.src})`
-            : `url(${image.fallbackSrc ?? image.src})`;
+        const backgroundImage = `url(${image.src})`;
 
         return (
           <div
