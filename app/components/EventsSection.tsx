@@ -34,9 +34,11 @@ type EventsSectionLabels = {
 export function EventsSection({
   events,
   labels,
+  locale,
 }: {
   events: EventItem[];
   labels: EventsSectionLabels;
+  locale: string;
 }) {
   const [activeEpisode, setActiveEpisode] = useState("all");
 
@@ -115,6 +117,7 @@ export function EventsSection({
                 speakers={event.speakers}
                 links={event.links}
                 labels={labels.eventCard}
+                locale={locale}
               />
             ))}
           </div>

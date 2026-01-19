@@ -1,7 +1,7 @@
 {
   "header": {
     "events": "Events",
-    "recordings": "Recordings",
+    "library": "Library",
     "locations": "Locations",
     "logoAlt": "Bonfire Events logo"
   },
@@ -20,10 +20,14 @@
     },
     "stats": {
       "locations": "Locations",
+      "locationsValue": "2",
       "talks": "Talks",
-      "attendees": "Attendees"
+      "talksValue": "30+",
+      "attendees": "Attendees",
+      "attendeesValue": "500+"
     },
-    "scroll": "Scroll"
+    "scroll": "Scroll",
+    "scrollLabel": "Scroll to events"
   },
   "sections": {
     "events": {
@@ -52,6 +56,7 @@
       "country": "Czech Republic",
       "eventsHosted": "{count} events hosted",
       "sponsorsTitle": "Partners",
+      "websiteLabel": "{name} website",
       "prague": {
         "name": "Bonfire@Prague",
         "description": "Our flagship location in the heart of Czech Republic's capital. Meetups featuring talks from local and international game developers."
@@ -60,6 +65,11 @@
         "name": "Bonfire@Zlin",
         "description": "Bringing the game dev community to Moravia. Regular meetups at UTB university with focus on indie development and student projects."
       }
+    },
+    "talkBanner": {
+      "title": "Do you want to have a talk?",
+      "subtitle": "We're always looking for speakers to share their knowledge and experience.",
+      "cta": "Write us at"
     }
   },
   "events": {
@@ -75,17 +85,21 @@
     "register": "Register via:"
   },
   "recordings": {
-    "backToRecordings": "Back to Recordings",
+    "backToLibrary": "Back to Library",
     "cinema": "Cinema mode",
     "exitCinema": "Exit cinema",
     "locationLabel": "Location: {location}",
     "speaker": "Speaker",
     "date": "Date",
-    "about": "About this talk"
+    "about": "About this talk",
+    "relatedTitle": "Related Talks",
+    "back": "Back",
+    "epShort": "Ep.",
+    "special": "Special"
   },
-  "recordingsPage": {
+  "libraryPage": {
     "eyebrow": "Stream the sessions",
-    "title": "Recordings Library",
+    "title": "Talk Library",
     "subtitle": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
     "filters": {
       "title": "Filters",
@@ -99,7 +113,9 @@
       "prague": "Prague",
       "zlin": "Zlin"
     },
-    "empty": "No recordings match your filters yet."
+    "empty": "No recordings match your filters yet.",
+    "disclaimer": "Bonfire@Prague #1 (The Gathering) and #2 (The Dreamweavers) were not recorded.",
+    "noteLabel": "Note:"
   },
   "footer": {
     "tagline": "Game Dev Meetups in Czech Republic",
@@ -109,15 +125,16 @@
     "youtubeLabel": "YouTube",
     "facebookLabel": "Facebook",
     "discordLabel": "Discord",
-    "copyright": "© {year} Bonfire Events. Made with love for the gamedev community."
+    "copyright": "© {year} Bonfire Events. Made with love for the gamedev community.",
+    "legalLabel": "Code of Conduct & Legal"
   },
   "meta": {
     "siteTitle": "Bonfire Events - Game Dev Meetups",
     "siteDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlin, Czech Republic.",
     "homeTitle": "Bonfire Events - Game Dev Meetups",
     "homeDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlin, Czech Republic. Join us for talks and networking.",
-    "recordingsTitle": "Recordings | Bonfire Events",
-    "recordingsDescription": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
+    "libraryTitle": "Library | Bonfire Events",
+    "libraryDescription": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
     "recordingNotFound": "Recording Not Found",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",
@@ -132,7 +149,8 @@
       "unity",
       "unreal",
       "godot"
-    ]
+    ],
+    "titleSuffix": " | Bonfire"
   },
   "language": {
     "switchTo": "Switch to {language}",

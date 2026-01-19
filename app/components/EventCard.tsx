@@ -32,6 +32,7 @@ interface EventCardProps {
   speakers: Array<{ name: string; topic: string }>;
   links?: EventLinks;
   labels: EventCardLabels;
+  locale: string;
 }
 
 function CalendarIcon({ className }: { className?: string }) {
@@ -129,12 +130,13 @@ export function EventCard({
   registrationUrl,
   speakers,
   labels,
+  locale,
 }: EventCardProps) {
   const isTba = date.trim().toUpperCase() === "TBA";
   const hasSpeakers = speakers.some((speaker) => speaker.name.trim().length > 0);
 
   const formattedDate = !isTba
-    ? new Date(date).toLocaleDateString("en-US", {
+    ? new Date(date).toLocaleDateString(locale, {
         weekday: "long",
         month: "long",
         day: "numeric",

@@ -1,12 +1,13 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { RecordingsCatalog } from "../components/RecordingsCatalog";
 import { getAllRecordings } from "../lib/recordings";
 
-export default async function RecordingsPage() {
-  const t = await getTranslations("recordingsPage");
+export default async function LibraryPage() {
+  const t = await getTranslations("libraryPage");
+  const locale = await getLocale();
   const recordings = getAllRecordings();
 
   const labels = {
@@ -26,6 +27,9 @@ export default async function RecordingsPage() {
       zlin: t("filters.zlin"),
     },
     empty: t("empty"),
+    disclaimer: t("disclaimer"),
+    noteLabel: t("noteLabel"),
+    epShort: (await getTranslations("recordings"))("epShort"),
   };
 
   return (
@@ -37,6 +41,7 @@ export default async function RecordingsPage() {
           title={t("title")}
           subtitle={t("subtitle")}
           labels={labels}
+          locale={locale}
         />
       </main>
       <Footer />
@@ -47,17 +52,17 @@ export default async function RecordingsPage() {
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
   return {
-    title: t("recordingsTitle"),
-    description: t("recordingsDescription"),
+    title: t("libraryTitle"),
+    description: t("libraryDescription"),
     openGraph: {
-      title: t("recordingsTitle"),
-      description: t("recordingsDescription"),
+      title: t("libraryTitle"),
+      description: t("libraryDescription"),
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: t("recordingsTitle"),
-      description: t("recordingsDescription"),
+      title: t("libraryTitle"),
+      description: t("libraryDescription"),
     },
   };
 }

@@ -3,14 +3,15 @@ import pragueRecordingsData from "../data/prague-recordings.json";
 import zlinRecordingsData from "../data/zlin-recordings.json";
 
 export type Recording = {
-  id: string;
+  youtubeId: string;
+  shortId: string;
   slug: string;
   title: string;
-  speaker: string;
+  speaker: string[];
   date: string;
   thumbnail: string;
   url: string;
-  description: string;
+  description: string | null;
   tags: string[];
   location: LocationValue;
   episode?: string;

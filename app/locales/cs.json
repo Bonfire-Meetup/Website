@@ -1,7 +1,7 @@
 {
   "header": {
     "events": "Akce",
-    "recordings": "Záznamy",
+    "library": "Knihovna",
     "locations": "Lokace",
     "logoAlt": "Logo Bonfire Events"
   },
@@ -20,10 +20,14 @@
     },
     "stats": {
       "locations": "Lokace",
+      "locationsValue": "2",
       "talks": "Přednášek",
-      "attendees": "Účastníků"
+      "talksValue": "30+",
+      "attendees": "Účastníků",
+      "attendeesValue": "500+"
     },
-    "scroll": "Roluj dolů"
+    "scroll": "Roluj dolů",
+    "scrollLabel": "Skočit na akce"
   },
   "sections": {
     "events": {
@@ -52,6 +56,7 @@
       "country": "Česká republika",
       "eventsHosted": "Proběhlo {count} akcí",
       "sponsorsTitle": "Partneři",
+      "websiteLabel": "Webové stránky {name}",
       "prague": {
         "name": "Bonfire@Prague",
         "description": "Naše hlavní základna v srdci Prahy. Meetupy s přednáškami od lokálních i zahraničních hostů."
@@ -60,6 +65,11 @@
         "name": "Bonfire@Zlin",
         "description": "Tvoříme gamedev komunitu i na Moravě. Pravidelné akce na UTB se zaměřením na indie scenu a studentské projekty."
       }
+    },
+    "talkBanner": {
+      "title": "Chceš u nás přednášet?",
+      "subtitle": "Pořád hledáme zajímavé speakery, kteří se chtějí podělit o své zkušenosti.",
+      "cta": "Napiš nám na"
     }
   },
   "events": {
@@ -75,17 +85,21 @@
     "register": "Registrace přes:"
   },
   "recordings": {
-    "backToRecordings": "Zpátky na záznamy",
+    "backToLibrary": "Zpátky do knihovny",
     "cinema": "Kino režim",
     "exitCinema": "Zrušit kino",
     "locationLabel": "Místo: {location}",
     "speaker": "Mluvčí",
     "date": "Datum",
-    "about": "O přednášce"
+    "about": "O přednášce",
+    "relatedTitle": "Mohlo by tě zajímat",
+    "back": "Zpět",
+    "epShort": "Ep.",
+    "special": "Speciál"
   },
-  "recordingsPage": {
+  "libraryPage": {
     "eyebrow": "Pusť si to zpětně",
-    "title": "Knihovna záznamů",
+    "title": "Knihovna přednášek",
     "subtitle": "Projdi si kompletní archiv Bonfire přednášek o techu, artu i produkci, plus záznamy z live podcastů a rozhovorů.",
     "filters": {
       "title": "Filtry",
@@ -99,7 +113,9 @@
       "prague": "Praha",
       "zlin": "Zlín"
     },
-    "empty": "Filtruješ moc přísně, nic tu není."
+    "empty": "Filtruješ moc přísně, nic tu není.",
+    "disclaimer": "Akce Bonfire@Prague #1 (The Gathering) a #2 (The Dreamweavers) nebyly nahrávány.",
+    "noteLabel": "Poznámka:"
   },
   "footer": {
     "tagline": "Game Dev Meetupy v Česku",
@@ -109,15 +125,16 @@
     "youtubeLabel": "YouTube",
     "facebookLabel": "Facebook",
     "discordLabel": "Discord",
-    "copyright": "© {year} Bonfire Events. Ukuchtěno s láskou pro gamedev komunitu."
+    "copyright": "© {year} Bonfire Events. Ukuchtěno s láskou pro gamedev komunitu.",
+    "legalLabel": "Právní info & Etický kodex"
   },
   "meta": {
     "siteTitle": "Bonfire Events - Game Dev Meetupy",
     "siteDescription": "Bonfire Events je gamedev komunita pořádající meetupy v Praze a Zlíně.",
     "homeTitle": "Bonfire Events - Game Dev Meetupy",
     "homeDescription": "Bonfire Events je komunita herních vývojářů. Pořádáme meetupy v Praze a Zlíně. Doraž na přednášku a pokec.",
-    "recordingsTitle": "Záznamy | Bonfire Events",
-    "recordingsDescription": "Archiv Bonfire přednášek o techu, artu a produkci, včetně live podcastů.",
+    "libraryTitle": "Knihovna | Bonfire Events",
+    "libraryDescription": "Archiv Bonfire přednášek o techu, artu a produkci, včetně live podcastů.",
     "recordingNotFound": "Záznam nenalezen",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",
@@ -132,7 +149,8 @@
       "unity",
       "unreal",
       "godot"
-    ]
+    ],
+    "titleSuffix": " | Bonfire"
   },
   "language": {
     "switchTo": "Přepnout na {language}",

@@ -1,13 +1,11 @@
 @import "tailwindcss";
 
-/* Configure dark mode to use class-based toggle instead of media query */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  /* Brand Colors - Modern Violet/Neon Theme */
   --color-brand-50: #f5f3ff;
   --color-brand-100: #ede9fe;
   --color-brand-200: #ddd6fe;
@@ -19,13 +17,11 @@
   --color-brand-800: #5b21b6;
   --color-brand-900: #4c1d95;
 
-  /* Fire gradient - Synthwave/Magic Fire */
   --color-fire-start: #7c3aed;
   --color-fire-mid: #d946ef;
   --color-fire-end: #f43f5e;
 }
 
-/* Base styles */
 * {
   box-sizing: border-box;
 }
@@ -34,7 +30,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Browser color-scheme for native elements (scrollbars, form controls) */
 .light {
   color-scheme: light;
 }
@@ -43,7 +38,6 @@ html {
   color-scheme: dark;
 }
 
-/* Premium Glass Effect - Light Mode */
 .glass {
   background: linear-gradient(
     135deg,
@@ -76,7 +70,6 @@ html {
     inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 }
 
-/* Glass Card with Gradient Border */
 .glass-card {
   position: relative;
   background: linear-gradient(
@@ -179,7 +172,6 @@ html {
     inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
-/* Premium Glass Button with Animated Gradient */
 .glass-button {
   position: relative;
   background: linear-gradient(
@@ -261,7 +253,6 @@ html {
   transform: translateY(-1px) scale(1.01);
 }
 
-/* Secondary Glass Button */
 .glass-button-secondary {
   position: relative;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
@@ -303,7 +294,6 @@ html {
   border-color: rgba(139, 92, 246, 0.3);
 }
 
-/* Animated Background Gradient */
 .gradient-bg {
   background: linear-gradient(
     135deg,
@@ -351,7 +341,6 @@ html {
   }
 }
 
-/* Fire Glow Effect - Enhanced */
 .fire-glow {
   position: relative;
 }
@@ -392,7 +381,6 @@ html {
   }
 }
 
-/* Text Gradient - Enhanced */
 .text-gradient {
   display: inline-block;
   background: linear-gradient(
@@ -421,7 +409,6 @@ html {
   }
 }
 
-/* Video Card Thumbnail Overlay */
 .video-overlay {
   position: relative;
 }
@@ -440,7 +427,6 @@ html {
   opacity: 0.7;
 }
 
-/* Play Button - Enhanced */
 .play-button {
   position: absolute;
   top: 50%;
@@ -491,7 +477,6 @@ html {
   color: var(--color-brand-600);
 }
 
-/* Smooth scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -520,7 +505,6 @@ html {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.35) 100%);
 }
 
-/* Location Badge - Enhanced */
 .location-badge {
   display: inline-flex;
   align-items: center;
@@ -561,7 +545,6 @@ html {
   box-shadow: 0 2px 12px rgba(59, 130, 246, 0.15);
 }
 
-/* Section divider with enhanced glow */
 .section-divider {
   height: 1px;
   background: linear-gradient(
@@ -575,7 +558,6 @@ html {
   box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
 }
 
-/* Animated border gradient */
 .border-gradient {
   position: relative;
   border-radius: 24px;
@@ -622,7 +604,6 @@ html {
   }
 }
 
-/* Stat card hover effect */
 .stat-card {
   position: relative;
   padding: 1.5rem;
@@ -648,7 +629,6 @@ html {
   border-color: rgba(139, 92, 246, 0.3);
 }
 
-/* Hero Special Effects */
 .text-outline {
   -webkit-text-fill-color: transparent;
   -webkit-text-stroke: 1px rgba(139, 92, 246, 0.4);
@@ -721,4 +701,52 @@ html {
 
 .animate-rise {
   animation: rise 15s linear infinite;
+}
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.recording-card-enter {
+  animation: cardEnter 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.stagger-1 {
+  animation-delay: 50ms;
+}
+
+.stagger-2 {
+  animation-delay: 100ms;
+}
+
+.stagger-3 {
+  animation-delay: 150ms;
+}
+
+.stagger-4 {
+  animation-delay: 200ms;
+}
+
+.stagger-5 {
+  animation-delay: 250ms;
+}
+
+.stagger-6 {
+  animation-delay: 300ms;
+}
+
+.stagger-7 {
+  animation-delay: 350ms;
+}
+
+.stagger-8 {
+  animation-delay: 400ms;
 }

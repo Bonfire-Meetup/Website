@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 export function HeroBackground({ images }: { images: Array<{ src: string; alt: string }> }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Preload next image for performance
   useEffect(() => {
     const nextIndex = (currentIndex + 1) % images.length;
     const img = new Image();
@@ -15,7 +14,7 @@ export function HeroBackground({ images }: { images: Array<{ src: string; alt: s
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 6000); // 6 seconds per image
+    }, 6000);
     return () => clearInterval(timer);
   }, [images.length]);
 

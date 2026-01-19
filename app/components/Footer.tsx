@@ -102,7 +102,7 @@ export async function Footer() {
             href="/legal"
             className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
           >
-            Code of Conduct & Legal
+            {t("legalLabel")}
           </a>
         </div>
       </div>

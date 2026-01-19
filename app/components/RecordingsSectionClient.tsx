@@ -14,6 +14,7 @@ type Labels = {
   zlin: string;
   empty: string;
   viewAll: string;
+  ariaLocationLabel: string;
 };
 
 function MapPinIcon({ className }: { className?: string }) {
@@ -42,9 +43,11 @@ function MapPinIcon({ className }: { className?: string }) {
 export function RecordingsSectionClient({
   recordings,
   labels,
+  locale,
 }: {
   recordings: Recording[];
   labels: Labels;
+  locale: string;
 }) {
   const [activeFilter, setActiveFilter] = useState<FilterOption>("all");
 
@@ -85,17 +88,19 @@ export function RecordingsSectionClient({
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {filteredRecordings.map((recording) => (
           <VideoCard
-            key={recording.id}
-            id={recording.id}
+            key={recording.shortId}
+            shortId={recording.shortId}
             slug={recording.slug}
             title={recording.title}
             speaker={recording.speaker}
             date={recording.date}
             thumbnail={recording.thumbnail}
             url={recording.url}
-            description={recording.description}
+            description={recording.description ?? ""}
             location={recording.location}
             locationLabel={recording.location === LOCATIONS.PRAGUE ? labels.prague : labels.zlin}
+            ariaLocationLabel={labels.ariaLocationLabel.replace("{location}", recording.location)}
+            locale={locale}
           />
         ))}
       </div>
@@ -107,7 +112,7 @@ export function RecordingsSectionClient({
       )}
 
       <div className="mt-16 text-center">
-        <Link href="/recordings" className="glass-button inline-flex items-center gap-3">
+        <Link href="/library" className="glass-button inline-flex items-center gap-3">
           {labels.viewAll}
         </Link>
       </div>

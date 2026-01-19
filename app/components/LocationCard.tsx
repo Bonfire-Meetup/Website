@@ -147,7 +147,7 @@ export async function LocationCard({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="transition-opacity hover:opacity-80"
-                  aria-label={`${sponsor.name} website`}
+                  aria-label={t("websiteLabel", { name: sponsor.name })}
                 >
                   <Image
                     src={sponsor.logo}

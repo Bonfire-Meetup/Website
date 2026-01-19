@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import type { Recording } from "../lib/recordings";
 import { RecordingsSectionClient } from "./RecordingsSectionClient";
 
@@ -8,6 +8,8 @@ interface RecordingsSectionProps {
 
 export async function RecordingsSection({ recordings }: RecordingsSectionProps) {
   const t = await getTranslations("sections.recordings");
+  const tRec = await getTranslations("recordings");
+  const locale = await getLocale();
 
   return (
     <section className="relative px-4 py-28 sm:px-6 lg:px-8">
@@ -29,7 +31,9 @@ export async function RecordingsSection({ recordings }: RecordingsSectionProps) 
             zlin: t("filter.zlin"),
             empty: t("empty"),
             viewAll: t("viewAll"),
+            ariaLocationLabel: tRec("locationLabel", { location: "{location}" }),
           }}
+          locale={locale}
         />
       </div>
     </section>

@@ -8,3 +8,5 @@ export { RecordingsSection } from "./RecordingsSection";
 export { ThemeToggle } from "./ThemeToggle";
 export { ThemeProvider, useTheme } from "./ThemeProvider";
 export { LanguageToggle } from "./LanguageToggle";
+export { TalkBanner } from "./TalkBanner";
+export { LocationsSection } from "./LocationsSection";
