@@ -4,6 +4,7 @@
     "events": "Events",
     "library": "Library",
     "locations": "Locations",
+    "crew": "Crew",
     "back": "Back",
     "logoAlt": "Bonfire Events logo"
   },
@@ -133,6 +134,49 @@
     "disclaimer": "Bonfire@Prague #1 (The Gathering) and #2 (The Dreamweavers) were not recorded.",
     "noteLabel": "Note:"
   },
+  "teamPage": {
+    "eyebrow": "Team",
+    "title": "Meet the beautiful chaos crew",
+    "subtitle": "We run meetups, wrangle cables, and keep the vibes sharp in Prague and Zlin.",
+    "introEyebrow": "How it works",
+    "introLines": [
+      "No capes. Just checklists, coffee, and a stubborn love for game dev.",
+      "If something goes right, it was planned. If something goes wrong, it was still planned.",
+      "We are allergic to boring events. We bring the spark."
+    ],
+    "stats": "11 people · 2 cities",
+    "crewEyebrow": "Local crew",
+    "cities": [
+      {
+        "name": "Prague",
+        "tagline": "Where it all started.",
+        "members": [
+          { "name": "Jan Hrušovský", "role": "moderator" },
+          { "name": "Michael Petr", "role": "recording" },
+          { "name": "Jakub Hubáček", "role": "photography" },
+          { "name": "Hedvika Jandová", "role": "operations" },
+          { "name": "Ondřej Purchart", "role": "video, audio" },
+          { "name": "Pavel Pilař", "role": "operations, bodyguard" },
+          { "name": "Matouš Márai", "role": "operations" }
+        ]
+      },
+      {
+        "name": "Zlin",
+        "tagline": "Moravian heart, students pulse.",
+        "members": [
+          { "name": "Michael Petr", "role": "recording" },
+          { "name": "Pavel Novák", "role": "operations" },
+          { "name": "Jitka Honsová", "role": "operations, venue" },
+          { "name": "Michal Ščuglík", "role": "operations" }
+        ]
+      }
+    ],
+    "joinCallout": "Want to lend a hand? Reach out at",
+    "founderEyebrow": "A note from the founder",
+    "founderTitle": "Thank you",
+    "founderNote": "Bonfire exists because of **you** - the crew, the speakers, and everyone who shows up. Building a strong community, connecting people, and sharing knowledge is what this is all about. Thank **you** for being part of it.",
+    "founderSignature": "Martin Pernica"
+  },
   "footer": {
     "tagline": "Game Dev Meetups in Czech Republic",
     "brandName": "Bonfire Events",
@@ -142,6 +186,7 @@
     "facebookLabel": "Facebook",
     "discordLabel": "Discord",
     "copyright": "© {year} Bonfire Events. Made with love for the gamedev community.",
+    "crewLabel": "Crew",
     "legalLabel": "Code of Conduct & Legal"
   },
   "meta": {
@@ -151,6 +196,8 @@
     "homeDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlin, Czech Republic. Join us for talks and networking.",
     "libraryTitle": "Library | Bonfire Events",
     "libraryDescription": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
+    "crewTitle": "Crew | Bonfire Events",
+    "crewDescription": "Meet the crew behind Bonfire events in Prague and Zlin.",
     "recordingNotFound": "Recording Not Found",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",
@@ -197,7 +244,7 @@
     },
     "photos": {
       "title": "Media Policy",
-      "content": "We love capturing the energy of our community! By attending our events, you agree that your image may be used in our social media, website, or marketing materials. We respect your privacy—if you would prefer not to be photographed, please inform our staff at check-in. If you would like a specific photo of yourself removed from our platforms, contact us and we will accommodate your request."
+      "content": "We love capturing the energy of our community! By attending our events, you agree that your image may be used in our social media, website, or marketing materials. We respect your privacy-if you would prefer not to be photographed, please inform our staff at check-in. If you would like a specific photo of yourself removed from our platforms, contact us and we will accommodate your request."
     },
     "contact": {
       "title": "Reporting & Support",

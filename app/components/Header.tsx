@@ -46,6 +46,9 @@ export async function Header() {
           <Button href="/#locations" variant="ghost" size="sm">
             {t("locations")}
           </Button>
+          <Button href="/crew" variant="ghost" size="sm">
+            {t("crew")}
+          </Button>
         </nav>
         <div className="flex items-center gap-2 md:justify-self-end">
           <LanguageToggle
@@ -58,10 +61,7 @@ export async function Header() {
             }}
           />
           <ThemeToggle />
-          <Button href="/library" variant="primary" className="hidden md:inline-flex">
-            {t("library")}
-          </Button>
-          <Button href="/library" variant="primary" className="md:hidden">
+          <Button href="/library" variant="primary">
             {t("library")}
           </Button>
         </div>

@@ -4,6 +4,7 @@
     "events": "Akce",
     "library": "Knihovna",
     "locations": "Lokace",
+    "crew": "Crew",
     "back": "Zp\u011bt",
     "logoAlt": "Logo Bonfire Events"
   },
@@ -133,6 +134,49 @@
     "disclaimer": "Akce Bonfire@Prague #1 (The Gathering) a #2 (The Dreamweavers) nebyly nahrávány.",
     "noteLabel": "Poznámka:"
   },
+  "teamPage": {
+    "eyebrow": "Tým",
+    "title": "Poznej krásně chaotickou crew",
+    "subtitle": "Děláme meetupy, hlídáme kabely a držíme vibe v Praze a Zlíně.",
+    "introEyebrow": "Jak to funguje",
+    "introLines": [
+      "Žádné pláště. Jen checklisty, kafe a tvrdohlavá láska ke gamedevu.",
+      "Když se něco povede, bylo to v plánu. Když se něco nepovede, bylo to taky v plánu.",
+      "Na nudné eventy máme alergii. My přinášíme jiskru."
+    ],
+    "stats": "11 lidí · 2 města",
+    "crewEyebrow": "Lokální crew",
+    "cities": [
+      {
+        "name": "Praha",
+        "tagline": "Kde to všechno začalo.",
+        "members": [
+          { "name": "Jan Hrušovský", "role": "moderátor" },
+          { "name": "Michael Petr", "role": "nahrávání" },
+          { "name": "Jakub Hubáček", "role": "fotografie" },
+          { "name": "Hedvika Jandová", "role": "produkce" },
+          { "name": "Ondřej Purchart", "role": "video, audio" },
+          { "name": "Pavel Pilař", "role": "produkce, bodyguard" },
+          { "name": "Matouš Márai", "role": "produkce" }
+        ]
+      },
+      {
+        "name": "Zlín",
+        "tagline": "Moravské srdce a studentský puls.",
+        "members": [
+          { "name": "Michael Petr", "role": "nahrávání" },
+          { "name": "Pavel Novák", "role": "produkce" },
+          { "name": "Jitka Honsová", "role": "produkce, prostor" },
+          { "name": "Michal Ščuglík", "role": "produkce" }
+        ]
+      }
+    ],
+    "joinCallout": "Chceš pomoct? Ozvi se na",
+    "founderEyebrow": "Slovo zakladatele",
+    "founderTitle": "Děkuji",
+    "founderNote": "Bonfire existuje díky **vám** - crew, speakerům i každému, kdo dorazí. Budovat silnou komunitu, propojovat lidi a sdílet znalosti je to, o čem to celé je. **Děkuji**, že jste toho součástí.",
+    "founderSignature": "Martin Pernica"
+  },
   "footer": {
     "tagline": "Game Dev Meetupy v Česku",
     "brandName": "Bonfire Events",
@@ -142,6 +186,7 @@
     "facebookLabel": "Facebook",
     "discordLabel": "Discord",
     "copyright": "© {year} Bonfire Events. Ukuchtěno s láskou pro gamedev komunitu.",
+    "crewLabel": "Crew",
     "legalLabel": "Právní info & Etický kodex"
   },
   "meta": {
@@ -151,6 +196,8 @@
     "homeDescription": "Bonfire Events je komunita herních vývojářů. Pořádáme meetupy v Praze a Zlíně. Doraž na přednášku a pokec.",
     "libraryTitle": "Knihovna | Bonfire Events",
     "libraryDescription": "Archiv Bonfire přednášek o techu, artu a produkci, včetně live podcastů.",
+    "crewTitle": "Crew | Bonfire Events",
+    "crewDescription": "Poznej crew Bonfire v Praze a Zlíně.",
     "recordingNotFound": "Záznam nenalezen",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",

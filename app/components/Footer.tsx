@@ -98,12 +98,21 @@ export async function Footer() {
 
         <div className="mt-4 flex flex-col items-center justify-between gap-4 border-t border-neutral-200 pt-4 text-center text-xs text-neutral-500 sm:flex-row sm:text-left dark:border-white/10 dark:text-neutral-500">
           <p>{t("copyright", { year: new Date().getFullYear() })}</p>
-          <a
-            href="/legal"
-            className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
-          >
-            {t("legalLabel")}
-          </a>
+          <div className="flex items-center gap-4">
+            <a
+              href="/crew"
+              className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
+            >
+              {t("crewLabel")}
+            </a>
+            <span className="text-neutral-300 dark:text-neutral-700">·</span>
+            <a
+              href="/legal"
+              className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
+            >
+              {t("legalLabel")}
+            </a>
+          </div>
         </div>
       </div>
     </footer>
