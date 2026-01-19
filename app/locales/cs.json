@@ -1,8 +1,10 @@
 {
   "header": {
+    "home": "Dom\u016f",
     "events": "Akce",
     "library": "Knihovna",
     "locations": "Lokace",
+    "back": "Zp\u011bt",
     "logoAlt": "Logo Bonfire Events"
   },
   "hero": {

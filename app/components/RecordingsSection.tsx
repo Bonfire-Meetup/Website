@@ -1,7 +1,11 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import dynamic from "next/dynamic";
 import type { Recording } from "../lib/recordings";
 import { getProxiedThumbnailUrl } from "../lib/thumbnail";
-import { RecordingsSectionClient } from "./RecordingsSectionClient";
+
+const RecordingsSectionClient = dynamic(() =>
+  import("./RecordingsSectionClient").then((mod) => mod.RecordingsSectionClient),
+);
 
 interface RecordingsSectionProps {
   recordings: Recording[];

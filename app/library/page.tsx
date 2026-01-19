@@ -1,10 +1,14 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { RecordingsCatalog } from "../components/RecordingsCatalog";
 import { getAllRecordings } from "../lib/recordings";
 import { getProxiedThumbnailUrl } from "../lib/thumbnail";
+
+const RecordingsCatalog = dynamic(() =>
+  import("../components/RecordingsCatalog").then((mod) => mod.RecordingsCatalog),
+);
 
 export default async function LibraryPage() {
   const t = await getTranslations("libraryPage");

@@ -1,10 +1,11 @@
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
-import { EventsSection, type EventItem } from "./components/EventsSection";
+import type { EventItem } from "./components/EventsSection";
 import { LocationsSection } from "./components/LocationsSection";
 import { RecordingsSection } from "./components/RecordingsSection";
 import { TalkBanner } from "./components/TalkBanner";
@@ -12,6 +13,10 @@ import { RecordingsSectionSkeleton, LocationsSectionSkeleton } from "./component
 
 import upcomingEventsData from "./data/upcoming-events.json";
 import { getHeroImages, getHomepageRecordings } from "./lib/data";
+
+const EventsSection = dynamic(() =>
+  import("./components/EventsSection").then((mod) => mod.EventsSection),
+);
 
 export default async function HomePage() {
   const t = await getTranslations();
@@ -45,7 +50,7 @@ export default async function HomePage() {
     <>
       <Header />
 
-      <main className="relative">
+      <main id="top" className="relative">
         <Hero images={heroImages} />
 
         <EventsSection

@@ -1,7 +1,11 @@
 import { notFound } from "next/navigation";
+import dynamic from "next/dynamic";
 import { getLocale, getTranslations } from "next-intl/server";
-import { RecordingPlayer } from "../../components/RecordingPlayer";
 import { getAllRecordings, getRelatedRecordings } from "../../lib/recordings";
+
+const RecordingPlayer = dynamic(() =>
+  import("../../components/RecordingPlayer").then((mod) => mod.RecordingPlayer),
+);
 
 function getWatchSlug(recording: { slug: string; shortId: string }) {
   return `${recording.slug}-${recording.shortId}`;
