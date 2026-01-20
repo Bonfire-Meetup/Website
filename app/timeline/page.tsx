@@ -126,17 +126,15 @@ export default async function TimelinePage() {
                               isRight ? "lg:flex-row" : "lg:flex-row-reverse"
                             }`}
                           >
-                            <div className="relative aspect-[16/10] w-full overflow-hidden lg:w-[220px] xl:w-[260px]">
+                            <div className="relative aspect-[16/9] w-full overflow-hidden sm:aspect-[16/10] lg:w-[220px] xl:w-[260px]">
                               {entry.photosCover ? (
                                 <AlbumImage
                                   src={`${baseUrl}/${entry.photosCover.src}`}
                                   alt={entry.title}
-                                  className="h-full"
+                                  className="h-full w-full"
                                   imgClassName="transition duration-700 group-hover:scale-105"
                                   loading="lazy"
                                   fetchPriority="low"
-                                  width={entry.photosCover.width}
-                                  height={entry.photosCover.height}
                                 />
                               ) : (
                                 <div className="flex h-full w-full items-center justify-center bg-neutral-100 text-sm font-semibold uppercase tracking-[0.3em] text-neutral-400 dark:bg-neutral-900 dark:text-neutral-500">
@@ -164,8 +162,8 @@ export default async function TimelinePage() {
                               </div>
 
                               <div className="space-y-3">
-                                <div className="flex items-start gap-3">
-                                  <AccentBar className="mt-2" />
+                                <div className="flex items-center gap-3">
+                                  <AccentBar />
                                   <h2 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
                                     {entry.title}
                                   </h2>
