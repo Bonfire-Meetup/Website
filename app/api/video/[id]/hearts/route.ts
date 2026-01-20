@@ -25,7 +25,7 @@ const hashValue = (value: string) => {
 
 const getClientHashes = (requestHeaders: Headers) => {
   const forwarded = requestHeaders.get("x-forwarded-for");
-  const ip = forwarded?.split(",")[0]?.trim() || requestHeaders.get("x-real-ip") || "0.0.0.0";
+  const ip = requestHeaders.get("x-real-ip") || forwarded?.split(",")[0]?.trim() || "0.0.0.0";
   const userAgent = requestHeaders.get("user-agent") ?? "";
   const parser = new UAParser(userAgent);
   const { browser, os, device } = parser.getResult();
