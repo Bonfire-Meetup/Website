@@ -5,8 +5,9 @@ import { Footer } from "../components/Footer";
 import { AccentBar } from "../components/AccentBar";
 import { Button } from "../components/Button";
 import { Pill } from "../components/Pill";
+import { AlbumImage } from "../components/AlbumImage";
 import photoAlbums from "../data/photo-albums.json";
-import { episodes, formatEpisodeTitle, buildAlbumSlug } from "../lib/episodes";
+import { episodes, buildAlbumSlug } from "../lib/episodes";
 import { getAllRecordings } from "../lib/recordings";
 
 type Album = {
@@ -36,7 +37,9 @@ function getEpisodeEntries(): EpisodeEntry[] {
   const recordings = getAllRecordings();
   return episodes
     .map((episode) => {
-      const episodeRecordings = recordings.filter((recording) => recording.episodeId === episode.id);
+      const episodeRecordings = recordings.filter(
+        (recording) => recording.episodeId === episode.id,
+      );
       const album = albums.find((item) => item.episodeId === episode.id);
       return {
         id: episode.id,
@@ -125,12 +128,15 @@ export default async function TimelinePage() {
                           >
                             <div className="relative aspect-[16/10] w-full overflow-hidden lg:w-[220px] xl:w-[260px]">
                               {entry.photosCover ? (
-                                <img
+                                <AlbumImage
                                   src={`${baseUrl}/${entry.photosCover.src}`}
                                   alt={entry.title}
-                                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                                  className="h-full"
+                                  imgClassName="transition duration-700 group-hover:scale-105"
                                   loading="lazy"
-                                  decoding="async"
+                                  fetchPriority="low"
+                                  width={entry.photosCover.width}
+                                  height={entry.photosCover.height}
                                 />
                               ) : (
                                 <div className="flex h-full w-full items-center justify-center bg-neutral-100 text-sm font-semibold uppercase tracking-[0.3em] text-neutral-400 dark:bg-neutral-900 dark:text-neutral-500">

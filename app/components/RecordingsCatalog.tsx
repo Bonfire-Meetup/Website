@@ -355,12 +355,22 @@ export function RecordingsCatalog({
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [isFeaturedPaused, setIsFeaturedPaused] = useState(false);
   const [canHover, setCanHover] = useState(false);
+  const [isPageVisible, setIsPageVisible] = useState(true);
 
   useEffect(() => {
     setCanHover(window.matchMedia("(hover: hover)").matches);
   }, []);
+  useEffect(() => {
+    const handleVisibility = () => {
+      setIsPageVisible(document.visibilityState === "visible");
+    };
+    handleVisibility();
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
   const featuredStartRef = useRef(0);
   const featuredRemainingRef = useRef(FEATURED_INTERVAL_MS);
+  const isAutoPlayPaused = isFeaturedPaused || !isPageVisible;
 
   const tagOptions = useMemo(() => {
     const filteredForTags = recordings.filter(
@@ -577,7 +587,7 @@ export function RecordingsCatalog({
   useEffect(() => {
     if (viewMode !== "rows" || featuredCandidates.length <= 1) return;
 
-    if (isFeaturedPaused) {
+    if (isAutoPlayPaused) {
       const elapsed = performance.now() - featuredStartRef.current;
       featuredRemainingRef.current = Math.max(FEATURED_INTERVAL_MS - elapsed, 0);
       return;
@@ -592,7 +602,7 @@ export function RecordingsCatalog({
     }, featuredRemainingRef.current);
 
     return () => clearTimeout(timer);
-  }, [featuredIndex, featuredCandidates.length, viewMode, isFeaturedPaused]);
+  }, [featuredIndex, featuredCandidates.length, viewMode, isAutoPlayPaused]);
 
   const tagRows = useMemo(() => {
     if (activeTag !== "all") {
@@ -926,7 +936,7 @@ export function RecordingsCatalog({
                                     isActive
                                       ? {
                                           animationDuration: `${FEATURED_INTERVAL_MS}ms`,
-                                          animationPlayState: isFeaturedPaused
+                                          animationPlayState: isAutoPlayPaused
                                             ? "paused"
                                             : "running",
                                         }

@@ -846,6 +846,23 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .gradient-bg,
+  .dark .gradient-bg {
+    animation: none;
+  }
+
+  .fire-glow::before,
+  .text-gradient,
+  .border-gradient::before,
+  .animate-float,
+  .animate-float-delayed,
+  .animate-float-slow,
+  .animate-rise,
+  .recording-card-enter,
+  .hero-progress-fill {
+    animation: none;
+  }
+
   .hero-ken-burns-1,
   .hero-ken-burns-2,
   .hero-ken-burns-3,
@@ -853,4 +870,8 @@ html {
     animation: none;
     transform: scale(1.05);
   }
+}
+
+[data-motion="paused"] * {
+  animation-play-state: paused !important;
 }

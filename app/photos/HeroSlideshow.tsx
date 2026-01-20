@@ -68,6 +68,10 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     prefersReducedMotion: false,
   });
   const [loadedIndices, setLoadedIndices] = useState<Set<number>>(() => new Set());
+  const [isInView, setIsInView] = useState(true);
+  const [isPageVisible, setIsPageVisible] = useState(true);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const transitionTimeoutRef = useRef<number | null>(null);
 
   const currentIndexRef = useRef(state.currentIndex);
   currentIndexRef.current = state.currentIndex;
@@ -93,6 +97,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
 
   useEffect(() => {
     if (!state.ready || images.length <= 1 || state.prefersReducedMotion) return;
+    if (!isInView || !isPageVisible) return;
 
     const getNextRandomIndex = () => {
       let next = Math.floor(Math.random() * images.length);
@@ -106,13 +111,38 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
       const next = getNextRandomIndex();
       dispatch({ type: "START_TRANSITION", nextIndex: next, nextDirection: getRandomDirection() });
 
-      setTimeout(() => {
+      transitionTimeoutRef.current = window.setTimeout(() => {
         dispatch({ type: "COMPLETE_TRANSITION" });
       }, 2000);
     }, interval);
 
-    return () => clearInterval(timer);
-  }, [state.ready, images.length, interval, state.prefersReducedMotion]);
+    return () => {
+      clearInterval(timer);
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+        transitionTimeoutRef.current = null;
+      }
+    };
+  }, [state.ready, images.length, interval, state.prefersReducedMotion, isInView, isPageVisible]);
+
+  useEffect(() => {
+    const handleVisibility = () => {
+      setIsPageVisible(document.visibilityState === "visible");
+    };
+    handleVisibility();
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting), {
+      rootMargin: "200px",
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   if (images.length === 0) return null;
 
@@ -136,12 +166,14 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
 
   if (state.prefersReducedMotion) {
     return (
-      <div className="absolute inset-0 overflow-hidden">
+      <div ref={containerRef} className="absolute inset-0 overflow-hidden">
         <img
           src={currentImage.src}
           alt={currentImage.alt}
           className="h-full w-full object-cover"
           onLoad={() => markLoaded(state.currentIndex)}
+          loading="eager"
+          fetchPriority="high"
         />
         <div
           className={`pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-200/80 via-white/70 to-neutral-200/60 transition-opacity duration-700 dark:from-neutral-900/80 dark:via-neutral-950/70 dark:to-neutral-900/60 ${
@@ -153,7 +185,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   }
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div ref={containerRef} className="absolute inset-0 overflow-hidden">
       <div
         className={`pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-200/80 via-white/70 to-neutral-200/60 transition-opacity duration-700 dark:from-neutral-900/80 dark:via-neutral-950/70 dark:to-neutral-900/60 ${
           isCurrentLoaded ? "opacity-0" : "opacity-100"
@@ -170,6 +202,8 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
           alt={currentImage.alt}
           className={`h-full w-full object-cover hero-ken-burns-${state.currentDirection}`}
           onLoad={() => markLoaded(state.currentIndex)}
+          loading="eager"
+          fetchPriority="high"
         />
       </div>
 
@@ -185,6 +219,8 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
             alt={nextImage.alt}
             className={`h-full w-full object-cover hero-ken-burns-${state.nextDirection}`}
             onLoad={() => markLoaded(nextIndex as number)}
+            loading="lazy"
+            fetchPriority="low"
           />
         </div>
       )}
