@@ -45,6 +45,7 @@ User identification: SHA256 hash of IP + User-Agent (no auth required).
 Homepage "Trending" section uses ISR (revalidate: 1 hour).
 
 Scoring algorithm:
+
 - Likes: `count × 3`
 - Recency: +10 (≤30d), +7 (≤90d), +4 (≤180d), +2 (≤365d)
 - Featured: +3

@@ -41,10 +41,7 @@ export async function Header() {
             {t("home")}
           </Button>
           <Button href="/#events" variant="ghost" size="sm">
-            {t("events")}
-          </Button>
-          <Button href="/#locations" variant="ghost" size="sm">
-            {t("locations")}
+            {t("upcoming")}
           </Button>
           <Button href="/crew" variant="ghost" size="sm">
             {t("crew")}

@@ -1,9 +1,8 @@
 {
   "header": {
     "home": "Home",
-    "events": "Events",
+    "upcoming": "Upcoming",
     "library": "Library",
-    "locations": "Locations",
     "crew": "Crew",
     "back": "Back",
     "logoAlt": "Bonfire Events logo"
