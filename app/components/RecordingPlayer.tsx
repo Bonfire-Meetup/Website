@@ -176,20 +176,28 @@ export function RecordingPlayer({
     setIsHearting(true);
     setHeartPulse(true);
     setTimeout(() => setHeartPulse(false), 550);
+
+    const prevHearted = hasHearted;
+    const prevCount = heartCount;
+    const adding = !hasHearted;
+
+    setHasHearted(adding);
+    setHeartCount((c) => (c ?? 0) + (adding ? 1 : -1));
+
     try {
-      const response = await fetch(`/api/video/${recording.shortId}/hearts`, {
-        method: hasHearted ? "DELETE" : "POST",
+      const res = await fetch(`/api/video/${recording.shortId}/hearts`, {
+        method: adding ? "POST" : "DELETE",
       });
-      if (!response.ok) return;
-      const data = (await response.json()) as { count: number; added?: boolean; removed?: boolean };
-      setHeartCount(data.count ?? heartCount ?? 0);
-      if (data.added) {
-        setHasHearted(true);
-      } else if (data.removed) {
-        setHasHearted(false);
+      if (!res.ok) {
+        setHasHearted(prevHearted);
+        setHeartCount(prevCount);
+        return;
       }
+      const { count } = (await res.json()) as { count: number };
+      setHeartCount(count);
     } catch {
-      setHeartPulse(false);
+      setHasHearted(prevHearted);
+      setHeartCount(prevCount);
     } finally {
       setIsHearting(false);
     }
@@ -236,7 +244,7 @@ export function RecordingPlayer({
                   } ${heartPulse ? "heart-pop" : ""} ${isHearting ? "opacity-80" : ""}`}
                 >
                   <HeartIcon className={`h-5 w-5 ${hasHearted ? "fill-white stroke-white" : ""}`} />
-                    <span className="uppercase tracking-[0.2em] text-[10px]">{labels.like}</span>
+                  <span className="uppercase tracking-[0.2em] text-[10px]">{labels.like}</span>
                   <span className="tabular-nums text-base">{heartCount ?? "—"}</span>
                 </button>
 
