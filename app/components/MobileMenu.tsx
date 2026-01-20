@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,11 +19,14 @@ type MobileMenuProps = {
 export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isRendered, setIsRendered] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const animationMs = 220;
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isActiveLink = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href.startsWith("/#")) return pathname === "/";
+    if (href.startsWith("/#")) return false;
     return pathname.startsWith(href);
   };
 
@@ -33,6 +36,31 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
 
   useEffect(() => {
     if (isOpen) {
+      if (closeTimer.current) {
+        clearTimeout(closeTimer.current);
+        closeTimer.current = null;
+      }
+      setIsRendered(true);
+      return;
+    }
+
+    if (!isRendered) return;
+
+    closeTimer.current = setTimeout(() => {
+      setIsRendered(false);
+      closeTimer.current = null;
+    }, animationMs);
+
+    return () => {
+      if (closeTimer.current) {
+        clearTimeout(closeTimer.current);
+        closeTimer.current = null;
+      }
+    };
+  }, [isOpen, isRendered, animationMs]);
+
+  useEffect(() => {
+    if (isRendered) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -40,27 +68,33 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isOpen]);
+  }, [isRendered]);
+
+  const closeMenu = () => setIsOpen(false);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false);
+      if (e.key === "Escape") closeMenu();
     };
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
 
   const menuContent =
-    isOpen && mounted
+    isRendered && mounted
       ? createPortal(
           <>
             <div
-              className="fixed inset-0 bg-black/60"
+              className={`fixed inset-0 bg-black/60 transition-opacity duration-200 ease-out motion-reduce:transition-none ${
+                isOpen ? "opacity-100" : "opacity-0"
+              }`}
               style={{ zIndex: 9998 }}
-              onClick={() => setIsOpen(false)}
+              onClick={closeMenu}
             />
             <div
-              className="fixed top-0 right-0 bottom-0 w-64 bg-white shadow-2xl dark:bg-neutral-900"
+              className={`fixed top-0 right-0 bottom-0 w-64 bg-white shadow-2xl transition duration-200 ease-out motion-reduce:transition-none ${
+                isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+              } dark:bg-neutral-900`}
               style={{ zIndex: 9999 }}
             >
               <div className="flex h-14 items-center justify-between px-4">
@@ -69,7 +103,7 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
                 </span>
                 <button
                   type="button"
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeMenu}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-neutral-700 hover:bg-black/5 dark:text-neutral-300 dark:hover:bg-white/10"
                   aria-label={closeLabel}
                 >
@@ -90,7 +124,7 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
                     <li key={link.href}>
                       <Link
                         href={link.href}
-                        onClick={() => setIsOpen(false)}
+                        onClick={closeMenu}
                         className={`block rounded-lg px-3 py-2.5 text-sm font-medium ${
                           isActiveLink(link.href)
                             ? "bg-brand-500/10 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400"
@@ -113,7 +147,10 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
     <>
       <button
         type="button"
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsRendered(true);
+          requestAnimationFrame(() => setIsOpen(true));
+        }}
         className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-700 hover:bg-black/5 md:hidden dark:text-neutral-300 dark:hover:bg-white/10"
         aria-label={menuLabel}
       >
