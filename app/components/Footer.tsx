@@ -66,6 +66,13 @@ export async function Footer() {
             </a>
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <a
+              href="/press"
+              className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
+            >
+              {t("pressLabel")}
+            </a>
+            <span className="text-neutral-300 dark:text-neutral-700">·</span>
+            <a
               href="/legal"
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >

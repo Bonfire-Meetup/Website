@@ -108,6 +108,89 @@
     "returnToPlayer": "Return to player",
     "closePlayer": "Close player"
   },
+  "press": {
+    "eyebrow": "Media",
+    "title": "Press Kit",
+    "subtitle": "Download logos, grab brand colors, and reference usage guidelines.",
+    "about": {
+      "title": "About Bonfire",
+      "body": "Bonfire Events is a Czech game dev community that runs meetups in Prague and Zlin. Bonfire curates talks, panels, and networking nights connecting professionals, students, and indie creators. Bonfire is powered by volunteers and partners who believe in sharing craft and building a welcoming scene.",
+      "copy": "Copy about text",
+      "copied": "Copied"
+    },
+    "stats": {
+      "title": "Key Stats",
+      "subtitle": "Snapshot numbers for quick reference.",
+      "firstPragueLabel": "First Prague event",
+      "firstPragueDate": "THU, NOV 9, 2023",
+      "firstZlinLabel": "First Zlin event",
+      "firstZlinDate": "MON, DEC 4, 2023"
+    },
+    "logos": {
+      "title": "Logo Downloads",
+      "subtitle": "Use the right logo for light or dark backgrounds and download in PNG or SVG.",
+      "brands": {
+        "bonfire": "Bonfire",
+        "prague": "Bonfire Prague",
+        "zlin": "Bonfire Zlin"
+      },
+      "variants": {
+        "black": "Black",
+        "gray": "Gray",
+        "white": "White"
+      },
+      "downloadPng": "PNG",
+      "downloadSvg": "SVG",
+      "downloadAllTitle": "Download All Logos",
+      "downloadAllSubtitle": "Get every logo variant in one zip.",
+      "downloadAllCta": "Download bonfire-press-kit.zip"
+    },
+    "colors": {
+      "title": "Brand Colors",
+      "subtitle": "Primary brand and flame accents.",
+      "copy": "Copy hex",
+      "copied": "Copied",
+      "brand": "Bonfire Violet",
+      "brandDeep": "Deep Violet",
+      "fireMid": "Fire Magenta",
+      "fireEnd": "Fire Coral"
+    },
+    "guidelines": {
+      "title": "Usage Guidelines",
+      "subtitle": "Keep the Bonfire mark clean and consistent.",
+      "doTitle": "Do",
+      "dontTitle": "Don't",
+      "do1": "Use the full logo with generous clear space around it.",
+      "do2": "Choose black or gray logos on light backgrounds and white on dark.",
+      "do3": "Keep the logo proportions and colors intact.",
+      "dont1": "Stretch, crop, rotate, or add effects to the logo.",
+      "dont2": "Place the logo on busy photography or low-contrast backgrounds.",
+      "dont3": "Recolor or rebuild the logo with different typefaces."
+    },
+    "brandName": {
+      "title": "Brand Name",
+      "subtitle": "Keep the name clear and consistent in editorial text.",
+      "doTitle": "Do",
+      "dontTitle": "Don't",
+      "do1": "Use “Bonfire Events” on first reference.",
+      "do2": "Shorten to “Bonfire” after the first mention.",
+      "do3": "Keep capitalization as shown.",
+      "dont1": "Use just “Bonfire” as the first mention.",
+      "dont2": "Write “Bonfire events” or “bonfire Events”.",
+      "dont3": "Add extra descriptors like “Bonfire meetup group”."
+    },
+    "photos": {
+      "title": "Event Photos",
+      "body": "Browse high-energy photos from our meetups. Albums are currently hosted on Facebook.",
+      "cta": "See the photo albums",
+      "link": "https://www.facebook.com/bonfire.meetup/photos_albums"
+    },
+    "help": {
+      "title": "Need Something Else?",
+      "body": "Email us at",
+      "email": "hello+press@bnf.events"
+    }
+  },
   "libraryPage": {
     "eyebrow": "Stream the sessions",
     "title": "Talk Library",
@@ -195,6 +278,7 @@
     "discordLabel": "Discord",
     "copyright": "© {year} Bonfire Events. Made with love for the gamedev community.",
     "crewLabel": "Crew",
+    "pressLabel": "Press",
     "legalLabel": "Code of Conduct & Legal"
   },
   "meta": {
@@ -206,6 +290,8 @@
     "libraryDescription": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
     "crewTitle": "Crew | Bonfire Events",
     "crewDescription": "Meet the crew behind Bonfire events in Prague and Zlin.",
+    "pressTitle": "Press Kit | Bonfire Events",
+    "pressDescription": "Download logos, brand colors, and usage guidelines for Bonfire Events.",
     "recordingNotFound": "Recording Not Found",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",

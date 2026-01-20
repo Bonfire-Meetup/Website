@@ -20,7 +20,7 @@ type ButtonProps = {
 };
 
 const baseClasses =
-  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition";
+  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-semibold transition";
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:

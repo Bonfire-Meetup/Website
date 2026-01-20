@@ -108,6 +108,89 @@
     "returnToPlayer": "Zpět k přehrávači",
     "closePlayer": "Zavřít přehrávač"
   },
+  "press": {
+    "eyebrow": "Média",
+    "title": "Press kit",
+    "subtitle": "Stáhněte loga, brand barvy a pravidla použití.",
+    "about": {
+      "title": "O Bonfire",
+      "body": "Bonfire Events je česká game dev komunita, která pořádá meetupy v Praze a Zlíně. Bonfire připravuje přednášky, panely a networkingové večery pro profíky, studenty i indie tvůrce. Bonfire stojí na dobrovolnících a partnerech, kteří věří ve sdílení know-how a přátelskou scénu.",
+      "copy": "Kopírovat text",
+      "copied": "Zkopírováno"
+    },
+    "stats": {
+      "title": "Klíčová čísla",
+      "subtitle": "Rychlý přehled pro reference.",
+      "firstPragueLabel": "První akce v Praze",
+      "firstPragueDate": "ČTV, 9. 11. 2023",
+      "firstZlinLabel": "První akce ve Zlíně",
+      "firstZlinDate": "PON, 4. 12. 2023"
+    },
+    "logos": {
+      "title": "Stažení log",
+      "subtitle": "Vyberte správné logo pro světlé nebo tmavé pozadí a stáhněte PNG nebo SVG.",
+      "brands": {
+        "bonfire": "Bonfire",
+        "prague": "Bonfire Praha",
+        "zlin": "Bonfire Zlín"
+      },
+      "variants": {
+        "black": "Černé",
+        "gray": "Šedé",
+        "white": "Bílé"
+      },
+      "downloadPng": "PNG",
+      "downloadSvg": "SVG",
+      "downloadAllTitle": "Stáhnout všechna loga",
+      "downloadAllSubtitle": "Všechny varianty log v jednom zipu.",
+      "downloadAllCta": "Stáhnout bonfire-press-kit.zip"
+    },
+    "colors": {
+      "title": "Brand barvy",
+      "subtitle": "Primární barva a ohnivé akcenty.",
+      "copy": "Kopírovat hex",
+      "copied": "Zkopírováno",
+      "brand": "Bonfire fialová",
+      "brandDeep": "Tmavá fialová",
+      "fireMid": "Ohnivá magenta",
+      "fireEnd": "Ohnivý korál"
+    },
+    "guidelines": {
+      "title": "Pravidla použití",
+      "subtitle": "Udržujte logo čisté a konzistentní.",
+      "doTitle": "Dělejte",
+      "dontTitle": "Nedělejte",
+      "do1": "Používejte celé logo s dostatečným ochranným prostorem kolem.",
+      "do2": "Na světlé pozadí použijte černé nebo šedé logo, na tmavém bílé.",
+      "do3": "Zachovejte proporce a barvy loga.",
+      "dont1": "Nenatahujte, neotáčejte, neořezávejte ani nepřidávejte efekty.",
+      "dont2": "Nedávejte logo na rušné fotky nebo pozadí s nízkým kontrastem.",
+      "dont3": "Nepřebarvujte ani nepřepisujte typografii loga."
+    },
+    "brandName": {
+      "title": "Název značky",
+      "subtitle": "Udržujte název jasný a konzistentní v redakčních textech.",
+      "doTitle": "Dělejte",
+      "dontTitle": "Nedělejte",
+      "do1": "Na první zmínku používejte „Bonfire Events“.",
+      "do2": "Po první zmínce zkracujte na „Bonfire“.",
+      "do3": "Dodržujte stejné velké a malé písmo.",
+      "dont1": "Nepoužívejte „Bonfire“ hned při první zmínce.",
+      "dont2": "Nepište „Bonfire events“ nebo „bonfire Events“.",
+      "dont3": "Nepřidávejte popisky typu „Bonfire meetup skupina“."
+    },
+    "photos": {
+      "title": "Fotky z akcí",
+      "body": "Prohlédněte si fotky z našich meetupů. Alba jsou aktuálně na Facebooku.",
+      "cta": "Zobrazit alba",
+      "link": "https://www.facebook.com/bonfire.meetup/photos_albums"
+    },
+    "help": {
+      "title": "Potřebujete něco dalšího?",
+      "body": "Napište nám na",
+      "email": "hello+press@bnf.events"
+    }
+  },
   "libraryPage": {
     "eyebrow": "Pusť si to zpětně",
     "title": "Knihovna přednášek",
@@ -195,6 +278,7 @@
     "discordLabel": "Discord",
     "copyright": "© {year} Bonfire Events. Ukuchtěno s láskou pro gamedev komunitu.",
     "crewLabel": "Crew",
+    "pressLabel": "Press",
     "legalLabel": "Právní info & Etický kodex"
   },
   "meta": {
@@ -206,6 +290,8 @@
     "libraryDescription": "Archiv Bonfire přednášek o techu, artu a produkci, včetně live podcastů.",
     "crewTitle": "Crew | Bonfire Events",
     "crewDescription": "Poznej crew Bonfire v Praze a Zlíně.",
+    "pressTitle": "Press kit | Bonfire Events",
+    "pressDescription": "Stáhněte loga, brand barvy a pravidla použití pro Bonfire Events.",
     "recordingNotFound": "Záznam nenalezen",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",
