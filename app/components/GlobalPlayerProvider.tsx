@@ -55,7 +55,13 @@ const useMediaQuery = (query: string) => {
   return matches;
 };
 
-export function GlobalPlayerProvider({ children }: { children: React.ReactNode }) {
+export function GlobalPlayerProvider({
+  children,
+  labels,
+}: {
+  children: React.ReactNode;
+  labels: { returnToPlayer: string; closePlayer: string; exitCinema: string };
+}) {
   const [video, setVideo] = useState<VideoInfo | null>(null);
   const [inlineElement, setInlineElement] = useState<HTMLDivElement | null>(null);
   const [inlineRect, setInlineRect] = useState<InlineRect | null>(null);
@@ -165,7 +171,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
                 type="button"
                 onClick={() => setCinemaMode(false)}
                 className="fixed right-6 top-6 z-[90] inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white/80 backdrop-blur-sm transition hover:bg-white/20 hover:text-white"
-                aria-label="Exit theater"
+                aria-label={labels.exitCinema}
               >
                 <CloseIcon className="h-5 w-5" />
               </button>
@@ -180,13 +186,13 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
                 href={video.watchUrl}
                 className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-neutral-700 shadow-lg ring-1 ring-black/5 transition dark:bg-neutral-950/90 dark:text-neutral-200 dark:ring-white/10"
               >
-                Return to player
+                {labels.returnToPlayer}
               </Link>
               <button
                 type="button"
                 onClick={() => setVideo(null)}
                 className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white/80 shadow-lg transition cursor-pointer hover:bg-black/90 hover:text-white"
-                aria-label="Close player"
+                aria-label={labels.closePlayer}
               >
                 <CloseIcon className="h-4 w-4" />
               </button>

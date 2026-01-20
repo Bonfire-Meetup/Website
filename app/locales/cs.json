@@ -102,7 +102,10 @@
     "special": "Speciál",
     "share": "Sdílet",
     "copyLink": "Kopírovat odkaz",
-    "copied": "Zkopírováno!"
+    "copied": "Zkopírováno!",
+    "like": "Líbí se mi",
+    "returnToPlayer": "Zpět k přehrávači",
+    "closePlayer": "Zavřít přehrávač"
   },
   "libraryPage": {
     "eyebrow": "Pusť si to zpětně",

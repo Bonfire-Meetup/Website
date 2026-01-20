@@ -66,6 +66,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
     backToLibrary: t("backToLibrary"),
     exitCinema: t("exitCinema"),
     cinema: t("cinema"),
+    like: t("like"),
     nextUp: t("nextUp"),
     speaker: t("speaker"),
     date: t("date"),

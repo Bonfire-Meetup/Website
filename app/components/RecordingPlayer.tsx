@@ -29,6 +29,7 @@ interface RecordingPlayerLabels {
   backToLibrary: string;
   exitCinema: string;
   cinema: string;
+  like: string;
   nextUp: string;
   speaker: string;
   date: string;
@@ -235,7 +236,7 @@ export function RecordingPlayer({
                   } ${heartPulse ? "heart-pop" : ""} ${isHearting ? "opacity-80" : ""}`}
                 >
                   <HeartIcon className={`h-5 w-5 ${hasHearted ? "fill-white stroke-white" : ""}`} />
-                  <span className="uppercase tracking-[0.2em] text-[10px]">Heart</span>
+                    <span className="uppercase tracking-[0.2em] text-[10px]">{labels.like}</span>
                   <span className="tabular-nums text-base">{heartCount ?? "—"}</span>
                 </button>
 

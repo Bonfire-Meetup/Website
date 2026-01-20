@@ -102,7 +102,10 @@
     "special": "Special",
     "share": "Share",
     "copyLink": "Copy link",
-    "copied": "Copied!"
+    "copied": "Copied!",
+    "like": "Like",
+    "returnToPlayer": "Return to player",
+    "closePlayer": "Close player"
   },
   "libraryPage": {
     "eyebrow": "Stream the sessions",

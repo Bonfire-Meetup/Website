@@ -45,6 +45,7 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
+  const t = await getTranslations("recordings");
 
   return (
     <html
@@ -73,7 +74,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased transition-colors duration-300 dark:bg-neutral-950 dark:text-neutral-100">
         <ThemeProvider>
-          <GlobalPlayerProvider>
+          <GlobalPlayerProvider
+            labels={{
+              returnToPlayer: t("returnToPlayer"),
+              closePlayer: t("closePlayer"),
+              exitCinema: t("exitCinema"),
+            }}
+          >
             <div className="relative flex min-h-screen flex-col">{children}</div>
           </GlobalPlayerProvider>
         </ThemeProvider>
