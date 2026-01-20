@@ -78,19 +78,19 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
     }
     const [{ count }] =
-      (await sql`select count(*)::int as count from video_hearts where video_id = ${videoId}`) as {
+      (await sql`select count(*)::int as count from video_likes where video_id = ${videoId}`) as {
         count: number;
       }[];
     const [{ exists }] =
-      (await sql`select exists(select 1 from video_hearts where video_id = ${videoId} and ip_hash = ${ipHash} and ua_hash = ${uaHash}) as exists`) as {
+      (await sql`select exists(select 1 from video_likes where video_id = ${videoId} and ip_hash = ${ipHash} and ua_hash = ${uaHash}) as exists`) as {
         exists: boolean;
       }[];
     return NextResponse.json(
-      { count, hasHearted: exists },
+      { count, hasLiked: exists },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch {
-    return NextResponse.json({ error: "Failed to load hearts" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to load likes" }, { status: 500 });
   }
 }
 
@@ -111,16 +111,16 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
     }
     const inserted =
-      (await sql`insert into video_hearts (video_id, ip_hash, ua_hash) values (${videoId}, ${ipHash}, ${uaHash}) on conflict do nothing returning video_id`) as {
+      (await sql`insert into video_likes (video_id, ip_hash, ua_hash) values (${videoId}, ${ipHash}, ${uaHash}) on conflict do nothing returning video_id`) as {
         video_id: string;
       }[];
     const [{ count }] =
-      (await sql`select count(*)::int as count from video_hearts where video_id = ${videoId}`) as {
+      (await sql`select count(*)::int as count from video_likes where video_id = ${videoId}`) as {
         count: number;
       }[];
     return NextResponse.json({ count, added: inserted.length > 0 });
   } catch {
-    return NextResponse.json({ error: "Failed to save heart" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to save like" }, { status: 500 });
   }
 }
 
@@ -141,15 +141,15 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
     }
     const removed =
-      (await sql`delete from video_hearts where video_id = ${videoId} and ip_hash = ${ipHash} and ua_hash = ${uaHash} returning video_id`) as {
+      (await sql`delete from video_likes where video_id = ${videoId} and ip_hash = ${ipHash} and ua_hash = ${uaHash} returning video_id`) as {
         video_id: string;
       }[];
     const [{ count }] =
-      (await sql`select count(*)::int as count from video_hearts where video_id = ${videoId}`) as {
+      (await sql`select count(*)::int as count from video_likes where video_id = ${videoId}`) as {
         count: number;
       }[];
     return NextResponse.json({ count, removed: removed.length > 0 });
   } catch {
-    return NextResponse.json({ error: "Failed to remove heart" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to remove like" }, { status: 500 });
   }
 }

@@ -14,7 +14,7 @@ import {
   CheckIcon,
   CinemaIcon,
   FacebookIcon,
-  HeartIcon,
+  FireIcon,
   LinkIcon,
   LinkedInIcon,
   MapPinIcon,
@@ -111,12 +111,12 @@ export function RecordingPlayer({
     let isActive = true;
     const loadHearts = async () => {
       try {
-        const response = await fetch(`/api/video/${recording.shortId}/hearts`);
+        const response = await fetch(`/api/video/${recording.shortId}/likes`);
         if (!response.ok) return;
-        const data = (await response.json()) as { count: number; hasHearted: boolean };
+        const data = (await response.json()) as { count: number; hasLiked: boolean };
         if (isActive) {
           setHeartCount(data.count ?? 0);
-          setHasHearted(Boolean(data.hasHearted));
+          setHasHearted(Boolean(data.hasLiked));
         }
       } catch {}
     };
@@ -185,7 +185,7 @@ export function RecordingPlayer({
     setHeartCount((c) => (c ?? 0) + (adding ? 1 : -1));
 
     try {
-      const res = await fetch(`/api/video/${recording.shortId}/hearts`, {
+      const res = await fetch(`/api/video/${recording.shortId}/likes`, {
         method: adding ? "POST" : "DELETE",
       });
       if (!res.ok) {
@@ -239,11 +239,11 @@ export function RecordingPlayer({
                   disabled={isHearting}
                   className={`inline-flex items-center gap-3 rounded-full px-5 py-2.5 text-sm font-semibold shadow-lg transition-all cursor-pointer ${
                     hasHearted
-                      ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-rose-500/30"
-                      : "bg-white text-rose-600 ring-1 ring-rose-200/70 hover:-translate-y-0.5 hover:shadow-rose-500/20 dark:bg-white/5 dark:text-rose-300 dark:ring-white/10"
+                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-orange-500/30"
+                      : "bg-white text-orange-600 ring-1 ring-orange-200/70 hover:-translate-y-0.5 hover:shadow-orange-500/20 dark:bg-white/5 dark:text-orange-300 dark:ring-white/10"
                   } ${heartPulse ? "heart-pop" : ""} ${isHearting ? "opacity-80" : ""}`}
                 >
-                  <HeartIcon className={`h-5 w-5 ${hasHearted ? "fill-white stroke-white" : ""}`} />
+                  <FireIcon className={`h-5 w-5 ${hasHearted ? "fill-white stroke-white" : ""}`} />
                   <span className="uppercase tracking-[0.2em] text-[10px]">{labels.like}</span>
                   <span className="tabular-nums text-base">{heartCount ?? "—"}</span>
                 </button>
@@ -319,54 +319,52 @@ export function RecordingPlayer({
 
               <div>
                 <div className="px-5 py-5 sm:px-6 sm:py-6">
-                  <div className="mb-4 flex flex-col items-start gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-start gap-3">
-                        <AccentBar className="mt-1" />
-                        <h1 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl lg:text-[1.75rem] dark:text-white">
-                          {recording.title}
-                        </h1>
-                      </div>
+                  <div className="mb-4 flex items-start gap-3">
+                    <AccentBar className="mt-1" />
+                    <h1 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl lg:text-[1.75rem] dark:text-white">
+                      {recording.title}
+                    </h1>
+                  </div>
+
+                  <div className="mb-5 flex flex-wrap items-center justify-between gap-2 text-xs text-neutral-600 dark:text-neutral-300">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {recording.speaker.map((name) => (
+                        <Pill
+                          key={name}
+                          size="sm"
+                          className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10"
+                        >
+                          <UserIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
+                          {name}
+                        </Pill>
+                      ))}
+                      <Pill
+                        size="sm"
+                        className="gap-2 bg-white font-semibold text-neutral-600 shadow-sm ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-300 dark:ring-white/10"
+                      >
+                        <CalendarIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
+                        {formattedDate}
+                      </Pill>
+                      <Pill
+                        href={`/library?location=${recording.location}`}
+                        size="sm"
+                        className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/20"
+                      >
+                        <MapPinIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
+                        {recording.location}
+                      </Pill>
                     </div>
                     {recording.episode && (
                       <Pill
                         href={`/library?episode=${encodeURIComponent(recording.episode)}`}
-                        size="xxs"
-                        className="shrink-0 bg-neutral-900/5 font-semibold uppercase tracking-[0.15em] text-neutral-600 transition hover:bg-neutral-900/10 hover:text-neutral-800 dark:bg-white/10 dark:text-neutral-200 dark:hover:bg-white/20 dark:hover:text-white"
+                        size="sm"
+                        className="bg-neutral-900/5 font-semibold uppercase tracking-[0.15em] text-neutral-600 transition hover:bg-neutral-900/10 hover:text-neutral-800 dark:bg-white/10 dark:text-neutral-200 dark:hover:bg-white/20 dark:hover:text-white"
                       >
                         {recording.episodeNumber
                           ? `${labels.epShort} ${recording.episodeNumber} · ${recording.episode}`
                           : recording.episode}
                       </Pill>
                     )}
-                  </div>
-
-                  <div className="mb-5 flex flex-wrap items-center gap-2 text-xs text-neutral-600 dark:text-neutral-300">
-                    {recording.speaker.map((name) => (
-                      <Pill
-                        key={name}
-                        size="sm"
-                        className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10"
-                      >
-                        <UserIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
-                        {name}
-                      </Pill>
-                    ))}
-                    <Pill
-                      size="sm"
-                      className="gap-2 bg-white font-semibold text-neutral-600 shadow-sm ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-300 dark:ring-white/10"
-                    >
-                      <CalendarIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
-                      {formattedDate}
-                    </Pill>
-                    <Pill
-                      href={`/library?location=${recording.location}`}
-                      size="sm"
-                      className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/20"
-                    >
-                      <MapPinIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
-                      {recording.location}
-                    </Pill>
                   </div>
 
                   <div className="border-t border-neutral-200/40 pt-5 dark:border-neutral-700/40">
