@@ -14,6 +14,7 @@ import {
   CinemaIcon,
   ExitCinemaIcon,
   FacebookIcon,
+  HeartIcon,
   LinkIcon,
   LinkedInIcon,
   MapPinIcon,
@@ -65,6 +66,10 @@ export function RecordingPlayer({
   const [isMiniPlayer, setIsMiniPlayer] = useState(false);
   const [isMiniPlayerDismissed, setIsMiniPlayerDismissed] = useState(false);
   const [canMiniPlayer, setCanMiniPlayer] = useState(false);
+  const [heartCount, setHeartCount] = useState<number | null>(null);
+  const [hasHearted, setHasHearted] = useState(false);
+  const [isHearting, setIsHearting] = useState(false);
+  const [heartPulse, setHeartPulse] = useState(false);
   const playerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -125,6 +130,25 @@ export function RecordingPlayer({
   const remainingRelated = relatedRecordings.slice(1);
   const showMiniPlayer = canMiniPlayer && isMiniPlayer && !cinemaMode && !isMiniPlayerDismissed;
 
+  useEffect(() => {
+    let isActive = true;
+    const loadHearts = async () => {
+      try {
+        const response = await fetch(`/api/video/${recording.shortId}/hearts`);
+        if (!response.ok) return;
+        const data = (await response.json()) as { count: number; hasHearted: boolean };
+        if (isActive) {
+          setHeartCount(data.count ?? 0);
+          setHasHearted(Boolean(data.hasHearted));
+        }
+      } catch {}
+    };
+    loadHearts();
+    return () => {
+      isActive = false;
+    };
+  }, [recording.shortId]);
+
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -167,6 +191,30 @@ export function RecordingPlayer({
         setShowShareMenu(false);
       }, 1500);
       setTimeout(() => setShowCopyToast(false), 2000);
+    }
+  };
+
+  const handleHeart = async () => {
+    if (isHearting) return;
+    setIsHearting(true);
+    setHeartPulse(true);
+    setTimeout(() => setHeartPulse(false), 550);
+    try {
+      const response = await fetch(`/api/video/${recording.shortId}/hearts`, {
+        method: hasHearted ? "DELETE" : "POST",
+      });
+      if (!response.ok) return;
+      const data = (await response.json()) as { count: number; added?: boolean; removed?: boolean };
+      setHeartCount(data.count ?? heartCount ?? 0);
+      if (data.added) {
+        setHasHearted(true);
+      } else if (data.removed) {
+        setHasHearted(false);
+      }
+    } catch {
+      setHeartPulse(false);
+    } finally {
+      setIsHearting(false);
     }
   };
 
@@ -219,33 +267,85 @@ export function RecordingPlayer({
         <div className="flex flex-col gap-12 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
           <div className="min-w-0 space-y-8">
             <div className="glass-card no-hover-pop overflow-hidden">
-              <div className="flex items-center justify-between border-b border-neutral-200/30 px-4 py-3 dark:border-neutral-700/30">
-                <Button
-                  href="/library"
-                  variant="ghost"
-                  size="sm"
-                  className="group hidden items-center gap-2 lg:inline-flex"
-                >
-                  <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-                  <span>{labels.backToLibrary}</span>
-                </Button>
+              <div className="hidden items-center justify-between border-b border-neutral-200/30 px-4 py-3 dark:border-neutral-700/30 lg:flex">
+                <div className="hidden lg:block">
+                  <Button
+                    href="/library"
+                    variant="ghost"
+                    size="sm"
+                    className="group items-center gap-2"
+                  >
+                    <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+                    <span>{labels.backToLibrary}</span>
+                  </Button>
+                </div>
 
-                <div className="flex items-center gap-1">
+              </div>
+
+                <div ref={playerRef} className="relative">
+                  {showMiniPlayer && <div className="aspect-video w-full" aria-hidden="true" />}
+                  <div
+                    className={`${
+                      showMiniPlayer
+                        ? "fixed bottom-6 right-6 z-50 aspect-video w-[320px] overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-black/20"
+                      : "relative w-full aspect-video bg-black"
+                    }`}
+                  >
+                  {isPlayerLoading && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
+                      <div className="h-12 w-12 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                    </div>
+                  )}
+                  {showMiniPlayer && (
+                    <button
+                      type="button"
+                      onClick={() => setIsMiniPlayerDismissed(true)}
+                      className="absolute right-2 top-2 z-20 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white/80 transition hover:bg-black/80 hover:text-white"
+                      aria-label="Dismiss mini player"
+                    >
+                      <XIcon className="h-4 w-4" />
+                    </button>
+                  )}
+                  <iframe
+                    src={`https://www.youtube.com/embed/${recording.youtubeId}?rel=0&modestbranding=1`}
+                    title={recording.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    onLoad={() => setIsPlayerLoading(false)}
+                    className="absolute inset-0 h-full w-full"
+                  />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200/40 px-5 py-4 dark:border-neutral-700/40 sm:px-6">
+                  <button
+                    type="button"
+                    onClick={handleHeart}
+                    aria-pressed={hasHearted}
+                    disabled={isHearting}
+                    className={`inline-flex items-center gap-3 rounded-full px-5 py-2.5 text-sm font-semibold shadow-lg transition-all cursor-pointer ${
+                      hasHearted
+                        ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-rose-500/30"
+                        : "bg-white text-rose-600 ring-1 ring-rose-200/70 hover:-translate-y-0.5 hover:shadow-rose-500/20 dark:bg-white/5 dark:text-rose-300 dark:ring-white/10"
+                    } ${heartPulse ? "heart-pop" : ""} ${isHearting ? "opacity-80" : ""}`}
+                  >
+                    <HeartIcon className={`h-5 w-5 ${hasHearted ? "fill-white stroke-white" : ""}`} />
+                    <span className="uppercase tracking-[0.2em] text-[10px]">Heart</span>
+                    <span className="tabular-nums text-base">{heartCount ?? "—"}</span>
+                  </button>
+
                   <div className="relative">
                     <button
                       type="button"
                       onClick={handleShare}
-                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
                     >
                       <ShareIcon className="h-3.5 w-3.5" />
                       <span className="hidden sm:inline">{labels.share}</span>
                     </button>
                     {showShareMenu && (
                       <>
-                        <div
-                          className="fixed inset-0 z-40"
-                          onClick={() => setShowShareMenu(false)}
-                        />
+                        <div className="fixed inset-0 z-40" onClick={() => setShowShareMenu(false)} />
                         <div className="absolute right-0 top-full z-50 mt-1 w-48 overflow-hidden rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/10">
                           <button
                             type="button"
@@ -296,48 +396,12 @@ export function RecordingPlayer({
                   <button
                     type="button"
                     onClick={() => setCinemaMode(true)}
-                    className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+                    className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
                   >
                     <CinemaIcon className="h-3.5 w-3.5" />
                     {labels.cinema}
                   </button>
                 </div>
-              </div>
-
-              <div ref={playerRef} className="relative">
-                {showMiniPlayer && <div className="aspect-video w-full" aria-hidden="true" />}
-                <div
-                  className={`${
-                    showMiniPlayer
-                      ? "fixed bottom-6 right-6 z-50 aspect-video w-[320px] overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-black/20"
-                      : "relative w-full aspect-video bg-black"
-                  }`}
-                >
-                  {isPlayerLoading && (
-                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
-                      <div className="h-12 w-12 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                    </div>
-                  )}
-                  {showMiniPlayer && (
-                    <button
-                      type="button"
-                      onClick={() => setIsMiniPlayerDismissed(true)}
-                      className="absolute right-2 top-2 z-20 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white/80 transition hover:bg-black/80 hover:text-white"
-                      aria-label="Dismiss mini player"
-                    >
-                      <XIcon className="h-4 w-4" />
-                    </button>
-                  )}
-                  <iframe
-                    src={`https://www.youtube.com/embed/${recording.youtubeId}?rel=0&modestbranding=1`}
-                    title={recording.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    onLoad={() => setIsPlayerLoading(false)}
-                    className="absolute inset-0 h-full w-full"
-                  />
-                </div>
-              </div>
 
               <div>
                 <div className="px-5 py-5 sm:px-6 sm:py-6">

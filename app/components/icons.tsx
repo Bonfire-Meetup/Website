@@ -460,6 +460,25 @@ export function PlayIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function HeartIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M21.001 8.25c0 4.97-4.113 8.002-8.25 11.25C8.614 16.252 4.5 13.22 4.5 8.25a4.125 4.125 0 0 1 7.5-2.356A4.125 4.125 0 0 1 21 8.25Z"
+      />
+    </svg>
+  );
+}
+
 export function ShareIcon({ className, ...props }: IconProps) {
   return (
     <svg

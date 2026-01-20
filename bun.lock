@@ -5,32 +5,33 @@
     "": {
       "name": "zet-homepage-web",
       "dependencies": {
-        "@neondatabase/serverless": "latest",
-        "@tailwindcss/postcss": "latest",
-        "@vercel/analytics": "latest",
-        "@vercel/speed-insights": "latest",
-        "babel-plugin-react-compiler": "latest",
-        "clsx": "latest",
-        "geist": "latest",
-        "next": "latest",
-        "next-intl": "latest",
-        "postcss": "latest",
-        "react": "latest",
-        "react-dom": "latest",
-        "sharp": "latest",
-        "tailwind-merge": "latest",
-        "tailwindcss": "latest",
-        "uuid": "latest",
-        "zod": "latest",
+        "@neondatabase/serverless": "^1.0.2",
+        "@tailwindcss/postcss": "^4.1.18",
+        "@vercel/analytics": "^1.6.1",
+        "@vercel/speed-insights": "^1.3.1",
+        "babel-plugin-react-compiler": "^1.0.0",
+        "clsx": "^2.1.1",
+        "geist": "^1.5.1",
+        "next": "^16.1.3",
+        "next-intl": "^4.7.0",
+        "postcss": "^8.5.6",
+        "react": "^19.2.3",
+        "react-dom": "^19.2.3",
+        "sharp": "^0.34.5",
+        "tailwind-merge": "^3.4.0",
+        "tailwindcss": "^4.1.18",
+        "ua-parser-js": "^2.0.8",
+        "uuid": "^13.0.0",
+        "zod": "^4.3.5",
       },
       "devDependencies": {
-        "@types/node": "latest",
-        "@types/react": "latest",
-        "@types/react-dom": "latest",
-        "eslint-plugin-react-hooks": "latest",
-        "oxfmt": "latest",
-        "oxlint": "latest",
-        "typescript": "latest",
+        "@types/node": "^25.0.9",
+        "@types/react": "^19.2.8",
+        "@types/react-dom": "^19.2.3",
+        "eslint-plugin-react-hooks": "^7.0.1",
+        "oxfmt": "^0.25.0",
+        "oxlint": "^1.40.0",
+        "typescript": "^5.9.3",
       },
     },
   },
@@ -371,6 +372,8 @@
 
     "deep-is": ["deep-is@0.1.4", "", {}, "sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ=="],
 
+    "detect-europe-js": ["detect-europe-js@0.1.2", "", {}, "sha512-lgdERlL3u0aUdHocoouzT10d9I89VVhk0qNRmll7mXdGfJT1/wqZ2ZLA4oJAjeACPY5fT1wsbq2AT+GkuInsow=="],
+
     "detect-libc": ["detect-libc@2.1.2", "", {}, "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="],
 
     "electron-to-chromium": ["electron-to-chromium@1.5.267", "", {}, "sha512-0Drusm6MVRXSOJpGbaSVgcQsuB4hEkMpHXaVstcPmhu5LIedxs1xNK/nIxmQIU/RPC0+1/o0AVZfBTkTNJOdUw=="],
@@ -440,6 +443,8 @@
     "is-extglob": ["is-extglob@2.1.1", "", {}, "sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ=="],
 
     "is-glob": ["is-glob@4.0.3", "", { "dependencies": { "is-extglob": "^2.1.1" } }, "sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg=="],
+
+    "is-standalone-pwa": ["is-standalone-pwa@0.1.1", "", {}, "sha512-9Cbovsa52vNQCjdXOzeQq5CnCbAcRk05aU62K20WO372NrTv0NxibLFCK6lQ4/iZEFdEA3p3t2VNOn8AJ53F5g=="],
 
     "isexe": ["isexe@2.0.0", "", {}, "sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw=="],
 
@@ -594,6 +599,10 @@
     "type-check": ["type-check@0.4.0", "", { "dependencies": { "prelude-ls": "^1.2.1" } }, "sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew=="],
 
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
+
+    "ua-is-frozen": ["ua-is-frozen@0.1.2", "", {}, "sha512-RwKDW2p3iyWn4UbaxpP2+VxwqXh0jpvdxsYpZ5j/MLLiQOfbsV5shpgQiw93+KMYQPcteeMQ289MaAFzs3G9pw=="],
+
+    "ua-parser-js": ["ua-parser-js@2.0.8", "", { "dependencies": { "detect-europe-js": "^0.1.2", "is-standalone-pwa": "^0.1.1", "ua-is-frozen": "^0.1.2" }, "bin": { "ua-parser-js": "script/cli.js" } }, "sha512-BdnBM5waFormdrOFBU+cA90R689V0tWUWlIG2i30UXxElHjuCu5+dOV2Etw3547jcQ/yaLtPm9wrqIuOY2bSJg=="],
 
     "undici-types": ["undici-types@7.16.0", "", {}, "sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw=="],
 

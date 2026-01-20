@@ -17,6 +17,25 @@ bun install
 bun run dev
 ```
 
+## Neon (hearts)
+
+This project uses Neon Postgres for the video heart system.
+
+Required env vars:
+
+- `BNF_NEON_DATABASE_URL` (Neon connection string)
+- `BNF_HEARTS_SALT` (long random string for hashing IP/UA)
+
+Generate a salt: `openssl rand -hex 32`
+
+## API
+
+### Hearts
+
+- `GET /api/video/:id/hearts` -> `{ count, hasHearted }`
+- `POST /api/video/:id/hearts` -> `{ count, added }`
+- `DELETE /api/video/:id/hearts` -> `{ count, removed }`
+
 ## Contributing
 
 PRs welcome — especially for performance fixes, layout tweaks, and “why is this pixel doing that” mysteries. If you spot a bug, send a PR (or at least a good meme with the issue).

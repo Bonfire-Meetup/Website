@@ -703,6 +703,28 @@ html {
   animation: rise 15s linear infinite;
 }
 
+@keyframes heartPop {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.25);
+  }
+
+  70% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.heart-pop {
+  animation: heartPop 0.55s ease;
+}
+
 @keyframes cardEnter {
   from {
     opacity: 0;
