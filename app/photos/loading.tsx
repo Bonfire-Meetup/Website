@@ -24,31 +24,33 @@ export default function Loading() {
                 <Skeleton key={index} className="aspect-[3/4] rounded-2xl sm:rounded-3xl" />
               ))}
             </div>
-
-            <div className="mt-12 rounded-3xl border border-black/10 bg-white/80 p-6 shadow-xl shadow-black/5 backdrop-blur sm:mt-16 sm:p-8 lg:p-10 dark:border-white/10 dark:bg-neutral-950/70 dark:shadow-black/20">
-              <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-end">
-                <div className="space-y-3">
-                  <Skeleton className="h-8 w-52" />
-                  <Skeleton className="h-4 w-72" />
-                </div>
-                <div className="grid grid-cols-2 gap-4 sm:gap-6">
-                  {Array.from({ length: 2 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="rounded-2xl bg-white/80 px-5 py-4 ring-1 ring-black/5 dark:bg-white/5 dark:ring-white/10"
-                    >
-                      <Skeleton className="h-10 w-20" />
-                      <Skeleton className="mt-3 h-3 w-16" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
-      <div className="mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="section-divider mx-auto mt-20 max-w-4xl" />
+
+      <div className="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-6">
+          <div className="max-w-2xl space-y-3">
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-8 w-1 rounded-full" />
+              <Skeleton className="h-8 w-52" />
+            </div>
+            <Skeleton className="h-4 w-72" />
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            {Array.from({ length: 2 }).map((_, index) => (
+              <div
+                key={index}
+                className="inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-2 ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10"
+              >
+                <Skeleton className="h-6 w-10" />
+                <Skeleton className="h-3 w-16" />
+              </div>
+            ))}
+          </div>
+        </div>
         <section>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, index) => (

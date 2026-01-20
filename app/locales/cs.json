@@ -214,6 +214,20 @@
     "backToAlbums": "Zpět na alba",
     "backToTop": "Zpět nahoru"
   },
+  "timeline": {
+    "eyebrow": "Časová osa epizod",
+    "title": "Všechny epizody Bonfire",
+    "subtitle": "Vertikální časová osa s odkazy na záznamy a fotoalba.",
+    "episodeLabel": "Epizoda",
+    "videos": "videí",
+    "photos": "fotek",
+    "watchVideos": "Pustit videa",
+    "viewPhotos": "Zobrazit fotky",
+    "browsePhotos": "Procházet fotky",
+    "noPhotos": "Zatím bez fotek",
+    "prague": "Praha",
+    "zlin": "Zlín"
+  },
   "libraryPage": {
     "eyebrow": "Pusť si to zpětně",
     "title": "Knihovna přednášek",
@@ -245,6 +259,11 @@
       "zlin": "Zlín"
     },
     "empty": "Filtruješ moc přísně, nic tu není.",
+    "notRecorded": {
+      "title": "Tato epizoda nebyla nahrána",
+      "body": "{episode} nemá žádné videozáznamy.\nProhlédněte si fotky nebo další přednášky.",
+      "cta": "Zobrazit všechny záznamy"
+    },
     "disclaimer": "Akce Bonfire@Prague #1 (The Gathering) a #2 (The Dreamweavers) nebyly nahrávány.",
     "noteLabel": "Poznámka:"
   },
@@ -301,6 +320,7 @@
     "discordLabel": "Discord",
     "copyright": "© {year} Bonfire Events. Ukuchtěno s láskou pro gamedev komunitu.",
     "crewLabel": "Crew",
+    "timelineLabel": "Timeline",
     "pressLabel": "Press",
     "legalLabel": "Právní info & Etický kodex"
   },
@@ -317,6 +337,8 @@
     "pressDescription": "Stáhněte loga, brand barvy a pravidla použití pro Bonfire Events.",
     "photosTitle": "Fotky | Bonfire Events",
     "photosDescription": "Fotoalba z Bonfire meetupů v Praze a Zlíně.",
+    "timelineTitle": "Timeline | Bonfire Events",
+    "timelineDescription": "Projděte si epizody Bonfire se záznamy a fotoalby.",
     "recordingNotFound": "Záznam nenalezen",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",

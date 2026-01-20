@@ -39,6 +39,20 @@ function pickDailyRandomImage(album: Album, seed: string) {
   return candidates[index];
 }
 
+const statPillClass =
+  "inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-400 dark:ring-white/10";
+
+function StatPill({ value, label }: { value: string | number; label: string }) {
+  return (
+    <div className={statPillClass}>
+      <span className="text-lg font-bold tabular-nums text-neutral-900 dark:text-white">
+        {value}
+      </span>
+      {label}
+    </div>
+  );
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
   return {
@@ -148,18 +162,8 @@ export default async function PhotosPage() {
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <div className="inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-400 dark:ring-white/10">
-                <span className="text-lg font-bold tabular-nums text-neutral-900 dark:text-white">
-                  {albums.length}
-                </span>
-                {t("stats.albums")}
-              </div>
-              <div className="inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-400 dark:ring-white/10">
-                <span className="text-lg font-bold tabular-nums text-neutral-900 dark:text-white">
-                  {totalPhotos.toLocaleString(locale)}
-                </span>
-                {t("stats.photos")}
-              </div>
+              <StatPill value={albums.length} label={t("stats.albums")} />
+              <StatPill value={totalPhotos.toLocaleString(locale)} label={t("stats.photos")} />
             </div>
           </div>
           <section>

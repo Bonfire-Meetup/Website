@@ -1,15 +1,88 @@
 {
   "episodes": [
-    { "id": "prague-7", "city": "prague", "number": 7, "title": "Whispers of the Void" },
-    { "id": "prague-6", "city": "prague", "number": 6, "title": "The Shape of Echoes" },
-    { "id": "prague-5", "city": "prague", "number": 5, "title": "Knights of the Digital Age" },
-    { "id": "prague-4", "city": "prague", "number": 4, "title": "The Mystic Voyagers" },
-    { "id": "prague-3", "city": "prague", "number": 3, "title": "The Convergence" },
-    { "id": "prague-2", "city": "prague", "number": 2, "title": "The Dreamweavers" },
-    { "id": "zlin-5", "city": "zlin", "number": 5, "title": "Beyond the Frame" },
-    { "id": "zlin-4", "city": "zlin", "number": 4, "title": "The Boundless Expedition" },
-    { "id": "zlin-3", "city": "zlin", "number": 3, "title": "The Infinite Wanderers" },
-    { "id": "zlin-2", "city": "zlin", "number": 2, "title": "The Horizon Seekers" },
-    { "id": "zlin-1", "city": "zlin", "number": 1, "title": "The Pioneers" }
+    {
+      "id": "prague-1",
+      "city": "prague",
+      "number": 1,
+      "title": "The Gathering",
+      "date": null
+    },
+    {
+      "id": "prague-7",
+      "city": "prague",
+      "number": 7,
+      "title": "Whispers of the Void",
+      "date": "2025-11-11"
+    },
+    {
+      "id": "prague-6",
+      "city": "prague",
+      "number": 6,
+      "title": "The Shape of Echoes",
+      "date": "2025-07-08"
+    },
+    {
+      "id": "prague-5",
+      "city": "prague",
+      "number": 5,
+      "title": "Knights of the Digital Age",
+      "date": "2025-03-11"
+    },
+    {
+      "id": "prague-4",
+      "city": "prague",
+      "number": 4,
+      "title": "The Mystic Voyagers",
+      "date": "2024-10-29"
+    },
+    {
+      "id": "prague-3",
+      "city": "prague",
+      "number": 3,
+      "title": "The Convergence",
+      "date": "2024-06-25"
+    },
+    {
+      "id": "prague-2",
+      "city": "prague",
+      "number": 2,
+      "title": "The Dreamweavers",
+      "date": null
+    },
+    {
+      "id": "zlin-5",
+      "city": "zlin",
+      "number": 5,
+      "title": "Beyond the Frame",
+      "date": "2025-11-24"
+    },
+    {
+      "id": "zlin-4",
+      "city": "zlin",
+      "number": 4,
+      "title": "The Boundless Expedition",
+      "date": "2025-04-28"
+    },
+    {
+      "id": "zlin-3",
+      "city": "zlin",
+      "number": 3,
+      "title": "The Infinite Wanderers",
+      "date": "2024-11-11"
+    },
+    {
+      "id": "zlin-2",
+      "city": "zlin",
+      "number": 2,
+      "title": "The Horizon Seekers",
+      "date": "2024-04-22"
+    },
+    {
+      "id": "zlin-1",
+      "city": "zlin",
+      "number": 1,
+      "title": "The Pioneers",
+      "date": "2023-12-04"
+    }
   ]
 }

@@ -214,6 +214,20 @@
     "backToAlbums": "Back to albums",
     "backToTop": "Back to top"
   },
+  "timeline": {
+    "eyebrow": "Episode Timeline",
+    "title": "Every Bonfire Episode",
+    "subtitle": "A vertical timeline of each episode with quick links to recordings and photo albums.",
+    "episodeLabel": "Episode",
+    "videos": "videos",
+    "photos": "photos",
+    "watchVideos": "Watch videos",
+    "viewPhotos": "View photos",
+    "browsePhotos": "Browse photos",
+    "noPhotos": "No photos yet",
+    "prague": "Prague",
+    "zlin": "Zlin"
+  },
   "libraryPage": {
     "eyebrow": "Stream the sessions",
     "title": "Talk Library",
@@ -245,6 +259,11 @@
       "zlin": "Zlin"
     },
     "empty": "No recordings match your filters yet.",
+    "notRecorded": {
+      "title": "This episode was not recorded",
+      "body": "{episode} had no video recordings.\nCheck the photo album or browse other sessions.",
+      "cta": "Browse all recordings"
+    },
     "disclaimer": "Bonfire@Prague #1 (The Gathering) and #2 (The Dreamweavers) were not recorded.",
     "noteLabel": "Note:"
   },
@@ -301,6 +320,7 @@
     "discordLabel": "Discord",
     "copyright": "© {year} Bonfire Events. Made with love for the gamedev community.",
     "crewLabel": "Crew",
+    "timelineLabel": "Timeline",
     "pressLabel": "Press",
     "legalLabel": "Code of Conduct & Legal"
   },
@@ -317,6 +337,8 @@
     "pressDescription": "Download logos, brand colors, and usage guidelines for Bonfire Events.",
     "photosTitle": "Photos | Bonfire Events",
     "photosDescription": "Browse photo albums from Bonfire meetups in Prague and Zlin.",
+    "timelineTitle": "Timeline | Bonfire Events",
+    "timelineDescription": "Explore Bonfire episodes with links to recordings and photo albums.",
     "recordingNotFound": "Recording Not Found",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",

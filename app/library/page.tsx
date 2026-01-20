@@ -67,6 +67,11 @@ export default async function LibraryPage() {
     disclaimer: t("disclaimer"),
     noteLabel: t("noteLabel"),
     epShort: (await getTranslations("recordings"))("epShort"),
+    notRecorded: {
+      title: t("notRecorded.title"),
+      body: t.raw("notRecorded.body"),
+      cta: t("notRecorded.cta"),
+    },
   };
 
   return (

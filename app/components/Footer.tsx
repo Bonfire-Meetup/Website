@@ -59,10 +59,10 @@ export async function Footer() {
           <p>{t("copyright", { year: new Date().getFullYear() })}</p>
           <div className="flex items-center gap-4">
             <a
-              href="/crew"
+              href="/timeline"
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
-              {t("crewLabel")}
+              {t("timelineLabel")}
             </a>
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <a

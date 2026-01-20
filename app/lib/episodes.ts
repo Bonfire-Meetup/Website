@@ -5,6 +5,7 @@ export type Episode = {
   city: "prague" | "zlin";
   number: number;
   title: string;
+  date: string | null;
 };
 
 export const episodes = episodesData.episodes as Episode[];

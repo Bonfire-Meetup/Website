@@ -13,6 +13,7 @@ import { Pill } from "./Pill";
 import { Skeleton } from "./Skeletons";
 
 import { LOCATIONS, type LocationValue } from "../lib/constants";
+import { getEpisodeById } from "../lib/episodes";
 
 type LocationFilter = "all" | LocationValue;
 
@@ -67,6 +68,11 @@ interface RecordingsCatalogLabels {
   disclaimer: string;
   noteLabel: string;
   epShort: string;
+  notRecorded: {
+    title: string;
+    body: string;
+    cta: string;
+  };
 }
 
 const locationOptions: {
@@ -93,7 +99,54 @@ function normalizeText(value: string) {
     .toLowerCase();
 }
 
+const metaBaseClass =
+  "flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase text-neutral-600 dark:text-white/70";
+
+function getLocationPillClass(location: LocationValue) {
+  return location === LOCATIONS.PRAGUE
+    ? "bg-rose-500/10 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300"
+    : "bg-blue-500/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300";
+}
+
+function RecordingMeta({
+  location,
+  date,
+  locale,
+  trackingClass,
+}: {
+  location: LocationValue;
+  date: string;
+  locale: string;
+  trackingClass: string;
+}) {
+  return (
+    <div className={`${metaBaseClass} ${trackingClass}`}>
+      <Pill size="xxs" className={getLocationPillClass(location)}>
+        {location}
+      </Pill>
+      <span className="text-neutral-400 dark:text-white/50">•</span>
+      <span>{formatDate(date, locale)}</span>
+    </div>
+  );
+}
+
+function SpeakerList({ speakers }: { speakers: string[] }) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      {speakers.map((name) => (
+        <div key={name} className="flex items-center gap-2">
+          <span className="h-1 w-1 shrink-0 rounded-full bg-brand-500 shadow-[0_0_6px_rgba(59,130,246,0.4)] dark:bg-brand-400" />
+          <span className="text-[11px] font-medium text-neutral-700 dark:text-neutral-300">
+            {name}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const FEATURED_INTERVAL_MS = 6000;
+const UNRECORDED_EPISODES = new Set(["prague-1", "prague-2"]);
 
 function RailSkeleton() {
   return (
@@ -136,6 +189,20 @@ function GridSkeleton() {
   );
 }
 
+function BrowseAllButton({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <Button
+      onClick={onClick}
+      variant="primary"
+      size="xs"
+      className="rounded-full bg-gradient-to-r from-brand-500 to-rose-500 text-white shadow-lg shadow-brand-500/20"
+    >
+      {label}
+      <ChevronRightIcon className="h-3.5 w-3.5" />
+    </Button>
+  );
+}
+
 function RecordingRailCard({
   recording,
   locale,
@@ -161,33 +228,16 @@ function RecordingRailCard({
         />
       </div>
       <div className="flex flex-1 flex-col space-y-3 bg-white/85 px-4 pb-5 pt-4 text-neutral-900 dark:bg-black/75 dark:text-white">
-        <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:text-white/70">
-          <Pill
-            size="xxs"
-            className={
-              recording.location === "Prague"
-                ? "bg-rose-500/10 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300"
-                : "bg-blue-500/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
-            }
-          >
-            {recording.location}
-          </Pill>
-          <span className="text-neutral-400 dark:text-white/50">•</span>
-          <span>{formatDate(recording.date, locale)}</span>
-        </div>
+        <RecordingMeta
+          location={recording.location}
+          date={recording.date}
+          locale={locale}
+          trackingClass="tracking-[0.2em]"
+        />
         <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-neutral-900 dark:text-white">
           {recording.title}
         </h3>
-        <div className="flex flex-col gap-1.5">
-          {recording.speaker.map((name) => (
-            <div key={name} className="flex items-center gap-2">
-              <span className="h-1 w-1 shrink-0 rounded-full bg-brand-500 shadow-[0_0_6px_rgba(59,130,246,0.4)] dark:bg-brand-400" />
-              <span className="text-[11px] font-medium text-neutral-700 dark:text-neutral-300">
-                {name}
-              </span>
-            </div>
-          ))}
-        </div>
+        <SpeakerList speakers={recording.speaker} />
         <div className="flex flex-wrap gap-2">
           {recording.tags.slice(0, 3).map((tag) => (
             <Pill
@@ -344,6 +394,17 @@ export function RecordingsCatalog({
       }
     });
 
+    for (const episodeId of UNRECORDED_EPISODES) {
+      if (map.has(episodeId)) continue;
+      const episode = getEpisodeById(episodeId);
+      if (!episode) continue;
+      map.set(episodeId, {
+        number: episode.number,
+        location: episode.city === "prague" ? LOCATIONS.PRAGUE : LOCATIONS.ZLIN,
+        title: episode.title,
+      });
+    }
+
     return Array.from(map.entries()).map(([id, data]) => ({
       value: id,
       label: data.number ? `${labels.epShort} ${data.number} — ${data.title}` : data.title,
@@ -376,9 +437,11 @@ export function RecordingsCatalog({
         ? locationParam
         : "all";
     const normalizedTag = tagOptions.includes(tagParam) ? tagParam : "all";
-    const normalizedEpisode = episodeOptions.some((option) => option.value === episodeParam)
-      ? episodeParam
-      : "all";
+    const normalizedEpisode =
+      episodeOptions.some((option) => option.value === episodeParam) ||
+      UNRECORDED_EPISODES.has(episodeParam)
+        ? episodeParam
+        : "all";
     const normalizedQuery = queryParam.trim();
     setActiveLocation(normalizedLocation);
     setActiveTag(normalizedTag);
@@ -732,11 +795,46 @@ export function RecordingsCatalog({
           }`}
         >
           {filteredRecordings.length === 0 ? (
-            <EmptyState
-              message={labels.empty}
-              className="max-w-lg p-12 recording-card-enter"
-              messageClassName="text-lg text-neutral-600 dark:text-neutral-300"
-            />
+            (() => {
+              const notRecordedEpisode =
+                activeEpisode !== "all" && UNRECORDED_EPISODES.has(activeEpisode)
+                  ? getEpisodeById(activeEpisode)
+                  : undefined;
+              if (notRecordedEpisode) {
+                const episodeLabel = notRecordedEpisode.number
+                  ? `${labels.epShort} ${notRecordedEpisode.number} — ${notRecordedEpisode.title}`
+                  : notRecordedEpisode.title;
+                return (
+                  <div className="mx-auto max-w-2xl recording-card-enter rounded-[28px] bg-white/90 p-10 text-center shadow-xl shadow-black/5 ring-1 ring-black/5 dark:bg-neutral-950 dark:shadow-black/20 dark:ring-white/10">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-500/10 text-brand-500 dark:bg-brand-500/20 dark:text-brand-300">
+                      <InfoIcon className="h-6 w-6" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-neutral-900 dark:text-white">
+                      {labels.notRecorded.title}
+                    </h3>
+                    <p className="mt-3 whitespace-pre-line text-sm text-neutral-600 dark:text-neutral-300">
+                      {labels.notRecorded.body.replace("{episode}", episodeLabel)}
+                    </p>
+                    <div className="mt-6 flex justify-center">
+                      <Button
+                        onClick={() => updateFilters("all", "all", "all", "")}
+                        variant="primary"
+                        size="sm"
+                      >
+                        {labels.notRecorded.cta}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              }
+              return (
+                <EmptyState
+                  message={labels.empty}
+                  className="max-w-lg p-12 recording-card-enter"
+                  messageClassName="text-lg text-neutral-600 dark:text-neutral-300"
+                />
+              );
+            })()
           ) : (
             <>
               {viewMode === "rows" && featured && (
@@ -938,15 +1036,7 @@ export function RecordingsCatalog({
                 ) : (
                   <div className="space-y-12">
                     <div className="flex justify-center">
-                      <Button
-                        onClick={handleBrowseAll}
-                        variant="primary"
-                        size="xs"
-                        className="rounded-full bg-gradient-to-r from-brand-500 to-rose-500 text-white shadow-lg shadow-brand-500/20"
-                      >
-                        {labels.view.all}
-                        <ChevronRightIcon className="h-3.5 w-3.5" />
-                      </Button>
+                      <BrowseAllButton label={labels.view.all} onClick={handleBrowseAll} />
                     </div>
                     {rows.map((row) => (
                       <RecordingRail
@@ -958,15 +1048,7 @@ export function RecordingsCatalog({
                       />
                     ))}
                     <div className="flex justify-center">
-                      <Button
-                        onClick={handleBrowseAll}
-                        variant="primary"
-                        size="xs"
-                        className="rounded-full bg-gradient-to-r from-brand-500 to-rose-500 text-white shadow-lg shadow-brand-500/20"
-                      >
-                        {labels.view.all}
-                        <ChevronRightIcon className="h-3.5 w-3.5" />
-                      </Button>
+                      <BrowseAllButton label={labels.view.all} onClick={handleBrowseAll} />
                     </div>
                   </div>
                 )
@@ -999,33 +1081,16 @@ export function RecordingsCatalog({
                         />
                       </div>
                       <div className="flex flex-1 flex-col space-y-3 bg-white/85 px-5 pb-6 pt-5 text-neutral-900 dark:bg-black/75 dark:text-white">
-                        <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.25em] text-neutral-600 dark:text-white/70">
-                          <Pill
-                            size="xxs"
-                            className={
-                              recording.location === "Prague"
-                                ? "bg-rose-500/10 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300"
-                                : "bg-blue-500/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
-                            }
-                          >
-                            {recording.location}
-                          </Pill>
-                          <span className="text-neutral-400 dark:text-white/50">•</span>
-                          <span>{formatDate(recording.date, locale)}</span>
-                        </div>
+                        <RecordingMeta
+                          location={recording.location}
+                          date={recording.date}
+                          locale={locale}
+                          trackingClass="tracking-[0.25em]"
+                        />
                         <h3 className="line-clamp-2 text-base font-semibold leading-snug text-neutral-900 dark:text-white">
                           {recording.title}
                         </h3>
-                        <div className="flex flex-col gap-1.5">
-                          {recording.speaker.map((name) => (
-                            <div key={name} className="flex items-center gap-2">
-                              <span className="h-1 w-1 shrink-0 rounded-full bg-brand-500 shadow-[0_0_6px_rgba(59,130,246,0.4)] dark:bg-brand-400" />
-                              <span className="text-[11px] font-medium text-neutral-700 dark:text-neutral-300">
-                                {name}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                        <SpeakerList speakers={recording.speaker} />
                         <div className="flex flex-wrap gap-2">
                           {recording.tags.map((tag) => (
                             <Pill
@@ -1048,19 +1113,21 @@ export function RecordingsCatalog({
           )}
         </div>
 
-        <div className="mt-20 flex justify-center">
-          <div className="glass-card relative inline-flex items-center gap-4 px-6 py-4 transition-none hover:scale-100!">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/10 text-brand-500 dark:bg-brand-500/20 dark:text-brand-400">
-              <InfoIcon className="h-5 w-5" />
+        {!UNRECORDED_EPISODES.has(activeEpisode) && (
+          <div className="mt-20 flex justify-center">
+            <div className="glass-card relative inline-flex items-center gap-4 px-6 py-4 transition-none hover:scale-100!">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/10 text-brand-500 dark:bg-brand-500/20 dark:text-brand-400">
+                <InfoIcon className="h-5 w-5" />
+              </div>
+              <p className="max-w-4xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                <span className="mr-1.5 font-semibold text-neutral-900 dark:text-white">
+                  {labels.noteLabel}
+                </span>
+                {labels.disclaimer}
+              </p>
             </div>
-            <p className="max-w-4xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-              <span className="mr-1.5 font-semibold text-neutral-900 dark:text-white">
-                {labels.noteLabel}
-              </span>
-              {labels.disclaimer}
-            </p>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
