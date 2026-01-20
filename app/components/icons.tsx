@@ -601,6 +601,21 @@ export function XIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function CloseIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6l-12 12" />
+    </svg>
+  );
+}
+
 export function YouTubeIcon({ className, ...props }: IconProps) {
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" {...props}>

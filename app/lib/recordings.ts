@@ -48,8 +48,7 @@ export function getRelatedRecordings(
   const recordingSpeakers = new Set(recording.speaker.map((name) => name.toLowerCase()));
   const recordingDate = new Date(recording.date).getTime();
 
-  const countSharedTags = (tags: string[]) =>
-    tags.filter((tag) => recordingTags.has(tag)).length;
+  const countSharedTags = (tags: string[]) => tags.filter((tag) => recordingTags.has(tag)).length;
   const countSharedSpeakers = (speakers: string[]) =>
     speakers.map((name) => name.toLowerCase()).filter((name) => recordingSpeakers.has(name)).length;
 
@@ -79,7 +78,9 @@ export function getRelatedRecordings(
     .map((r) => {
       const sharedTags = countSharedTags(r.tags);
       const sharedSpeakers = countSharedSpeakers(r.speaker);
-      const sameEpisode = Boolean(r.episode && recording.episode && r.episode === recording.episode);
+      const sameEpisode = Boolean(
+        r.episode && recording.episode && r.episode === recording.episode,
+      );
       const sameLocation = r.location === recording.location;
       return {
         recording: r,
@@ -154,8 +155,9 @@ export function getRelatedRecordings(
       if (usedIds.has(candidate.recording.shortId)) continue;
       if (candidate.recording.episode && usedEpisodes.has(candidate.recording.episode)) continue;
 
-      const sharedWithSelectedTags = candidate.recording.tags.filter((tag) => usedTags.has(tag))
-        .length;
+      const sharedWithSelectedTags = candidate.recording.tags.filter((tag) =>
+        usedTags.has(tag),
+      ).length;
       const sharedWithSelectedSpeakers = candidate.speakersLower.filter((name) =>
         usedSpeakers.has(name),
       ).length;

@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { GlobalPlayerProvider } from "./components/GlobalPlayerProvider";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -72,7 +73,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased transition-colors duration-300 dark:bg-neutral-950 dark:text-neutral-100">
         <ThemeProvider>
-          <div className="relative flex min-h-screen flex-col">{children}</div>
+          <GlobalPlayerProvider>
+            <div className="relative flex min-h-screen flex-col">{children}</div>
+          </GlobalPlayerProvider>
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

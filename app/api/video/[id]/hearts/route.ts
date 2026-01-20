@@ -29,11 +29,7 @@ const getClientHashes = (requestHeaders: Headers) => {
   const userAgent = requestHeaders.get("user-agent") ?? "";
   const parser = new UAParser(userAgent);
   const { browser, os, device } = parser.getResult();
-  const uaSignature = [
-    browser.name ?? "unknown",
-    os.name ?? "unknown",
-    device.type ?? "desktop",
-  ]
+  const uaSignature = [browser.name ?? "unknown", os.name ?? "unknown", device.type ?? "desktop"]
     .join("|")
     .toLowerCase();
   return { ipHash: hashValue(ip), uaHash: hashValue(uaSignature) };
@@ -81,11 +77,18 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
     if (isRateLimited(`read:${videoId}:${ipHash}`, RATE_LIMIT_MAX_READ)) {
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
     }
-    const [{ count }] = await sql<{ count: number }[]>
-      `select count(*)::int as count from video_hearts where video_id = ${videoId}`;
-    const [{ exists }] = await sql<{ exists: boolean }[]>
-      `select exists(select 1 from video_hearts where video_id = ${videoId} and ip_hash = ${ipHash} and ua_hash = ${uaHash}) as exists`;
-    return NextResponse.json({ count, hasHearted: exists }, { headers: { "Cache-Control": "no-store" } });
+    const [{ count }] =
+      (await sql`select count(*)::int as count from video_hearts where video_id = ${videoId}`) as {
+        count: number;
+      }[];
+    const [{ exists }] =
+      (await sql`select exists(select 1 from video_hearts where video_id = ${videoId} and ip_hash = ${ipHash} and ua_hash = ${uaHash}) as exists`) as {
+        exists: boolean;
+      }[];
+    return NextResponse.json(
+      { count, hasHearted: exists },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch {
     return NextResponse.json({ error: "Failed to load hearts" }, { status: 500 });
   }
@@ -107,10 +110,14 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
     if (isRateLimited(`write:${videoId}:${ipHash}`, RATE_LIMIT_MAX_MUTATION)) {
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
     }
-    const inserted = await sql<{ video_id: string }[]>
-      `insert into video_hearts (video_id, ip_hash, ua_hash) values (${videoId}, ${ipHash}, ${uaHash}) on conflict do nothing returning video_id`;
-    const [{ count }] = await sql<{ count: number }[]>
-      `select count(*)::int as count from video_hearts where video_id = ${videoId}`;
+    const inserted =
+      (await sql`insert into video_hearts (video_id, ip_hash, ua_hash) values (${videoId}, ${ipHash}, ${uaHash}) on conflict do nothing returning video_id`) as {
+        video_id: string;
+      }[];
+    const [{ count }] =
+      (await sql`select count(*)::int as count from video_hearts where video_id = ${videoId}`) as {
+        count: number;
+      }[];
     return NextResponse.json({ count, added: inserted.length > 0 });
   } catch {
     return NextResponse.json({ error: "Failed to save heart" }, { status: 500 });
@@ -133,10 +140,14 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
     if (isRateLimited(`write:${videoId}:${ipHash}`, RATE_LIMIT_MAX_MUTATION)) {
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
     }
-    const removed = await sql<{ video_id: string }[]>
-      `delete from video_hearts where video_id = ${videoId} and ip_hash = ${ipHash} and ua_hash = ${uaHash} returning video_id`;
-    const [{ count }] = await sql<{ count: number }[]>
-      `select count(*)::int as count from video_hearts where video_id = ${videoId}`;
+    const removed =
+      (await sql`delete from video_hearts where video_id = ${videoId} and ip_hash = ${ipHash} and ua_hash = ${uaHash} returning video_id`) as {
+        video_id: string;
+      }[];
+    const [{ count }] =
+      (await sql`select count(*)::int as count from video_hearts where video_id = ${videoId}`) as {
+        count: number;
+      }[];
     return NextResponse.json({ count, removed: removed.length > 0 });
   } catch {
     return NextResponse.json({ error: "Failed to remove heart" }, { status: 500 });

@@ -7,6 +7,7 @@ import { getProxiedThumbnailUrl } from "../lib/thumbnail";
 import { AccentBar } from "./AccentBar";
 import { Pill } from "./Pill";
 import { Button } from "./Button";
+import { useGlobalPlayer } from "./GlobalPlayerProvider";
 import {
   ArrowLeftIcon,
   CalendarIcon,
@@ -63,14 +64,12 @@ export function RecordingPlayer({
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showCopyToast, setShowCopyToast] = useState(false);
-  const [isMiniPlayer, setIsMiniPlayer] = useState(false);
-  const [isMiniPlayerDismissed, setIsMiniPlayerDismissed] = useState(false);
-  const [canMiniPlayer, setCanMiniPlayer] = useState(false);
   const [heartCount, setHeartCount] = useState<number | null>(null);
   const [hasHearted, setHasHearted] = useState(false);
   const [isHearting, setIsHearting] = useState(false);
   const [heartPulse, setHeartPulse] = useState(false);
-  const playerRef = useRef<HTMLDivElement | null>(null);
+  const inlinePlayerRef = useRef<HTMLDivElement | null>(null);
+  const { setVideo, setInlineContainer } = useGlobalPlayer();
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
@@ -87,37 +86,6 @@ export function RecordingPlayer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [cinemaMode]);
 
-  useEffect(() => {
-    const media = window.matchMedia("(min-width: 1024px)");
-    const handleChange = () => setCanMiniPlayer(media.matches);
-    handleChange();
-    if (media.addEventListener) {
-      media.addEventListener("change", handleChange);
-      return () => media.removeEventListener("change", handleChange);
-    }
-    media.addListener(handleChange);
-    return () => media.removeListener(handleChange);
-  }, []);
-
-  useEffect(() => {
-    if (!playerRef.current || !canMiniPlayer) {
-      setIsMiniPlayer(false);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const shouldStick = !entry.isIntersecting && entry.boundingClientRect.top < 0;
-        setIsMiniPlayer(shouldStick);
-        if (entry.isIntersecting) {
-          setIsMiniPlayerDismissed(false);
-        }
-      },
-      { threshold: 0.2 },
-    );
-    observer.observe(playerRef.current);
-    return () => observer.disconnect();
-  }, [canMiniPlayer]);
-
   const formattedDate = new Date(recording.date).toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
@@ -128,7 +96,19 @@ export function RecordingPlayer({
   const shareText = `${recording.title} - ${recording.speaker.join(", ")}`;
   const nextUp = relatedRecordings[0];
   const remainingRelated = relatedRecordings.slice(1);
-  const showMiniPlayer = canMiniPlayer && isMiniPlayer && !cinemaMode && !isMiniPlayerDismissed;
+
+  useEffect(() => {
+    setVideo({
+      youtubeId: recording.youtubeId,
+      title: recording.title,
+      watchUrl: `/watch/${recording.slug}-${recording.shortId}`,
+    });
+  }, [recording.youtubeId, recording.title, recording.slug, recording.shortId, setVideo]);
+
+  useEffect(() => {
+    setInlineContainer(inlinePlayerRef.current);
+    return () => setInlineContainer(null);
+  }, [setInlineContainer, recording.youtubeId]);
 
   useEffect(() => {
     let isActive = true;
@@ -279,129 +259,95 @@ export function RecordingPlayer({
                     <span>{labels.backToLibrary}</span>
                   </Button>
                 </div>
-
               </div>
 
-                <div ref={playerRef} className="relative">
-                  {showMiniPlayer && <div className="aspect-video w-full" aria-hidden="true" />}
-                  <div
-                    className={`${
-                      showMiniPlayer
-                        ? "fixed bottom-6 right-6 z-50 aspect-video w-[320px] overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-black/20"
-                      : "relative w-full aspect-video bg-black"
-                    }`}
-                  >
-                  {isPlayerLoading && (
-                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
-                      <div className="h-12 w-12 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                    </div>
-                  )}
-                  {showMiniPlayer && (
-                    <button
-                      type="button"
-                      onClick={() => setIsMiniPlayerDismissed(true)}
-                      className="absolute right-2 top-2 z-20 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white/80 transition hover:bg-black/80 hover:text-white"
-                      aria-label="Dismiss mini player"
-                    >
-                      <XIcon className="h-4 w-4" />
-                    </button>
-                  )}
-                  <iframe
-                    src={`https://www.youtube.com/embed/${recording.youtubeId}?rel=0&modestbranding=1`}
-                    title={recording.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    onLoad={() => setIsPlayerLoading(false)}
-                    className="absolute inset-0 h-full w-full"
-                  />
-                  </div>
-                </div>
+              <div ref={inlinePlayerRef} className="relative w-full aspect-video bg-black" />
 
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200/40 px-5 py-4 dark:border-neutral-700/40 sm:px-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200/40 px-5 py-4 dark:border-neutral-700/40 sm:px-6">
+                <button
+                  type="button"
+                  onClick={handleHeart}
+                  aria-pressed={hasHearted}
+                  disabled={isHearting}
+                  className={`inline-flex items-center gap-3 rounded-full px-5 py-2.5 text-sm font-semibold shadow-lg transition-all cursor-pointer ${
+                    hasHearted
+                      ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-rose-500/30"
+                      : "bg-white text-rose-600 ring-1 ring-rose-200/70 hover:-translate-y-0.5 hover:shadow-rose-500/20 dark:bg-white/5 dark:text-rose-300 dark:ring-white/10"
+                  } ${heartPulse ? "heart-pop" : ""} ${isHearting ? "opacity-80" : ""}`}
+                >
+                  <HeartIcon className={`h-5 w-5 ${hasHearted ? "fill-white stroke-white" : ""}`} />
+                  <span className="uppercase tracking-[0.2em] text-[10px]">Heart</span>
+                  <span className="tabular-nums text-base">{heartCount ?? "—"}</span>
+                </button>
+
+                <div className="relative">
                   <button
                     type="button"
-                    onClick={handleHeart}
-                    aria-pressed={hasHearted}
-                    disabled={isHearting}
-                    className={`inline-flex items-center gap-3 rounded-full px-5 py-2.5 text-sm font-semibold shadow-lg transition-all cursor-pointer ${
-                      hasHearted
-                        ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-rose-500/30"
-                        : "bg-white text-rose-600 ring-1 ring-rose-200/70 hover:-translate-y-0.5 hover:shadow-rose-500/20 dark:bg-white/5 dark:text-rose-300 dark:ring-white/10"
-                    } ${heartPulse ? "heart-pop" : ""} ${isHearting ? "opacity-80" : ""}`}
+                    onClick={handleShare}
+                    className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
                   >
-                    <HeartIcon className={`h-5 w-5 ${hasHearted ? "fill-white stroke-white" : ""}`} />
-                    <span className="uppercase tracking-[0.2em] text-[10px]">Heart</span>
-                    <span className="tabular-nums text-base">{heartCount ?? "—"}</span>
+                    <ShareIcon className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">{labels.share}</span>
                   </button>
-
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={handleShare}
-                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
-                    >
-                      <ShareIcon className="h-3.5 w-3.5" />
-                      <span className="hidden sm:inline">{labels.share}</span>
-                    </button>
-                    {showShareMenu && (
-                      <>
-                        <div className="fixed inset-0 z-40" onClick={() => setShowShareMenu(false)} />
-                        <div className="absolute right-0 top-full z-50 mt-1 w-48 overflow-hidden rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/10">
-                          <button
-                            type="button"
-                            onClick={handleCopyLink}
-                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
-                          >
-                            {copied ? (
-                              <CheckIcon className="h-4 w-4 text-green-500" />
-                            ) : (
-                              <LinkIcon className="h-4 w-4" />
-                            )}
-                            {copied ? labels.copied : labels.copyLink}
-                          </button>
-                          <div className="my-1 h-px bg-neutral-200 dark:bg-white/10" />
-                          <a
-                            href={shareLinks.x}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => setShowShareMenu(false)}
-                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
-                          >
-                            <XIcon className="h-4 w-4" />X
-                          </a>
-                          <a
-                            href={shareLinks.facebook}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => setShowShareMenu(false)}
-                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
-                          >
-                            <FacebookIcon className="h-4 w-4" />
-                            Facebook
-                          </a>
-                          <a
-                            href={shareLinks.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => setShowShareMenu(false)}
-                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
-                          >
-                            <LinkedInIcon className="h-4 w-4" />
-                            LinkedIn
-                          </a>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setCinemaMode(true)}
-                    className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
-                  >
-                    <CinemaIcon className="h-3.5 w-3.5" />
-                    {labels.cinema}
-                  </button>
+                  {showShareMenu && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setShowShareMenu(false)} />
+                      <div className="absolute right-0 top-full z-50 mt-1 w-48 overflow-hidden rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/10">
+                        <button
+                          type="button"
+                          onClick={handleCopyLink}
+                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
+                        >
+                          {copied ? (
+                            <CheckIcon className="h-4 w-4 text-green-500" />
+                          ) : (
+                            <LinkIcon className="h-4 w-4" />
+                          )}
+                          {copied ? labels.copied : labels.copyLink}
+                        </button>
+                        <div className="my-1 h-px bg-neutral-200 dark:bg-white/10" />
+                        <a
+                          href={shareLinks.x}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShowShareMenu(false)}
+                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
+                        >
+                          <XIcon className="h-4 w-4" />X
+                        </a>
+                        <a
+                          href={shareLinks.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShowShareMenu(false)}
+                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
+                        >
+                          <FacebookIcon className="h-4 w-4" />
+                          Facebook
+                        </a>
+                        <a
+                          href={shareLinks.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setShowShareMenu(false)}
+                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
+                        >
+                          <LinkedInIcon className="h-4 w-4" />
+                          LinkedIn
+                        </a>
+                      </div>
+                    </>
+                  )}
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setCinemaMode(true)}
+                  className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+                >
+                  <CinemaIcon className="h-3.5 w-3.5" />
+                  {labels.cinema}
+                </button>
+              </div>
 
               <div>
                 <div className="px-5 py-5 sm:px-6 sm:py-6">
