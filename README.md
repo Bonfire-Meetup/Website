@@ -17,9 +17,9 @@ bun install
 bun run dev
 ```
 
-## Neon (hearts)
+## Neon (likes)
 
-This project uses Neon Postgres for the video heart system.
+This project uses Neon Postgres for the video likes ("Spark") system.
 
 Required env vars:
 
@@ -28,13 +28,28 @@ Required env vars:
 
 Generate a salt: `openssl rand -hex 32`
 
+Schema: see `db/schema.sql`
+
 ## API
 
-### Hearts
+### Likes
 
-- `GET /api/video/:id/hearts` -> `{ count, hasHearted }`
-- `POST /api/video/:id/hearts` -> `{ count, added }`
-- `DELETE /api/video/:id/hearts` -> `{ count, removed }`
+- `GET /api/video/:id/likes` -> `{ count, hasLiked }`
+- `POST /api/video/:id/likes` -> `{ count, added }`
+- `DELETE /api/video/:id/likes` -> `{ count, removed }`
+
+User identification: SHA256 hash of IP + User-Agent (no auth required).
+
+## Trending
+
+Homepage "Trending" section uses ISR (revalidate: 1 hour).
+
+Scoring algorithm:
+- Likes: `count × 3`
+- Recency: +10 (≤30d), +7 (≤90d), +4 (≤180d), +2 (≤365d)
+- Featured: +3
+
+DB calls: ~24/day (1 per revalidation), cached at edge.
 
 ## Contributing
 
