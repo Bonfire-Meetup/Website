@@ -89,8 +89,9 @@
   },
   "recordings": {
     "backToLibrary": "Back to Library",
-    "cinema": "Cinema mode",
-    "exitCinema": "Exit cinema",
+    "cinema": "Theater mode",
+    "exitCinema": "Exit theater",
+    "nextUp": "Next up",
     "locationLabel": "Location: {location}",
     "speaker": "Speaker",
     "date": "Date",

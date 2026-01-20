@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Recording } from "../lib/recordings";
 import { getProxiedThumbnailUrl } from "../lib/thumbnail";
 import { AccentBar } from "./AccentBar";
@@ -17,6 +17,7 @@ import {
   LinkIcon,
   LinkedInIcon,
   MapPinIcon,
+  PlayIcon,
   ShareIcon,
   UserIcon,
   XIcon,
@@ -27,6 +28,7 @@ interface RecordingPlayerLabels {
   backToLibrary: string;
   exitCinema: string;
   cinema: string;
+  nextUp: string;
   speaker: string;
   date: string;
   about: string;
@@ -59,6 +61,11 @@ export function RecordingPlayer({
   const [isPlayerLoading, setIsPlayerLoading] = useState(true);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showCopyToast, setShowCopyToast] = useState(false);
+  const [isMiniPlayer, setIsMiniPlayer] = useState(false);
+  const [isMiniPlayerDismissed, setIsMiniPlayerDismissed] = useState(false);
+  const [canMiniPlayer, setCanMiniPlayer] = useState(false);
+  const playerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
@@ -75,6 +82,37 @@ export function RecordingPlayer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [cinemaMode]);
 
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const handleChange = () => setCanMiniPlayer(media.matches);
+    handleChange();
+    if (media.addEventListener) {
+      media.addEventListener("change", handleChange);
+      return () => media.removeEventListener("change", handleChange);
+    }
+    media.addListener(handleChange);
+    return () => media.removeListener(handleChange);
+  }, []);
+
+  useEffect(() => {
+    if (!playerRef.current || !canMiniPlayer) {
+      setIsMiniPlayer(false);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const shouldStick = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+        setIsMiniPlayer(shouldStick);
+        if (entry.isIntersecting) {
+          setIsMiniPlayerDismissed(false);
+        }
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(playerRef.current);
+    return () => observer.disconnect();
+  }, [canMiniPlayer]);
+
   const formattedDate = new Date(recording.date).toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
@@ -83,6 +121,9 @@ export function RecordingPlayer({
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareText = `${recording.title} - ${recording.speaker.join(", ")}`;
+  const nextUp = relatedRecordings[0];
+  const remainingRelated = relatedRecordings.slice(1);
+  const showMiniPlayer = canMiniPlayer && isMiniPlayer && !cinemaMode && !isMiniPlayerDismissed;
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -106,10 +147,12 @@ export function RecordingPlayer({
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
+      setShowCopyToast(true);
       setTimeout(() => {
         setCopied(false);
         setShowShareMenu(false);
       }, 1500);
+      setTimeout(() => setShowCopyToast(false), 2000);
     } catch {
       const textArea = document.createElement("textarea");
       textArea.value = shareUrl;
@@ -118,10 +161,12 @@ export function RecordingPlayer({
       document.execCommand("copy");
       document.body.removeChild(textArea);
       setCopied(true);
+      setShowCopyToast(true);
       setTimeout(() => {
         setCopied(false);
         setShowShareMenu(false);
       }, 1500);
+      setTimeout(() => setShowCopyToast(false), 2000);
     }
   };
 
@@ -171,7 +216,7 @@ export function RecordingPlayer({
         </div>
       </div>
       <div className="relative mx-auto px-4 py-6 sm:px-6 lg:px-8" style={{ maxWidth: "85rem" }}>
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-12 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
           <div className="min-w-0 space-y-8">
             <div className="glass-card no-hover-pop overflow-hidden">
               <div className="flex items-center justify-between border-b border-neutral-200/30 px-4 py-3 dark:border-neutral-700/30">
@@ -179,7 +224,7 @@ export function RecordingPlayer({
                   href="/library"
                   variant="ghost"
                   size="sm"
-                  className="group hidden items-center gap-2 sm:inline-flex"
+                  className="group hidden items-center gap-2 lg:inline-flex"
                 >
                   <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
                   <span>{labels.backToLibrary}</span>
@@ -259,20 +304,39 @@ export function RecordingPlayer({
                 </div>
               </div>
 
-              <div className="relative w-full bg-black aspect-video">
-                {isPlayerLoading && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
-                    <div className="h-12 w-12 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                  </div>
-                )}
-                <iframe
-                  src={`https://www.youtube.com/embed/${recording.youtubeId}?rel=0&modestbranding=1`}
-                  title={recording.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  onLoad={() => setIsPlayerLoading(false)}
-                  className="absolute inset-0 h-full w-full"
-                />
+              <div ref={playerRef} className="relative">
+                {showMiniPlayer && <div className="aspect-video w-full" aria-hidden="true" />}
+                <div
+                  className={`${
+                    showMiniPlayer
+                      ? "fixed bottom-6 right-6 z-50 aspect-video w-[320px] overflow-hidden rounded-2xl bg-black shadow-2xl ring-1 ring-black/20"
+                      : "relative w-full aspect-video bg-black"
+                  }`}
+                >
+                  {isPlayerLoading && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
+                      <div className="h-12 w-12 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                    </div>
+                  )}
+                  {showMiniPlayer && (
+                    <button
+                      type="button"
+                      onClick={() => setIsMiniPlayerDismissed(true)}
+                      className="absolute right-2 top-2 z-20 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white/80 transition hover:bg-black/80 hover:text-white"
+                      aria-label="Dismiss mini player"
+                    >
+                      <XIcon className="h-4 w-4" />
+                    </button>
+                  )}
+                  <iframe
+                    src={`https://www.youtube.com/embed/${recording.youtubeId}?rel=0&modestbranding=1`}
+                    title={recording.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    onLoad={() => setIsPlayerLoading(false)}
+                    className="absolute inset-0 h-full w-full"
+                  />
+                </div>
               </div>
 
               <div>
@@ -352,17 +416,47 @@ export function RecordingPlayer({
             </div>
           </div>
 
-          <section className="space-y-8">
-            <div className="flex items-center gap-4">
-              <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10" />
-              <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white">
+          <section className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            <div className="flex items-center gap-4 lg:gap-3">
+              <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10 lg:hidden" />
+              <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white lg:text-left">
                 {labels.relatedTitle}
               </h2>
-              <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10" />
+              <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10 lg:hidden" />
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {relatedRecordings.map((related, index) => (
+            {nextUp ? (
+              <Link
+                href={`/watch/${nextUp.slug}-${nextUp.shortId}`}
+                className="group flex items-center gap-4 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/80 p-3 shadow-lg shadow-black/5 transition hover:-translate-y-0.5 hover:border-neutral-200 hover:shadow-xl dark:border-white/10 dark:bg-neutral-950 dark:shadow-black/20 dark:hover:border-white/20"
+              >
+                <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-xl bg-neutral-900">
+                  <img
+                    src={getProxiedThumbnailUrl(nextUp.thumbnail)}
+                    alt={nextUp.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-neutral-700 shadow-sm">
+                    <PlayIcon className="h-3 w-3" />
+                    {labels.nextUp}
+                  </div>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
+                    {labels.nextUp}
+                  </p>
+                  <p className="mt-1 line-clamp-2 text-sm font-semibold text-neutral-900 group-hover:text-brand-500 dark:text-white dark:group-hover:text-brand-400">
+                    {nextUp.title}
+                  </p>
+                </div>
+              </Link>
+            ) : null}
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+              {remainingRelated.map((related, index) => (
                 <Link
                   key={related.shortId}
                   href={`/watch/${related.slug}-${related.shortId}`}
@@ -419,6 +513,15 @@ export function RecordingPlayer({
           </section>
         </div>
       </div>
+      {showCopyToast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-full bg-neutral-900/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-black/30 backdrop-blur"
+        >
+          {labels.copied}
+        </div>
+      )}
     </div>
   );
 }
