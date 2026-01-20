@@ -24,15 +24,23 @@ export default function WatchLoading() {
   return (
     <div className="gradient-bg min-h-screen">
       <div className="relative mx-auto max-w-[85rem] px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-12 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
           <div className="min-w-0 space-y-8">
             <div className="overflow-hidden rounded-3xl bg-white/90 shadow-xl shadow-black/5 ring-1 ring-black/5 dark:bg-neutral-950 dark:shadow-black/10 dark:ring-white/10">
-              <div className="flex items-center justify-between border-b border-neutral-200/30 px-4 py-3 dark:border-neutral-700/30">
+              <div className="hidden items-center justify-between border-b border-neutral-200/30 px-4 py-3 dark:border-neutral-700/30 lg:flex">
                 <Skeleton className="h-5 w-36" />
                 <Skeleton className="h-7 w-24 rounded-lg" />
               </div>
 
               <Skeleton className="aspect-video w-full !rounded-none" />
+
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200/40 px-5 py-4 dark:border-neutral-700/40 sm:px-6">
+                <Skeleton className="h-10 w-36 rounded-full" />
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-8 w-20 rounded-lg" />
+                  <Skeleton className="h-8 w-24 rounded-lg" />
+                </div>
+              </div>
 
               <div className="px-5 py-5 sm:px-6 sm:py-6 space-y-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -61,15 +69,23 @@ export default function WatchLoading() {
             </div>
           </div>
 
-          <section className="space-y-8">
-            <div className="flex items-center gap-4">
-              <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10" />
+          <section className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            <div className="flex items-center gap-4 lg:gap-3">
+              <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10 lg:hidden" />
               <Skeleton className="h-7 w-36" />
-              <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10" />
+              <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10 lg:hidden" />
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, i) => (
+            <div className="overflow-hidden rounded-2xl bg-white/90 shadow-lg shadow-black/5 ring-1 ring-black/5 dark:bg-neutral-950 dark:shadow-black/10 dark:ring-white/10">
+              <Skeleton className="aspect-video w-full !rounded-none" />
+              <div className="p-4 space-y-2">
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
+              {Array.from({ length: 3 }).map((_, i) => (
                 <RelatedCardSkeleton key={i} />
               ))}
             </div>

@@ -13,7 +13,6 @@ import {
   CalendarIcon,
   CheckIcon,
   CinemaIcon,
-  ExitCinemaIcon,
   FacebookIcon,
   HeartIcon,
   LinkIcon,
@@ -59,8 +58,6 @@ export function RecordingPlayer({
   labels: RecordingPlayerLabels;
   locale: string;
 }) {
-  const [cinemaMode, setCinemaMode] = useState(false);
-  const [isPlayerLoading, setIsPlayerLoading] = useState(true);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showCopyToast, setShowCopyToast] = useState(false);
@@ -69,11 +66,10 @@ export function RecordingPlayer({
   const [isHearting, setIsHearting] = useState(false);
   const [heartPulse, setHeartPulse] = useState(false);
   const inlinePlayerRef = useRef<HTMLDivElement | null>(null);
-  const { setVideo, setInlineContainer } = useGlobalPlayer();
+  const { setVideo, setInlineContainer, cinemaMode, setCinemaMode } = useGlobalPlayer();
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
-    setIsPlayerLoading(true);
   }, [recording.youtubeId]);
 
   useEffect(() => {
@@ -84,7 +80,7 @@ export function RecordingPlayer({
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [cinemaMode]);
+  }, [cinemaMode, setCinemaMode]);
 
   const formattedDate = new Date(recording.date).toLocaleDateString(locale, {
     month: "short",
@@ -206,43 +202,6 @@ export function RecordingPlayer({
 
   return (
     <div className="gradient-bg min-h-screen">
-      <div
-        className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/95 transition-all duration-500 ${
-          cinemaMode ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
-        onClick={() => setCinemaMode(false)}
-      >
-        <button
-          type="button"
-          onClick={() => setCinemaMode(false)}
-          className={`absolute right-4 top-4 z-10 flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:text-white ${
-            cinemaMode ? "translate-y-0 opacity-100 delay-200" : "-translate-y-4 opacity-0"
-          }`}
-        >
-          <ExitCinemaIcon className="h-4 w-4" />
-          {labels.exitCinema}
-        </button>
-        <div
-          className={`relative aspect-video transition-all duration-500 ease-out ${
-            cinemaMode ? "w-[90vw] scale-100 opacity-100" : "w-[60vw] scale-95 opacity-0"
-          }`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {isPlayerLoading && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-black/60">
-              <div className="h-12 w-12 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-            </div>
-          )}
-          <iframe
-            src={`https://www.youtube.com/embed/${recording.youtubeId}?rel=0&modestbranding=1`}
-            title={recording.title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-            onLoad={() => setIsPlayerLoading(false)}
-            className="absolute inset-0 h-full w-full rounded-lg"
-          />
-        </div>
-      </div>
       <div className="relative mx-auto px-4 py-6 sm:px-6 lg:px-8" style={{ maxWidth: "85rem" }}>
         <div className="flex flex-col gap-12 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
           <div className="min-w-0 space-y-8">
@@ -341,11 +300,11 @@ export function RecordingPlayer({
                 </div>
                 <button
                   type="button"
-                  onClick={() => setCinemaMode(true)}
+                  onClick={() => setCinemaMode(!cinemaMode)}
                   className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
                 >
                   <CinemaIcon className="h-3.5 w-3.5" />
-                  {labels.cinema}
+                  {cinemaMode ? labels.exitCinema : labels.cinema}
                 </button>
               </div>
 
