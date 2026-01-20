@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { type LocationValue } from "../lib/constants";
-import { MapPinIcon } from "./icons";
+import { FireIcon, MapPinIcon } from "./icons";
 import { LocationPill } from "./LocationPill";
 
 interface VideoCardProps {
@@ -15,6 +15,7 @@ interface VideoCardProps {
   locationLabel?: string;
   ariaLocationLabel?: string;
   locale?: string;
+  likeCount?: number;
 }
 
 export function VideoCard({
@@ -28,6 +29,7 @@ export function VideoCard({
   locationLabel,
   ariaLocationLabel,
   locale = "en-US",
+  likeCount,
 }: VideoCardProps) {
   const formattedDate = new Date(date).toLocaleDateString(locale, {
     month: "short",
@@ -76,6 +78,12 @@ export function VideoCard({
           </div>
           <div className="flex items-center justify-between border-t border-neutral-100 pt-3 dark:border-white/5">
             <span className="text-xs text-neutral-400 dark:text-neutral-500">{formattedDate}</span>
+            {typeof likeCount === "number" && likeCount > 0 && (
+              <span className="flex items-center gap-1.5 text-xs font-medium text-rose-400">
+                <FireIcon className="h-3.5 w-3.5" />
+                {likeCount}
+              </span>
+            )}
           </div>
         </div>
       </div>

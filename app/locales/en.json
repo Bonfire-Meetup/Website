@@ -43,8 +43,8 @@
       }
     },
     "recordings": {
-      "title": "Past Recordings",
-      "subtitle": "Missed a meetup? Catch up with our talk recordings from previous events.",
+      "title": "Trending Talks",
+      "subtitle": "The most popular recordings from our community.",
       "viewAll": "View all recordings",
       "empty": "No recordings found for this location.",
       "filter": {

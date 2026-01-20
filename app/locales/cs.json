@@ -43,8 +43,8 @@
       }
     },
     "recordings": {
-      "title": "Archiv záznamů",
-      "subtitle": "Nestihl jsi meetup? Nevadí, pusť si záznamy z proběhlých akcí.",
+      "title": "Populární záznamy",
+      "subtitle": "Nejoblíbenější přednášky z naší komunity.",
       "viewAll": "Všechny záznamy",
       "empty": "Z téhle lokace tu zatím nic není.",
       "filter": {

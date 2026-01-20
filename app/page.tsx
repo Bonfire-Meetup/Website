@@ -12,11 +12,14 @@ import { TalkBanner } from "./components/TalkBanner";
 import { RecordingsSectionSkeleton, LocationsSectionSkeleton } from "./components/Skeletons";
 
 import upcomingEventsData from "./data/upcoming-events.json";
-import { getHeroImages, getHomepageRecordings } from "./lib/data";
+import { getHeroImages } from "./lib/data";
+import { getTrendingRecordings } from "./lib/trending";
 
 const EventsSection = dynamic(() =>
   import("./components/EventsSection").then((mod) => mod.EventsSection),
 );
+
+export const revalidate = 3600;
 
 export default async function HomePage() {
   const t = await getTranslations();
@@ -24,7 +27,7 @@ export default async function HomePage() {
   const photoAlt = t("hero.photoAlt");
 
   const heroImages = await getHeroImages(photoAlt);
-  const homepageRecordings = getHomepageRecordings();
+  const trendingRecordings = await getTrendingRecordings(6);
 
   const eventsLabels = {
     title: t("sections.events.title"),
@@ -62,7 +65,7 @@ export default async function HomePage() {
         <div className="section-divider mx-auto max-w-4xl" />
 
         <Suspense fallback={<RecordingsSectionSkeleton />}>
-          <RecordingsSection recordings={homepageRecordings} />
+          <RecordingsSection recordings={trendingRecordings} />
         </Suspense>
 
         <div className="section-divider mx-auto max-w-4xl" />

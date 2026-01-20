@@ -1,17 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { VideoCard } from "./VideoCard";
 import { EmptyState } from "./EmptyState";
 import { Button } from "./Button";
-import { MapPinIcon } from "./icons";
 import type { Recording } from "../lib/recordings";
-import { LOCATIONS, type LocationValue } from "../lib/constants";
-
-type FilterOption = "all" | LocationValue;
+import { LOCATIONS } from "../lib/constants";
 
 type Labels = {
-  all: string;
   prague: string;
   zlin: string;
   empty: string;
@@ -22,7 +17,7 @@ type Labels = {
 type HomepageRecording = Pick<
   Recording,
   "shortId" | "slug" | "title" | "speaker" | "date" | "thumbnail" | "location"
->;
+> & { likeCount?: number };
 
 export function RecordingsSectionClient({
   recordings,
@@ -33,46 +28,10 @@ export function RecordingsSectionClient({
   labels: Labels;
   locale: string;
 }) {
-  const [activeFilter, setActiveFilter] = useState<FilterOption>("all");
-
-  const filteredRecordings =
-    activeFilter === "all" ? recordings : recordings.filter((r) => r.location === activeFilter);
-
-  const filterOptions: { key: FilterOption; label: string; color?: string }[] = [
-    { key: "all", label: labels.all },
-    { key: LOCATIONS.PRAGUE, label: labels.prague, color: "red" },
-    { key: LOCATIONS.ZLIN, label: labels.zlin, color: "blue" },
-  ];
-
   return (
     <>
-      <div className="mb-10 flex justify-center">
-        <div className="glass inline-flex items-center gap-1 rounded-2xl p-1.5">
-          {filterOptions.map((option) => (
-            <Button
-              key={option.key}
-              onClick={() => setActiveFilter(option.key)}
-              variant="plain"
-              size="lg"
-              className={`flex items-center gap-2 rounded-xl font-medium transition-all duration-300 ${
-                activeFilter === option.key
-                  ? option.color === "red"
-                    ? "bg-red-500 text-white shadow-lg shadow-red-500/25"
-                    : option.color === "blue"
-                      ? "bg-blue-500 text-white shadow-lg shadow-blue-500/25"
-                      : "bg-brand-500 text-white shadow-lg shadow-brand-500/25"
-                  : "text-neutral-600 hover:bg-white/50 dark:text-neutral-400 dark:hover:bg-white/10"
-              }`}
-            >
-              {option.key !== "all" && <MapPinIcon className="h-4 w-4" />}
-              {option.label}
-            </Button>
-          ))}
-        </div>
-      </div>
-
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredRecordings.map((recording) => (
+        {recordings.map((recording) => (
           <VideoCard
             key={recording.shortId}
             shortId={recording.shortId}
@@ -85,11 +44,12 @@ export function RecordingsSectionClient({
             locationLabel={recording.location === LOCATIONS.PRAGUE ? labels.prague : labels.zlin}
             ariaLocationLabel={labels.ariaLocationLabel.replace("{location}", recording.location)}
             locale={locale}
+            likeCount={recording.likeCount}
           />
         ))}
       </div>
 
-      {filteredRecordings.length === 0 && (
+      {recordings.length === 0 && (
         <EmptyState
           message={labels.empty}
           className="max-w-md p-12"

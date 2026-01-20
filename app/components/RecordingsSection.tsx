@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import dynamic from "next/dynamic";
 import type { Recording } from "../lib/recordings";
+import type { TrendingRecording } from "../lib/trending";
 import { SectionHeader } from "./SectionHeader";
 import { getProxiedThumbnailUrl } from "../lib/thumbnail";
 
@@ -9,7 +10,7 @@ const RecordingsSectionClient = dynamic(() =>
 );
 
 interface RecordingsSectionProps {
-  recordings: Recording[];
+  recordings: (Recording | TrendingRecording)[];
 }
 
 export async function RecordingsSection({ recordings }: RecordingsSectionProps) {
@@ -24,6 +25,7 @@ export async function RecordingsSection({ recordings }: RecordingsSectionProps) 
     date: recording.date,
     thumbnail: getProxiedThumbnailUrl(recording.thumbnail),
     location: recording.location,
+    likeCount: "likeCount" in recording ? recording.likeCount : undefined,
   }));
 
   return (
@@ -39,7 +41,6 @@ export async function RecordingsSection({ recordings }: RecordingsSectionProps) 
         <RecordingsSectionClient
           recordings={homepageRecordings}
           labels={{
-            all: t("filter.all"),
             prague: t("filter.prague"),
             zlin: t("filter.zlin"),
             empty: t("empty"),
