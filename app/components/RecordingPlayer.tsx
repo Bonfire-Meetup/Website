@@ -364,15 +364,15 @@ export function RecordingPlayer({
                         {recording.location}
                       </Pill>
                     </div>
-                    {recording.episode && (
+                    {recording.episodeId && (
                       <Pill
-                        href={`/library?episode=${encodeURIComponent(recording.episode)}`}
+                        href={`/library?episode=${encodeURIComponent(recording.episodeId)}`}
                         size="sm"
                         className="bg-neutral-900/5 font-semibold uppercase tracking-[0.15em] text-neutral-600 transition hover:bg-neutral-900/10 hover:text-neutral-800 dark:bg-white/10 dark:text-neutral-200 dark:hover:bg-white/20 dark:hover:text-white"
                       >
                         {recording.episodeNumber
-                          ? `${labels.epShort} ${recording.episodeNumber} · ${recording.episode}`
-                          : recording.episode}
+                          ? `${labels.epShort} ${recording.episodeNumber} · ${recording.episode ?? recording.episodeId}`
+                          : (recording.episode ?? recording.episodeId)}
                       </Pill>
                     )}
                   </div>

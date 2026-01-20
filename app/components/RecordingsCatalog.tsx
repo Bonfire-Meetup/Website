@@ -28,6 +28,7 @@ type CatalogRecording = Pick<
   | "description"
   | "tags"
   | "location"
+  | "episodeId"
   | "episode"
   | "episodeNumber"
 >;
@@ -83,6 +84,13 @@ function formatDate(date: string, locale: string) {
     day: "numeric",
     year: "numeric",
   });
+}
+
+function normalizeText(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase();
 }
 
 const FEATURED_INTERVAL_MS = 6000;
@@ -308,7 +316,7 @@ export function RecordingsCatalog({
     const filteredForTags = recordings.filter(
       (r) =>
         (activeLocation === "all" || r.location === activeLocation) &&
-        (activeEpisode === "all" || r.episode === activeEpisode),
+        (activeEpisode === "all" || r.episodeId === activeEpisode),
     );
     const tags = Array.from(new Set(filteredForTags.flatMap((recording) => recording.tags))).sort(
       (a, b) => a.localeCompare(b),
@@ -322,21 +330,23 @@ export function RecordingsCatalog({
         (activeLocation === "all" || r.location === activeLocation) &&
         (activeTag === "all" || r.tags.includes(activeTag)),
     );
-    const map = new Map<string, { number?: number; location: LocationValue }>();
+    const map = new Map<string, { number?: number; location: LocationValue; title: string }>();
     filteredForEpisodes.forEach((recording) => {
-      if (recording.episode) {
-        if (!map.has(recording.episode)) {
-          map.set(recording.episode, {
+      if (recording.episodeId) {
+        const title = recording.episode ?? recording.episodeId;
+        if (!map.has(recording.episodeId)) {
+          map.set(recording.episodeId, {
             number: recording.episodeNumber,
             location: recording.location,
+            title,
           });
         }
       }
     });
 
-    return Array.from(map.entries()).map(([name, data]) => ({
-      value: name,
-      label: data.number ? `${labels.epShort} ${data.number} — ${name}` : name,
+    return Array.from(map.entries()).map(([id, data]) => ({
+      value: id,
+      label: data.number ? `${labels.epShort} ${data.number} — ${data.title}` : data.title,
       number: data.number || 0,
       location: data.location,
     }));
@@ -403,19 +413,21 @@ export function RecordingsCatalog({
   };
 
   const filteredRecordings = useMemo(() => {
-    const loweredQuery = searchQuery.trim().toLowerCase();
+    const loweredQuery = normalizeText(searchQuery.trim());
     return recordings.filter((recording) => {
       const matchesLocation = activeLocation === "all" || recording.location === activeLocation;
       const matchesTag = activeTag === "all" || recording.tags.includes(activeTag);
-      const matchesEpisode = activeEpisode === "all" || recording.episode === activeEpisode;
+      const matchesEpisode = activeEpisode === "all" || recording.episodeId === activeEpisode;
       const matchesQuery =
         loweredQuery.length === 0 ||
-        recording.title.toLowerCase().includes(loweredQuery) ||
-        recording.speaker.some((name) => name.toLowerCase().includes(loweredQuery)) ||
-        recording.tags.some((tag) => tag.toLowerCase().includes(loweredQuery)) ||
-        recording.location.toLowerCase().includes(loweredQuery) ||
-        (recording.episode?.toLowerCase().includes(loweredQuery) ?? false) ||
-        (recording.description?.toLowerCase().includes(loweredQuery) ?? false);
+        normalizeText(recording.title).includes(loweredQuery) ||
+        recording.speaker.some((name) => normalizeText(name).includes(loweredQuery)) ||
+        recording.tags.some((tag) => normalizeText(tag).includes(loweredQuery)) ||
+        normalizeText(recording.location).includes(loweredQuery) ||
+        (recording.episode ? normalizeText(recording.episode).includes(loweredQuery) : false) ||
+        (recording.description
+          ? normalizeText(recording.description).includes(loweredQuery)
+          : false);
       return matchesLocation && matchesTag && matchesEpisode && matchesQuery;
     });
   }, [recordings, activeLocation, activeTag, activeEpisode, searchQuery]);
@@ -569,7 +581,7 @@ export function RecordingsCatalog({
                       (r) =>
                         r.location === option.value &&
                         (activeTag === "all" || r.tags.includes(activeTag)) &&
-                        (activeEpisode === "all" || r.episode === activeEpisode),
+                        (activeEpisode === "all" || r.episodeId === activeEpisode),
                     );
 
                   return (
@@ -728,186 +740,192 @@ export function RecordingsCatalog({
           ) : (
             <>
               {viewMode === "rows" && featured && (
-                <article
-                  key={`featured-${featured.shortId}-${filterKey}`}
-                  role="link"
-                  tabIndex={0}
-                  onClick={() => router.push(`/watch/${featured.slug}-${featured.shortId}`)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      router.push(`/watch/${featured.slug}-${featured.shortId}`);
-                    }
-                  }}
-                  aria-label={featured.title}
-                  onMouseEnter={canHover ? () => setIsFeaturedPaused(true) : undefined}
-                  onMouseLeave={canHover ? () => setIsFeaturedPaused(false) : undefined}
-                  className={`group recording-card-enter relative mb-12 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10 ${
-                    hasFeaturedHero ? "min-h-[420px] sm:min-h-0" : ""
-                  }`}
-                >
-                  <div
-                    className={
-                      hasFeaturedHero
-                        ? "absolute inset-0 z-0 sm:relative sm:aspect-[16/7] sm:w-full"
-                        : "relative aspect-[16/7] w-full"
-                    }
+                <>
+                  <article
+                    key={`featured-${featured.shortId}-${filterKey}`}
+                    role="link"
+                    tabIndex={0}
+                    onClick={() => router.push(`/watch/${featured.slug}-${featured.shortId}`)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        router.push(`/watch/${featured.slug}-${featured.shortId}`);
+                      }
+                    }}
+                    aria-label={featured.title}
+                    onMouseEnter={canHover ? () => setIsFeaturedPaused(true) : undefined}
+                    onMouseLeave={canHover ? () => setIsFeaturedPaused(false) : undefined}
+                    className={`group recording-card-enter relative mb-8 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10 ${
+                      hasFeaturedHero ? "min-h-[420px] sm:min-h-0" : ""
+                    }`}
                   >
-                    <Image
-                      src={featuredThumbnail ?? featured.thumbnail}
-                      alt={featured.title}
-                      fill
-                      className="object-cover transition duration-700 group-hover:scale-105"
-                      sizes="(max-width: 1024px) 100vw, 70vw"
-                      priority
-                    />
-                    {viewMode === "rows" && featuredCandidates.length > 1 ? (
-                      <div className="absolute inset-0 z-10 pointer-events-none">
-                        <button
-                          type="button"
-                          aria-label="Previous featured"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setIsFeaturedPaused(false);
-                            setFeaturedIndex(
-                              (prev) =>
-                                (prev - 1 + featuredCandidates.length) % featuredCandidates.length,
-                            );
-                          }}
-                          className="pointer-events-auto absolute inset-y-0 left-0 w-1/5 cursor-pointer"
-                        />
-                        <button
-                          type="button"
-                          aria-label="Next featured"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setIsFeaturedPaused(false);
-                            setFeaturedIndex((prev) => (prev + 1) % featuredCandidates.length);
-                          }}
-                          className="pointer-events-auto absolute inset-y-0 right-0 w-1/5 cursor-pointer"
-                        />
-                      </div>
-                    ) : null}
-                    {viewMode === "rows" && featuredCandidates.length > 1 ? (
-                      <div className="absolute top-4 left-6 right-6 z-10 flex gap-2">
-                        {featuredCandidates.map((item, index) => {
-                          const isActive = index === featuredIndex;
-                          return (
-                            <div
-                              key={`progress-${item.shortId}`}
-                              className="h-0.5 flex-1 overflow-hidden rounded-full bg-white/40 dark:bg-white/20"
-                            >
-                              <span
-                                key={
-                                  isActive
-                                    ? `active-${item.shortId}-${featuredIndex}`
-                                    : `inactive-${item.shortId}`
-                                }
-                                className={`block h-full rounded-full ${
-                                  isActive
-                                    ? "hero-progress-fill"
-                                    : index < featuredIndex
-                                      ? "bg-white"
-                                      : "bg-white/20"
-                                }`}
-                                style={
-                                  isActive
-                                    ? {
-                                        animationDuration: `${FEATURED_INTERVAL_MS}ms`,
-                                        animationPlayState: isFeaturedPaused ? "paused" : "running",
-                                      }
-                                    : index < featuredIndex
-                                      ? { width: "100%" }
-                                      : { width: "0%" }
-                                }
-                              />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4 z-20 sm:bottom-6 sm:left-6 sm:right-6">
                     <div
-                      className={`flex max-w-2xl flex-col gap-2 rounded-3xl px-4 py-4 sm:px-5 sm:py-4 ${
+                      className={
                         hasFeaturedHero
-                          ? "bg-black/60 text-white ring-1 ring-white/10 sm:bg-white/90 sm:text-neutral-900 sm:ring-black/5 dark:sm:bg-black/60 dark:sm:text-white dark:sm:ring-white/10"
-                          : "bg-white/85 text-neutral-900 ring-1 ring-black/5 dark:bg-black/60 dark:text-white dark:ring-white/10"
-                      }`}
+                          ? "absolute inset-0 z-0 sm:relative sm:aspect-[16/7] sm:w-full"
+                          : "relative aspect-[16/7] w-full"
+                      }
                     >
+                      <Image
+                        src={featuredThumbnail ?? featured.thumbnail}
+                        alt={featured.title}
+                        fill
+                        className="object-cover transition duration-700 group-hover:scale-105"
+                        sizes="(max-width: 1024px) 100vw, 70vw"
+                        priority
+                      />
+                      {viewMode === "rows" && featuredCandidates.length > 1 ? (
+                        <div className="absolute inset-0 z-10 pointer-events-none">
+                          <button
+                            type="button"
+                            aria-label="Previous featured"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setIsFeaturedPaused(false);
+                              setFeaturedIndex(
+                                (prev) =>
+                                  (prev - 1 + featuredCandidates.length) %
+                                  featuredCandidates.length,
+                              );
+                            }}
+                            className="pointer-events-auto absolute inset-y-0 left-0 w-1/5 cursor-pointer"
+                          />
+                          <button
+                            type="button"
+                            aria-label="Next featured"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setIsFeaturedPaused(false);
+                              setFeaturedIndex((prev) => (prev + 1) % featuredCandidates.length);
+                            }}
+                            className="pointer-events-auto absolute inset-y-0 right-0 w-1/5 cursor-pointer"
+                          />
+                        </div>
+                      ) : null}
+                      {viewMode === "rows" && featuredCandidates.length > 1 ? (
+                        <div className="absolute top-4 left-6 right-6 z-10 flex gap-2">
+                          {featuredCandidates.map((item, index) => {
+                            const isActive = index === featuredIndex;
+                            return (
+                              <div
+                                key={`progress-${item.shortId}`}
+                                className="h-0.5 flex-1 overflow-hidden rounded-full bg-white/40 dark:bg-white/20"
+                              >
+                                <span
+                                  key={
+                                    isActive
+                                      ? `active-${item.shortId}-${featuredIndex}`
+                                      : `inactive-${item.shortId}`
+                                  }
+                                  className={`block h-full rounded-full ${
+                                    isActive
+                                      ? "hero-progress-fill"
+                                      : index < featuredIndex
+                                        ? "bg-white"
+                                        : "bg-white/20"
+                                  }`}
+                                  style={
+                                    isActive
+                                      ? {
+                                          animationDuration: `${FEATURED_INTERVAL_MS}ms`,
+                                          animationPlayState: isFeaturedPaused
+                                            ? "paused"
+                                            : "running",
+                                        }
+                                      : index < featuredIndex
+                                        ? { width: "100%" }
+                                        : { width: "0%" }
+                                  }
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
+                    <div className="absolute bottom-4 left-4 right-4 z-20 sm:bottom-6 sm:left-6 sm:right-6">
                       <div
-                        className={`flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] ${
+                        className={`flex max-w-2xl flex-col gap-2 rounded-3xl px-4 py-4 sm:px-5 sm:py-4 ${
                           hasFeaturedHero
-                            ? "text-white/80 sm:text-neutral-600 dark:sm:text-white/70"
-                            : "text-neutral-600 dark:text-white/70"
+                            ? "bg-black/60 text-white ring-1 ring-white/10 sm:bg-white/90 sm:text-neutral-900 sm:ring-black/5 dark:sm:bg-black/60 dark:sm:text-white dark:sm:ring-white/10"
+                            : "bg-white/85 text-neutral-900 ring-1 ring-black/5 dark:bg-black/60 dark:text-white dark:ring-white/10"
                         }`}
                       >
-                        <Pill
-                          size="xs"
-                          className={`${
+                        <div
+                          className={`flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] ${
                             hasFeaturedHero
-                              ? "bg-white/15 text-white/90 sm:bg-black/5 sm:text-neutral-700 dark:sm:bg-white/10 dark:sm:text-white/80"
-                              : "bg-black/5 text-neutral-700 dark:bg-white/10 dark:text-white/80"
+                              ? "text-white/80 sm:text-neutral-600 dark:sm:text-white/70"
+                              : "text-neutral-600 dark:text-white/70"
                           }`}
                         >
-                          {featured.location}
-                        </Pill>
-                        <span>{formatDate(featured.date, locale)}</span>
-                      </div>
-                      <h2
-                        className={`break-words text-xl font-semibold leading-tight line-clamp-2 sm:text-3xl lg:text-4xl ${
-                          hasFeaturedHero
-                            ? "text-white sm:text-neutral-900 dark:sm:text-white"
-                            : "text-neutral-900 dark:text-white"
-                        }`}
-                      >
-                        {featured.title}
-                      </h2>
-                      <div className="flex flex-col gap-1.5">
-                        {featured.speaker.map((name) => (
-                          <div key={name} className="flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(59,130,246,0.4)] dark:bg-brand-400" />
-                            <span
-                              className={`text-xs font-medium sm:text-sm ${
-                                hasFeaturedHero
-                                  ? "text-white/90 sm:text-neutral-900/80 dark:sm:text-white/80"
-                                  : "text-neutral-900/80 dark:text-white/80"
-                              }`}
-                            >
-                              {name}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                      <p
-                        className={`text-xs sm:text-base ${
-                          hasFeaturedHero
-                            ? "text-white/70 sm:text-neutral-600 dark:sm:text-white/70"
-                            : "text-neutral-600 dark:text-white/70"
-                        }`}
-                      >
-                        {featured.description}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {featured.tags.map((tag) => (
                           <Pill
-                            key={tag}
-                            href={`/library?tag=${encodeURIComponent(tag)}`}
-                            onClick={(event) => event.stopPropagation()}
                             size="xs"
-                            className={`font-semibold transition hover:text-neutral-900 dark:hover:text-white ${
+                            className={`${
                               hasFeaturedHero
-                                ? "bg-white/10 text-white/75 sm:bg-black/5 sm:text-neutral-600 dark:sm:bg-white/10 dark:sm:text-white/70"
-                                : "bg-black/5 text-neutral-600 dark:bg-white/10 dark:text-white/70"
+                                ? "bg-white/15 text-white/90 sm:bg-black/5 sm:text-neutral-700 dark:sm:bg-white/10 dark:sm:text-white/80"
+                                : "bg-black/5 text-neutral-700 dark:bg-white/10 dark:text-white/80"
                             }`}
                           >
-                            {tag}
+                            {featured.location}
                           </Pill>
-                        ))}
+                          <span>{formatDate(featured.date, locale)}</span>
+                        </div>
+                        <h2
+                          className={`break-words text-xl font-semibold leading-tight line-clamp-2 sm:text-3xl lg:text-4xl ${
+                            hasFeaturedHero
+                              ? "text-white sm:text-neutral-900 dark:sm:text-white"
+                              : "text-neutral-900 dark:text-white"
+                          }`}
+                        >
+                          {featured.title}
+                        </h2>
+                        <div className="flex flex-col gap-1.5">
+                          {featured.speaker.map((name) => (
+                            <div key={name} className="flex items-center gap-2">
+                              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(59,130,246,0.4)] dark:bg-brand-400" />
+                              <span
+                                className={`text-xs font-medium sm:text-sm ${
+                                  hasFeaturedHero
+                                    ? "text-white/90 sm:text-neutral-900/80 dark:sm:text-white/80"
+                                    : "text-neutral-900/80 dark:text-white/80"
+                                }`}
+                              >
+                                {name}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                        <p
+                          className={`text-xs sm:text-base ${
+                            hasFeaturedHero
+                              ? "text-white/70 sm:text-neutral-600 dark:sm:text-white/70"
+                              : "text-neutral-600 dark:text-white/70"
+                          }`}
+                        >
+                          {featured.description}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {featured.tags.map((tag) => (
+                            <Pill
+                              key={tag}
+                              href={`/library?tag=${encodeURIComponent(tag)}`}
+                              onClick={(event) => event.stopPropagation()}
+                              size="xs"
+                              className={`font-semibold transition hover:text-neutral-900 dark:hover:text-white ${
+                                hasFeaturedHero
+                                  ? "bg-white/10 text-white/75 sm:bg-black/5 sm:text-neutral-600 dark:sm:bg-white/10 dark:sm:text-white/70"
+                                  : "bg-black/5 text-neutral-600 dark:bg-white/10 dark:text-white/70"
+                              }`}
+                            >
+                              {tag}
+                            </Pill>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </article>
+                  </article>
+                  <div className="section-divider mb-10" />
+                </>
               )}
 
               {viewMode === "rows" ? (

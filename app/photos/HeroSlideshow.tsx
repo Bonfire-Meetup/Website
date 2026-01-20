@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useReducer } from "react";
+import { useEffect, useRef, useReducer, useState } from "react";
 
 type HeroSlideshowProps = {
   images: { src: string; alt: string }[];
@@ -67,6 +67,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     isTransitioning: false,
     prefersReducedMotion: false,
   });
+  const [loadedIndices, setLoadedIndices] = useState<Set<number>>(() => new Set());
 
   const currentIndexRef = useRef(state.currentIndex);
   currentIndexRef.current = state.currentIndex;
@@ -120,18 +121,44 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   }
 
   const currentImage = images[state.currentIndex];
-  const nextImage = state.nextIndex !== null ? images[state.nextIndex] : null;
+  const nextIndex = state.nextIndex;
+  const nextImage = nextIndex !== null ? images[nextIndex] : null;
+  const isCurrentLoaded = loadedIndices.has(state.currentIndex);
+
+  const markLoaded = (index: number) => {
+    setLoadedIndices((prev) => {
+      if (prev.has(index)) return prev;
+      const next = new Set(prev);
+      next.add(index);
+      return next;
+    });
+  };
 
   if (state.prefersReducedMotion) {
     return (
       <div className="absolute inset-0 overflow-hidden">
-        <img src={currentImage.src} alt={currentImage.alt} className="h-full w-full object-cover" />
+        <img
+          src={currentImage.src}
+          alt={currentImage.alt}
+          className="h-full w-full object-cover"
+          onLoad={() => markLoaded(state.currentIndex)}
+        />
+        <div
+          className={`pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-200/80 via-white/70 to-neutral-200/60 transition-opacity duration-700 dark:from-neutral-900/80 dark:via-neutral-950/70 dark:to-neutral-900/60 ${
+            isCurrentLoaded ? "opacity-0" : "opacity-100"
+          }`}
+        />
       </div>
     );
   }
 
   return (
     <div className="absolute inset-0 overflow-hidden">
+      <div
+        className={`pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-200/80 via-white/70 to-neutral-200/60 transition-opacity duration-700 dark:from-neutral-900/80 dark:via-neutral-950/70 dark:to-neutral-900/60 ${
+          isCurrentLoaded ? "opacity-0" : "opacity-100"
+        }`}
+      />
       <div
         key={`slide-${state.currentIndex}`}
         className={`absolute inset-0 transition-opacity duration-[2000ms] ease-in-out ${
@@ -142,6 +169,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
           src={currentImage.src}
           alt={currentImage.alt}
           className={`h-full w-full object-cover hero-ken-burns-${state.currentDirection}`}
+          onLoad={() => markLoaded(state.currentIndex)}
         />
       </div>
 
@@ -156,6 +184,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
             src={nextImage.src}
             alt={nextImage.alt}
             className={`h-full w-full object-cover hero-ken-burns-${state.nextDirection}`}
+            onLoad={() => markLoaded(nextIndex as number)}
           />
         </div>
       )}

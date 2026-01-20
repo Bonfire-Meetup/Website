@@ -28,6 +28,7 @@ export default async function LibraryPage() {
     description: recording.description,
     tags: recording.tags,
     location: recording.location,
+    episodeId: recording.episodeId,
     episode: recording.episode,
     episodeNumber: recording.episodeNumber,
   }));
