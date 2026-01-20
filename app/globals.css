@@ -795,3 +795,62 @@ html {
   background-color: rgba(255, 255, 255, 0.9);
   animation: heroProgress linear forwards;
 }
+
+@keyframes kenBurns1 {
+  0% {
+    transform: scale(1.02) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.12) translate(-1.5%, -1%);
+  }
+}
+
+@keyframes kenBurns2 {
+  0% {
+    transform: scale(1.02) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.12) translate(1.5%, -1%);
+  }
+}
+
+@keyframes kenBurns3 {
+  0% {
+    transform: scale(1.12) translate(-1%, -0.5%);
+  }
+  100% {
+    transform: scale(1.02) translate(0.5%, 0.5%);
+  }
+}
+
+@keyframes kenBurns4 {
+  0% {
+    transform: scale(1.12) translate(1%, -0.5%);
+  }
+  100% {
+    transform: scale(1.02) translate(-0.5%, 0.5%);
+  }
+}
+
+.hero-ken-burns-1 {
+  animation: kenBurns1 20s ease-in-out forwards;
+}
+.hero-ken-burns-2 {
+  animation: kenBurns2 20s ease-in-out forwards;
+}
+.hero-ken-burns-3 {
+  animation: kenBurns3 20s ease-in-out forwards;
+}
+.hero-ken-burns-4 {
+  animation: kenBurns4 20s ease-in-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ken-burns-1,
+  .hero-ken-burns-2,
+  .hero-ken-burns-3,
+  .hero-ken-burns-4 {
+    animation: none;
+    transform: scale(1.05);
+  }
+}

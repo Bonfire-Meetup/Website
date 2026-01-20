@@ -4,7 +4,12 @@
     "upcoming": "Nadch\u00e1zej\u00edc\u00ed",
     "library": "Knihovna",
     "crew": "Crew",
+    "photos": "Fotky",
+    "press": "Pro m\u00e9dia",
+    "codeOfConduct": "Kodex chov\u00e1n\u00ed",
     "back": "Zp\u011bt",
+    "menu": "Otev\u0159\u00edt menu",
+    "close": "Zav\u0159\u00edt menu",
     "logoAlt": "Logo Bonfire Events"
   },
   "hero": {
@@ -181,15 +186,33 @@
     },
     "photos": {
       "title": "Fotky z akcí",
-      "body": "Prohlédněte si fotky z našich meetupů. Alba jsou aktuálně na Facebooku.",
+      "body": "Prohlédněte si fotky z našich meetupů.",
       "cta": "Zobrazit alba",
-      "link": "https://www.facebook.com/bonfire.meetup/photos_albums"
+      "link": "/photos"
     },
     "help": {
       "title": "Potřebujete něco dalšího?",
       "body": "Napište nám na",
       "email": "hello+press@bnf.events"
     }
+  },
+  "photos": {
+    "eyebrow": "Fotoalba",
+    "title": "Byli jsme tam",
+    "subtitle": "Vizuální archiv meetupů, přednášek a komunitních momentů Bonfire.",
+    "featuredTitle": "Výběr fotek",
+    "featuredSubtitle": "Náhodná ochutnávka napříč alby.",
+    "stats": {
+      "albums": "Alba",
+      "photos": "Fotky"
+    },
+    "albumsTitle": "Všechna alba",
+    "albumsSubtitle": "Procházejte kompletní archiv podle epizod.",
+    "albumPhotos": "{count} fotek",
+    "viewAlbum": "Otevřít album",
+    "download": "Stáhnout",
+    "backToAlbums": "Zpět na alba",
+    "backToTop": "Zpět nahoru"
   },
   "libraryPage": {
     "eyebrow": "Pusť si to zpětně",
@@ -292,6 +315,8 @@
     "crewDescription": "Poznej crew Bonfire v Praze a Zlíně.",
     "pressTitle": "Press kit | Bonfire Events",
     "pressDescription": "Stáhněte loga, brand barvy a pravidla použití pro Bonfire Events.",
+    "photosTitle": "Fotky | Bonfire Events",
+    "photosDescription": "Fotoalba z Bonfire meetupů v Praze a Zlíně.",
     "recordingNotFound": "Záznam nenalezen",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",

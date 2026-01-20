@@ -132,3 +132,6 @@ dist
 .DS_Store
 
 .env.local
+cdn/
+cdn-webp/
+.wrangler/

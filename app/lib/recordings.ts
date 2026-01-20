@@ -2,6 +2,7 @@ import { cache } from "react";
 import { LOCATIONS, type LocationValue } from "./constants";
 import pragueRecordingsData from "../data/prague-recordings.json";
 import zlinRecordingsData from "../data/zlin-recordings.json";
+import { getEpisodeById } from "./episodes";
 
 export type Recording = {
   youtubeId: string;
@@ -16,9 +17,21 @@ export type Recording = {
   description: string | null;
   tags: string[];
   location: LocationValue;
+  episodeId?: string;
   episode?: string;
   episodeNumber?: number;
 };
+
+function withEpisode(recording: Recording) {
+  if (!recording.episodeId) return recording;
+  const episode = getEpisodeById(recording.episodeId);
+  if (!episode) return recording;
+  return {
+    ...recording,
+    episode: episode.title,
+    episodeNumber: episode.number,
+  };
+}
 
 export const getAllRecordings = cache((): Recording[] => {
   return [
@@ -32,7 +45,9 @@ export const getAllRecordings = cache((): Recording[] => {
       tags: recording.tags.map((tag) => tag.toLowerCase()),
       location: LOCATIONS.ZLIN,
     })),
-  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  ]
+    .map((recording) => withEpisode(recording))
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 });
 
 export function getRecordingBySlug(slug: string): Recording | undefined {

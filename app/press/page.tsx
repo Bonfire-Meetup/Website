@@ -5,7 +5,6 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { SectionHeader } from "../components/SectionHeader";
 import { CopyButton } from "../components/CopyButton";
-import { ExternalLinkIcon } from "../components/icons";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
@@ -130,9 +129,7 @@ export default async function PressPage() {
             <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
               {t("title")}
             </h1>
-            <p className="mt-4 text-lg text-neutral-600 dark:text-neutral-400">
-              {t("subtitle")}
-            </p>
+            <p className="mt-4 text-lg text-neutral-600 dark:text-neutral-400">{t("subtitle")}</p>
           </div>
 
           <section className="glass-card no-hover-pop p-8 sm:p-12">
@@ -162,9 +159,7 @@ export default async function PressPage() {
                   <div key={stat.label} className="text-center sm:text-left">
                     <div
                       className={`font-bold text-neutral-900 dark:text-white ${
-                        stat.emphasis === "sm"
-                          ? "text-lg sm:text-xl"
-                          : "text-2xl sm:text-3xl"
+                        stat.emphasis === "sm" ? "text-lg sm:text-xl" : "text-2xl sm:text-3xl"
                       }`}
                     >
                       {stat.value}
@@ -320,10 +315,7 @@ export default async function PressPage() {
           </section>
 
           <section>
-            <SectionHeader
-              title={t("brandName.title")}
-              subtitle={t("brandName.subtitle")}
-            />
+            <SectionHeader title={t("brandName.title")} subtitle={t("brandName.subtitle")} />
             <div className="grid gap-6 lg:grid-cols-2">
               <div className="glass-card no-hover-pop p-6 sm:p-8">
                 <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
@@ -370,18 +362,13 @@ export default async function PressPage() {
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
               {t("photos.title")}
             </h2>
-            <p className="mt-3 text-neutral-600 dark:text-neutral-400">
-              {t("photos.body")}
-            </p>
+            <p className="mt-3 text-neutral-600 dark:text-neutral-400">{t("photos.body")}</p>
             <div className="mt-4">
               <a
                 href={t("photos.link")}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 font-semibold text-brand-600 hover:underline dark:text-brand-400"
               >
                 {t("photos.cta")}
-                <ExternalLinkIcon className="h-4 w-4" />
               </a>
             </div>
           </section>

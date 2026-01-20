@@ -4,7 +4,12 @@
     "upcoming": "Upcoming",
     "library": "Library",
     "crew": "Crew",
+    "photos": "Photos",
+    "press": "Press Kit",
+    "codeOfConduct": "Code of Conduct",
     "back": "Back",
+    "menu": "Open menu",
+    "close": "Close menu",
     "logoAlt": "Bonfire Events logo"
   },
   "hero": {
@@ -181,15 +186,33 @@
     },
     "photos": {
       "title": "Event Photos",
-      "body": "Browse high-energy photos from our meetups. Albums are currently hosted on Facebook.",
+      "body": "Browse high-energy photos from our meetups.",
       "cta": "See the photo albums",
-      "link": "https://www.facebook.com/bonfire.meetup/photos_albums"
+      "link": "/photos"
     },
     "help": {
       "title": "Need Something Else?",
       "body": "Email us at",
       "email": "hello+press@bnf.events"
     }
+  },
+  "photos": {
+    "eyebrow": "Photo Albums",
+    "title": "We Were There",
+    "subtitle": "A visual archive of Bonfire meetups, talks, and community moments.",
+    "featuredTitle": "Featured Shots",
+    "featuredSubtitle": "A rotating selection from across the albums.",
+    "stats": {
+      "albums": "Albums",
+      "photos": "Photos"
+    },
+    "albumsTitle": "All Albums",
+    "albumsSubtitle": "Browse the full archive by episode.",
+    "albumPhotos": "{count} photos",
+    "viewAlbum": "View album",
+    "download": "Download",
+    "backToAlbums": "Back to albums",
+    "backToTop": "Back to top"
   },
   "libraryPage": {
     "eyebrow": "Stream the sessions",
@@ -292,6 +315,8 @@
     "crewDescription": "Meet the crew behind Bonfire events in Prague and Zlin.",
     "pressTitle": "Press Kit | Bonfire Events",
     "pressDescription": "Download logos, brand colors, and usage guidelines for Bonfire Events.",
+    "photosTitle": "Photos | Bonfire Events",
+    "photosDescription": "Browse photo albums from Bonfire meetups in Prague and Zlin.",
     "recordingNotFound": "Recording Not Found",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",
