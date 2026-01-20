@@ -703,7 +703,7 @@ html {
   animation: rise 15s linear infinite;
 }
 
-@keyframes heartPop {
+@keyframes likePop {
   0% {
     transform: scale(1);
   }
@@ -721,8 +721,8 @@ html {
   }
 }
 
-.heart-pop {
-  animation: heartPop 0.55s ease;
+.like-pop {
+  animation: likePop 0.55s ease;
 }
 
 @keyframes cardEnter {

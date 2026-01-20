@@ -29,7 +29,9 @@ interface RecordingPlayerLabels {
   backToLibrary: string;
   exitCinema: string;
   cinema: string;
-  like: string;
+  spark: string;
+  sparks: string;
+  lightItUp: string;
   nextUp: string;
   speaker: string;
   date: string;
@@ -62,10 +64,10 @@ export function RecordingPlayer({
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showCopyToast, setShowCopyToast] = useState(false);
-  const [heartCount, setHeartCount] = useState<number | null>(null);
-  const [hasHearted, setHasHearted] = useState(false);
-  const [isHearting, setIsHearting] = useState(false);
-  const [heartPulse, setHeartPulse] = useState(false);
+  const [likeCount, setLikeCount] = useState<number | null>(null);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
+  const [likePulse, setLikePulse] = useState(false);
   const inlinePlayerRef = useRef<HTMLDivElement | null>(null);
   const { setVideo, setInlineContainer, cinemaMode, setCinemaMode } = useGlobalPlayer();
 
@@ -109,18 +111,18 @@ export function RecordingPlayer({
 
   useEffect(() => {
     let isActive = true;
-    const loadHearts = async () => {
+    const loadLikes = async () => {
       try {
         const response = await fetch(`/api/video/${recording.shortId}/likes`);
         if (!response.ok) return;
         const data = (await response.json()) as { count: number; hasLiked: boolean };
         if (isActive) {
-          setHeartCount(data.count ?? 0);
-          setHasHearted(Boolean(data.hasLiked));
+          setLikeCount(data.count ?? 0);
+          setHasLiked(Boolean(data.hasLiked));
         }
       } catch {}
     };
-    loadHearts();
+    loadLikes();
     return () => {
       isActive = false;
     };
@@ -171,35 +173,35 @@ export function RecordingPlayer({
     }
   };
 
-  const handleHeart = async () => {
-    if (isHearting) return;
-    setIsHearting(true);
-    setHeartPulse(true);
-    setTimeout(() => setHeartPulse(false), 550);
+  const handleLike = async () => {
+    if (isLiking) return;
+    setIsLiking(true);
+    setLikePulse(true);
+    setTimeout(() => setLikePulse(false), 550);
 
-    const prevHearted = hasHearted;
-    const prevCount = heartCount;
-    const adding = !hasHearted;
+    const prevLiked = hasLiked;
+    const prevCount = likeCount;
+    const adding = !hasLiked;
 
-    setHasHearted(adding);
-    setHeartCount((c) => (c ?? 0) + (adding ? 1 : -1));
+    setHasLiked(adding);
+    setLikeCount((c) => (c ?? 0) + (adding ? 1 : -1));
 
     try {
       const res = await fetch(`/api/video/${recording.shortId}/likes`, {
         method: adding ? "POST" : "DELETE",
       });
       if (!res.ok) {
-        setHasHearted(prevHearted);
-        setHeartCount(prevCount);
+        setHasLiked(prevLiked);
+        setLikeCount(prevCount);
         return;
       }
       const { count } = (await res.json()) as { count: number };
-      setHeartCount(count);
+      setLikeCount(count);
     } catch {
-      setHasHearted(prevHearted);
-      setHeartCount(prevCount);
+      setHasLiked(prevLiked);
+      setLikeCount(prevCount);
     } finally {
-      setIsHearting(false);
+      setIsLiking(false);
     }
   };
 
@@ -234,87 +236,95 @@ export function RecordingPlayer({
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200/40 px-5 py-4 dark:border-neutral-700/40 sm:px-6">
                 <button
                   type="button"
-                  onClick={handleHeart}
-                  aria-pressed={hasHearted}
-                  disabled={isHearting}
+                  onClick={handleLike}
+                  aria-pressed={hasLiked}
+                  disabled={isLiking}
                   className={`inline-flex items-center gap-3 rounded-full px-5 py-2.5 text-sm font-semibold shadow-lg transition-all cursor-pointer ${
-                    hasHearted
-                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-orange-500/30"
-                      : "bg-white text-orange-600 ring-1 ring-orange-200/70 hover:-translate-y-0.5 hover:shadow-orange-500/20 dark:bg-white/5 dark:text-orange-300 dark:ring-white/10"
-                  } ${heartPulse ? "heart-pop" : ""} ${isHearting ? "opacity-80" : ""}`}
+                    hasLiked
+                      ? "bg-gradient-to-r from-orange-500 to-rose-500 text-white shadow-orange-500/30"
+                      : "bg-white text-rose-400 ring-1 ring-rose-200/70 hover:-translate-y-0.5 hover:shadow-rose-500/20 dark:bg-white/5 dark:text-rose-300 dark:ring-white/10"
+                  } ${likePulse ? "like-pop" : ""} ${isLiking ? "opacity-80" : ""}`}
                 >
-                  <FireIcon className={`h-5 w-5 ${hasHearted ? "fill-white stroke-white" : ""}`} />
-                  <span className="uppercase tracking-[0.2em] text-[10px]">{labels.like}</span>
-                  <span className="tabular-nums text-base">{heartCount ?? "—"}</span>
+                  <FireIcon className={`h-5 w-5 ${hasLiked ? "fill-white stroke-white" : ""}`} />
+                  {likeCount ? (
+                    <span className="tabular-nums text-base">{likeCount}</span>
+                  ) : (
+                    <span className="text-[11px]">{labels.lightItUp}</span>
+                  )}
                 </button>
 
-                <div className="relative">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={handleShare}
+                      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+                    >
+                      <ShareIcon className="h-3.5 w-3.5" />
+                      <span className="hidden sm:inline">{labels.share}</span>
+                    </button>
+                    {showShareMenu && (
+                      <>
+                        <div
+                          className="fixed inset-0 z-40"
+                          onClick={() => setShowShareMenu(false)}
+                        />
+                        <div className="absolute right-0 top-full z-50 mt-1 w-48 overflow-hidden rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/10">
+                          <button
+                            type="button"
+                            onClick={handleCopyLink}
+                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
+                          >
+                            {copied ? (
+                              <CheckIcon className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <LinkIcon className="h-4 w-4" />
+                            )}
+                            {copied ? labels.copied : labels.copyLink}
+                          </button>
+                          <div className="my-1 h-px bg-neutral-200 dark:bg-white/10" />
+                          <a
+                            href={shareLinks.x}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setShowShareMenu(false)}
+                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
+                          >
+                            <XIcon className="h-4 w-4" />X
+                          </a>
+                          <a
+                            href={shareLinks.facebook}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setShowShareMenu(false)}
+                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
+                          >
+                            <FacebookIcon className="h-4 w-4" />
+                            Facebook
+                          </a>
+                          <a
+                            href={shareLinks.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setShowShareMenu(false)}
+                            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
+                          >
+                            <LinkedInIcon className="h-4 w-4" />
+                            LinkedIn
+                          </a>
+                        </div>
+                      </>
+                    )}
+                  </div>
                   <button
                     type="button"
-                    onClick={handleShare}
-                    className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+                    onClick={() => setCinemaMode(!cinemaMode)}
+                    className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
                   >
-                    <ShareIcon className="h-3.5 w-3.5" />
-                    <span className="hidden sm:inline">{labels.share}</span>
+                    <CinemaIcon className="h-3.5 w-3.5" />
+                    {cinemaMode ? labels.exitCinema : labels.cinema}
                   </button>
-                  {showShareMenu && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setShowShareMenu(false)} />
-                      <div className="absolute right-0 top-full z-50 mt-1 w-48 overflow-hidden rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/10">
-                        <button
-                          type="button"
-                          onClick={handleCopyLink}
-                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
-                        >
-                          {copied ? (
-                            <CheckIcon className="h-4 w-4 text-green-500" />
-                          ) : (
-                            <LinkIcon className="h-4 w-4" />
-                          )}
-                          {copied ? labels.copied : labels.copyLink}
-                        </button>
-                        <div className="my-1 h-px bg-neutral-200 dark:bg-white/10" />
-                        <a
-                          href={shareLinks.x}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => setShowShareMenu(false)}
-                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
-                        >
-                          <XIcon className="h-4 w-4" />X
-                        </a>
-                        <a
-                          href={shareLinks.facebook}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => setShowShareMenu(false)}
-                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
-                        >
-                          <FacebookIcon className="h-4 w-4" />
-                          Facebook
-                        </a>
-                        <a
-                          href={shareLinks.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => setShowShareMenu(false)}
-                          className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-white/5"
-                        >
-                          <LinkedInIcon className="h-4 w-4" />
-                          LinkedIn
-                        </a>
-                      </div>
-                    </>
-                  )}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setCinemaMode(!cinemaMode)}
-                  className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
-                >
-                  <CinemaIcon className="h-3.5 w-3.5" />
-                  {cinemaMode ? labels.exitCinema : labels.cinema}
-                </button>
               </div>
 
               <div>

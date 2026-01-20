@@ -103,7 +103,9 @@
     "share": "Share",
     "copyLink": "Copy link",
     "copied": "Copied!",
-    "like": "Spark",
+    "spark": "Spark",
+    "sparks": "Sparks",
+    "lightItUp": "Light it up",
     "returnToPlayer": "Return to player",
     "closePlayer": "Close player"
   },
