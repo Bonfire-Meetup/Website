@@ -18,7 +18,7 @@ export async function Header() {
     { href: "/photos", label: t("photos") },
     { href: "/crew", label: t("crew") },
     { href: "/press", label: t("press") },
-    { href: "/code-of-conduct", label: t("codeOfConduct") },
+    { href: "/legal", label: t("codeOfConduct") },
   ];
 
   return (
