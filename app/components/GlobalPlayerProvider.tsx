@@ -140,7 +140,7 @@ export function GlobalPlayerProvider({
   }, [isInline, canMiniPlayer, video, cinemaMode]);
 
   useEffect(() => {
-    if (isInline || isAnimating || cinemaMode) return;
+    if (isInline || isAnimating || cinemaMode || !canMiniPlayer) return;
     const update = () => {
       setPlayerRect({
         top: window.innerHeight - 24 - MINI_HEIGHT,
@@ -151,7 +151,7 @@ export function GlobalPlayerProvider({
     };
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  }, [isInline, isAnimating, cinemaMode]);
+  }, [isInline, isAnimating, cinemaMode, canMiniPlayer]);
 
   const value = useMemo(
     () => ({
@@ -179,7 +179,7 @@ export function GlobalPlayerProvider({
   return (
     <GlobalPlayerContext.Provider value={value}>
       {children}
-      {ENABLE_GLOBAL_MINI_PLAYER && video && playerRect && (
+      {ENABLE_GLOBAL_MINI_PLAYER && video && playerRect && (isInline || canMiniPlayer) && (
         <>
           {cinemaMode && (
             <>
