@@ -12,7 +12,8 @@
     "format": "oxfmt --check .",
     "format:write": "oxfmt --write .",
     "check": "oxlint --fix . && oxfmt --write .",
-    "clean": "bun pm cache rm && rm -rf node_modules bun.lock && bun install"
+    "clean": "bun pm cache rm && rm -rf node_modules bun.lock && bun install",
+    "prepublish": "oxlint --fix . && oxfmt --write . && tsc --noEmit"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

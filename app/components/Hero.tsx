@@ -5,10 +5,10 @@ import { NeonText } from "./NeonText";
 import { ScrollChevron } from "./ScrollChevron";
 import { Button } from "./Button";
 
-function Ember({ style }: { style: CSSProperties }) {
+function Ember({ style, className = "" }: { style: CSSProperties; className?: string }) {
   return (
     <div
-      className="animate-rise absolute rounded-full bg-gradient-to-t from-brand-500 to-rose-500 blur-md"
+      className={`animate-rise absolute rounded-full bg-gradient-to-t from-brand-500 to-rose-500 blur-sm md:blur-md ${className}`}
       style={style}
     />
   );
@@ -56,7 +56,7 @@ export async function Hero({
 
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         {embers.map((style, i) => (
-          <Ember key={i} style={style} />
+          <Ember key={i} style={style} className={i >= 6 ? "hidden md:block" : ""} />
         ))}
       </div>
 
