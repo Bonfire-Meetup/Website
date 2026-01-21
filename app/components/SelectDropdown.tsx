@@ -35,6 +35,8 @@ export function SelectDropdown({
   onChange,
   buttonClassName = "",
   menuClassName = "",
+  optionClassName = "",
+  activeOptionClassName = "",
   nativeClassName = "",
   name,
   id,
@@ -49,6 +51,8 @@ export function SelectDropdown({
   onChange: (nextValue: string) => void;
   buttonClassName?: string;
   menuClassName?: string;
+  optionClassName?: string;
+  activeOptionClassName?: string;
   nativeClassName?: string;
   name?: string;
   id?: string;
@@ -214,8 +218,10 @@ export function SelectDropdown({
               data-option
               className={`flex w-full items-center rounded-lg px-3 py-2 text-left font-medium transition whitespace-normal ${
                 option.value === value
-                  ? "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
-                  : "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/10"
+                  ? activeOptionClassName ||
+                    "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
+                  : optionClassName ||
+                    "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/10"
               } ${option.disabled ? "cursor-not-allowed opacity-60" : ""}`}
             >
               {option.label}
@@ -241,8 +247,10 @@ export function SelectDropdown({
                   data-option
                   className={`flex w-full items-center rounded-lg px-3 py-2 text-left font-medium transition whitespace-normal ${
                     option.value === value
-                      ? "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
-                      : "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/10"
+                      ? activeOptionClassName ||
+                        "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
+                      : optionClassName ||
+                        "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/10"
                   } ${option.disabled ? "cursor-not-allowed opacity-60" : ""}`}
                 >
                   {option.label}

@@ -189,6 +189,7 @@ export function ContactForm({ t }: { t: Translations }) {
             nativeOnMobile
             buttonClassName={`${inputBaseClass} ${inputNormalClass}`}
             nativeClassName={`${inputBaseClass} ${inputNormalClass}`}
+            activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
           />
         </div>
 

@@ -240,6 +240,7 @@ export function TalkProposalForm({ t }: { t: Translations }) {
                   ? "text-neutral-900 dark:text-white"
                   : "text-neutral-400 dark:text-neutral-500"
               }`}
+              activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
             />
             {state.errors?.duration && (
               <p className="mt-1.5 text-sm text-rose-500">{getFieldError("duration")}</p>
@@ -262,6 +263,7 @@ export function TalkProposalForm({ t }: { t: Translations }) {
               nativeOnMobile
               buttonClassName={`${inputBaseClass} ${inputNormalClass}`}
               nativeClassName={`${inputBaseClass} ${inputNormalClass}`}
+              activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
             />
           </div>
         </div>

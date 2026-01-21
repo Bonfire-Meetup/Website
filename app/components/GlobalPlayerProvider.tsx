@@ -63,13 +63,17 @@ export function GlobalPlayerProvider({
   const [playerRect, setPlayerRect] = useState<Rect | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasPlaybackStarted, setHasPlaybackStarted] = useState(false);
   const lastInlineRectRef = useRef<Rect | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const canMiniPlayer = useMediaQuery("(min-width: 768px)");
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
 
   const isInline = Boolean(inlineElement);
 
   useEffect(() => {
     setIsLoading(true);
+    setHasPlaybackStarted(false);
   }, [video?.youtubeId]);
 
   useEffect(() => {
@@ -112,7 +116,7 @@ export function GlobalPlayerProvider({
 
     if (isInline) return;
 
-    if (!canMiniPlayer || !video) {
+    if (!canMiniPlayer || !video || !hasPlaybackStarted) {
       setPlayerRect(null);
       return;
     }
@@ -137,7 +141,7 @@ export function GlobalPlayerProvider({
     } else {
       setPlayerRect(miniRect);
     }
-  }, [isInline, canMiniPlayer, video, cinemaMode]);
+  }, [isInline, canMiniPlayer, video, cinemaMode, hasPlaybackStarted]);
 
   useEffect(() => {
     if (isInline || isAnimating || cinemaMode || !canMiniPlayer) return;
@@ -152,6 +156,57 @@ export function GlobalPlayerProvider({
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, [isInline, isAnimating, cinemaMode, canMiniPlayer]);
+
+  useEffect(() => {
+    if (!video) return;
+    const handleMessage = (event: MessageEvent) => {
+      if (!iframeRef.current?.contentWindow) return;
+      if (event.source !== iframeRef.current.contentWindow) return;
+      if (!event.origin.includes("youtube")) return;
+      if (typeof event.data !== "string" && typeof event.data !== "object") return;
+      const parsed =
+        typeof event.data === "string"
+          ? (() => {
+              try {
+                return JSON.parse(event.data) as { event?: string; info?: unknown };
+              } catch {
+                return null;
+              }
+            })()
+          : (event.data as { event?: string; info?: unknown });
+      if (!parsed) return;
+      const eventName = parsed.event;
+      if (!eventName) return;
+      const info = parsed.info;
+      const playerState =
+        typeof info === "number"
+          ? info
+          : typeof info === "object" && info && "playerState" in info
+            ? (info as { playerState?: number }).playerState
+            : undefined;
+      if (eventName === "onStateChange" || eventName === "infoDelivery") {
+        if (playerState === 1 || playerState === 2 || playerState === 3) {
+          setHasPlaybackStarted(true);
+        }
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [video?.youtubeId]);
+
+  const registerPlayerListener = () => {
+    const target = iframeRef.current?.contentWindow;
+    if (!target) return;
+    target.postMessage(JSON.stringify({ event: "listening", id: "global-player" }), "*");
+    target.postMessage(
+      JSON.stringify({
+        event: "command",
+        func: "addEventListener",
+        args: ["onStateChange"],
+      }),
+      "*",
+    );
+  };
 
   const value = useMemo(
     () => ({
@@ -241,11 +296,15 @@ export function GlobalPlayerProvider({
               </div>
             )}
             <iframe
-              src={`https://www.youtube.com/embed/${video.youtubeId}?rel=0&modestbranding=1`}
+              ref={iframeRef}
+              src={`https://www.youtube.com/embed/${video.youtubeId}?rel=0&modestbranding=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
               title={video.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
-              onLoad={() => setIsLoading(false)}
+              onLoad={() => {
+                setIsLoading(false);
+                registerPlayerListener();
+              }}
               className={`absolute inset-0 h-full w-full ${cinemaMode ? "rounded-2xl" : ""}`}
             />
           </div>
