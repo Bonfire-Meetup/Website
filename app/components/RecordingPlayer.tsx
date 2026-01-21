@@ -239,13 +239,15 @@ export function RecordingPlayer({
                   onClick={handleLike}
                   aria-pressed={hasLiked}
                   disabled={isLiking}
-                  className={`inline-flex items-center gap-3 rounded-full px-5 py-2.5 text-sm font-semibold shadow-lg transition-all cursor-pointer ${
+                  className={`inline-flex items-center justify-center gap-3 rounded-full px-5 py-2.5 text-sm font-semibold shadow-lg transition-all cursor-pointer min-w-[8.5rem] ${
                     hasLiked
                       ? "bg-gradient-to-r from-orange-500 to-rose-500 text-white shadow-orange-500/30"
                       : "bg-white text-rose-400 ring-1 ring-rose-200/70 hover:-translate-y-0.5 hover:shadow-rose-500/20 dark:bg-white/5 dark:text-rose-300 dark:ring-white/10"
                   } ${likePulse ? "like-pop" : ""} ${isLiking ? "opacity-80" : ""}`}
                 >
-                  <FireIcon className={`h-5 w-5 ${hasLiked ? "fill-white stroke-white" : ""}`} />
+                  <FireIcon
+                    className={`h-5 w-5 shrink-0 ${hasLiked ? "fill-white stroke-white" : ""}`}
+                  />
                   {likeCount ? (
                     <span className="tabular-nums text-base">{likeCount}</span>
                   ) : (
@@ -329,8 +331,10 @@ export function RecordingPlayer({
 
               <div>
                 <div className="px-5 py-5 sm:px-6 sm:py-6">
-                  <div className="mb-4 flex items-start gap-3">
-                    <AccentBar className="mt-1" />
+                  <div className="mb-4 flex gap-3">
+                    <div className="flex h-7 items-center sm:h-8 lg:h-9">
+                      <AccentBar />
+                    </div>
                     <h1 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl lg:text-[1.75rem] dark:text-white">
                       {recording.title}
                     </h1>

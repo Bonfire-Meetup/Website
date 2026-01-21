@@ -1,16 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { createPortal } from "react-dom";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { CloseIcon } from "./icons";
 
 export const ENABLE_GLOBAL_MINI_PLAYER = true;
@@ -21,7 +12,7 @@ type VideoInfo = {
   watchUrl: string;
 };
 
-type InlineRect = {
+type Rect = {
   top: number;
   left: number;
   width: number;
@@ -56,6 +47,9 @@ const useMediaQuery = (query: string) => {
   return matches;
 };
 
+const MINI_WIDTH = 320;
+const MINI_HEIGHT = (MINI_WIDTH * 9) / 16;
+
 export function GlobalPlayerProvider({
   children,
   labels,
@@ -65,74 +59,99 @@ export function GlobalPlayerProvider({
 }) {
   const [video, setVideo] = useState<VideoInfo | null>(null);
   const [inlineElement, setInlineElement] = useState<HTMLDivElement | null>(null);
-  const [inlineRect, setInlineRect] = useState<InlineRect | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [miniHeight, setMiniHeight] = useState(0);
   const [cinemaMode, setCinemaMode] = useState(false);
-  const miniRef = useRef<HTMLDivElement | null>(null);
+  const [playerRect, setPlayerRect] = useState<Rect | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const lastInlineRectRef = useRef<Rect | null>(null);
   const canMiniPlayer = useMediaQuery("(min-width: 768px)");
 
-  const updateRect = useCallback(() => {
-    if (!inlineElement) {
-      setInlineRect(null);
-      return;
-    }
-    const rect = inlineElement.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) {
-      setInlineRect(null);
-      return;
-    }
-    setInlineRect({
-      top: rect.top,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height,
-    });
-  }, [inlineElement]);
+  const isInline = Boolean(inlineElement);
 
   useEffect(() => {
-    if (!inlineElement) {
-      setInlineRect(null);
-      return;
-    }
-    updateRect();
-    const observer = new ResizeObserver(() => updateRect());
-    observer.observe(inlineElement);
-    const handleScroll = () => requestAnimationFrame(updateRect);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", updateRect);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", updateRect);
-    };
-  }, [inlineElement, updateRect]);
-
-  useEffect(() => {
-    if (!video) return;
     setIsLoading(true);
   }, [video?.youtubeId]);
 
   useEffect(() => {
-    if (!video || inlineRect || !miniRef.current) {
-      setMiniHeight(0);
-      return;
-    }
-    const update = () => {
-      const rect = miniRef.current?.getBoundingClientRect();
-      if (rect) {
-        setMiniHeight(rect.height);
+    if (!inlineElement) return;
+    const updateRect = () => {
+      const rect = inlineElement.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        const newRect = { top: rect.top, left: rect.left, width: rect.width, height: rect.height };
+        lastInlineRectRef.current = newRect;
+        if (!cinemaMode) {
+          setPlayerRect(newRect);
+        }
       }
     };
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(miniRef.current);
-    window.addEventListener("resize", update);
+    updateRect();
+    const observer = new ResizeObserver(updateRect);
+    observer.observe(inlineElement);
+    window.addEventListener("scroll", updateRect, { passive: true });
+    window.addEventListener("resize", updateRect);
     return () => {
       observer.disconnect();
-      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", updateRect);
+      window.removeEventListener("resize", updateRect);
     };
-  }, [video, inlineRect]);
+  }, [inlineElement, cinemaMode]);
+
+  useEffect(() => {
+    if (cinemaMode) {
+      const vw = window.innerWidth;
+      const width = Math.min(vw * 0.92, 1200);
+      const height = (width * 9) / 16;
+      setPlayerRect({
+        top: (window.innerHeight - height) / 2,
+        left: (vw - width) / 2,
+        width,
+        height,
+      });
+      return;
+    }
+
+    if (isInline) return;
+
+    if (!canMiniPlayer || !video) {
+      setPlayerRect(null);
+      return;
+    }
+
+    const miniRect = {
+      top: window.innerHeight - 24 - MINI_HEIGHT,
+      left: window.innerWidth - 24 - MINI_WIDTH,
+      width: MINI_WIDTH,
+      height: MINI_HEIGHT,
+    };
+
+    if (lastInlineRectRef.current) {
+      setPlayerRect(lastInlineRectRef.current);
+      setIsAnimating(true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setPlayerRect(miniRect);
+          setTimeout(() => setIsAnimating(false), 300);
+        });
+      });
+      lastInlineRectRef.current = null;
+    } else {
+      setPlayerRect(miniRect);
+    }
+  }, [isInline, canMiniPlayer, video, cinemaMode]);
+
+  useEffect(() => {
+    if (isInline || isAnimating || cinemaMode) return;
+    const update = () => {
+      setPlayerRect({
+        top: window.innerHeight - 24 - MINI_HEIGHT,
+        left: window.innerWidth - 24 - MINI_WIDTH,
+        width: MINI_WIDTH,
+        height: MINI_HEIGHT,
+      });
+    };
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [isInline, isAnimating, cinemaMode]);
 
   const value = useMemo(
     () => ({
@@ -155,12 +174,12 @@ export function GlobalPlayerProvider({
     [cinemaMode],
   );
 
-  const isInline = Boolean(inlineRect);
+  const showMiniControls = !isInline && !cinemaMode && canMiniPlayer && playerRect;
 
   return (
     <GlobalPlayerContext.Provider value={value}>
       {children}
-      {ENABLE_GLOBAL_MINI_PLAYER && video && (
+      {ENABLE_GLOBAL_MINI_PLAYER && video && playerRect && (
         <>
           {cinemaMode && (
             <>
@@ -178,10 +197,11 @@ export function GlobalPlayerProvider({
               </button>
             </>
           )}
-          {!isInline && !cinemaMode && canMiniPlayer ? (
+
+          {showMiniControls && (
             <div
               className="fixed right-6 z-[60] flex items-center gap-2"
-              style={{ bottom: `${24 + miniHeight + 8}px` }}
+              style={{ bottom: `${24 + MINI_HEIGHT + 8}px` }}
             >
               <Link
                 href={video.watchUrl}
@@ -198,68 +218,37 @@ export function GlobalPlayerProvider({
                 <CloseIcon className="h-4 w-4" />
               </button>
             </div>
-          ) : null}
-          {isInline && !canMiniPlayer && inlineElement
-            ? createPortal(
-                <div className="absolute inset-0 overflow-hidden bg-black">
-                  {isLoading && (
-                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
-                      <div className="h-12 w-12 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                    </div>
-                  )}
-                  <iframe
-                    src={`https://www.youtube.com/embed/${video.youtubeId}?rel=0&modestbranding=1`}
-                    title={video.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    onLoad={() => setIsLoading(false)}
-                    className="absolute inset-0 h-full w-full"
-                  />
-                </div>,
-                inlineElement,
-              )
-            : (cinemaMode || isInline || canMiniPlayer) && (
-                <div
-                  ref={miniRef}
-                  className={`fixed overflow-hidden bg-black transition-all duration-300 ${
-                    cinemaMode
-                      ? "z-[80] aspect-video w-[92vw] max-w-[1200px] rounded-2xl"
-                      : isInline
-                        ? "z-40 rounded-xl"
-                        : "bottom-6 right-6 z-50 aspect-video w-[220px] rounded-2xl shadow-2xl ring-1 ring-black/20 sm:w-[260px] md:w-[320px]"
-                  }`}
-                  style={
-                    cinemaMode
-                      ? {
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%, -50%)",
-                        }
-                      : isInline
-                        ? {
-                            top: inlineRect?.top ?? 0,
-                            left: inlineRect?.left ?? 0,
-                            width: inlineRect?.width ?? 0,
-                            height: inlineRect?.height ?? 0,
-                          }
-                        : undefined
-                  }
-                >
-                  {isLoading && (
-                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60">
-                      <div className="h-12 w-12 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                    </div>
-                  )}
-                  <iframe
-                    src={`https://www.youtube.com/embed/${video.youtubeId}?rel=0&modestbranding=1`}
-                    title={video.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    onLoad={() => setIsLoading(false)}
-                    className={`absolute inset-0 h-full w-full ${cinemaMode ? "rounded-2xl" : ""}`}
-                  />
-                </div>
-              )}
+          )}
+
+          <div
+            className={`fixed overflow-hidden bg-black ${
+              cinemaMode
+                ? "z-[80] rounded-2xl"
+                : isInline
+                  ? "z-40 rounded-xl"
+                  : "z-50 rounded-2xl shadow-2xl ring-1 ring-black/20"
+            } ${isAnimating ? "transition-all duration-300" : ""}`}
+            style={{
+              top: playerRect.top,
+              left: playerRect.left,
+              width: playerRect.width,
+              height: playerRect.height,
+            }}
+          >
+            {isLoading && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-black">
+                <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+              </div>
+            )}
+            <iframe
+              src={`https://www.youtube.com/embed/${video.youtubeId}?rel=0&modestbranding=1`}
+              title={video.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              onLoad={() => setIsLoading(false)}
+              className={`absolute inset-0 h-full w-full ${cinemaMode ? "rounded-2xl" : ""}`}
+            />
+          </div>
         </>
       )}
     </GlobalPlayerContext.Provider>
