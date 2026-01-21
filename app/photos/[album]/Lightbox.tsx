@@ -18,6 +18,7 @@ export function Lightbox({
   downloadLabel,
 }: LightboxProps) {
   const [index, setIndex] = useState(initialIndex);
+  const [saveData, setSaveData] = useState(false);
   const isDesktopViewport = useCallback(() => {
     if (typeof window === "undefined") return true;
     return window.matchMedia("(min-width: 640px)").matches;
@@ -46,6 +47,32 @@ export function Lightbox({
   const goToNext = useCallback(() => {
     if (hasNext) updateIndex(index + 1);
   }, [hasNext, index, updateIndex]);
+
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    const connection = (
+      navigator as Navigator & {
+        connection?: {
+          saveData?: boolean;
+          addEventListener?: Function;
+          removeEventListener?: Function;
+        };
+      }
+    ).connection;
+    const update = () => setSaveData(Boolean(connection?.saveData));
+    update();
+    connection?.addEventListener?.("change", update);
+    return () => connection?.removeEventListener?.("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (saveData) return;
+    const targets = [index - 1, index + 1].filter((i) => i >= 0 && i < images.length);
+    targets.forEach((i) => {
+      const img = new window.Image();
+      img.src = images[i].src;
+    });
+  }, [index, images, saveData]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

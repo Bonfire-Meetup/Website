@@ -71,10 +71,12 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   const [loadedIndices, setLoadedIndices] = useState<Set<number>>(() => new Set());
   const [isInView, setIsInView] = useState(true);
   const [isPageVisible, setIsPageVisible] = useState(true);
+  const [saveData, setSaveData] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const transitionTimeoutRef = useRef<number | null>(null);
   const pendingNextRef = useRef<number | null>(null);
   const pendingDirectionRef = useRef<number>(1);
+  const pendingTriggeredRef = useRef(false);
 
   const currentIndexRef = useRef(state.currentIndex);
   currentIndexRef.current = state.currentIndex;
@@ -117,6 +119,23 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (typeof navigator === "undefined") return;
+    const connection = (
+      navigator as Navigator & {
+        connection?: {
+          saveData?: boolean;
+          addEventListener?: Function;
+          removeEventListener?: Function;
+        };
+      }
+    ).connection;
+    const update = () => setSaveData(Boolean(connection?.saveData));
+    update();
+    connection?.addEventListener?.("change", update);
+    return () => connection?.removeEventListener?.("change", update);
+  }, []);
+
   const markLoaded = useCallback((index: number) => {
     setLoadedIndices((prev) => {
       if (prev.has(index)) return prev;
@@ -141,6 +160,13 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   const nextIndex = state.nextIndex;
   const nextImage = nextIndex !== null ? images[nextIndex] : null;
   const isCurrentLoaded = loadedIndices.has(state.currentIndex);
+  const getNextRandomIndex = useCallback(() => {
+    let next = Math.floor(Math.random() * images.length);
+    while (next === currentIndexRef.current && images.length > 1) {
+      next = Math.floor(Math.random() * images.length);
+    }
+    return next;
+  }, [images.length]);
   const startTransition = useCallback(
     (next: number, direction: number) => {
       if (state.isTransitioning) return;
@@ -172,22 +198,70 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     if (!state.ready || images.length <= 1 || state.prefersReducedMotion) return;
     if (!isInView || !isPageVisible) return;
     if (!loadedIndices.has(state.currentIndex)) return;
+    if (saveData) return;
+    if (pendingNextRef.current !== null) return;
+    const next = getNextRandomIndex();
+    const direction = getRandomDirection();
+    pendingNextRef.current = next;
+    pendingDirectionRef.current = direction;
+    pendingTriggeredRef.current = false;
+    if (!loadedIndices.has(next)) {
+      preloadIndex(next);
+    }
+  }, [
+    state.ready,
+    images.length,
+    state.prefersReducedMotion,
+    isInView,
+    isPageVisible,
+    loadedIndices,
+    state.currentIndex,
+    saveData,
+    getNextRandomIndex,
+    preloadIndex,
+  ]);
 
-    const getNextRandomIndex = () => {
-      let next = Math.floor(Math.random() * images.length);
-      while (next === currentIndexRef.current && images.length > 1) {
-        next = Math.floor(Math.random() * images.length);
-      }
-      return next;
-    };
+  useEffect(() => {
+    if (!pendingTriggeredRef.current) return;
+    const pending = pendingNextRef.current;
+    if (pending === null) return;
+    if (!loadedIndices.has(pending)) return;
+    if (state.prefersReducedMotion || !state.ready || !isInView || !isPageVisible) return;
+    if (!loadedIndices.has(state.currentIndex)) return;
+    pendingNextRef.current = null;
+    pendingTriggeredRef.current = false;
+    startTransition(pending, pendingDirectionRef.current);
+  }, [
+    loadedIndices,
+    state.prefersReducedMotion,
+    state.ready,
+    isInView,
+    isPageVisible,
+    state.currentIndex,
+    startTransition,
+  ]);
+
+  useEffect(() => {
+    if (!state.ready || images.length <= 1 || state.prefersReducedMotion) return;
+    if (!isInView || !isPageVisible) return;
+    if (!loadedIndices.has(state.currentIndex)) return;
 
     const timer = setInterval(() => {
-      if (pendingNextRef.current !== null) return;
+      if (pendingNextRef.current !== null) {
+        if (loadedIndices.has(pendingNextRef.current)) {
+          const pending = pendingNextRef.current;
+          pendingNextRef.current = null;
+          pendingTriggeredRef.current = false;
+          startTransition(pending, pendingDirectionRef.current);
+        }
+        return;
+      }
       const next = getNextRandomIndex();
       const direction = getRandomDirection();
       if (!loadedIndices.has(next)) {
         pendingNextRef.current = next;
         pendingDirectionRef.current = direction;
+        pendingTriggeredRef.current = true;
         preloadIndex(next);
         return;
       }
@@ -212,6 +286,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     preloadIndex,
     state.currentIndex,
     startTransition,
+    getNextRandomIndex,
   ]);
 
   useEffect(() => {
