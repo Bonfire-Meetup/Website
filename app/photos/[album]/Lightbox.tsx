@@ -32,9 +32,16 @@ export function Lightbox({
     [onIndexChange],
   );
   const [isZoomed, setIsZoomed] = useState(false);
+  const [isPinching, setIsPinching] = useState(false);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const isMultiTouch = useRef(false);
+
+  const setPinching = useCallback((value: boolean) => {
+    if (isMultiTouch.current === value) return;
+    isMultiTouch.current = value;
+    setIsPinching(value);
+  }, []);
 
   const current = images[index];
   const hasPrev = index > 0;
@@ -105,21 +112,23 @@ export function Lightbox({
   }, [onClose, goToPrev, goToNext]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    isMultiTouch.current = e.touches.length > 1;
+    setPinching(e.touches.length > 1);
     touchStartX.current = e.touches[0].clientX;
     touchEndX.current = e.touches[0].clientX;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length > 1) {
-      isMultiTouch.current = true;
+      setPinching(true);
     }
     touchEndX.current = e.touches[0].clientX;
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
     if (isMultiTouch.current) {
-      isMultiTouch.current = false;
+      if (e.touches.length === 0) {
+        setPinching(false);
+      }
       return;
     }
 
@@ -290,7 +299,9 @@ export function Lightbox({
         />
         <div className="absolute inset-0 bg-black/30 sm:hidden" />
         <div className="relative z-20 inline-flex max-h-[100svh] max-w-[100vw] items-center justify-center sm:max-h-full sm:max-w-full">
-          <div className="absolute inset-0 z-20 flex sm:hidden">
+          <div
+            className={`absolute inset-0 z-20 flex sm:hidden ${isPinching ? "pointer-events-none" : ""}`}
+          >
             <button
               type="button"
               onClick={(e) => {
