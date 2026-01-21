@@ -7,19 +7,11 @@ import { AccentBar } from "../components/AccentBar";
 import { HeroSlideshow } from "./HeroSlideshow";
 import photoAlbums from "../data/photo-albums.json";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "../lib/episodes";
+import type { PhotoAlbum } from "../lib/photos/types";
 
-type Album = {
-  id: string;
-  folder: string;
-  cover: { src: string; width: number; height: number };
-  images: { src: string; width: number; height: number }[];
-  count: number;
-  episodeId: string;
-};
+const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
 
-const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: Album[] };
-
-function toAlbumSlug(album: Album) {
+function toAlbumSlug(album: PhotoAlbum) {
   return buildAlbumSlug(album.id, album.episodeId);
 }
 
@@ -31,7 +23,7 @@ function hashSeed(input: string) {
   return Math.abs(hash);
 }
 
-function pickDailyRandomImage(album: Album, seed: string) {
+function pickDailyRandomImage(album: PhotoAlbum, seed: string) {
   const coverSrc = album.cover.src;
   const candidates = album.images.filter((img) => img.src !== coverSrc);
   if (candidates.length === 0) return album.cover;

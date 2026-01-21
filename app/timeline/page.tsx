@@ -8,30 +8,11 @@ import { Pill } from "../components/Pill";
 import { AlbumImage } from "../components/AlbumImage";
 import photoAlbums from "../data/photo-albums.json";
 import { episodes, buildAlbumSlug } from "../lib/episodes";
+import type { EpisodeEntry } from "../lib/episodes";
 import { getAllRecordings } from "../lib/recordings";
+import type { PhotoAlbum } from "../lib/photos/types";
 
-type Album = {
-  id: string;
-  cover: { src: string; width: number; height: number };
-  images: { src: string; width: number; height: number }[];
-  count: number;
-  episodeId: string;
-};
-
-const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: Album[] };
-
-type EpisodeEntry = {
-  id: string;
-  title: string;
-  city: "prague" | "zlin";
-  number: number;
-  date: string | null;
-  recordingsCount: number;
-  photosCount: number;
-  photosCover?: { src: string; width: number; height: number };
-  videosHref: string;
-  photosHref?: string;
-};
+const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
 
 function getEpisodeEntries(): EpisodeEntry[] {
   const recordings = getAllRecordings();

@@ -6,22 +6,14 @@ import { Footer } from "../../components/Footer";
 import { Button } from "../../components/Button";
 import { AlbumImage } from "../../components/AlbumImage";
 import { AlbumGallery } from "./AlbumGallery";
-import { ArrowLeftIcon } from "../../components/icons";
+import { ArrowLeftIcon, ExternalLinkIcon } from "../../components/icons";
 import photoAlbums from "../../data/photo-albums.json";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "../../lib/episodes";
+import type { PhotoAlbum } from "../../lib/photos/types";
 
-type Album = {
-  id: string;
-  folder: string;
-  cover: { src: string; width: number; height: number };
-  images: { src: string; width: number; height: number }[];
-  count: number;
-  episodeId: string;
-};
+const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
 
-const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: Album[] };
-
-function toAlbumSlug(album: Album) {
+function toAlbumSlug(album: PhotoAlbum) {
   return buildAlbumSlug(album.id, album.episodeId);
 }
 
@@ -71,6 +63,13 @@ export default async function AlbumPage({ params }: PageProps) {
   }
   const episode = getEpisodeById(album.episodeId);
   const title = episode ? formatEpisodeTitle(episode) : album.id;
+  const photographers =
+    album.photographers
+      ?.map((photographer) => ({
+        name: photographer.name.trim(),
+        url: photographer.url?.trim(),
+      }))
+      .filter((photographer) => photographer.name.length > 0) ?? [];
 
   return (
     <>
@@ -97,9 +96,51 @@ export default async function AlbumPage({ params }: PageProps) {
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">{title}</h1>
-                  <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-                    {t("albumPhotos", { count: album.count })}
-                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-neutral-600 dark:text-neutral-400">
+                    <span className="font-semibold text-neutral-800 dark:text-neutral-100">
+                      {t("albumPhotos", { count: album.count })}
+                    </span>
+                    {photographers.length > 0 ? (
+                      <>
+                        <span className="text-neutral-300 dark:text-neutral-600">•</span>
+                        <span className="text-neutral-500 dark:text-neutral-400">
+                          {t("photographersBy")}
+                        </span>
+                        <span className="flex flex-wrap items-center gap-2">
+                          {photographers.map((photographer, index) => (
+                            <span
+                              key={`${photographer.name}-${index}`}
+                              className="inline-flex items-center gap-2"
+                            >
+                              {photographer.url ? (
+                                <a
+                                  href={photographer.url}
+                                  className="font-semibold text-neutral-800 underline decoration-transparent underline-offset-4 transition hover:decoration-current dark:text-neutral-100"
+                                  rel="noopener noreferrer"
+                                  target="_blank"
+                                >
+                                  <span className="inline-flex items-center gap-1">
+                                    {photographer.name}
+                                    <ExternalLinkIcon
+                                      className="h-3.5 w-3.5 text-neutral-400"
+                                      aria-hidden="true"
+                                    />
+                                  </span>
+                                </a>
+                              ) : (
+                                <span className="font-semibold text-neutral-800 dark:text-neutral-100">
+                                  {photographer.name}
+                                </span>
+                              )}
+                              {index < photographers.length - 1 ? (
+                                <span className="text-neutral-300 dark:text-neutral-600">/</span>
+                              ) : null}
+                            </span>
+                          ))}
+                        </span>
+                      </>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>

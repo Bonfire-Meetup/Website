@@ -1,16 +1,12 @@
 import { getAllRecordings } from "../lib/recordings";
 import photoAlbums from "../data/photo-albums.json";
 import { buildSitemapIndexXml } from "../lib/sitemap-utils";
+import type { PhotoAlbum } from "../lib/photos/types";
 
 const BASE_URL = "https://www.bnf.events";
 const PAGE_SIZE = 10000;
 
-type Album = {
-  id: string;
-  episodeId?: string;
-};
-
-const { albums } = photoAlbums as { albums: Album[] };
+const { albums } = photoAlbums as { albums: Pick<PhotoAlbum, "id" | "episodeId">[] };
 
 const CACHE_CONTROL = "public, max-age=0, s-maxage=604800, stale-while-revalidate=86400";
 

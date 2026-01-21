@@ -5,9 +5,9 @@
       "id": "zlin-5",
       "folder": "zlin-5",
       "cover": {
-        "src": "zlin-5/577042863_122253854666184727_5032184404935075903_n.webp",
-        "width": 1365,
-        "height": 2048
+        "src": "zlin-5/599403708_122253854054184727_4862491639687770129_n.webp",
+        "width": 2048,
+        "height": 1365
       },
       "images": [
         {
@@ -167,13 +167,18 @@
         }
       ],
       "count": 31,
+      "photographers": [
+        {
+          "name": "Michal Paraska"
+        }
+      ],
       "episodeId": "zlin-5"
     },
     {
       "id": "prague-7",
       "folder": "prague-7",
       "cover": {
-        "src": "prague-7/584054289_122249771588184727_3608675724931344277_n.webp",
+        "src": "prague-7/585210147_122249772296184727_3668235525426241944_n.webp",
         "width": 2048,
         "height": 1366
       },
@@ -635,13 +640,19 @@
         }
       ],
       "count": 91,
+      "photographers": [
+        {
+          "name": "Martin Večeřa",
+          "url": "https://foto-vecera.cz/"
+        }
+      ],
       "episodeId": "prague-7"
     },
     {
       "id": "prague-6",
       "folder": "prague-6",
       "cover": {
-        "src": "prague-6/518416894_122230282070184727_3016727953759619376_n.webp",
+        "src": "prague-6/523835034_122230280576184727_7794684090276194192_n.webp",
         "width": 2048,
         "height": 1365
       },
@@ -898,13 +909,18 @@
         }
       ],
       "count": 50,
+      "photographers": [
+        {
+          "name": "Jakub Hubáček"
+        }
+      ],
       "episodeId": "prague-6"
     },
     {
       "id": "zlin-4",
       "folder": "zlin-4",
       "cover": {
-        "src": "zlin-4/499148023_122219171990184727_4656321843122931599_n.webp",
+        "src": "zlin-4/499821031_122219171450184727_5026425772404894840_n.webp",
         "width": 2048,
         "height": 1365
       },
@@ -1081,13 +1097,18 @@
         }
       ],
       "count": 34,
+      "photographers": [
+        {
+          "name": "Jakub Hubáček"
+        }
+      ],
       "episodeId": "zlin-4"
     },
     {
       "id": "prague-5",
       "folder": "prague-5",
       "cover": {
-        "src": "prague-5/492510761_122214054650184727_8363913101136525944_n.webp",
+        "src": "prague-5/493288152_122214054080184727_9170836605239422094_n.webp",
         "width": 2048,
         "height": 1365
       },
@@ -1392,13 +1413,21 @@
         }
       ],
       "count": 19,
+      "photographers": [
+        {
+          "name": "Jakub Hubáček"
+        },
+        {
+          "name": "Viet Tran"
+        }
+      ],
       "episodeId": "prague-3"
     },
     {
       "id": "zlin-3",
       "folder": "zlin-3",
       "cover": {
-        "src": "zlin-3/476368339_122198423930184727_4120652303494196083_n.webp",
+        "src": "zlin-3/476448539_122198423642184727_8219735992606443477_n.webp",
         "width": 2048,
         "height": 1365
       },
@@ -1823,6 +1852,14 @@
         }
       ],
       "count": 44,
+      "photographers": [
+        {
+          "name": "Jakub Hubáček"
+        },
+        {
+          "name": "Viet Tran"
+        }
+      ],
       "episodeId": "prague-4"
     },
     {
