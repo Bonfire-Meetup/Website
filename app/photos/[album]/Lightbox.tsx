@@ -157,7 +157,7 @@ export function Lightbox({
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <div className="text-xs font-medium text-white/80">
+        <div className="flex h-9 items-center justify-center rounded-full bg-white/10 px-3 text-xs font-medium text-white/80 backdrop-blur-sm">
           {index + 1} / {images.length}
         </div>
         <button
