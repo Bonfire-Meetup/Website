@@ -899,7 +899,7 @@ export function RecordingsCatalog({
         <div className="mb-2 sm:mb-6" />
 
         {viewMode === "grid" ? (
-          <div className="glass mb-8 rounded-2xl px-4 py-3">
+          <div className="glass relative z-10 mb-8 rounded-2xl px-4 py-3">
             <div className="flex flex-wrap items-center gap-3 lg:flex-nowrap lg:gap-2">
               <div className="flex items-center gap-2">
                 {locationOptions.map((option) => {
