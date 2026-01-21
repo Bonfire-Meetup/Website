@@ -444,6 +444,7 @@
         "messageRequired": "Please enter a message (at least 10 characters)",
         "rateLimited": "You've sent too many messages. Please try again later.",
         "captchaFailed": "Please verify that you're human.",
+        "botBlocked": "We couldn't verify this request. Please try again.",
         "csrfInvalid": "Please refresh the page and try again.",
         "generic": "Something went wrong. Please try again or email us directly."
       }
@@ -499,6 +500,7 @@
         "durationRequired": "Please select a preferred duration",
         "rateLimited": "You've submitted too many proposals. Please try again later.",
         "captchaFailed": "Please verify that you're human.",
+        "botBlocked": "We couldn't verify this request. Please try again.",
         "csrfInvalid": "Please refresh the page and try again.",
         "generic": "Something went wrong. Please try again or email us directly."
       }

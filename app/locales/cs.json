@@ -444,6 +444,7 @@
         "messageRequired": "Zadejte prosím zprávu (alespoň 10 znaků)",
         "rateLimited": "Poslali jste příliš mnoho zpráv. Zkuste to prosím později.",
         "captchaFailed": "Potvrďte prosím, že nejste robot.",
+        "botBlocked": "Tento požadavek se nepodařilo ověřit. Zkuste to prosím znovu.",
         "csrfInvalid": "Obnovte prosím stránku a zkuste to znovu.",
         "generic": "Něco se pokazilo. Zkuste to znovu nebo nám napište přímo."
       }
@@ -499,6 +500,7 @@
         "durationRequired": "Vyberte prosím preferovanou délku",
         "rateLimited": "Odeslali jste příliš mnoho návrhů. Zkuste to prosím později.",
         "captchaFailed": "Potvrďte prosím, že nejste robot.",
+        "botBlocked": "Tento požadavek se nepodařilo ověřit. Zkuste to prosím znovu.",
         "csrfInvalid": "Obnovte prosím stránku a zkuste to znovu.",
         "generic": "Něco se pokazilo. Zkuste to znovu nebo nám napište přímo."
       }

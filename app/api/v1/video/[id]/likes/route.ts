@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
 import { UAParser } from "ua-parser-js";
+import { checkBotId } from "botid/server";
 import crypto from "crypto";
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -73,6 +74,10 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
     if (!isOriginAllowed(requestHeaders)) {
       return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
     }
+    const verification = await checkBotId();
+    if (verification.isBot) {
+      return NextResponse.json({ error: "Bot traffic blocked" }, { status: 403 });
+    }
     const { ipHash, uaHash } = getClientHashes(requestHeaders);
     if (isRateLimited(`read:${videoId}:${ipHash}`, RATE_LIMIT_MAX_READ)) {
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
@@ -106,6 +111,10 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
     if (!isOriginAllowed(requestHeaders)) {
       return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
     }
+    const verification = await checkBotId();
+    if (verification.isBot) {
+      return NextResponse.json({ error: "Bot traffic blocked" }, { status: 403 });
+    }
     const { ipHash, uaHash } = getClientHashes(requestHeaders);
     if (isRateLimited(`write:${videoId}:${ipHash}`, RATE_LIMIT_MAX_MUTATION)) {
       return NextResponse.json({ error: "Rate limited" }, { status: 429 });
@@ -135,6 +144,10 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
     const requestHeaders = await headers();
     if (!isOriginAllowed(requestHeaders)) {
       return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+    }
+    const verification = await checkBotId();
+    if (verification.isBot) {
+      return NextResponse.json({ error: "Bot traffic blocked" }, { status: 403 });
     }
     const { ipHash, uaHash } = getClientHashes(requestHeaders);
     if (isRateLimited(`write:${videoId}:${ipHash}`, RATE_LIMIT_MAX_MUTATION)) {

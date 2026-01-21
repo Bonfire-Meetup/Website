@@ -63,6 +63,7 @@ export default async function TalkProposalPage() {
         durationRequired: t("form.errors.durationRequired"),
         rateLimited: t("form.errors.rateLimited"),
         captchaFailed: t("form.errors.captchaFailed"),
+        botBlocked: t("form.errors.botBlocked"),
         csrfInvalid: t("form.errors.csrfInvalid"),
         generic: t("form.errors.generic"),
       },

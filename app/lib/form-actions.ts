@@ -4,6 +4,7 @@ import { headers, cookies } from "next/headers";
 import { neon } from "@neondatabase/serverless";
 import crypto from "crypto";
 import { z } from "zod";
+import { checkBotId } from "botid/server";
 
 const RATE_LIMIT_WINDOW_MS = 3600_000;
 const RATE_LIMIT_MAX_CONTACT = 5;
@@ -116,6 +117,11 @@ export async function submitContactForm(
     return { success: true };
   }
 
+  const verification = await checkBotId();
+  if (verification.isBot) {
+    return { success: false, message: "botBlocked" };
+  }
+
   const ipHash = await getClientIpHash();
 
   if (isRateLimited(`contact:${ipHash}`, RATE_LIMIT_MAX_CONTACT)) {
@@ -179,6 +185,11 @@ export async function submitTalkProposal(
   const honeypot = formData.get("company");
   if (honeypot) {
     return { success: true };
+  }
+
+  const verification = await checkBotId();
+  if (verification.isBot) {
+    return { success: false, message: "botBlocked" };
   }
 
   const ipHash = await getClientIpHash();

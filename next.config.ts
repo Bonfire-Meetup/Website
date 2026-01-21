@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { withBotId } from "botid/next/config";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
@@ -39,4 +40,4 @@ const nextConfig = {
   },
 } satisfies NextConfig;
 
-export default withNextIntl(nextConfig);
+export default withBotId(withNextIntl(nextConfig));
