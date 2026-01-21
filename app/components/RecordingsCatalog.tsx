@@ -703,7 +703,7 @@ export function RecordingsCatalog({
                             ? "bg-red-500 text-white shadow-sm shadow-red-500/25"
                             : option.value === LOCATIONS.ZLIN
                               ? "bg-blue-500 text-white shadow-sm shadow-blue-500/25"
-                              : "bg-brand-500 text-white shadow-sm shadow-brand-500/25"
+                              : "bg-rose-500 text-white shadow-sm shadow-rose-500/25"
                           : !hasResults
                             ? "cursor-not-allowed bg-neutral-100 text-neutral-400 opacity-50 dark:bg-white/5 dark:text-neutral-600"
                             : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/15"

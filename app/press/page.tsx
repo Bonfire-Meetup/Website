@@ -243,7 +243,7 @@ export default async function PressPage() {
                 <a
                   href={`/assets/${pressKitFilename}`}
                   download
-                  className="inline-flex items-center justify-center rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-500 dark:bg-brand-500 dark:shadow-brand-500/30 dark:hover:bg-brand-400"
+                  className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand-600 to-rose-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/25 transition hover:from-brand-500 hover:to-rose-400 dark:from-brand-500 dark:to-rose-400 dark:shadow-rose-400/30 dark:hover:from-brand-400 dark:hover:to-rose-300"
                 >
                   {t("logos.downloadAllCta", { fileName: pressKitFilename })}
                 </a>
