@@ -57,13 +57,13 @@ export function AlbumGallery({ images, baseUrl, title, downloadLabel }: AlbumGal
 
   return (
     <>
-      <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
+      <div className="flex flex-col gap-6 sm:block sm:columns-2 sm:gap-4 lg:columns-3">
         {images.map((image, index) => (
           <button
             key={image.src}
             type="button"
             onClick={() => openLightbox(index)}
-            className="mb-4 block w-full cursor-zoom-in break-inside-avoid overflow-hidden rounded-2xl transition-transform hover:scale-[1.02]"
+            className="glass-card no-hover-pop block w-full break-inside-avoid overflow-hidden rounded-2xl ring-1 ring-black/5 shadow-lg shadow-black/5 sm:mb-4 sm:cursor-zoom-in sm:transition-transform sm:hover:scale-[1.02] dark:ring-white/10 dark:shadow-black/20"
           >
             <AlbumImage
               src={`${baseUrl}/${image.src}`}

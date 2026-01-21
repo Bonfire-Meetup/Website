@@ -18,6 +18,10 @@ export function Lightbox({
   downloadLabel,
 }: LightboxProps) {
   const [index, setIndex] = useState(initialIndex);
+  const isDesktopViewport = useCallback(() => {
+    if (typeof window === "undefined") return true;
+    return window.matchMedia("(min-width: 640px)").matches;
+  }, []);
 
   const updateIndex = useCallback(
     (newIndex: number) => {
@@ -89,23 +93,70 @@ export function Lightbox({
   };
 
   const handleDownload = async () => {
-    const response = await fetch(current.src);
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
+    a.href = current.src;
     a.download = current.src.split("/").pop() || "photo.jpg";
+    a.target = "_blank";
+    a.rel = "noopener";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95">
+      <div className="absolute inset-x-3 top-3 z-30 flex gap-1 sm:hidden">
+        {images.map((_, i) => (
+          <div
+            key={`progress-${i}`}
+            className={`h-1 flex-1 rounded-full ${i <= index ? "bg-white" : "bg-white/30"}`}
+          />
+        ))}
+      </div>
+
+      <div className="absolute top-8 left-3 right-3 z-30 flex items-center justify-between text-white sm:hidden">
+        <button
+          onClick={onClose}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
+          aria-label="Close"
+        >
+          <svg
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div className="text-xs font-medium text-white/80">
+          {index + 1} / {images.length}
+        </div>
+        <button
+          onClick={handleDownload}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
+          aria-label={downloadLabel}
+        >
+          <svg
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+            />
+          </svg>
+        </button>
+      </div>
+
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+        className="absolute top-6 right-6 z-30 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
         aria-label="Close"
       >
         <svg
@@ -119,7 +170,7 @@ export function Lightbox({
         </svg>
       </button>
 
-      <div className="absolute top-6 left-6 z-10 flex gap-2">
+      <div className="absolute top-6 left-6 z-30 hidden gap-2 sm:flex">
         <button
           onClick={handleDownload}
           className="flex h-12 items-center gap-2 rounded-full bg-white/10 px-5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
@@ -141,14 +192,14 @@ export function Lightbox({
         </button>
       </div>
 
-      <div className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-sm">
+      <div className="absolute bottom-4 left-1/2 z-30 hidden -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-sm sm:block">
         {index + 1} / {images.length}
       </div>
 
       {hasPrev && (
         <button
           onClick={goToPrev}
-          className="absolute left-6 z-10 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
+          className="absolute left-6 z-30 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
           aria-label="Previous"
         >
           <svg
@@ -166,7 +217,7 @@ export function Lightbox({
       {hasNext && (
         <button
           onClick={goToNext}
-          className="absolute right-6 z-10 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
+          className="absolute right-6 z-30 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
           aria-label="Next"
         >
           <svg
@@ -182,7 +233,7 @@ export function Lightbox({
       )}
 
       <div
-        className="flex h-full w-full items-center justify-center px-4 pb-16 pt-20 sm:px-16 sm:pb-16 sm:pt-24"
+        className="relative flex h-full w-full items-center justify-center px-0 pb-0 pt-0 sm:px-16 sm:pb-16 sm:pt-24"
         onClick={(e) => {
           if (e.target === e.currentTarget) onClose();
         }}
@@ -192,15 +243,46 @@ export function Lightbox({
       >
         <img
           src={current.src}
-          alt={current.alt}
-          className={`max-h-full max-w-full object-contain transition-transform duration-200 ${
-            isZoomed ? "cursor-zoom-out scale-150" : "cursor-zoom-in"
-          }`}
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsZoomed(!isZoomed);
-          }}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full scale-105 object-cover blur-lg opacity-70 sm:hidden"
         />
+        <div className="absolute inset-0 bg-black/30 sm:hidden" />
+        <div className="relative z-20 inline-flex max-h-[100svh] max-w-[100vw] items-center justify-center sm:max-h-full sm:max-w-full">
+          <div className="absolute inset-0 z-20 flex sm:hidden">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                goToPrev();
+              }}
+              disabled={!hasPrev}
+              aria-label="Previous"
+              className="flex-1 disabled:opacity-0"
+            />
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                goToNext();
+              }}
+              disabled={!hasNext}
+              aria-label="Next"
+              className="flex-1 disabled:opacity-0"
+            />
+          </div>
+          <img
+            src={current.src}
+            alt={current.alt}
+            className={`block max-h-[100svh] max-w-[100vw] object-contain sm:max-h-full sm:max-w-full sm:transition-transform sm:duration-200 ${
+              isZoomed ? "sm:cursor-zoom-out sm:scale-150" : "sm:cursor-zoom-in"
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isDesktopViewport()) setIsZoomed(!isZoomed);
+            }}
+          />
+        </div>
       </div>
     </div>
   );
