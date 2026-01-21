@@ -272,6 +272,13 @@ export default async function TeamPage() {
               >
                 hello+crew@bnf.events
               </a>
+              <span className="mx-1">{t("joinCalloutOr")}</span>
+              <a
+                href="/contact?type=crew"
+                className="font-medium text-brand-600 underline decoration-brand-600/30 underline-offset-2 transition-colors hover:text-brand-700 hover:decoration-brand-600 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300"
+              >
+                {t("joinCalloutContact")}
+              </a>
             </p>
           </div>
 

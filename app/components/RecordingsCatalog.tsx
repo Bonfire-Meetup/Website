@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useDeferredValue, useCallback, useId } from "react";
+import { useEffect, useMemo, useRef, useState, useDeferredValue, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,9 +8,10 @@ import type { Recording } from "../lib/recordings";
 import { AccentBar } from "./AccentBar";
 import { Button } from "./Button";
 import { EmptyState } from "./EmptyState";
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon } from "./icons";
+import { ChevronLeftIcon, ChevronRightIcon, InfoIcon } from "./icons";
 import { Pill } from "./Pill";
 import { Skeleton } from "./Skeletons";
+import { SelectDropdown, type DropdownGroup, type DropdownOption } from "./SelectDropdown";
 
 import { LOCATIONS, type LocationValue } from "../lib/constants";
 import { getEpisodeById } from "../lib/episodes";
@@ -334,192 +335,6 @@ function RecordingRail({
   );
 }
 
-type DropdownOption = {
-  value: string;
-  label: string;
-  disabled?: boolean;
-};
-
-type DropdownGroup = {
-  label: string;
-  options: DropdownOption[];
-};
-
-function getDropdownLabel(
-  value: string,
-  options: DropdownOption[],
-  groups: DropdownGroup[],
-): string {
-  const direct = options.find((option) => option.value === value);
-  if (direct) return direct.label;
-  for (const group of groups) {
-    const match = group.options.find((option) => option.value === value);
-    if (match) return match.label;
-  }
-  return value;
-}
-
-function FilterDropdown({
-  value,
-  options,
-  groups,
-  onChange,
-  buttonClassName = "",
-  menuClassName = "",
-}: {
-  value: string;
-  options: DropdownOption[];
-  groups?: DropdownGroup[];
-  onChange: (nextValue: string) => void;
-  buttonClassName?: string;
-  menuClassName?: string;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [menuWidth, setMenuWidth] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const measureRef = useRef<HTMLSpanElement | null>(null);
-  const listboxId = useId();
-  const resolvedGroups = groups ?? [];
-  const label = getDropdownLabel(value, options, resolvedGroups);
-  const optionLabels = useMemo(
-    () => [
-      ...options.map((option) => option.label),
-      ...resolvedGroups.flatMap((group) => group.options.map((option) => option.label)),
-    ],
-    [options, resolvedGroups],
-  );
-
-  useEffect(() => {
-    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handlePointerDown);
-    document.addEventListener("touchstart", handlePointerDown);
-    return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-      document.removeEventListener("touchstart", handlePointerDown);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const raf = requestAnimationFrame(() => {
-      const minWidth = containerRef.current?.clientWidth ?? 0;
-      const maxWidth = Math.floor(window.innerWidth * 0.9);
-      let widest = 0;
-      if (measureRef.current) {
-        optionLabels.forEach((text) => {
-          measureRef.current!.textContent = text;
-          widest = Math.max(widest, measureRef.current!.offsetWidth);
-        });
-      }
-      const padded = widest + 48;
-      const nextWidth = Math.min(maxWidth, Math.max(minWidth, padded));
-      setMenuWidth(nextWidth || null);
-    });
-    return () => cancelAnimationFrame(raf);
-  }, [isOpen, optionLabels]);
-
-  const handleSelect = (nextValue: string) => {
-    setIsOpen(false);
-    if (nextValue !== value) {
-      onChange(nextValue);
-    }
-  };
-
-  return (
-    <div ref={containerRef} className="relative">
-      <span
-        ref={measureRef}
-        className="invisible absolute -z-10 whitespace-nowrap text-xs font-medium sm:text-sm"
-      />
-      <button
-        type="button"
-        aria-haspopup="listbox"
-        aria-expanded={isOpen}
-        aria-controls={listboxId}
-        onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex w-full items-center justify-between gap-2 text-left ${buttonClassName}`}
-      >
-        <span className="truncate">{label}</span>
-        <ChevronDownIcon className="h-3 w-3 text-neutral-400" />
-      </button>
-
-      {isOpen ? (
-        <div
-          id={listboxId}
-          role="listbox"
-          ref={menuRef}
-          style={menuWidth ? { width: menuWidth } : undefined}
-          className={`absolute left-0 z-50 mt-2 max-h-64 min-w-full max-w-[min(36rem,90vw)] overflow-y-auto overflow-x-hidden rounded-xl border border-black/5 bg-white/95 p-2 text-xs shadow-lg shadow-black/10 backdrop-blur sm:text-sm dark:border-white/10 dark:bg-neutral-950/95 ${menuClassName}`}
-        >
-          {options.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              role="option"
-              aria-selected={option.value === value}
-              disabled={option.disabled}
-              onClick={() => handleSelect(option.value)}
-              data-option
-              className={`flex w-full items-center rounded-lg px-3 py-2 text-left font-medium transition whitespace-normal ${
-                option.value === value
-                  ? "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
-                  : "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/10"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-
-          {resolvedGroups.map((group) => (
-            <div
-              key={group.label}
-              className="mt-2 border-t border-black/5 pt-2 dark:border-white/10"
-            >
-              <div className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
-                {group.label}
-              </div>
-              {group.options.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="option"
-                  aria-selected={option.value === value}
-                  disabled={option.disabled}
-                  onClick={() => handleSelect(option.value)}
-                  data-option
-                  className={`flex w-full items-center rounded-lg px-3 py-2 text-left font-medium transition whitespace-normal ${
-                    option.value === value
-                      ? "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
-                      : "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-white/10"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 export function RecordingsCatalog({
   recordings,
   labels,
@@ -546,21 +361,9 @@ export function RecordingsCatalog({
   const [isFeaturedPaused, setIsFeaturedPaused] = useState(false);
   const [canHover, setCanHover] = useState(false);
   const [isPageVisible, setIsPageVisible] = useState(true);
-  const [useNativeSelects, setUseNativeSelects] = useState(false);
 
   useEffect(() => {
     setCanHover(window.matchMedia("(hover: hover)").matches);
-  }, []);
-  useEffect(() => {
-    const media = window.matchMedia("(max-width: 767px)");
-    const handleChange = () => setUseNativeSelects(media.matches);
-    handleChange();
-    if (media.addEventListener) {
-      media.addEventListener("change", handleChange);
-      return () => media.removeEventListener("change", handleChange);
-    }
-    media.addListener(handleChange);
-    return () => media.removeListener(handleChange);
   }, []);
   useEffect(() => {
     const handleVisibility = () => {
@@ -942,90 +745,46 @@ export function RecordingsCatalog({
               <div className="hidden h-5 w-px bg-neutral-300/60 sm:block dark:bg-white/10" />
 
               <div className="relative">
-                {useNativeSelects ? (
-                  <select
-                    value={activeTag}
-                    onChange={(e) => {
-                      updateFilters(activeLocation, e.target.value, activeEpisode, searchQuery);
-                    }}
-                    className={`w-40 rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-8 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 sm:w-44 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
-                      activeTag !== "all"
-                        ? "text-brand-600 dark:text-brand-300"
-                        : "text-neutral-600 dark:text-neutral-300"
-                    }`}
-                  >
-                    <option value="all">{labels.filters.allTags}</option>
-                    {tagOptions
-                      .filter((tag) => tag !== "all")
-                      .map((tag) => (
-                        <option key={tag} value={tag}>
-                          {tag}
-                        </option>
-                      ))}
-                  </select>
-                ) : (
-                  <FilterDropdown
-                    value={activeTag}
-                    options={tagDropdownOptions}
-                    onChange={(nextValue) =>
-                      updateFilters(activeLocation, nextValue, activeEpisode, searchQuery)
-                    }
-                    buttonClassName={`min-w-0 w-36 rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-3 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 sm:w-40 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
-                      activeTag !== "all"
-                        ? "text-brand-600 dark:text-brand-300"
-                        : "text-neutral-600 dark:text-neutral-300"
-                    }`}
-                  />
-                )}
+                <SelectDropdown
+                  value={activeTag}
+                  options={tagDropdownOptions}
+                  nativeOnMobile
+                  onChange={(nextValue) =>
+                    updateFilters(activeLocation, nextValue, activeEpisode, searchQuery)
+                  }
+                  buttonClassName={`min-w-0 w-36 rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-3 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 sm:w-40 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
+                    activeTag !== "all"
+                      ? "text-brand-600 dark:text-brand-300"
+                      : "text-neutral-600 dark:text-neutral-300"
+                  }`}
+                  nativeClassName={`w-40 rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-8 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 sm:w-44 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
+                    activeTag !== "all"
+                      ? "text-brand-600 dark:text-brand-300"
+                      : "text-neutral-600 dark:text-neutral-300"
+                  }`}
+                />
               </div>
 
               <div className="relative">
-                {useNativeSelects ? (
-                  <select
-                    value={activeEpisode}
-                    onChange={(e) => {
-                      updateFilters(activeLocation, activeTag, e.target.value, searchQuery);
-                    }}
-                    className={`w-full min-w-[16rem] rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-8 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 sm:w-64 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
-                      activeEpisode !== "all"
-                        ? "text-brand-600 dark:text-brand-300"
-                        : "text-neutral-600 dark:text-neutral-300"
-                    }`}
-                  >
-                    <option value="all">{labels.filters.allEpisodes}</option>
-                    {groupedEpisodes.map((group) => (
-                      <optgroup
-                        key={group.label}
-                        label={group.label}
-                        className="font-semibold text-neutral-900 dark:text-white"
-                      >
-                        {group.options.map((episode) => (
-                          <option
-                            key={episode.value}
-                            value={episode.value}
-                            className="font-normal text-neutral-600 dark:text-neutral-300"
-                          >
-                            {episode.label}
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </select>
-                ) : (
-                  <FilterDropdown
-                    value={activeEpisode}
-                    options={episodeDropdownOptions}
-                    groups={episodeDropdownGroups}
-                    onChange={(nextValue) =>
-                      updateFilters(activeLocation, activeTag, nextValue, searchQuery)
-                    }
-                    buttonClassName={`min-w-0 w-56 rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-3 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 sm:w-64 lg:w-72 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
-                      activeEpisode !== "all"
-                        ? "text-brand-600 dark:text-brand-300"
-                        : "text-neutral-600 dark:text-neutral-300"
-                    }`}
-                  />
-                )}
+                <SelectDropdown
+                  value={activeEpisode}
+                  options={episodeDropdownOptions}
+                  groups={episodeDropdownGroups}
+                  nativeOnMobile
+                  onChange={(nextValue) =>
+                    updateFilters(activeLocation, activeTag, nextValue, searchQuery)
+                  }
+                  buttonClassName={`min-w-0 w-56 rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-3 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 sm:w-64 lg:w-72 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
+                    activeEpisode !== "all"
+                      ? "text-brand-600 dark:text-brand-300"
+                      : "text-neutral-600 dark:text-neutral-300"
+                  }`}
+                  nativeClassName={`w-full min-w-[16rem] rounded-lg border-0 bg-white/80 py-1.5 pl-3 pr-8 text-xs font-medium shadow-sm ring-1 ring-black/5 transition focus:outline-none focus:ring-2 focus:ring-brand-500/50 sm:w-64 dark:bg-white/10 dark:ring-white/10 dark:focus:ring-brand-400/50 ${
+                    activeEpisode !== "all"
+                      ? "text-brand-600 dark:text-brand-300"
+                      : "text-neutral-600 dark:text-neutral-300"
+                  }`}
+                />
               </div>
 
               <div className="relative flex-1">

@@ -6,6 +6,7 @@
     "crew": "Crew",
     "photos": "Photos",
     "press": "Press Kit",
+    "contact": "Contact",
     "codeOfConduct": "Code of Conduct",
     "back": "Back",
     "menu": "Open menu",
@@ -76,7 +77,7 @@
     "talkBanner": {
       "title": "Do you want to give a talk?",
       "subtitle": "We're always looking for speakers to share their knowledge and experience.",
-      "cta": "Write us at"
+      "cta": "Submit a talk proposal"
     }
   },
   "events": {
@@ -128,8 +129,8 @@
       "subtitle": "Snapshot numbers for quick reference.",
       "firstPragueLabel": "First Prague event",
       "firstPragueDate": "THU, NOV 9, 2023",
-      "firstZlínLabel": "First Zlín event",
-      "firstZlínDate": "MON, DEC 4, 2023"
+      "firstZlinLabel": "First Zlín event",
+      "firstZlinDate": "MON, DEC 4, 2023"
     },
     "logos": {
       "title": "Logo Downloads",
@@ -196,7 +197,9 @@
     "help": {
       "title": "Need Something Else?",
       "body": "Email us at",
-      "email": "hello+press@bnf.events"
+      "email": "hello+press@bnf.events",
+      "orContact": "or use the",
+      "contactLink": "contact form"
     }
   },
   "photos": {
@@ -308,6 +311,8 @@
       }
     ],
     "joinCallout": "Want to lend a hand? Reach out at",
+    "joinCalloutOr": "or use the",
+    "joinCalloutContact": "contact form",
     "founderEyebrow": "A note from the founder",
     "founderTitle": "Thank you",
     "founderNote": "Bonfire exists because of **you** - the crew, the speakers, and everyone who shows up. Building a strong community, connecting people, and sharing knowledge is what this is all about. Thank **you** for being part of it.",
@@ -342,6 +347,10 @@
     "photosDescription": "Browse photo albums from Bonfire meetups in Prague and Zlín.",
     "timelineTitle": "Timeline | Bonfire Events",
     "timelineDescription": "Explore Bonfire episodes with links to recordings and photo albums.",
+    "contactTitle": "Contact Us | Bonfire Events",
+    "contactDescription": "Get in touch with the Bonfire Events team. Questions, feedback, or partnership inquiries welcome.",
+    "talkProposalTitle": "Propose a Talk | Bonfire Events",
+    "talkProposalDescription": "Submit your talk proposal for Bonfire Events. Share your knowledge with the Czech game dev community.",
     "recordingNotFound": "Recording Not Found",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",
@@ -395,7 +404,103 @@
       "content": "If you experience or witness a breach of this code of conduct, please report it immediately. All reports will be handled with discretion and confidentiality. You can reach our team by:",
       "methods": "<bullet>Speaking directly to any Bonfire staff member at the event (they will be clearly identifiable)</bullet>\n<bullet>Emailing us (reports are monitored before, during, and after events)</bullet>",
       "email": "hello+coc@bnf.events",
+      "orContact": "or use the",
+      "contactLink": "contact form",
       "closing": "We take all reports seriously and are committed to addressing concerns promptly. You will not face retaliation for making a good-faith report."
+    }
+  },
+  "contactPage": {
+    "eyebrow": "Get in Touch",
+    "titlePart1": "We'd Love to",
+    "titleHighlight": "Hear From You",
+    "subtitle": "Questions, feedback, partnership inquiries, or just want to say hi? Drop us a message and we'll get back to you.",
+    "alternativeContact": "Or email us directly at",
+    "form": {
+      "title": "Send a Message",
+      "subtitle": "Fill out the form below and we'll respond soon.",
+      "name": "Your Name",
+      "namePlaceholder": "John Doe",
+      "email": "Email Address",
+      "emailPlaceholder": "john@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "What's this about?",
+      "message": "Message",
+      "messagePlaceholder": "Tell us what's on your mind...",
+      "inquiryType": "Inquiry type",
+      "inquiryTypeGeneral": "General",
+      "inquiryTypePress": "Press",
+      "inquiryTypeCrew": "Crew",
+      "inquiryTypeConduct": "Code of Conduct",
+      "submit": "Send Message",
+      "submitting": "Sending...",
+      "successTitle": "Message Sent!",
+      "successMessage": "Thanks for reaching out. We'll get back to you as soon as possible.",
+      "sendAnother": "Send Another Message",
+      "errors": {
+        "nameRequired": "Please enter your name (at least 2 characters)",
+        "emailInvalid": "Please enter a valid email address",
+        "subjectRequired": "Please enter a subject (at least 3 characters)",
+        "messageRequired": "Please enter a message (at least 10 characters)",
+        "rateLimited": "You've sent too many messages. Please try again later.",
+        "captchaFailed": "Please verify that you're human.",
+        "csrfInvalid": "Please refresh the page and try again.",
+        "generic": "Something went wrong. Please try again or email us directly."
+      }
+    }
+  },
+  "talkProposalPage": {
+    "eyebrow": "Call for Speakers",
+    "titlePart1": "Share Your",
+    "titleHighlight": "Knowledge",
+    "subtitle": "We're always looking for passionate speakers to share their expertise with our community. Whether you're a seasoned pro or first-time speaker, we want to hear from you.",
+    "questions": "Have questions about speaking? Email us at",
+    "whatWeLookFor": {
+      "title": "What We Look For",
+      "item1": "Game development topics: programming, art, design, audio, production, business",
+      "item2": "Practical insights and real-world experiences",
+      "item3": "Both beginner-friendly and advanced deep-dives",
+      "item4": "Passion for sharing knowledge with the community"
+    },
+    "form": {
+      "title": "Submit Your Proposal",
+      "subtitle": "Tell us about your talk idea.",
+      "speakerName": "Your Name",
+      "speakerNamePlaceholder": "John Doe",
+      "email": "Email Address",
+      "emailPlaceholder": "john@example.com",
+      "talkTitle": "Talk Title",
+      "talkTitlePlaceholder": "A catchy title for your talk",
+      "abstract": "Talk Abstract",
+      "abstractPlaceholder": "Describe what your talk is about, what attendees will learn, and why it's relevant to game developers...",
+      "abstractHint": "Minimum 50 characters. Be specific about the value for attendees.",
+      "duration": "Preferred Duration",
+      "durationPlaceholder": "Select duration",
+      "duration15": "15 minutes (Lightning talk)",
+      "duration30": "30 minutes (Standard)",
+      "duration45": "45 minutes (Deep dive)",
+      "preferredLocation": "Preferred Location",
+      "locationEither": "Either Prague or Zlín",
+      "locationPrague": "Prague",
+      "locationZlin": "Zlín",
+      "experience": "Speaker Experience",
+      "experiencePlaceholder": "Tell us about your background and any previous speaking experience...",
+      "experienceHint": "Optional. First-time speakers are welcome!",
+      "submit": "Submit Proposal",
+      "submitting": "Submitting...",
+      "successTitle": "Proposal Submitted!",
+      "successMessage": "Thanks for your submission! We'll review your proposal and get back to you within a few weeks.",
+      "submitAnother": "Submit Another Proposal",
+      "errors": {
+        "nameRequired": "Please enter your name (at least 2 characters)",
+        "emailInvalid": "Please enter a valid email address",
+        "titleRequired": "Please enter a talk title (at least 5 characters)",
+        "abstractRequired": "Please provide an abstract (at least 50 characters)",
+        "durationRequired": "Please select a preferred duration",
+        "rateLimited": "You've submitted too many proposals. Please try again later.",
+        "captchaFailed": "Please verify that you're human.",
+        "csrfInvalid": "Please refresh the page and try again.",
+        "generic": "Something went wrong. Please try again or email us directly."
+      }
     }
   }
 }

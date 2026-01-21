@@ -116,7 +116,7 @@ export function RecordingPlayer({
     const loadLikes = async () => {
       try {
         setLikeLoadError(false);
-        const response = await fetch(`/api/video/${recording.shortId}/likes`);
+        const response = await fetch(`/api/v1/video/${recording.shortId}/likes`);
         if (!response.ok) {
           if (isActive) setLikeLoadError(true);
           return;
@@ -195,7 +195,7 @@ export function RecordingPlayer({
     setLikeCount((c) => (c ?? 0) + (adding ? 1 : -1));
 
     try {
-      const res = await fetch(`/api/video/${recording.shortId}/likes`, {
+      const res = await fetch(`/api/v1/video/${recording.shortId}/likes`, {
         method: adding ? "POST" : "DELETE",
       });
       if (!res.ok) {

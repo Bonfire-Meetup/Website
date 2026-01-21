@@ -4,7 +4,17 @@ const BASE_URL = "https://www.bnf.events";
 
 const CACHE_CONTROL = "public, max-age=0, s-maxage=604800, stale-while-revalidate=86400";
 
-const STATIC_PATHS = ["/", "/library", "/photos", "/timeline", "/crew", "/press", "/legal"];
+const STATIC_PATHS = [
+  "/",
+  "/library",
+  "/photos",
+  "/timeline",
+  "/crew",
+  "/press",
+  "/legal",
+  "/contact",
+  "/speak",
+];
 
 export async function GET() {
   const urls = STATIC_PATHS.map((path) => ({ loc: `${BASE_URL}${path}` }));

@@ -6,6 +6,7 @@
     "crew": "Crew",
     "photos": "Fotky",
     "press": "Pro m\u00e9dia",
+    "contact": "Kontakt",
     "codeOfConduct": "Kodex chov\u00e1n\u00ed",
     "back": "Zp\u011bt",
     "menu": "Otev\u0159\u00edt menu",
@@ -76,7 +77,7 @@
     "talkBanner": {
       "title": "Chceš u nás přednášet?",
       "subtitle": "Pořád hledáme zajímavé speakery, kteří se chtějí podělit o své zkušenosti.",
-      "cta": "Napiš nám na"
+      "cta": "Navrhnout přednášku"
     }
   },
   "events": {
@@ -128,8 +129,8 @@
       "subtitle": "Rychlý přehled pro reference.",
       "firstPragueLabel": "První akce v Praze",
       "firstPragueDate": "ČTV, 9. 11. 2023",
-      "firstZlínLabel": "První akce ve Zlíně",
-      "firstZlínDate": "PON, 4. 12. 2023"
+      "firstZlinLabel": "První akce ve Zlíně",
+      "firstZlinDate": "PON, 4. 12. 2023"
     },
     "logos": {
       "title": "Stažení log",
@@ -196,7 +197,9 @@
     "help": {
       "title": "Potřebujete něco dalšího?",
       "body": "Napište nám na",
-      "email": "hello+press@bnf.events"
+      "email": "hello+press@bnf.events",
+      "orContact": "nebo použijte",
+      "contactLink": "kontaktní formulář"
     }
   },
   "photos": {
@@ -308,6 +311,8 @@
       }
     ],
     "joinCallout": "Chceš pomoct? Ozvi se na",
+    "joinCalloutOr": "nebo použij",
+    "joinCalloutContact": "kontaktní formulář",
     "founderEyebrow": "Slovo zakladatele",
     "founderTitle": "Děkuji",
     "founderNote": "Bonfire existuje díky **vám** - crew, speakerům i každému, kdo dorazí. Budovat silnou komunitu, propojovat lidi a sdílet znalosti je to, o čem to celé je. **Děkuji**, že jste toho součástí.",
@@ -342,6 +347,10 @@
     "photosDescription": "Fotoalba z Bonfire meetupů v Praze a Zlíně.",
     "timelineTitle": "Timeline | Bonfire Events",
     "timelineDescription": "Projděte si epizody Bonfire se záznamy a fotoalby.",
+    "contactTitle": "Kontakt | Bonfire Events",
+    "contactDescription": "Napište nám. Otázky, zpětná vazba nebo partnerská spolupráce.",
+    "talkProposalTitle": "Navrhnout přednášku | Bonfire Events",
+    "talkProposalDescription": "Pošlete návrh přednášky pro Bonfire Events. Sdílejte své znalosti s českou gamedev komunitou.",
     "recordingNotFound": "Záznam nenalezen",
     "siteName": "Bonfire Events",
     "author": "Bonfire Events",
@@ -395,7 +404,103 @@
       "content": "Pokud zažiješ nebo uvidíš porušení tohoto kodexu, okamžitě nám to nahlás. Všechna hlášení zpracujeme diskrétně a důvěrně. Na náš tým se můžeš obrátit takto:",
       "methods": "<bullet>Oslov přímo kteréhokoliv člena týmu Bonfire na akci (budou jasně označeni)</bullet>\n<bullet>Napiš nám e-mail (zprávy sledujeme před, během i po akcích)</bullet>",
       "email": "hello+coc@bnf.events",
+      "orContact": "nebo použij",
+      "contactLink": "kontaktní formulář",
       "closing": "Všechna hlášení bereme vážně a zavazujeme se je řešit bez prodlení. Nebudeš čelit odvetě za podání hlášení v dobré víře."
+    }
+  },
+  "contactPage": {
+    "eyebrow": "Kontaktujte nás",
+    "titlePart1": "Rádi od vás",
+    "titleHighlight": "Uslyšíme",
+    "subtitle": "Máte otázky, zpětnou vazbu, zájem o partnerství, nebo se jen chcete pozdravit? Napište nám a brzy se ozveme.",
+    "alternativeContact": "Nebo nám napište přímo na",
+    "form": {
+      "title": "Poslat zprávu",
+      "subtitle": "Vyplňte formulář a brzy se vám ozveme.",
+      "name": "Vaše jméno",
+      "namePlaceholder": "Jan Novák",
+      "email": "E-mailová adresa",
+      "emailPlaceholder": "jan@example.com",
+      "subject": "Předmět",
+      "subjectPlaceholder": "O co se jedná?",
+      "message": "Zpráva",
+      "messagePlaceholder": "Napište nám, co máte na srdci...",
+      "inquiryType": "Typ dotazu",
+      "inquiryTypeGeneral": "Obecné",
+      "inquiryTypePress": "Média",
+      "inquiryTypeCrew": "Crew",
+      "inquiryTypeConduct": "Kodex chování",
+      "submit": "Odeslat zprávu",
+      "submitting": "Odesílám...",
+      "successTitle": "Zpráva odeslána!",
+      "successMessage": "Děkujeme za zprávu. Ozveme se vám co nejdříve.",
+      "sendAnother": "Poslat další zprávu",
+      "errors": {
+        "nameRequired": "Zadejte prosím své jméno (alespoň 2 znaky)",
+        "emailInvalid": "Zadejte prosím platnou e-mailovou adresu",
+        "subjectRequired": "Zadejte prosím předmět (alespoň 3 znaky)",
+        "messageRequired": "Zadejte prosím zprávu (alespoň 10 znaků)",
+        "rateLimited": "Poslali jste příliš mnoho zpráv. Zkuste to prosím později.",
+        "captchaFailed": "Potvrďte prosím, že nejste robot.",
+        "csrfInvalid": "Obnovte prosím stránku a zkuste to znovu.",
+        "generic": "Něco se pokazilo. Zkuste to znovu nebo nám napište přímo."
+      }
+    }
+  },
+  "talkProposalPage": {
+    "eyebrow": "Výzva pro speakery",
+    "titlePart1": "Sdílejte své",
+    "titleHighlight": "Znalosti",
+    "subtitle": "Hledáme nadšené přednášející, kteří chtějí sdílet své zkušenosti s naší komunitou. Ať už jste zkušený profík nebo vystupujete poprvé, rádi vás uslyšíme.",
+    "questions": "Máte otázky ohledně přednášení? Napište nám na",
+    "whatWeLookFor": {
+      "title": "Co hledáme",
+      "item1": "Témata z herního vývoje: programování, art, design, audio, produkce, business",
+      "item2": "Praktické poznatky a reálné zkušenosti",
+      "item3": "Přednášky pro začátečníky i pokročilé hluboké ponory",
+      "item4": "Nadšení pro sdílení znalostí s komunitou"
+    },
+    "form": {
+      "title": "Pošlete návrh",
+      "subtitle": "Řekněte nám o své přednášce.",
+      "speakerName": "Vaše jméno",
+      "speakerNamePlaceholder": "Jan Novák",
+      "email": "E-mailová adresa",
+      "emailPlaceholder": "jan@example.com",
+      "talkTitle": "Název přednášky",
+      "talkTitlePlaceholder": "Chytlavý název vaší přednášky",
+      "abstract": "Abstrakt přednášky",
+      "abstractPlaceholder": "Popište, o čem vaše přednáška bude, co se účastníci naučí a proč je to relevantní pro herní vývojáře...",
+      "abstractHint": "Minimum 50 znaků. Buďte konkrétní ohledně přínosu pro účastníky.",
+      "duration": "Preferovaná délka",
+      "durationPlaceholder": "Vyberte délku",
+      "duration15": "15 minut (Bleskový talk)",
+      "duration30": "30 minut (Standardní)",
+      "duration45": "45 minut (Hluboký ponor)",
+      "preferredLocation": "Preferovaná lokace",
+      "locationEither": "Praha nebo Zlín",
+      "locationPrague": "Praha",
+      "locationZlin": "Zlín",
+      "experience": "Zkušenosti speakera",
+      "experiencePlaceholder": "Řekněte nám o svém pozadí a předchozích zkušenostech s přednášením...",
+      "experienceHint": "Volitelné. Vítáme i ty, co přednáší poprvé!",
+      "submit": "Odeslat návrh",
+      "submitting": "Odesílám...",
+      "successTitle": "Návrh odeslán!",
+      "successMessage": "Děkujeme za váš návrh! Projdeme ho a ozveme se vám během několika týdnů.",
+      "submitAnother": "Odeslat další návrh",
+      "errors": {
+        "nameRequired": "Zadejte prosím své jméno (alespoň 2 znaky)",
+        "emailInvalid": "Zadejte prosím platnou e-mailovou adresu",
+        "titleRequired": "Zadejte prosím název přednášky (alespoň 5 znaků)",
+        "abstractRequired": "Zadejte prosím abstrakt (alespoň 50 znaků)",
+        "durationRequired": "Vyberte prosím preferovanou délku",
+        "rateLimited": "Odeslali jste příliš mnoho návrhů. Zkuste to prosím později.",
+        "captchaFailed": "Potvrďte prosím, že nejste robot.",
+        "csrfInvalid": "Obnovte prosím stránku a zkuste to znovu.",
+        "generic": "Něco se pokazilo. Zkuste to znovu nebo nám napište přímo."
+      }
     }
   }
 }

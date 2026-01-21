@@ -4,7 +4,6 @@ import { ArrowRightIcon } from "./icons";
 
 export async function TalkBanner() {
   const t = await getTranslations("sections.talkBanner");
-  const email = "hello+proposal@bnf.events";
 
   return (
     <section className="relative px-4 py-20 sm:px-6 lg:px-8">
@@ -25,15 +24,11 @@ export async function TalkBanner() {
 
             <div className="flex shrink-0">
               <Button
-                href={`mailto:${email}`}
+                href="/speak"
                 variant="glass"
-                external
                 className="group flex items-center gap-3 px-8 py-4"
               >
-                <div className="flex flex-col items-center md:items-start">
-                  <span className="text-sm font-medium opacity-90">{t("cta")}</span>
-                  <span className="text-lg font-bold">{email}</span>
-                </div>
+                <span className="text-lg font-bold">{t("cta")}</span>
                 <ArrowRightIcon className="h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </div>

@@ -393,6 +393,13 @@ export default async function PressPage() {
               >
                 {t("help.email")}
               </a>
+              <span className="mx-1">{t("help.orContact")}</span>
+              <a
+                href="/contact?type=press"
+                className="font-semibold text-brand-600 hover:underline dark:text-brand-400"
+              >
+                {t("help.contactLink")}
+              </a>
             </p>
           </section>
         </div>

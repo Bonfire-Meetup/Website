@@ -18,6 +18,7 @@ export async function Header() {
     { href: "/photos", label: t("photos") },
     { href: "/crew", label: t("crew") },
     { href: "/press", label: t("press") },
+    { href: "/contact?type=general", label: t("contact") },
     { href: "/legal", label: t("codeOfConduct") },
   ];
 
@@ -57,6 +58,9 @@ export async function Header() {
           </Button>
           <Button href="/crew" variant="ghost" size="sm">
             {t("crew")}
+          </Button>
+          <Button href="/contact?type=general" variant="ghost" size="sm">
+            {t("contact")}
           </Button>
         </nav>
 
