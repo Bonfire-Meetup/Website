@@ -27,7 +27,7 @@ export async function Header() {
         <div className="flex items-center gap-3 md:justify-self-start">
           <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
             <Image
-              src="/bonfire_logo_dark.png"
+              src="/assets/brand/RGB_PNG_01_bonfire_black_gradient.png"
               alt={t("logoAlt")}
               width={140}
               height={40}
@@ -35,7 +35,7 @@ export async function Header() {
               priority
             />
             <Image
-              src="/bonfire_logo_light.png"
+              src="/assets/brand/RGB_PNG_03_bonfire_white_gradient.png"
               alt={t("logoAlt")}
               width={140}
               height={40}

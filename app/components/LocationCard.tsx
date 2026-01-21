@@ -23,9 +23,13 @@ export async function LocationCard({
 }: LocationCardProps) {
   const t = await getTranslations("sections.locations");
   const logoDark =
-    city === LOCATIONS.PRAGUE ? "/bonfire_prague_logo_dark.png" : "/bonfire_zlin_logo_dark.png";
+    city === LOCATIONS.PRAGUE
+      ? "/assets/brand/RGB_PNG_04_bonfire-prague_black_gradient.png"
+      : "/assets/brand/RGB_PNG_07_bonfire-zlin_black_symbol_gradient.png";
   const logoLight =
-    city === LOCATIONS.PRAGUE ? "/bonfire_prague_logo_light.png" : "/bonfire_zlin_logo_light.png";
+    city === LOCATIONS.PRAGUE
+      ? "/assets/brand/RGB_PNG_06_bonfire-prague_white_symbol_gradient.png"
+      : "/assets/brand/RGB_PNG_09_bonfire-zlin_white_symbol_gradient.png";
 
   return (
     <div className="glass-card group relative p-8 sm:p-10">

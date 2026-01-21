@@ -142,13 +142,16 @@
       "variants": {
         "black": "Black",
         "gray": "Gray",
-        "white": "White"
+        "white": "White",
+        "gradient": "Gradient"
       },
       "downloadPng": "PNG",
       "downloadSvg": "SVG",
+      "preferenceNoteLabel": "Note:",
+      "preferenceNote": "We prefer the gradient versions whenever possible. If your design does not allow it, use the non-gradient logo.",
       "downloadAllTitle": "Download All Logos",
       "downloadAllSubtitle": "Get every logo variant in one zip.",
-      "downloadAllCta": "Download bonfire-press-kit.zip"
+      "downloadAllCta": "Download {fileName}"
     },
     "colors": {
       "title": "Brand Colors",

@@ -142,13 +142,16 @@
       "variants": {
         "black": "Černé",
         "gray": "Šedé",
-        "white": "Bílé"
+        "white": "Bílé",
+        "gradient": "Gradient"
       },
       "downloadPng": "PNG",
       "downloadSvg": "SVG",
+      "preferenceNoteLabel": "Poznámka:",
+      "preferenceNote": "Preferujeme gradientní verze. Pokud to váš design neumožňuje, použijte ne‑gradientní logo.",
       "downloadAllTitle": "Stáhnout všechna loga",
       "downloadAllSubtitle": "Všechny varianty log v jednom zipu.",
-      "downloadAllCta": "Stáhnout bonfire-press-kit.zip"
+      "downloadAllCta": "Stáhnout {fileName}"
     },
     "colors": {
       "title": "Brand barvy",

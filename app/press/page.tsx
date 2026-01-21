@@ -27,6 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PressPage() {
   const t = await getTranslations("press");
   const tHero = await getTranslations("hero");
+  const pressKitFilename = "bonfire-press-kit.zip";
 
   const aboutText = t("about.body");
 
@@ -37,20 +38,20 @@ export default async function PressPage() {
         {
           label: t("logos.variants.black"),
           bg: "bg-white",
-          png: "/press-kit/brand/RGB_PNG_01_bonfire_black.png",
-          svg: "/press-kit/brand/RGB_SVG_01_bonfire_black.svg",
+          png: "/assets/brand/RGB_PNG_01_bonfire_black.png",
+          svg: "/assets/brand/RGB_SVG_01_bonfire_black.svg",
         },
         {
-          label: t("logos.variants.gray"),
-          bg: "bg-neutral-100",
-          png: "/press-kit/brand/RGB_PNG_02_bonfire_gray.png",
-          svg: "/press-kit/brand/RGB_SVG_02_bonfire_gray.svg",
+          label: t("logos.variants.gradient"),
+          bg: "bg-white",
+          png: "/assets/brand/RGB_PNG_01_bonfire_black_gradient.png",
+          svg: "/assets/brand/RGB_SVG_01_bonfire_black_gradient.svg",
         },
         {
           label: t("logos.variants.white"),
           bg: "bg-neutral-900",
-          png: "/press-kit/brand/RGB_PNG_03_bonfire_white.png",
-          svg: "/press-kit/brand/RGB_SVG_03_bonfire_white.svg",
+          png: "/assets/brand/RGB_PNG_03_bonfire_white.png",
+          svg: "/assets/brand/RGB_SVG_03_bonfire_white.svg",
         },
       ],
     },
@@ -60,20 +61,20 @@ export default async function PressPage() {
         {
           label: t("logos.variants.black"),
           bg: "bg-white",
-          png: "/press-kit/brand/RGB_PNG_04_bonfire-prague_black.png",
-          svg: "/press-kit/brand/RGB_SVG_04_bonfire-prague_black.svg",
+          png: "/assets/brand/RGB_PNG_04_bonfire-prague_black.png",
+          svg: "/assets/brand/RGB_SVG_04_bonfire-prague_black.svg",
         },
         {
-          label: t("logos.variants.gray"),
-          bg: "bg-neutral-100",
-          png: "/press-kit/brand/RGB_PNG_05_bonfire-prague_gray.png",
-          svg: "/press-kit/brand/RGB_SVG_05_bonfire-prague_gray.svg",
+          label: t("logos.variants.gradient"),
+          bg: "bg-white",
+          png: "/assets/brand/RGB_PNG_04_bonfire-prague_black_gradient.png",
+          svg: "/assets/brand/RGB_SVG_04_bonfire-prague_black_gradient.svg",
         },
         {
           label: t("logos.variants.white"),
           bg: "bg-neutral-900",
-          png: "/press-kit/brand/RGB_PNG_06_bonfire-prague_white.png",
-          svg: "/press-kit/brand/RGB_SVG_06_bonfire-prague_white.svg",
+          png: "/assets/brand/RGB_PNG_06_bonfire-prague_white.png",
+          svg: "/assets/brand/RGB_SVG_06_bonfire-prague_white.svg",
         },
       ],
     },
@@ -83,20 +84,20 @@ export default async function PressPage() {
         {
           label: t("logos.variants.black"),
           bg: "bg-white",
-          png: "/press-kit/brand/RGB_PNG_07_bonfire-zlin_black.png",
-          svg: "/press-kit/brand/RGB_SVG_07_bonfire-zlin_black.svg",
+          png: "/assets/brand/RGB_PNG_07_bonfire-zlin_black.png",
+          svg: "/assets/brand/RGB_SVG_07_bonfire-zlin_black.svg",
         },
         {
-          label: t("logos.variants.gray"),
-          bg: "bg-neutral-100",
-          png: "/press-kit/brand/RGB_PNG_08_bonfire-zlin_gray.png",
-          svg: "/press-kit/brand/RGB_SVG_08_bonfire-zlin_gray.svg",
+          label: t("logos.variants.gradient"),
+          bg: "bg-white",
+          png: "/assets/brand/RGB_PNG_07_bonfire-zlin_black_symbol_gradient.png",
+          svg: "/assets/brand/RGB_SVG_07_bonfire-zlin_black_symbol_gradient.svg",
         },
         {
           label: t("logos.variants.white"),
           bg: "bg-neutral-900",
-          png: "/press-kit/brand/RGB_PNG_09_bonfire-zlin_white.png",
-          svg: "/press-kit/brand/RGB_SVG_09_bonfire-zlin_white.svg",
+          png: "/assets/brand/RGB_PNG_09_bonfire-zlin_white.png",
+          svg: "/assets/brand/RGB_SVG_09_bonfire-zlin_white.svg",
         },
       ],
     },
@@ -223,6 +224,13 @@ export default async function PressPage() {
                 </div>
               ))}
 
+              <p className="mx-auto mt-6 max-w-2xl text-center text-sm text-neutral-600 dark:text-neutral-400">
+                <span className="font-semibold text-neutral-900 dark:text-white">
+                  {t("logos.preferenceNoteLabel")}
+                </span>{" "}
+                {t("logos.preferenceNote")}
+              </p>
+
               <div className="glass-card no-hover-pop p-8 sm:p-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h3 className="text-2xl font-semibold text-neutral-900 dark:text-white">
@@ -233,11 +241,11 @@ export default async function PressPage() {
                   </p>
                 </div>
                 <a
-                  href="/press-kit/bonfire-press-kit.zip"
+                  href={`/assets/${pressKitFilename}`}
                   download
                   className="inline-flex items-center justify-center rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:bg-brand-500 dark:bg-brand-500 dark:shadow-brand-500/30 dark:hover:bg-brand-400"
                 >
-                  {t("logos.downloadAllCta")}
+                  {t("logos.downloadAllCta", { fileName: pressKitFilename })}
                 </a>
               </div>
             </div>
