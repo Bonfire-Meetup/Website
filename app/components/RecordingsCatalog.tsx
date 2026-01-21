@@ -465,7 +465,7 @@ function FilterDropdown({
           role="listbox"
           ref={menuRef}
           style={menuWidth ? { width: menuWidth } : undefined}
-          className={`absolute left-0 z-20 mt-2 max-h-64 min-w-full max-w-[min(36rem,90vw)] overflow-y-auto overflow-x-hidden rounded-xl border border-black/5 bg-white/95 p-2 text-xs shadow-lg shadow-black/10 backdrop-blur sm:text-sm dark:border-white/10 dark:bg-neutral-950/95 ${menuClassName}`}
+          className={`absolute left-0 z-50 mt-2 max-h-64 min-w-full max-w-[min(36rem,90vw)] overflow-y-auto overflow-x-hidden rounded-xl border border-black/5 bg-white/95 p-2 text-xs shadow-lg shadow-black/10 backdrop-blur sm:text-sm dark:border-white/10 dark:bg-neutral-950/95 ${menuClassName}`}
         >
           {options.map((option) => (
             <button
