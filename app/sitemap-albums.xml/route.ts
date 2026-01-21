@@ -1,6 +1,6 @@
 import photoAlbums from "../data/photo-albums.json";
 import { buildAlbumSlug, getEpisodeById } from "../lib/episodes";
-import { buildSitemapXml } from "../lib/sitemap";
+import { buildSitemapXml } from "../lib/sitemap-utils";
 
 const BASE_URL = "https://www.bnf.events";
 const PAGE_SIZE = 10000;
@@ -12,7 +12,7 @@ type Album = {
 
 const { albums } = photoAlbums as { albums: Album[] };
 
-export const revalidate = 60 * 60 * 24 * 7;
+const CACHE_CONTROL = "public, max-age=0, s-maxage=604800, stale-while-revalidate=86400";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -39,6 +39,7 @@ export async function GET(request: Request) {
     status: 200,
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": CACHE_CONTROL,
     },
   });
 }

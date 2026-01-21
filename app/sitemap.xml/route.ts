@@ -1,6 +1,6 @@
 import { getAllRecordings } from "../lib/recordings";
 import photoAlbums from "../data/photo-albums.json";
-import { buildSitemapIndexXml } from "../lib/sitemap";
+import { buildSitemapIndexXml } from "../lib/sitemap-utils";
 
 const BASE_URL = "https://www.bnf.events";
 const PAGE_SIZE = 10000;
@@ -12,7 +12,7 @@ type Album = {
 
 const { albums } = photoAlbums as { albums: Album[] };
 
-export const revalidate = 60 * 60 * 24 * 7;
+const CACHE_CONTROL = "public, max-age=0, s-maxage=604800, stale-while-revalidate=86400";
 
 function buildPagedUrls(basePath: string, totalCount: number) {
   const pages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
@@ -39,6 +39,7 @@ export async function GET() {
     status: 200,
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": CACHE_CONTROL,
     },
   });
 }
