@@ -71,7 +71,7 @@ export default function LibraryLoading() {
           </div>
 
           <div className="mt-20 flex justify-center">
-            <div className="glass-card relative inline-flex items-center gap-4 px-6 py-4 transition-none hover:scale-100!">
+            <div className="glass-card no-hover-pop relative inline-flex items-center gap-4 px-6 py-4">
               <Skeleton className="h-10 w-10 rounded-full" />
               <div className="space-y-2">
                 <Skeleton className="h-4 w-28" />

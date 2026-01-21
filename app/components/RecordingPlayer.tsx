@@ -345,8 +345,9 @@ export function RecordingPlayer({
                       {recording.speaker.map((name) => (
                         <Pill
                           key={name}
+                          href={`/library?q=${encodeURIComponent(name)}`}
                           size="sm"
-                          className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10"
+                          className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/20"
                         >
                           <UserIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
                           {name}

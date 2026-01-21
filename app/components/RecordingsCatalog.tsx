@@ -1125,7 +1125,7 @@ export function RecordingsCatalog({
 
         {!UNRECORDED_EPISODES.has(activeEpisode) && (
           <div className="mt-20 flex justify-center">
-            <div className="glass-card relative inline-flex items-center gap-4 px-6 py-4 transition-none hover:scale-100!">
+            <div className="glass-card no-hover-pop relative inline-flex items-center gap-4 px-6 py-4">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/10 text-brand-500 dark:bg-brand-500/20 dark:text-brand-400">
                 <InfoIcon className="h-5 w-5" />
               </div>
