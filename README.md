@@ -62,8 +62,14 @@ Homepage "Trending" section uses ISR (revalidate: 1 hour).
 Scoring algorithm:
 
 - Likes: `count × 3`
-- Recency: +10 (≤30d), +7 (≤90d), +4 (≤180d), +2 (≤365d)
+- Recency: +10 (≤120d), +7 (≤240d), +4 (≤365d), +2 (≤540d)
 - Featured: +3
+
+Selection constraints:
+
+- Location cap: no more than `ceil(limit / 2)` per location
+- Quarter cap: no more than `ceil(limit / 3)` per quarter
+- Backfill from remaining records if caps prevent filling the limit
 
 DB calls: ~24/day (1 per revalidation), cached at edge.
 

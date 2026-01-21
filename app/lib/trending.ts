@@ -35,10 +35,10 @@ function calculateTrendingScore(recording: Recording, likeCount: number, now: nu
   const recordingDate = new Date(recording.date).getTime();
   const daysSince = Math.floor((now - recordingDate) / (1000 * 60 * 60 * 24));
 
-  if (daysSince <= 30) score += 10;
-  else if (daysSince <= 90) score += 7;
-  else if (daysSince <= 180) score += 4;
-  else if (daysSince <= 365) score += 2;
+  if (daysSince <= 120) score += 10;
+  else if (daysSince <= 240) score += 7;
+  else if (daysSince <= 365) score += 4;
+  else if (daysSince <= 540) score += 2;
 
   if (recording.featureHeroThumbnail) score += 3;
 
@@ -70,15 +70,22 @@ export const getTrendingRecordings = cache(async (limit = 6): Promise<TrendingRe
 
   const selected: TrendingRecording[] = [];
   const usedLocations = new Map<string, number>();
+  const usedQuarters = new Map<string, number>();
+  const maxPerQuarter = Math.max(1, Math.ceil(limit / 3));
 
   for (const recording of scored) {
     if (selected.length >= limit) break;
 
     const locationCount = usedLocations.get(recording.location) ?? 0;
     if (locationCount >= Math.ceil(limit / 2)) continue;
+    const recordingDate = new Date(recording.date);
+    const quarterKey = `${recordingDate.getFullYear()}-Q${Math.floor(recordingDate.getMonth() / 3) + 1}`;
+    const quarterCount = usedQuarters.get(quarterKey) ?? 0;
+    if (quarterCount >= maxPerQuarter) continue;
 
     selected.push(recording);
     usedLocations.set(recording.location, locationCount + 1);
+    usedQuarters.set(quarterKey, quarterCount + 1);
   }
 
   if (selected.length < limit) {
