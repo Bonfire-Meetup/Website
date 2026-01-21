@@ -192,14 +192,16 @@ function CitySection({
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {city.members.map((member, index) => (
-            <MemberCard
-              key={`${city.name}-${member.name}`}
-              member={member}
-              cityTheme={theme}
-              index={index}
-            />
-          ))}
+          {[...city.members]
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((member, index) => (
+              <MemberCard
+                key={`${city.name}-${member.name}`}
+                member={member}
+                cityTheme={theme}
+                index={index}
+              />
+            ))}
         </div>
       </div>
     </section>
