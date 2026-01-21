@@ -74,9 +74,10 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   const [saveData, setSaveData] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const transitionTimeoutRef = useRef<number | null>(null);
-  const pendingNextRef = useRef<number | null>(null);
-  const pendingDirectionRef = useRef<number>(1);
-  const pendingTriggeredRef = useRef(false);
+  const scheduleTimeoutRef = useRef<number | null>(null);
+  const nextCandidateRef = useRef<number | null>(null);
+  const nextDirectionRef = useRef<number>(1);
+  const transitionDueRef = useRef(false);
 
   const currentIndexRef = useRef(state.currentIndex);
   currentIndexRef.current = state.currentIndex;
@@ -193,18 +194,16 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
       </div>
     </div>
   );
-
   useEffect(() => {
     if (!state.ready || images.length <= 1 || state.prefersReducedMotion) return;
     if (!isInView || !isPageVisible) return;
     if (!loadedIndices.has(state.currentIndex)) return;
+    if (state.isTransitioning) return;
     if (saveData) return;
-    if (pendingNextRef.current !== null) return;
+    if (nextCandidateRef.current !== null) return;
     const next = getNextRandomIndex();
-    const direction = getRandomDirection();
-    pendingNextRef.current = next;
-    pendingDirectionRef.current = direction;
-    pendingTriggeredRef.current = false;
+    nextCandidateRef.current = next;
+    nextDirectionRef.current = getRandomDirection();
     if (!loadedIndices.has(next)) {
       preloadIndex(next);
     }
@@ -216,63 +215,41 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     isPageVisible,
     loadedIndices,
     state.currentIndex,
+    state.isTransitioning,
     saveData,
     getNextRandomIndex,
     preloadIndex,
   ]);
 
   useEffect(() => {
-    if (!pendingTriggeredRef.current) return;
-    const pending = pendingNextRef.current;
-    if (pending === null) return;
-    if (!loadedIndices.has(pending)) return;
-    if (state.prefersReducedMotion || !state.ready || !isInView || !isPageVisible) return;
-    if (!loadedIndices.has(state.currentIndex)) return;
-    pendingNextRef.current = null;
-    pendingTriggeredRef.current = false;
-    startTransition(pending, pendingDirectionRef.current);
-  }, [
-    loadedIndices,
-    state.prefersReducedMotion,
-    state.ready,
-    isInView,
-    isPageVisible,
-    state.currentIndex,
-    startTransition,
-  ]);
-
-  useEffect(() => {
     if (!state.ready || images.length <= 1 || state.prefersReducedMotion) return;
     if (!isInView || !isPageVisible) return;
     if (!loadedIndices.has(state.currentIndex)) return;
-
-    const timer = setInterval(() => {
-      if (pendingNextRef.current !== null) {
-        if (loadedIndices.has(pendingNextRef.current)) {
-          const pending = pendingNextRef.current;
-          pendingNextRef.current = null;
-          pendingTriggeredRef.current = false;
-          startTransition(pending, pendingDirectionRef.current);
-        }
+    if (state.isTransitioning) return;
+    if (scheduleTimeoutRef.current) {
+      clearTimeout(scheduleTimeoutRef.current);
+    }
+    scheduleTimeoutRef.current = window.setTimeout(() => {
+      transitionDueRef.current = true;
+      if (nextCandidateRef.current === null) {
+        nextCandidateRef.current = getNextRandomIndex();
+        nextDirectionRef.current = getRandomDirection();
+      }
+      const next = nextCandidateRef.current;
+      if (next !== null && loadedIndices.has(next)) {
+        transitionDueRef.current = false;
+        nextCandidateRef.current = null;
+        startTransition(next, nextDirectionRef.current);
         return;
       }
-      const next = getNextRandomIndex();
-      const direction = getRandomDirection();
-      if (!loadedIndices.has(next)) {
-        pendingNextRef.current = next;
-        pendingDirectionRef.current = direction;
-        pendingTriggeredRef.current = true;
+      if (next !== null) {
         preloadIndex(next);
-        return;
       }
-      startTransition(next, direction);
     }, interval);
 
     return () => {
-      clearInterval(timer);
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current);
-        transitionTimeoutRef.current = null;
+      if (scheduleTimeoutRef.current) {
+        clearTimeout(scheduleTimeoutRef.current);
       }
     };
   }, [
@@ -283,21 +260,24 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     isInView,
     isPageVisible,
     loadedIndices,
-    preloadIndex,
     state.currentIndex,
+    state.isTransitioning,
+    preloadIndex,
     startTransition,
     getNextRandomIndex,
   ]);
 
   useEffect(() => {
-    if (pendingNextRef.current === null) return;
-    if (!loadedIndices.has(pendingNextRef.current)) return;
+    if (!transitionDueRef.current) return;
+    const next = nextCandidateRef.current;
+    if (next === null) return;
+    if (!loadedIndices.has(next)) return;
     if (state.prefersReducedMotion || !state.ready || !isInView || !isPageVisible) return;
     if (!loadedIndices.has(state.currentIndex)) return;
-    const next = pendingNextRef.current;
-    const direction = pendingDirectionRef.current;
-    pendingNextRef.current = null;
-    startTransition(next, direction);
+    if (state.isTransitioning) return;
+    transitionDueRef.current = false;
+    nextCandidateRef.current = null;
+    startTransition(next, nextDirectionRef.current);
   }, [
     loadedIndices,
     state.prefersReducedMotion,
@@ -305,6 +285,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     isInView,
     isPageVisible,
     state.currentIndex,
+    state.isTransitioning,
     startTransition,
   ]);
 
