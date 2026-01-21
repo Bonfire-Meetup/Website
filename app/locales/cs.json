@@ -69,7 +69,7 @@
         "description": "Naše hlavní pražská zastávka v srdci metropole. Meetupy s přednáškami od lokálních i zahraničních hostů."
       },
       "zlin": {
-        "name": "Bonfire@Zlin",
+        "name": "Bonfire@Zlín",
         "description": "Tvoříme gamedev komunitu i na Moravě. Pravidelné akce na UTB se zaměřením na indie scenu a studentské projekty."
       }
     },
@@ -128,8 +128,8 @@
       "subtitle": "Rychlý přehled pro reference.",
       "firstPragueLabel": "První akce v Praze",
       "firstPragueDate": "ČTV, 9. 11. 2023",
-      "firstZlinLabel": "První akce ve Zlíně",
-      "firstZlinDate": "PON, 4. 12. 2023"
+      "firstZlínLabel": "První akce ve Zlíně",
+      "firstZlínDate": "PON, 4. 12. 2023"
     },
     "logos": {
       "title": "Stažení log",

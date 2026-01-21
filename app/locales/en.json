@@ -20,7 +20,7 @@
       "highlight": "Game Devs",
       "part2": "Meet"
     },
-    "subtitle": "Join the Czech game development community at our meetups in Prague and Zlin. Talks and networking.",
+    "subtitle": "Join the Czech game development community at our meetups in Prague and Zlín for talks and networking.",
     "cta": {
       "events": "Upcoming Events",
       "recordings": "Watch Recordings"
@@ -54,12 +54,12 @@
       "filter": {
         "all": "All",
         "prague": "Prague",
-        "zlin": "Zlin"
+        "zlin": "Zlín"
       }
     },
     "locations": {
       "title": "Our Locations",
-      "subtitle": "Bonfire brings game developers together in two cities across Czech Republic.",
+      "subtitle": "Bonfire brings game developers together in two cities across the Czech Republic.",
       "country": "Czech Republic",
       "eventsHosted": "{count} events hosted",
       "sponsorsTitle": "Partners",
@@ -69,12 +69,12 @@
         "description": "Our main Prague venue in the heart of the Czech capital, with meetups featuring talks from local and international game developers."
       },
       "zlin": {
-        "name": "Bonfire@Zlin",
+        "name": "Bonfire@Zlín",
         "description": "Bringing the game dev community to Moravia. Regular meetups at UTB university with focus on indie development and student projects."
       }
     },
     "talkBanner": {
-      "title": "Do you want to have a talk?",
+      "title": "Do you want to give a talk?",
       "subtitle": "We're always looking for speakers to share their knowledge and experience.",
       "cta": "Write us at"
     }
@@ -119,7 +119,7 @@
     "subtitle": "Download logos, grab brand colors, and reference usage guidelines.",
     "about": {
       "title": "About Bonfire",
-      "body": "Bonfire Events is a Czech game dev community that runs meetups in Prague and Zlin. Bonfire curates talks, panels, and networking nights connecting professionals, students, and indie creators. Bonfire is powered by volunteers and partners who believe in sharing craft and building a welcoming scene.",
+      "body": "Bonfire Events is a Czech game dev community that runs meetups in Prague and Zlín. Bonfire curates talks, panels, and networking nights connecting professionals, students, and indie creators. Bonfire is powered by volunteers and partners who believe in sharing craft and building a welcoming scene.",
       "copy": "Copy about text",
       "copied": "Copied"
     },
@@ -128,8 +128,8 @@
       "subtitle": "Snapshot numbers for quick reference.",
       "firstPragueLabel": "First Prague event",
       "firstPragueDate": "THU, NOV 9, 2023",
-      "firstZlinLabel": "First Zlin event",
-      "firstZlinDate": "MON, DEC 4, 2023"
+      "firstZlínLabel": "First Zlín event",
+      "firstZlínDate": "MON, DEC 4, 2023"
     },
     "logos": {
       "title": "Logo Downloads",
@@ -137,7 +137,7 @@
       "brands": {
         "bonfire": "Bonfire",
         "prague": "Bonfire Prague",
-        "zlin": "Bonfire Zlin"
+        "zlin": "Bonfire Zlín"
       },
       "variants": {
         "black": "Black",
@@ -229,7 +229,7 @@
     "browsePhotos": "Browse photos",
     "noPhotos": "No photos yet",
     "prague": "Prague",
-    "zlin": "Zlin"
+    "zlin": "Zlín"
   },
   "libraryPage": {
     "eyebrow": "Stream the sessions",
@@ -238,7 +238,7 @@
     "rows": {
       "latest": "Latest uploads",
       "prague": "Prague sessions",
-      "zlin": "Zlin sessions",
+      "zlin": "Zlín sessions",
       "topic": "Topic: {tag}"
     },
     "view": {
@@ -259,7 +259,7 @@
       "allTags": "All Topics",
       "allEpisodes": "All Episodes",
       "prague": "Prague",
-      "zlin": "Zlin"
+      "zlin": "Zlín"
     },
     "empty": "No recordings match your filters yet.",
     "notRecorded": {
@@ -273,7 +273,7 @@
   "teamPage": {
     "eyebrow": "Team",
     "title": "Meet the beautiful chaos crew",
-    "subtitle": "We run meetups, wrangle cables, and keep the vibes sharp in Prague and Zlin.",
+    "subtitle": "We run meetups, wrangle cables, and keep the vibes sharp in Prague and Zlín.",
     "introEyebrow": "How it works",
     "introLines": [
       "No capes. Just checklists, coffee, and a stubborn love for game dev.",
@@ -297,8 +297,8 @@
         ]
       },
       {
-        "name": "Zlin",
-        "tagline": "Moravian heart, students pulse.",
+        "name": "Zlín",
+        "tagline": "Moravian heart, students' pulse.",
         "members": [
           { "name": "Michael Petr", "role": "recording" },
           { "name": "Pavel Novák", "role": "operations" },
@@ -314,7 +314,7 @@
     "founderSignature": "Martin Pernica"
   },
   "footer": {
-    "tagline": "Game Dev Meetups in Czech Republic",
+    "tagline": "Game Dev Meetups in the Czech Republic",
     "brandName": "Bonfire Events",
     "vibes": "Casual meetups, big ideas, and good vibes. 🔥🎮",
     "emailLabel": "Email",
@@ -329,17 +329,17 @@
   },
   "meta": {
     "siteTitle": "Bonfire Events - Game Dev Meetups",
-    "siteDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlin, Czech Republic.",
+    "siteDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlín, Czech Republic.",
     "homeTitle": "Bonfire Events - Game Dev Meetups",
-    "homeDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlin, Czech Republic. Join us for talks and networking.",
+    "homeDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlín, Czech Republic. Join us for talks and networking.",
     "libraryTitle": "Library | Bonfire Events",
     "libraryDescription": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
     "crewTitle": "Crew | Bonfire Events",
-    "crewDescription": "Meet the crew behind Bonfire events in Prague and Zlin.",
+    "crewDescription": "Meet the crew behind Bonfire events in Prague and Zlín.",
     "pressTitle": "Press Kit | Bonfire Events",
     "pressDescription": "Download logos, brand colors, and usage guidelines for Bonfire Events.",
     "photosTitle": "Photos | Bonfire Events",
-    "photosDescription": "Browse photo albums from Bonfire meetups in Prague and Zlin.",
+    "photosDescription": "Browse photo albums from Bonfire meetups in Prague and Zlín.",
     "timelineTitle": "Timeline | Bonfire Events",
     "timelineDescription": "Explore Bonfire episodes with links to recordings and photo albums.",
     "recordingNotFound": "Recording Not Found",
@@ -350,7 +350,7 @@
       "gamedev",
       "meetup",
       "Prague",
-      "Zlin",
+      "Zlín",
       "Czech Republic",
       "indie games",
       "unity",
@@ -388,7 +388,7 @@
     },
     "photos": {
       "title": "Media Policy",
-      "content": "We love capturing the energy of our community! By attending our events, you agree that your image may be used in our social media, website, or marketing materials. We respect your privacy-if you would prefer not to be photographed, please inform our staff at check-in. If you would like a specific photo of yourself removed from our platforms, contact us and we will accommodate your request."
+      "content": "We love capturing the energy of our community! By attending our events, you agree that your image may be used in our social media, website, or marketing materials. We respect your privacy. If you would prefer not to be photographed, please inform our staff at check-in. If you would like a specific photo of yourself removed from our platforms, contact us and we will accommodate your request."
     },
     "contact": {
       "title": "Reporting & Support",
