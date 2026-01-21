@@ -29,6 +29,11 @@ const nextConfig = {
         hostname: "i.ytimg.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn-img.bnf.events",
+        pathname: "/**",
+      },
     ],
   },
 } satisfies NextConfig;

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useReducer, useState } from "react";
 
 type HeroSlideshowProps = {
@@ -167,13 +168,14 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   if (state.prefersReducedMotion) {
     return (
       <div ref={containerRef} className="absolute inset-0 overflow-hidden">
-        <img
+        <Image
           src={currentImage.src}
           alt={currentImage.alt}
-          className="h-full w-full object-cover"
+          fill
+          sizes="100vw"
+          className="object-cover"
           onLoad={() => markLoaded(state.currentIndex)}
-          loading="eager"
-          fetchPriority="high"
+          priority
         />
         <div
           className={`pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-200/80 via-white/70 to-neutral-200/60 transition-opacity duration-700 dark:from-neutral-900/80 dark:via-neutral-950/70 dark:to-neutral-900/60 ${
@@ -197,13 +199,14 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
           state.isTransitioning ? "opacity-0" : "opacity-100"
         }`}
       >
-        <img
+        <Image
           src={currentImage.src}
           alt={currentImage.alt}
-          className={`h-full w-full object-cover hero-ken-burns-${state.currentDirection}`}
+          fill
+          sizes="100vw"
+          className={`object-cover hero-ken-burns-${state.currentDirection}`}
           onLoad={() => markLoaded(state.currentIndex)}
-          loading="eager"
-          fetchPriority="high"
+          priority
         />
       </div>
 
@@ -214,13 +217,14 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
             state.isTransitioning ? "opacity-100" : "opacity-0"
           }`}
         >
-          <img
+          <Image
             src={nextImage.src}
             alt={nextImage.alt}
-            className={`h-full w-full object-cover hero-ken-burns-${state.nextDirection}`}
+            fill
+            sizes="100vw"
+            className={`object-cover hero-ken-burns-${state.nextDirection}`}
             onLoad={() => markLoaded(nextIndex as number)}
             loading="lazy"
-            fetchPriority="low"
           />
         </div>
       )}

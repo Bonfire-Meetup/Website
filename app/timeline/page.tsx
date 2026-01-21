@@ -135,6 +135,7 @@ export default async function TimelinePage() {
                                   imgClassName="transition duration-700 group-hover:scale-105"
                                   loading="lazy"
                                   fetchPriority="low"
+                                  sizes="(max-width: 1024px) 100vw, 260px"
                                 />
                               ) : (
                                 <div className="flex h-full w-full items-center justify-center bg-neutral-100 text-sm font-semibold uppercase tracking-[0.3em] text-neutral-400 dark:bg-neutral-900 dark:text-neutral-500">

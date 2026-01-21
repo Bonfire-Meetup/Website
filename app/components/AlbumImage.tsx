@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type Callback = () => void;
@@ -48,6 +49,7 @@ type AlbumImageProps = {
   fetchPriority?: "high" | "low" | "auto";
   width?: number;
   height?: number;
+  sizes?: string;
 };
 
 export function AlbumImage({
@@ -59,11 +61,11 @@ export function AlbumImage({
   fetchPriority = "low",
   width,
   height,
+  sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
 }: AlbumImageProps) {
   const [inView, setInView] = useState(loading === "eager");
   const [loaded, setLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const imgRef = useRef<HTMLImageElement | null>(null);
   const aspectRatio = width && height ? { aspectRatio: `${width} / ${height}` } : undefined;
 
   useEffect(() => {
@@ -79,29 +81,20 @@ export function AlbumImage({
     return () => unobserve(container);
   }, [loading]);
 
-  useEffect(() => {
-    if (inView && imgRef.current?.complete) {
-      setLoaded(true);
-    }
-  }, [inView, src]);
-
   return (
     <div ref={containerRef} className={`relative overflow-hidden ${className}`} style={aspectRatio}>
       {!loaded && (
         <div className="absolute inset-0 animate-pulse bg-neutral-200/70 dark:bg-white/5" />
       )}
       {inView && (
-        <img
-          ref={imgRef}
+        <Image
           src={src}
           alt={alt}
-          decoding="async"
-          fetchPriority={fetchPriority}
-          width={width}
-          height={height}
+          fill
+          sizes={sizes}
+          priority={fetchPriority === "high"}
           onLoad={() => setLoaded(true)}
-          onError={() => setLoaded(true)}
-          className={`h-full w-full object-cover transition-opacity duration-500 ${
+          className={`object-cover transition-opacity duration-500 ${
             loaded ? "opacity-100" : "opacity-0"
           } ${imgClassName}`}
         />

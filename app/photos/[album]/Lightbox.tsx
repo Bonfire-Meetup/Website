@@ -14,6 +14,7 @@ export function Lightbox({ images, initialIndex, onClose, downloadLabel }: Light
   const [isZoomed, setIsZoomed] = useState(false);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+  const isMultiTouch = useRef(false);
 
   const current = images[index];
   const hasPrev = index > 0;
@@ -44,14 +45,24 @@ export function Lightbox({ images, initialIndex, onClose, downloadLabel }: Light
   }, [onClose, goToPrev, goToNext]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    isMultiTouch.current = e.touches.length > 1;
     touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = e.touches[0].clientX;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length > 1) {
+      isMultiTouch.current = true;
+    }
     touchEndX.current = e.touches[0].clientX;
   };
 
   const handleTouchEnd = () => {
+    if (isMultiTouch.current) {
+      isMultiTouch.current = false;
+      return;
+    }
+
     const diff = touchStartX.current - touchEndX.current;
     const threshold = 50;
 

@@ -90,6 +90,7 @@ export default async function AlbumPage({ params }: PageProps) {
                 alt={title}
                 loading="eager"
                 fetchPriority="high"
+                sizes="(max-width: 1152px) 100vw, 1152px"
               />
             </div>
             <div className="p-6 sm:p-8">
