@@ -156,7 +156,7 @@ export function Lightbox({
 
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 z-30 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
+        className="absolute top-6 right-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
         aria-label="Close"
       >
         <svg
@@ -173,7 +173,7 @@ export function Lightbox({
       <div className="absolute top-6 left-6 z-30 hidden gap-2 sm:flex">
         <button
           onClick={handleDownload}
-          className="flex h-12 items-center gap-2 rounded-full bg-white/10 px-5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+          className="flex h-12 cursor-pointer items-center gap-2 rounded-full bg-white/10 px-5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
         >
           <svg
             className="h-5 w-5"
@@ -199,7 +199,7 @@ export function Lightbox({
       {hasPrev && (
         <button
           onClick={goToPrev}
-          className="absolute left-6 z-30 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
+          className="absolute left-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
           aria-label="Previous"
         >
           <svg
@@ -217,7 +217,7 @@ export function Lightbox({
       {hasNext && (
         <button
           onClick={goToNext}
-          className="absolute right-6 z-30 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
+          className="absolute right-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
           aria-label="Next"
         >
           <svg

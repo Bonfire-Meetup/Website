@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useReducer, useState } from "react";
+import { useEffect, useRef, useReducer, useState, useCallback } from "react";
 
 type HeroSlideshowProps = {
   images: { src: string; alt: string }[];
@@ -73,6 +73,8 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   const [isPageVisible, setIsPageVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const transitionTimeoutRef = useRef<number | null>(null);
+  const pendingNextRef = useRef<number | null>(null);
+  const pendingDirectionRef = useRef<number>(1);
 
   const currentIndexRef = useRef(state.currentIndex);
   currentIndexRef.current = state.currentIndex;
@@ -97,36 +99,6 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   }, [images.length]);
 
   useEffect(() => {
-    if (!state.ready || images.length <= 1 || state.prefersReducedMotion) return;
-    if (!isInView || !isPageVisible) return;
-
-    const getNextRandomIndex = () => {
-      let next = Math.floor(Math.random() * images.length);
-      while (next === currentIndexRef.current && images.length > 1) {
-        next = Math.floor(Math.random() * images.length);
-      }
-      return next;
-    };
-
-    const timer = setInterval(() => {
-      const next = getNextRandomIndex();
-      dispatch({ type: "START_TRANSITION", nextIndex: next, nextDirection: getRandomDirection() });
-
-      transitionTimeoutRef.current = window.setTimeout(() => {
-        dispatch({ type: "COMPLETE_TRANSITION" });
-      }, 2000);
-    }, interval);
-
-    return () => {
-      clearInterval(timer);
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current);
-        transitionTimeoutRef.current = null;
-      }
-    };
-  }, [state.ready, images.length, interval, state.prefersReducedMotion, isInView, isPageVisible]);
-
-  useEffect(() => {
     const handleVisibility = () => {
       setIsPageVisible(document.visibilityState === "visible");
     };
@@ -145,40 +117,145 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     return () => observer.disconnect();
   }, []);
 
-  if (images.length === 0) return null;
-
-  if (!state.ready) {
-    return <div className="absolute inset-0 bg-neutral-200 dark:bg-neutral-900" />;
-  }
-
-  const currentImage = images[state.currentIndex];
-  const nextIndex = state.nextIndex;
-  const nextImage = nextIndex !== null ? images[nextIndex] : null;
-  const isCurrentLoaded = loadedIndices.has(state.currentIndex);
-
-  const markLoaded = (index: number) => {
+  const markLoaded = useCallback((index: number) => {
     setLoadedIndices((prev) => {
       if (prev.has(index)) return prev;
       const next = new Set(prev);
       next.add(index);
       return next;
     });
-  };
+  }, []);
+
+  const preloadIndex = useCallback(
+    (index: number) => {
+      if (typeof window === "undefined") return;
+      if (loadedIndices.has(index)) return;
+      const img = new window.Image();
+      img.src = images[index].src;
+      img.onload = () => markLoaded(index);
+    },
+    [images, loadedIndices, markLoaded],
+  );
+
+  const currentImage = images[state.currentIndex];
+  const nextIndex = state.nextIndex;
+  const nextImage = nextIndex !== null ? images[nextIndex] : null;
+  const isCurrentLoaded = loadedIndices.has(state.currentIndex);
+  const startTransition = useCallback(
+    (next: number, direction: number) => {
+      if (state.isTransitioning) return;
+      dispatch({ type: "START_TRANSITION", nextIndex: next, nextDirection: direction });
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+      }
+      transitionTimeoutRef.current = window.setTimeout(() => {
+        dispatch({ type: "COMPLETE_TRANSITION" });
+      }, 2000);
+    },
+    [state.isTransitioning],
+  );
+  const Loader = ({ hidden }: { hidden: boolean }) => (
+    <div
+      className={`absolute inset-0 z-20 flex items-center justify-center transition-opacity ${
+        hidden ? "opacity-0" : "opacity-100"
+      }`}
+    >
+      <div className="flex items-end gap-2">
+        <span className="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_12px_rgba(59,130,246,0.45)] animate-bounce motion-reduce:animate-none dark:bg-brand-400" />
+        <span className="h-3 w-3 rounded-full bg-brand-500 shadow-[0_0_14px_rgba(59,130,246,0.5)] animate-bounce [animation-delay:150ms] motion-reduce:animate-none dark:bg-brand-400" />
+        <span className="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_12px_rgba(59,130,246,0.45)] animate-bounce [animation-delay:300ms] motion-reduce:animate-none dark:bg-brand-400" />
+      </div>
+    </div>
+  );
+
+  useEffect(() => {
+    if (!state.ready || images.length <= 1 || state.prefersReducedMotion) return;
+    if (!isInView || !isPageVisible) return;
+    if (!loadedIndices.has(state.currentIndex)) return;
+
+    const getNextRandomIndex = () => {
+      let next = Math.floor(Math.random() * images.length);
+      while (next === currentIndexRef.current && images.length > 1) {
+        next = Math.floor(Math.random() * images.length);
+      }
+      return next;
+    };
+
+    const timer = setInterval(() => {
+      if (pendingNextRef.current !== null) return;
+      const next = getNextRandomIndex();
+      const direction = getRandomDirection();
+      if (!loadedIndices.has(next)) {
+        pendingNextRef.current = next;
+        pendingDirectionRef.current = direction;
+        preloadIndex(next);
+        return;
+      }
+      startTransition(next, direction);
+    }, interval);
+
+    return () => {
+      clearInterval(timer);
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+        transitionTimeoutRef.current = null;
+      }
+    };
+  }, [
+    state.ready,
+    images.length,
+    interval,
+    state.prefersReducedMotion,
+    isInView,
+    isPageVisible,
+    loadedIndices,
+    preloadIndex,
+    state.currentIndex,
+    startTransition,
+  ]);
+
+  useEffect(() => {
+    if (pendingNextRef.current === null) return;
+    if (!loadedIndices.has(pendingNextRef.current)) return;
+    if (state.prefersReducedMotion || !state.ready || !isInView || !isPageVisible) return;
+    if (!loadedIndices.has(state.currentIndex)) return;
+    const next = pendingNextRef.current;
+    const direction = pendingDirectionRef.current;
+    pendingNextRef.current = null;
+    startTransition(next, direction);
+  }, [
+    loadedIndices,
+    state.prefersReducedMotion,
+    state.ready,
+    isInView,
+    isPageVisible,
+    state.currentIndex,
+    startTransition,
+  ]);
+
+  if (images.length === 0) return null;
+
+  if (!state.ready) {
+    return <div className="absolute inset-0 bg-neutral-200 dark:bg-neutral-900" />;
+  }
 
   if (state.prefersReducedMotion) {
     return (
-      <div ref={containerRef} className="absolute inset-0 overflow-hidden">
+      <div ref={containerRef} className="absolute inset-0 overflow-hidden z-0">
         <Image
           src={currentImage.src}
           alt={currentImage.alt}
           fill
           sizes="100vw"
-          className="object-cover"
+          className={`object-cover transition-opacity duration-700 ${
+            isCurrentLoaded ? "opacity-100" : "opacity-0"
+          }`}
           onLoad={() => markLoaded(state.currentIndex)}
           priority
         />
+        <Loader hidden={isCurrentLoaded} />
         <div
-          className={`pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-200/80 via-white/70 to-neutral-200/60 transition-opacity duration-700 dark:from-neutral-900/80 dark:via-neutral-950/70 dark:to-neutral-900/60 ${
+          className={`pointer-events-none absolute inset-0 z-10 bg-gradient-to-br from-neutral-200/80 via-white/70 to-neutral-200/60 transition-opacity duration-700 dark:from-neutral-900/80 dark:via-neutral-950/70 dark:to-neutral-900/60 ${
             isCurrentLoaded ? "opacity-0" : "opacity-100"
           }`}
         />
@@ -187,15 +264,16 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   }
 
   return (
-    <div ref={containerRef} className="absolute inset-0 overflow-hidden">
+    <div ref={containerRef} className="absolute inset-0 overflow-hidden z-0">
       <div
-        className={`pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-200/80 via-white/70 to-neutral-200/60 transition-opacity duration-700 dark:from-neutral-900/80 dark:via-neutral-950/70 dark:to-neutral-900/60 ${
+        className={`pointer-events-none absolute inset-0 z-10 bg-gradient-to-br from-neutral-200/80 via-white/70 to-neutral-200/60 transition-opacity duration-700 dark:from-neutral-900/80 dark:via-neutral-950/70 dark:to-neutral-900/60 ${
           isCurrentLoaded ? "opacity-0" : "opacity-100"
         }`}
       />
+      <Loader hidden={isCurrentLoaded} />
       <div
         key={`slide-${state.currentIndex}`}
-        className={`absolute inset-0 transition-opacity duration-[2000ms] ease-in-out ${
+        className={`absolute inset-0 z-0 transition-opacity duration-[2000ms] ease-in-out ${
           state.isTransitioning ? "opacity-0" : "opacity-100"
         }`}
       >
@@ -204,7 +282,9 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
           alt={currentImage.alt}
           fill
           sizes="100vw"
-          className={`object-cover hero-ken-burns-${state.currentDirection}`}
+          className={`object-cover hero-ken-burns-${state.currentDirection} transition-opacity duration-700 ${
+            isCurrentLoaded ? "opacity-100" : "opacity-0"
+          }`}
           onLoad={() => markLoaded(state.currentIndex)}
           priority
         />
@@ -213,7 +293,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
       {nextImage && (
         <div
           key={`slide-${state.nextIndex}`}
-          className={`absolute inset-0 transition-opacity duration-[2000ms] ease-in-out ${
+          className={`absolute inset-0 z-0 transition-opacity duration-[2000ms] ease-in-out ${
             state.isTransitioning ? "opacity-100" : "opacity-0"
           }`}
         >

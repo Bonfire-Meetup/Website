@@ -5,8 +5,15 @@ export default function Loading() {
     <main className="gradient-bg min-h-screen pb-24">
       <section className="relative">
         <div className="relative h-[70vh] min-h-[500px] w-full overflow-hidden sm:h-[80vh] sm:min-h-[600px]">
-          <Skeleton className="absolute inset-0 !rounded-none" />
-          <div className="absolute inset-x-0 bottom-0 px-4 pb-32 sm:px-6 sm:pb-40 lg:px-8 lg:pb-48">
+          <Skeleton className="absolute inset-0 z-0 !rounded-none" />
+          <div className="absolute inset-0 z-10 flex items-center justify-center">
+            <div className="flex items-end gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_12px_rgba(59,130,246,0.45)] animate-bounce motion-reduce:animate-none dark:bg-brand-400" />
+              <span className="h-3 w-3 rounded-full bg-brand-500 shadow-[0_0_14px_rgba(59,130,246,0.5)] animate-bounce [animation-delay:150ms] motion-reduce:animate-none dark:bg-brand-400" />
+              <span className="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_12px_rgba(59,130,246,0.45)] animate-bounce [animation-delay:300ms] motion-reduce:animate-none dark:bg-brand-400" />
+            </div>
+          </div>
+          <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-32 sm:px-6 sm:pb-40 lg:px-8 lg:pb-48">
             <div className="mx-auto max-w-7xl">
               <div className="max-w-3xl space-y-4">
                 <Skeleton className="h-6 w-40 rounded-full" />
