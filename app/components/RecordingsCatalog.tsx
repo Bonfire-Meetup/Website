@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useDeferredValue, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -349,8 +349,10 @@ export function RecordingsCatalog({
   const [activeTag, setActiveTag] = useState("all");
   const [activeEpisode, setActiveEpisode] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const deferredSearchQuery = useDeferredValue(searchQuery);
   const [isFiltering, setIsFiltering] = useState(false);
   const isFirstFilter = useRef(true);
+  const searchDebounceRef = useRef<number | null>(null);
   const [viewMode, setViewMode] = useState<"rows" | "grid">("rows");
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [isFeaturedPaused, setIsFeaturedPaused] = useState(false);
@@ -459,34 +461,37 @@ export function RecordingsCatalog({
     setSearchQuery(normalizedQuery);
   }, [searchParams, tagOptions, episodeOptions]);
 
-  const updateFilters = (location: LocationFilter, tag: string, episode: string, search = "") => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (location === "all") {
-      params.delete("location");
-    } else {
-      params.set("location", location);
-    }
-    if (tag === "all") {
-      params.delete("tag");
-    } else {
-      params.set("tag", tag);
-    }
-    if (episode === "all") {
-      params.delete("episode");
-    } else {
-      params.set("episode", episode);
-    }
-    if (!search.trim()) {
-      params.delete("q");
-    } else {
-      params.set("q", search.trim());
-    }
-    const queryString = params.toString();
-    router.replace(queryString ? `/library?${queryString}` : "/library");
-  };
+  const updateFilters = useCallback(
+    (location: LocationFilter, tag: string, episode: string, search = "") => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (location === "all") {
+        params.delete("location");
+      } else {
+        params.set("location", location);
+      }
+      if (tag === "all") {
+        params.delete("tag");
+      } else {
+        params.set("tag", tag);
+      }
+      if (episode === "all") {
+        params.delete("episode");
+      } else {
+        params.set("episode", episode);
+      }
+      if (!search.trim()) {
+        params.delete("q");
+      } else {
+        params.set("q", search.trim());
+      }
+      const queryString = params.toString();
+      router.replace(queryString ? `/library?${queryString}` : "/library");
+    },
+    [router, searchParams],
+  );
 
   const filteredRecordings = useMemo(() => {
-    const loweredQuery = normalizeText(searchQuery.trim());
+    const loweredQuery = normalizeText(deferredSearchQuery.trim());
     return recordings.filter((recording) => {
       const matchesLocation = activeLocation === "all" || recording.location === activeLocation;
       const matchesTag = activeTag === "all" || recording.tags.includes(activeTag);
@@ -503,14 +508,14 @@ export function RecordingsCatalog({
           : false);
       return matchesLocation && matchesTag && matchesEpisode && matchesQuery;
     });
-  }, [recordings, activeLocation, activeTag, activeEpisode, searchQuery]);
+  }, [recordings, activeLocation, activeTag, activeEpisode, deferredSearchQuery]);
 
-  const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${searchQuery}`;
+  const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
   const hasActiveFilters =
     activeLocation !== "all" ||
     activeTag !== "all" ||
     activeEpisode !== "all" ||
-    searchQuery.trim() !== "";
+    deferredSearchQuery.trim() !== "";
 
   useEffect(() => {
     if (isFirstFilter.current) {
@@ -531,6 +536,23 @@ export function RecordingsCatalog({
   useEffect(() => {
     setFeaturedIndex(0);
   }, [filterKey, viewMode]);
+
+  useEffect(() => {
+    const trimmed = searchQuery.trim();
+    const currentQueryParam = searchParams.get("q") ?? "";
+    if (trimmed === currentQueryParam) return;
+    if (searchDebounceRef.current) {
+      clearTimeout(searchDebounceRef.current);
+    }
+    searchDebounceRef.current = window.setTimeout(() => {
+      updateFilters(activeLocation, activeTag, activeEpisode, trimmed);
+    }, 350);
+    return () => {
+      if (searchDebounceRef.current) {
+        clearTimeout(searchDebounceRef.current);
+      }
+    };
+  }, [searchQuery, activeLocation, activeTag, activeEpisode, searchParams, updateFilters]);
 
   const handleBrowseAll = () => {
     setViewMode("grid");
@@ -749,9 +771,7 @@ export function RecordingsCatalog({
                   type="search"
                   value={searchQuery}
                   onChange={(e) => {
-                    const next = e.target.value;
-                    setSearchQuery(next);
-                    updateFilters(activeLocation, activeTag, activeEpisode, next);
+                    setSearchQuery(e.target.value);
                   }}
                   placeholder={labels.search.placeholder}
                   aria-label={labels.search.label}

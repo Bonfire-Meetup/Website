@@ -39,7 +39,7 @@
   "sections": {
     "events": {
       "title": "Upcoming Events",
-      "subtitle": "Join us at our next meetup! Register early to secure your spot.",
+      "subtitle": "Join us at the next meetup! Seats are first come, first served.",
       "noEvents": "No upcoming events scheduled. Check back soon!",
       "filter": {
         "label": "Episode",

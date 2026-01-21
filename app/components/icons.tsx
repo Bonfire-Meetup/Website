@@ -301,6 +301,25 @@ export function FireIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function FrownIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 16.5a3.75 3.75 0 0 0-6 0m1.125-6.75h.008v.008h-.008V9.75Zm3.75 0h.008v.008h-.008V9.75ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+      />
+    </svg>
+  );
+}
+
 export function InfoIcon({ className, ...props }: IconProps) {
   return (
     <svg

@@ -62,7 +62,7 @@ export async function LocationsSection() {
               {
                 name: "Tomas Bata University",
                 logo: "/partners/tomas_bata_university_light.png",
-                url: "https://www.utb.cz/en/",
+                url: "https://www.utb.cz/",
               },
               {
                 name: "Upper",

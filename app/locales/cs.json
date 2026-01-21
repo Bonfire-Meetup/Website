@@ -39,7 +39,7 @@
   "sections": {
     "events": {
       "title": "Co se chystá",
-      "subtitle": "Doraž na náš další meetup! Registruj se včas, ať máš místo.",
+      "subtitle": "Doraz na náš další meetup! Kdo dřív přijde, ten má místo.",
       "noEvents": "Zatím nic neplánujeme. Zkus to zčeknout později!",
       "filter": {
         "label": "Epizoda",

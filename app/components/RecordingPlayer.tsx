@@ -15,6 +15,7 @@ import {
   CinemaIcon,
   FacebookIcon,
   FireIcon,
+  FrownIcon,
   LinkIcon,
   LinkedInIcon,
   MapPinIcon,
@@ -68,6 +69,7 @@ export function RecordingPlayer({
   const [hasLiked, setHasLiked] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [likePulse, setLikePulse] = useState(false);
+  const [likeLoadError, setLikeLoadError] = useState(false);
   const inlinePlayerRef = useRef<HTMLDivElement | null>(null);
   const { setVideo, setInlineContainer, cinemaMode, setCinemaMode } = useGlobalPlayer();
 
@@ -113,14 +115,20 @@ export function RecordingPlayer({
     let isActive = true;
     const loadLikes = async () => {
       try {
+        setLikeLoadError(false);
         const response = await fetch(`/api/video/${recording.shortId}/likes`);
-        if (!response.ok) return;
+        if (!response.ok) {
+          if (isActive) setLikeLoadError(true);
+          return;
+        }
         const data = (await response.json()) as { count: number; hasLiked: boolean };
         if (isActive) {
           setLikeCount(data.count ?? 0);
           setHasLiked(Boolean(data.hasLiked));
         }
-      } catch {}
+      } catch {
+        if (isActive) setLikeLoadError(true);
+      }
     };
     loadLikes();
     return () => {
@@ -238,17 +246,31 @@ export function RecordingPlayer({
                   type="button"
                   onClick={handleLike}
                   aria-pressed={hasLiked}
-                  disabled={isLiking}
-                  className={`inline-flex items-center justify-center gap-3 rounded-full px-5 py-2.5 text-sm font-semibold shadow-lg transition-all cursor-pointer min-w-[8.5rem] ${
+                  disabled={isLiking || likeCount === null}
+                  className={`inline-flex items-center justify-center gap-3 rounded-full px-5 py-2.5 text-sm font-semibold shadow-lg transition-all min-w-[8.5rem] ${
                     hasLiked
                       ? "bg-gradient-to-r from-orange-500 to-rose-500 text-white shadow-orange-500/30"
                       : "bg-white text-rose-400 ring-1 ring-rose-200/70 hover:-translate-y-0.5 hover:shadow-rose-500/20 dark:bg-white/5 dark:text-rose-300 dark:ring-white/10"
-                  } ${likePulse ? "like-pop" : ""} ${isLiking ? "opacity-80" : ""}`}
+                  } ${likePulse ? "like-pop" : ""} ${isLiking || likeCount === null ? "opacity-80" : ""} ${
+                    likeCount === null
+                      ? "cursor-not-allowed"
+                      : "cursor-pointer hover:-translate-y-0.5"
+                  }`}
                 >
                   <FireIcon
                     className={`h-5 w-5 shrink-0 ${hasLiked ? "fill-white stroke-white" : ""}`}
                   />
-                  {likeCount ? (
+                  {likeCount === null ? (
+                    likeLoadError ? (
+                      <FrownIcon className="h-4 w-4" />
+                    ) : (
+                      <span className="flex items-center gap-1 text-[11px]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-current animate-bounce [animation-delay:0ms]" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-current animate-bounce [animation-delay:120ms]" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-current animate-bounce [animation-delay:240ms]" />
+                      </span>
+                    )
+                  ) : likeCount > 0 ? (
                     <span className="tabular-nums text-base">{likeCount}</span>
                   ) : (
                     <span className="text-[11px]">{labels.lightItUp}</span>
