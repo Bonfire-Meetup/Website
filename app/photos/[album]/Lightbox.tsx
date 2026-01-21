@@ -6,11 +6,26 @@ type LightboxProps = {
   images: { src: string; alt: string }[];
   initialIndex: number;
   onClose: () => void;
+  onIndexChange?: (index: number) => void;
   downloadLabel: string;
 };
 
-export function Lightbox({ images, initialIndex, onClose, downloadLabel }: LightboxProps) {
+export function Lightbox({
+  images,
+  initialIndex,
+  onClose,
+  onIndexChange,
+  downloadLabel,
+}: LightboxProps) {
   const [index, setIndex] = useState(initialIndex);
+
+  const updateIndex = useCallback(
+    (newIndex: number) => {
+      setIndex(newIndex);
+      onIndexChange?.(newIndex);
+    },
+    [onIndexChange],
+  );
   const [isZoomed, setIsZoomed] = useState(false);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -21,12 +36,12 @@ export function Lightbox({ images, initialIndex, onClose, downloadLabel }: Light
   const hasNext = index < images.length - 1;
 
   const goToPrev = useCallback(() => {
-    if (hasPrev) setIndex((i) => i - 1);
-  }, [hasPrev]);
+    if (hasPrev) updateIndex(index - 1);
+  }, [hasPrev, index, updateIndex]);
 
   const goToNext = useCallback(() => {
-    if (hasNext) setIndex((i) => i + 1);
-  }, [hasNext]);
+    if (hasNext) updateIndex(index + 1);
+  }, [hasNext, index, updateIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -90,7 +105,7 @@ export function Lightbox({ images, initialIndex, onClose, downloadLabel }: Light
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95">
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+        className="absolute top-6 right-6 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
         aria-label="Close"
       >
         <svg
@@ -104,7 +119,7 @@ export function Lightbox({ images, initialIndex, onClose, downloadLabel }: Light
         </svg>
       </button>
 
-      <div className="absolute top-4 left-4 z-10 flex gap-2">
+      <div className="absolute top-6 left-6 z-10 flex gap-2">
         <button
           onClick={handleDownload}
           className="flex h-12 items-center gap-2 rounded-full bg-white/10 px-5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
@@ -167,7 +182,7 @@ export function Lightbox({ images, initialIndex, onClose, downloadLabel }: Light
       )}
 
       <div
-        className="flex h-full w-full items-center justify-center p-4 sm:p-16"
+        className="flex h-full w-full items-center justify-center px-4 pb-16 pt-20 sm:px-16 sm:pb-16 sm:pt-24"
         onClick={(e) => {
           if (e.target === e.currentTarget) onClose();
         }}

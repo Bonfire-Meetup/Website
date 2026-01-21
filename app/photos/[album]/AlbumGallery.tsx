@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { AlbumImage } from "../../components/AlbumImage";
 import { Lightbox } from "./Lightbox";
 
@@ -17,8 +17,38 @@ type AlbumGalleryProps = {
   downloadLabel: string;
 };
 
+function parsePhotoHash(): number | null {
+  if (typeof window === "undefined") return null;
+  const match = window.location.hash.match(/^#photo-(\d+)$/);
+  if (!match) return null;
+  const num = parseInt(match[1], 10);
+  return num >= 1 ? num - 1 : null;
+}
+
 export function AlbumGallery({ images, baseUrl, title, downloadLabel }: AlbumGalleryProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    const hashIndex = parsePhotoHash();
+    if (hashIndex !== null && hashIndex < images.length) {
+      setLightboxIndex(hashIndex);
+    }
+  }, [images.length]);
+
+  const openLightbox = useCallback((index: number) => {
+    setLightboxIndex(index);
+    window.history.replaceState(null, "", `#photo-${index + 1}`);
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    setLightboxIndex(null);
+    window.history.replaceState(null, "", window.location.pathname);
+  }, []);
+
+  const handleIndexChange = useCallback((newIndex: number) => {
+    setLightboxIndex(newIndex);
+    window.history.replaceState(null, "", `#photo-${newIndex + 1}`);
+  }, []);
 
   const lightboxImages = images.map((img, i) => ({
     src: `${baseUrl}/${img.src}`,
@@ -32,7 +62,7 @@ export function AlbumGallery({ images, baseUrl, title, downloadLabel }: AlbumGal
           <button
             key={image.src}
             type="button"
-            onClick={() => setLightboxIndex(index)}
+            onClick={() => openLightbox(index)}
             className="mb-4 block w-full cursor-zoom-in break-inside-avoid overflow-hidden rounded-2xl transition-transform hover:scale-[1.02]"
           >
             <AlbumImage
@@ -49,7 +79,8 @@ export function AlbumGallery({ images, baseUrl, title, downloadLabel }: AlbumGal
         <Lightbox
           images={lightboxImages}
           initialIndex={lightboxIndex}
-          onClose={() => setLightboxIndex(null)}
+          onClose={closeLightbox}
+          onIndexChange={handleIndexChange}
           downloadLabel={downloadLabel}
         />
       )}
