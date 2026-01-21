@@ -81,8 +81,14 @@ export function AlbumImage({
     return () => unobserve(container);
   }, [loading]);
 
+  const fillParent = !width || !height;
+
   return (
-    <div ref={containerRef} className={`relative overflow-hidden ${className}`} style={aspectRatio}>
+    <div
+      ref={containerRef}
+      className={`relative overflow-hidden ${fillParent ? "h-full" : ""} ${className}`}
+      style={aspectRatio}
+    >
       {!loaded && (
         <div className="absolute inset-0 animate-pulse bg-neutral-200/70 dark:bg-white/5" />
       )}
