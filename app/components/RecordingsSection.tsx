@@ -3,7 +3,6 @@ import dynamic from "next/dynamic";
 import type { Recording } from "../lib/recordings";
 import type { TrendingRecording } from "../lib/trending";
 import { SectionHeader } from "./SectionHeader";
-import { getProxiedThumbnailUrl } from "../lib/thumbnail";
 
 const RecordingsSectionClient = dynamic(() =>
   import("./RecordingsSectionClient").then((mod) => mod.RecordingsSectionClient),
@@ -23,7 +22,7 @@ export async function RecordingsSection({ recordings }: RecordingsSectionProps) 
     title: recording.title,
     speaker: recording.speaker,
     date: recording.date,
-    thumbnail: getProxiedThumbnailUrl(recording.thumbnail),
+    thumbnail: recording.thumbnail,
     location: recording.location,
     likeCount: "likeCount" in recording ? recording.likeCount : undefined,
   }));

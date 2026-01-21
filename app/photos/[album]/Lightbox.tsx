@@ -133,7 +133,7 @@ export function Lightbox({ images, initialIndex, onClose, downloadLabel }: Light
       {hasPrev && (
         <button
           onClick={goToPrev}
-          className="absolute left-4 z-10 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
+          className="absolute left-6 z-10 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
           aria-label="Previous"
         >
           <svg
@@ -151,7 +151,7 @@ export function Lightbox({ images, initialIndex, onClose, downloadLabel }: Light
       {hasNext && (
         <button
           onClick={goToNext}
-          className="absolute right-4 z-10 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
+          className="absolute right-6 z-10 hidden h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
           aria-label="Next"
         >
           <svg

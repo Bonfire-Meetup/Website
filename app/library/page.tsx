@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { getAllRecordings } from "../lib/recordings";
-import { getProxiedThumbnailUrl } from "../lib/thumbnail";
 
 const RecordingsCatalog = dynamic(() =>
   import("../components/RecordingsCatalog").then((mod) => mod.RecordingsCatalog),
@@ -19,12 +18,8 @@ export default async function LibraryPage() {
     title: recording.title,
     speaker: recording.speaker,
     date: recording.date,
-    thumbnail: getProxiedThumbnailUrl(recording.thumbnail),
-    featureHeroThumbnail: recording.featureHeroThumbnail
-      ? recording.featureHeroThumbnail.startsWith("/library/featured/")
-        ? recording.featureHeroThumbnail
-        : getProxiedThumbnailUrl(recording.featureHeroThumbnail)
-      : undefined,
+    thumbnail: recording.thumbnail,
+    featureHeroThumbnail: recording.featureHeroThumbnail,
     description: recording.description,
     tags: recording.tags,
     location: recording.location,

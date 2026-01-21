@@ -13,6 +13,7 @@ const nextConfig = {
     turbopackFileSystemCacheForDev: true,
   },
   images: {
+    minimumCacheTTL: 2592000,
     localPatterns: [
       {
         pathname: "/**",
