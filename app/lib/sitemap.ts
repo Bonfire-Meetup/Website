@@ -27,10 +27,12 @@ function renderUrlEntry({ loc, lastmod }: SitemapUrl) {
 
 export function buildSitemapXml(urls: SitemapUrl[]) {
   const items = urls.map(renderUrlEntry).join("\n");
-  return `<?xml version="1.0" encoding="UTF-8"?>\n` +
+  return (
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     `${items}\n` +
-    `</urlset>\n`;
+    `</urlset>\n`
+  );
 }
 
 export function buildSitemapIndexXml(sitemaps: SitemapUrl[]) {
@@ -48,8 +50,10 @@ export function buildSitemapIndexXml(sitemaps: SitemapUrl[]) {
         .join("\n");
     })
     .join("\n");
-  return `<?xml version="1.0" encoding="UTF-8"?>\n` +
+  return (
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     `${items}\n` +
-    `</sitemapindex>\n`;
+    `</sitemapindex>\n`
+  );
 }

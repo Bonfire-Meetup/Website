@@ -487,7 +487,10 @@ function FilterDropdown({
           ))}
 
           {resolvedGroups.map((group) => (
-            <div key={group.label} className="mt-2 border-t border-black/5 pt-2 dark:border-white/10">
+            <div
+              key={group.label}
+              className="mt-2 border-t border-black/5 pt-2 dark:border-white/10"
+            >
               <div className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
                 {group.label}
               </div>
