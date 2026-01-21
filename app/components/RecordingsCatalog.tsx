@@ -353,6 +353,8 @@ export function RecordingsCatalog({
   const [isFiltering, setIsFiltering] = useState(false);
   const isFirstFilter = useRef(true);
   const searchDebounceRef = useRef<number | null>(null);
+  const isSearchDirtyRef = useRef(false);
+  const lastCommittedSearchRef = useRef("");
   const [viewMode, setViewMode] = useState<"rows" | "grid">("rows");
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [isFeaturedPaused, setIsFeaturedPaused] = useState(false);
@@ -458,11 +460,18 @@ export function RecordingsCatalog({
     setActiveLocation(normalizedLocation);
     setActiveTag(normalizedTag);
     setActiveEpisode(normalizedEpisode);
-    setSearchQuery(normalizedQuery);
+    if (!isSearchDirtyRef.current || normalizedQuery === lastCommittedSearchRef.current) {
+      setSearchQuery(normalizedQuery);
+      lastCommittedSearchRef.current = normalizedQuery;
+      isSearchDirtyRef.current = false;
+    }
   }, [searchParams, tagOptions, episodeOptions]);
 
   const updateFilters = useCallback(
     (location: LocationFilter, tag: string, episode: string, search = "") => {
+      const trimmedSearch = search.trim();
+      lastCommittedSearchRef.current = trimmedSearch;
+      isSearchDirtyRef.current = false;
       const params = new URLSearchParams(searchParams.toString());
       if (location === "all") {
         params.delete("location");
@@ -479,10 +488,10 @@ export function RecordingsCatalog({
       } else {
         params.set("episode", episode);
       }
-      if (!search.trim()) {
+      if (!trimmedSearch) {
         params.delete("q");
       } else {
-        params.set("q", search.trim());
+        params.set("q", trimmedSearch);
       }
       const queryString = params.toString();
       router.replace(queryString ? `/library?${queryString}` : "/library");
@@ -771,6 +780,7 @@ export function RecordingsCatalog({
                   type="search"
                   value={searchQuery}
                   onChange={(e) => {
+                    isSearchDirtyRef.current = true;
                     setSearchQuery(e.target.value);
                   }}
                   placeholder={labels.search.placeholder}
