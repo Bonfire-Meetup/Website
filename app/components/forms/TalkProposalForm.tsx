@@ -176,7 +176,7 @@ export function TalkProposalForm() {
   if (state.success) {
     return (
       <div className="glass-card no-hover-pop mx-auto max-w-2xl p-8 text-center sm:p-12">
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-500 shadow-lg shadow-green-500/30">
+        <div className="form-success-icon">
           <CheckIcon className="h-8 w-8 text-white" />
         </div>
         <h2 className="mb-3 text-2xl font-bold text-neutral-900 dark:text-white">
@@ -198,11 +198,9 @@ export function TalkProposalForm() {
     return t(`errors.${errorKey}`) || errorKey;
   };
 
-  const inputBaseClass =
-    "w-full rounded-xl border bg-white px-4 py-3 text-neutral-900 placeholder-neutral-400 transition-all duration-200 focus:outline-none focus:ring-2 dark:bg-white/5 dark:text-white dark:placeholder-neutral-500";
-  const inputNormalClass =
-    "border-neutral-200 focus:border-brand-500 focus:ring-brand-500/20 dark:border-white/10 dark:focus:border-brand-400";
-  const inputErrorClass = "border-rose-400 focus:border-rose-500 focus:ring-rose-500/20";
+  const inputBaseClass = "form-input-base";
+  const inputNormalClass = "form-input";
+  const inputErrorClass = "form-input-error";
   const durationOptions: DropdownOption[] = [
     { value: "", label: t("durationPlaceholder"), disabled: true },
     { value: "15", label: t("duration15") },
@@ -226,7 +224,7 @@ export function TalkProposalForm() {
     >
       <div className="mb-8 flex items-start justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-rose-500 shadow-lg shadow-brand-500/30">
+          <div className="form-header-icon">
             <MicIcon className="h-6 w-6 text-white" />
           </div>
           <div>
@@ -240,7 +238,7 @@ export function TalkProposalForm() {
             variant="plain"
             size="sm"
             onClick={clearDraft}
-            className="flex items-center gap-1.5 rounded-lg border border-neutral-200/70 bg-white/60 px-3 py-1.5 text-xs font-medium text-neutral-600 shadow-sm transition-colors hover:border-neutral-300 hover:bg-white hover:text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+            className="form-clear-button"
           >
             <CloseIcon className="h-3.5 w-3.5" />
             {t("clearDraft")}
@@ -248,19 +246,12 @@ export function TalkProposalForm() {
         )}
       </div>
 
-      {hasDraft && (
-        <div className="mb-5 rounded-lg border border-neutral-200/50 bg-neutral-50/50 px-3 py-2 text-xs text-neutral-500 dark:border-white/5 dark:bg-white/5 dark:text-neutral-400">
-          {t("draftNote")}
-        </div>
-      )}
+      {hasDraft && <div className="form-draft-note">{t("draftNote")}</div>}
 
       <div className="space-y-5">
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label
-              htmlFor="speaker-name"
-              className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
-            >
+            <label htmlFor="speaker-name" className="form-label">
               {t("speakerName")} <span className="text-rose-500">*</span>
             </label>
             <input
@@ -276,15 +267,12 @@ export function TalkProposalForm() {
               placeholder={t("speakerNamePlaceholder")}
             />
             {state.errors?.speakerName && (
-              <p className="mt-1.5 text-sm text-rose-500">{getFieldError("speakerName")}</p>
+              <p className="form-error-text">{getFieldError("speakerName")}</p>
             )}
           </div>
 
           <div>
-            <label
-              htmlFor="speaker-email"
-              className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
-            >
+            <label htmlFor="speaker-email" className="form-label">
               {t("email")} <span className="text-rose-500">*</span>
             </label>
             <input
@@ -298,17 +286,12 @@ export function TalkProposalForm() {
               className={`${inputBaseClass} ${state.errors?.email ? inputErrorClass : inputNormalClass}`}
               placeholder={t("emailPlaceholder")}
             />
-            {state.errors?.email && (
-              <p className="mt-1.5 text-sm text-rose-500">{getFieldError("email")}</p>
-            )}
+            {state.errors?.email && <p className="form-error-text">{getFieldError("email")}</p>}
           </div>
         </div>
 
         <div>
-          <label
-            htmlFor="talk-title"
-            className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
-          >
+          <label htmlFor="talk-title" className="form-label">
             {t("talkTitle")} <span className="text-rose-500">*</span>
           </label>
           <input
@@ -323,15 +306,12 @@ export function TalkProposalForm() {
             placeholder={t("talkTitlePlaceholder")}
           />
           {state.errors?.talkTitle && (
-            <p className="mt-1.5 text-sm text-rose-500">{getFieldError("talkTitle")}</p>
+            <p className="form-error-text">{getFieldError("talkTitle")}</p>
           )}
         </div>
 
         <div>
-          <label
-            htmlFor="talk-abstract"
-            className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
-          >
+          <label htmlFor="talk-abstract" className="form-label">
             {t("abstract")} <span className="text-rose-500">*</span>
           </label>
           <textarea
@@ -355,10 +335,7 @@ export function TalkProposalForm() {
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label
-              htmlFor="talk-duration"
-              className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
-            >
+            <label htmlFor="talk-duration" className="form-label">
               {t("duration")} <span className="text-rose-500">*</span>
             </label>
             <SelectDropdown
@@ -383,15 +360,12 @@ export function TalkProposalForm() {
               activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
             />
             {state.errors?.duration && (
-              <p className="mt-1.5 text-sm text-rose-500">{getFieldError("duration")}</p>
+              <p className="form-error-text">{getFieldError("duration")}</p>
             )}
           </div>
 
           <div>
-            <label
-              htmlFor="preferred-location"
-              className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
-            >
+            <label htmlFor="preferred-location" className="form-label">
               {t("preferredLocation")}
             </label>
             <SelectDropdown
@@ -409,10 +383,7 @@ export function TalkProposalForm() {
         </div>
 
         <div>
-          <label
-            htmlFor="speaker-experience"
-            className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
-          >
+          <label htmlFor="speaker-experience" className="form-label">
             {t("experience")}
           </label>
           <textarea
@@ -440,9 +411,7 @@ export function TalkProposalForm() {
         <input type="hidden" name="csrfToken" value={csrfToken} />
 
         {state.message && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400">
-            {t(`errors.${state.message}`) || state.message}
-          </div>
+          <div className="form-error-alert">{t(`errors.${state.message}`) || state.message}</div>
         )}
 
         <TurnstileWidget className="flex justify-center" />

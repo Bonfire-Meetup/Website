@@ -144,9 +144,9 @@ export function EventCard({
               href={getMapUrl(venue)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 text-sm text-neutral-500 transition-colors hover:text-brand-600 dark:text-neutral-400 dark:hover:text-brand-400"
+              className="venue-link"
             >
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-100/80 dark:bg-brand-500/10">
+              <div className="meta-icon-container">
                 <MapPinIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />
               </div>
               <span className="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline">
@@ -158,15 +158,10 @@ export function EventCard({
 
           {hasSpeakers && (
             <div className="mb-5">
-              <p className="mb-2 text-sm font-medium text-neutral-500 dark:text-neutral-400">
-                {t("speakers")}
-              </p>
+              <p className="section-label">{t("speakers")}</p>
               <div className="space-y-2">
                 {speakers.map((speaker) => (
-                  <div
-                    key={`${speaker.name}-${speaker.topic}`}
-                    className="flex items-start gap-3 rounded-2xl bg-white/60 p-3 text-sm text-neutral-700 shadow-sm shadow-black/5 dark:bg-white/5 dark:text-neutral-200"
-                  >
+                  <div key={`${speaker.name}-${speaker.topic}`} className="speaker-card">
                     <div className="mt-0.5 h-2.5 w-2.5 flex-none rounded-full bg-brand-500/80" />
                     <div>
                       <p className="font-semibold text-neutral-900 dark:text-white">
@@ -227,9 +222,9 @@ export function EventCard({
             href={getMapUrl(venue)}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 text-sm text-neutral-500 transition-colors hover:text-brand-600 dark:text-neutral-400 dark:hover:text-brand-400"
+            className="venue-link"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-100/80 dark:bg-brand-500/10">
+            <div className="meta-icon-container">
               <MapPinIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />
             </div>
             <span className="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline">
@@ -241,9 +236,7 @@ export function EventCard({
 
         {hasSpeakers && (
           <div className="mb-6">
-            <p className="mb-3 text-sm font-medium text-neutral-500 dark:text-neutral-400">
-              {t("speakers")}
-            </p>
+            <p className="section-label-spaced">{t("speakers")}</p>
             <div className="space-y-3">
               {speakers.map((speaker) => (
                 <div
@@ -261,9 +254,7 @@ export function EventCard({
           </div>
         )}
 
-        <p className="mb-3 text-sm font-medium text-neutral-500 dark:text-neutral-400">
-          {t("register")}
-        </p>
+        <p className="section-label-spaced">{t("register")}</p>
 
         <div className="flex flex-wrap gap-3">
           {platformLinks.map((platform) => (

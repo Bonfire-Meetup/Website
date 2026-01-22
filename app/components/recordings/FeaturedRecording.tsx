@@ -225,7 +225,7 @@ export function FeaturedRecording({
           <div className="flex flex-col gap-1.5">
             {currentFeatured.speaker.map((name: string) => (
               <div key={name} className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(59,130,246,0.4)] dark:bg-brand-400" />
+                <span className="speaker-dot" />
                 <span
                   className={`text-xs font-medium sm:text-sm ${
                     hasFeaturedHero
