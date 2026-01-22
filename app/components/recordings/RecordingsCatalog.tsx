@@ -148,6 +148,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     const tags = Array.from(new Set(filteredForTags.flatMap((recording) => recording.tags))).sort(
       (a, b) => a.localeCompare(b),
     );
+
     return ["all", ...tags];
   }, [recordings, activeLocation, activeEpisode]);
 
@@ -164,6 +165,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     filteredForEpisodes.forEach((recording) => {
       if (recording.episodeId) {
         const title = recording.episode ?? recording.episodeId;
+
         if (!map.has(recording.episodeId)) {
           map.set(recording.episodeId, {
             location: recording.location,
@@ -177,6 +179,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     for (const episodeId of UNRECORDED_EPISODES) {
       if (!map.has(episodeId)) {
         const episode = getEpisodeById(episodeId);
+
         if (episode) {
           map.set(episodeId, {
             location: episode.city === "prague" ? LOCATIONS.PRAGUE : LOCATIONS.ZLIN,
@@ -272,6 +275,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     const isSearchNotDirty = !isSearchDirtyRef.current;
     const isQueryUnchanged = normalizedQuery === lastCommittedSearchRef.current;
     const shouldUpdateSearch = isSearchNotDirty || isQueryUnchanged;
+
     if (shouldUpdateSearch) {
       setSearchQuery(normalizedQuery);
       lastCommittedSearchRef.current = normalizedQuery;
@@ -285,26 +289,31 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
       lastCommittedSearchRef.current = trimmedSearch;
       isSearchDirtyRef.current = false;
       const params = new URLSearchParams(searchParams.toString());
+
       if (location === "all") {
         params.delete("location");
       } else {
         params.set("location", location);
       }
+
       if (tag === "all") {
         params.delete("tag");
       } else {
         params.set("tag", tag);
       }
+
       if (episode === "all") {
         params.delete("episode");
       } else {
         params.set("episode", episode);
       }
+
       if (!trimmedSearch) {
         params.delete("q");
       } else {
         params.set("q", trimmedSearch);
       }
+
       const queryString = params.toString();
       router.replace(queryString ? `${PAGE_ROUTES.LIBRARY}?${queryString}` : PAGE_ROUTES.LIBRARY);
     },
@@ -330,6 +339,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     }
 
     const normalizedQuery = normalizeText(deferredSearchQuery.trim());
+
     return recordings.filter((recording) => {
       const isLocationMatch = activeLocation === "all" || recording.location === activeLocation;
       const isTagMatch = activeTag === "all" || recording.tags.includes(activeTag);
@@ -387,10 +397,13 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   useEffect(() => {
     if (isFirstFilter.current) {
       isFirstFilter.current = false;
+
       return;
     }
+
     setIsFiltering(true);
     const timer = setTimeout(() => setIsFiltering(false), 200);
+
     return () => clearTimeout(timer);
   }, [filterKey]);
 
@@ -403,15 +416,19 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   useEffect(() => {
     const trimmed = searchQuery.trim();
     const currentQueryParam = searchParams.get("q") ?? "";
+
     if (trimmed === currentQueryParam) {
       return;
     }
+
     if (searchDebounceRef.current) {
       clearTimeout(searchDebounceRef.current);
     }
+
     searchDebounceRef.current = window.setTimeout(() => {
       updateFilters(activeLocation, activeTag, activeEpisode, trimmed);
     }, 350);
+
     return () => {
       if (searchDebounceRef.current) {
         clearTimeout(searchDebounceRef.current);
@@ -449,6 +466,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
           title: tRows("prague", { prague: tCommon("prague") }),
         });
       }
+
       if (zlinItems.length > 0) {
         rows.push({
           items: zlinItems,
@@ -456,6 +474,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
           title: tRows("zlin", { zlin: tCommon("zlin") }),
         });
       }
+
       return rows;
     }
 
@@ -466,6 +485,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
         title: tRows("prague", { prague: tCommon("prague") }),
       });
     }
+
     if (activeLocation === LOCATIONS.ZLIN && zlinItems.length > 0) {
       rows.push({
         items: zlinItems,
@@ -505,9 +525,11 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
 
   const rows = useMemo(() => {
     const nextRows: RailRow[] = [];
+
     if (latestRecordings.length > 0) {
       nextRows.push({ items: latestRecordings, key: "latest", title: tRows("latest") });
     }
+
     return [...nextRows, ...locationRows, ...tagRows];
   }, [latestRecordings, locationRows, tagRows, tRows]);
 

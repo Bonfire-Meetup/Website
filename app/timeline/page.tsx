@@ -17,12 +17,14 @@ const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum
 
 function getEpisodeEntries(): EpisodeEntry[] {
   const recordings = getAllRecordings();
+
   return episodes
     .map((episode) => {
       const episodeRecordings = recordings.filter(
         (recording) => recording.episodeId === episode.id,
       );
       const album = albums.find((item) => item.episodeId === episode.id);
+
       return {
         city: episode.city,
         date: episode.date ?? null,
@@ -41,12 +43,15 @@ function getEpisodeEntries(): EpisodeEntry[] {
     .sort((a, b) => {
       const aTime = a.date ? new Date(a.date).getTime() : 0;
       const bTime = b.date ? new Date(b.date).getTime() : 0;
+
       if (aTime !== bTime) {
         return bTime - aTime;
       }
+
       if (a.city !== b.city) {
         return a.city.localeCompare(b.city);
       }
+
       return b.number - a.number;
     });
 }
@@ -60,6 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
     prague: tCommon("prague"),
     zlin: tCommon("zlin"),
   };
+
   return {
     description: t("timelineDescription"),
     openGraph: {
@@ -94,6 +100,7 @@ export default async function TimelinePage() {
               <div className="space-y-12">
                 {entries.map((entry, index) => {
                   const isRight = index % 2 === 1;
+
                   return (
                     <article
                       key={entry.id}

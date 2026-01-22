@@ -26,6 +26,7 @@ interface RailCardProps {
 export function RailCard({ recording, isFirst = false, badge }: RailCardProps) {
   const t = useTranslations("recordings");
   const locale = useLocale();
+
   return (
     <Link
       href={PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}

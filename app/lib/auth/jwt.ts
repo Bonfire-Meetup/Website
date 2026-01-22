@@ -11,6 +11,7 @@ const normalizePem = (pem: string): string => {
   if (pem.includes("\n")) {
     return pem;
   }
+
   return pem
     .replace(/(-----BEGIN [A-Z ]+-----)/, "$1\n")
     .replace(/(-----END [A-Z ]+-----)/, "\n$1");
@@ -28,6 +29,7 @@ export const getAccessTokenTtlSeconds = () => accessTokenTtlSeconds;
 
 export const signAccessToken = async (userId: string, jti: string) => {
   const privateKey = await importPKCS8(getJwtPrivateKey(), "EdDSA");
+
   return new SignJWT({})
     .setProtectedHeader({ alg: "EdDSA", kid: getJwtKeyId(), typ: "JWT" })
     .setIssuer(getJwtIssuer())
@@ -45,15 +47,20 @@ export const verifyAccessToken = async (token: string) => {
     audience: getJwtAudience(),
     issuer: getJwtIssuer(),
   });
+
   if (typeof payload.sub !== "string") {
     throw new Error("Invalid token subject");
   }
+
   if (typeof payload.jti !== "string") {
     throw new Error("Invalid token id");
   }
+
   const isActive = await isAuthTokenActive(payload.jti);
+
   if (!isActive) {
     throw new Error("Token revoked");
   }
+
   return payload;
 };

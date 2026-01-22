@@ -26,24 +26,30 @@ export const POST = async (request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
     let payload: unknown;
+
     try {
       payload = await request.json();
     } catch {
       logWarn("auth.challenge.invalid_request");
+
       return respond({ ok: true });
     }
 
     const result = challengeSchema.safeParse(payload);
+
     if (!result.success) {
       logWarn("auth.challenge.invalid_request");
+
       return respond({ error: "invalid_request" }, { status: 400 });
     }
 
     const { turnstileToken } = result.data;
 
     const isTurnstileValid = await verifyTurnstileToken(turnstileToken);
+
     if (!isTurnstileValid) {
       logWarn("auth.challenge.captcha_failed");
+
       return respond({ error: "captcha_failed" }, { status: 400 });
     }
 
@@ -71,8 +77,10 @@ export const POST = async (request: Request) =>
       },
       ttlMs: challengeTtlMs,
     });
+
     if (!resultChallenge.ok) {
       return respond({ ok: true });
     }
+
     return respond({ challenge_token: resultChallenge.challenge_token, ok: true });
   });

@@ -28,9 +28,11 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
     if (href === "/") {
       return pathname === "/";
     }
+
     if (href.startsWith("/#")) {
       return false;
     }
+
     return pathname.startsWith(href);
   };
 
@@ -44,7 +46,9 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
         clearTimeout(closeTimer.current);
         closeTimer.current = null;
       }
+
       setIsRendered(true);
+
       return;
     }
 
@@ -71,6 +75,7 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
     } else {
       document.body.style.overflow = "";
     }
+
     return () => {
       document.body.style.overflow = "";
     };
@@ -84,7 +89,9 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
         closeMenu();
       }
     };
+
     document.addEventListener("keydown", handleEscape);
+
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
 

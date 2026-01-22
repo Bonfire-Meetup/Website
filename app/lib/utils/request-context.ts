@@ -12,6 +12,7 @@ export const runWithRequestContext = <T>(
   handler: () => Promise<T>,
 ): Promise<T> => {
   const requestId = request.headers.get("x-bnf-request-id") ?? crypto.randomUUID();
+
   return storage.run({ requestId }, handler);
 };
 

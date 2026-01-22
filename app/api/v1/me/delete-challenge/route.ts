@@ -21,13 +21,16 @@ export const POST = async (request: Request) =>
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
 
     const auth = await requireAuth(request, "account.delete-challenge");
+
     if (!auth.success) {
       return auth.response;
     }
 
     const user = await getAuthUserById(auth.userId);
+
     if (!user) {
       logWarn("account.delete-challenge.user_not_found", { userId: auth.userId });
+
       return respond({ error: "not_found" }, { status: 404 });
     }
 
@@ -54,6 +57,7 @@ export const POST = async (request: Request) =>
       },
       ttlMs: challengeTtlMs,
     });
+
     if (!resultChallenge.ok) {
       const emailFingerprint = getEmailFingerprint(user.email);
       const { headers } = request;
@@ -61,15 +65,20 @@ export const POST = async (request: Request) =>
         headers.get("x-real-ip") || headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
       const userAgent = headers.get("user-agent");
       const clientFingerprint = getClientFingerprint({ ip, userAgent });
+
       if (resultChallenge.reason === "rate_limited") {
         logWarn("account.delete-challenge.rate_limited", {
           ...emailFingerprint,
           ...clientFingerprint,
         });
+
         return respond({ error: "rate_limited" }, { status: 429 });
       }
+
       const error = resultChallenge.reason === "persist_failed" ? "persist_failed" : "email_failed";
+
       return respond({ error }, { status: 500 });
     }
+
     return respond({ challenge_token: resultChallenge.challenge_token, ok: true });
   });

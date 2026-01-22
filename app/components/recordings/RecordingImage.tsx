@@ -18,6 +18,7 @@ function getSharedObserver() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const cb = callbacks.get(entry.target);
+
           if (cb) {
             cb();
             callbacks.delete(entry.target);
@@ -68,15 +69,18 @@ export function RecordingImage({
   useEffect(() => {
     if (loading === "eager") {
       setInView(true);
+
       return;
     }
 
     const container = containerRef.current;
+
     if (!container) {
       return;
     }
 
     observe(container, () => setInView(true));
+
     return () => unobserve(container);
   }, [loading]);
 

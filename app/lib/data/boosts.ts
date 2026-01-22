@@ -21,13 +21,16 @@ export const getVideoBoostStats = async (
       (await sql`select count(*)::int as count from video_boosts where video_id = ${videoId}`) as {
         count: number;
       }[];
+
     if (!userId) {
       return { count, hasBoosted: false };
     }
+
     const [{ exists }] =
       (await sql`select exists(select 1 from video_boosts where video_id = ${videoId} and user_id = ${userId}) as exists`) as {
         exists: boolean;
       }[];
+
     return { count, hasBoosted: exists };
   } catch (error) {
     logError("data.boosts.stats_failed", error, { userId: userId ?? null, videoId });
@@ -49,6 +52,7 @@ export const addVideoBoost = async (
       (await sql`select count(*)::int as count from video_boosts where video_id = ${videoId}`) as {
         count: number;
       }[];
+
     return { added: inserted.length > 0, count };
   } catch (error) {
     logError("data.boosts.add_failed", error, { userId, videoId });
@@ -70,6 +74,7 @@ export const removeVideoBoost = async (
       (await sql`select count(*)::int as count from video_boosts where video_id = ${videoId}`) as {
         count: number;
       }[];
+
     return { count, removed: removed.length > 0 };
   } catch (error) {
     logError("data.boosts.remove_failed", error, { userId, videoId });
@@ -86,6 +91,7 @@ export const getUserBoosts = async (userId: string) => {
       WHERE user_id = ${userId}
       ORDER BY created_at DESC
     `) as { video_id: string; created_at: Date }[];
+
     return rows;
   } catch (error) {
     logError("data.boosts.user_fetch_failed", error, { userId });

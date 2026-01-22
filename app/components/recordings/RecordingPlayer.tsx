@@ -42,7 +42,9 @@ export function RecordingPlayer({
         setCinemaMode(false);
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
+
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [cinemaMode, setCinemaMode]);
 
@@ -61,6 +63,7 @@ export function RecordingPlayer({
 
   useEffect(() => {
     setInlineContainer(inlinePlayerRef.current);
+
     return () => setInlineContainer(null);
   }, [setInlineContainer, recording.youtubeId]);
 

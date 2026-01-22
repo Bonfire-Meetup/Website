@@ -27,11 +27,13 @@ export const POST = async (request: Request) =>
     const tooManyAttemptsResponse = () => respond({ error: "too_many_attempts" }, { status: 429 });
 
     const auth = await requireAuth(request, "account.delete");
+
     if (!auth.success) {
       return auth.response;
     }
 
     let payload: unknown;
+
     try {
       payload = await request.json();
     } catch {
@@ -39,11 +41,13 @@ export const POST = async (request: Request) =>
     }
 
     const result = deleteSchema.safeParse(payload);
+
     if (!result.success) {
       return respond({ error: "invalid_request" }, { status: 400 });
     }
 
     const user = await getAuthUserById(auth.userId);
+
     if (!user) {
       return respond({ error: "not_found" }, { status: 404 });
     }
@@ -61,18 +65,22 @@ export const POST = async (request: Request) =>
       email,
       timingGuard: timingGuardHash,
     });
+
     if (!verification.ok) {
       logWarn("account.delete.invalid_code", {
         ...emailFingerprint,
         ...clientFingerprint,
         reason: verification.reason,
       });
+
       if (verification.reason === "expired") {
         return expiredResponse();
       }
+
       if (verification.reason === "max_attempts") {
         return tooManyAttemptsResponse();
       }
+
       return invalidResponse();
     }
 
@@ -89,6 +97,7 @@ export const POST = async (request: Request) =>
         ...emailFingerprint,
         ...clientFingerprint,
       });
+
       return respond({ error: "delete_failed" }, { status: 500 });
     }
 
@@ -96,5 +105,6 @@ export const POST = async (request: Request) =>
       ...emailFingerprint,
       ...clientFingerprint,
     });
+
     return respond({ ok: true });
   });

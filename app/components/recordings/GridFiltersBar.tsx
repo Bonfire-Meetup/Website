@@ -54,6 +54,7 @@ export function GridFiltersBar({
   const t = useTranslations("libraryPage.filters");
   const tSearch = useTranslations("libraryPage.search");
   const tView = useTranslations("libraryPage.view");
+
   return (
     <div className="glass relative z-10 mb-8 rounded-2xl px-4 py-3">
       <div className="flex flex-wrap items-center gap-3 lg:flex-nowrap lg:gap-2">
@@ -64,6 +65,7 @@ export function GridFiltersBar({
               const isLocationMatch = r.location === option.value;
               const isTagMatch = activeTag === "all" || r.tags.includes(activeTag);
               const isEpisodeMatch = activeEpisode === "all" || r.episodeId === activeEpisode;
+
               return isLocationMatch && isTagMatch && isEpisodeMatch;
             });
             const hasResults = isAllOption || hasMatchingRecordings;
@@ -77,6 +79,7 @@ export function GridFiltersBar({
                   if (shouldPreventClick) {
                     return;
                   }
+
                   onLocationChange(option.value);
                 }}
                 variant="plain"
@@ -91,9 +94,11 @@ export function GridFiltersBar({
                     if (isPrague) {
                       return "rounded-full font-medium transition bg-red-500 text-white shadow-sm shadow-red-500/25";
                     }
+
                     if (isZlin) {
                       return "rounded-full font-medium transition bg-blue-500 text-white shadow-sm shadow-blue-500/25";
                     }
+
                     return "rounded-full font-medium transition bg-rose-500 text-white shadow-sm shadow-rose-500/25";
                   }
 
@@ -107,12 +112,15 @@ export function GridFiltersBar({
                 {(() => {
                   const isPragueLabel = option.labelKey === "prague";
                   const isZlinLabel = option.labelKey === "zlin";
+
                   if (isPragueLabel) {
                     return t(option.labelKey, { prague: tCommon("prague") });
                   }
+
                   if (isZlinLabel) {
                     return t(option.labelKey, { zlin: tCommon("zlin") });
                   }
+
                   return t(option.labelKey);
                 })()}
               </Button>

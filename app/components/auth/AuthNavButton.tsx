@@ -14,6 +14,7 @@ export function AuthNavButton() {
 
   useEffect(() => {
     const token = readAccessToken();
+
     if (token && isAccessTokenValid(token)) {
       setHref(PAGE_ROUTES.ME);
       setIsAuthed(true);

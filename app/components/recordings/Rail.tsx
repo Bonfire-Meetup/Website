@@ -38,6 +38,7 @@ export function Rail<T>({
     if (!railRef.current) {
       return;
     }
+
     const { scrollLeft, scrollWidth, clientWidth } = railRef.current;
     setCanScrollLeft(scrollLeft > 0);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
@@ -45,6 +46,7 @@ export function Rail<T>({
 
   useEffect(() => {
     const rail = railRef.current;
+
     if (!rail) {
       return;
     }
@@ -65,6 +67,7 @@ export function Rail<T>({
     if (!railRef.current) {
       return;
     }
+
     railRef.current.scrollBy({
       behavior: "smooth",
       left: direction * railRef.current.clientWidth * 0.85,
@@ -83,6 +86,7 @@ export function Rail<T>({
         right: null as string | null,
       };
     }
+
     const isRose = gradientFrom.includes("rose");
     const isEmerald = gradientFrom.includes("emerald");
     const ringClass = isRose
@@ -100,6 +104,7 @@ export function Rail<T>({
       : gradientTo.includes("teal")
         ? "from-teal-500/5 to-transparent dark:from-teal-500/10"
         : null;
+
     return {
       container: `relative ${containerClassName} bg-gradient-to-r ${gradientFrom} ${gradientTo} ring-1 ${ringClass}`,
       left: leftGradient,

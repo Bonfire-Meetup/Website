@@ -28,6 +28,7 @@ export function TurnstileWidget({ className = "" }: { className?: string }) {
       if (!window.turnstile || !containerRef.current || widgetIdRef.current) {
         return;
       }
+
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
         appearance: "interaction-only",
         sitekey: siteKey,
@@ -48,6 +49,7 @@ export function TurnstileWidget({ className = "" }: { className?: string }) {
 
     return () => {
       clearInterval(interval);
+
       if (widgetIdRef.current && window.turnstile) {
         window.turnstile.remove(widgetIdRef.current);
         widgetIdRef.current = null;

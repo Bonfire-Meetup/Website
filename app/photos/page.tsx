@@ -20,19 +20,24 @@ function toAlbumSlug(album: PhotoAlbum) {
 
 function hashSeed(input: string) {
   let hash = 0;
+
   for (let i = 0; i < input.length; i += 1) {
     hash = (hash * 31 + input.charCodeAt(i)) | 0;
   }
+
   return Math.abs(hash);
 }
 
 function pickDailyRandomImage(album: PhotoAlbum, seed: string) {
   const coverSrc = album.cover.src;
   const candidates = album.images.filter((img) => img.src !== coverSrc);
+
   if (candidates.length === 0) {
     return album.cover;
   }
+
   const index = hashSeed(`${seed}-${album.id}`) % candidates.length;
+
   return candidates[index];
 }
 
@@ -59,6 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
     prague: tCommon("prague"),
     zlin: tCommon("zlin"),
   };
+
   return {
     description: t("photosDescription", commonValues),
     openGraph: {
@@ -89,6 +95,7 @@ export default async function PhotosPage() {
       .map((img) => ({
         alt: (() => {
           const episode = getEpisodeById(album.episodeId);
+
           return episode ? formatEpisodeTitle(episode) : album.id;
         })(),
         src: `${baseUrl}/${img.src}`,
@@ -130,6 +137,7 @@ export default async function PhotosPage() {
                   const episode = getEpisodeById(album.episodeId);
                   const title = episode ? formatEpisodeTitle(episode) : album.id;
                   const highlight = pickDailyRandomImage(album, dailySeed);
+
                   return (
                     <div
                       key={album.id}
@@ -177,6 +185,7 @@ export default async function PhotosPage() {
               {albums.map((album) => {
                 const episode = getEpisodeById(album.episodeId);
                 const title = episode ? formatEpisodeTitle(episode) : album.id;
+
                 return (
                   <a
                     key={album.id}

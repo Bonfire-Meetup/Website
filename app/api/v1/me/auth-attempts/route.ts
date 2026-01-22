@@ -8,20 +8,26 @@ import { runWithRequestContext } from "@/lib/utils/request-context";
 export async function GET(request: Request) {
   return runWithRequestContext(request, async () => {
     const auth = await requireAuth(request, "account.attempts");
+
     if (!auth.success) {
       return auth.response;
     }
 
     try {
       const user = await getAuthUserById(auth.userId);
+
       if (!user) {
         logWarn("account.attempts.user_not_found", { userId: auth.userId });
+
         return NextResponse.json({ error: "not_found" }, { status: 404 });
       }
+
       const fingerprint = getEmailFingerprint(user.email);
+
       if (!fingerprint.emailHash) {
         return NextResponse.json({ items: [] });
       }
+
       const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
       const attempts = await getAuthAttemptsByEmailHash({
         accountCreatedAt: user.created_at,
@@ -35,9 +41,11 @@ export async function GET(request: Request) {
         id: attempt.id,
         outcome: attempt.outcome,
       }));
+
       return NextResponse.json({ items });
     } catch (error) {
       logError("account.attempts.failed", error, { userId: auth.userId });
+
       return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   });

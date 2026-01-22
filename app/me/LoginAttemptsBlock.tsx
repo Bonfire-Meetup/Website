@@ -17,13 +17,16 @@ interface LoginAttemptsBlockProps {
 export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlockProps) {
   const t = useTranslations("account.attempts");
   const locale = useLocale();
+
   const getOutcomeStyle = (outcome: string) => {
     if (outcome === "success") {
       return "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400";
     }
+
     if (outcome === "rate_limited" || outcome === "too_many_attempts") {
       return "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400";
     }
+
     return "bg-neutral-100 text-neutral-500 dark:bg-white/5 dark:text-neutral-400";
   };
 

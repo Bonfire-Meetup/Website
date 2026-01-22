@@ -36,6 +36,7 @@ function reducer(state: State, action: Action): State {
         prefersReducedMotion: action.reducedMotion,
         ready: true,
       };
+
     case "START_TRANSITION":
       return {
         ...state,
@@ -43,6 +44,7 @@ function reducer(state: State, action: Action): State {
         nextDirection: action.nextDirection,
         nextIndex: action.nextIndex,
       };
+
     case "COMPLETE_TRANSITION":
       return {
         ...state,
@@ -51,8 +53,10 @@ function reducer(state: State, action: Action): State {
         isTransitioning: false,
         nextIndex: null,
       };
+
     case "SET_REDUCED_MOTION":
       return { ...state, prefersReducedMotion: action.value };
+
     default:
       return state;
   }
@@ -98,6 +102,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     };
 
     mediaQuery.addEventListener("change", handler);
+
     return () => mediaQuery.removeEventListener("change", handler);
   }, [images.length]);
 
@@ -105,20 +110,25 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     const handleVisibility = () => {
       setIsPageVisible(document.visibilityState === "visible");
     };
+
     handleVisibility();
     document.addEventListener("visibilitychange", handleVisibility);
+
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
   useEffect(() => {
     const node = containerRef.current;
+
     if (!node) {
       return;
     }
+
     const observer = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting), {
       rootMargin: "200px",
     });
     observer.observe(node);
+
     return () => observer.disconnect();
   }, []);
 
@@ -126,6 +136,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     if (typeof navigator === "undefined") {
       return;
     }
+
     const { connection } = navigator as Navigator & {
       connection?: {
         saveData?: boolean;
@@ -136,6 +147,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     const update = () => setSaveData(Boolean(connection?.saveData));
     update();
     connection?.addEventListener?.("change", update);
+
     return () => connection?.removeEventListener?.("change", update);
   }, []);
 
@@ -144,8 +156,10 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
       if (prev.has(index)) {
         return prev;
       }
+
       const next = new Set(prev);
       next.add(index);
+
       return next;
     });
   }, []);
@@ -155,9 +169,11 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
       if (typeof window === "undefined") {
         return;
       }
+
       if (loadedIndices.has(index)) {
         return;
       }
+
       const img = new window.Image();
       img.src = images[index].src;
       img.onload = () => markLoaded(index);
@@ -171,9 +187,11 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   const isCurrentLoaded = loadedIndices.has(state.currentIndex);
   const getNextRandomIndex = useCallback(() => {
     let next = Math.floor(Math.random() * images.length);
+
     while (next === currentIndexRef.current && images.length > 1) {
       next = Math.floor(Math.random() * images.length);
     }
+
     return next;
   }, [images.length]);
   const startTransition = useCallback(
@@ -181,10 +199,13 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
       if (state.isTransitioning) {
         return;
       }
+
       dispatch({ nextDirection: direction, nextIndex: next, type: "START_TRANSITION" });
+
       if (transitionTimeoutRef.current) {
         clearTimeout(transitionTimeoutRef.current);
       }
+
       transitionTimeoutRef.current = window.setTimeout(() => {
         dispatch({ type: "COMPLETE_TRANSITION" });
       }, 2000);
@@ -208,24 +229,31 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     if (!state.ready || images.length <= 1 || state.prefersReducedMotion) {
       return;
     }
+
     if (!isInView || !isPageVisible) {
       return;
     }
+
     if (!loadedIndices.has(state.currentIndex)) {
       return;
     }
+
     if (state.isTransitioning) {
       return;
     }
+
     if (saveData) {
       return;
     }
+
     if (nextCandidateRef.current !== null) {
       return;
     }
+
     const next = getNextRandomIndex();
     nextCandidateRef.current = next;
     nextDirectionRef.current = getRandomDirection();
+
     if (!loadedIndices.has(next)) {
       preloadIndex(next);
     }
@@ -247,31 +275,41 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     if (!state.ready || images.length <= 1 || state.prefersReducedMotion) {
       return;
     }
+
     if (!isInView || !isPageVisible) {
       return;
     }
+
     if (!loadedIndices.has(state.currentIndex)) {
       return;
     }
+
     if (state.isTransitioning) {
       return;
     }
+
     if (scheduleTimeoutRef.current) {
       clearTimeout(scheduleTimeoutRef.current);
     }
+
     scheduleTimeoutRef.current = window.setTimeout(() => {
       transitionDueRef.current = true;
+
       if (nextCandidateRef.current === null) {
         nextCandidateRef.current = getNextRandomIndex();
         nextDirectionRef.current = getRandomDirection();
       }
+
       const next = nextCandidateRef.current;
+
       if (next !== null && loadedIndices.has(next)) {
         transitionDueRef.current = false;
         nextCandidateRef.current = null;
         startTransition(next, nextDirectionRef.current);
+
         return;
       }
+
       if (next !== null) {
         preloadIndex(next);
       }
@@ -301,22 +339,29 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     if (!transitionDueRef.current) {
       return;
     }
+
     const next = nextCandidateRef.current;
+
     if (next === null) {
       return;
     }
+
     if (!loadedIndices.has(next)) {
       return;
     }
+
     if (state.prefersReducedMotion || !state.ready || !isInView || !isPageVisible) {
       return;
     }
+
     if (!loadedIndices.has(state.currentIndex)) {
       return;
     }
+
     if (state.isTransitioning) {
       return;
     }
+
     transitionDueRef.current = false;
     nextCandidateRef.current = null;
     startTransition(next, nextDirectionRef.current);

@@ -25,36 +25,48 @@ export const verifyOtpChallenge = async ({
 }): Promise<VerificationResult> => {
   const challengeTokenHash = hashOtpCode(email, challengeToken);
   const challenge = await getChallengeByToken(challengeTokenHash, email);
+
   if (!challenge) {
     if (timingGuard) {
       timingSafeMatch(hashOtpCode(email, code), timingGuard);
     }
+
     return { ok: false, reason: "missing" };
   }
+
   if (challenge.used_at) {
     if (timingGuard) {
       timingSafeMatch(hashOtpCode(email, code), timingGuard);
     }
+
     return { ok: false, reason: "used" };
   }
+
   if (challenge.expires_at <= new Date()) {
     if (timingGuard) {
       timingSafeMatch(hashOtpCode(email, code), timingGuard);
     }
+
     return { ok: false, reason: "expired" };
   }
+
   if (challenge.attempts >= challenge.max_attempts) {
     if (timingGuard) {
       timingSafeMatch(hashOtpCode(email, code), timingGuard);
     }
+
     return { ok: false, reason: "max_attempts" };
   }
+
   const codeHash = hashOtpCode(email, code);
+
   if (!timingSafeMatch(codeHash, challenge.code_hash)) {
     if (incrementAttempts) {
       await incrementAuthChallengeAttempts(challenge.id);
     }
+
     return { ok: false, reason: "mismatch" };
   }
+
   return { id: challenge.id, ok: true };
 };

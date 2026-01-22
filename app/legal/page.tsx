@@ -11,6 +11,7 @@ import { TermsOfServiceSection } from "./components/TermsOfServiceSection";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("legal");
+
   return {
     description: t("subtitle"),
     title: t("title"),

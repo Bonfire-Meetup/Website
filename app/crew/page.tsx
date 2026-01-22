@@ -74,9 +74,11 @@ function RoleIcon({ role, className }: { role: string; className?: string }) {
 
 function renderWithBold(text: string) {
   const parts = text.split(/(\*\*.*?\*\*)/g);
+
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       const content = part.slice(2, -2);
+
       return (
         <strong
           key={`bold-${i}-${content.slice(0, 10)}`}
@@ -86,6 +88,7 @@ function renderWithBold(text: string) {
         </strong>
       );
     }
+
     return <span key={`text-${i}`}>{part}</span>;
   });
 }
@@ -99,6 +102,7 @@ export async function generateMetadata(): Promise<Metadata> {
     prague: tCommon("prague"),
     zlin: tCommon("zlin"),
   };
+
   return {
     description: t("crewDescription", commonValues),
     openGraph: {

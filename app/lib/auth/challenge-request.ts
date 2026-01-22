@@ -27,6 +27,7 @@ const normalizeEmail = (email: string) => email.trim().toLowerCase();
 const getClientIp = (headers: Headers) => {
   const forwarded = headers.get("x-forwarded-for");
   const ip = headers.get("x-real-ip") || forwarded?.split(",")[0]?.trim() || null;
+
   return ip === "0.0.0.0" ? null : ip;
 };
 
@@ -38,12 +39,16 @@ const isRateLimited = (
 ) => {
   const now = Date.now();
   const hits = store.get(key)?.filter((time) => now - time < windowMs) ?? [];
+
   if (hits.length >= maxHits) {
     store.set(key, hits);
+
     return true;
   }
+
   hits.push(now);
   store.set(key, hits);
+
   return false;
 };
 
@@ -76,6 +81,7 @@ export const createEmailChallenge = async (config: ChallengeRequestConfig) => {
       ...clientFingerprint,
       scope: "email",
     });
+
     return { ok: false, reason: "rate_limited" as const };
   }
 
@@ -85,6 +91,7 @@ export const createEmailChallenge = async (config: ChallengeRequestConfig) => {
       ...clientFingerprint,
       scope: "ip",
     });
+
     return { ok: false, reason: "rate_limited" as const };
   }
 
@@ -101,6 +108,7 @@ export const createEmailChallenge = async (config: ChallengeRequestConfig) => {
       ...emailFingerprint,
       ...clientFingerprint,
     });
+
     return allowSilentFailure
       ? { ok: false, reason: "silent" as const }
       : { ok: false, reason: "email_failed" as const };
@@ -121,11 +129,13 @@ export const createEmailChallenge = async (config: ChallengeRequestConfig) => {
       ...emailFingerprint,
       ...clientFingerprint,
     });
+
     return allowSilentFailure
       ? { ok: false, reason: "silent" as const }
       : { ok: false, reason: "persist_failed" as const };
   }
 
   logInfo(`${logPrefix}.created`, { ...emailFingerprint, ...clientFingerprint });
+
   return { challenge_token: challengeToken, email: normalizedEmail, ok: true };
 };

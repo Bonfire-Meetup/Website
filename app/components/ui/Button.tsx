@@ -60,6 +60,7 @@ export function Button({
 
   if (href) {
     const isExternal = external || href.startsWith("http") || href.startsWith("mailto:");
+
     if (isExternal) {
       return (
         <a href={href} className={classes} aria-label={ariaLabel} target={target} rel={rel}>
@@ -67,6 +68,7 @@ export function Button({
         </a>
       );
     }
+
     return (
       <Link href={href} className={classes} aria-label={ariaLabel}>
         {children}

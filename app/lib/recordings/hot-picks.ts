@@ -13,6 +13,7 @@ function calculateHotScore(likeCount: number, recordingDate: Date, now: number):
   let score = likeCount * 10;
 
   const daysSince = Math.floor((now - recordingDate.getTime()) / (1000 * 60 * 60 * 24));
+
   if (daysSince <= 90) {
     score += 3;
   } else if (daysSince <= 180) {
@@ -36,6 +37,7 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
     .map((recording) => {
       const likeCount = engagement.likes[recording.shortId] ?? 0;
       const hotScore = calculateHotScore(likeCount, new Date(recording.date), now);
+
       return { ...recording, hotScore, likeCount };
     })
     .filter((r) => r.likeCount > 0)
@@ -43,6 +45,7 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
       if (b.hotScore !== a.hotScore) {
         return b.hotScore - a.hotScore;
       }
+
       return b.likeCount - a.likeCount;
     });
 
@@ -56,6 +59,7 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
     }
 
     const locationCount = usedLocations.get(recording.location) ?? 0;
+
     if (locationCount < maxPerLocation) {
       selected.push(recording);
       usedLocations.set(recording.location, locationCount + 1);
@@ -67,6 +71,7 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
       if (selected.length >= limit) {
         break;
       }
+
       if (!selected.some((r) => r.shortId === recording.shortId)) {
         selected.push(recording);
       }

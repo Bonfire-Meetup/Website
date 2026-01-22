@@ -32,6 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
           ? commonValues.country
           : k,
   );
+
   return {
     authors: [{ name: t("author", commonValues) }],
     description: t("siteDescription", commonValues),

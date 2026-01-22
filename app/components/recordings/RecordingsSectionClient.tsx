@@ -24,6 +24,7 @@ export const RecordingsSectionClient = memo(function RecordingsSectionClient({
   const tRecordings = useTranslations("recordings");
   const tCommon = useTranslations("common");
   const locale = useLocale();
+
   return (
     <>
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">

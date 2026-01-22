@@ -38,18 +38,23 @@ const normalizeEmail = (email: string) => email.trim().toLowerCase();
 const getClientIp = (headers: Headers) => {
   const forwarded = headers.get("x-forwarded-for");
   const ip = headers.get("x-real-ip") || forwarded?.split(",")[0]?.trim() || null;
+
   return ip === "0.0.0.0" ? null : ip;
 };
 
 const isRateLimited = (key: string, maxHits: number) => {
   const now = Date.now();
   const hits = rateLimitStore.get(key)?.filter((time) => now - time < rateLimitWindowMs) ?? [];
+
   if (hits.length >= maxHits) {
     rateLimitStore.set(key, hits);
+
     return true;
   }
+
   hits.push(now);
   rateLimitStore.set(key, hits);
+
   return false;
 };
 
@@ -62,37 +67,52 @@ export const POST = async (request: Request) =>
           resolve();
         }, failureDelayMs);
       });
+
     const invalidResponse = async () => {
       await delay();
+
       return respond({ error: "invalid_code" }, { status: 400 });
     };
+
     const invalidRequest = async () => {
       await delay();
+
       return respond({ error: "invalid_request" }, { status: 400 });
     };
+
     const expiredResponse = async () => {
       await delay();
+
       return respond({ error: "expired" }, { status: 410 });
     };
+
     const tooManyAttemptsResponse = async () => {
       await delay();
+
       return respond({ error: "too_many_attempts" }, { status: 429 });
     };
+
     const rateLimitedResponse = async () => {
       await delay();
+
       return respond({ error: "rate_limited" }, { status: 429 });
     };
+
     let payload: unknown;
+
     try {
       payload = await request.json();
     } catch {
       logWarn("auth.token.invalid_request");
+
       return invalidRequest();
     }
 
     const result = tokenSchema.safeParse(payload);
+
     if (!result.success) {
       logWarn("auth.token.invalid_request");
+
       return invalidRequest();
     }
 
@@ -108,6 +128,7 @@ export const POST = async (request: Request) =>
       if (!emailFingerprint.emailHash) {
         return;
       }
+
       await insertAuthAttempt({
         emailDomain: emailFingerprint.emailDomain,
         emailHash: emailFingerprint.emailHash,
@@ -118,6 +139,7 @@ export const POST = async (request: Request) =>
         userId,
       });
     };
+
     if (isRateLimited(`email:${email}`, maxEmailVerifications)) {
       logWarn("auth.token.rate_limited", {
         ...emailFingerprint,
@@ -125,6 +147,7 @@ export const POST = async (request: Request) =>
         scope: "email",
       });
       await recordAttempt("rate_limited");
+
       return rateLimitedResponse();
     }
 
@@ -135,6 +158,7 @@ export const POST = async (request: Request) =>
         scope: "ip",
       });
       await recordAttempt("rate_limited");
+
       return rateLimitedResponse();
     }
 
@@ -144,6 +168,7 @@ export const POST = async (request: Request) =>
       email,
       timingGuard: timingGuardHash,
     });
+
     if (!verification.ok) {
       logWarn("auth.token.invalid_code", {
         ...emailFingerprint,
@@ -151,24 +176,29 @@ export const POST = async (request: Request) =>
         reason: verification.reason,
       });
       await recordAttempt(verification.reason);
+
       if (verification.reason === "expired") {
         return expiredResponse();
       }
+
       if (verification.reason === "max_attempts") {
         return tooManyAttemptsResponse();
       }
+
       return invalidResponse();
     }
 
     await markAuthChallengeUsed(verification.id);
 
     const userId = await upsertAuthUser(email);
+
     if (!userId) {
       logError("auth.token.user_failed", new Error("user_upsert_failed"), {
         ...emailFingerprint,
         ...clientFingerprint,
       });
       await recordAttempt("user_failed");
+
       return respond({ error: "Authentication failed" }, { status: 500 });
     }
 
@@ -187,6 +217,7 @@ export const POST = async (request: Request) =>
 
     await recordAttempt("success", userId);
     logInfo("auth.token.issued", { ...emailFingerprint, ...clientFingerprint, jti });
+
     return respond({
       access_token: accessToken,
       expires_in: expiresIn,

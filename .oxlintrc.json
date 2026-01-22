@@ -196,6 +196,7 @@
     "dist/**",
     "build/**",
     "*.min.js",
-    "coverage/**"
+    "coverage/**",
+    "scripts/**"
   ]
 }

@@ -38,11 +38,15 @@ const useMediaQuery = (query: string) => {
     const media = window.matchMedia(query);
     const handleChange = () => setMatches(media.matches);
     handleChange();
+
     if (media.addEventListener) {
       media.addEventListener("change", handleChange);
+
       return () => media.removeEventListener("change", handleChange);
     }
+
     media.addListener(handleChange);
+
     return () => media.removeListener(handleChange);
   }, [query]);
 
@@ -77,21 +81,26 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     if (!inlineElement) {
       return;
     }
+
     const updateRect = () => {
       const rect = inlineElement.getBoundingClientRect();
+
       if (rect.width > 0 && rect.height > 0) {
         const newRect = { height: rect.height, left: rect.left, top: rect.top, width: rect.width };
         lastInlineRectRef.current = newRect;
+
         if (!cinemaMode) {
           setPlayerRect(newRect);
         }
       }
     };
+
     updateRect();
     const observer = new ResizeObserver(updateRect);
     observer.observe(inlineElement);
     window.addEventListener("scroll", updateRect, { passive: true });
     window.addEventListener("resize", updateRect);
+
     return () => {
       observer.disconnect();
       window.removeEventListener("scroll", updateRect);
@@ -110,6 +119,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
         top: (window.innerHeight - height) / 2,
         width,
       });
+
       return;
     }
 
@@ -119,6 +129,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
 
     if (!canMiniPlayer || !video || !hasPlaybackStarted) {
       setPlayerRect(null);
+
       return;
     }
 
@@ -148,6 +159,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     if (isInline || isAnimating || cinemaMode || !canMiniPlayer || !hasPlaybackStarted) {
       return;
     }
+
     const update = () => {
       setPlayerRect({
         height: MINI_HEIGHT,
@@ -156,7 +168,9 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
         width: MINI_WIDTH,
       });
     };
+
     window.addEventListener("resize", update);
+
     return () => window.removeEventListener("resize", update);
   }, [isInline, isAnimating, cinemaMode, canMiniPlayer, hasPlaybackStarted]);
 
@@ -164,19 +178,24 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     if (!video) {
       return;
     }
+
     const handleMessage = (event: MessageEvent) => {
       if (!iframeRef.current?.contentWindow) {
         return;
       }
+
       if (event.source !== iframeRef.current.contentWindow) {
         return;
       }
+
       if (!event.origin.includes("youtube")) {
         return;
       }
+
       if (typeof event.data !== "string" && typeof event.data !== "object") {
         return;
       }
+
       const parsed =
         typeof event.data === "string"
           ? (() => {
@@ -187,13 +206,17 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
               }
             })()
           : (event.data as { event?: string; info?: unknown });
+
       if (!parsed) {
         return;
       }
+
       const eventName = parsed.event;
+
       if (!eventName) {
         return;
       }
+
       const { info } = parsed;
       const playerState =
         typeof info === "number"
@@ -201,21 +224,26 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
           : typeof info === "object" && info && "playerState" in info
             ? (info as { playerState?: number }).playerState
             : undefined;
+
       if (eventName === "onStateChange" || eventName === "infoDelivery") {
         if (playerState === 1 || playerState === 2 || playerState === 3) {
           setHasPlaybackStarted(true);
         }
       }
     };
+
     window.addEventListener("message", handleMessage);
+
     return () => window.removeEventListener("message", handleMessage);
   }, [video]);
 
   const registerPlayerListener = () => {
     const target = iframeRef.current?.contentWindow;
+
     if (!target) {
       return;
     }
+
     target.postMessage(JSON.stringify({ event: "listening", id: "global-player" }), "*");
     target.postMessage(
       JSON.stringify({
@@ -243,6 +271,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
           if (isSameVideo) {
             return current;
           }
+
           return next;
         }),
     }),
@@ -345,8 +374,10 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
 
 export function useGlobalPlayer() {
   const context = useContext(GlobalPlayerContext);
+
   if (!context) {
     throw new Error("useGlobalPlayer must be used within GlobalPlayerProvider");
   }
+
   return context;
 }

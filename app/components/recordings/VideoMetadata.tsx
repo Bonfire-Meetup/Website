@@ -13,6 +13,7 @@ interface VideoMetadataProps {
 
 export function VideoMetadata({ recording, formattedDate }: VideoMetadataProps) {
   const t = useTranslations("recordings");
+
   return (
     <div className="px-5 py-5 sm:px-6 sm:py-6">
       <div className="mb-4 flex gap-3">

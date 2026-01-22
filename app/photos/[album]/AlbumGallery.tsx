@@ -26,11 +26,15 @@ function parsePhotoHash(): number | null {
   if (typeof window === "undefined") {
     return null;
   }
+
   const match = window.location.hash.match(/^#photo-(\d+)$/);
+
   if (!match) {
     return null;
   }
+
   const num = parseInt(match[1], 10);
+
   return num >= 1 ? num - 1 : null;
 }
 
@@ -47,6 +51,7 @@ export function AlbumGallery({
 
   useEffect(() => {
     const hashIndex = parsePhotoHash();
+
     if (hashIndex !== null && hashIndex < images.length) {
       setLightboxIndex(hashIndex);
     }

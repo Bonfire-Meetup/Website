@@ -53,6 +53,7 @@ const getTrendingRecordingsUncached = async (limit = 6): Promise<TrendingRecordi
     const likeCount = engagement.likes[recording.shortId] ?? 0;
     const boostCount = engagement.boosts[recording.shortId] ?? 0;
     const trendingScore = calculateTrendingScore(recording, likeCount, boostCount, now);
+
     return { ...recording, boostCount, likeCount, trendingScore };
   });
 
@@ -60,6 +61,7 @@ const getTrendingRecordingsUncached = async (limit = 6): Promise<TrendingRecordi
     if (b.trendingScore !== a.trendingScore) {
       return b.trendingScore - a.trendingScore;
     }
+
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 
@@ -77,6 +79,7 @@ const getTrendingRecordingsUncached = async (limit = 6): Promise<TrendingRecordi
     const recordingDate = new Date(recording.date);
     const quarterKey = `${recordingDate.getFullYear()}-Q${Math.floor(recordingDate.getMonth() / 3) + 1}`;
     const quarterCount = usedQuarters.get(quarterKey) ?? 0;
+
     if (locationCount < Math.ceil(limit / 2) && quarterCount < maxPerQuarter) {
       selected.push(recording);
       usedLocations.set(recording.location, locationCount + 1);
@@ -89,6 +92,7 @@ const getTrendingRecordingsUncached = async (limit = 6): Promise<TrendingRecordi
       if (selected.length >= limit) {
         break;
       }
+
       if (!selected.some((r) => r.shortId === recording.shortId)) {
         selected.push(recording);
       }
@@ -106,5 +110,6 @@ export const getTrendingRecordings = (limit = 6): Promise<TrendingRecording[]> =
       revalidate: 3600,
     },
   );
+
   return cachedFn();
 };

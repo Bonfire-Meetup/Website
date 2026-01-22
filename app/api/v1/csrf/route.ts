@@ -20,6 +20,7 @@ export async function GET() {
       secure: serverEnv.NODE_ENV === "production",
     });
     logInfo("csrf.token_generated");
+
     return response;
   } catch (error) {
     logError("csrf.generation_failed", error);

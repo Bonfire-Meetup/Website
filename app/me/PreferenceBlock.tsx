@@ -10,6 +10,7 @@ interface PreferenceBlockProps {
 
 export function PreferenceBlock({ enabled, disabled, onToggle }: PreferenceBlockProps) {
   const t = useTranslations("account.communityEmails");
+
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
       <div className="flex items-center justify-between gap-4 p-4">

@@ -66,11 +66,14 @@ export function MeClient() {
 
   useEffect(() => {
     const token = readAccessToken();
+
     if (!token || !isAccessTokenValid(token)) {
       clearAccessToken();
       router.replace(PAGE_ROUTES.LOGIN);
+
       return;
     }
+
     setAccessToken(token);
 
     const loadAll = async () => {
@@ -82,6 +85,7 @@ export function MeClient() {
         if (!response.ok) {
           clearAccessToken();
           router.replace(PAGE_ROUTES.LOGIN);
+
           return;
         }
 
@@ -119,15 +123,18 @@ export function MeClient() {
     if (!accessToken || !profile) {
       return;
     }
+
     const nextValue = !profile.allowCommunityEmails;
     setProfile({ ...profile, allowCommunityEmails: nextValue });
     setUpdatingPreference(true);
+
     try {
       const response = await fetch(API_ROUTES.ME.PREFERENCES, {
         body: JSON.stringify({ allowCommunityEmails: nextValue }),
         headers: createJsonAuthHeaders(accessToken),
         method: "PATCH",
       });
+
       if (!response.ok) {
         setProfile({ ...profile, allowCommunityEmails: !nextValue });
       }
@@ -142,10 +149,13 @@ export function MeClient() {
     if (!accessToken) {
       return;
     }
+
     if (!deleteIntent) {
       setDeleteError(tDelete("intentRequired"));
+
       return;
     }
+
     setDeleteLoading(true);
     setDeleteError(null);
     setDeleteStatus(null);
@@ -155,17 +165,23 @@ export function MeClient() {
         headers: createAuthHeaders(accessToken),
         method: "POST",
       });
+
       if (!response.ok) {
         setDeleteError(tDelete("error"));
         setDeleteLoading(false);
+
         return;
       }
+
       const data = (await response.json()) as { challenge_token?: string };
+
       if (!data.challenge_token) {
         setDeleteError(tDelete("error"));
         setDeleteLoading(false);
+
         return;
       }
+
       setDeleteChallengeToken(data.challenge_token);
       setDeleteStep("verify");
       setDeleteStatus(tDelete("status"));
@@ -180,6 +196,7 @@ export function MeClient() {
     if (!accessToken || !deleteChallengeToken) {
       return;
     }
+
     setDeleteLoading(true);
     setDeleteError(null);
     setDeleteStatus(null);
@@ -190,9 +207,11 @@ export function MeClient() {
         headers: createJsonAuthHeaders(accessToken),
         method: "POST",
       });
+
       if (!response.ok) {
         const data = (await response.json().catch(() => null)) as { error?: string } | null;
         const reason = data?.error;
+
         if (reason === "expired") {
           setDeleteError(tDelete("expired"));
           setDeleteStep("confirm");
@@ -210,9 +229,12 @@ export function MeClient() {
         } else {
           setDeleteError(tDelete("error"));
         }
+
         setDeleteLoading(false);
+
         return;
       }
+
       setDeleteStep("done");
       setDeleteStatus(tDelete("completed"));
       setTimeout(() => {
@@ -244,13 +266,16 @@ export function MeClient() {
     if (!accessToken) {
       return;
     }
+
     const prev = boosts;
     setBoosts((current) => current.filter((item) => item.shortId !== shortId));
+
     try {
       const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
         headers: createAuthHeaders(accessToken),
         method: "DELETE",
       });
+
       if (!response.ok) {
         setBoosts(prev);
       }

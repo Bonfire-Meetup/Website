@@ -12,6 +12,7 @@ const getWatchSlug = (recording: { slug: string; shortId: string }) =>
 export async function GET(request: Request) {
   return runWithRequestContext(request, async () => {
     const auth = await requireAuth(request, "account.boosts");
+
     if (!auth.success) {
       return auth.response;
     }
@@ -23,13 +24,16 @@ export async function GET(request: Request) {
       const items = boosts
         .map((boost) => {
           const recording = recordingMap.get(boost.video_id);
+
           if (!recording) {
             logWarn("account.boosts.recording_missing", {
               userId: auth.userId,
               videoId: boost.video_id,
             });
+
             return null;
           }
+
           return {
             date: recording.date,
             shortId: recording.shortId,
@@ -43,6 +47,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ items });
     } catch (error) {
       logError("account.boosts.failed", error, { userId: auth.userId });
+
       return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   });

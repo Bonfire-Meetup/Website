@@ -32,6 +32,7 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
 
   useEffect(() => {
     const token = readAccessToken();
+
     if (token && isAccessTokenValid(token)) {
       setAccessToken(token);
     } else {
@@ -41,17 +42,22 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
 
   useEffect(() => {
     let isActive = true;
+
     const loadLikes = async () => {
       try {
         setLikeLoadError(false);
         const response = await fetch(API_ROUTES.VIDEO.LIKES(shortId));
+
         if (!response.ok) {
           if (isActive) {
             setLikeLoadError(true);
           }
+
           return;
         }
+
         const data = (await response.json()) as { count: number; hasLiked: boolean };
+
         if (isActive) {
           setLikeCount(data.count ?? 0);
           setHasLiked(Boolean(data.hasLiked));
@@ -62,7 +68,9 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
         }
       }
     };
+
     loadLikes();
+
     return () => {
       isActive = false;
     };
@@ -70,19 +78,24 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
 
   useEffect(() => {
     let isActive = true;
+
     const loadBoosts = async () => {
       try {
         setBoostLoadError(false);
         const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
           headers: createAuthHeaders(accessToken),
         });
+
         if (!response.ok) {
           if (isActive) {
             setBoostLoadError(true);
           }
+
           return;
         }
+
         const data = (await response.json()) as { count: number; hasBoosted: boolean };
+
         if (isActive) {
           setBoostCount(data.count ?? 0);
           setHasBoosted(Boolean(data.hasBoosted));
@@ -93,7 +106,9 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
         }
       }
     };
+
     loadBoosts();
+
     return () => {
       isActive = false;
     };
@@ -103,6 +118,7 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
     if (isLiking) {
       return;
     }
+
     setIsLiking(true);
     setLikePulse(true);
     setTimeout(() => setLikePulse(false), 550);
@@ -118,11 +134,14 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
       const res = await fetch(API_ROUTES.VIDEO.LIKES(shortId), {
         method: adding ? "POST" : "DELETE",
       });
+
       if (!res.ok) {
         setHasLiked(prevLiked);
         setLikeCount(prevCount);
+
         return;
       }
+
       const { count } = (await res.json()) as { count: number };
       setLikeCount(count);
     } catch {
@@ -136,11 +155,14 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
   const handleBoost = async () => {
     if (!accessToken) {
       router.push(PAGE_ROUTES.LOGIN_WITH_REASON("video-boost"));
+
       return;
     }
+
     if (isBoosting) {
       return;
     }
+
     setIsBoosting(true);
     setBoostPulse(true);
     setTimeout(() => setBoostPulse(false), 550);
@@ -157,11 +179,14 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
         headers: createAuthHeaders(accessToken),
         method: adding ? "POST" : "DELETE",
       });
+
       if (!res.ok) {
         setHasBoosted(prevBoosted);
         setBoostCount(prevCount);
+
         return;
       }
+
       const { count } = (await res.json()) as { count: number };
       setBoostCount(count);
     } catch {

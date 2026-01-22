@@ -13,6 +13,7 @@ export async function GET() {
     const publicKey = await importSPKI(getJwtPublicKey(), "EdDSA");
     const jwk = await exportJWK(publicKey);
     const key = { ...jwk, alg: "EdDSA", kid: getJwtKeyId(), use: "sig" };
+
     return NextResponse.json({ keys: [key] });
   } catch (error) {
     logError("auth.jwks.failed", error);

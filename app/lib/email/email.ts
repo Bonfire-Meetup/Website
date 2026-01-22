@@ -39,6 +39,7 @@ const AUTH_EMAIL_DISPLAY_NAME = "Bonfire Events Auth";
 
 export const getAuthFrom = () => {
   const email = serverEnv.BNF_RESEND_AUTH_FROM ?? serverEnv.BNF_RESEND_FROM;
+
   return `${AUTH_EMAIL_DISPLAY_NAME} <${email}>`;
 };
 
@@ -82,11 +83,14 @@ export const sendEmail = async (input: SendEmailInput): Promise<ResendSuccessRes
   });
 
   const data = (await response.json()) as ResendSuccessResponse | ResendErrorResponse;
+
   if (!response.ok) {
     const message = "message" in data && data.message ? data.message : "Resend request failed";
     logError("email.send_failed", new Error(message), emailFingerprint ?? undefined);
     throw new Error(message);
   }
+
   logInfo("email.sent", emailFingerprint ?? undefined);
+
   return data as ResendSuccessResponse;
 };

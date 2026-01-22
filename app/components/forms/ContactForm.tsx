@@ -45,22 +45,29 @@ export function ContactForm() {
     if (typeof window === "undefined") {
       return;
     }
+
     try {
       const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+
       if (draft) {
         const parsed = JSON.parse(draft);
+
         if (parsed.name) {
           setName(parsed.name);
         }
+
         if (parsed.email) {
           setEmail(parsed.email);
         }
+
         if (parsed.subject) {
           setSubject(parsed.subject);
         }
+
         if (parsed.message) {
           setMessage(parsed.message);
         }
+
         if (
           parsed.inquiryType &&
           inquiryOptions.some((option) => option.value === parsed.inquiryType)
@@ -75,9 +82,11 @@ export function ContactForm() {
 
   useEffect(() => {
     const nextType = searchParams.get("type");
+
     if (!nextType) {
       return;
     }
+
     if (inquiryOptions.some((option) => option.value === nextType)) {
       setInquiryType(nextType);
     }
@@ -87,8 +96,10 @@ export function ContactForm() {
     if (typeof window === "undefined") {
       return;
     }
+
     if (state.success) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+
       return;
     }
 
@@ -101,13 +112,16 @@ export function ContactForm() {
     };
 
     const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
+
     if (!hasContent) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+
       return;
     }
 
     try {
       const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+
       if (existingDraft) {
         const parsed = JSON.parse(existingDraft);
         const isUnchanged =
@@ -116,6 +130,7 @@ export function ContactForm() {
           parsed.subject === draft.subject &&
           parsed.message === draft.message &&
           parsed.inquiryType === draft.inquiryType;
+
         if (isUnchanged) {
           return;
         }
@@ -131,7 +146,9 @@ export function ContactForm() {
     if (typeof window === "undefined") {
       return;
     }
+
     const timeoutId = setTimeout(saveDraft, 1500);
+
     return () => clearTimeout(timeoutId);
   }, [name, email, subject, message, inquiryType, state.success, saveDraft]);
 
@@ -139,10 +156,13 @@ export function ContactForm() {
     if (typeof window === "undefined") {
       return;
     }
+
     const handleBeforeUnload = () => {
       saveDraft();
     };
+
     window.addEventListener("beforeunload", handleBeforeUnload);
+
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
@@ -155,6 +175,7 @@ export function ContactForm() {
       .then((data) => {
         const hasToken = Boolean(data?.token);
         const shouldSetToken = isActive && hasToken;
+
         if (shouldSetToken) {
           setCsrfToken(data.token);
         }
@@ -164,6 +185,7 @@ export function ContactForm() {
           setCsrfToken("");
         }
       });
+
     return () => {
       isActive = false;
     };
@@ -175,6 +197,7 @@ export function ContactForm() {
     setSubject("");
     setMessage("");
     setInquiryType("general");
+
     if (typeof window !== "undefined") {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
     }
@@ -208,9 +231,11 @@ export function ContactForm() {
 
   const getFieldError = (field: string) => {
     const errorKey = state.errors?.[field];
+
     if (!errorKey) {
       return null;
     }
+
     return t(`errors.${errorKey}`) || errorKey;
   };
 

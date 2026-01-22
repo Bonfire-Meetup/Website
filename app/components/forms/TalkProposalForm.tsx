@@ -34,28 +34,37 @@ export function TalkProposalForm() {
     if (typeof window === "undefined") {
       return;
     }
+
     try {
       const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+
       if (draft) {
         const parsed = JSON.parse(draft);
+
         if (parsed.speakerName) {
           setSpeakerName(parsed.speakerName);
         }
+
         if (parsed.email) {
           setEmail(parsed.email);
         }
+
         if (parsed.talkTitle) {
           setTalkTitle(parsed.talkTitle);
         }
+
         if (parsed.abstract) {
           setAbstract(parsed.abstract);
         }
+
         if (parsed.experience) {
           setExperience(parsed.experience);
         }
+
         if (parsed.duration) {
           setDuration(parsed.duration);
         }
+
         if (parsed.preferredLocation) {
           setPreferredLocation(parsed.preferredLocation);
         }
@@ -69,8 +78,10 @@ export function TalkProposalForm() {
     if (typeof window === "undefined") {
       return;
     }
+
     if (state.success) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+
       return;
     }
 
@@ -87,15 +98,19 @@ export function TalkProposalForm() {
     const hasContent = Object.values(draft).some((value) => {
       const hasValue = Boolean(value);
       const hasNonEmptyValue = hasValue && value.trim().length > 0;
+
       return hasNonEmptyValue;
     });
+
     if (!hasContent) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+
       return;
     }
 
     try {
       const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+
       if (existingDraft) {
         const parsed = JSON.parse(existingDraft);
         const isUnchanged =
@@ -106,6 +121,7 @@ export function TalkProposalForm() {
           parsed.experience === draft.experience &&
           parsed.duration === draft.duration &&
           parsed.preferredLocation === draft.preferredLocation;
+
         if (isUnchanged) {
           return;
         }
@@ -130,7 +146,9 @@ export function TalkProposalForm() {
     if (typeof window === "undefined") {
       return;
     }
+
     const timeoutId = setTimeout(saveDraft, 1500);
+
     return () => clearTimeout(timeoutId);
   }, [
     speakerName,
@@ -148,10 +166,13 @@ export function TalkProposalForm() {
     if (typeof window === "undefined") {
       return;
     }
+
     const handleBeforeUnload = () => {
       saveDraft();
     };
+
     window.addEventListener("beforeunload", handleBeforeUnload);
+
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
@@ -181,6 +202,7 @@ export function TalkProposalForm() {
           setCsrfToken("");
         }
       });
+
     return () => {
       isActive = false;
     };
@@ -194,6 +216,7 @@ export function TalkProposalForm() {
     setExperience("");
     setDuration("");
     setPreferredLocation("either");
+
     if (typeof window !== "undefined") {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
     }
@@ -236,9 +259,11 @@ export function TalkProposalForm() {
 
   const getFieldError = (field: string) => {
     const errorKey = state.errors?.[field];
+
     if (!errorKey) {
       return null;
     }
+
     return t(`errors.${errorKey}`) || errorKey;
   };
 

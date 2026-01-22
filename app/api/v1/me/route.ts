@@ -15,12 +15,14 @@ export const GET = async (request: Request) =>
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
 
     const auth = await requireAuth(request, "account.me");
+
     if (!auth.success) {
       return auth.response;
     }
 
     try {
       const user = await getAuthUserById(auth.userId);
+
       if (!user) {
         return respond({ error: "not_found" }, { status: 404 });
       }
@@ -47,9 +49,11 @@ export const GET = async (request: Request) =>
       const boostItems = boosts
         .map((boost) => {
           const recording = recordingMap.get(boost.video_id);
+
           if (!recording) {
             return null;
           }
+
           return {
             date: recording.date,
             shortId: recording.shortId,
@@ -79,6 +83,7 @@ export const GET = async (request: Request) =>
       });
     } catch (error) {
       logError("account.me.failed", error);
+
       return respond({ error: "internal_error" }, { status: 500 });
     }
   });

@@ -12,6 +12,7 @@
     "format": "oxfmt --check .",
     "format:write": "oxfmt --write .",
     "check": "oxlint --fix . && oxfmt --write .",
+    "add-blank-lines": "node scripts/add-blank-lines-eslint.mjs",
     "clean": "bun pm cache rm && rm -rf node_modules bun.lock && bun install",
     "prepublish": "oxlint --fix . && oxfmt --write . && tsc --noEmit"
   },
@@ -39,10 +40,13 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin": "^5.7.0",
     "@types/mustache": "^4.2.6",
     "@types/node": "^25.0.10",
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/parser": "^8.53.1",
+    "eslint": "^9.39.2",
     "eslint-plugin-react-hooks": "^7.0.1",
     "oxfmt": "^0.26.0",
     "oxlint": "^1.41.0",

@@ -39,14 +39,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
   const { album: albumId } = await params;
   const album = albums.find((item) => albumId === item.id || albumId.startsWith(`${item.id}-`));
+
   if (!album) {
     return {
       description: t("photosDescription", commonValues),
       title: t("photosTitle", commonValues),
     };
   }
+
   const episode = getEpisodeById(album.episodeId);
   const title = episode ? formatEpisodeTitle(episode) : album.id;
+
   return {
     description: t("photosDescription", commonValues),
     openGraph: {
@@ -72,6 +75,7 @@ export default async function AlbumPage({ params }: PageProps) {
   if (!album) {
     notFound();
   }
+
   const episode = getEpisodeById(album.episodeId);
   const title = episode ? formatEpisodeTitle(episode) : album.id;
   const photographers =

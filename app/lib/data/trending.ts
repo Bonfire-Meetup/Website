@@ -17,6 +17,7 @@ interface EngagementRow {
 
 const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
   const sql = getDatabaseClient({ required: false });
+
   if (!sql) {
     return { boosts: {}, likes: {} };
   }

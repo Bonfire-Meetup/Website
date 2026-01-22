@@ -15,6 +15,7 @@ function escapeXml(value: string) {
 function renderUrlEntry({ loc, lastmod }: SitemapUrl) {
   const escapedLoc = escapeXml(loc);
   const escapedLastmod = lastmod ? escapeXml(lastmod) : null;
+
   return [
     "  <url>",
     `    <loc>${escapedLoc}</loc>`,
@@ -27,6 +28,7 @@ function renderUrlEntry({ loc, lastmod }: SitemapUrl) {
 
 export function buildSitemapXml(urls: SitemapUrl[]) {
   const items = urls.map(renderUrlEntry).join("\n");
+
   return (
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
@@ -40,6 +42,7 @@ export function buildSitemapIndexXml(sitemaps: SitemapUrl[]) {
     .map(({ loc, lastmod }) => {
       const escapedLoc = escapeXml(loc);
       const escapedLastmod = lastmod ? escapeXml(lastmod) : null;
+
       return [
         "  <sitemap>",
         `    <loc>${escapedLoc}</loc>`,
@@ -50,6 +53,7 @@ export function buildSitemapIndexXml(sitemaps: SitemapUrl[]) {
         .join("\n");
     })
     .join("\n");
+
   return (
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

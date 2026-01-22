@@ -21,15 +21,19 @@ function getDropdownLabel(
   groups: DropdownGroup[],
 ): string {
   const direct = options.find((option) => option.value === value);
+
   if (direct) {
     return direct.label;
   }
+
   for (const group of groups) {
     const match = group.options.find((option) => option.value === value);
+
     if (match) {
       return match.label;
     }
   }
+
   return value;
 }
 
@@ -72,6 +76,7 @@ export function SelectDropdown({
     if (!nativeOnMobile || typeof window === "undefined") {
       return false;
     }
+
     return window.matchMedia("(max-width: 767px)").matches;
   });
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -90,16 +95,22 @@ export function SelectDropdown({
   useEffect(() => {
     if (!nativeOnMobile) {
       setUseNative(false);
+
       return;
     }
+
     const media = window.matchMedia("(max-width: 767px)");
     const handleChange = () => setUseNative(media.matches);
     handleChange();
+
     if (media.addEventListener) {
       media.addEventListener("change", handleChange);
+
       return () => media.removeEventListener("change", handleChange);
     }
+
     media.addListener(handleChange);
+
     return () => media.removeListener(handleChange);
   }, [nativeOnMobile]);
 
@@ -109,8 +120,10 @@ export function SelectDropdown({
         setIsOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handlePointerDown);
     document.addEventListener("touchstart", handlePointerDown);
+
     return () => {
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("touchstart", handlePointerDown);
@@ -121,12 +134,15 @@ export function SelectDropdown({
     if (!isOpen) {
       return;
     }
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
       }
     };
+
     document.addEventListener("keydown", handleKeyDown);
+
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
@@ -134,26 +150,31 @@ export function SelectDropdown({
     if (!isOpen) {
       return;
     }
+
     const raf = requestAnimationFrame(() => {
       const minWidth = containerRef.current?.clientWidth ?? 0;
       const maxWidth = Math.floor(window.innerWidth * 0.9);
       let widest = 0;
       const measureElement = measureRef.current;
+
       if (measureElement) {
         optionLabels.forEach((text) => {
           measureElement.textContent = text;
           widest = Math.max(widest, measureElement.offsetWidth);
         });
       }
+
       const padded = widest + 48;
       const nextWidth = Math.min(maxWidth, Math.max(minWidth, padded));
       setMenuWidth(nextWidth || null);
     });
+
     return () => cancelAnimationFrame(raf);
   }, [isOpen, optionLabels]);
 
   const handleSelect = (nextValue: string) => {
     setIsOpen(false);
+
     if (nextValue !== value) {
       onChange(nextValue);
     }

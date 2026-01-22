@@ -43,6 +43,7 @@ export const insertAuthChallenge = async ({
     VALUES (${challengeTokenHash}, ${email}, ${codeHash}, ${expiresAt}, ${maxAttempts}, ${ip}, ${userAgent})
     RETURNING id
   `) as { id: string }[];
+
   return rows[0]?.id ?? null;
 };
 
@@ -60,6 +61,7 @@ export const getActiveChallengeByToken = async (
       AND expires_at > now()
     LIMIT 1
   `) as AuthChallengeRow[];
+
   return rows[0] ?? null;
 };
 
@@ -76,6 +78,7 @@ export const getChallengeByToken = async (
     ORDER BY created_at DESC
     LIMIT 1
   `) as AuthChallengeStatusRow[];
+
   return rows[0] ?? null;
 };
 
@@ -106,6 +109,7 @@ export const upsertAuthUser = async (email: string): Promise<string> => {
     DO UPDATE SET last_login_at = now()
     RETURNING id
   `) as { id: string }[];
+
   return rows[0]?.id ?? "";
 };
 
@@ -117,6 +121,7 @@ export const getAuthUserById = async (id: string): Promise<AuthUserRow | null> =
     WHERE id = ${id}
     LIMIT 1
   `) as AuthUserRow[];
+
   return rows[0] ?? null;
 };
 
@@ -164,6 +169,7 @@ export const isAuthTokenActive = async (jti: string) => {
       WHERE jti = ${jti} AND revoked_at IS NULL AND expires_at > now()
     ) as exists
   `) as { exists: boolean }[];
+
   return rows[0]?.exists ?? false;
 };
 
@@ -217,6 +223,7 @@ export const getAuthAttemptsByEmailHash = async ({
     ORDER BY created_at DESC
     LIMIT ${limit}
   `) as { id: string; outcome: string; created_at: Date }[];
+
   return rows;
 };
 

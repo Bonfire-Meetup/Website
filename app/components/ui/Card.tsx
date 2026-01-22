@@ -13,6 +13,7 @@ export function Card<T extends ElementType = "div">({
   ...rest
 }: CardProps<T>) {
   const Component = as ?? "div";
+
   return (
     <Component className={`glass-card ${className}`} {...rest}>
       {children}

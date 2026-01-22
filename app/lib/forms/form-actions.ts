@@ -20,6 +20,7 @@ const rateLimitStore = new Map<string, number[]>();
 
 const hashValue = (value: string) => {
   const salt = serverEnv.BNF_HEARTS_SALT;
+
   return crypto.createHash("sha256").update(`${value}:${salt}`).digest("hex");
 };
 
@@ -27,18 +28,23 @@ const getClientIpHash = async () => {
   const requestHeaders = await headers();
   const forwarded = requestHeaders.get("x-forwarded-for");
   const ip = requestHeaders.get("x-real-ip") || forwarded?.split(",")[0]?.trim() || "0.0.0.0";
+
   return hashValue(ip);
 };
 
 const isRateLimited = (key: string, maxHits: number) => {
   const now = Date.now();
   const hits = rateLimitStore.get(key)?.filter((time) => now - time < RATE_LIMIT_WINDOW_MS) ?? [];
+
   if (hits.length >= maxHits) {
     rateLimitStore.set(key, hits);
+
     return true;
   }
+
   hits.push(now);
   rateLimitStore.set(key, hits);
+
   return false;
 };
 
@@ -74,6 +80,7 @@ export interface TalkProposalFormState {
 
 const verifyTurnstile = async (token: FormDataEntryValue | null) => {
   const secret = serverEnv.BNF_TURNSTILE_SECRET_KEY;
+
   if (!token || typeof token !== "string") {
     return false;
   }
@@ -91,10 +98,13 @@ const verifyTurnstile = async (token: FormDataEntryValue | null) => {
     if (!response.ok) {
       return false;
     }
+
     const data = (await response.json()) as { success?: boolean };
+
     return Boolean(data.success);
   } catch (error) {
     logError("form.turnstile_failed", error);
+
     return false;
   }
 };
@@ -103,8 +113,10 @@ const verifyCsrfToken = async (token: FormDataEntryValue | null) => {
   if (!token || typeof token !== "string") {
     return false;
   }
+
   const cookieStore = await cookies();
   const cookieValue = cookieStore.get(CSRF_COOKIE_NAME)?.value;
+
   return Boolean(cookieValue && cookieValue === token);
 };
 
@@ -113,14 +125,17 @@ export async function submitContactForm(
   formData: FormData,
 ): Promise<ContactFormState> {
   const honeypot = formData.get("website");
+
   if (honeypot) {
     return { success: true };
   }
 
   const verification = await checkBotId();
+
   if (verification.isBot) {
     const ipHash = await getClientIpHash();
     logWarn("form.bot_blocked", { formType: "contact", ipHash });
+
     return { message: "botBlocked", success: false };
   }
 
@@ -128,16 +143,19 @@ export async function submitContactForm(
 
   if (isRateLimited(`contact:${ipHash}`, RATE_LIMIT_MAX_CONTACT)) {
     logWarn("form.rate_limited", { formType: "contact", ipHash });
+
     return { message: "rateLimited", success: false };
   }
 
   if (!(await verifyCsrfToken(formData.get("csrfToken")))) {
     logWarn("form.csrf_invalid", { formType: "contact", ipHash });
+
     return { message: "csrfInvalid", success: false };
   }
 
   if (!(await verifyTurnstile(formData.get("cf-turnstile-response")))) {
     logWarn("form.captcha_failed", { formType: "contact", ipHash });
+
     return { message: "captchaFailed", success: false };
   }
 
@@ -153,10 +171,12 @@ export async function submitContactForm(
 
   if (!result.success) {
     const errors: Record<string, string> = {};
+
     for (const issue of result.error.issues) {
       const field = issue.path[0] as string;
       errors[field] = issue.message;
     }
+
     return { errors, success: false };
   }
 
@@ -172,9 +192,11 @@ export async function submitContactForm(
     });
 
     logInfo("form.contact_submitted", { inquiryType: inquiryType || "general", ipHash });
+
     return { success: true };
   } catch (error) {
     logError("form.contact_failed", error, { ipHash });
+
     return { message: "generic", success: false };
   }
 }
@@ -184,14 +206,17 @@ export async function submitTalkProposal(
   formData: FormData,
 ): Promise<TalkProposalFormState> {
   const honeypot = formData.get("company");
+
   if (honeypot) {
     return { success: true };
   }
 
   const verification = await checkBotId();
+
   if (verification.isBot) {
     const ipHash = await getClientIpHash();
     logWarn("form.bot_blocked", { formType: "talk_proposal", ipHash });
+
     return { message: "botBlocked", success: false };
   }
 
@@ -199,16 +224,19 @@ export async function submitTalkProposal(
 
   if (isRateLimited(`talk:${ipHash}`, RATE_LIMIT_MAX_TALK)) {
     logWarn("form.rate_limited", { formType: "talk_proposal", ipHash });
+
     return { message: "rateLimited", success: false };
   }
 
   if (!(await verifyCsrfToken(formData.get("csrfToken")))) {
     logWarn("form.csrf_invalid", { formType: "talk_proposal", ipHash });
+
     return { message: "csrfInvalid", success: false };
   }
 
   if (!(await verifyTurnstile(formData.get("cf-turnstile-response")))) {
     logWarn("form.captcha_failed", { formType: "talk_proposal", ipHash });
+
     return { message: "captchaFailed", success: false };
   }
 
@@ -226,10 +254,12 @@ export async function submitTalkProposal(
 
   if (!result.success) {
     const errors: Record<string, string> = {};
+
     for (const issue of result.error.issues) {
       const field = issue.path[0] as string;
       errors[field] = issue.message;
     }
+
     return { errors, success: false };
   }
 
@@ -251,9 +281,11 @@ export async function submitTalkProposal(
       ipHash,
       preferredLocation: preferredLocation || "either",
     });
+
     return { success: true };
   } catch (error) {
     logError("form.talk_proposal_failed", error, { ipHash });
+
     return { message: "generic", success: false };
   }
 }

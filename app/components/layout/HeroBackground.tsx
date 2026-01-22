@@ -17,6 +17,7 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
     if (!isInView || !isPageVisible) {
       return;
     }
+
     const nextIndex = (currentIndex + 1) % images.length;
     const nextImage = images[nextIndex];
     const img = new Image();
@@ -27,9 +28,11 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
     if (!isInView || !isPageVisible || images.length <= 1) {
       return;
     }
+
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
     }, 6000);
+
     return () => clearInterval(timer);
   }, [images.length, isInView, isPageVisible]);
 
@@ -37,20 +40,25 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
     const handleVisibility = () => {
       setIsPageVisible(document.visibilityState === "visible");
     };
+
     handleVisibility();
     document.addEventListener("visibilitychange", handleVisibility);
+
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
   useEffect(() => {
     const node = containerRef.current;
+
     if (!node) {
       return;
     }
+
     const observer = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting), {
       rootMargin: "200px",
     });
     observer.observe(node);
+
     return () => observer.disconnect();
   }, []);
 

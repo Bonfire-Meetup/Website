@@ -49,6 +49,7 @@ export function EventsSectionClient({
         names.add(event.episode);
       }
     });
+
     return Array.from(names);
   }, [events]);
 
@@ -56,6 +57,7 @@ export function EventsSectionClient({
     if (activeEpisode === initialEpisode && preFilteredEvents) {
       return preFilteredEvents;
     }
+
     return activeEpisode === "all"
       ? events
       : events.filter((event) => event.episode === activeEpisode);

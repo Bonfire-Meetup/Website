@@ -26,6 +26,7 @@ export const getVideoLikeStats = async (
       (await sql`select exists(select 1 from video_likes where video_id = ${videoId} and ip_hash = ${ipHash} and ua_hash = ${uaHash}) as exists`) as {
         exists: boolean;
       }[];
+
     return { count, hasLiked: exists };
   } catch (error) {
     logError("data.likes.stats_failed", error, { videoId });
@@ -48,6 +49,7 @@ export const addVideoLike = async (
       (await sql`select count(*)::int as count from video_likes where video_id = ${videoId}`) as {
         count: number;
       }[];
+
     return { added: inserted.length > 0, count };
   } catch (error) {
     logError("data.likes.add_failed", error, { ipHash, uaHash, videoId });
@@ -70,6 +72,7 @@ export const removeVideoLike = async (
       (await sql`select count(*)::int as count from video_likes where video_id = ${videoId}`) as {
         count: number;
       }[];
+
     return { count, removed: removed.length > 0 };
   } catch (error) {
     logError("data.likes.remove_failed", error, { ipHash, uaHash, videoId });

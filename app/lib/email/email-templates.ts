@@ -13,40 +13,50 @@ const ttlTextByLocale = (locale: Locale, minutes: number) => {
   if (locale === LOCALES.CS) {
     return `${minutes} minut`;
   }
+
   return `${minutes} minutes`;
 };
 
 const loadTemplate = async (path: string) => {
   const cached = templateCache.get(path);
+
   if (cached) {
     return cached;
   }
+
   const content = await readFile(path, "utf8");
   templateCache.set(path, content);
+
   return content;
 };
 
 const loadLocaleMessages = async (locale: Locale) => {
   const cached = localeCache.get(locale);
+
   if (cached) {
     return cached;
   }
+
   const path = join(process.cwd(), "app", "locales", `${locale}.json`);
   const content = await readFile(path, "utf8");
   const json = JSON.parse(content) as Record<string, unknown>;
   localeCache.set(locale, json);
+
   return json;
 };
 
 const getCommonValues = async (locale: Locale) => {
   const messages = await loadLocaleMessages(locale);
   const common = messages.common as Record<string, string> | undefined;
+
   if (!common) {
     if (locale !== defaultLocale) {
       return getCommonValues(defaultLocale);
     }
+
     throw new Error("Missing common translations");
   }
+
   return common;
 };
 
@@ -54,12 +64,15 @@ const getAuthCodeMessages = async (locale: Locale) => {
   const messages = await loadLocaleMessages(locale);
   const email = messages.email as Record<string, unknown> | undefined;
   const authCode = email?.authCode as Record<string, string> | undefined;
+
   if (!authCode) {
     if (locale !== defaultLocale) {
       return getAuthCodeMessages(defaultLocale);
     }
+
     throw new Error("Missing email translations");
   }
+
   return authCode;
 };
 
@@ -67,12 +80,15 @@ const getAccountDeleteMessages = async (locale: Locale) => {
   const messages = await loadLocaleMessages(locale);
   const email = messages.email as Record<string, unknown> | undefined;
   const accountDelete = email?.accountDelete as Record<string, string> | undefined;
+
   if (!accountDelete) {
     if (locale !== defaultLocale) {
       return getAccountDeleteMessages(defaultLocale);
     }
+
     throw new Error("Missing email translations");
   }
+
   return accountDelete;
 };
 
@@ -109,6 +125,7 @@ export const renderEmailCodeTemplate = async ({
     ttl,
   };
   const subject = mustache.render(translations.subject ?? "", baseView);
+
   return {
     html: mustache.render(html, view),
     subject,
@@ -149,6 +166,7 @@ export const renderAccountDeleteTemplate = async ({
     ttl,
   };
   const subject = mustache.render(translations.subject ?? "", baseView);
+
   return {
     html: mustache.render(html, view),
     subject,

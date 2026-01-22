@@ -17,6 +17,7 @@ const fetchTopBoostedVideos = async (
   limit: number,
 ): Promise<{ videoId: string; count: number }[]> => {
   const sql = getDatabaseClient({ required: false });
+
   if (!sql) {
     return [];
   }

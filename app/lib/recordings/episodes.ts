@@ -31,6 +31,7 @@ export function getEpisodeById(id: string) {
 
 export function formatEpisodeTitle(episode: Episode) {
   const cityLabel = episode.city === "prague" ? "Prague" : "Zlin";
+
   return `Bonfire@${cityLabel} #${episode.number} - ${episode.title}`;
 }
 
@@ -45,10 +46,14 @@ export function buildAlbumSlug(albumId: string, episodeId?: string) {
   if (!episodeId) {
     return albumId;
   }
+
   const episode = getEpisodeById(episodeId);
+
   if (!episode) {
     return albumId;
   }
+
   const slug = formatEpisodeSlug(episode);
+
   return slug ? `${albumId}-${slug}` : albumId;
 }

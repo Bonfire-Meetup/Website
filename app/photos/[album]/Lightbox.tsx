@@ -29,6 +29,7 @@ export function Lightbox({
     if (typeof window === "undefined") {
       return true;
     }
+
     return window.matchMedia("(min-width: 640px)").matches;
   }, []);
 
@@ -49,6 +50,7 @@ export function Lightbox({
     if (isMultiTouch.current === value) {
       return;
     }
+
     isMultiTouch.current = value;
     setIsPinching(value);
   }, []);
@@ -73,6 +75,7 @@ export function Lightbox({
     if (typeof navigator === "undefined") {
       return;
     }
+
     const { connection } = navigator as Navigator & {
       connection?: {
         saveData?: boolean;
@@ -83,6 +86,7 @@ export function Lightbox({
     const update = () => setSaveData(Boolean(connection?.saveData));
     update();
     connection?.addEventListener?.("change", update);
+
     return () => connection?.removeEventListener?.("change", update);
   }, []);
 
@@ -90,6 +94,7 @@ export function Lightbox({
     if (saveData) {
       return;
     }
+
     const targets = [index - 1, index + 1].filter((i) => i >= 0 && i < images.length);
     targets.forEach((i) => {
       const img = new window.Image();
@@ -102,9 +107,11 @@ export function Lightbox({
       if (e.key === "Escape") {
         onClose();
       }
+
       if (e.key === "ArrowLeft") {
         goToPrev();
       }
+
       if (e.key === "ArrowRight") {
         goToNext();
       }
@@ -143,6 +150,7 @@ export function Lightbox({
     if (e.touches.length > 1) {
       setPinching(true);
     }
+
     touchEndX.current = e.touches[0].clientX;
   };
 
@@ -151,6 +159,7 @@ export function Lightbox({
       if (e.touches.length === 0) {
         setPinching(false);
       }
+
       return;
     }
 
@@ -355,6 +364,7 @@ export function Lightbox({
             }`}
             onClick={(e) => {
               e.stopPropagation();
+
               if (isDesktopViewport()) {
                 setIsZoomed(!isZoomed);
               }

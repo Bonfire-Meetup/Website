@@ -21,6 +21,7 @@ interface BoostedVideosBlockProps {
 
 export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedVideosBlockProps) {
   const t = useTranslations("account.boosted");
+
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
       <div className="border-b border-neutral-100 px-4 py-3 dark:border-white/5">

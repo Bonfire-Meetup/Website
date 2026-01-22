@@ -38,8 +38,10 @@ export function FeaturedRecording({
     const handleVisibility = () => {
       setIsPageVisible(document.visibilityState === "visible");
     };
+
     handleVisibility();
     document.addEventListener("visibilitychange", handleVisibility);
+
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
@@ -51,6 +53,7 @@ export function FeaturedRecording({
     if (candidates.length <= 1) {
       return;
     }
+
     featuredRemainingRef.current = FEATURED_INTERVAL_MS;
     featuredStartRef.current = performance.now();
   }, [featuredIndex, candidates.length]);
@@ -70,6 +73,7 @@ export function FeaturedRecording({
     if (isAutoPlayPaused) {
       const elapsed = performance.now() - featuredStartRef.current;
       featuredRemainingRef.current = Math.max(FEATURED_INTERVAL_MS - elapsed, 0);
+
       return;
     }
 
@@ -150,6 +154,7 @@ export function FeaturedRecording({
             <div className="absolute top-4 right-6 left-6 z-10 flex gap-2">
               {candidates.map((item, index) => {
                 const isActive = index === featuredIndex;
+
                 return (
                   <div
                     key={`progress-${item.shortId}`}

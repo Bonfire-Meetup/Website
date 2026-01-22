@@ -53,6 +53,7 @@ export function LoginClient() {
     if (typeof window === "undefined") {
       return;
     }
+
     window.localStorage.setItem(getAuthChallengeKey(token), value);
   };
 
@@ -60,17 +61,21 @@ export function LoginClient() {
     if (typeof window === "undefined") {
       return null;
     }
+
     return window.localStorage.getItem(getAuthChallengeKey(token));
   };
+
   const clearChallengeEmail = (token: string) => {
     if (typeof window === "undefined") {
       return;
     }
+
     window.localStorage.removeItem(getAuthChallengeKey(token));
   };
 
   useEffect(() => {
     const token = readAccessToken();
+
     if (token && isAccessTokenValid(token)) {
       router.replace(PAGE_ROUTES.ME);
     }
@@ -78,10 +83,13 @@ export function LoginClient() {
 
   useEffect(() => {
     const token = searchParams.get("challenge");
+
     if (!token) {
       return;
     }
+
     const storedEmail = readChallengeEmail(token);
+
     if (storedEmail) {
       setEmail(storedEmail);
       setStep("verify");
@@ -102,9 +110,11 @@ export function LoginClient() {
 
     const formData = new FormData(formRef.current ?? undefined);
     const turnstileToken = formData.get("cf-turnstile-response");
+
     if (!turnstileToken || typeof turnstileToken !== "string") {
       setError("Please verify that you're human.");
       setLoading(false);
+
       return;
     }
 
@@ -118,16 +128,20 @@ export function LoginClient() {
       const data = (await response.json().catch(() => null)) as { error?: string } | null;
       setError(data?.error ?? "Unable to send code");
       setLoading(false);
+
       return;
     }
 
     const data = (await response.json().catch(() => null)) as { challenge_token?: string } | null;
     const nextChallengeToken = data?.challenge_token;
+
     if (!nextChallengeToken) {
       setError("Unable to start challenge");
       setLoading(false);
+
       return;
     }
+
     storeChallengeEmail(nextChallengeToken, email);
     setChallengeToken(nextChallengeToken);
     setStep("verify");
@@ -145,6 +159,7 @@ export function LoginClient() {
     if (!challengeToken) {
       setError("Missing challenge");
       setLoading(false);
+
       return;
     }
 
@@ -157,10 +172,12 @@ export function LoginClient() {
     if (!response.ok) {
       const data = (await response.json().catch(() => null)) as { error?: string } | null;
       const reason = data?.error;
+
       if (reason === "expired") {
         if (challengeToken) {
           clearChallengeEmail(challengeToken);
         }
+
         setChallengeToken(null);
         setStep("request");
         router.replace(PAGE_ROUTES.LOGIN);
@@ -171,6 +188,7 @@ export function LoginClient() {
         if (challengeToken) {
           clearChallengeEmail(challengeToken);
         }
+
         setChallengeToken(null);
         setStep("request");
         router.replace(PAGE_ROUTES.LOGIN);
@@ -180,15 +198,19 @@ export function LoginClient() {
       } else {
         setError(t("errorInvalidCode"));
       }
+
       setLoading(false);
+
       return;
     }
 
     const data = (await response.json()) as { access_token?: string };
+
     if (data.access_token) {
       clearChallengeEmail(challengeToken);
       writeAccessToken(data.access_token);
       router.replace(PAGE_ROUTES.ME);
+
       return;
     }
 

@@ -15,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
     prague: tCommon("prague"),
     zlin: tCommon("zlin"),
   };
+
   return {
     description: t("talkProposalDescription", commonValues),
     openGraph: {

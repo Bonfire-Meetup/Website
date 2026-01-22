@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 export function GuildCard() {
   const t = useTranslations("account.guild");
   const perks = t.raw("perks") as string[];
+
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-violet-200/50 bg-gradient-to-br from-white via-white to-violet-50/80 shadow-lg shadow-violet-500/5 dark:border-violet-500/20 dark:from-neutral-900 dark:via-neutral-900/95 dark:to-violet-950/30 dark:shadow-violet-500/10">
       <div className="relative h-full overflow-hidden px-6 py-6">

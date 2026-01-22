@@ -12,9 +12,11 @@ const CACHE_CONTROL = "public, max-age=0, s-maxage=604800, stale-while-revalidat
 
 function buildPagedUrls(basePath: string, totalCount: number) {
   const pages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+
   return Array.from({ length: pages }, (_, index) => {
     const page = index + 1;
     const suffix = page === 1 ? "" : `?page=${page}`;
+
     return `${WEBSITE_URLS.BASE}${basePath}${suffix}`;
   });
 }
