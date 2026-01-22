@@ -1,31 +1,6 @@
-import { neon } from "@neondatabase/serverless";
 import { cache } from "react";
 import { getAllRecordings, type Recording } from "./recordings";
-
-type LikeCounts = Record<string, number>;
-
-const getSql = () => {
-  const url = process.env.BNF_NEON_DATABASE_URL;
-  if (!url) return null;
-  return neon(url);
-};
-
-async function fetchLikeCounts(): Promise<LikeCounts> {
-  const sql = getSql();
-  if (!sql) return {};
-
-  try {
-    const rows = (await sql`
-      SELECT video_id, COUNT(*)::int as count
-      FROM video_likes
-      GROUP BY video_id
-    `) as { video_id: string; count: number }[];
-
-    return Object.fromEntries(rows.map((row) => [row.video_id, row.count]));
-  } catch {
-    return {};
-  }
-}
+import { fetchLikeCounts } from "./data/trending";
 
 function calculateTrendingScore(recording: Recording, likeCount: number, now: number): number {
   let score = 0;

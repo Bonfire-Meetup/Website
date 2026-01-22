@@ -1,10 +1,10 @@
 "use server";
 
 import { headers, cookies } from "next/headers";
-import { neon } from "@neondatabase/serverless";
 import crypto from "crypto";
 import { z } from "zod";
 import { checkBotId } from "botid/server";
+import { insertContactSubmission, insertTalkProposal } from "./data/forms";
 
 const RATE_LIMIT_WINDOW_MS = 3600_000;
 const RATE_LIMIT_MAX_CONTACT = 5;
@@ -13,12 +13,6 @@ const TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/sit
 const CSRF_COOKIE_NAME = "bnf_csrf";
 
 const rateLimitStore = new Map<string, number[]>();
-
-const getSql = () => {
-  const url = process.env.BNF_NEON_DATABASE_URL;
-  if (!url) throw new Error("BNF_NEON_DATABASE_URL is not set");
-  return neon(url);
-};
 
 const hashValue = (value: string) => {
   const salt = process.env.BNF_HEARTS_SALT ?? "";
@@ -156,20 +150,15 @@ export async function submitContactForm(
   }
 
   try {
-    const sql = getSql();
     const { name, email, subject, message, inquiryType } = result.data;
-
-    await sql`
-      INSERT INTO contact_submissions (name, email, inquiry_type, subject, message, ip_hash)
-      VALUES (
-        ${name.trim()},
-        ${email.trim().toLowerCase()},
-        ${inquiryType || "general"},
-        ${subject.trim()},
-        ${message.trim()},
-        ${ipHash}
-      )
-    `;
+    await insertContactSubmission({
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      inquiryType: inquiryType || "general",
+      subject: subject.trim(),
+      message: message.trim(),
+      ipHash,
+    });
 
     return { success: true };
   } catch (error) {
@@ -228,23 +217,18 @@ export async function submitTalkProposal(
   }
 
   try {
-    const sql = getSql();
     const { speakerName, email, talkTitle, abstract, duration, experience, preferredLocation } =
       result.data;
-
-    await sql`
-      INSERT INTO talk_proposals (speaker_name, email, talk_title, abstract, duration, experience, preferred_location, ip_hash)
-      VALUES (
-        ${speakerName.trim()},
-        ${email.trim().toLowerCase()},
-        ${talkTitle.trim()},
-        ${abstract.trim()},
-        ${duration},
-        ${experience?.trim() || null},
-        ${preferredLocation || "either"},
-        ${ipHash}
-      )
-    `;
+    await insertTalkProposal({
+      speakerName: speakerName.trim(),
+      email: email.trim().toLowerCase(),
+      talkTitle: talkTitle.trim(),
+      abstract: abstract.trim(),
+      duration,
+      experience: experience?.trim() || null,
+      preferredLocation: preferredLocation || "either",
+      ipHash,
+    });
 
     return { success: true };
   } catch (error) {
