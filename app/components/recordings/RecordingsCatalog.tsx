@@ -107,9 +107,11 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   nextFeaturedLabel?: string;
 }) {
   const t = useTranslations("recordings");
-  const tFilters = useTranslations("recordings.filters");
-  const tRows = useTranslations("recordings.rows");
-  const tView = useTranslations("recordings.view");
+  const tCommon = useTranslations("common");
+  const tLibrary = useTranslations("libraryPage");
+  const tFilters = useTranslations("libraryPage.filters");
+  const tRows = useTranslations("libraryPage.rows");
+  const tView = useTranslations("libraryPage.view");
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -195,10 +197,10 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
       .sort((a, b) => b.number - a.number);
 
     return [
-      { label: tFilters("prague"), options: prague },
-      { label: tFilters("zlin"), options: zlin },
+      { label: tFilters("prague", { prague: tCommon("prague") }), options: prague },
+      { label: tFilters("zlin", { zlin: tCommon("zlin") }), options: zlin },
     ].filter((group) => group.options.length > 0);
-  }, [episodeOptions, tFilters]);
+  }, [episodeOptions, tFilters, tCommon]);
 
   const tagDropdownOptions = useMemo(
     () =>
@@ -401,23 +403,39 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
 
     if (activeLocation === "all") {
       if (pragueItems.length > 0) {
-        rows.push({ key: "location-prague", title: tRows("prague"), items: pragueItems });
+        rows.push({
+          key: "location-prague",
+          title: tRows("prague", { prague: tCommon("prague") }),
+          items: pragueItems,
+        });
       }
       if (zlinItems.length > 0) {
-        rows.push({ key: "location-zlin", title: tRows("zlin"), items: zlinItems });
+        rows.push({
+          key: "location-zlin",
+          title: tRows("zlin", { zlin: tCommon("zlin") }),
+          items: zlinItems,
+        });
       }
       return rows;
     }
 
     if (activeLocation === LOCATIONS.PRAGUE && pragueItems.length > 0) {
-      rows.push({ key: "location-prague", title: tRows("prague"), items: pragueItems });
+      rows.push({
+        key: "location-prague",
+        title: tRows("prague", { prague: tCommon("prague") }),
+        items: pragueItems,
+      });
     }
     if (activeLocation === LOCATIONS.ZLIN && zlinItems.length > 0) {
-      rows.push({ key: "location-zlin", title: tRows("zlin"), items: zlinItems });
+      rows.push({
+        key: "location-zlin",
+        title: tRows("zlin", { zlin: tCommon("zlin") }),
+        items: zlinItems,
+      });
     }
 
     return rows;
-  }, [activeLocation, filteredRecordings, tRows]);
+  }, [activeLocation, filteredRecordings, tRows, tCommon]);
 
   const tagRows = useMemo(() => {
     if (activeTag !== "all") {
@@ -570,9 +588,9 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
               </div>
               <p className="max-w-4xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                 <span className="mr-1.5 font-semibold text-neutral-900 dark:text-white">
-                  {t("noteLabel")}
+                  {tLibrary("noteLabel")}
                 </span>
-                {t("disclaimer")}
+                {tLibrary("disclaimer", { prague: tCommon("prague") })}
               </p>
             </div>
           </div>

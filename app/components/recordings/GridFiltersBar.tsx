@@ -48,9 +48,10 @@ export function GridFiltersBar({
   onViewRows: () => void;
   isSearchDirtyRef: React.MutableRefObject<boolean>;
 }) {
-  const t = useTranslations("recordings.filters");
-  const tSearch = useTranslations("recordings.search");
-  const tView = useTranslations("recordings.view");
+  const tCommon = useTranslations("common");
+  const t = useTranslations("libraryPage.filters");
+  const tSearch = useTranslations("libraryPage.search");
+  const tView = useTranslations("libraryPage.view");
   return (
     <div className="glass relative z-10 mb-8 rounded-2xl px-4 py-3">
       <div className="flex flex-wrap items-center gap-3 lg:flex-nowrap lg:gap-2">
@@ -86,7 +87,11 @@ export function GridFiltersBar({
                       : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/15"
                 }`}
               >
-                {t(option.labelKey)}
+                {option.labelKey === "prague"
+                  ? t(option.labelKey, { prague: tCommon("prague") })
+                  : option.labelKey === "zlin"
+                    ? t(option.labelKey, { zlin: tCommon("zlin") })
+                    : t(option.labelKey)}
               </Button>
             );
           })}

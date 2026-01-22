@@ -71,73 +71,42 @@ export function MeClient() {
     }
     setAccessToken(token);
 
-    const loadProfile = async () => {
-      const response = await fetch(API_ROUTES.ME.BASE, {
-        headers: createAuthHeaders(token),
-      });
-
-      if (!response.ok) {
-        clearAccessToken();
-        router.replace(PAGE_ROUTES.LOGIN);
-        return;
-      }
-
-      const data = (await response.json()) as Profile;
-      setProfile(data);
-      setLoading(false);
-    };
-
-    loadProfile().catch(() => {
-      setError(t("error"));
-      setLoading(false);
-    });
-  }, [router, t]);
-
-  useEffect(() => {
-    if (!accessToken) return;
-    const loadBoosts = async () => {
+    const loadAll = async () => {
       try {
-        const response = await fetch(API_ROUTES.ME.BOOSTS, {
-          headers: createAuthHeaders(accessToken),
+        const response = await fetch(API_ROUTES.ME.BASE, {
+          headers: createAuthHeaders(token),
         });
+
         if (!response.ok) {
-          setBoostsError(t("boosted.error"));
-          setBoostsLoading(false);
+          clearAccessToken();
+          router.replace(PAGE_ROUTES.LOGIN);
           return;
         }
-        const data = (await response.json()) as { items: BoostedRecording[] };
-        setBoosts(data.items ?? []);
+
+        const data = (await response.json()) as {
+          profile: Profile;
+          boosts: { items: BoostedRecording[] };
+          attempts: { items: LoginAttempt[] };
+        };
+
+        setProfile(data.profile);
+        setBoosts(data.boosts.items ?? []);
+        setAttempts(data.attempts.items ?? []);
+        setLoading(false);
         setBoostsLoading(false);
+        setAttemptsLoading(false);
       } catch {
+        setError(t("error"));
         setBoostsError(t("boosted.error"));
-        setBoostsLoading(false);
-      }
-    };
-    loadBoosts();
-  }, [accessToken, t]);
-
-  useEffect(() => {
-    if (!accessToken) return;
-    const loadAttempts = async () => {
-      try {
-        const response = await fetch(API_ROUTES.ME.AUTH_ATTEMPTS, {
-          headers: createAuthHeaders(accessToken),
-        });
-        if (!response.ok) {
-          setAttemptsError(t("attempts.error"));
-          setAttemptsLoading(false);
-          return;
-        }
-        const data = (await response.json()) as { items: LoginAttempt[] };
-        setAttempts(data.items ?? []);
-        setAttemptsLoading(false);
-      } catch {
         setAttemptsError(t("attempts.error"));
+        setLoading(false);
+        setBoostsLoading(false);
         setAttemptsLoading(false);
       }
     };
-    loadAttempts();
-  }, [accessToken, t]);
+
+    loadAll();
+  }, [router, t]);
 
   const handleSignOut = () => {
     clearAccessToken();

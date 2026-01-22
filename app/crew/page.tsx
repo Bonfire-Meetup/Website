@@ -252,11 +252,15 @@ export default async function TeamPage() {
               <span className="h-px w-8 bg-gradient-to-l from-transparent to-brand-400 sm:w-12" />
             </p>
 
-            <h1 className="mb-8 text-4xl font-black tracking-tight text-neutral-900 sm:text-6xl lg:text-7xl dark:text-white">
+            <h1 className="mb-4 text-4xl font-black tracking-tight text-neutral-900 sm:text-6xl lg:text-7xl dark:text-white">
               <span className="block">Meet the</span>
               <span className="text-gradient block">beautiful chaos</span>
               <span className="block">crew</span>
             </h1>
+
+            <p className="mb-4 text-base text-neutral-600 sm:text-lg dark:text-neutral-400">
+              {t("subtitle", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
+            </p>
 
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
               {t("stats", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
