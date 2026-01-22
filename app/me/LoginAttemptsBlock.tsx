@@ -42,7 +42,7 @@ export function LoginAttemptsBlock({
       </div>
       <div className="p-4">
         {loading ? (
-          <div className="space-y-2">
+          <div className="space-y-2 max-h-[280px] sm:max-h-[320px] overflow-y-auto overscroll-contain">
             {Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={`attempt-skeleton-${index}`}
@@ -65,7 +65,7 @@ export function LoginAttemptsBlock({
             {emptyLabel}
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-2 max-h-[280px] sm:max-h-[320px] overflow-y-auto overscroll-contain -mx-4 px-4">
             {items.map((attempt) => (
               <div
                 key={attempt.id}

@@ -85,10 +85,7 @@ export function CodeOfConductSection({ t, tToc }: CodeOfConductSectionProps) {
               {t("contact.email")}
             </a>
             <span className="mx-1">{t("contact.orContact")}</span>
-            <a
-              href="/contact?type=coc"
-              className="font-medium text-brand-600 hover:underline"
-            >
+            <a href="/contact?type=coc" className="font-medium text-brand-600 hover:underline">
               {t("contact.contactLink")}
             </a>
           </p>

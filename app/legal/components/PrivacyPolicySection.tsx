@@ -14,19 +14,14 @@ type PrivacyPolicySectionProps = {
   currentDate: string;
 };
 
-export function PrivacyPolicySection({
-  tPrivacy,
-  currentDate,
-}: PrivacyPolicySectionProps) {
+export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySectionProps) {
   return (
     <section
       id="privacy-policy"
       className="scroll-mt-24 pt-12 border-t border-neutral-200 dark:border-white/10 space-y-6"
     >
       <div>
-        <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">
-          {tPrivacy("title")}
-        </h2>
+        <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">{tPrivacy("title")}</h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2">
           {tPrivacy("lastUpdated", { date: currentDate })}
         </p>
@@ -55,28 +50,19 @@ export function PrivacyPolicySection({
               <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
                 {tPrivacy("dataCollection.personal.title")}
               </h4>
-              <RichText
-                t={tPrivacy}
-                translationKey="dataCollection.personal.content"
-              />
+              <RichText t={tPrivacy} translationKey="dataCollection.personal.content" />
             </div>
             <div>
               <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
                 {tPrivacy("dataCollection.technical.title")}
               </h4>
-              <RichText
-                t={tPrivacy}
-                translationKey="dataCollection.technical.content"
-              />
+              <RichText t={tPrivacy} translationKey="dataCollection.technical.content" />
             </div>
             <div>
               <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
                 {tPrivacy("dataCollection.interactions.title")}
               </h4>
-              <RichText
-                t={tPrivacy}
-                translationKey="dataCollection.interactions.content"
-              />
+              <RichText t={tPrivacy} translationKey="dataCollection.interactions.content" />
             </div>
           </div>
         </div>
@@ -146,10 +132,7 @@ export function PrivacyPolicySection({
             <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
               {tPrivacy("dataStorage.retention.title")}
             </h4>
-            <RichText
-              t={tPrivacy}
-              translationKey="dataStorage.retention.content"
-            />
+            <RichText t={tPrivacy} translationKey="dataStorage.retention.content" />
           </div>
         </div>
 
