@@ -1,8 +1,5 @@
-import { defaultLocale, locales } from "@/i18n/routing";
-
-type Locale = (typeof locales)[number];
-
-const isValidLocale = (value: string): value is Locale => locales.includes(value as Locale);
+import { defaultLocale } from "@/i18n/routing";
+import { isValidLocale, type Locale } from "@/lib/i18n/locales";
 
 const getCookieValue = (cookieHeader: string | null, name: string) => {
   if (!cookieHeader) return null;

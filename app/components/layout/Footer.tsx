@@ -1,5 +1,7 @@
 import { getTranslations } from "next-intl/server";
-import { DiscordIcon, FacebookIcon, MailIcon, YouTubeIcon } from "../shared/icons";
+import { DiscordIcon, FacebookIcon, MailIcon, YouTubeIcon } from "@/components/shared/icons";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 
 export async function Footer() {
   const t = await getTranslations("footer");
@@ -21,7 +23,7 @@ export async function Footer() {
           <div className="flex flex-col items-center gap-3 md:items-end">
             <div className="flex items-center gap-2">
               <a
-                href="mailto:hello@bnf.events"
+                href={`mailto:${WEBSITE_URLS.CONTACT_EMAIL}`}
                 className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:bg-brand-100 hover:text-brand-700 hover:scale-105 dark:bg-white/5 dark:hover:bg-brand-500/15 dark:hover:text-brand-300"
                 aria-label={t("emailLabel")}
               >
@@ -67,21 +69,21 @@ export async function Footer() {
           </p>
           <div className="flex items-center gap-4">
             <a
-              href="/timeline"
+              href={PAGE_ROUTES.TIMELINE}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("timelineLabel")}
             </a>
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <a
-              href="/press"
+              href={PAGE_ROUTES.PRESS}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("pressLabel")}
             </a>
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <a
-              href="/legal"
+              href={PAGE_ROUTES.LEGAL}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("legalLabel")}

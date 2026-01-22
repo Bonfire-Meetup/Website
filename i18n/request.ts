@@ -1,12 +1,7 @@
 import { getRequestConfig } from "next-intl/server";
 import { cookies, headers } from "next/headers";
-import { defaultLocale, locales } from "./routing";
-
-type Locale = (typeof locales)[number];
-
-function isValidLocale(locale: string): locale is Locale {
-  return locales.includes(locale as Locale);
-}
+import { defaultLocale } from "./routing";
+import { isValidLocale, type Locale } from "../app/lib/i18n/locales";
 
 async function getLocaleFromRequest(): Promise<Locale> {
   const cookieStore = await cookies();

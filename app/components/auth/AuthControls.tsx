@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { LanguageToggle } from "../theme/LanguageToggle";
 import { ThemeToggle } from "../theme/ThemeToggle";
+import { LOCALES, DEFAULT_LOCALE, isValidLocale, type Locale } from "@/lib/i18n/locales";
 
 const getCookieValue = (name: string) => {
   if (typeof document === "undefined") return null;
@@ -22,12 +23,13 @@ type AuthControlsProps = {
 };
 
 export function AuthControls({ labels }: AuthControlsProps = {}) {
-  const [locale, setLocale] = useState("en");
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
 
   useEffect(() => {
     const cookieLocale = getCookieValue("NEXT_LOCALE");
     const docLocale = document.documentElement.lang;
-    setLocale(cookieLocale || docLocale || "en");
+    const resolvedLocale = cookieLocale || docLocale || DEFAULT_LOCALE;
+    setLocale(isValidLocale(resolvedLocale) ? resolvedLocale : DEFAULT_LOCALE);
   }, []);
 
   const defaultLabels: AuthControlsLabels = {

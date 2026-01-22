@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { addVideoLike, getVideoLikeStats, removeVideoLike } from "@/app/lib/data/likes";
-import { validateVideoApiRequest, getClientHashes, checkRateLimit } from "@/app/lib/api/rate-limit";
-import { videoLikeStatsSchema, videoLikeMutationSchema } from "@/app/lib/api/schemas";
-import { logError } from "@/app/lib/utils/log";
-import { runWithRequestContext } from "@/app/lib/utils/request-context";
+import { addVideoLike, getVideoLikeStats, removeVideoLike } from "@/lib/data/likes";
+import { validateVideoApiRequest, getClientHashes, checkRateLimit } from "@/lib/api/rate-limit";
+import { videoLikeStatsSchema, videoLikeMutationSchema } from "@/lib/api/schemas";
+import { logError } from "@/lib/utils/log";
+import { runWithRequestContext } from "@/lib/utils/request-context";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   return runWithRequestContext(_, async () => {

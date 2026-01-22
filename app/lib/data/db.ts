@@ -1,5 +1,5 @@
 import { neon, type NeonQueryFunctionInTransaction } from "@neondatabase/serverless";
-import { serverEnv } from "@/app/lib/config/env";
+import { serverEnv } from "@/lib/config/env";
 
 const providers = {
   neon: (url: string) => neon(url),

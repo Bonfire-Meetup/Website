@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { addVideoBoost, getVideoBoostStats, removeVideoBoost } from "@/app/lib/data/boosts";
-import { validateVideoApiRequest, getAuthUserId, checkRateLimit } from "@/app/lib/api/rate-limit";
-import { videoBoostStatsSchema, videoBoostMutationSchema } from "@/app/lib/api/schemas";
-import { logError } from "@/app/lib/utils/log";
-import { runWithRequestContext } from "@/app/lib/utils/request-context";
+import { addVideoBoost, getVideoBoostStats, removeVideoBoost } from "@/lib/data/boosts";
+import { validateVideoApiRequest, getAuthUserId, checkRateLimit } from "@/lib/api/rate-limit";
+import { videoBoostStatsSchema, videoBoostMutationSchema } from "@/lib/api/schemas";
+import { logError } from "@/lib/utils/log";
+import { runWithRequestContext } from "@/lib/utils/request-context";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   return runWithRequestContext(request, async () => {

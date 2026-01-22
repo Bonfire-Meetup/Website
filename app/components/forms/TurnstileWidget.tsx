@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { useEffect, useRef } from "react";
-import { clientEnv } from "@/app/lib/config/env";
+import { clientEnv } from "@/lib/config/env";
 
 declare global {
   interface Window {

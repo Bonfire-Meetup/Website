@@ -1,19 +1,19 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getAccessTokenTtlSeconds, signAccessToken } from "@/app/lib/auth/jwt";
-import { timingGuardHash, verifyOtpChallenge } from "@/app/lib/auth/challenge";
-import { insertAuthToken, markAuthChallengeUsed, upsertAuthUser } from "@/app/lib/data/auth";
+import { getAccessTokenTtlSeconds, signAccessToken } from "@/lib/auth/jwt";
+import { timingGuardHash, verifyOtpChallenge } from "@/lib/auth/challenge";
+import { insertAuthToken, markAuthChallengeUsed, upsertAuthUser } from "@/lib/data/auth";
 import {
   getClientFingerprint,
   getEmailFingerprint,
   logError,
   logInfo,
   logWarn,
-} from "@/app/lib/utils/log";
-import { runWithRequestContext } from "@/app/lib/utils/request-context";
-import { insertAuthAttempt } from "@/app/lib/data/auth";
-import { getRequestId } from "@/app/lib/utils/request-context";
+} from "@/lib/utils/log";
+import { runWithRequestContext } from "@/lib/utils/request-context";
+import { insertAuthAttempt } from "@/lib/data/auth";
+import { getRequestId } from "@/lib/utils/request-context";
 
 const tokenSchema = z.object({
   email: z.string().email(),

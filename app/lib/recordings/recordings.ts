@@ -1,7 +1,7 @@
 import { cache } from "react";
-import { LOCATIONS, type LocationValue } from "../config/constants";
-import pragueRecordingsData from "../../data/prague-recordings.json";
-import zlinRecordingsData from "../../data/zlin-recordings.json";
+import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import pragueRecordingsData from "@/data/prague-recordings.json";
+import zlinRecordingsData from "@/data/zlin-recordings.json";
 import { getEpisodeById } from "./episodes";
 
 export type Recording = {

@@ -1,7 +1,8 @@
-import type { Recording } from "../../lib/recordings/recordings";
-import { AccentBar } from "../ui/AccentBar";
-import { Pill } from "../ui/Pill";
-import { CalendarIcon, MapPinIcon, UserIcon } from "../shared/icons";
+import type { Recording } from "@/lib/recordings/recordings";
+import { AccentBar } from "@/components/ui/AccentBar";
+import { Pill } from "@/components/ui/Pill";
+import { CalendarIcon, MapPinIcon, UserIcon } from "@/components/shared/icons";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type VideoMetadataLabels = {
   epShort: string;
@@ -37,7 +38,7 @@ export function VideoMetadata({
           {recording.speaker.map((name) => (
             <Pill
               key={name}
-              href={`/library?q=${encodeURIComponent(name)}`}
+              href={`${PAGE_ROUTES.LIBRARY}?q=${encodeURIComponent(name)}`}
               size="sm"
               className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/20"
             >
@@ -53,7 +54,7 @@ export function VideoMetadata({
             {formattedDate}
           </Pill>
           <Pill
-            href={`/library?location=${recording.location}`}
+            href={`${PAGE_ROUTES.LIBRARY}?location=${recording.location}`}
             size="sm"
             className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/20"
           >
@@ -63,7 +64,7 @@ export function VideoMetadata({
         </div>
         {recording.episodeId && (
           <Pill
-            href={`/library?episode=${encodeURIComponent(recording.episodeId)}`}
+            href={`${PAGE_ROUTES.LIBRARY}?episode=${encodeURIComponent(recording.episodeId)}`}
             size="sm"
             className="bg-neutral-900/5 font-semibold uppercase tracking-[0.15em] text-neutral-600 transition hover:bg-neutral-900/10 hover:text-neutral-800 dark:bg-white/10 dark:text-neutral-200 dark:hover:bg-white/20 dark:hover:text-white"
           >
@@ -84,7 +85,7 @@ export function VideoMetadata({
             {recording.tags.map((tag) => (
               <Pill
                 key={tag}
-                href={`/library?tag=${encodeURIComponent(tag)}`}
+                href={`${PAGE_ROUTES.LIBRARY}?tag=${encodeURIComponent(tag)}`}
                 size="xs"
                 className="bg-brand-50 font-semibold uppercase tracking-[0.18em] text-brand-700 transition-colors hover:bg-brand-100 hover:text-brand-800 dark:bg-brand-500/10 dark:text-brand-200 dark:hover:bg-brand-500/20 dark:hover:text-brand-100"
               >

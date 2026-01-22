@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { STORAGE_KEYS } from "@/lib/storage/keys";
 
 type Theme = "light" | "dark" | "system";
 
@@ -45,14 +46,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const setTheme = useCallback(
     (newTheme: Theme) => {
       setThemeState(newTheme);
-      localStorage.setItem("bonfire-theme", newTheme);
+      localStorage.setItem(STORAGE_KEYS.THEME, newTheme);
       applyTheme(newTheme);
     },
     [applyTheme],
   );
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("bonfire-theme") as Theme | null;
+    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) as Theme | null;
     const initialTheme = savedTheme || "system";
     setThemeState(initialTheme);
     applyTheme(initialTheme);

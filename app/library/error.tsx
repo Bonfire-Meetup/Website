@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/app/components/ui/Button";
+import { Button } from "@/components/ui/Button";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export default function LibraryError({
   error,
@@ -28,7 +29,7 @@ export default function LibraryError({
           <Button onClick={reset} variant="primary">
             {t("tryAgain")}
           </Button>
-          <Button href="/" variant="secondary">
+          <Button href={PAGE_ROUTES.HOME} variant="secondary">
             {t("goHome")}
           </Button>
         </div>

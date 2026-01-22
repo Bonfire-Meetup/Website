@@ -1,5 +1,5 @@
 import upcomingEventsData from "./upcoming-events.json";
-import type { EventItem } from "../components/events/EventsSection";
+import type { EventItem } from "@/components/events/EventsSection";
 
 type UpcomingEventJson = {
   id: string;

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
-import { ContactForm } from "../components/forms/ContactForm";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { ContactForm } from "@/components/forms/ContactForm";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
@@ -56,6 +57,8 @@ export default async function ContactPage() {
       successTitle: t("form.successTitle"),
       successMessage: t("form.successMessage"),
       sendAnother: t("form.sendAnother"),
+      clearDraft: t("form.clearDraft"),
+      draftNote: t("form.draftNote"),
       errors: {
         nameRequired: t("form.errors.nameRequired"),
         emailInvalid: t("form.errors.emailInvalid"),
@@ -112,10 +115,10 @@ export default async function ContactPage() {
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
               {t("alternativeContact")}{" "}
               <a
-                href="mailto:hello@bnf.events"
+                href={`mailto:${WEBSITE_URLS.CONTACT_EMAIL}`}
                 className="font-medium text-brand-600 underline decoration-brand-600/30 underline-offset-2 transition-colors hover:text-brand-700 hover:decoration-brand-600 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300"
               >
-                hello@bnf.events
+                {WEBSITE_URLS.CONTACT_EMAIL}
               </a>
             </p>
           </div>

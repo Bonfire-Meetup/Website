@@ -1,5 +1,5 @@
-import { hashOtpCode, timingSafeMatch } from "@/app/lib/auth/otp";
-import { getChallengeByToken, incrementAuthChallengeAttempts } from "@/app/lib/data/auth";
+import { hashOtpCode, timingSafeMatch } from "@/lib/auth/otp";
+import { getChallengeByToken, incrementAuthChallengeAttempts } from "@/lib/data/auth";
 
 type VerificationResult =
   | { ok: true; id: string }

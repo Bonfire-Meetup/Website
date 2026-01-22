@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import {
   BoltIcon,
   BuildingIcon,
@@ -11,7 +13,7 @@ import {
   MicIcon,
   ShieldIcon,
   VideoIcon,
-} from "../components/shared/icons";
+} from "@/components/shared/icons";
 
 type TeamMember = {
   name: string;
@@ -283,14 +285,14 @@ export default async function TeamPage() {
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
               {t("joinCallout")}{" "}
               <a
-                href="mailto:hello+crew@bnf.events"
+                href={`mailto:${WEBSITE_URLS.CONTACT_EMAIL_CREW}`}
                 className="font-medium text-brand-600 underline decoration-brand-600/30 underline-offset-2 transition-colors hover:text-brand-700 hover:decoration-brand-600 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300"
               >
-                hello+crew@bnf.events
+                {WEBSITE_URLS.CONTACT_EMAIL_CREW}
               </a>
               <span className="mx-1">{t("joinCalloutOr")}</span>
               <a
-                href="/contact?type=crew"
+                href={PAGE_ROUTES.CONTACT_WITH_TYPE("crew")}
                 className="font-medium text-brand-600 underline decoration-brand-600/30 underline-offset-2 transition-colors hover:text-brand-700 hover:decoration-brand-600 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300"
               >
                 {t("joinCalloutContact")}

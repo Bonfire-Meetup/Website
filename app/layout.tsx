@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/next";
@@ -7,6 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
 import { GlobalPlayerProvider } from "./components/shared/GlobalPlayerProvider";
 import { MotionManager } from "./components/theme/MotionManager";
+import { STORAGE_KEYS } from "./lib/storage/keys";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -63,6 +65,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
   const t = await getTranslations("recordings");
+  const messages = (await import(`./locales/${locale}.json`)).default;
 
   return (
     <html
@@ -77,10 +80,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             __html: `
               (function() {
                 try {
-                  var theme = localStorage.getItem('bonfire-theme');
+                  var theme = localStorage.getItem("${STORAGE_KEYS.THEME}");
                   var resolved = theme;
-                  if (!theme || theme === 'system') {
-                    resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  if (!theme || theme === "system") {
+                    resolved = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
                   }
                   document.documentElement.classList.add(resolved);
                 } catch (e) {}
@@ -90,18 +93,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased transition-colors duration-300 dark:bg-neutral-950 dark:text-neutral-100">
-        <MotionManager />
-        <ThemeProvider>
-          <GlobalPlayerProvider
-            labels={{
-              returnToPlayer: t("returnToPlayer"),
-              closePlayer: t("closePlayer"),
-              exitCinema: t("exitCinema"),
-            }}
-          >
-            <div className="relative flex min-h-screen flex-col">{children}</div>
-          </GlobalPlayerProvider>
-        </ThemeProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <MotionManager />
+          <ThemeProvider>
+            <GlobalPlayerProvider
+              labels={{
+                returnToPlayer: t("returnToPlayer"),
+                closePlayer: t("closePlayer"),
+                exitCinema: t("exitCinema"),
+              }}
+            >
+              <div className="relative flex min-h-screen flex-col">{children}</div>
+            </GlobalPlayerProvider>
+          </ThemeProvider>
+        </NextIntlClientProvider>
         <Analytics />
         <SpeedInsights />
       </body>

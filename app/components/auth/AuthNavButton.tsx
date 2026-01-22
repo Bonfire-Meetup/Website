@@ -3,19 +3,20 @@
 import { useEffect, useState } from "react";
 import { IconButton } from "../ui/IconButton";
 import { LogInIcon, UserIcon } from "../shared/icons";
-import { isAccessTokenValid, readAccessToken } from "@/app/lib/auth/client";
+import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export function AuthNavButton() {
-  const [href, setHref] = useState("/login");
+  const [href, setHref] = useState<string>(PAGE_ROUTES.LOGIN);
   const [isAuthed, setIsAuthed] = useState(false);
 
   useEffect(() => {
     const token = readAccessToken();
     if (token && isAccessTokenValid(token)) {
-      setHref("/me");
+      setHref(PAGE_ROUTES.ME);
       setIsAuthed(true);
     } else {
-      setHref("/login");
+      setHref(PAGE_ROUTES.LOGIN);
       setIsAuthed(false);
     }
   }, []);

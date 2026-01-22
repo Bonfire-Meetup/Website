@@ -1,6 +1,6 @@
 import { exportJWK, importSPKI } from "jose";
 import { NextResponse } from "next/server";
-import { serverEnv } from "@/app/lib/config/env";
+import { serverEnv } from "@/lib/config/env";
 
 const getJwtPublicKey = () => {
   return serverEnv.BNF_JWT_PUBLIC_KEY;

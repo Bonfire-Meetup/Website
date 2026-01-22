@@ -2,8 +2,9 @@ import { memo } from "react";
 import { VideoCard } from "./VideoCard";
 import { EmptyState } from "../ui/EmptyState";
 import { Button } from "../ui/Button";
-import type { Recording } from "../../lib/recordings/recordings";
-import { LOCATIONS } from "../../lib/config/constants";
+import type { Recording } from "@/lib/recordings/recordings";
+import { LOCATIONS } from "@/lib/config/constants";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type Labels = {
   prague: string;
@@ -58,7 +59,7 @@ export const RecordingsSectionClient = memo(function RecordingsSectionClient({
       )}
 
       <div className="mt-16 text-center">
-        <Button href="/library" variant="glass" className="inline-flex items-center gap-3">
+        <Button href={PAGE_ROUTES.LIBRARY} variant="glass" className="inline-flex items-center gap-3">
           {labels.viewAll}
         </Button>
       </div>

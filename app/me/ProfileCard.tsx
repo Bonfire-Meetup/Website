@@ -1,7 +1,7 @@
 "use client";
 
-import { formatDate } from "@/app/lib/utils/locale";
-import { copyToClipboard } from "@/app/lib/utils/clipboard";
+import { formatDate } from "@/lib/utils/locale";
+import { copyToClipboard } from "@/lib/utils/clipboard";
 import { useState } from "react";
 
 type Profile = {

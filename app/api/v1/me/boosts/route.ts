@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { getUserBoosts } from "@/app/lib/data/boosts";
-import { getAllRecordings } from "@/app/lib/recordings/recordings";
-import { logError } from "@/app/lib/utils/log";
-import { runWithRequestContext } from "@/app/lib/utils/request-context";
-import { requireAuth } from "@/app/lib/api/auth";
+import { getUserBoosts } from "@/lib/data/boosts";
+import { getAllRecordings } from "@/lib/recordings/recordings";
+import { logError } from "@/lib/utils/log";
+import { runWithRequestContext } from "@/lib/utils/request-context";
+import { requireAuth } from "@/lib/api/auth";
 
 const getWatchSlug = (recording: { slug: string; shortId: string }) =>
   `${recording.slug}-${recording.shortId}`;

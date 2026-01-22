@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { verifyAccessToken } from "@/app/lib/auth/jwt";
-import { logWarn, logError } from "@/app/lib/utils/log";
+import { verifyAccessToken } from "@/lib/auth/jwt";
+import { logWarn, logError } from "@/lib/utils/log";
 
 type AuthResult =
   | { success: true; userId: string; payload: { sub?: string } }

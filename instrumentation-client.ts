@@ -1,22 +1,24 @@
 import { initBotId } from "botid/client/core";
+import { API_ROUTES } from "./app/lib/api/routes";
+import { PAGE_ROUTES } from "./app/lib/routes/pages";
 
 initBotId({
   protect: [
-    { path: "/api/v1/video/*/likes", method: "GET" },
-    { path: "/api/v1/video/*/likes", method: "POST" },
-    { path: "/api/v1/video/*/likes", method: "DELETE" },
-    { path: "/api/v1/video/*/boosts", method: "GET" },
-    { path: "/api/v1/video/*/boosts", method: "POST" },
-    { path: "/api/v1/video/*/boosts", method: "DELETE" },
-    { path: "/api/v1/auth/challenges", method: "POST" },
-    { path: "/api/v1/auth/tokens", method: "POST" },
-    { path: "/api/v1/me", method: "GET" },
-    { path: "/api/v1/me/boosts", method: "GET" },
-    { path: "/api/v1/me/auth-attempts", method: "GET" },
-    { path: "/api/v1/me/preferences", method: "PATCH" },
-    { path: "/api/v1/me/delete-challenge", method: "POST" },
-    { path: "/api/v1/me/delete", method: "POST" },
-    { path: "/contact", method: "POST" },
-    { path: "/speak", method: "POST" },
+    { path: API_ROUTES.VIDEO.LIKES_PATTERN, method: "GET" },
+    { path: API_ROUTES.VIDEO.LIKES_PATTERN, method: "POST" },
+    { path: API_ROUTES.VIDEO.LIKES_PATTERN, method: "DELETE" },
+    { path: API_ROUTES.VIDEO.BOOSTS_PATTERN, method: "GET" },
+    { path: API_ROUTES.VIDEO.BOOSTS_PATTERN, method: "POST" },
+    { path: API_ROUTES.VIDEO.BOOSTS_PATTERN, method: "DELETE" },
+    { path: API_ROUTES.AUTH.CHALLENGES, method: "POST" },
+    { path: API_ROUTES.AUTH.TOKENS, method: "POST" },
+    { path: API_ROUTES.ME.BASE, method: "GET" },
+    { path: API_ROUTES.ME.BOOSTS, method: "GET" },
+    { path: API_ROUTES.ME.AUTH_ATTEMPTS, method: "GET" },
+    { path: API_ROUTES.ME.PREFERENCES, method: "PATCH" },
+    { path: API_ROUTES.ME.DELETE_CHALLENGE, method: "POST" },
+    { path: API_ROUTES.ME.DELETE, method: "POST" },
+    { path: PAGE_ROUTES.CONTACT, method: "POST" },
+    { path: PAGE_ROUTES.SPEAK, method: "POST" },
   ],
 });

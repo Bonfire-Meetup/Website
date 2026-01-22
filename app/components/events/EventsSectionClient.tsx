@@ -5,7 +5,7 @@ import { EventCard, type EventCardLabels } from "./EventCard";
 import { Button } from "../ui/Button";
 import { EmptyState } from "../ui/EmptyState";
 import { Pill } from "../ui/Pill";
-import { type LocationValue } from "../../lib/config/constants";
+import { type LocationValue } from "@/lib/config/constants";
 
 export type EventItem = {
   id: string;

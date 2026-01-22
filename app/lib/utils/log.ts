@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import { serverEnv } from "@/app/lib/config/env";
-import { getRequestId } from "@/app/lib/utils/request-context";
+import { serverEnv } from "@/lib/config/env";
+import { getRequestId } from "@/lib/utils/request-context";
 
 type LogLevel = "info" | "warn" | "error";
 

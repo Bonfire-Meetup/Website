@@ -2,7 +2,7 @@
 
 import { Button } from "../ui/Button";
 import { SelectDropdown, type DropdownGroup, type DropdownOption } from "../ui/SelectDropdown";
-import { LOCATIONS } from "../../lib/config/constants";
+import { LOCATIONS } from "@/lib/config/constants";
 import type {
   LocationFilter,
   CatalogRecording,

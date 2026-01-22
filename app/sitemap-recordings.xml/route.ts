@@ -1,14 +1,10 @@
-import { getAllRecordings } from "../lib/recordings/recordings";
-import { buildSitemapXml } from "../lib/utils/sitemap-utils";
-
-const BASE_URL = "https://www.bnf.events";
+import { getAllRecordings } from "@/lib/recordings/recordings";
+import { buildSitemapXml } from "@/lib/utils/sitemap-utils";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 const PAGE_SIZE = 10000;
 
 const CACHE_CONTROL = "public, max-age=0, s-maxage=604800, stale-while-revalidate=86400";
-
-function getWatchSlug(recording: { slug: string; shortId: string }) {
-  return `${recording.slug}-${recording.shortId}`;
-}
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -20,7 +16,7 @@ export async function GET(request: Request) {
   const pageItems = recordings.slice(start, start + PAGE_SIZE);
 
   const urls = pageItems.map((recording) => ({
-    loc: `${BASE_URL}/watch/${getWatchSlug(recording)}`,
+    loc: `${WEBSITE_URLS.BASE}${PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}`,
     lastmod: new Date(recording.date).toISOString(),
   }));
 

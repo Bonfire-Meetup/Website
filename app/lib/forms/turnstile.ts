@@ -1,4 +1,4 @@
-import { serverEnv } from "@/app/lib/config/env";
+import { serverEnv } from "@/lib/config/env";
 
 const TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 

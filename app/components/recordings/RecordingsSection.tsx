@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
-import type { Recording } from "../../lib/recordings/recordings";
-import type { TrendingRecording } from "../../lib/recordings/trending";
+import type { Recording } from "@/lib/recordings/recordings";
+import type { TrendingRecording } from "@/lib/recordings/trending";
 import { SectionHeader } from "../ui/SectionHeader";
 import { RecordingsSectionClient } from "./RecordingsSectionClient";
 

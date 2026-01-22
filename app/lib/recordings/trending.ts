@@ -86,12 +86,11 @@ const getTrendingRecordingsUncached = async (limit = 6): Promise<TrendingRecordi
 };
 
 export const getTrendingRecordings = async (limit = 6): Promise<TrendingRecording[]> => {
-  // Create a cached version for each limit value
   const cachedFn = unstable_cache(
     () => getTrendingRecordingsUncached(limit),
     [`trending-recordings-${limit}`],
     {
-      revalidate: 3600, // 1 hour (matches homepage revalidate)
+      revalidate: 3600,
     },
   );
   return cachedFn();

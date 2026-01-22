@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { Pill } from "../ui/Pill";
 import { FEATURED_INTERVAL_MS } from "./RecordingsCatalogTypes";
 import type { CatalogRecording } from "./RecordingsCatalogTypes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export function FeaturedRecording({
   featured: _featured,
@@ -250,7 +251,7 @@ export function FeaturedRecording({
             {currentFeatured.tags.map((tag: string) => (
               <Pill
                 key={tag}
-                href={`/library?tag=${encodeURIComponent(tag)}`}
+                href={`${PAGE_ROUTES.LIBRARY}?tag=${encodeURIComponent(tag)}`}
                 onClick={(event) => event.stopPropagation()}
                 size="xs"
                 className={`font-semibold transition hover:text-neutral-900 dark:hover:text-white ${

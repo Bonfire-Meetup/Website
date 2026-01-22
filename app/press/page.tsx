@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
-import { SectionHeader } from "../components/ui/SectionHeader";
-import { CopyButton } from "../components/ui/CopyButton";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { CopyButton } from "@/components/ui/CopyButton";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
@@ -417,7 +418,7 @@ export default async function PressPage() {
               </a>
               <span className="mx-1">{t("help.orContact")}</span>
               <a
-                href="/contact?type=press"
+                href={PAGE_ROUTES.CONTACT_WITH_TYPE("press")}
                 className="font-semibold text-brand-600 hover:underline dark:text-brand-400"
               >
                 {t("help.contactLink")}

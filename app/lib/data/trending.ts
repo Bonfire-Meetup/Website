@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { getDatabaseClient } from "@/app/lib/data/db";
+import { getDatabaseClient } from "@/lib/data/db";
 
 type LikeCounts = Record<string, number>;
 type BoostCounts = Record<string, number>;

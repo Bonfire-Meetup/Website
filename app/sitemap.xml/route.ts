@@ -1,9 +1,8 @@
-import { getAllRecordings } from "../lib/recordings/recordings";
-import photoAlbums from "../data/photo-albums.json";
-import { buildSitemapIndexXml } from "../lib/utils/sitemap-utils";
-import type { PhotoAlbum } from "../lib/photos/types";
-
-const BASE_URL = "https://www.bnf.events";
+import { getAllRecordings } from "@/lib/recordings/recordings";
+import photoAlbums from "@/data/photo-albums.json";
+import { buildSitemapIndexXml } from "@/lib/utils/sitemap-utils";
+import type { PhotoAlbum } from "@/lib/photos/types";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 const PAGE_SIZE = 10000;
 
 const { albums } = photoAlbums as { albums: Pick<PhotoAlbum, "id" | "episodeId">[] };
@@ -15,7 +14,7 @@ function buildPagedUrls(basePath: string, totalCount: number) {
   return Array.from({ length: pages }, (_, index) => {
     const page = index + 1;
     const suffix = page === 1 ? "" : `?page=${page}`;
-    return `${BASE_URL}${basePath}${suffix}`;
+    return `${WEBSITE_URLS.BASE}${basePath}${suffix}`;
   });
 }
 
@@ -24,7 +23,7 @@ export async function GET() {
   const albumCount = albums.length;
 
   const sitemapUrls = [
-    { loc: `${BASE_URL}/sitemap-pages.xml` },
+    { loc: `${WEBSITE_URLS.BASE}/sitemap-pages.xml` },
     ...buildPagedUrls("/sitemap-recordings.xml", recordingsCount).map((loc) => ({ loc })),
     ...buildPagedUrls("/sitemap-albums.xml", albumCount).map((loc) => ({ loc })),
   ];

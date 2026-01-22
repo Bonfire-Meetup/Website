@@ -1,4 +1,4 @@
-import { getDatabaseClient } from "@/app/lib/data/db";
+import { getDatabaseClient } from "@/lib/data/db";
 
 type BoostStats = { count: number; hasBoosted: boolean };
 type BoostMutationResult = { count: number; added?: boolean; removed?: boolean };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { AlbumImage } from "../../components/shared/AlbumImage";
+import { AlbumImage } from "@/components/shared/AlbumImage";
 import { Lightbox } from "./Lightbox";
 
 type Image = {

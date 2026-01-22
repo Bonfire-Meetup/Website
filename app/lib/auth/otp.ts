@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { serverEnv } from "@/app/lib/config/env";
+import { serverEnv } from "@/lib/config/env";
 
 const getOtpSecret = () => {
   return serverEnv.BNF_OTP_SECRET;

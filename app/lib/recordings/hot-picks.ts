@@ -8,10 +8,8 @@ export type HotRecording = Recording & {
 };
 
 function calculateHotScore(likeCount: number, recordingDate: Date, now: number): number {
-  // Heavily weight likes - this is the primary factor
   let score = likeCount * 10;
 
-  // Small recency bonus to break ties
   const daysSince = Math.floor((now - recordingDate.getTime()) / (1000 * 60 * 60 * 24));
   if (daysSince <= 90) score += 3;
   else if (daysSince <= 180) score += 2;
@@ -40,7 +38,6 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
       return b.likeCount - a.likeCount;
     });
 
-  // Ensure variety by limiting per location
   const selected: HotRecording[] = [];
   const usedLocations = new Map<string, number>();
   const maxPerLocation = Math.ceil(limit / 2) + 1;
@@ -55,7 +52,6 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
     usedLocations.set(recording.location, locationCount + 1);
   }
 
-  // Backfill from remaining liked videos
   if (selected.length < limit) {
     for (const recording of withLikes) {
       if (selected.length >= limit) break;
@@ -64,18 +60,16 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
     }
   }
 
-  // Backfill with older "classic" videos (different from member picks which uses newest)
-  // Sort by date ascending to get older proven content
   if (selected.length < limit) {
     const usedIds = new Set(selected.map((r) => r.shortId));
 
-    const classicsBackfill = allRecordings
+    const olderClassicsBackfill = allRecordings
       .filter((r) => !usedIds.has(r.shortId))
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
       .slice(0, limit - selected.length)
       .map((r) => ({ ...r, likeCount: 0, hotScore: 0 }));
 
-    selected.push(...classicsBackfill);
+    selected.push(...olderClassicsBackfill);
   }
 
   return selected;

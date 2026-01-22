@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOutIcon } from "@/app/components/shared/icons";
-import { Button } from "@/app/components/ui/Button";
-import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/app/lib/auth/client";
-import { createAuthHeaders, createJsonAuthHeaders } from "@/app/lib/utils/http";
+import { LogOutIcon } from "@/components/shared/icons";
+import { Button } from "@/components/ui/Button";
+import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
+import { API_ROUTES } from "@/lib/api/routes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { BoostedVideosBlock } from "./BoostedVideosBlock";
 import { DangerZoneBlock } from "./DangerZoneBlock";
 import { PreferenceBlock } from "./PreferenceBlock";
@@ -122,19 +124,19 @@ export function MeClient({ labels }: { labels: MeLabels }) {
     const token = readAccessToken();
     if (!token || !isAccessTokenValid(token)) {
       clearAccessToken();
-      router.replace("/login");
+      router.replace(PAGE_ROUTES.LOGIN);
       return;
     }
     setAccessToken(token);
 
     const loadProfile = async () => {
-      const response = await fetch("/api/v1/me", {
+      const response = await fetch(API_ROUTES.ME.BASE, {
         headers: createAuthHeaders(token),
       });
 
       if (!response.ok) {
         clearAccessToken();
-        router.replace("/login");
+        router.replace(PAGE_ROUTES.LOGIN);
         return;
       }
 
@@ -153,7 +155,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
     if (!accessToken) return;
     const loadBoosts = async () => {
       try {
-        const response = await fetch("/api/v1/me/boosts", {
+        const response = await fetch(API_ROUTES.ME.BOOSTS, {
           headers: createAuthHeaders(accessToken),
         });
         if (!response.ok) {
@@ -176,7 +178,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
     if (!accessToken) return;
     const loadAttempts = async () => {
       try {
-        const response = await fetch("/api/v1/me/auth-attempts", {
+        const response = await fetch(API_ROUTES.ME.AUTH_ATTEMPTS, {
           headers: createAuthHeaders(accessToken),
         });
         if (!response.ok) {
@@ -197,7 +199,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
 
   const handleSignOut = () => {
     clearAccessToken();
-    router.replace("/");
+    router.replace(PAGE_ROUTES.HOME);
   };
 
   const handleCommunityEmailsToggle = async () => {
@@ -206,7 +208,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
     setProfile({ ...profile, allowCommunityEmails: nextValue });
     setUpdatingPreference(true);
     try {
-      const response = await fetch("/api/v1/me/preferences", {
+      const response = await fetch(API_ROUTES.ME.PREFERENCES, {
         method: "PATCH",
         headers: createJsonAuthHeaders(accessToken),
         body: JSON.stringify({ allowCommunityEmails: nextValue }),
@@ -232,7 +234,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
     setDeleteStatus(null);
 
     try {
-      const response = await fetch("/api/v1/me/delete-challenge", {
+      const response = await fetch(API_ROUTES.ME.DELETE_CHALLENGE, {
         method: "POST",
         headers: createAuthHeaders(accessToken),
       });
@@ -264,7 +266,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
     setDeleteStatus(null);
 
     try {
-      const response = await fetch("/api/v1/me/delete", {
+      const response = await fetch(API_ROUTES.ME.DELETE, {
         method: "POST",
         headers: createJsonAuthHeaders(accessToken),
         body: JSON.stringify({ code: deleteCode, challenge_token: deleteChallengeToken }),
@@ -296,7 +298,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
       setDeleteStatus(labels.deleteCompleted);
       setTimeout(() => {
         clearAccessToken();
-        router.replace("/");
+        router.replace(PAGE_ROUTES.HOME);
       }, 3000);
     } catch {
       setDeleteError(labels.deleteError);
@@ -324,7 +326,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
     const prev = boosts;
     setBoosts((current) => current.filter((item) => item.shortId !== shortId));
     try {
-      const response = await fetch(`/api/v1/video/${shortId}/boosts`, {
+      const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
         method: "DELETE",
         headers: createAuthHeaders(accessToken),
       });
@@ -338,7 +340,6 @@ export function MeClient({ labels }: { labels: MeLabels }) {
 
   return (
     <div className="flex flex-col gap-10">
-      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
           {labels.title}
@@ -360,7 +361,6 @@ export function MeClient({ labels }: { labels: MeLabels }) {
         </div>
       )}
 
-      {/* Profile Section */}
       {loading ? (
         <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
           <ProfileSkeleton />
@@ -394,7 +394,6 @@ export function MeClient({ labels }: { labels: MeLabels }) {
         </div>
       ) : null}
 
-      {/* Preferences Section */}
       {profile && (
         <div className="space-y-4">
           <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
@@ -414,7 +413,6 @@ export function MeClient({ labels }: { labels: MeLabels }) {
         </div>
       )}
 
-      {/* Activity Section */}
       <div className="space-y-4">
         <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
           {labels.activityTitle}
@@ -443,14 +441,13 @@ export function MeClient({ labels }: { labels: MeLabels }) {
         </div>
       </div>
 
-      {/* Support Section */}
       <div className="space-y-4">
         <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
           {labels.supportTitle}
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <a
-            href="/contact?type=feature"
+            href={PAGE_ROUTES.CONTACT_WITH_TYPE("feature")}
             className="group flex items-center gap-4 rounded-2xl border border-neutral-200/70 bg-white/70 p-4 transition hover:border-brand-200 hover:bg-brand-50/50 dark:border-white/10 dark:bg-white/5 dark:hover:border-brand-500/30 dark:hover:bg-brand-500/5"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-600 transition group-hover:bg-brand-200 dark:bg-brand-500/20 dark:text-brand-300 dark:group-hover:bg-brand-500/30">
@@ -472,7 +469,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
             </span>
           </a>
           <a
-            href="/contact?type=support"
+            href={PAGE_ROUTES.CONTACT_WITH_TYPE("support")}
             className="group flex items-center gap-4 rounded-2xl border border-neutral-200/70 bg-white/70 p-4 transition hover:border-amber-200 hover:bg-amber-50/50 dark:border-white/10 dark:bg-white/5 dark:hover:border-amber-500/30 dark:hover:bg-amber-500/5"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 transition group-hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:group-hover:bg-amber-500/30">
@@ -497,7 +494,6 @@ export function MeClient({ labels }: { labels: MeLabels }) {
         </div>
       </div>
 
-      {/* Danger Zone */}
       <DangerZoneBlock
         title={labels.dangerZone}
         steps={{

@@ -3,11 +3,14 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AuthControls } from "@/app/components/auth/AuthControls";
-import { Button } from "@/app/components/ui/Button";
-import { LoadingSpinner } from "@/app/components/ui/LoadingSpinner";
-import { TurnstileWidget } from "@/app/components/forms/TurnstileWidget";
-import { isAccessTokenValid, readAccessToken, writeAccessToken } from "@/app/lib/auth/client";
+import { AuthControls } from "@/components/auth/AuthControls";
+import { Button } from "@/components/ui/Button";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
+import { isAccessTokenValid, readAccessToken, writeAccessToken } from "@/lib/auth/client";
+import { getAuthChallengeKey } from "@/lib/storage/keys";
+import { API_ROUTES } from "@/lib/api/routes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type Step = "request" | "verify";
 
@@ -85,22 +88,22 @@ export function LoginClient({
 
   const storeChallengeEmail = (token: string, value: string) => {
     if (typeof window === "undefined") return;
-    window.localStorage.setItem(`bnf_auth_challenge:${token}`, value);
+    window.localStorage.setItem(getAuthChallengeKey(token), value);
   };
 
   const readChallengeEmail = (token: string) => {
     if (typeof window === "undefined") return null;
-    return window.localStorage.getItem(`bnf_auth_challenge:${token}`);
+    return window.localStorage.getItem(getAuthChallengeKey(token));
   };
   const clearChallengeEmail = (token: string) => {
     if (typeof window === "undefined") return;
-    window.localStorage.removeItem(`bnf_auth_challenge:${token}`);
+    window.localStorage.removeItem(getAuthChallengeKey(token));
   };
 
   useEffect(() => {
     const token = readAccessToken();
     if (token && isAccessTokenValid(token)) {
-      router.replace("/me");
+      router.replace(PAGE_ROUTES.ME);
     }
   }, [router]);
 
@@ -134,7 +137,7 @@ export function LoginClient({
       return;
     }
 
-    const response = await fetch("/api/v1/auth/challenges", {
+    const response = await fetch(API_ROUTES.AUTH.CHALLENGES, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, type: "email", turnstileToken }),
@@ -158,7 +161,7 @@ export function LoginClient({
     setChallengeToken(nextChallengeToken);
     setStep("verify");
     setStatus("Code sent. Check your inbox.");
-    router.replace(`/login?challenge=${nextChallengeToken}`);
+    router.replace(PAGE_ROUTES.LOGIN_WITH_CHALLENGE(nextChallengeToken));
     setLoading(false);
   };
 
@@ -174,7 +177,7 @@ export function LoginClient({
       return;
     }
 
-    const response = await fetch("/api/v1/auth/tokens", {
+    const response = await fetch(API_ROUTES.AUTH.TOKENS, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, code, challenge_token: challengeToken }),
@@ -187,7 +190,7 @@ export function LoginClient({
         if (challengeToken) clearChallengeEmail(challengeToken);
         setChallengeToken(null);
         setStep("request");
-        router.replace("/login");
+        router.replace(PAGE_ROUTES.LOGIN);
         setError(labels.errorExpired);
       } else if (reason === "rate_limited") {
         setError(labels.errorRateLimited);
@@ -195,7 +198,7 @@ export function LoginClient({
         if (challengeToken) clearChallengeEmail(challengeToken);
         setChallengeToken(null);
         setStep("request");
-        router.replace("/login");
+        router.replace(PAGE_ROUTES.LOGIN);
         setError(labels.errorTooManyAttempts);
       } else if (reason === "invalid_request") {
         setError(labels.errorInvalidRequest);
@@ -210,7 +213,7 @@ export function LoginClient({
     if (data.access_token) {
       clearChallengeEmail(challengeToken);
       writeAccessToken(data.access_token);
-      router.replace("/me");
+      router.replace(PAGE_ROUTES.ME);
       return;
     }
 
@@ -441,7 +444,7 @@ export function LoginClient({
                 {labels.termsPrefix}
                 <a
                   className="underline decoration-neutral-400/60 underline-offset-2 hover:text-neutral-700 dark:hover:text-neutral-200"
-                  href="/legal"
+                  href={PAGE_ROUTES.LEGAL}
                 >
                   {labels.termsLink}
                 </a>

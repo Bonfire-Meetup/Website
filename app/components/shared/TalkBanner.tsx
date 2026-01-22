@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Button } from "../ui/Button";
 import { ArrowRightIcon } from "./icons";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export async function TalkBanner() {
   const t = await getTranslations("sections.talkBanner");
@@ -24,7 +25,7 @@ export async function TalkBanner() {
 
             <div className="flex shrink-0">
               <Button
-                href="/speak"
+                href={PAGE_ROUTES.SPEAK}
                 variant="glass"
                 className="group flex items-center gap-3 px-8 py-4"
               >

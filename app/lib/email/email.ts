@@ -1,5 +1,5 @@
-import { serverEnv } from "@/app/lib/config/env";
-import { getEmailFingerprint, logError, logInfo } from "@/app/lib/utils/log";
+import { serverEnv } from "@/lib/config/env";
+import { getEmailFingerprint, logError, logInfo } from "@/lib/utils/log";
 
 type EmailAddress = string | string[];
 

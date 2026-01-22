@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
-import { AccentBar } from "../components/ui/AccentBar";
-import { Button } from "../components/ui/Button";
-import { Pill } from "../components/ui/Pill";
-import { AlbumImage } from "../components/shared/AlbumImage";
-import photoAlbums from "../data/photo-albums.json";
-import { episodes, buildAlbumSlug } from "../lib/recordings/episodes";
-import type { EpisodeEntry } from "../lib/recordings/episodes";
-import { getAllRecordings } from "../lib/recordings/recordings";
-import type { PhotoAlbum } from "../lib/photos/types";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { AccentBar } from "@/components/ui/AccentBar";
+import { Button } from "@/components/ui/Button";
+import { Pill } from "@/components/ui/Pill";
+import { AlbumImage } from "@/components/shared/AlbumImage";
+import photoAlbums from "@/data/photo-albums.json";
+import { episodes, buildAlbumSlug } from "@/lib/recordings/episodes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import type { EpisodeEntry } from "@/lib/recordings/episodes";
+import { getAllRecordings } from "@/lib/recordings/recordings";
+import type { PhotoAlbum } from "@/lib/photos/types";
 
 const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
 
@@ -31,8 +32,8 @@ function getEpisodeEntries(): EpisodeEntry[] {
         recordingsCount: episodeRecordings.length,
         photosCount: album?.count ?? 0,
         photosCover: album?.cover,
-        videosHref: `/library?episode=${episode.id}`,
-        photosHref: album ? `/photos/${buildAlbumSlug(album.id, album.episodeId)}` : undefined,
+        videosHref: `${PAGE_ROUTES.LIBRARY}?episode=${episode.id}`,
+        photosHref: album ? PAGE_ROUTES.PHOTOS_ALBUM(buildAlbumSlug(album.id, album.episodeId)) : undefined,
       };
     })
     .sort((a, b) => {
@@ -173,7 +174,7 @@ export default async function TimelinePage() {
                                   {t("watchVideos")}
                                 </Button>
                                 <Button
-                                  href={entry.photosHref ?? "/photos"}
+                                  href={entry.photosHref ?? PAGE_ROUTES.PHOTOS}
                                   variant="ghost"
                                   size="sm"
                                 >

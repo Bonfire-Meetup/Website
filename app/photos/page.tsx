@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
-import { AlbumImage } from "../components/shared/AlbumImage";
-import { AccentBar } from "../components/ui/AccentBar";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { AlbumImage } from "@/components/shared/AlbumImage";
+import { AccentBar } from "@/components/ui/AccentBar";
 import { HeroSlideshow } from "./HeroSlideshow";
-import photoAlbums from "../data/photo-albums.json";
-import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "../lib/recordings/episodes";
-import type { PhotoAlbum } from "../lib/photos/types";
+import photoAlbums from "@/data/photo-albums.json";
+import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
+import type { PhotoAlbum } from "@/lib/photos/types";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
 
@@ -174,7 +175,7 @@ export default async function PhotosPage() {
                 return (
                   <a
                     key={album.id}
-                    href={`/photos/${toAlbumSlug(album)}`}
+                    href={PAGE_ROUTES.PHOTOS_ALBUM(toAlbumSlug(album))}
                     className="glass-card group no-hover-pop overflow-hidden"
                   >
                     <div className="aspect-[16/10] overflow-hidden">

@@ -1,6 +1,6 @@
 import { importPKCS8, importSPKI, jwtVerify, SignJWT } from "jose";
-import { serverEnv } from "@/app/lib/config/env";
-import { isAuthTokenActive } from "@/app/lib/data/auth";
+import { serverEnv } from "@/lib/config/env";
+import { isAuthTokenActive } from "@/lib/data/auth";
 
 const getJwtIssuer = () => {
   return serverEnv.BNF_JWT_ISSUER;

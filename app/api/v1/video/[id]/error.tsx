@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/app/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 
 export default function VideoApiError({
   error,

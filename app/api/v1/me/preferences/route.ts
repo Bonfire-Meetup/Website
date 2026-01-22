@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { updateAuthUserCommunityEmails } from "@/app/lib/data/auth";
-import { runWithRequestContext } from "@/app/lib/utils/request-context";
-import { logWarn, logError } from "@/app/lib/utils/log";
-import { requireAuth } from "@/app/lib/api/auth";
+import { updateAuthUserCommunityEmails } from "@/lib/data/auth";
+import { runWithRequestContext } from "@/lib/utils/request-context";
+import { logWarn, logError } from "@/lib/utils/log";
+import { requireAuth } from "@/lib/api/auth";
 
 const preferencesSchema = z.object({
   allowCommunityEmails: z.boolean(),

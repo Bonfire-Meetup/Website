@@ -6,6 +6,7 @@ import { RecordingMeta } from "./RecordingMeta";
 import { SpeakerList } from "../ui/SpeakerList";
 import { RecordingImage } from "./RecordingImage";
 import type { CatalogRecording } from "./RecordingsCatalogTypes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export function GridView({
   recordings,
@@ -25,11 +26,11 @@ export function GridView({
           key={`${recording.shortId}-${filterKey}`}
           role="link"
           tabIndex={0}
-          onClick={() => router.push(`/watch/${recording.slug}-${recording.shortId}`)}
+          onClick={() => router.push(PAGE_ROUTES.WATCH(recording.slug, recording.shortId))}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
-              router.push(`/watch/${recording.slug}-${recording.shortId}`);
+              router.push(PAGE_ROUTES.WATCH(recording.slug, recording.shortId));
             }
           }}
           aria-label={recording.title}
@@ -60,7 +61,7 @@ export function GridView({
               {recording.tags.map((tag: string) => (
                 <Pill
                   key={tag}
-                  href={`/library?tag=${encodeURIComponent(tag)}`}
+                  href={`${PAGE_ROUTES.LIBRARY}?tag=${encodeURIComponent(tag)}`}
                   onClick={(event) => event.stopPropagation()}
                   size="xxs"
                   className="bg-black/5 font-semibold uppercase tracking-[0.2em] text-neutral-600 transition hover:text-neutral-900 dark:bg-white/10 dark:text-white/70 dark:hover:text-white"

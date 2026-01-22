@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { timingGuardHash, verifyOtpChallenge } from "@/app/lib/auth/challenge";
-import { getAuthUserById, markAuthChallengeUsed } from "@/app/lib/data/auth";
-import { runTransaction } from "@/app/lib/data/db";
+import { timingGuardHash, verifyOtpChallenge } from "@/lib/auth/challenge";
+import { getAuthUserById, markAuthChallengeUsed } from "@/lib/data/auth";
+import { runTransaction } from "@/lib/data/db";
 import {
   getClientFingerprint,
   getEmailFingerprint,
   logError,
   logInfo,
   logWarn,
-} from "@/app/lib/utils/log";
-import { runWithRequestContext } from "@/app/lib/utils/request-context";
-import { requireAuth } from "@/app/lib/api/auth";
+} from "@/lib/utils/log";
+import { runWithRequestContext } from "@/lib/utils/request-context";
+import { requireAuth } from "@/lib/api/auth";
 
 const deleteSchema = z.object({
   code: z.string().regex(/^\d{1,6}$/),

@@ -1,6 +1,6 @@
 import { getTranslations, getLocale } from "next-intl/server";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import type { Metadata } from "next";
 import { TableOfContents } from "./components/TableOfContents";
 import { CodeOfConductSection } from "./components/CodeOfConductSection";

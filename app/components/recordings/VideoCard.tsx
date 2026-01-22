@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { memo } from "react";
-import { type LocationValue } from "../../lib/config/constants";
-import { BoltIcon, FireIcon, MapPinIcon } from "../shared/icons";
-import { LocationPill } from "../locations/LocationPill";
+import { type LocationValue } from "@/lib/config/constants";
+import { BoltIcon, FireIcon, MapPinIcon } from "@/components/shared/icons";
+import { LocationPill } from "@/components/locations/LocationPill";
 import { RecordingImage } from "./RecordingImage";
-import { formatDate } from "../../lib/utils/locale";
+import { formatDate } from "@/lib/utils/locale";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type VideoCardProps = {
   shortId: string;
@@ -39,7 +40,7 @@ export const VideoCard = memo(function VideoCard({
 
   return (
     <Link
-      href={`/watch/${slug}-${shortId}`}
+      href={PAGE_ROUTES.WATCH(slug, shortId)}
       className="glass-card group flex flex-col h-full cursor-pointer"
     >
       <div className="video-overlay relative shrink-0 overflow-hidden rounded-t-3xl">

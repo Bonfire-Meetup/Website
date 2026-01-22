@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { LocationCard } from "./LocationCard";
 import { SectionHeader } from "../ui/SectionHeader";
-import { LOCATIONS } from "../../lib/config/constants";
+import { LOCATIONS } from "@/lib/config/constants";
 
 export async function LocationsSection() {
   const t = await getTranslations("sections.locations");

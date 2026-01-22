@@ -2,10 +2,10 @@ import { headers } from "next/headers";
 import { checkBotId } from "botid/server";
 import { UAParser } from "ua-parser-js";
 import crypto from "crypto";
-import { serverEnv } from "@/app/lib/config/env";
-import { getRequestId } from "@/app/lib/utils/request-context";
-import { logWarn } from "@/app/lib/utils/log";
-import { verifyAccessToken } from "@/app/lib/auth/jwt";
+import { serverEnv } from "@/lib/config/env";
+import { getRequestId } from "@/lib/utils/request-context";
+import { logWarn } from "@/lib/utils/log";
+import { verifyAccessToken } from "@/lib/auth/jwt";
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { LocationValue } from "../../lib/config/constants";
+import type { LocationValue } from "@/lib/config/constants";
 import { Pill } from "../ui/Pill";
 
 type LocationPillProps = {

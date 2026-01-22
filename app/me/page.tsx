@@ -1,6 +1,6 @@
 import { getTranslations, getLocale } from "next-intl/server";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { MeClient } from "./MeClient";
 
 export default async function MePage() {

@@ -4,6 +4,8 @@ import { withBotId } from "botid/next/config";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
+const CDN_HOSTNAME = "cdn-img.bnf.events";
+
 const nextConfig = {
   reactStrictMode: true,
   output: "standalone",
@@ -33,7 +35,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "cdn-img.bnf.events",
+        hostname: CDN_HOSTNAME,
         pathname: "/**",
       },
     ],

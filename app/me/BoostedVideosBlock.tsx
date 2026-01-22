@@ -1,5 +1,7 @@
 "use client";
 
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+
 type BoostedRecording = {
   shortId: string;
   title: string;
@@ -67,7 +69,7 @@ export function BoostedVideosBlock({
               >
                 <div className="min-w-0">
                   <a
-                    href={`/watch/${boost.slug}`}
+                    href={PAGE_ROUTES.WATCH(boost.slug, boost.shortId)}
                     className="block truncate text-sm font-medium text-neutral-900 hover:text-brand-600 dark:text-white dark:hover:text-brand-300"
                   >
                     {boost.title}

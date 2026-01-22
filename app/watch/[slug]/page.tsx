@@ -5,10 +5,11 @@ import {
   getAllRecordings,
   getRelatedRecordings,
   type Recording,
-} from "../../lib/recordings/recordings";
+} from "@/lib/recordings/recordings";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 const RecordingPlayer = dynamic(() =>
-  import("../../components/recordings/RecordingPlayer").then((mod) => mod.RecordingPlayer),
+  import("@/components/recordings/RecordingPlayer").then((mod) => mod.RecordingPlayer),
 );
 
 function getWatchSlug(recording: { slug: string; shortId: string }) {
@@ -43,7 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: recording.title,
       description: recording.description,
-      url: `/watch/${getWatchSlug(recording)}`,
+      url: PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
       images: [recording.thumbnail],
     },
     twitter: {

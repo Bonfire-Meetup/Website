@@ -1,4 +1,4 @@
-import { getDatabaseClient } from "@/app/lib/data/db";
+import { getDatabaseClient } from "@/lib/data/db";
 
 type AuthChallengeRow = {
   id: string;

@@ -1,15 +1,14 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import mustache from "mustache";
-import { defaultLocale, locales } from "@/i18n/routing";
-
-type Locale = (typeof locales)[number];
+import { defaultLocale } from "@/i18n/routing";
+import { LOCALES, type Locale } from "@/lib/i18n/locales";
 
 const templateCache = new Map<string, string>();
 const localeCache = new Map<string, Record<string, unknown>>();
 
 const ttlTextByLocale = (locale: Locale, minutes: number) => {
-  if (locale === "cs") return `${minutes} minut`;
+  if (locale === LOCALES.CS) return `${minutes} minut`;
   return `${minutes} minutes`;
 };
 

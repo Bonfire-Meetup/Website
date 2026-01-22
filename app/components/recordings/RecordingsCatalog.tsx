@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState, useDeferredValue, useCallback, memo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "../ui/Button";
-import { InfoIcon } from "../shared/icons";
-import { Skeleton } from "../shared/Skeletons";
-import { LOCATIONS } from "../../lib/config/constants";
-import { getEpisodeById } from "../../lib/recordings/episodes";
+import { Button } from "@/components/ui/Button";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { InfoIcon } from "@/components/shared/icons";
+import { Skeleton } from "@/components/shared/Skeletons";
+import { LOCATIONS } from "@/lib/config/constants";
+import { getEpisodeById } from "@/lib/recordings/episodes";
 import { RecordingRail } from "./RecordingRail";
 import { MemberPicksRail } from "./MemberPicksRail";
 import { HotPicksRail } from "./HotPicksRail";
@@ -289,7 +290,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
         params.set("q", trimmedSearch);
       }
       const queryString = params.toString();
-      router.replace(queryString ? `/library?${queryString}` : "/library");
+      router.replace(queryString ? `${PAGE_ROUTES.LIBRARY}?${queryString}` : PAGE_ROUTES.LIBRARY);
     },
     [router, searchParams],
   );
@@ -507,7 +508,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
                     locale={locale}
                     filterKey={filterKey}
                     canHover={canHover}
-                    onNavigate={(slug, shortId) => router.push(`/watch/${slug}-${shortId}`)}
+                    onNavigate={(slug, shortId) => router.push(PAGE_ROUTES.WATCH(slug, shortId))}
                     previousLabel={previousFeaturedLabel}
                     nextLabel={nextFeaturedLabel}
                   />

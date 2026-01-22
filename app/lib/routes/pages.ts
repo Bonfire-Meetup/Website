@@ -1,0 +1,22 @@
+export const PAGE_ROUTES = {
+  HOME: "/",
+  LIBRARY: "/library",
+  PHOTOS: "/photos",
+  PHOTOS_ALBUM: (album: string) => `/photos/${album}`,
+  TIMELINE: "/timeline",
+  CREW: "/crew",
+  PRESS: "/press",
+  LEGAL: "/legal",
+  CONTACT: "/contact",
+  CONTACT_WITH_TYPE: (type: string) => `/contact?type=${type}`,
+  SPEAK: "/speak",
+  LOGIN: "/login",
+  LOGIN_WITH_REASON: (reason: string) => `/login?reason-hint=${reason}`,
+  LOGIN_WITH_CHALLENGE: (token: string) => `/login?challenge=${token}`,
+  ME: "/me",
+  WATCH: (slug: string, shortId: string) => `/watch/${slug}-${shortId}`,
+  ANCHOR: {
+    TOP: "/#top",
+    EVENTS: "/#events",
+  },
+} as const;

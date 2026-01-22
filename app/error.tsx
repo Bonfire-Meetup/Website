@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "./components/ui/Button";
+import { PAGE_ROUTES } from "./lib/routes/pages";
 
 export default function Error({
   error,
@@ -26,7 +27,7 @@ export default function Error({
           <Button onClick={reset} variant="primary">
             {t("tryAgain")}
           </Button>
-          <Button href="/" variant="secondary">
+          <Button href={PAGE_ROUTES.HOME} variant="secondary">
             {t("goHome")}
           </Button>
         </div>

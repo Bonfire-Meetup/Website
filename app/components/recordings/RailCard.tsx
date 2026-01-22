@@ -5,6 +5,7 @@ import { RecordingMeta } from "./RecordingMeta";
 import { SpeakerList } from "../ui/SpeakerList";
 import { RecordingImage } from "./RecordingImage";
 import type { CatalogRecording, RecordingsCatalogLabels } from "./RecordingsCatalogTypes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type RailCardBadge = {
   icon: ReactNode;
@@ -23,7 +24,7 @@ type RailCardProps = {
 export function RailCard({ recording, locale, labels, isFirst = false, badge }: RailCardProps) {
   return (
     <Link
-      href={`/watch/${recording.slug}-${recording.shortId}`}
+      href={PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}
       className="group relative flex w-[75vw] shrink-0 snap-start flex-col overflow-hidden rounded-[24px] bg-white/90 text-neutral-900 shadow-lg shadow-black/5 ring-1 ring-black/5 transition-all hover:-translate-y-1 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10 sm:w-[45vw] lg:w-[280px] xl:w-[300px]"
       aria-label={recording.title}
     >

@@ -4,6 +4,7 @@ import { HeroBackground } from "./HeroBackground";
 import { NeonText } from "../theme/NeonText";
 import { ScrollChevron } from "../ui/ScrollChevron";
 import { Button } from "../ui/Button";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 function Ember({ style, className = "" }: { style: CSSProperties; className?: string }) {
   return (
@@ -101,7 +102,7 @@ export async function Hero({
               <div className="absolute inset-0 -z-10 bg-brand-500 opacity-40 blur-xl transition-opacity group-hover:opacity-60" />
             </Button>
             <Button
-              href="/library"
+              href={PAGE_ROUTES.LIBRARY}
               variant="glass-secondary"
               className="px-5 py-3 text-sm sm:px-10 sm:py-5 sm:text-lg"
             >

@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
-import { serverEnv } from "@/app/lib/config/env";
+import { serverEnv } from "@/lib/config/env";
 
 const CSRF_COOKIE_NAME = "bnf_csrf";
 const CSRF_TTL_SECONDS = 60 * 60;

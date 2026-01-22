@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { BoltIcon, FireIcon, FrownIcon } from "../shared/icons";
-import { isAccessTokenValid, readAccessToken } from "@/app/lib/auth/client";
-import { createAuthHeaders } from "@/app/lib/utils/http";
+import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { createAuthHeaders } from "@/lib/utils/http";
+import { API_ROUTES } from "@/lib/api/routes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type LikeBoostButtonsLabels = {
   lightItUp: string;
@@ -44,7 +46,7 @@ export function LikeBoostButtons({ shortId, labels }: LikeBoostButtonsProps) {
     const loadLikes = async () => {
       try {
         setLikeLoadError(false);
-        const response = await fetch(`/api/v1/video/${shortId}/likes`);
+        const response = await fetch(API_ROUTES.VIDEO.LIKES(shortId));
         if (!response.ok) {
           if (isActive) setLikeLoadError(true);
           return;
@@ -69,7 +71,7 @@ export function LikeBoostButtons({ shortId, labels }: LikeBoostButtonsProps) {
     const loadBoosts = async () => {
       try {
         setBoostLoadError(false);
-        const response = await fetch(`/api/v1/video/${shortId}/boosts`, {
+        const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
           headers: createAuthHeaders(accessToken),
         });
         if (!response.ok) {
@@ -105,7 +107,7 @@ export function LikeBoostButtons({ shortId, labels }: LikeBoostButtonsProps) {
     setLikeCount((c) => (c ?? 0) + (adding ? 1 : -1));
 
     try {
-      const res = await fetch(`/api/v1/video/${shortId}/likes`, {
+      const res = await fetch(API_ROUTES.VIDEO.LIKES(shortId), {
         method: adding ? "POST" : "DELETE",
       });
       if (!res.ok) {
@@ -125,7 +127,7 @@ export function LikeBoostButtons({ shortId, labels }: LikeBoostButtonsProps) {
 
   const handleBoost = async () => {
     if (!accessToken) {
-      router.push("/login?reason-hint=video-boost");
+      router.push(PAGE_ROUTES.LOGIN_WITH_REASON("video-boost"));
       return;
     }
     if (isBoosting) return;
@@ -141,7 +143,7 @@ export function LikeBoostButtons({ shortId, labels }: LikeBoostButtonsProps) {
     setBoostCount((c) => (c ?? 0) + (adding ? 1 : -1));
 
     try {
-      const res = await fetch(`/api/v1/video/${shortId}/boosts`, {
+      const res = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
         method: adding ? "POST" : "DELETE",
         headers: createAuthHeaders(accessToken),
       });

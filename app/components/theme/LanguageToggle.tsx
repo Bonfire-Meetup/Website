@@ -3,16 +3,17 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { IconButton } from "../ui/IconButton";
+import { LOCALES, type Locale } from "@/lib/i18n/locales";
 
 type LanguageToggleProps = {
-  locale: string;
+  locale: Locale;
   labels: {
     csLabel: string;
     enLabel: string;
     switchToCs: string;
     switchToEn: string;
   };
-  onLocaleChange?: (locale: string) => void;
+  onLocaleChange?: (locale: Locale) => void;
 };
 
 export function LanguageToggle({ locale, labels, onLocaleChange }: LanguageToggleProps) {
@@ -20,7 +21,7 @@ export function LanguageToggle({ locale, labels, onLocaleChange }: LanguageToggl
   const [isPending, startTransition] = useTransition();
 
   const toggleLocale = () => {
-    const newLocale = locale === "en" ? "cs" : "en";
+    const newLocale: Locale = locale === LOCALES.EN ? LOCALES.CS : LOCALES.EN;
 
     startTransition(() => {
       document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
@@ -33,13 +34,13 @@ export function LanguageToggle({ locale, labels, onLocaleChange }: LanguageToggl
     <IconButton
       onClick={toggleLocale}
       disabled={isPending}
-      ariaLabel={locale === "en" ? labels.switchToCs : labels.switchToEn}
+      ariaLabel={locale === LOCALES.EN ? labels.switchToCs : labels.switchToEn}
       size="pill"
       shape="rounded"
       variant="glass"
       className="text-sm font-medium hover:scale-105 active:scale-95 disabled:opacity-50"
     >
-      <span className="uppercase">{locale === "en" ? labels.csLabel : labels.enLabel}</span>
+      <span className="uppercase">{locale === LOCALES.EN ? labels.csLabel : labels.enLabel}</span>
     </IconButton>
   );
 }

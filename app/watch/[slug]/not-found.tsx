@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { PlayIcon } from "../../components/shared/icons";
+import { PlayIcon } from "@/components/shared/icons";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export default function WatchNotFound() {
   return (
@@ -22,10 +23,10 @@ export default function WatchNotFound() {
         </p>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <Link href="/library" className="glass-button px-8 py-3">
+          <Link href={PAGE_ROUTES.LIBRARY} className="glass-button px-8 py-3">
             Browse Library
           </Link>
-          <Link href="/" className="glass-button-secondary px-8 py-3">
+          <Link href={PAGE_ROUTES.HOME} className="glass-button-secondary px-8 py-3">
             Back to Home
           </Link>
         </div>

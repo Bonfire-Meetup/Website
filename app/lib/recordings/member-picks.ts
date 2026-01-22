@@ -50,31 +50,29 @@ const getMemberPicksUncached = async (limit = 6): Promise<MemberPickRecording[]>
     return boostedRecordings;
   }
 
-  // Backfill with newest featured videos (different from hot which uses oldest classics)
   const usedIds = new Set(boostedRecordings.map((r) => r.shortId));
   const backfillCount = limit - boostedRecordings.length;
 
-  const backfill = allRecordings
+  const newestFeaturedBackfill = allRecordings
     .filter((r) => !usedIds.has(r.shortId) && r.featureHeroThumbnail)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, backfillCount)
     .map((r) => ({ ...r, boostCount: 0 }));
 
-  if (boostedRecordings.length + backfill.length >= limit) {
-    return [...boostedRecordings, ...backfill];
+  if (boostedRecordings.length + newestFeaturedBackfill.length >= limit) {
+    return [...boostedRecordings, ...newestFeaturedBackfill];
   }
 
-  // Final backfill with newest remaining videos
-  const stillNeeded = limit - boostedRecordings.length - backfill.length;
-  const allUsedIds = new Set([...usedIds, ...backfill.map((r) => r.shortId)]);
+  const stillNeeded = limit - boostedRecordings.length - newestFeaturedBackfill.length;
+  const allUsedIds = new Set([...usedIds, ...newestFeaturedBackfill.map((r) => r.shortId)]);
 
-  const remainingBackfill = allRecordings
+  const newestRemainingBackfill = allRecordings
     .filter((r) => !allUsedIds.has(r.shortId))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, stillNeeded)
     .map((r) => ({ ...r, boostCount: 0 }));
 
-  return [...boostedRecordings, ...backfill, ...remainingBackfill];
+  return [...boostedRecordings, ...newestFeaturedBackfill, ...newestRemainingBackfill];
 };
 
 export const getMemberPicks = unstable_cache(getMemberPicksUncached, ["member-picks"], {

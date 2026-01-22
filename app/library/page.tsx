@@ -1,18 +1,18 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import dynamic from "next/dynamic";
 import type { Metadata } from "next";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
-import { getAllRecordings } from "../lib/recordings/recordings";
-import { getMemberPicks } from "../lib/recordings/member-picks";
-import { getHotRecordings } from "../lib/recordings/hot-picks";
-import { LOCATIONS, type LocationValue } from "../lib/config/constants";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { getAllRecordings } from "@/lib/recordings/recordings";
+import { getMemberPicks } from "@/lib/recordings/member-picks";
+import { getHotRecordings } from "@/lib/recordings/hot-picks";
+import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 
 const RecordingsCatalog = dynamic(() =>
-  import("../components/recordings/RecordingsCatalog").then((mod) => mod.RecordingsCatalog),
+  import("@/components/recordings/RecordingsCatalog").then((mod) => mod.RecordingsCatalog),
 );
 
-import { normalizeText } from "../lib/utils/text";
+import { normalizeText } from "@/lib/utils/text";
 
 type LocationFilter = "all" | LocationValue;
 

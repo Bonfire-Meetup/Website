@@ -1,10 +1,10 @@
-import { LOCATIONS, type LocationValue } from "../../lib/config/constants";
-import { AccentBar } from "../ui/AccentBar";
+import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { Card } from "../ui/Card";
 import {
   CalendarIcon,
   ClockIcon,
   EventbriteIcon,
+  ExternalLinkIcon,
   FacebookIcon,
   LumaIcon,
   MapPinIcon,
@@ -74,6 +74,11 @@ export function EventCard({
       })
     : "";
 
+  const getMapUrl = (address: string) => {
+    const encodedAddress = encodeURIComponent(address);
+    return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+  };
+
   const platformLinks = [
     {
       key: "luma",
@@ -103,49 +108,87 @@ export function EventCard({
 
   if (isTba) {
     return (
-      <Card as="article" className="group relative overflow-hidden p-7 sm:p-9">
+      <Card as="article" className="fire-glow group relative p-6 sm:p-7">
+        <div
+          className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full blur-3xl opacity-50 ${
+            location === LOCATIONS.PRAGUE
+              ? "bg-gradient-to-br from-red-400/25 to-rose-500/15"
+              : "bg-gradient-to-br from-blue-400/25 to-indigo-500/15"
+          }`}
+        />
+
         <div className="relative">
-          <div className="mb-5 flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <AccentBar className="mt-1" />
-              <div>
-                <h3 className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
-                  {title}
-                </h3>
-                {episode && (
-                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
-                    {labels.episodeLabel}: {episode}
-                  </p>
-                )}
-              </div>
-            </div>
+          <div className="mb-4 flex items-start justify-between">
             <LocationPill
               location={location}
               ariaLabel={labels.locationLabel.replace("{location}", location)}
               icon={<MapPinIcon className="h-4 w-4" />}
-              className="text-xs"
             />
-          </div>
-
-          <p className="mb-6 leading-relaxed text-neutral-600 dark:text-neutral-300">
-            {description}
-          </p>
-
-          <div className="mb-4 flex flex-wrap items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
             <Pill
-              size="md"
-              className="bg-neutral-900/5 font-semibold uppercase tracking-[0.25em] text-neutral-600 dark:bg-white/10 dark:text-neutral-300"
+              size="sm"
+              className="bg-amber-100 font-semibold uppercase tracking-[0.2em] text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
             >
-              {labels.tba}
+              Coming soon
             </Pill>
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
-              Details soon
-            </span>
           </div>
-          <div className="flex items-center gap-3 rounded-2xl bg-white/70 px-3 py-2.5 text-sm text-neutral-600 dark:bg-white/5 dark:text-neutral-300">
-            <MapPinIcon className="h-4 w-4 text-neutral-400 dark:text-neutral-500" />
-            <span className="font-medium truncate">{venue}</span>
+
+          <h3 className="mb-2 text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
+            {title}
+          </h3>
+          {episode && (
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
+              {labels.episodeLabel}: {episode}
+            </p>
+          )}
+
+          <p className="mb-5 leading-relaxed text-neutral-600 dark:text-neutral-300">{description}</p>
+
+          <div className="mb-6 space-y-2.5">
+            <MetaRow
+              icon={<CalendarIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
+              text={labels.tba}
+            />
+            <MetaRow
+              icon={<ClockIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
+              text={time}
+            />
+            <a
+              href={getMapUrl(venue)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 text-sm text-neutral-500 transition-colors hover:text-brand-600 dark:text-neutral-400 dark:hover:text-brand-400"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-100/80 dark:bg-brand-500/10">
+                <MapPinIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+              </div>
+              <span className="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline">
+                {venue}
+                <ExternalLinkIcon className="h-3.5 w-3.5 shrink-0 opacity-60" />
+              </span>
+            </a>
           </div>
+
+          {hasSpeakers && (
+            <div className="mb-5">
+              <p className="mb-2 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                {labels.speakers}
+              </p>
+              <div className="space-y-2">
+                {speakers.map((speaker) => (
+                  <div
+                    key={`${speaker.name}-${speaker.topic}`}
+                    className="flex items-start gap-3 rounded-2xl bg-white/60 p-3 text-sm text-neutral-700 shadow-sm shadow-black/5 dark:bg-white/5 dark:text-neutral-200"
+                  >
+                    <div className="mt-0.5 h-2.5 w-2.5 flex-none rounded-full bg-brand-500/80" />
+                    <div>
+                      <p className="font-semibold text-neutral-900 dark:text-white">{speaker.name}</p>
+                      <p className="text-neutral-500 dark:text-neutral-400">{speaker.topic}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </Card>
     );
@@ -190,10 +233,20 @@ export function EventCard({
             icon={<ClockIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
             text={time}
           />
-          <MetaRow
-            icon={<MapPinIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
-            text={venue}
-          />
+          <a
+            href={getMapUrl(venue)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 text-sm text-neutral-500 transition-colors hover:text-brand-600 dark:text-neutral-400 dark:hover:text-brand-400"
+          >
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-100/80 dark:bg-brand-500/10">
+              <MapPinIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+            </div>
+            <span className="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline">
+              {venue}
+              <ExternalLinkIcon className="h-3.5 w-3.5 shrink-0 opacity-60" />
+            </span>
+          </a>
         </div>
 
         {hasSpeakers && (

@@ -1,12 +1,14 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/Button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
-import { CheckIcon, MicIcon } from "../shared/icons";
-import { submitTalkProposal, type TalkProposalFormState } from "../../lib/forms/form-actions";
-import { SelectDropdown, type DropdownOption } from "../ui/SelectDropdown";
+import { CheckIcon, CloseIcon, MicIcon } from "../shared/icons";
+import { submitTalkProposal, type TalkProposalFormState } from "@/lib/forms/form-actions";
+import { SelectDropdown, type DropdownOption } from "@/components/ui/SelectDropdown";
 import { TurnstileWidget } from "./TurnstileWidget";
+import { STORAGE_KEYS } from "@/lib/storage/keys";
+import { API_ROUTES } from "@/lib/api/routes";
 
 type Translations = {
   form: {
@@ -38,6 +40,8 @@ type Translations = {
     successTitle: string;
     successMessage: string;
     submitAnother: string;
+    clearDraft: string;
+    draftNote: string;
     errors: Record<string, string>;
   };
 };
@@ -46,9 +50,112 @@ const initialState: TalkProposalFormState = { success: false };
 
 export function TalkProposalForm({ t }: { t: Translations }) {
   const [state, formAction, isPending] = useActionState(submitTalkProposal, initialState);
+  const [speakerName, setSpeakerName] = useState("");
+  const [email, setEmail] = useState("");
+  const [talkTitle, setTalkTitle] = useState("");
+  const [abstract, setAbstract] = useState("");
+  const [experience, setExperience] = useState("");
   const [duration, setDuration] = useState("");
   const [preferredLocation, setPreferredLocation] = useState("either");
   const [csrfToken, setCsrfToken] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    try {
+      const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+      if (draft) {
+        const parsed = JSON.parse(draft);
+        if (parsed.speakerName) setSpeakerName(parsed.speakerName);
+        if (parsed.email) setEmail(parsed.email);
+        if (parsed.talkTitle) setTalkTitle(parsed.talkTitle);
+        if (parsed.abstract) setAbstract(parsed.abstract);
+        if (parsed.experience) setExperience(parsed.experience);
+        if (parsed.duration) setDuration(parsed.duration);
+        if (parsed.preferredLocation) setPreferredLocation(parsed.preferredLocation);
+      }
+    } catch {
+    }
+  }, []);
+
+  useEffect(() => {
+    if (state.success) {
+      localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      const draft = {
+        speakerName,
+        email,
+        talkTitle,
+        abstract,
+        experience,
+        duration,
+        preferredLocation,
+      };
+      
+      const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
+      if (!hasContent) {
+        localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+        return;
+      }
+
+      try {
+        const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+        if (existingDraft) {
+          const parsed = JSON.parse(existingDraft);
+          const isUnchanged =
+            parsed.speakerName === draft.speakerName &&
+            parsed.email === draft.email &&
+            parsed.talkTitle === draft.talkTitle &&
+            parsed.abstract === draft.abstract &&
+            parsed.experience === draft.experience &&
+            parsed.duration === draft.duration &&
+            parsed.preferredLocation === draft.preferredLocation;
+          if (isUnchanged) {
+            return;
+          }
+        }
+      } catch {
+      }
+
+      localStorage.setItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL, JSON.stringify(draft));
+    }, 1500);
+
+    return () => clearTimeout(timeoutId);
+  }, [speakerName, email, talkTitle, abstract, experience, duration, preferredLocation, state.success]);
+
+  useEffect(() => {
+    let isActive = true;
+    fetch(API_ROUTES.CSRF)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (isActive && data?.token) {
+          setCsrfToken(data.token);
+        }
+      })
+      .catch(() => {
+        if (isActive) {
+          setCsrfToken("");
+        }
+      });
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const clearDraft = () => {
+    setSpeakerName("");
+    setEmail("");
+    setTalkTitle("");
+    setAbstract("");
+    setExperience("");
+    setDuration("");
+    setPreferredLocation("either");
+    localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+  };
+
+  const hasDraft = speakerName || email || talkTitle || abstract || experience || duration || preferredLocation !== "either";
 
   if (state.success) {
     return (
@@ -92,36 +199,37 @@ export function TalkProposalForm({ t }: { t: Translations }) {
     { value: "zlin", label: t.form.locationZlin },
   ];
 
-  useEffect(() => {
-    let isActive = true;
-    fetch("/api/v1/csrf")
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data) => {
-        if (isActive && data?.token) {
-          setCsrfToken(data.token);
-        }
-      })
-      .catch(() => {
-        if (isActive) {
-          setCsrfToken("");
-        }
-      });
-    return () => {
-      isActive = false;
-    };
-  }, []);
-
   return (
-    <form action={formAction} className="glass-card no-hover-pop mx-auto max-w-2xl p-6 sm:p-10">
-      <div className="mb-8 flex items-center gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-rose-500 shadow-lg shadow-brand-500/30">
-          <MicIcon className="h-6 w-6 text-white" />
+    <form ref={formRef} action={formAction} className="glass-card no-hover-pop mx-auto max-w-2xl p-6 sm:p-10">
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-rose-500 shadow-lg shadow-brand-500/30">
+            <MicIcon className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-neutral-900 dark:text-white">{t.form.title}</h2>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t.form.subtitle}</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-bold text-neutral-900 dark:text-white">{t.form.title}</h2>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">{t.form.subtitle}</p>
-        </div>
+        {hasDraft && (
+          <Button
+            type="button"
+            variant="plain"
+            size="sm"
+            onClick={clearDraft}
+            className="flex items-center gap-1.5 rounded-lg border border-neutral-200/70 bg-white/60 px-3 py-1.5 text-xs font-medium text-neutral-600 shadow-sm transition-colors hover:border-neutral-300 hover:bg-white hover:text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+          >
+            <CloseIcon className="h-3.5 w-3.5" />
+            {t.form.clearDraft}
+          </Button>
+        )}
       </div>
+
+      {hasDraft && (
+        <div className="mb-5 rounded-lg border border-neutral-200/50 bg-neutral-50/50 px-3 py-2 text-xs text-neutral-500 dark:border-white/5 dark:bg-white/5 dark:text-neutral-400">
+          {t.form.draftNote}
+        </div>
+      )}
 
       <div className="space-y-5">
         <div className="grid gap-5 sm:grid-cols-2">
@@ -136,6 +244,8 @@ export function TalkProposalForm({ t }: { t: Translations }) {
               type="text"
               id="speaker-name"
               name="speakerName"
+              value={speakerName}
+              onChange={(e) => setSpeakerName(e.target.value)}
               required
               minLength={2}
               autoComplete="name"
@@ -158,6 +268,8 @@ export function TalkProposalForm({ t }: { t: Translations }) {
               type="email"
               id="speaker-email"
               name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
               className={`${inputBaseClass} ${state.errors?.email ? inputErrorClass : inputNormalClass}`}
@@ -180,6 +292,8 @@ export function TalkProposalForm({ t }: { t: Translations }) {
             type="text"
             id="talk-title"
             name="talkTitle"
+            value={talkTitle}
+            onChange={(e) => setTalkTitle(e.target.value)}
             required
             minLength={5}
             className={`${inputBaseClass} ${state.errors?.talkTitle ? inputErrorClass : inputNormalClass}`}
@@ -200,6 +314,8 @@ export function TalkProposalForm({ t }: { t: Translations }) {
           <textarea
             id="talk-abstract"
             name="abstract"
+            value={abstract}
+            onChange={(e) => setAbstract(e.target.value)}
             rows={5}
             required
             minLength={50}
@@ -279,6 +395,8 @@ export function TalkProposalForm({ t }: { t: Translations }) {
           <textarea
             id="speaker-experience"
             name="experience"
+            value={experience}
+            onChange={(e) => setExperience(e.target.value)}
             rows={3}
             className={`${inputBaseClass} resize-none ${inputNormalClass}`}
             placeholder={t.form.experiencePlaceholder}

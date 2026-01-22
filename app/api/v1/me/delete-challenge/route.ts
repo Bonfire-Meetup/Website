@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getAuthUserById } from "@/app/lib/data/auth";
-import { renderAccountDeleteTemplate } from "@/app/lib/email/email-templates";
-import { sendEmail, getAuthFrom } from "@/app/lib/email/email";
-import { runWithRequestContext } from "@/app/lib/utils/request-context";
-import { getRequestLocale } from "@/app/lib/utils/locale";
-import { createEmailChallenge } from "@/app/lib/auth/challenge-request";
-import { requireAuth } from "@/app/lib/api/auth";
+import { getAuthUserById } from "@/lib/data/auth";
+import { renderAccountDeleteTemplate } from "@/lib/email/email-templates";
+import { sendEmail, getAuthFrom } from "@/lib/email/email";
+import { runWithRequestContext } from "@/lib/utils/request-context";
+import { getRequestLocale } from "@/lib/utils/locale";
+import { createEmailChallenge } from "@/lib/auth/challenge-request";
+import { requireAuth } from "@/lib/api/auth";
 
 const challengeTtlMs = 10 * 60_000;
 const maxAttempts = 5;

@@ -89,7 +89,7 @@ export function RecordingImage({
           sizes={sizes}
           priority={fetchPriority === "high"}
           onLoad={() => setLoaded(true)}
-          className={`object-cover transition duration-700 transition-opacity duration-500 ${imgClassName} ${
+          className={`object-cover transition-transform duration-700 ease-out transition-opacity duration-500 ${imgClassName} ${
             loaded ? "opacity-100" : "opacity-0"
           }`}
         />

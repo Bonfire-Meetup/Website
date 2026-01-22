@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getAuthUserById } from "@/app/lib/data/auth";
-import { runWithRequestContext } from "@/app/lib/utils/request-context";
-import { logError } from "@/app/lib/utils/log";
-import { requireAuth } from "@/app/lib/api/auth";
+import { getAuthUserById } from "@/lib/data/auth";
+import { runWithRequestContext } from "@/lib/utils/request-context";
+import { logError } from "@/lib/utils/log";
+import { requireAuth } from "@/lib/api/auth";
 
 export const GET = async (request: Request) =>
   runWithRequestContext(request, async () => {

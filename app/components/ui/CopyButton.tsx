@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "./Button";
-import { copyToClipboard } from "../../lib/utils/clipboard";
+import { copyToClipboard } from "@/lib/utils/clipboard";
 
 type CopyButtonProps = {
   text: string;

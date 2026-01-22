@@ -1,7 +1,7 @@
 import { Button } from "../ui/Button";
 import { EmptyState } from "../ui/EmptyState";
 import { InfoIcon } from "../shared/icons";
-import { getEpisodeById } from "../../lib/recordings/episodes";
+import { getEpisodeById } from "@/lib/recordings/episodes";
 import { UNRECORDED_EPISODES } from "./RecordingsCatalogTypes";
 import type { RecordingsCatalogLabels } from "./RecordingsCatalogTypes";
 

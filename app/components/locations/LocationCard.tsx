@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { LOCATIONS, type LocationValue } from "../../lib/config/constants";
+import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { FireIcon, MapPinIcon } from "../shared/icons";
 
 type LocationCardProps = {

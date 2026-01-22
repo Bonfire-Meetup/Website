@@ -1,12 +1,12 @@
-import { generateChallengeToken, generateOtpCode, hashOtpCode } from "@/app/lib/auth/otp";
-import { insertAuthChallenge } from "@/app/lib/data/auth";
+import { generateChallengeToken, generateOtpCode, hashOtpCode } from "@/lib/auth/otp";
+import { insertAuthChallenge } from "@/lib/data/auth";
 import {
   getClientFingerprint,
   getEmailFingerprint,
   logError,
   logInfo,
   logWarn,
-} from "@/app/lib/utils/log";
+} from "@/lib/utils/log";
 
 type ChallengeRequestConfig = {
   email: string;

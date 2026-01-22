@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { CheckIcon, FacebookIcon, LinkIcon, LinkedInIcon, ShareIcon, XIcon } from "../shared/icons";
-import { copyToClipboard } from "../../lib/utils/clipboard";
+import { copyToClipboard } from "@/lib/utils/clipboard";
 
 type ShareMenuLabels = {
   share: string;

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getAuthAttemptsByEmailHash, getAuthUserById } from "@/app/lib/data/auth";
-import { getEmailFingerprint, logError } from "@/app/lib/utils/log";
-import { runWithRequestContext } from "@/app/lib/utils/request-context";
-import { requireAuth } from "@/app/lib/api/auth";
+import { getAuthAttemptsByEmailHash, getAuthUserById } from "@/lib/data/auth";
+import { getEmailFingerprint, logError } from "@/lib/utils/log";
+import { runWithRequestContext } from "@/lib/utils/request-context";
+import { requireAuth } from "@/lib/api/auth";
 
 export async function GET(request: Request) {
   return runWithRequestContext(request, async () => {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Header } from "./components/layout/Header";
 import { Footer } from "./components/layout/Footer";
 import { FireIcon } from "./components/shared/icons";
+import { PAGE_ROUTES } from "./lib/routes/pages";
 
 export default function NotFound() {
   return (
@@ -26,10 +27,10 @@ export default function NotFound() {
           </p>
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <Link href="/" className="glass-button px-8 py-3">
+            <Link href={PAGE_ROUTES.HOME} className="glass-button px-8 py-3">
               Back to Home
             </Link>
-            <Link href="/library" className="glass-button-secondary px-8 py-3">
+            <Link href={PAGE_ROUTES.LIBRARY} className="glass-button-secondary px-8 py-3">
               Browse Library
             </Link>
           </div>

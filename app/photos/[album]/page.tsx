@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Header } from "../../components/layout/Header";
-import { Footer } from "../../components/layout/Footer";
-import { Button } from "../../components/ui/Button";
-import { AlbumImage } from "../../components/shared/AlbumImage";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { Button } from "@/components/ui/Button";
+import { AlbumImage } from "@/components/shared/AlbumImage";
 import { AlbumGallery } from "./AlbumGallery";
-import { ArrowLeftIcon, ExternalLinkIcon } from "../../components/shared/icons";
-import photoAlbums from "../../data/photo-albums.json";
-import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "../../lib/recordings/episodes";
-import type { PhotoAlbum } from "../../lib/photos/types";
+import { ArrowLeftIcon, ExternalLinkIcon } from "@/components/shared/icons";
+import photoAlbums from "@/data/photo-albums.json";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
+import type { PhotoAlbum } from "@/lib/photos/types";
 
 const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
 
@@ -85,7 +86,7 @@ export default async function AlbumPage({ params }: PageProps) {
       <main className="gradient-bg min-h-screen pt-28 pb-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="hidden items-center lg:flex">
-            <Button href="/photos" variant="ghost" size="sm" className="group items-center gap-2">
+            <Button href={PAGE_ROUTES.PHOTOS} variant="ghost" size="sm" className="group items-center gap-2">
               <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
               <span>{t("backToAlbums")}</span>
             </Button>

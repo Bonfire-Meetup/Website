@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { sendEmail, getAuthFrom } from "@/app/lib/email/email";
-import { renderEmailCodeTemplate } from "@/app/lib/email/email-templates";
-import { logWarn } from "@/app/lib/utils/log";
-import { runWithRequestContext } from "@/app/lib/utils/request-context";
-import { getRequestLocale } from "@/app/lib/utils/locale";
-import { verifyTurnstileToken } from "@/app/lib/forms/turnstile";
-import { createEmailChallenge } from "@/app/lib/auth/challenge-request";
+import { sendEmail, getAuthFrom } from "@/lib/email/email";
+import { renderEmailCodeTemplate } from "@/lib/email/email-templates";
+import { logWarn } from "@/lib/utils/log";
+import { runWithRequestContext } from "@/lib/utils/request-context";
+import { getRequestLocale } from "@/lib/utils/locale";
+import { verifyTurnstileToken } from "@/lib/forms/turnstile";
+import { createEmailChallenge } from "@/lib/auth/challenge-request";
 
 const challengeSchema = z.object({
   email: z.string().email(),

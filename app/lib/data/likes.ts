@@ -1,4 +1,4 @@
-import { getDatabaseClient } from "@/app/lib/data/db";
+import { getDatabaseClient } from "@/lib/data/db";
 
 type LikeStats = { count: number; hasLiked: boolean };
 type LikeMutationResult = { count: number; added?: boolean; removed?: boolean };

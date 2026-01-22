@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Recording } from "../../lib/recordings/recordings";
-import { Button } from "../ui/Button";
-import { useGlobalPlayer } from "../shared/GlobalPlayerProvider";
-import { ArrowLeftIcon, CinemaIcon } from "../shared/icons";
+import type { Recording } from "@/lib/recordings/recordings";
+import { Button } from "@/components/ui/Button";
+import { useGlobalPlayer } from "@/components/shared/GlobalPlayerProvider";
+import { ArrowLeftIcon, CinemaIcon } from "@/components/shared/icons";
 import { LikeBoostButtons } from "./LikeBoostButtons";
 import { ShareMenu } from "./ShareMenu";
 import { VideoMetadata } from "./VideoMetadata";
 import { RelatedVideosSection } from "./RelatedVideosSection";
-import { formatDate } from "../../lib/utils/locale";
+import { formatDate } from "@/lib/utils/locale";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type RecordingPlayerLabels = {
   backToLibrary: string;
@@ -76,7 +77,7 @@ export function RecordingPlayer({
     setVideo({
       youtubeId: recording.youtubeId,
       title: recording.title,
-      watchUrl: `/watch/${recording.slug}-${recording.shortId}`,
+      watchUrl: PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
     });
   }, [recording.youtubeId, recording.title, recording.slug, recording.shortId, setVideo]);
 
@@ -94,7 +95,7 @@ export function RecordingPlayer({
               <div className="hidden items-center justify-between border-b border-neutral-200/30 px-4 py-3 dark:border-neutral-700/30 lg:flex">
                 <div className="hidden lg:block">
                   <Button
-                    href="/library"
+                    href={PAGE_ROUTES.LIBRARY}
                     variant="ghost"
                     size="sm"
                     className="group items-center gap-2"

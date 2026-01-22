@@ -613,6 +613,8 @@
       "successTitle": "Zpráva odeslána!",
       "successMessage": "Děkujeme za zprávu. Ozveme se vám co nejdříve.",
       "sendAnother": "Poslat další zprávu",
+      "clearDraft": "Vymazat koncept",
+      "draftNote": "Koncepty se ukládají lokálně ve vašem prohlížeči. Pokud formulář neodešlete, vaše data k nám nikdy nedorazí.",
       "errors": {
         "nameRequired": "Zadejte prosím své jméno (alespoň 2 znaky)",
         "emailInvalid": "Zadejte prosím platnou e-mailovou adresu",
@@ -668,6 +670,8 @@
       "successTitle": "Návrh odeslán!",
       "successMessage": "Děkujeme za váš návrh! Projdeme ho a ozveme se vám během několika týdnů.",
       "submitAnother": "Odeslat další návrh",
+      "clearDraft": "Vymazat koncept",
+      "draftNote": "Koncepty se ukládají lokálně ve vašem prohlížeči. Pokud formulář neodešlete, vaše data k nám nikdy nedorazí.",
       "errors": {
         "nameRequired": "Zadejte prosím své jméno (alespoň 2 znaky)",
         "emailInvalid": "Zadejte prosím platnou e-mailovou adresu",

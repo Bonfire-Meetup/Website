@@ -613,6 +613,8 @@
       "successTitle": "Message Sent!",
       "successMessage": "Thanks for reaching out. We'll get back to you as soon as possible.",
       "sendAnother": "Send Another Message",
+      "clearDraft": "Clear draft",
+      "draftNote": "Drafts are stored locally in your browser. If you don't submit, your data never reaches us.",
       "errors": {
         "nameRequired": "Please enter your name (at least 2 characters)",
         "emailInvalid": "Please enter a valid email address",
@@ -668,6 +670,8 @@
       "successTitle": "Proposal Submitted!",
       "successMessage": "Thanks for your submission! We'll review your proposal and get back to you within a few weeks.",
       "submitAnother": "Submit Another Proposal",
+      "clearDraft": "Clear draft",
+      "draftNote": "Drafts are stored locally in your browser. If you don't submit, your data never reaches us.",
       "errors": {
         "nameRequired": "Please enter your name (at least 2 characters)",
         "emailInvalid": "Please enter a valid email address",

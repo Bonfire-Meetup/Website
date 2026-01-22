@@ -1,5 +1,7 @@
 "use client";
 
+import { STORAGE_KEYS } from "../storage/keys";
+
 export type AccessTokenPayload = {
   sub?: string;
   exp?: number;
@@ -9,7 +11,7 @@ export type AccessTokenPayload = {
   jti?: string;
 };
 
-const accessTokenStorageKey = "bnf_access_token";
+const accessTokenStorageKey = STORAGE_KEYS.ACCESS_TOKEN;
 
 const decodeBase64Url = (value: string) => {
   const base64 = value.replace(/-/g, "+").replace(/_/g, "/");

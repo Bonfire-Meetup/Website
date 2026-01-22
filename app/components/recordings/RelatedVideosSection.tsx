@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { RelatedRecording } from "./RecordingPlayer";
 import { LocationPill } from "../locations/LocationPill";
 import { PlayIcon } from "../shared/icons";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type RelatedVideosSectionLabels = {
   relatedTitle: string;
@@ -32,7 +33,7 @@ export function RelatedVideosSection({ relatedRecordings, labels }: RelatedVideo
 
       {nextUp ? (
         <Link
-          href={`/watch/${nextUp.slug}-${nextUp.shortId}`}
+          href={PAGE_ROUTES.WATCH(nextUp.slug, nextUp.shortId)}
           className="group flex items-center gap-4 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/80 p-3 shadow-lg shadow-black/5 transition hover:-translate-y-0.5 hover:border-neutral-200 hover:shadow-xl dark:border-white/10 dark:bg-neutral-950 dark:shadow-black/20 dark:hover:border-white/20"
         >
           <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-xl bg-neutral-900">
@@ -64,7 +65,7 @@ export function RelatedVideosSection({ relatedRecordings, labels }: RelatedVideo
         {remainingRelated.map((related, index) => (
           <Link
             key={related.shortId}
-            href={`/watch/${related.slug}-${related.shortId}`}
+            href={PAGE_ROUTES.WATCH(related.slug, related.shortId)}
             className={`group recording-card-enter opacity-0 stagger-${
               (index % 8) + 1
             } relative flex flex-col overflow-hidden rounded-[24px] bg-white/90 text-neutral-900 shadow-xl shadow-black/5 ring-1 ring-black/5 transition-all hover:-translate-y-1 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10`}
@@ -75,7 +76,7 @@ export function RelatedVideosSection({ relatedRecordings, labels }: RelatedVideo
                 alt={related.title}
                 fill
                 sizes="(max-width: 1024px) 50vw, 360px"
-                className="object-cover transition duration-500 group-hover:scale-110"
+                className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
             </div>

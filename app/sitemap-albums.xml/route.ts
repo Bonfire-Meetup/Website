@@ -1,9 +1,9 @@
-import photoAlbums from "../data/photo-albums.json";
-import { buildAlbumSlug, getEpisodeById } from "../lib/recordings/episodes";
-import { buildSitemapXml } from "../lib/utils/sitemap-utils";
-import type { PhotoAlbum } from "../lib/photos/types";
-
-const BASE_URL = "https://www.bnf.events";
+import photoAlbums from "@/data/photo-albums.json";
+import { buildAlbumSlug, getEpisodeById } from "@/lib/recordings/episodes";
+import { buildSitemapXml } from "@/lib/utils/sitemap-utils";
+import type { PhotoAlbum } from "@/lib/photos/types";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 const PAGE_SIZE = 10000;
 
 const { albums } = photoAlbums as { albums: Pick<PhotoAlbum, "id" | "episodeId">[] };
@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     const lastmod = episode?.date ? new Date(episode.date).toISOString() : undefined;
 
     return {
-      loc: `${BASE_URL}/photos/${slug}`,
+      loc: `${WEBSITE_URLS.BASE}${PAGE_ROUTES.PHOTOS_ALBUM(slug)}`,
       lastmod,
     };
   });

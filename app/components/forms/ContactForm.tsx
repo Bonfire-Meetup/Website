@@ -1,13 +1,15 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "../ui/Button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
-import { CheckIcon, MailIcon } from "../shared/icons";
-import { submitContactForm, type ContactFormState } from "../../lib/forms/form-actions";
-import { SelectDropdown, type DropdownOption } from "../ui/SelectDropdown";
+import { CheckIcon, CloseIcon, MailIcon } from "../shared/icons";
+import { submitContactForm, type ContactFormState } from "@/lib/forms/form-actions";
+import { SelectDropdown, type DropdownOption } from "@/components/ui/SelectDropdown";
 import { TurnstileWidget } from "./TurnstileWidget";
+import { STORAGE_KEYS } from "@/lib/storage/keys";
+import { API_ROUTES } from "@/lib/api/routes";
 
 type Translations = {
   form: {
@@ -33,6 +35,8 @@ type Translations = {
     successTitle: string;
     successMessage: string;
     sendAnother: string;
+    clearDraft: string;
+    draftNote: string;
     errors: Record<string, string>;
   };
 };
@@ -42,8 +46,13 @@ const initialState: ContactFormState = { success: false };
 export function ContactForm({ t }: { t: Translations }) {
   const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
   const searchParams = useSearchParams();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
   const [inquiryType, setInquiryType] = useState("general");
   const [csrfToken, setCsrfToken] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   const inquiryOptions = useMemo<DropdownOption[]>(
     () => [
@@ -65,6 +74,23 @@ export function ContactForm({ t }: { t: Translations }) {
   );
 
   useEffect(() => {
+    try {
+      const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+      if (draft) {
+        const parsed = JSON.parse(draft);
+        if (parsed.name) setName(parsed.name);
+        if (parsed.email) setEmail(parsed.email);
+        if (parsed.subject) setSubject(parsed.subject);
+        if (parsed.message) setMessage(parsed.message);
+        if (parsed.inquiryType && inquiryOptions.some((option) => option.value === parsed.inquiryType)) {
+          setInquiryType(parsed.inquiryType);
+        }
+      }
+    } catch {
+    }
+  }, [inquiryOptions]);
+
+  useEffect(() => {
     const nextType = searchParams.get("type");
     if (!nextType) return;
     if (inquiryOptions.some((option) => option.value === nextType)) {
@@ -73,8 +99,52 @@ export function ContactForm({ t }: { t: Translations }) {
   }, [searchParams, inquiryOptions]);
 
   useEffect(() => {
+    if (state.success) {
+      localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      const draft = {
+        name,
+        email,
+        subject,
+        message,
+        inquiryType,
+      };
+      
+      const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
+      if (!hasContent) {
+        localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+        return;
+      }
+
+      try {
+        const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+        if (existingDraft) {
+          const parsed = JSON.parse(existingDraft);
+          const isUnchanged =
+            parsed.name === draft.name &&
+            parsed.email === draft.email &&
+            parsed.subject === draft.subject &&
+            parsed.message === draft.message &&
+            parsed.inquiryType === draft.inquiryType;
+          if (isUnchanged) {
+            return;
+          }
+        }
+      } catch {
+      }
+
+      localStorage.setItem(STORAGE_KEYS.DRAFT_CONTACT_FORM, JSON.stringify(draft));
+    }, 1500);
+
+    return () => clearTimeout(timeoutId);
+  }, [name, email, subject, message, inquiryType, state.success]);
+
+  useEffect(() => {
     let isActive = true;
-    fetch("/api/v1/csrf")
+    fetch(API_ROUTES.CSRF)
       .then((response) => (response.ok ? response.json() : null))
       .then((data) => {
         if (isActive && data?.token) {
@@ -90,6 +160,17 @@ export function ContactForm({ t }: { t: Translations }) {
       isActive = false;
     };
   }, []);
+
+  const clearDraft = () => {
+    setName("");
+    setEmail("");
+    setSubject("");
+    setMessage("");
+    setInquiryType("general");
+    localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+  };
+
+  const hasDraft = name || email || subject || message || inquiryType !== "general";
 
   if (state.success) {
     return (
@@ -123,16 +204,36 @@ export function ContactForm({ t }: { t: Translations }) {
   const inputErrorClass = "border-rose-400 focus:border-rose-500 focus:ring-rose-500/20";
 
   return (
-    <form action={formAction} className="glass-card no-hover-pop mx-auto max-w-2xl p-6 sm:p-10">
-      <div className="mb-8 flex items-center gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-rose-500 shadow-lg shadow-brand-500/30">
-          <MailIcon className="h-6 w-6 text-white" />
+    <form ref={formRef} action={formAction} className="glass-card no-hover-pop mx-auto max-w-2xl p-6 sm:p-10">
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-rose-500 shadow-lg shadow-brand-500/30">
+            <MailIcon className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-neutral-900 dark:text-white">{t.form.title}</h2>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t.form.subtitle}</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-bold text-neutral-900 dark:text-white">{t.form.title}</h2>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">{t.form.subtitle}</p>
-        </div>
+        {hasDraft && (
+          <Button
+            type="button"
+            variant="plain"
+            size="sm"
+            onClick={clearDraft}
+            className="flex items-center gap-1.5 rounded-lg border border-neutral-200/70 bg-white/60 px-3 py-1.5 text-xs font-medium text-neutral-600 shadow-sm transition-colors hover:border-neutral-300 hover:bg-white hover:text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+          >
+            <CloseIcon className="h-3.5 w-3.5" />
+            {t.form.clearDraft}
+          </Button>
+        )}
       </div>
+
+      {hasDraft && (
+        <div className="mb-5 rounded-lg border border-neutral-200/50 bg-neutral-50/50 px-3 py-2 text-xs text-neutral-500 dark:border-white/5 dark:bg-white/5 dark:text-neutral-400">
+          {t.form.draftNote}
+        </div>
+      )}
 
       <div className="space-y-5">
         <div className="grid gap-5 sm:grid-cols-2">
@@ -147,6 +248,8 @@ export function ContactForm({ t }: { t: Translations }) {
               type="text"
               id="contact-name"
               name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
               minLength={2}
               autoComplete="name"
@@ -169,6 +272,8 @@ export function ContactForm({ t }: { t: Translations }) {
               type="email"
               id="contact-email"
               name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
               className={`${inputBaseClass} ${state.errors?.email ? inputErrorClass : inputNormalClass}`}
@@ -211,6 +316,8 @@ export function ContactForm({ t }: { t: Translations }) {
             type="text"
             id="contact-subject"
             name="subject"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
             required
             minLength={3}
             className={`${inputBaseClass} ${state.errors?.subject ? inputErrorClass : inputNormalClass}`}
@@ -231,6 +338,8 @@ export function ContactForm({ t }: { t: Translations }) {
           <textarea
             id="contact-message"
             name="message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             rows={5}
             required
             minLength={10}
