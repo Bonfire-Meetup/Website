@@ -30,6 +30,9 @@ const normalizeError = (error: unknown) => {
 };
 
 const log = (level: LogLevel, event: string, data?: Record<string, unknown>) => {
+  if (typeof window !== "undefined") {
+    return;
+  }
   const requestId = getRequestId();
   const payloadData =
     requestId && (!data || !("requestId" in data)) ? { ...data, requestId } : data;
@@ -46,6 +49,9 @@ const log = (level: LogLevel, event: string, data?: Record<string, unknown>) => 
   }
   if (level === "warn") {
     console.warn(line);
+    return;
+  }
+  if (serverEnv.NODE_ENV === "production") {
     return;
   }
   // eslint-disable-next-line no-console
