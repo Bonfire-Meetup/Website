@@ -188,6 +188,12 @@
       "rules": {
         "no-console": "off"
       }
+    },
+    {
+      "files": ["**/GlobalPlayerProvider.tsx"],
+      "rules": {
+        "react/iframe-missing-sandbox": "off"
+      }
     }
   ],
   "ignorePatterns": [

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useActionState, useCallback, useEffect, useRef, useState } from "react";
+import { useActionState, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
 import { API_ROUTES } from "@/lib/api/routes";
@@ -16,10 +16,35 @@ import { TurnstileWidget } from "./TurnstileWidget";
 
 const initialState: TalkProposalFormState = { success: false };
 
+function getStoredDraft(): {
+  speakerName?: string;
+  email?: string;
+  talkTitle?: string;
+  abstract?: string;
+  experience?: string;
+  duration?: string;
+  preferredLocation?: string;
+} | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+    return draft ? JSON.parse(draft) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function TalkProposalForm() {
   const t = useTranslations("talkProposalPage.form");
   const tCommon = useTranslations("common");
   const [state, formAction, isPending] = useActionState(submitTalkProposal, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
+  const [csrfToken, setCsrfToken] = useState("");
+  const [mounted, setMounted] = useState(false);
+
   const [speakerName, setSpeakerName] = useState("");
   const [email, setEmail] = useState("");
   const [talkTitle, setTalkTitle] = useState("");
@@ -27,51 +52,55 @@ export function TalkProposalForm() {
   const [experience, setExperience] = useState("");
   const [duration, setDuration] = useState("");
   const [preferredLocation, setPreferredLocation] = useState("either");
-  const [csrfToken, setCsrfToken] = useState("");
-  const formRef = useRef<HTMLFormElement>(null);
+
+  const durationOptions = useMemo<DropdownOption[]>(
+    () => [
+      { disabled: true, label: t("durationPlaceholder"), value: "" },
+      { label: t("duration15"), value: "15" },
+      { label: t("duration30"), value: "30" },
+      { label: t("duration45"), value: "45" },
+    ],
+    [t],
+  );
+
+  const locationOptions = useMemo<DropdownOption[]>(
+    () => [
+      {
+        label: t("locationEither", { prague: tCommon("prague"), zlin: tCommon("zlin") }),
+        value: "either",
+      },
+      { label: tCommon("prague"), value: "prague" },
+      { label: tCommon("zlin"), value: "zlin" },
+    ],
+    [t, tCommon],
+  );
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    try {
-      const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
-
-      if (draft) {
-        const parsed = JSON.parse(draft);
-
-        if (parsed.speakerName) {
-          setSpeakerName(parsed.speakerName);
-        }
-
-        if (parsed.email) {
-          setEmail(parsed.email);
-        }
-
-        if (parsed.talkTitle) {
-          setTalkTitle(parsed.talkTitle);
-        }
-
-        if (parsed.abstract) {
-          setAbstract(parsed.abstract);
-        }
-
-        if (parsed.experience) {
-          setExperience(parsed.experience);
-        }
-
-        if (parsed.duration) {
-          setDuration(parsed.duration);
-        }
-
-        if (parsed.preferredLocation) {
-          setPreferredLocation(parsed.preferredLocation);
-        }
+    const draft = getStoredDraft();
+    if (draft) {
+      if (draft.speakerName) {
+        setSpeakerName(draft.speakerName);
       }
-    } catch {
-      // Ignore localStorage errors
+      if (draft.email) {
+        setEmail(draft.email);
+      }
+      if (draft.talkTitle) {
+        setTalkTitle(draft.talkTitle);
+      }
+      if (draft.abstract) {
+        setAbstract(draft.abstract);
+      }
+      if (draft.experience) {
+        setExperience(draft.experience);
+      }
+      if (draft.duration) {
+        setDuration(draft.duration);
+      }
+      if (draft.preferredLocation) {
+        setPreferredLocation(draft.preferredLocation);
+      }
     }
+    setMounted(true);
   }, []);
 
   const saveDraft = useCallback(() => {
@@ -81,7 +110,6 @@ export function TalkProposalForm() {
 
     if (state.success) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
-
       return;
     }
 
@@ -95,22 +123,15 @@ export function TalkProposalForm() {
       talkTitle,
     };
 
-    const hasContent = Object.values(draft).some((value) => {
-      const hasValue = Boolean(value);
-      const hasNonEmptyValue = hasValue && value.trim().length > 0;
-
-      return hasNonEmptyValue;
-    });
+    const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
 
     if (!hasContent) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
-
       return;
     }
 
     try {
       const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
-
       if (existingDraft) {
         const parsed = JSON.parse(existingDraft);
         const isUnchanged =
@@ -121,13 +142,12 @@ export function TalkProposalForm() {
           parsed.experience === draft.experience &&
           parsed.duration === draft.duration &&
           parsed.preferredLocation === draft.preferredLocation;
-
         if (isUnchanged) {
           return;
         }
       }
     } catch {
-      // Ignore localStorage errors
+      // Ignore
     }
 
     localStorage.setItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL, JSON.stringify(draft));
@@ -146,9 +166,7 @@ export function TalkProposalForm() {
     if (typeof window === "undefined") {
       return;
     }
-
     const timeoutId = setTimeout(saveDraft, 1500);
-
     return () => clearTimeout(timeoutId);
   }, [
     speakerName,
@@ -166,27 +184,9 @@ export function TalkProposalForm() {
     if (typeof window === "undefined") {
       return;
     }
-
-    const handleBeforeUnload = () => {
-      saveDraft();
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [
-    speakerName,
-    email,
-    talkTitle,
-    abstract,
-    experience,
-    duration,
-    preferredLocation,
-    state.success,
-    saveDraft,
-  ]);
+    window.addEventListener("beforeunload", saveDraft);
+    return () => window.removeEventListener("beforeunload", saveDraft);
+  }, [saveDraft]);
 
   useEffect(() => {
     let isActive = true;
@@ -202,11 +202,16 @@ export function TalkProposalForm() {
           setCsrfToken("");
         }
       });
-
     return () => {
       isActive = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (state.message === "captchaFailed") {
+      setTurnstileResetKey((prev) => prev + 1);
+    }
+  }, [state.message]);
 
   const clearDraft = () => {
     setSpeakerName("");
@@ -216,7 +221,6 @@ export function TalkProposalForm() {
     setExperience("");
     setDuration("");
     setPreferredLocation("either");
-
     if (typeof window !== "undefined") {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
     }
@@ -259,31 +263,15 @@ export function TalkProposalForm() {
 
   const getFieldError = (field: string) => {
     const errorKey = state.errors?.[field];
-
     if (!errorKey) {
       return null;
     }
-
     return t(`errors.${errorKey}`) || errorKey;
   };
 
   const inputBaseClass = "form-input-base";
   const inputNormalClass = "form-input";
   const inputErrorClass = "form-input-error";
-  const durationOptions: DropdownOption[] = [
-    { disabled: true, label: t("durationPlaceholder"), value: "" },
-    { label: t("duration15"), value: "15" },
-    { label: t("duration30"), value: "30" },
-    { label: t("duration45"), value: "45" },
-  ];
-  const locationOptions: DropdownOption[] = [
-    {
-      label: t("locationEither", { prague: tCommon("prague"), zlin: tCommon("zlin") }),
-      value: "either",
-    },
-    { label: tCommon("prague"), value: "prague" },
-    { label: tCommon("zlin"), value: "zlin" },
-  ];
 
   return (
     <form
@@ -407,27 +395,35 @@ export function TalkProposalForm() {
             <label htmlFor="talk-duration" className="form-label">
               {t("duration")} <span className="text-rose-500">*</span>
             </label>
-            <SelectDropdown
-              id="talk-duration"
-              name="duration"
-              value={duration}
-              options={durationOptions}
-              onChange={setDuration}
-              ariaInvalid={Boolean(state.errors?.duration)}
-              nativeOnMobile
-              required
-              buttonClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${
-                duration
-                  ? "text-neutral-900 dark:text-white"
-                  : "text-neutral-400 dark:text-neutral-500"
-              }`}
-              nativeClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${
-                duration
-                  ? "text-neutral-900 dark:text-white"
-                  : "text-neutral-400 dark:text-neutral-500"
-              }`}
-              activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
-            />
+            {mounted ? (
+              <SelectDropdown
+                id="talk-duration"
+                name="duration"
+                value={duration}
+                options={durationOptions}
+                onChange={setDuration}
+                ariaInvalid={Boolean(state.errors?.duration)}
+                nativeOnMobile
+                required
+                buttonClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${
+                  duration
+                    ? "text-neutral-900 dark:text-white"
+                    : "text-neutral-400 dark:text-neutral-500"
+                }`}
+                nativeClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${
+                  duration
+                    ? "text-neutral-900 dark:text-white"
+                    : "text-neutral-400 dark:text-neutral-500"
+                }`}
+                activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
+              />
+            ) : (
+              <div
+                className={`${inputBaseClass} ${inputNormalClass} flex items-center text-neutral-400 dark:text-neutral-500`}
+              >
+                {durationOptions.find((o) => o.value === "")?.label}
+              </div>
+            )}
             {state.errors?.duration && (
               <p className="form-error-text">{getFieldError("duration")}</p>
             )}
@@ -437,17 +433,23 @@ export function TalkProposalForm() {
             <label htmlFor="preferred-location" className="form-label">
               {t("preferredLocation")}
             </label>
-            <SelectDropdown
-              id="preferred-location"
-              name="preferredLocation"
-              value={preferredLocation}
-              options={locationOptions}
-              onChange={setPreferredLocation}
-              nativeOnMobile
-              buttonClassName={`${inputBaseClass} ${inputNormalClass}`}
-              nativeClassName={`${inputBaseClass} ${inputNormalClass}`}
-              activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
-            />
+            {mounted ? (
+              <SelectDropdown
+                id="preferred-location"
+                name="preferredLocation"
+                value={preferredLocation}
+                options={locationOptions}
+                onChange={setPreferredLocation}
+                nativeOnMobile
+                buttonClassName={`${inputBaseClass} ${inputNormalClass}`}
+                nativeClassName={`${inputBaseClass} ${inputNormalClass}`}
+                activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
+              />
+            ) : (
+              <div className={`${inputBaseClass} ${inputNormalClass} flex items-center`}>
+                {locationOptions.find((o) => o.value === "either")?.label}
+              </div>
+            )}
           </div>
         </div>
 
@@ -483,7 +485,10 @@ export function TalkProposalForm() {
           <div className="form-error-alert">{t(`errors.${state.message}`) || state.message}</div>
         )}
 
-        <TurnstileWidget className="flex justify-center" />
+        <TurnstileWidget
+          className="flex justify-center"
+          resetKey={state.message === "captchaFailed" ? turnstileResetKey : undefined}
+        />
 
         <Button type="submit" variant="glass" disabled={isPending || !csrfToken} className="w-full">
           {isPending ? (

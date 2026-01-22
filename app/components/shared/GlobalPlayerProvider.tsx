@@ -352,13 +352,14 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
                 <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-white" />
               </div>
             )}
+            {/* eslint-disable-next-line react/iframe-missing-sandbox */}
             <iframe
               ref={iframeRef}
               src={`https://www.youtube.com/embed/${video.youtubeId}?rel=0&modestbranding=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
               title={video.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
-              sandbox="allow-scripts allow-presentation allow-popups allow-popups-to-escape-sandbox"
+              sandbox="allow-same-origin allow-scripts allow-presentation allow-popups allow-popups-to-escape-sandbox"
               onLoad={() => {
                 setIsLoading(false);
                 registerPlayerListener();

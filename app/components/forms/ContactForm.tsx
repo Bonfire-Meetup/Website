@@ -17,17 +17,38 @@ import { TurnstileWidget } from "./TurnstileWidget";
 
 const initialState: ContactFormState = { success: false };
 
+function getStoredDraft(): {
+  name?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
+  inquiryType?: string;
+} | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  try {
+    const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+    return draft ? JSON.parse(draft) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function ContactForm() {
   const t = useTranslations("contactPage.form");
   const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
   const searchParams = useSearchParams();
+  const formRef = useRef<HTMLFormElement>(null);
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
+  const [csrfToken, setCsrfToken] = useState("");
+  const [mounted, setMounted] = useState(false);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [inquiryType, setInquiryType] = useState("general");
-  const [csrfToken, setCsrfToken] = useState("");
-  const formRef = useRef<HTMLFormElement>(null);
 
   const inquiryOptions = useMemo<DropdownOption[]>(
     () => [
@@ -42,55 +63,39 @@ export function ContactForm() {
   );
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
+    const draft = getStoredDraft();
+    const hasDraftInquiryType = draft?.inquiryType;
 
-    try {
-      const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
-
-      if (draft) {
-        const parsed = JSON.parse(draft);
-
-        if (parsed.name) {
-          setName(parsed.name);
-        }
-
-        if (parsed.email) {
-          setEmail(parsed.email);
-        }
-
-        if (parsed.subject) {
-          setSubject(parsed.subject);
-        }
-
-        if (parsed.message) {
-          setMessage(parsed.message);
-        }
-
-        if (
-          parsed.inquiryType &&
-          inquiryOptions.some((option) => option.value === parsed.inquiryType)
-        ) {
-          setInquiryType(parsed.inquiryType);
-        }
+    if (draft) {
+      if (draft.name) {
+        setName(draft.name);
       }
-    } catch {
-      // Ignore localStorage errors
+      if (draft.email) {
+        setEmail(draft.email);
+      }
+      if (draft.subject) {
+        setSubject(draft.subject);
+      }
+      if (draft.message) {
+        setMessage(draft.message);
+      }
+      if (
+        hasDraftInquiryType &&
+        inquiryOptions.some((option) => option.value === hasDraftInquiryType)
+      ) {
+        setInquiryType(hasDraftInquiryType);
+      }
     }
-  }, [inquiryOptions]);
 
-  useEffect(() => {
-    const nextType = searchParams.get("type");
-
-    if (!nextType) {
-      return;
+    if (!hasDraftInquiryType) {
+      const nextType = searchParams.get("type");
+      if (nextType && inquiryOptions.some((option) => option.value === nextType)) {
+        setInquiryType(nextType);
+      }
     }
 
-    if (inquiryOptions.some((option) => option.value === nextType)) {
-      setInquiryType(nextType);
-    }
-  }, [searchParams, inquiryOptions]);
+    setMounted(true);
+  }, [inquiryOptions, searchParams]);
 
   const saveDraft = useCallback(() => {
     if (typeof window === "undefined") {
@@ -99,29 +104,19 @@ export function ContactForm() {
 
     if (state.success) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
-
       return;
     }
 
-    const draft = {
-      email,
-      inquiryType,
-      message,
-      name,
-      subject,
-    };
-
+    const draft = { email, inquiryType, message, name, subject };
     const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
 
     if (!hasContent) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
-
       return;
     }
 
     try {
       const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
-
       if (existingDraft) {
         const parsed = JSON.parse(existingDraft);
         const isUnchanged =
@@ -130,13 +125,12 @@ export function ContactForm() {
           parsed.subject === draft.subject &&
           parsed.message === draft.message &&
           parsed.inquiryType === draft.inquiryType;
-
         if (isUnchanged) {
           return;
         }
       }
     } catch {
-      // Ignore localStorage errors
+      // Ignore
     }
 
     localStorage.setItem(STORAGE_KEYS.DRAFT_CONTACT_FORM, JSON.stringify(draft));
@@ -146,9 +140,7 @@ export function ContactForm() {
     if (typeof window === "undefined") {
       return;
     }
-
     const timeoutId = setTimeout(saveDraft, 1500);
-
     return () => clearTimeout(timeoutId);
   }, [name, email, subject, message, inquiryType, state.success, saveDraft]);
 
@@ -156,27 +148,16 @@ export function ContactForm() {
     if (typeof window === "undefined") {
       return;
     }
-
-    const handleBeforeUnload = () => {
-      saveDraft();
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [name, email, subject, message, inquiryType, state.success, saveDraft]);
+    window.addEventListener("beforeunload", saveDraft);
+    return () => window.removeEventListener("beforeunload", saveDraft);
+  }, [saveDraft]);
 
   useEffect(() => {
     let isActive = true;
     fetch(API_ROUTES.CSRF)
       .then((response) => (response.ok ? response.json() : null))
       .then((data) => {
-        const hasToken = Boolean(data?.token);
-        const shouldSetToken = isActive && hasToken;
-
-        if (shouldSetToken) {
+        if (isActive && data?.token) {
           setCsrfToken(data.token);
         }
       })
@@ -185,11 +166,16 @@ export function ContactForm() {
           setCsrfToken("");
         }
       });
-
     return () => {
       isActive = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (state.message === "captchaFailed") {
+      setTurnstileResetKey((prev) => prev + 1);
+    }
+  }, [state.message]);
 
   const clearDraft = () => {
     setName("");
@@ -197,7 +183,6 @@ export function ContactForm() {
     setSubject("");
     setMessage("");
     setInquiryType("general");
-
     if (typeof window !== "undefined") {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
     }
@@ -231,11 +216,9 @@ export function ContactForm() {
 
   const getFieldError = (field: string) => {
     const errorKey = state.errors?.[field];
-
     if (!errorKey) {
       return null;
     }
-
     return t(`errors.${errorKey}`) || errorKey;
   };
 
@@ -319,17 +302,23 @@ export function ContactForm() {
           <label htmlFor="contact-inquiry" className="form-label">
             {t("inquiryType")}
           </label>
-          <SelectDropdown
-            id="contact-inquiry"
-            name="inquiryType"
-            value={inquiryType}
-            options={inquiryOptions}
-            onChange={setInquiryType}
-            nativeOnMobile
-            buttonClassName={`${inputBaseClass} ${inputNormalClass}`}
-            nativeClassName={`${inputBaseClass} ${inputNormalClass}`}
-            activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
-          />
+          {mounted ? (
+            <SelectDropdown
+              id="contact-inquiry"
+              name="inquiryType"
+              value={inquiryType}
+              options={inquiryOptions}
+              onChange={setInquiryType}
+              nativeOnMobile
+              buttonClassName={`${inputBaseClass} ${inputNormalClass}`}
+              nativeClassName={`${inputBaseClass} ${inputNormalClass}`}
+              activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
+            />
+          ) : (
+            <div className={`${inputBaseClass} ${inputNormalClass} flex items-center`}>
+              {inquiryOptions.find((o) => o.value === "general")?.label}
+            </div>
+          )}
         </div>
 
         <div>
@@ -382,7 +371,10 @@ export function ContactForm() {
           <div className="form-error-alert">{t(`errors.${state.message}`) || state.message}</div>
         )}
 
-        <TurnstileWidget className="flex justify-center" />
+        <TurnstileWidget
+          className="flex justify-center"
+          resetKey={state.message === "captchaFailed" ? turnstileResetKey : undefined}
+        />
 
         <Button type="submit" variant="glass" disabled={isPending || !csrfToken} className="w-full">
           {isPending ? (

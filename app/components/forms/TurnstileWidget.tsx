@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { clientEnv } from "@/lib/config/env";
 
@@ -10,52 +10,107 @@ declare global {
     turnstile?: {
       render: (container: HTMLElement, options: Record<string, unknown>) => string;
       remove: (widgetId: string) => void;
+      reset: (widgetId: string) => void;
     };
   }
 }
 
-export function TurnstileWidget({ className = "" }: { className?: string }) {
+export function TurnstileWidget({
+  className = "",
+  onError,
+  resetKey,
+}: {
+  className?: string;
+  onError?: () => void;
+  resetKey?: string | number;
+}) {
   const siteKey = clientEnv.NEXT_PUBLIC_BNF_TURNSTILE_SITE_KEY;
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [scriptError, setScriptError] = useState(false);
 
-  useEffect(() => {
-    if (!siteKey || !containerRef.current) {
-      return;
+  const renderWidget = useCallback(() => {
+    if (!window.turnstile || !containerRef.current) {
+      return false;
     }
 
-    const renderWidget = () => {
-      if (!window.turnstile || !containerRef.current || widgetIdRef.current) {
-        return;
+    if (widgetIdRef.current) {
+      try {
+        window.turnstile.remove(widgetIdRef.current);
+      } catch {
+        // Ignore
       }
+      widgetIdRef.current = null;
+    }
 
+    try {
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
         appearance: "interaction-only",
         sitekey: siteKey,
         theme: "auto",
       });
-    };
+      return true;
+    } catch (error) {
+      console.error("Failed to render Turnstile widget:", error);
+      setScriptError(true);
+      onError?.();
+      return false;
+    }
+  }, [siteKey, onError]);
 
-    if (window.turnstile) {
-      renderWidget();
+  useEffect(() => {
+    if (
+      resetKey === undefined ||
+      !scriptLoaded ||
+      !widgetIdRef.current ||
+      !window.turnstile ||
+      !containerRef.current
+    ) {
+      return;
     }
 
-    const interval = setInterval(() => {
-      if (window.turnstile) {
+    try {
+      window.turnstile.reset(widgetIdRef.current);
+    } catch {
+      renderWidget();
+    }
+  }, [resetKey, scriptLoaded, renderWidget]);
+
+  useEffect(() => {
+    if (!siteKey || !containerRef.current || !scriptLoaded || !window.turnstile) {
+      return;
+    }
+    renderWidget();
+  }, [siteKey, scriptLoaded, renderWidget]);
+
+  const handleScriptLoad = () => {
+    setScriptLoaded(true);
+    setTimeout(() => {
+      if (window.turnstile && containerRef.current) {
         renderWidget();
-        clearInterval(interval);
       }
     }, 100);
+  };
 
-    return () => {
-      clearInterval(interval);
+  const handleScriptError = () => {
+    setScriptError(true);
+    onError?.();
+  };
 
+  useEffect(
+    () => () => {
       if (widgetIdRef.current && window.turnstile) {
-        window.turnstile.remove(widgetIdRef.current);
+        try {
+          window.turnstile.remove(widgetIdRef.current);
+        } catch {
+          // Ignore
+        }
         widgetIdRef.current = null;
       }
-    };
-  }, [siteKey]);
+    },
+    [],
+  );
 
   if (!siteKey) {
     return null;
@@ -66,8 +121,15 @@ export function TurnstileWidget({ className = "" }: { className?: string }) {
       <Script
         src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
         strategy="afterInteractive"
+        onLoad={handleScriptLoad}
+        onError={handleScriptError}
       />
       <div ref={containerRef} />
+      {scriptError && (
+        <p className="mt-2 text-sm text-rose-500">
+          Failed to load verification widget. Please refresh the page.
+        </p>
+      )}
     </div>
   );
 }
