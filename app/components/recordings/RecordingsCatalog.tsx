@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, useDeferredValue, useCallback, memo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { InfoIcon } from "@/components/shared/icons";
@@ -20,7 +21,6 @@ import {
   type MemberPickRecording,
   type HotRecording,
   type LocationFilter,
-  type RecordingsCatalogLabels,
   normalizeText,
   UNRECORDED_EPISODES,
 } from "./RecordingsCatalogTypes";
@@ -83,8 +83,6 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   recordings,
   memberPicks,
   hotPicks,
-  labels,
-  locale,
   initialFilters,
   preFilteredRecordings,
   scrollLeftLabel,
@@ -95,8 +93,6 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   recordings: CatalogRecording[];
   memberPicks: MemberPickRecording[];
   hotPicks: HotRecording[];
-  labels: RecordingsCatalogLabels;
-  locale: string;
   initialFilters?: {
     location: LocationFilter;
     tag: string;
@@ -110,6 +106,11 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   previousFeaturedLabel?: string;
   nextFeaturedLabel?: string;
 }) {
+  const t = useTranslations("recordings");
+  const tFilters = useTranslations("recordings.filters");
+  const tRows = useTranslations("recordings.rows");
+  const tView = useTranslations("recordings.view");
+  const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeLocation, setActiveLocation] = useState<LocationFilter>(
@@ -179,11 +180,11 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
 
     return Array.from(map.entries()).map(([id, data]) => ({
       value: id,
-      label: data.number ? `${labels.epShort} ${data.number} — ${data.title}` : data.title,
+      label: data.number ? `${t("epShort")} ${data.number} — ${data.title}` : data.title,
       number: data.number || 0,
       location: data.location,
     }));
-  }, [recordings, activeLocation, activeTag, labels.epShort]);
+  }, [recordings, activeLocation, activeTag, t]);
 
   const groupedEpisodes = useMemo(() => {
     const prague = episodeOptions
@@ -194,23 +195,23 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
       .sort((a, b) => b.number - a.number);
 
     return [
-      { label: labels.filters.prague, options: prague },
-      { label: labels.filters.zlin, options: zlin },
+      { label: tFilters("prague"), options: prague },
+      { label: tFilters("zlin"), options: zlin },
     ].filter((group) => group.options.length > 0);
-  }, [episodeOptions, labels.filters.prague, labels.filters.zlin]);
+  }, [episodeOptions, tFilters]);
 
   const tagDropdownOptions = useMemo(
     () =>
       tagOptions.map((tag) => ({
         value: tag,
-        label: tag === "all" ? labels.filters.allTags : tag,
+        label: tag === "all" ? tFilters("allTags") : tag,
       })),
-    [labels.filters.allTags, tagOptions],
+    [tFilters, tagOptions],
   );
 
   const episodeDropdownOptions = useMemo(
-    () => [{ value: "all", label: labels.filters.allEpisodes }],
-    [labels.filters.allEpisodes],
+    () => [{ value: "all", label: tFilters("allEpisodes") }],
+    [tFilters],
   );
 
   const episodeDropdownGroups = useMemo(
@@ -400,23 +401,23 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
 
     if (activeLocation === "all") {
       if (pragueItems.length > 0) {
-        rows.push({ key: "location-prague", title: labels.rows.prague, items: pragueItems });
+        rows.push({ key: "location-prague", title: tRows("prague"), items: pragueItems });
       }
       if (zlinItems.length > 0) {
-        rows.push({ key: "location-zlin", title: labels.rows.zlin, items: zlinItems });
+        rows.push({ key: "location-zlin", title: tRows("zlin"), items: zlinItems });
       }
       return rows;
     }
 
     if (activeLocation === LOCATIONS.PRAGUE && pragueItems.length > 0) {
-      rows.push({ key: "location-prague", title: labels.rows.prague, items: pragueItems });
+      rows.push({ key: "location-prague", title: tRows("prague"), items: pragueItems });
     }
     if (activeLocation === LOCATIONS.ZLIN && zlinItems.length > 0) {
-      rows.push({ key: "location-zlin", title: labels.rows.zlin, items: zlinItems });
+      rows.push({ key: "location-zlin", title: tRows("zlin"), items: zlinItems });
     }
 
     return rows;
-  }, [activeLocation, filteredRecordings, labels.rows.prague, labels.rows.zlin]);
+  }, [activeLocation, filteredRecordings, tRows]);
 
   const tagRows = useMemo(() => {
     if (activeTag !== "all") {
@@ -438,19 +439,19 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     return topTags
       .map((tag) => ({
         key: `tag-${tag}`,
-        title: labels.rows.topic.replace("{tag}", tag),
+        title: tRows("topic", { tag }),
         items: filteredRecordings.filter((recording) => recording.tags.includes(tag)),
       }))
       .filter((row) => row.items.length > 0);
-  }, [activeTag, filteredRecordings, labels.rows.topic]);
+  }, [activeTag, filteredRecordings, tRows]);
 
   const rows = useMemo(() => {
     const nextRows: RailRow[] = [];
     if (latestRecordings.length > 0) {
-      nextRows.push({ key: "latest", title: labels.rows.latest, items: latestRecordings });
+      nextRows.push({ key: "latest", title: tRows("latest"), items: latestRecordings });
     }
     return [...nextRows, ...locationRows, ...tagRows];
-  }, [latestRecordings, locationRows, tagRows, labels.rows.latest]);
+  }, [latestRecordings, locationRows, tagRows, tRows]);
 
   return (
     <section className="relative px-4 pb-24 sm:px-6 lg:px-8">
@@ -467,7 +468,6 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
             tagDropdownOptions={tagDropdownOptions}
             episodeDropdownOptions={episodeDropdownOptions}
             episodeDropdownGroups={episodeDropdownGroups}
-            labels={labels}
             onLocationChange={(location) =>
               updateFilters(location, activeTag, activeEpisode, searchQuery)
             }
@@ -495,7 +495,6 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
           {filteredRecordings.length === 0 ? (
             <EmptyStateMessage
               activeEpisode={activeEpisode}
-              labels={labels}
               onReset={() => updateFilters("all", "all", "all", "")}
             />
           ) : (
@@ -526,21 +525,17 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
                 ) : (
                   <div className="space-y-12">
                     <div className="flex justify-center">
-                      <BrowseAllButton label={labels.view.all} onClick={handleBrowseAll} />
+                      <BrowseAllButton label={tView("all")} onClick={handleBrowseAll} />
                     </div>
                     <MemberPicksRail
-                      title={labels.rows.memberPicks}
+                      title={tRows("memberPicks")}
                       recordings={memberPicks}
-                      locale={locale}
-                      labels={labels}
                       scrollLeftLabel={scrollLeftLabel}
                       scrollRightLabel={scrollRightLabel}
                     />
                     <HotPicksRail
-                      title={labels.rows.hot}
+                      title={tRows("hot")}
                       recordings={hotPicks}
-                      locale={locale}
-                      labels={labels}
                       scrollLeftLabel={scrollLeftLabel}
                       scrollRightLabel={scrollRightLabel}
                     />
@@ -549,14 +544,12 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
                         key={`${row.key}-${filterKey}`}
                         title={row.title}
                         recordings={row.items}
-                        locale={locale}
-                        labels={labels}
                         scrollLeftLabel={scrollLeftLabel}
                         scrollRightLabel={scrollRightLabel}
                       />
                     ))}
                     <div className="flex justify-center">
-                      <BrowseAllButton label={labels.view.all} onClick={handleBrowseAll} />
+                      <BrowseAllButton label={tView("all")} onClick={handleBrowseAll} />
                     </div>
                   </div>
                 )
@@ -577,9 +570,9 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
               </div>
               <p className="max-w-4xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                 <span className="mr-1.5 font-semibold text-neutral-900 dark:text-white">
-                  {labels.noteLabel}
+                  {t("noteLabel")}
                 </span>
-                {labels.disclaimer}
+                {t("disclaimer")}
               </p>
             </div>
           </div>

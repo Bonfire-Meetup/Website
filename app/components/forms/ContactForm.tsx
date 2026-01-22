@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { useActionState, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "../ui/Button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { CheckIcon, CloseIcon, MailIcon } from "../shared/icons";
@@ -11,39 +12,10 @@ import { TurnstileWidget } from "./TurnstileWidget";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { API_ROUTES } from "@/lib/api/routes";
 
-type Translations = {
-  form: {
-    title: string;
-    subtitle: string;
-    name: string;
-    namePlaceholder: string;
-    email: string;
-    emailPlaceholder: string;
-    subject: string;
-    subjectPlaceholder: string;
-    message: string;
-    messagePlaceholder: string;
-    inquiryType: string;
-    inquiryTypeGeneral: string;
-    inquiryTypePress: string;
-    inquiryTypeCrew: string;
-    inquiryTypeConduct: string;
-    inquiryTypeFeature: string;
-    inquiryTypeSupport: string;
-    submit: string;
-    submitting: string;
-    successTitle: string;
-    successMessage: string;
-    sendAnother: string;
-    clearDraft: string;
-    draftNote: string;
-    errors: Record<string, string>;
-  };
-};
-
 const initialState: ContactFormState = { success: false };
 
-export function ContactForm({ t }: { t: Translations }) {
+export function ContactForm() {
+  const t = useTranslations("contactPage.form");
   const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
   const searchParams = useSearchParams();
   const [name, setName] = useState("");
@@ -56,24 +28,18 @@ export function ContactForm({ t }: { t: Translations }) {
 
   const inquiryOptions = useMemo<DropdownOption[]>(
     () => [
-      { value: "general", label: t.form.inquiryTypeGeneral },
-      { value: "feature", label: t.form.inquiryTypeFeature },
-      { value: "support", label: t.form.inquiryTypeSupport },
-      { value: "press", label: t.form.inquiryTypePress },
-      { value: "crew", label: t.form.inquiryTypeCrew },
-      { value: "coc", label: t.form.inquiryTypeConduct },
+      { value: "general", label: t("inquiryTypeGeneral") },
+      { value: "feature", label: t("inquiryTypeFeature") },
+      { value: "support", label: t("inquiryTypeSupport") },
+      { value: "press", label: t("inquiryTypePress") },
+      { value: "crew", label: t("inquiryTypeCrew") },
+      { value: "coc", label: t("inquiryTypeConduct") },
     ],
-    [
-      t.form.inquiryTypeConduct,
-      t.form.inquiryTypeCrew,
-      t.form.inquiryTypeFeature,
-      t.form.inquiryTypeGeneral,
-      t.form.inquiryTypePress,
-      t.form.inquiryTypeSupport,
-    ],
+    [t],
   );
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     try {
       const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
       if (draft) {
@@ -82,12 +48,14 @@ export function ContactForm({ t }: { t: Translations }) {
         if (parsed.email) setEmail(parsed.email);
         if (parsed.subject) setSubject(parsed.subject);
         if (parsed.message) setMessage(parsed.message);
-        if (parsed.inquiryType && inquiryOptions.some((option) => option.value === parsed.inquiryType)) {
+        if (
+          parsed.inquiryType &&
+          inquiryOptions.some((option) => option.value === parsed.inquiryType)
+        ) {
           setInquiryType(parsed.inquiryType);
         }
       }
-    } catch {
-    }
+    } catch {}
   }, [inquiryOptions]);
 
   useEffect(() => {
@@ -98,48 +66,61 @@ export function ContactForm({ t }: { t: Translations }) {
     }
   }, [searchParams, inquiryOptions]);
 
-  useEffect(() => {
+  const saveDraft = useCallback(() => {
+    if (typeof window === "undefined") return;
     if (state.success) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
       return;
     }
 
-    const timeoutId = setTimeout(() => {
-      const draft = {
-        name,
-        email,
-        subject,
-        message,
-        inquiryType,
-      };
-      
-      const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
-      if (!hasContent) {
-        localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
-        return;
-      }
+    const draft = {
+      name,
+      email,
+      subject,
+      message,
+      inquiryType,
+    };
 
-      try {
-        const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
-        if (existingDraft) {
-          const parsed = JSON.parse(existingDraft);
-          const isUnchanged =
-            parsed.name === draft.name &&
-            parsed.email === draft.email &&
-            parsed.subject === draft.subject &&
-            parsed.message === draft.message &&
-            parsed.inquiryType === draft.inquiryType;
-          if (isUnchanged) {
-            return;
-          }
+    const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
+    if (!hasContent) {
+      localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+      return;
+    }
+
+    try {
+      const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+      if (existingDraft) {
+        const parsed = JSON.parse(existingDraft);
+        const isUnchanged =
+          parsed.name === draft.name &&
+          parsed.email === draft.email &&
+          parsed.subject === draft.subject &&
+          parsed.message === draft.message &&
+          parsed.inquiryType === draft.inquiryType;
+        if (isUnchanged) {
+          return;
         }
-      } catch {
       }
+    } catch {}
 
-      localStorage.setItem(STORAGE_KEYS.DRAFT_CONTACT_FORM, JSON.stringify(draft));
-    }, 1500);
+    localStorage.setItem(STORAGE_KEYS.DRAFT_CONTACT_FORM, JSON.stringify(draft));
+  }, [name, email, subject, message, inquiryType, state.success]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const timeoutId = setTimeout(saveDraft, 1500);
     return () => clearTimeout(timeoutId);
+  }, [name, email, subject, message, inquiryType, state.success]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleBeforeUnload = () => {
+      saveDraft();
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, [name, email, subject, message, inquiryType, state.success]);
 
   useEffect(() => {
@@ -167,7 +148,9 @@ export function ContactForm({ t }: { t: Translations }) {
     setSubject("");
     setMessage("");
     setInquiryType("general");
-    localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+    }
   };
 
   const hasDraft = name || email || subject || message || inquiryType !== "general";
@@ -179,12 +162,12 @@ export function ContactForm({ t }: { t: Translations }) {
           <CheckIcon className="h-8 w-8 text-white" />
         </div>
         <h2 className="mb-3 text-2xl font-bold text-neutral-900 dark:text-white">
-          {t.form.successTitle}
+          {t("successTitle")}
         </h2>
-        <p className="text-neutral-600 dark:text-neutral-400">{t.form.successMessage}</p>
+        <p className="text-neutral-600 dark:text-neutral-400">{t("successMessage")}</p>
         <div className="mt-6 flex justify-center">
           <Button type="button" variant="plain" onClick={() => window.location.reload()}>
-            {t.form.sendAnother}
+            {t("sendAnother")}
           </Button>
         </div>
       </div>
@@ -194,7 +177,7 @@ export function ContactForm({ t }: { t: Translations }) {
   const getFieldError = (field: string) => {
     const errorKey = state.errors?.[field];
     if (!errorKey) return null;
-    return t.form.errors[errorKey] || errorKey;
+    return t(`errors.${errorKey}`) || errorKey;
   };
 
   const inputBaseClass =
@@ -204,15 +187,19 @@ export function ContactForm({ t }: { t: Translations }) {
   const inputErrorClass = "border-rose-400 focus:border-rose-500 focus:ring-rose-500/20";
 
   return (
-    <form ref={formRef} action={formAction} className="glass-card no-hover-pop mx-auto max-w-2xl p-6 sm:p-10">
+    <form
+      ref={formRef}
+      action={formAction}
+      className="glass-card no-hover-pop mx-auto max-w-2xl p-6 sm:p-10"
+    >
       <div className="mb-8 flex items-start justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-rose-500 shadow-lg shadow-brand-500/30">
             <MailIcon className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-neutral-900 dark:text-white">{t.form.title}</h2>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t.form.subtitle}</p>
+            <h2 className="text-xl font-bold text-neutral-900 dark:text-white">{t("title")}</h2>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("subtitle")}</p>
           </div>
         </div>
         {hasDraft && (
@@ -224,14 +211,14 @@ export function ContactForm({ t }: { t: Translations }) {
             className="flex items-center gap-1.5 rounded-lg border border-neutral-200/70 bg-white/60 px-3 py-1.5 text-xs font-medium text-neutral-600 shadow-sm transition-colors hover:border-neutral-300 hover:bg-white hover:text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
           >
             <CloseIcon className="h-3.5 w-3.5" />
-            {t.form.clearDraft}
+            {t("clearDraft")}
           </Button>
         )}
       </div>
 
       {hasDraft && (
         <div className="mb-5 rounded-lg border border-neutral-200/50 bg-neutral-50/50 px-3 py-2 text-xs text-neutral-500 dark:border-white/5 dark:bg-white/5 dark:text-neutral-400">
-          {t.form.draftNote}
+          {t("draftNote")}
         </div>
       )}
 
@@ -242,7 +229,7 @@ export function ContactForm({ t }: { t: Translations }) {
               htmlFor="contact-name"
               className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
             >
-              {t.form.name} <span className="text-rose-500">*</span>
+              {t("name")} <span className="text-rose-500">*</span>
             </label>
             <input
               type="text"
@@ -254,7 +241,7 @@ export function ContactForm({ t }: { t: Translations }) {
               minLength={2}
               autoComplete="name"
               className={`${inputBaseClass} ${state.errors?.name ? inputErrorClass : inputNormalClass}`}
-              placeholder={t.form.namePlaceholder}
+              placeholder={t("namePlaceholder")}
             />
             {state.errors?.name && (
               <p className="mt-1.5 text-sm text-rose-500">{getFieldError("name")}</p>
@@ -266,7 +253,7 @@ export function ContactForm({ t }: { t: Translations }) {
               htmlFor="contact-email"
               className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
             >
-              {t.form.email} <span className="text-rose-500">*</span>
+              {t("email")} <span className="text-rose-500">*</span>
             </label>
             <input
               type="email"
@@ -277,7 +264,7 @@ export function ContactForm({ t }: { t: Translations }) {
               required
               autoComplete="email"
               className={`${inputBaseClass} ${state.errors?.email ? inputErrorClass : inputNormalClass}`}
-              placeholder={t.form.emailPlaceholder}
+              placeholder={t("emailPlaceholder")}
             />
             {state.errors?.email && (
               <p className="mt-1.5 text-sm text-rose-500">{getFieldError("email")}</p>
@@ -290,7 +277,7 @@ export function ContactForm({ t }: { t: Translations }) {
             htmlFor="contact-inquiry"
             className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
           >
-            {t.form.inquiryType}
+            {t("inquiryType")}
           </label>
           <SelectDropdown
             id="contact-inquiry"
@@ -310,7 +297,7 @@ export function ContactForm({ t }: { t: Translations }) {
             htmlFor="contact-subject"
             className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
           >
-            {t.form.subject} <span className="text-rose-500">*</span>
+            {t("subject")} <span className="text-rose-500">*</span>
           </label>
           <input
             type="text"
@@ -321,7 +308,7 @@ export function ContactForm({ t }: { t: Translations }) {
             required
             minLength={3}
             className={`${inputBaseClass} ${state.errors?.subject ? inputErrorClass : inputNormalClass}`}
-            placeholder={t.form.subjectPlaceholder}
+            placeholder={t("subjectPlaceholder")}
           />
           {state.errors?.subject && (
             <p className="mt-1.5 text-sm text-rose-500">{getFieldError("subject")}</p>
@@ -333,7 +320,7 @@ export function ContactForm({ t }: { t: Translations }) {
             htmlFor="contact-message"
             className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
           >
-            {t.form.message} <span className="text-rose-500">*</span>
+            {t("message")} <span className="text-rose-500">*</span>
           </label>
           <textarea
             id="contact-message"
@@ -344,7 +331,7 @@ export function ContactForm({ t }: { t: Translations }) {
             required
             minLength={10}
             className={`${inputBaseClass} resize-none ${state.errors?.message ? inputErrorClass : inputNormalClass}`}
-            placeholder={t.form.messagePlaceholder}
+            placeholder={t("messagePlaceholder")}
           />
           {state.errors?.message && (
             <p className="mt-1.5 text-sm text-rose-500">{getFieldError("message")}</p>
@@ -363,7 +350,7 @@ export function ContactForm({ t }: { t: Translations }) {
 
         {state.message && (
           <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400">
-            {t.form.errors[state.message] || state.message}
+            {t(`errors.${state.message}`) || state.message}
           </div>
         )}
 
@@ -373,10 +360,10 @@ export function ContactForm({ t }: { t: Translations }) {
           {isPending ? (
             <span className="flex items-center justify-center gap-2">
               <LoadingSpinner size="md" />
-              {t.form.submitting}
+              {t("submitting")}
             </span>
           ) : (
-            t.form.submit
+            t("submit")
           )}
         </Button>
       </div>

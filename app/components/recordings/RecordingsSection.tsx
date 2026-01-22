@@ -1,4 +1,4 @@
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import type { Recording } from "@/lib/recordings/recordings";
 import type { TrendingRecording } from "@/lib/recordings/trending";
 import { SectionHeader } from "../ui/SectionHeader";
@@ -10,8 +10,6 @@ type RecordingsSectionProps = {
 
 export async function RecordingsSection({ recordings }: RecordingsSectionProps) {
   const t = await getTranslations("sections.recordings");
-  const tRec = await getTranslations("recordings");
-  const locale = await getLocale();
   const homepageRecordings = recordings.map((recording) => ({
     shortId: recording.shortId,
     slug: recording.slug,
@@ -34,17 +32,7 @@ export async function RecordingsSection({ recordings }: RecordingsSectionProps) 
           className="mb-12"
         />
 
-        <RecordingsSectionClient
-          recordings={homepageRecordings}
-          labels={{
-            prague: t("filter.prague"),
-            zlin: t("filter.zlin"),
-            empty: t("empty"),
-            viewAll: t("viewAll"),
-            ariaLocationLabel: tRec("locationLabel", { location: "{location}" }),
-          }}
-          locale={locale}
-        />
+        <RecordingsSectionClient recordings={homepageRecordings} />
       </div>
     </section>
   );

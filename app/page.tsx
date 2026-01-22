@@ -1,10 +1,9 @@
 import { Suspense } from "react";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { Header } from "./components/layout/Header";
 import { Footer } from "./components/layout/Footer";
 import { Hero } from "./components/layout/Hero";
-import type { EventsSectionLabels } from "./components/events/EventsSection";
 import { LocationsSection } from "./components/locations/LocationsSection";
 import { RecordingsSection } from "./components/recordings/RecordingsSection";
 import { TalkBanner } from "./components/shared/TalkBanner";
@@ -19,31 +18,10 @@ export const revalidate = 3600;
 
 export default async function HomePage() {
   const t = await getTranslations();
-  const locale = await getLocale();
   const photoAlt = t("hero.photoAlt");
 
   const heroImages = await getHeroImages(photoAlt);
   const trendingRecordings = await getTrendingRecordings(6);
-
-  const eventsLabels = {
-    title: t("sections.events.title"),
-    subtitle: t("sections.events.subtitle"),
-    filterLabel: t("sections.events.filter.label"),
-    filterAll: t("sections.events.filter.all"),
-    noEvents: t("sections.events.noEvents"),
-    eventCard: {
-      locationLabel: t("events.locationLabel", { location: "{location}" }),
-      episodeLabel: t("events.episodeLabel"),
-      tba: t("events.tba"),
-      speakers: t("events.speakers"),
-      register: t("events.register"),
-      platforms: {
-        luma: t("events.platforms.luma"),
-        facebook: t("events.platforms.facebook"),
-        eventbrite: t("events.platforms.eventbrite"),
-      },
-    },
-  } satisfies EventsSectionLabels;
 
   return (
     <>
@@ -52,7 +30,7 @@ export default async function HomePage() {
       <main id="top" className="relative">
         <Hero images={heroImages} />
 
-        <EventsSection events={upcomingEvents} labels={eventsLabels} locale={locale} />
+        <EventsSection events={upcomingEvents} />
 
         <div className="section-divider mx-auto max-w-4xl" />
 

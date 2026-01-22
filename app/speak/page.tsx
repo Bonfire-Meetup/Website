@@ -32,57 +32,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TalkProposalPage() {
   const t = await getTranslations("talkProposalPage");
-  const tCommon = await getTranslations("common");
-
-  const formTranslations = {
-    form: {
-      title: t("form.title"),
-      subtitle: t("form.subtitle"),
-      speakerName: t("form.speakerName"),
-      speakerNamePlaceholder: t("form.speakerNamePlaceholder"),
-      email: t("form.email"),
-      emailPlaceholder: t("form.emailPlaceholder"),
-      talkTitle: t("form.talkTitle"),
-      talkTitlePlaceholder: t("form.talkTitlePlaceholder"),
-      abstract: t("form.abstract"),
-      abstractPlaceholder: t("form.abstractPlaceholder"),
-      abstractHint: t("form.abstractHint"),
-      duration: t("form.duration"),
-      durationPlaceholder: t("form.durationPlaceholder"),
-      duration15: t("form.duration15"),
-      duration30: t("form.duration30"),
-      duration45: t("form.duration45"),
-      preferredLocation: t("form.preferredLocation"),
-      locationEither: t("form.locationEither", {
-        prague: tCommon("prague"),
-        zlin: tCommon("zlin"),
-      }),
-      locationPrague: tCommon("prague"),
-      locationZlin: tCommon("zlin"),
-      experience: t("form.experience"),
-      experiencePlaceholder: t("form.experiencePlaceholder"),
-      experienceHint: t("form.experienceHint"),
-      submit: t("form.submit"),
-      submitting: t("form.submitting"),
-      successTitle: t("form.successTitle"),
-      successMessage: t("form.successMessage"),
-      submitAnother: t("form.submitAnother"),
-      clearDraft: t("form.clearDraft"),
-      draftNote: t("form.draftNote"),
-      errors: {
-        nameRequired: t("form.errors.nameRequired"),
-        emailInvalid: t("form.errors.emailInvalid"),
-        titleRequired: t("form.errors.titleRequired"),
-        abstractRequired: t("form.errors.abstractRequired"),
-        durationRequired: t("form.errors.durationRequired"),
-        rateLimited: t("form.errors.rateLimited"),
-        captchaFailed: t("form.errors.captchaFailed"),
-        botBlocked: t("form.errors.botBlocked"),
-        csrfInvalid: t("form.errors.csrfInvalid"),
-        generic: t("form.errors.generic"),
-      },
-    },
-  };
 
   return (
     <>
@@ -120,7 +69,7 @@ export default async function TalkProposalPage() {
         </section>
 
         <div className="relative mx-auto max-w-4xl px-4 pb-24">
-          <TalkProposalForm t={formTranslations} />
+          <TalkProposalForm />
 
           <section className="mx-auto mt-16 max-w-2xl">
             <div className="rounded-2xl border border-brand-500/10 bg-gradient-to-br from-brand-500/5 via-transparent to-rose-500/5 p-6 sm:p-8">

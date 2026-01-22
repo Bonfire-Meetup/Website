@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations, useLocale } from "next-intl";
+
 type Attempt = {
   id: string;
   outcome: string;
@@ -7,26 +9,14 @@ type Attempt = {
 };
 
 type LoginAttemptsBlockProps = {
-  title: string;
-  emptyLabel: string;
-  errorLabel: string;
-  outcomeLabels: Record<string, string>;
   items: Attempt[];
   loading: boolean;
   error: string | null;
-  locale: string;
 };
 
-export function LoginAttemptsBlock({
-  title,
-  emptyLabel,
-  errorLabel,
-  outcomeLabels,
-  items,
-  loading,
-  error,
-  locale,
-}: LoginAttemptsBlockProps) {
+export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlockProps) {
+  const t = useTranslations("account.attempts");
+  const locale = useLocale();
   const getOutcomeStyle = (outcome: string) => {
     if (outcome === "success")
       return "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400";
@@ -38,7 +28,7 @@ export function LoginAttemptsBlock({
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
       <div className="border-b border-neutral-100 px-4 py-3 dark:border-white/5">
-        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">{title}</h3>
+        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">{t("title")}</h3>
       </div>
       <div className="p-4">
         {loading ? (
@@ -58,11 +48,11 @@ export function LoginAttemptsBlock({
           </div>
         ) : error ? (
           <div className="py-4 text-center text-sm text-neutral-500 dark:text-neutral-400">
-            {errorLabel}
+            {t("error")}
           </div>
         ) : items.length === 0 ? (
           <div className="py-4 text-center text-sm text-neutral-500 dark:text-neutral-400">
-            {emptyLabel}
+            {t("empty")}
           </div>
         ) : (
           <div className="space-y-2 max-h-[280px] sm:max-h-[320px] overflow-y-auto overscroll-contain -mx-4 px-4">
@@ -73,7 +63,7 @@ export function LoginAttemptsBlock({
               >
                 <div className="min-w-0">
                   <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                    {outcomeLabels[attempt.outcome] ?? attempt.outcome}
+                    {t(`outcomes.${attempt.outcome}`) ?? attempt.outcome}
                   </div>
                   <div className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
                     {new Date(attempt.createdAt).toLocaleString(locale)}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type BoostedRecording = {
@@ -11,30 +12,18 @@ type BoostedRecording = {
 };
 
 type BoostedVideosBlockProps = {
-  title: string;
-  emptyLabel: string;
-  errorLabel: string;
-  removeLabel: string;
   loading: boolean;
   error: string | null;
   items: BoostedRecording[];
   onRemove: (shortId: string) => void;
 };
 
-export function BoostedVideosBlock({
-  title,
-  emptyLabel,
-  errorLabel,
-  removeLabel,
-  loading,
-  error,
-  items,
-  onRemove,
-}: BoostedVideosBlockProps) {
+export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedVideosBlockProps) {
+  const t = useTranslations("account.boosted");
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
       <div className="border-b border-neutral-100 px-4 py-3 dark:border-white/5">
-        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">{title}</h3>
+        <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">{t("title")}</h3>
       </div>
       <div className="p-4">
         {loading ? (
@@ -54,11 +43,11 @@ export function BoostedVideosBlock({
           </div>
         ) : error ? (
           <div className="py-4 text-center text-sm text-neutral-500 dark:text-neutral-400">
-            {errorLabel}
+            {t("error")}
           </div>
         ) : items.length === 0 ? (
           <div className="py-4 text-center text-sm text-neutral-500 dark:text-neutral-400">
-            {emptyLabel}
+            {t("empty")}
           </div>
         ) : (
           <div className="space-y-2 max-h-[280px] sm:max-h-[320px] overflow-y-auto overscroll-contain -mx-4 px-4">
@@ -83,7 +72,7 @@ export function BoostedVideosBlock({
                   onClick={() => onRemove(boost.shortId)}
                   className="shrink-0 cursor-pointer rounded-lg px-2 py-1 text-xs text-neutral-400 opacity-0 transition hover:bg-rose-50 hover:text-rose-600 group-hover:opacity-100 dark:hover:bg-rose-500/10 dark:hover:text-rose-300"
                 >
-                  {removeLabel}
+                  {t("remove")}
                 </button>
               </div>
             ))}

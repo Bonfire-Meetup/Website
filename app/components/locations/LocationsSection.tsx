@@ -13,7 +13,11 @@ export async function LocationsSection() {
         <SectionHeader
           id="locations"
           title={t("title")}
-          subtitle={t("subtitle", { country: tCommon("country") })}
+          subtitle={t("subtitle", {
+            country: tCommon("country"),
+            prague: tCommon("prague"),
+            zlin: tCommon("zlin"),
+          })}
         />
 
         <div className="grid gap-8 md:grid-cols-2">

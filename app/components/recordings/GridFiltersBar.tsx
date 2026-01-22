@@ -1,17 +1,14 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Button } from "../ui/Button";
 import { SelectDropdown, type DropdownGroup, type DropdownOption } from "../ui/SelectDropdown";
 import { LOCATIONS } from "@/lib/config/constants";
-import type {
-  LocationFilter,
-  CatalogRecording,
-  RecordingsCatalogLabels,
-} from "./RecordingsCatalogTypes";
+import type { LocationFilter, CatalogRecording } from "./RecordingsCatalogTypes";
 
 const locationOptions: {
   value: LocationFilter;
-  labelKey: keyof RecordingsCatalogLabels["filters"];
+  labelKey: "allLocations" | "prague" | "zlin";
 }[] = [
   { value: "all", labelKey: "allLocations" },
   { value: LOCATIONS.PRAGUE, labelKey: "prague" },
@@ -27,7 +24,6 @@ export function GridFiltersBar({
   tagDropdownOptions,
   episodeDropdownOptions,
   episodeDropdownGroups,
-  labels,
   onLocationChange,
   onTagChange,
   onEpisodeChange,
@@ -44,7 +40,6 @@ export function GridFiltersBar({
   tagDropdownOptions: DropdownOption[];
   episodeDropdownOptions: DropdownOption[];
   episodeDropdownGroups: DropdownGroup[];
-  labels: RecordingsCatalogLabels;
   onLocationChange: (location: LocationFilter) => void;
   onTagChange: (tag: string) => void;
   onEpisodeChange: (episode: string) => void;
@@ -53,6 +48,9 @@ export function GridFiltersBar({
   onViewRows: () => void;
   isSearchDirtyRef: React.MutableRefObject<boolean>;
 }) {
+  const t = useTranslations("recordings.filters");
+  const tSearch = useTranslations("recordings.search");
+  const tView = useTranslations("recordings.view");
   return (
     <div className="glass relative z-10 mb-8 rounded-2xl px-4 py-3">
       <div className="flex flex-wrap items-center gap-3 lg:flex-nowrap lg:gap-2">
@@ -88,7 +86,7 @@ export function GridFiltersBar({
                       : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/15"
                 }`}
               >
-                {labels.filters[option.labelKey]}
+                {t(option.labelKey)}
               </Button>
             );
           })}
@@ -143,8 +141,8 @@ export function GridFiltersBar({
               isSearchDirtyRef.current = true;
               onSearchChange(e.target.value);
             }}
-            placeholder={labels.search.placeholder}
-            aria-label={labels.search.label}
+            placeholder={tSearch("placeholder")}
+            aria-label={tSearch("label")}
             className="w-full min-w-[220px] rounded-lg border-0 bg-white/90 px-3 py-1.5 text-xs font-medium text-neutral-700 shadow-sm ring-1 ring-black/5 transition placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:placeholder:text-neutral-500 dark:focus:ring-brand-400/50"
           />
         </div>
@@ -168,7 +166,7 @@ export function GridFiltersBar({
               : "text-neutral-600 hover:bg-white/80 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white"
           }`}
         >
-          {labels.filters.reset}
+          {t("reset")}
         </Button>
         <Button
           onClick={onViewRows}
@@ -176,7 +174,7 @@ export function GridFiltersBar({
           size="sm"
           className="ml-auto w-full rounded-lg bg-white/80 font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white sm:w-auto dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/15"
         >
-          {labels.view.rows}
+          {tView("rows")}
         </Button>
       </div>
     </div>

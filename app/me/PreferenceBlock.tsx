@@ -1,30 +1,21 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 type PreferenceBlockProps = {
-  title: string;
-  body: string;
-  enabledLabel: string;
-  disabledLabel: string;
   enabled: boolean;
   disabled?: boolean;
   onToggle: () => void;
 };
 
-export function PreferenceBlock({
-  title,
-  body,
-  enabledLabel,
-  disabledLabel,
-  enabled,
-  disabled,
-  onToggle,
-}: PreferenceBlockProps) {
+export function PreferenceBlock({ enabled, disabled, onToggle }: PreferenceBlockProps) {
+  const t = useTranslations("account.communityEmails");
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
       <div className="flex items-center justify-between gap-4 p-4">
         <div className="min-w-0">
-          <div className="text-sm font-medium text-neutral-900 dark:text-white">{title}</div>
-          <div className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{body}</div>
+          <div className="text-sm font-medium text-neutral-900 dark:text-white">{t("title")}</div>
+          <div className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{t("body")}</div>
         </div>
         <button
           type="button"
@@ -40,7 +31,7 @@ export function PreferenceBlock({
               enabled ? "translate-x-6" : "translate-x-1"
             }`}
           />
-          <span className="sr-only">{enabled ? enabledLabel : disabledLabel}</span>
+          <span className="sr-only">{enabled ? t("enabled") : t("disabled")}</span>
         </button>
       </div>
     </div>

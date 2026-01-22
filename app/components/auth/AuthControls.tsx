@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { LanguageToggle } from "../theme/LanguageToggle";
 import { ThemeToggle } from "../theme/ThemeToggle";
-import { LOCALES, DEFAULT_LOCALE, isValidLocale, type Locale } from "@/lib/i18n/locales";
+import { DEFAULT_LOCALE, isValidLocale, type Locale } from "@/lib/i18n/locales";
 
 const getCookieValue = (name: string) => {
   if (typeof document === "undefined") return null;
@@ -11,18 +11,7 @@ const getCookieValue = (name: string) => {
   return match ? decodeURIComponent(match[1] ?? "") : null;
 };
 
-type AuthControlsLabels = {
-  csLabel: string;
-  enLabel: string;
-  switchToCs: string;
-  switchToEn: string;
-};
-
-type AuthControlsProps = {
-  labels?: AuthControlsLabels;
-};
-
-export function AuthControls({ labels }: AuthControlsProps = {}) {
+export function AuthControls() {
   const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
 
   useEffect(() => {
@@ -32,16 +21,9 @@ export function AuthControls({ labels }: AuthControlsProps = {}) {
     setLocale(isValidLocale(resolvedLocale) ? resolvedLocale : DEFAULT_LOCALE);
   }, []);
 
-  const defaultLabels: AuthControlsLabels = {
-    csLabel: "CS",
-    enLabel: "EN",
-    switchToCs: "Switch to Czech",
-    switchToEn: "Switch to English",
-  };
-
   return (
     <div className="flex items-center gap-2">
-      <LanguageToggle locale={locale} labels={labels ?? defaultLabels} onLocaleChange={setLocale} />
+      <LanguageToggle locale={locale} onLocaleChange={setLocale} />
       <ThemeToggle />
     </div>
   );

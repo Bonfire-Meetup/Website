@@ -1,22 +1,16 @@
-"use client";
-
 import { FireIcon } from "../shared/icons";
 import { Rail } from "./Rail";
 import { RailCard } from "./RailCard";
-import type { HotRecording, RecordingsCatalogLabels } from "./RecordingsCatalogTypes";
+import type { HotRecording } from "./RecordingsCatalogTypes";
 
 export function HotPicksRail({
   title,
   recordings,
-  locale,
-  labels,
   scrollLeftLabel,
   scrollRightLabel,
 }: {
   title: string;
   recordings: HotRecording[];
-  locale: string;
-  labels: RecordingsCatalogLabels;
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
 }) {
@@ -28,8 +22,6 @@ export function HotPicksRail({
         <RailCard
           key={`hot-${recording.shortId}`}
           recording={recording}
-          locale={locale}
-          labels={labels}
           isFirst={index < 2}
           badge={
             recording.likeCount > 0

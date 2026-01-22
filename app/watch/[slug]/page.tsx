@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import {
   getAllRecordings,
   getRelatedRecordings,
@@ -65,40 +65,8 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
     notFound();
   }
 
-  const locale = await getLocale();
-  const t = await getTranslations("recordings");
-  const labels = {
-    backToLibrary: t("backToLibrary"),
-    exitCinema: t("exitCinema"),
-    cinema: t("cinema"),
-    spark: t("spark"),
-    sparks: t("sparks"),
-    lightItUp: t("lightItUp"),
-    boost: t("boost"),
-    boosts: t("boosts"),
-    boostItUp: t("boostItUp"),
-    nextUp: t("nextUp"),
-    speaker: t("speaker"),
-    date: t("date"),
-    about: t("about"),
-    relatedTitle: t("relatedTitle"),
-    back: t("back"),
-    epShort: t("epShort"),
-    special: t("special"),
-    share: t("share"),
-    copyLink: t("copyLink"),
-    copied: t("copied"),
-  };
-
   const allRecordings = getAllRecordings();
   const relatedRecordings = getRelatedRecordings(recording, allRecordings);
 
-  return (
-    <RecordingPlayer
-      recording={recording}
-      relatedRecordings={relatedRecordings}
-      labels={labels}
-      locale={locale}
-    />
-  );
+  return <RecordingPlayer recording={recording} relatedRecordings={relatedRecordings} />;
 }

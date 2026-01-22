@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { LogOutIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
@@ -38,68 +39,9 @@ type LoginAttempt = {
   createdAt: string;
 };
 
-type MeLabels = {
-  title: string;
-  subtitle: string;
-  signOut: string;
-  loading: string;
-  error: string;
-  email: string;
-  userId: string;
-  created: string;
-  lastLogin: string;
-  empty: string;
-  guildKicker: string;
-  guildTitle: string;
-  guildBody: string;
-  guildSoon: string;
-  guildPerks: string[];
-  preferencesTitle: string;
-  activityTitle: string;
-  boostedTitle: string;
-  boostedEmpty: string;
-  boostedError: string;
-  boostedRemove: string;
-  communityEmailsTitle: string;
-  communityEmailsBody: string;
-  communityEmailsEnabled: string;
-  communityEmailsDisabled: string;
-  deleteTitle: string;
-  deleteBody: string;
-  deleteCodeLabel: string;
-  deleteSendCode: string;
-  deleteSendingCode: string;
-  deleteConfirm: string;
-  deleteConfirming: string;
-  deleteCancel: string;
-  deleteStatus: string;
-  deleteError: string;
-  deleteInvalid: string;
-  deleteExpired: string;
-  deleteTooManyAttempts: string;
-  deleteStepIntent: string;
-  deleteStepSend: string;
-  deleteStepVerify: string;
-  deleteIntentLabel: string;
-  deleteIntentRequired: string;
-  deleteProceed: string;
-  deleteSendIntro: string;
-  deleteCompleted: string;
-  dangerZone: string;
-  attemptsTitle: string;
-  attemptsEmpty: string;
-  attemptsError: string;
-  attemptsOutcomes: Record<string, string>;
-  supportTitle: string;
-  supportFeatureRequest: string;
-  supportTechnicalIssue: string;
-  copySuccess: string;
-  copyError: string;
-  copyIdLabel: string;
-  locale: string;
-};
-
-export function MeClient({ labels }: { labels: MeLabels }) {
+export function MeClient() {
+  const t = useTranslations("account");
+  const tDelete = useTranslations("account.delete");
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -146,10 +88,10 @@ export function MeClient({ labels }: { labels: MeLabels }) {
     };
 
     loadProfile().catch(() => {
-      setError(labels.error);
+      setError(t("error"));
       setLoading(false);
     });
-  }, [router, labels.error]);
+  }, [router, t]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -159,7 +101,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
           headers: createAuthHeaders(accessToken),
         });
         if (!response.ok) {
-          setBoostsError(labels.boostedError);
+          setBoostsError(t("boosted.error"));
           setBoostsLoading(false);
           return;
         }
@@ -167,12 +109,12 @@ export function MeClient({ labels }: { labels: MeLabels }) {
         setBoosts(data.items ?? []);
         setBoostsLoading(false);
       } catch {
-        setBoostsError(labels.boostedError);
+        setBoostsError(t("boosted.error"));
         setBoostsLoading(false);
       }
     };
     loadBoosts();
-  }, [accessToken, labels.boostedError]);
+  }, [accessToken, t]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -182,7 +124,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
           headers: createAuthHeaders(accessToken),
         });
         if (!response.ok) {
-          setAttemptsError(labels.attemptsError);
+          setAttemptsError(t("attempts.error"));
           setAttemptsLoading(false);
           return;
         }
@@ -190,12 +132,12 @@ export function MeClient({ labels }: { labels: MeLabels }) {
         setAttempts(data.items ?? []);
         setAttemptsLoading(false);
       } catch {
-        setAttemptsError(labels.attemptsError);
+        setAttemptsError(t("attempts.error"));
         setAttemptsLoading(false);
       }
     };
     loadAttempts();
-  }, [accessToken, labels.attemptsError]);
+  }, [accessToken, t]);
 
   const handleSignOut = () => {
     clearAccessToken();
@@ -226,7 +168,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
   const handleDeleteRequest = async () => {
     if (!accessToken) return;
     if (!deleteIntent) {
-      setDeleteError(labels.deleteIntentRequired);
+      setDeleteError(tDelete("intentRequired"));
       return;
     }
     setDeleteLoading(true);
@@ -239,21 +181,21 @@ export function MeClient({ labels }: { labels: MeLabels }) {
         headers: createAuthHeaders(accessToken),
       });
       if (!response.ok) {
-        setDeleteError(labels.deleteError);
+        setDeleteError(tDelete("error"));
         setDeleteLoading(false);
         return;
       }
       const data = (await response.json()) as { challenge_token?: string };
       if (!data.challenge_token) {
-        setDeleteError(labels.deleteError);
+        setDeleteError(tDelete("error"));
         setDeleteLoading(false);
         return;
       }
       setDeleteChallengeToken(data.challenge_token);
       setDeleteStep("verify");
-      setDeleteStatus(labels.deleteStatus);
+      setDeleteStatus(tDelete("status"));
     } catch {
-      setDeleteError(labels.deleteError);
+      setDeleteError(tDelete("error"));
     } finally {
       setDeleteLoading(false);
     }
@@ -275,33 +217,33 @@ export function MeClient({ labels }: { labels: MeLabels }) {
         const data = (await response.json().catch(() => null)) as { error?: string } | null;
         const reason = data?.error;
         if (reason === "expired") {
-          setDeleteError(labels.deleteExpired);
+          setDeleteError(tDelete("expired"));
           setDeleteStep("confirm");
           setDeleteCode("");
           setDeleteChallengeToken(null);
           setDeleteStatus(null);
         } else if (reason === "too_many_attempts") {
-          setDeleteError(labels.deleteTooManyAttempts);
+          setDeleteError(tDelete("tooManyAttempts"));
           setDeleteStep("confirm");
           setDeleteCode("");
           setDeleteChallengeToken(null);
           setDeleteStatus(null);
         } else if (reason === "invalid_code" || reason === "invalid_request") {
-          setDeleteError(labels.deleteInvalid);
+          setDeleteError(tDelete("invalid"));
         } else {
-          setDeleteError(labels.deleteError);
+          setDeleteError(tDelete("error"));
         }
         setDeleteLoading(false);
         return;
       }
       setDeleteStep("done");
-      setDeleteStatus(labels.deleteCompleted);
+      setDeleteStatus(tDelete("completed"));
       setTimeout(() => {
         clearAccessToken();
         router.replace(PAGE_ROUTES.HOME);
       }, 3000);
     } catch {
-      setDeleteError(labels.deleteError);
+      setDeleteError(tDelete("error"));
       setDeleteLoading(false);
     }
   };
@@ -342,7 +284,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
     <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
-          {labels.title}
+          {t("title")}
         </h1>
         <Button
           onClick={handleSignOut}
@@ -351,13 +293,13 @@ export function MeClient({ labels }: { labels: MeLabels }) {
           className="group border border-neutral-200/70 bg-white/60 text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
         >
           <LogOutIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          {labels.signOut}
+          {t("signOut")}
         </Button>
       </div>
 
       {error && (
         <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
-          {labels.error}
+          {t("error")}
         </div>
       )}
 
@@ -368,43 +310,18 @@ export function MeClient({ labels }: { labels: MeLabels }) {
         </div>
       ) : profile ? (
         <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-          <ProfileCard
-            profile={profile}
-            locale={labels.locale}
-            labels={{
-              email: labels.email,
-              userId: labels.userId,
-              created: labels.created,
-              lastLogin: labels.lastLogin,
-              empty: labels.empty,
-              copySuccess: labels.copySuccess,
-              copyError: labels.copyError,
-              copyIdLabel: labels.copyIdLabel,
-            }}
-          />
-          <GuildCard
-            labels={{
-              guildKicker: labels.guildKicker,
-              guildTitle: labels.guildTitle,
-              guildBody: labels.guildBody,
-              guildSoon: labels.guildSoon,
-              guildPerks: labels.guildPerks,
-            }}
-          />
+          <ProfileCard profile={profile} />
+          <GuildCard />
         </div>
       ) : null}
 
       {profile && (
         <div className="space-y-4">
           <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
-            {labels.preferencesTitle}
+            {t("preferences.title")}
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <PreferenceBlock
-              title={labels.communityEmailsTitle}
-              body={labels.communityEmailsBody}
-              enabledLabel={labels.communityEmailsEnabled}
-              disabledLabel={labels.communityEmailsDisabled}
               enabled={profile.allowCommunityEmails}
               disabled={updatingPreference}
               onToggle={handleCommunityEmailsToggle}
@@ -415,35 +332,22 @@ export function MeClient({ labels }: { labels: MeLabels }) {
 
       <div className="space-y-4">
         <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
-          {labels.activityTitle}
+          {t("activity.title")}
         </h2>
         <div className="grid gap-6 lg:grid-cols-2">
           <BoostedVideosBlock
-            title={labels.boostedTitle}
-            emptyLabel={labels.boostedEmpty}
-            errorLabel={labels.boostedError}
-            removeLabel={labels.boostedRemove}
             loading={boostsLoading}
             error={boostsError}
             items={boosts}
             onRemove={handleRemoveBoost}
           />
-          <LoginAttemptsBlock
-            title={labels.attemptsTitle}
-            emptyLabel={labels.attemptsEmpty}
-            errorLabel={labels.attemptsError}
-            outcomeLabels={labels.attemptsOutcomes}
-            items={attempts}
-            loading={attemptsLoading}
-            error={attemptsError}
-            locale={labels.locale}
-          />
+          <LoginAttemptsBlock items={attempts} loading={attemptsLoading} error={attemptsError} />
         </div>
       </div>
 
       <div className="space-y-4">
         <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
-          {labels.supportTitle}
+          {t("support.title")}
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <a
@@ -465,7 +369,7 @@ export function MeClient({ labels }: { labels: MeLabels }) {
               </svg>
             </div>
             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
-              {labels.supportFeatureRequest}
+              {t("support.featureRequest")}
             </span>
           </a>
           <a
@@ -488,36 +392,19 @@ export function MeClient({ labels }: { labels: MeLabels }) {
               </svg>
             </div>
             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
-              {labels.supportTechnicalIssue}
+              {t("support.technicalIssue")}
             </span>
           </a>
         </div>
       </div>
 
       <DangerZoneBlock
-        title={labels.dangerZone}
-        steps={{
-          intent: labels.deleteStepIntent,
-          send: labels.deleteStepSend,
-          verify: labels.deleteStepVerify,
-        }}
-        heading={labels.deleteTitle}
-        body={labels.deleteBody}
         status={deleteStatus}
         error={deleteError}
         step={deleteStep}
         intentChecked={deleteIntent}
         loading={deleteLoading}
         code={deleteCode}
-        codeLabel={labels.deleteCodeLabel}
-        proceedLabel={labels.deleteProceed}
-        sendIntro={labels.deleteSendIntro}
-        sendLabel={labels.deleteSendCode}
-        sendingLabel={labels.deleteSendingCode}
-        confirmLabel={labels.deleteConfirm}
-        confirmingLabel={labels.deleteConfirming}
-        cancelLabel={labels.deleteCancel}
-        intentLabel={labels.deleteIntentLabel}
         onIntentChange={setDeleteIntent}
         onProceed={handleDeleteProceed}
         onSendCode={handleDeleteRequest}

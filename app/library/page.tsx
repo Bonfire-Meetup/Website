@@ -1,4 +1,4 @@
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 import { Header } from "@/components/layout/Header";
@@ -21,9 +21,7 @@ export default async function LibraryPage({
 }: {
   searchParams: Promise<{ location?: string; tag?: string; episode?: string; q?: string }>;
 }) {
-  const t = await getTranslations("libraryPage");
   const tCommon = await getTranslations("common");
-  const locale = await getLocale();
   const params = await searchParams;
 
   const [allRecordings, memberPicksData, hotPicksData] = await Promise.all([
@@ -31,49 +29,6 @@ export default async function LibraryPage({
     getMemberPicks(6),
     getHotRecordings(6),
   ]);
-
-  const labels = {
-    eyebrow: t("eyebrow"),
-    title: t("title"),
-    subtitle: t("subtitle"),
-    rows: {
-      latest: t("rows.latest"),
-      prague: t("rows.prague", { prague: tCommon("prague") }),
-      zlin: t("rows.zlin", { zlin: tCommon("zlin") }),
-      topic: t.raw("rows.topic"),
-      memberPicks: t("rows.memberPicks"),
-      hot: t("rows.hot"),
-    },
-    view: {
-      all: t("view.all"),
-      rows: t("view.rows"),
-    },
-    search: {
-      label: t("search.label"),
-      placeholder: t("search.placeholder"),
-    },
-    filters: {
-      title: t("filters.title"),
-      location: t("filters.location"),
-      tag: t("filters.tag"),
-      episode: t("filters.episode"),
-      reset: t("filters.reset"),
-      allLocations: t("filters.allLocations"),
-      allTags: t("filters.allTags"),
-      allEpisodes: t("filters.allEpisodes"),
-      prague: tCommon("prague"),
-      zlin: tCommon("zlin"),
-    },
-    empty: t("empty"),
-    disclaimer: t("disclaimer", { prague: tCommon("prague") }),
-    noteLabel: t("noteLabel"),
-    epShort: (await getTranslations("recordings"))("epShort"),
-    notRecorded: {
-      title: t("notRecorded.title"),
-      body: t.raw("notRecorded.body"),
-      cta: t("notRecorded.cta"),
-    },
-  };
 
   const initialLocation: LocationFilter =
     params.location === LOCATIONS.PRAGUE || params.location === LOCATIONS.ZLIN
@@ -168,8 +123,6 @@ export default async function LibraryPage({
           recordings={recordings}
           memberPicks={memberPicks}
           hotPicks={hotPicks}
-          labels={labels}
-          locale={locale}
           scrollLeftLabel={tCommon("scrollLeft")}
           scrollRightLabel={tCommon("scrollRight")}
           previousFeaturedLabel={tCommon("previousFeatured")}

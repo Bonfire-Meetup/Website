@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import type { Recording } from "@/lib/recordings/recordings";
 import { Button } from "@/components/ui/Button";
 import { useGlobalPlayer } from "@/components/shared/GlobalPlayerProvider";
@@ -12,29 +13,6 @@ import { RelatedVideosSection } from "./RelatedVideosSection";
 import { formatDate } from "@/lib/utils/locale";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-type RecordingPlayerLabels = {
-  backToLibrary: string;
-  exitCinema: string;
-  cinema: string;
-  spark: string;
-  sparks: string;
-  lightItUp: string;
-  boost: string;
-  boosts: string;
-  boostItUp: string;
-  nextUp: string;
-  speaker: string;
-  date: string;
-  about: string;
-  relatedTitle: string;
-  back: string;
-  epShort: string;
-  special: string;
-  share: string;
-  copyLink: string;
-  copied: string;
-};
-
 export type RelatedRecording = Pick<
   Recording,
   "shortId" | "slug" | "title" | "thumbnail" | "speaker" | "episode" | "episodeNumber" | "location"
@@ -43,14 +21,12 @@ export type RelatedRecording = Pick<
 export function RecordingPlayer({
   recording,
   relatedRecordings,
-  labels,
-  locale,
 }: {
   recording: Recording;
   relatedRecordings: RelatedRecording[];
-  labels: RecordingPlayerLabels;
-  locale: string;
 }) {
+  const t = useTranslations("recordings");
+  const locale = useLocale();
   const inlinePlayerRef = useRef<HTMLDivElement | null>(null);
   const { setVideo, setInlineContainer, cinemaMode, setCinemaMode } = useGlobalPlayer();
 
@@ -101,7 +77,7 @@ export function RecordingPlayer({
                     className="group items-center gap-2"
                   >
                     <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-                    <span>{labels.backToLibrary}</span>
+                    <span>{t("backToLibrary")}</span>
                   </Button>
                 </div>
               </div>
@@ -109,56 +85,26 @@ export function RecordingPlayer({
               <div ref={inlinePlayerRef} className="relative w-full aspect-video bg-black" />
 
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200/40 px-5 py-4 dark:border-neutral-700/40 sm:px-6">
-                <LikeBoostButtons
-                  shortId={recording.shortId}
-                  labels={{
-                    lightItUp: labels.lightItUp,
-                    boostItUp: labels.boostItUp,
-                  }}
-                />
+                <LikeBoostButtons shortId={recording.shortId} />
 
                 <div className="flex items-center gap-3">
-                  <ShareMenu
-                    shareUrl={shareUrl}
-                    shareText={shareText}
-                    labels={{
-                      share: labels.share,
-                      copyLink: labels.copyLink,
-                      copied: labels.copied,
-                    }}
-                  />
+                  <ShareMenu shareUrl={shareUrl} shareText={shareText} />
                   <button
                     type="button"
                     onClick={() => setCinemaMode(!cinemaMode)}
                     className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
                   >
                     <CinemaIcon className="h-3.5 w-3.5" />
-                    {cinemaMode ? labels.exitCinema : labels.cinema}
+                    {cinemaMode ? t("exitCinema") : t("cinema")}
                   </button>
                 </div>
               </div>
 
-              <VideoMetadata
-                recording={recording}
-                formattedDate={formattedDate}
-                locale={locale}
-                labels={{
-                  epShort: labels.epShort,
-                  special: labels.special,
-                }}
-              />
+              <VideoMetadata recording={recording} formattedDate={formattedDate} />
             </div>
           </div>
 
-          <RelatedVideosSection
-            relatedRecordings={relatedRecordings}
-            labels={{
-              relatedTitle: labels.relatedTitle,
-              nextUp: labels.nextUp,
-              epShort: labels.epShort,
-              special: labels.special,
-            }}
-          />
+          <RelatedVideosSection relatedRecordings={relatedRecordings} />
         </div>
       </div>
     </div>

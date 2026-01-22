@@ -1,23 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { RelatedRecording } from "./RecordingPlayer";
 import { LocationPill } from "../locations/LocationPill";
 import { PlayIcon } from "../shared/icons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-type RelatedVideosSectionLabels = {
-  relatedTitle: string;
-  nextUp: string;
-  epShort: string;
-  special: string;
-};
-
 type RelatedVideosSectionProps = {
   relatedRecordings: RelatedRecording[];
-  labels: RelatedVideosSectionLabels;
 };
 
-export function RelatedVideosSection({ relatedRecordings, labels }: RelatedVideosSectionProps) {
+export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSectionProps) {
+  const t = useTranslations("recordings");
   const nextUp = relatedRecordings[0];
   const remainingRelated = relatedRecordings.slice(1);
 
@@ -26,7 +20,7 @@ export function RelatedVideosSection({ relatedRecordings, labels }: RelatedVideo
       <div className="flex items-center gap-4 lg:gap-3">
         <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10 lg:hidden" />
         <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white lg:text-left">
-          {labels.relatedTitle}
+          {t("relatedTitle")}
         </h2>
         <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10 lg:hidden" />
       </div>
@@ -47,12 +41,12 @@ export function RelatedVideosSection({ relatedRecordings, labels }: RelatedVideo
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-neutral-700 shadow-sm">
               <PlayIcon className="h-3 w-3" />
-              {labels.nextUp}
+              {t("nextUp")}
             </div>
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
-              {labels.nextUp}
+              {t("nextUp")}
             </p>
             <p className="mt-1 line-clamp-2 text-sm font-semibold text-neutral-900 group-hover:text-brand-500 dark:text-white dark:group-hover:text-brand-400">
               {nextUp.title}
@@ -102,9 +96,9 @@ export function RelatedVideosSection({ relatedRecordings, labels }: RelatedVideo
                 <span className="text-[10px] font-medium uppercase tracking-wider text-neutral-400">
                   {related.episode
                     ? related.episodeNumber
-                      ? `${labels.epShort} ${related.episodeNumber}`
+                      ? `${t("epShort")} ${related.episodeNumber}`
                       : related.episode
-                    : labels.special}
+                    : t("special")}
                 </span>
                 <LocationPill location={related.location} size="xxs" className="!text-[9px]" />
               </div>

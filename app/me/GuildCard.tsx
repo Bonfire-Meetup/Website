@@ -1,16 +1,8 @@
-type GuildCardLabels = {
-  guildKicker: string;
-  guildTitle: string;
-  guildBody: string;
-  guildSoon: string;
-  guildPerks: string[];
-};
+import { useTranslations } from "next-intl";
 
-type GuildCardProps = {
-  labels: GuildCardLabels;
-};
-
-export function GuildCard({ labels }: GuildCardProps) {
+export function GuildCard() {
+  const t = useTranslations("account.guild");
+  const perks = t.raw("perks") as string[];
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-violet-200/50 bg-gradient-to-br from-white via-white to-violet-50/80 shadow-lg shadow-violet-500/5 dark:border-violet-500/20 dark:from-neutral-900 dark:via-neutral-900/95 dark:to-violet-950/30 dark:shadow-violet-500/10">
       <div className="relative h-full overflow-hidden px-6 py-6">
@@ -32,20 +24,20 @@ export function GuildCard({ labels }: GuildCardProps) {
         <div className="relative flex flex-col gap-3 pr-16">
           <div className="inline-flex items-center gap-2">
             <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-violet-600/90 dark:text-violet-300/90">
-              {labels.guildKicker}
+              {t("kicker")}
             </span>
             <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-700 dark:bg-violet-500/20 dark:text-violet-200">
-              {labels.guildSoon}
+              {t("soon")}
             </span>
           </div>
           <div className="text-xl font-black tracking-tight text-neutral-900 dark:text-white">
-            {labels.guildTitle}
+            {t("title")}
           </div>
           <div className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
-            {labels.guildBody}
+            {t("body")}
           </div>
           <ul className="mt-2 space-y-2">
-            {labels.guildPerks.map((perk) => (
+            {perks.map((perk) => (
               <li
                 key={perk}
                 className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400"

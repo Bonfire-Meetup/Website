@@ -33,7 +33,9 @@ function getEpisodeEntries(): EpisodeEntry[] {
         photosCount: album?.count ?? 0,
         photosCover: album?.cover,
         videosHref: `${PAGE_ROUTES.LIBRARY}?episode=${episode.id}`,
-        photosHref: album ? PAGE_ROUTES.PHOTOS_ALBUM(buildAlbumSlug(album.id, album.episodeId)) : undefined,
+        photosHref: album
+          ? PAGE_ROUTES.PHOTOS_ALBUM(buildAlbumSlug(album.id, album.episodeId))
+          : undefined,
       };
     })
     .sort((a, b) => {

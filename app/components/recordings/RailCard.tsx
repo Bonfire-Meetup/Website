@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Pill } from "../ui/Pill";
 import { RecordingMeta } from "./RecordingMeta";
 import { SpeakerList } from "../ui/SpeakerList";
 import { RecordingImage } from "./RecordingImage";
-import type { CatalogRecording, RecordingsCatalogLabels } from "./RecordingsCatalogTypes";
+import type { CatalogRecording } from "./RecordingsCatalogTypes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type RailCardBadge = {
@@ -15,13 +16,13 @@ type RailCardBadge = {
 
 type RailCardProps = {
   recording: CatalogRecording;
-  locale: string;
-  labels: RecordingsCatalogLabels;
   isFirst?: boolean;
   badge?: RailCardBadge;
 };
 
-export function RailCard({ recording, locale, labels, isFirst = false, badge }: RailCardProps) {
+export function RailCard({ recording, isFirst = false, badge }: RailCardProps) {
+  const t = useTranslations("recordings");
+  const locale = useLocale();
   return (
     <Link
       href={PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}
@@ -75,7 +76,7 @@ export function RailCard({ recording, locale, labels, isFirst = false, badge }: 
           className="absolute right-3 top-3 bg-black/60 font-semibold uppercase tracking-[0.18em] text-white shadow"
         >
           {recording.episodeNumber
-            ? `${labels.epShort} ${recording.episodeNumber}`
+            ? `${t("epShort")} ${recording.episodeNumber}`
             : recording.episode}
         </Pill>
       )}

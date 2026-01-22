@@ -33,46 +33,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ContactPage() {
   const t = await getTranslations("contactPage");
 
-  const formTranslations = {
-    form: {
-      title: t("form.title"),
-      subtitle: t("form.subtitle"),
-      name: t("form.name"),
-      namePlaceholder: t("form.namePlaceholder"),
-      email: t("form.email"),
-      emailPlaceholder: t("form.emailPlaceholder"),
-      subject: t("form.subject"),
-      subjectPlaceholder: t("form.subjectPlaceholder"),
-      message: t("form.message"),
-      messagePlaceholder: t("form.messagePlaceholder"),
-      inquiryType: t("form.inquiryType"),
-      inquiryTypeGeneral: t("form.inquiryTypeGeneral"),
-      inquiryTypeFeature: t("form.inquiryTypeFeature"),
-      inquiryTypeSupport: t("form.inquiryTypeSupport"),
-      inquiryTypePress: t("form.inquiryTypePress"),
-      inquiryTypeCrew: t("form.inquiryTypeCrew"),
-      inquiryTypeConduct: t("form.inquiryTypeConduct"),
-      submit: t("form.submit"),
-      submitting: t("form.submitting"),
-      successTitle: t("form.successTitle"),
-      successMessage: t("form.successMessage"),
-      sendAnother: t("form.sendAnother"),
-      clearDraft: t("form.clearDraft"),
-      draftNote: t("form.draftNote"),
-      errors: {
-        nameRequired: t("form.errors.nameRequired"),
-        emailInvalid: t("form.errors.emailInvalid"),
-        subjectRequired: t("form.errors.subjectRequired"),
-        messageRequired: t("form.errors.messageRequired"),
-        rateLimited: t("form.errors.rateLimited"),
-        captchaFailed: t("form.errors.captchaFailed"),
-        botBlocked: t("form.errors.botBlocked"),
-        csrfInvalid: t("form.errors.csrfInvalid"),
-        generic: t("form.errors.generic"),
-      },
-    },
-  };
-
   return (
     <>
       <Header />
@@ -109,7 +69,7 @@ export default async function ContactPage() {
         </section>
 
         <div className="relative mx-auto max-w-4xl px-4 pb-24">
-          <ContactForm t={formTranslations} />
+          <ContactForm />
 
           <div className="mt-16 text-center">
             <p className="text-sm text-neutral-500 dark:text-neutral-400">

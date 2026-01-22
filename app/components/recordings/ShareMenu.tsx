@@ -1,22 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { CheckIcon, FacebookIcon, LinkIcon, LinkedInIcon, ShareIcon, XIcon } from "../shared/icons";
 import { copyToClipboard } from "@/lib/utils/clipboard";
-
-type ShareMenuLabels = {
-  share: string;
-  copyLink: string;
-  copied: string;
-};
 
 type ShareMenuProps = {
   shareUrl: string;
   shareText: string;
-  labels: ShareMenuLabels;
 };
 
-export function ShareMenu({ shareUrl, shareText, labels }: ShareMenuProps) {
+export function ShareMenu({ shareUrl, shareText }: ShareMenuProps) {
+  const t = useTranslations("recordings");
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showCopyToast, setShowCopyToast] = useState(false);
@@ -65,7 +60,7 @@ export function ShareMenu({ shareUrl, shareText, labels }: ShareMenuProps) {
           className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
         >
           <ShareIcon className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">{labels.share}</span>
+          <span className="hidden sm:inline">{t("share")}</span>
         </button>
         {showShareMenu && (
           <>
@@ -81,7 +76,7 @@ export function ShareMenu({ shareUrl, shareText, labels }: ShareMenuProps) {
                 ) : (
                   <LinkIcon className="h-4 w-4" />
                 )}
-                {copied ? labels.copied : labels.copyLink}
+                {copied ? t("copied") : t("copyLink")}
               </button>
               <div className="my-1 h-px bg-neutral-200 dark:bg-white/10" />
               <a
@@ -123,7 +118,7 @@ export function ShareMenu({ shareUrl, shareText, labels }: ShareMenuProps) {
           aria-live="polite"
           className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-full bg-neutral-900/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-black/30 backdrop-blur"
         >
-          {labels.copied}
+          {t("copied")}
         </div>
       )}
     </>

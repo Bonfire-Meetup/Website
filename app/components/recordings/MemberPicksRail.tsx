@@ -1,22 +1,16 @@
-"use client";
-
 import { BoltIcon } from "../shared/icons";
 import { Rail } from "./Rail";
 import { RailCard } from "./RailCard";
-import type { MemberPickRecording, RecordingsCatalogLabels } from "./RecordingsCatalogTypes";
+import type { MemberPickRecording } from "./RecordingsCatalogTypes";
 
 export function MemberPicksRail({
   title,
   recordings,
-  locale,
-  labels,
   scrollLeftLabel,
   scrollRightLabel,
 }: {
   title: string;
   recordings: MemberPickRecording[];
-  locale: string;
-  labels: RecordingsCatalogLabels;
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
 }) {
@@ -28,8 +22,6 @@ export function MemberPicksRail({
         <RailCard
           key={`member-pick-${recording.shortId}`}
           recording={recording}
-          locale={locale}
-          labels={labels}
           isFirst={index < 2}
           badge={
             recording.boostCount > 0

@@ -86,7 +86,12 @@ export default async function AlbumPage({ params }: PageProps) {
       <main className="gradient-bg min-h-screen pt-28 pb-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="hidden items-center lg:flex">
-            <Button href={PAGE_ROUTES.PHOTOS} variant="ghost" size="sm" className="group items-center gap-2">
+            <Button
+              href={PAGE_ROUTES.PHOTOS}
+              variant="ghost"
+              size="sm"
+              className="group items-center gap-2"
+            >
               <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
               <span>{t("backToAlbums")}</span>
             </Button>

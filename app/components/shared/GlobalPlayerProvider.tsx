@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { CloseIcon } from "./icons";
 
 export const ENABLE_GLOBAL_MINI_PLAYER = true;
@@ -50,13 +51,8 @@ const useMediaQuery = (query: string) => {
 const MINI_WIDTH = 320;
 const MINI_HEIGHT = (MINI_WIDTH * 9) / 16;
 
-export function GlobalPlayerProvider({
-  children,
-  labels,
-}: {
-  children: React.ReactNode;
-  labels: { returnToPlayer: string; closePlayer: string; exitCinema: string };
-}) {
+export function GlobalPlayerProvider({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("recordings");
   const [video, setVideo] = useState<VideoInfo | null>(null);
   const [inlineElement, setInlineElement] = useState<HTMLDivElement | null>(null);
   const [cinemaMode, setCinemaMode] = useState(false);
@@ -246,7 +242,7 @@ export function GlobalPlayerProvider({
                 type="button"
                 onClick={() => setCinemaMode(false)}
                 className="fixed right-6 top-6 z-[90] inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white/80 backdrop-blur-sm transition hover:bg-white/20 hover:text-white"
-                aria-label={labels.exitCinema}
+                aria-label={t("exitCinema")}
               >
                 <CloseIcon className="h-5 w-5" />
               </button>
@@ -262,13 +258,13 @@ export function GlobalPlayerProvider({
                 href={video.watchUrl}
                 className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-neutral-700 shadow-lg ring-1 ring-black/5 transition dark:bg-neutral-950/90 dark:text-neutral-200 dark:ring-white/10"
               >
-                {labels.returnToPlayer}
+                {t("returnToPlayer")}
               </Link>
               <button
                 type="button"
                 onClick={() => setVideo(null)}
                 className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white/80 shadow-lg transition cursor-pointer hover:bg-black/90 hover:text-white"
-                aria-label={labels.closePlayer}
+                aria-label={t("closePlayer")}
               >
                 <CloseIcon className="h-4 w-4" />
               </button>

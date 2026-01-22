@@ -11,7 +11,6 @@ import { type Locale } from "@/lib/i18n/locales";
 
 export async function Header() {
   const t = await getTranslations("header");
-  const tLang = await getTranslations("language");
   const locale = (await getLocale()) as Locale;
 
   const mobileLinks = [
@@ -29,7 +28,10 @@ export async function Header() {
     <header className="glass fixed top-0 right-0 left-0 z-50">
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4">
         <div className="flex items-center gap-3 md:justify-self-start">
-          <Link href={PAGE_ROUTES.HOME} className="flex items-center gap-3 transition-opacity hover:opacity-80">
+          <Link
+            href={PAGE_ROUTES.HOME}
+            className="flex items-center gap-3 transition-opacity hover:opacity-80"
+          >
             <Image
               src="/assets/brand/RGB_PNG_01_bonfire_black_gradient.png"
               alt={t("logoAlt")}
@@ -68,15 +70,7 @@ export async function Header() {
         </nav>
 
         <div className="flex items-center gap-2 md:justify-self-end">
-          <LanguageToggle
-            locale={locale}
-            labels={{
-              csLabel: tLang("csLabel"),
-              enLabel: tLang("enLabel"),
-              switchToCs: tLang("switchTo", { language: tLang("czech") }),
-              switchToEn: tLang("switchTo", { language: tLang("english") }),
-            }}
-          />
+          <LanguageToggle locale={locale} />
           <ThemeToggle />
           <AuthNavButton />
           <Button href={PAGE_ROUTES.LIBRARY} variant="primary">

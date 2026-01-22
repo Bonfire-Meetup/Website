@@ -1,3 +1,4 @@
+import { useTranslations, useLocale } from "next-intl";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { Card } from "../ui/Card";
 import {
@@ -12,19 +13,6 @@ import {
 import { LocationPill } from "../locations/LocationPill";
 import { MetaRow } from "../ui/MetaRow";
 import { Pill } from "../ui/Pill";
-
-export interface EventCardLabels {
-  locationLabel: string;
-  episodeLabel: string;
-  tba: string;
-  speakers: string;
-  register: string;
-  platforms: {
-    luma: string;
-    facebook: string;
-    eventbrite: string;
-  };
-}
 
 type EventLinks = {
   luma?: string;
@@ -44,8 +32,6 @@ type EventCardProps = {
   registrationUrl: string;
   speakers: Array<{ name: string; topic: string }>;
   links?: EventLinks;
-  labels: EventCardLabels;
-  locale: string;
 };
 
 export function EventCard({
@@ -59,9 +45,9 @@ export function EventCard({
   links,
   registrationUrl,
   speakers,
-  labels,
-  locale,
 }: EventCardProps) {
+  const t = useTranslations("events");
+  const locale = useLocale();
   const isTba = date.trim().toUpperCase() === "TBA";
   const hasSpeakers = speakers.some((speaker) => speaker.name.trim().length > 0);
 
@@ -84,7 +70,7 @@ export function EventCard({
       key: "luma",
       url: links?.luma || registrationUrl,
       icon: LumaIcon,
-      label: labels.platforms.luma,
+      label: t("platforms.luma"),
       colors:
         "bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 shadow-violet-500/25",
     },
@@ -92,7 +78,7 @@ export function EventCard({
       key: "facebook",
       url: links?.facebook,
       icon: FacebookIcon,
-      label: labels.platforms.facebook,
+      label: t("platforms.facebook"),
       colors:
         "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-blue-500/25",
     },
@@ -100,7 +86,7 @@ export function EventCard({
       key: "eventbrite",
       url: links?.eventbrite,
       icon: EventbriteIcon,
-      label: labels.platforms.eventbrite,
+      label: t("platforms.eventbrite"),
       colors:
         "bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 shadow-brand-500/25",
     },
@@ -121,7 +107,7 @@ export function EventCard({
           <div className="mb-4 flex items-start justify-between">
             <LocationPill
               location={location}
-              ariaLabel={labels.locationLabel.replace("{location}", location)}
+              ariaLabel={t("locationLabel", { location })}
               icon={<MapPinIcon className="h-4 w-4" />}
             />
             <Pill
@@ -137,16 +123,18 @@ export function EventCard({
           </h3>
           {episode && (
             <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
-              {labels.episodeLabel}: {episode}
+              {t("episodeLabel")}: {episode}
             </p>
           )}
 
-          <p className="mb-5 leading-relaxed text-neutral-600 dark:text-neutral-300">{description}</p>
+          <p className="mb-5 leading-relaxed text-neutral-600 dark:text-neutral-300">
+            {description}
+          </p>
 
           <div className="mb-6 space-y-2.5">
             <MetaRow
               icon={<CalendarIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
-              text={labels.tba}
+              text={t("tba")}
             />
             <MetaRow
               icon={<ClockIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
@@ -171,7 +159,7 @@ export function EventCard({
           {hasSpeakers && (
             <div className="mb-5">
               <p className="mb-2 text-sm font-medium text-neutral-500 dark:text-neutral-400">
-                {labels.speakers}
+                {t("speakers")}
               </p>
               <div className="space-y-2">
                 {speakers.map((speaker) => (
@@ -181,7 +169,9 @@ export function EventCard({
                   >
                     <div className="mt-0.5 h-2.5 w-2.5 flex-none rounded-full bg-brand-500/80" />
                     <div>
-                      <p className="font-semibold text-neutral-900 dark:text-white">{speaker.name}</p>
+                      <p className="font-semibold text-neutral-900 dark:text-white">
+                        {speaker.name}
+                      </p>
                       <p className="text-neutral-500 dark:text-neutral-400">{speaker.topic}</p>
                     </div>
                   </div>
@@ -208,7 +198,7 @@ export function EventCard({
         <div className="mb-5 flex items-start justify-between">
           <LocationPill
             location={location}
-            ariaLabel={labels.locationLabel.replace("{location}", location)}
+            ariaLabel={t("locationLabel", { location })}
             icon={<MapPinIcon className="h-4 w-4" />}
           />
         </div>
@@ -218,7 +208,7 @@ export function EventCard({
         </h3>
         {episode && (
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
-            {labels.episodeLabel}: {episode}
+            {t("episodeLabel")}: {episode}
           </p>
         )}
 
@@ -252,7 +242,7 @@ export function EventCard({
         {hasSpeakers && (
           <div className="mb-6">
             <p className="mb-3 text-sm font-medium text-neutral-500 dark:text-neutral-400">
-              {labels.speakers}
+              {t("speakers")}
             </p>
             <div className="space-y-3">
               {speakers.map((speaker) => (
@@ -272,7 +262,7 @@ export function EventCard({
         )}
 
         <p className="mb-3 text-sm font-medium text-neutral-500 dark:text-neutral-400">
-          {labels.register}
+          {t("register")}
         </p>
 
         <div className="flex flex-wrap gap-3">

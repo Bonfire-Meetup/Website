@@ -1,27 +1,17 @@
+import { useTranslations } from "next-intl";
 import type { Recording } from "@/lib/recordings/recordings";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Pill } from "@/components/ui/Pill";
 import { CalendarIcon, MapPinIcon, UserIcon } from "@/components/shared/icons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-type VideoMetadataLabels = {
-  epShort: string;
-  special: string;
-};
-
 type VideoMetadataProps = {
   recording: Recording;
   formattedDate: string;
-  locale: string;
-  labels: VideoMetadataLabels;
 };
 
-export function VideoMetadata({
-  recording,
-  formattedDate,
-  locale: _locale,
-  labels,
-}: VideoMetadataProps) {
+export function VideoMetadata({ recording, formattedDate }: VideoMetadataProps) {
+  const t = useTranslations("recordings");
   return (
     <div className="px-5 py-5 sm:px-6 sm:py-6">
       <div className="mb-4 flex gap-3">
@@ -69,7 +59,7 @@ export function VideoMetadata({
             className="bg-neutral-900/5 font-semibold uppercase tracking-[0.15em] text-neutral-600 transition hover:bg-neutral-900/10 hover:text-neutral-800 dark:bg-white/10 dark:text-neutral-200 dark:hover:bg-white/20 dark:hover:text-white"
           >
             {recording.episodeNumber
-              ? `${labels.epShort} ${recording.episodeNumber} · ${recording.episode ?? recording.episodeId}`
+              ? `${t("epShort")} ${recording.episodeNumber} · ${recording.episode ?? recording.episodeId}`
               : (recording.episode ?? recording.episodeId)}
           </Pill>
         )}

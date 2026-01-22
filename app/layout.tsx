@@ -64,7 +64,6 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
-  const t = await getTranslations("recordings");
   const messages = (await import(`./locales/${locale}.json`)).default;
 
   return (
@@ -96,13 +95,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <NextIntlClientProvider locale={locale} messages={messages}>
           <MotionManager />
           <ThemeProvider>
-            <GlobalPlayerProvider
-              labels={{
-                returnToPlayer: t("returnToPlayer"),
-                closePlayer: t("closePlayer"),
-                exitCinema: t("exitCinema"),
-              }}
-            >
+            <GlobalPlayerProvider>
               <div className="relative flex min-h-screen flex-col">{children}</div>
             </GlobalPlayerProvider>
           </ThemeProvider>

@@ -1,31 +1,15 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 
 type DangerZoneBlockProps = {
-  title: string;
-  steps: {
-    intent: string;
-    send: string;
-    verify: string;
-  };
-  heading: string;
-  body: string;
   status: string | null;
   error: string | null;
   step: "idle" | "confirm" | "verify" | "done";
   intentChecked: boolean;
   loading: boolean;
   code: string;
-  codeLabel: string;
-  proceedLabel: string;
-  sendIntro: string;
-  sendLabel: string;
-  sendingLabel: string;
-  confirmLabel: string;
-  confirmingLabel: string;
-  cancelLabel: string;
-  intentLabel: string;
   onIntentChange: (checked: boolean) => void;
   onProceed: () => void;
   onSendCode: () => void;
@@ -35,25 +19,12 @@ type DangerZoneBlockProps = {
 };
 
 export function DangerZoneBlock({
-  title,
-  steps,
-  heading,
-  body,
   status,
   error,
   step,
   intentChecked,
   loading,
   code,
-  codeLabel,
-  proceedLabel,
-  sendIntro,
-  sendLabel,
-  sendingLabel,
-  confirmLabel,
-  confirmingLabel,
-  cancelLabel,
-  intentLabel,
   onIntentChange,
   onProceed,
   onSendCode,
@@ -61,14 +32,17 @@ export function DangerZoneBlock({
   onConfirm,
   onCancel,
 }: DangerZoneBlockProps) {
+  const t = useTranslations("account.delete");
   const stepIndex = step === "idle" ? 0 : step === "confirm" ? 1 : step === "verify" ? 2 : 3;
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white">{title}</h2>
+      <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white">
+        {t("dangerZone")}
+      </h2>
       <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
         <div className="flex border-b border-neutral-200/70 dark:border-white/10">
-          {[steps.intent, steps.send, steps.verify].map((label, i) => (
+          {[t("steps.intent"), t("steps.send"), t("steps.verify")].map((label, i) => (
             <div
               key={label}
               className={`flex flex-1 items-center justify-center gap-2 px-3 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors ${
@@ -96,9 +70,9 @@ export function DangerZoneBlock({
         <div className="p-5">
           <div className="mb-4">
             <h3 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
-              {heading}
+              {t("title")}
             </h3>
-            <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{body}</p>
+            <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{t("body")}</p>
           </div>
 
           {status && (
@@ -117,7 +91,7 @@ export function DangerZoneBlock({
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <label className="block text-xs uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
-                  {codeLabel}
+                  {t("codeLabel")}
                 </label>
                 <input
                   value={code}
@@ -134,7 +108,7 @@ export function DangerZoneBlock({
                   onClick={onCancel}
                   className="cursor-pointer px-3 py-2 text-sm text-neutral-500 transition hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200"
                 >
-                  {cancelLabel}
+                  {t("cancel")}
                 </button>
                 <Button
                   variant="plain"
@@ -161,21 +135,21 @@ export function DangerZoneBlock({
                         />
                       </svg>
                     )}
-                    {loading ? confirmingLabel : confirmLabel}
+                    {loading ? t("confirming") : t("confirm")}
                   </span>
                 </Button>
               </div>
             </div>
           ) : step === "confirm" ? (
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">{sendIntro}</p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">{t("sendIntro")}</p>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={onCancel}
                   className="cursor-pointer px-3 py-2 text-sm text-neutral-500 transition hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200"
                 >
-                  {cancelLabel}
+                  {t("cancel")}
                 </button>
                 <Button
                   variant="plain"
@@ -202,7 +176,7 @@ export function DangerZoneBlock({
                         />
                       </svg>
                     )}
-                    {loading ? sendingLabel : sendLabel}
+                    {loading ? t("sendingCode") : t("sendCode")}
                   </span>
                 </Button>
               </div>
@@ -216,7 +190,7 @@ export function DangerZoneBlock({
                   onChange={(event) => onIntentChange(event.target.checked)}
                   className="h-4 w-4 cursor-pointer rounded border-neutral-300 text-rose-600 focus:ring-rose-300/40 dark:border-neutral-600 dark:bg-white/5"
                 />
-                <span>{intentLabel}</span>
+                <span>{t("intentLabel")}</span>
               </label>
               <Button
                 variant="plain"
@@ -225,7 +199,7 @@ export function DangerZoneBlock({
                 onClick={onProceed}
                 className="rounded-xl bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-40"
               >
-                {proceedLabel}
+                {t("proceed")}
               </Button>
             </div>
           )}

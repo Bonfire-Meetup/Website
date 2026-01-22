@@ -2,23 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { BoltIcon, FireIcon, FrownIcon } from "../shared/icons";
 import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { createAuthHeaders } from "@/lib/utils/http";
 import { API_ROUTES } from "@/lib/api/routes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-type LikeBoostButtonsLabels = {
-  lightItUp: string;
-  boostItUp: string;
-};
-
 type LikeBoostButtonsProps = {
   shortId: string;
-  labels: LikeBoostButtonsLabels;
 };
 
-export function LikeBoostButtons({ shortId, labels }: LikeBoostButtonsProps) {
+export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
+  const t = useTranslations("recordings");
   const router = useRouter();
   const [likeCount, setLikeCount] = useState<number | null>(null);
   const [hasLiked, setHasLiked] = useState(false);
@@ -199,7 +195,7 @@ export function LikeBoostButtons({ shortId, labels }: LikeBoostButtonsProps) {
           ) : likeCount > 0 ? (
             <span className="tabular-nums text-base">{likeCount}</span>
           ) : (
-            <span className="text-[11px]">{labels.lightItUp}</span>
+            <span className="text-[11px]">{t("lightItUp")}</span>
           )}
         </button>
       </div>
@@ -239,7 +235,7 @@ export function LikeBoostButtons({ shortId, labels }: LikeBoostButtonsProps) {
           ) : boostCount > 0 ? (
             <span className="tabular-nums text-base">{boostCount}</span>
           ) : (
-            <span className="text-[11px]">{labels.boostItUp}</span>
+            <span className="text-[11px]">{t("boostItUp")}</span>
           )}
         </button>
       </div>

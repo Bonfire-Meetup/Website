@@ -1,18 +1,11 @@
 import { memo } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { VideoCard } from "./VideoCard";
 import { EmptyState } from "../ui/EmptyState";
 import { Button } from "../ui/Button";
 import type { Recording } from "@/lib/recordings/recordings";
 import { LOCATIONS } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-
-type Labels = {
-  prague: string;
-  zlin: string;
-  empty: string;
-  viewAll: string;
-  ariaLocationLabel: string;
-};
 
 type HomepageRecording = Pick<
   Recording,
@@ -21,13 +14,13 @@ type HomepageRecording = Pick<
 
 export const RecordingsSectionClient = memo(function RecordingsSectionClient({
   recordings,
-  labels,
-  locale,
 }: {
   recordings: HomepageRecording[];
-  labels: Labels;
-  locale: string;
 }) {
+  const t = useTranslations("sections.recordings");
+  const tRecordings = useTranslations("recordings");
+  const tCommon = useTranslations("common");
+  const locale = useLocale();
   return (
     <>
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -41,8 +34,10 @@ export const RecordingsSectionClient = memo(function RecordingsSectionClient({
             date={recording.date}
             thumbnail={recording.thumbnail}
             location={recording.location}
-            locationLabel={recording.location === LOCATIONS.PRAGUE ? labels.prague : labels.zlin}
-            ariaLocationLabel={labels.ariaLocationLabel.replace("{location}", recording.location)}
+            locationLabel={
+              recording.location === LOCATIONS.PRAGUE ? tCommon("prague") : tCommon("zlin")
+            }
+            ariaLocationLabel={tRecordings("locationLabel", { location: recording.location })}
             locale={locale}
             likeCount={recording.likeCount}
             boostCount={recording.boostCount}
@@ -52,15 +47,19 @@ export const RecordingsSectionClient = memo(function RecordingsSectionClient({
 
       {recordings.length === 0 && (
         <EmptyState
-          message={labels.empty}
+          message={t("empty")}
           className="max-w-md p-12"
           messageClassName="text-neutral-600 dark:text-neutral-400"
         />
       )}
 
       <div className="mt-16 text-center">
-        <Button href={PAGE_ROUTES.LIBRARY} variant="glass" className="inline-flex items-center gap-3">
-          {labels.viewAll}
+        <Button
+          href={PAGE_ROUTES.LIBRARY}
+          variant="glass"
+          className="inline-flex items-center gap-3"
+        >
+          {t("viewAll")}
         </Button>
       </div>
     </>

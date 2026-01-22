@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { AuthControls } from "@/components/auth/AuthControls";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -27,48 +28,9 @@ const emailPlaceholders = [
   "geralt@rivia.pl",
 ];
 
-type LoginLabels = {
-  eyebrow: string;
-  brand: string;
-  brandName: string;
-  title: string;
-  subtitle: string;
-  secureTitle: string;
-  secureBody: string;
-  codeHint: string;
-  emailLabel: string;
-  emailPlaceholder: string;
-  codeLabel: string;
-  sendCode: string;
-  verify: string;
-  sendingCode: string;
-  verifying: string;
-  cancel: string;
-  boostHint: string;
-  termsPrefix: string;
-  termsLink: string;
-  termsSuffix: string;
-  errorInvalidCode: string;
-  errorExpired: string;
-  errorRateLimited: string;
-  errorTooManyAttempts: string;
-  errorInvalidRequest: string;
-};
-
-type LanguageLabels = {
-  csLabel: string;
-  enLabel: string;
-  switchToCs: string;
-  switchToEn: string;
-};
-
-export function LoginClient({
-  labels,
-  languageLabels,
-}: {
-  labels: LoginLabels;
-  languageLabels: LanguageLabels;
-}) {
+export function LoginClient() {
+  const t = useTranslations("authLogin");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [step, setStep] = useState<Step>("request");
@@ -191,19 +153,19 @@ export function LoginClient({
         setChallengeToken(null);
         setStep("request");
         router.replace(PAGE_ROUTES.LOGIN);
-        setError(labels.errorExpired);
+        setError(t("errorExpired"));
       } else if (reason === "rate_limited") {
-        setError(labels.errorRateLimited);
+        setError(t("errorRateLimited"));
       } else if (reason === "too_many_attempts") {
         if (challengeToken) clearChallengeEmail(challengeToken);
         setChallengeToken(null);
         setStep("request");
         router.replace(PAGE_ROUTES.LOGIN);
-        setError(labels.errorTooManyAttempts);
+        setError(t("errorTooManyAttempts"));
       } else if (reason === "invalid_request") {
-        setError(labels.errorInvalidRequest);
+        setError(t("errorInvalidRequest"));
       } else {
-        setError(labels.errorInvalidCode);
+        setError(t("errorInvalidCode"));
       }
       setLoading(false);
       return;
@@ -231,19 +193,17 @@ export function LoginClient({
       <div className="relative flex flex-1 items-center justify-center px-4 py-6 sm:px-6 sm:py-12">
         <div className="flex w-full max-w-md flex-col gap-4 md:max-w-4xl">
           <div className="flex items-center justify-center gap-3 text-xs uppercase tracking-[0.3em] text-neutral-500 dark:text-neutral-400">
-            <span>{labels.eyebrow}</span>
+            <span>{t("eyebrow")}</span>
             <span className="h-1 w-1 rounded-full bg-neutral-400/60" />
-            <span>{labels.brand}</span>
+            <span>{t("brand", { brandName: tCommon("brandName") })}</span>
           </div>
 
           <div className="overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_20px_60px_rgba(18,18,18,0.1)] backdrop-blur sm:rounded-3xl md:grid md:grid-cols-[1.35fr_1fr] dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
             <div className="hidden flex-col gap-6 bg-gradient-to-br from-white to-[#f4f5f9] p-8 md:flex lg:p-10 dark:from-neutral-900 dark:to-neutral-950">
               <div>
-                <h1 className="text-2xl font-semibold tracking-tight lg:text-3xl">
-                  {labels.title}
-                </h1>
+                <h1 className="text-2xl font-semibold tracking-tight lg:text-3xl">{t("title")}</h1>
                 <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-                  {labels.subtitle}
+                  {t("subtitle")}
                 </p>
               </div>
               {reasonHint === "video-boost" && (
@@ -259,14 +219,14 @@ export function LoginClient({
                   >
                     <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
                   </svg>
-                  <span>{labels.boostHint}</span>
+                  <span>{t("boostHint")}</span>
                 </div>
               )}
               <div className="space-y-2 rounded-2xl border border-neutral-200/70 bg-white/80 px-5 py-4 text-sm text-neutral-700 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-neutral-200">
                 <div className="text-xs uppercase tracking-[0.2em] text-neutral-500 dark:text-brand-200/80">
-                  {labels.secureTitle}
+                  {t("secureTitle")}
                 </div>
-                <p>{labels.secureBody}</p>
+                <p>{t("secureBody")}</p>
               </div>
             </div>
 
@@ -277,8 +237,8 @@ export function LoginClient({
               </div>
 
               <div className="relative z-10 mb-4 flex items-center justify-between md:mb-6 md:justify-end">
-                <h1 className="text-xl font-semibold tracking-tight md:hidden">{labels.title}</h1>
-                <AuthControls labels={languageLabels} />
+                <h1 className="text-xl font-semibold tracking-tight md:hidden">{t("title")}</h1>
+                <AuthControls />
               </div>
 
               {reasonHint === "video-boost" && (
@@ -294,13 +254,13 @@ export function LoginClient({
                   >
                     <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
                   </svg>
-                  <span>{labels.boostHint}</span>
+                  <span>{t("boostHint")}</span>
                 </div>
               )}
 
               {step === "verify" && (
                 <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
-                  {labels.codeHint}
+                  {t("codeHint")}
                 </p>
               )}
 
@@ -314,7 +274,7 @@ export function LoginClient({
                     htmlFor="login-email"
                     className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
                   >
-                    {labels.emailLabel}
+                    {t("emailLabel")}
                   </label>
                   <input
                     id="login-email"
@@ -335,7 +295,7 @@ export function LoginClient({
                       htmlFor="login-code"
                       className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
                     >
-                      {labels.codeLabel}
+                      {t("codeLabel")}
                     </label>
                     <input
                       id="login-code"
@@ -402,11 +362,11 @@ export function LoginClient({
                       {loading && <LoadingSpinner size="sm" />}
                       {loading
                         ? step === "request"
-                          ? labels.sendingCode
-                          : labels.verifying
+                          ? t("sendingCode")
+                          : t("verifying")
                         : step === "request"
-                          ? labels.sendCode
-                          : labels.verify}
+                          ? t("sendCode")
+                          : t("verify")}
                     </span>
                   </Button>
                   <Button
@@ -417,7 +377,7 @@ export function LoginClient({
                     className="w-full sm:flex-1"
                     onClick={() => router.back()}
                   >
-                    {labels.cancel}
+                    {t("cancel")}
                   </Button>
                 </div>
               </form>
@@ -427,28 +387,28 @@ export function LoginClient({
               <div className="flex items-center gap-2">
                 <Image
                   src="/assets/brand/RGB_PNG_01_bonfire_black_gradient.png"
-                  alt={labels.brandName}
+                  alt={tCommon("brandName")}
                   width={100}
                   height={28}
                   className="h-5 w-auto dark:hidden"
                 />
                 <Image
                   src="/assets/brand/RGB_PNG_03_bonfire_white_gradient.png"
-                  alt={labels.brandName}
+                  alt={tCommon("brandName")}
                   width={100}
                   height={28}
                   className="hidden h-5 w-auto dark:block"
                 />
               </div>
               <div className="leading-relaxed">
-                {labels.termsPrefix}
+                {t("termsPrefix")}
                 <a
                   className="underline decoration-neutral-400/60 underline-offset-2 hover:text-neutral-700 dark:hover:text-neutral-200"
                   href={PAGE_ROUTES.LEGAL}
                 >
-                  {labels.termsLink}
+                  {t("termsLink")}
                 </a>
-                {labels.termsSuffix}
+                {t("termsSuffix")}
               </div>
             </div>
           </div>

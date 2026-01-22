@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { EventCard, type EventCardLabels } from "./EventCard";
+import { useTranslations } from "next-intl";
+import { EventCard } from "./EventCard";
 import { Button } from "../ui/Button";
 import { EmptyState } from "../ui/EmptyState";
 import { Pill } from "../ui/Pill";
+import { SectionHeader } from "../ui/SectionHeader";
 import { type LocationValue } from "@/lib/config/constants";
 
 export type EventItem = {
@@ -25,28 +27,16 @@ export type EventItem = {
   };
 };
 
-type EventsSectionLabels = {
-  title: string;
-  subtitle: string;
-  filterLabel: string;
-  filterAll: string;
-  noEvents: string;
-  eventCard: EventCardLabels;
-};
-
 export function EventsSectionClient({
   events,
-  labels,
-  locale,
   initialEpisode,
   preFilteredEvents,
 }: {
   events: EventItem[];
-  labels: EventsSectionLabels;
-  locale: string;
   initialEpisode?: string;
   preFilteredEvents?: EventItem[];
 }) {
+  const t = useTranslations("sections.events");
   const [activeEpisode, setActiveEpisode] = useState(initialEpisode ?? "all");
 
   const episodes = useMemo(() => {
@@ -70,13 +60,14 @@ export function EventsSectionClient({
 
   return (
     <>
+      <SectionHeader id="events" title={t("title")} subtitle={t("subtitle")} />
       {episodes.length > 0 && (
         <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
           <Pill
             size="sm"
             className="bg-neutral-900/5 font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:bg-white/10 dark:text-neutral-300"
           >
-            {labels.filterLabel}
+            {t("filter.label")}
           </Pill>
           <Button
             onClick={() => setActiveEpisode("all")}
@@ -88,7 +79,7 @@ export function EventsSectionClient({
                 : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20"
             }`}
           >
-            {labels.filterAll}
+            {t("filter.all")}
           </Button>
           {episodes.map((episode) => (
             <Button
@@ -124,15 +115,13 @@ export function EventsSectionClient({
               registrationUrl={event.registrationUrl ?? ""}
               speakers={event.speakers}
               links={event.links}
-              labels={labels.eventCard}
-              locale={locale}
             />
           ))}
         </div>
       ) : (
         <EmptyState
           icon="🔥"
-          message={labels.noEvents}
+          message={t("noEvents")}
           className="border-gradient max-w-2xl p-16"
           messageClassName="text-lg text-neutral-600 dark:text-neutral-400"
         />
