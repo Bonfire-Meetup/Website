@@ -1,10 +1,11 @@
-import { notFound } from "next/navigation";
-import dynamic from "next/dynamic";
 import { getTranslations } from "next-intl/server";
+import dynamic from "next/dynamic";
+import { notFound } from "next/navigation";
+
 import {
+  type Recording,
   getAllRecordings,
   getRelatedRecordings,
-  type Recording,
 } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -39,19 +40,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   return {
-    title: `${recording.title}${t("titleSuffix")}`,
     description: recording.description,
     openGraph: {
-      title: recording.title,
       description: recording.description,
-      url: PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
       images: [recording.thumbnail],
+      title: recording.title,
+      url: PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
     },
+    title: `${recording.title}${t("titleSuffix")}`,
     twitter: {
       card: "summary_large_image",
-      title: recording.title,
       description: recording.description,
       images: [recording.thumbnail],
+      title: recording.title,
     },
   };
 }

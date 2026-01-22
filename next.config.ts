@@ -1,45 +1,45 @@
+import { withBotId } from "botid/next/config";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import { withBotId } from "botid/next/config";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const CDN_HOSTNAME = "cdn-img.bnf.events";
 
 const nextConfig = {
-  reactStrictMode: true,
-  output: "standalone",
-  reactCompiler: true,
-  poweredByHeader: false,
   allowedDevOrigins: ["localhost", "elixeum.local"],
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },
   images: {
-    minimumCacheTTL: 2592000,
     localPatterns: [
       {
         pathname: "/**",
       },
     ],
+    minimumCacheTTL: 2592000,
     remotePatterns: [
       {
-        protocol: "https",
         hostname: "img.youtube.com",
         pathname: "/vi/**",
+        protocol: "https",
       },
       {
-        protocol: "https",
         hostname: "i.ytimg.com",
         pathname: "/**",
+        protocol: "https",
       },
       {
-        protocol: "https",
         hostname: CDN_HOSTNAME,
         pathname: "/**",
+        protocol: "https",
       },
     ],
   },
+  output: "standalone",
+  poweredByHeader: false,
+  reactCompiler: true,
+  reactStrictMode: true,
 } satisfies NextConfig;
 
 export default withBotId(withNextIntl(nextConfig));

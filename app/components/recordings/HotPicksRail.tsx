@@ -1,7 +1,9 @@
+import type { HotRecording } from "./RecordingsCatalogTypes";
+
 import { FireIcon } from "../shared/icons";
+
 import { Rail } from "./Rail";
 import { RailCard } from "./RailCard";
-import type { HotRecording } from "./RecordingsCatalogTypes";
 
 export function HotPicksRail({
   title,
@@ -26,9 +28,9 @@ export function HotPicksRail({
           badge={
             recording.likeCount > 0
               ? {
-                  icon: <FireIcon className="h-3.5 w-3.5" />,
                   count: recording.likeCount,
                   gradient: "bg-gradient-to-r from-rose-500 to-orange-500",
+                  icon: <FireIcon className="h-3.5 w-3.5" />,
                 }
               : undefined
           }

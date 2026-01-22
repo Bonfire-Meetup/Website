@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+
+import { checkRateLimit, getClientHashes, validateVideoApiRequest } from "@/lib/api/rate-limit";
+import { videoLikeMutationSchema, videoLikeStatsSchema } from "@/lib/api/schemas";
 import { addVideoLike, getVideoLikeStats, removeVideoLike } from "@/lib/data/likes";
-import { validateVideoApiRequest, getClientHashes, checkRateLimit } from "@/lib/api/rate-limit";
-import { videoLikeStatsSchema, videoLikeMutationSchema } from "@/lib/api/schemas";
 import { logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
 

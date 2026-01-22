@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useCallback, useState, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-type LightboxProps = {
+interface LightboxProps {
   images: { src: string; alt: string }[];
   initialIndex: number;
   onClose: () => void;
@@ -11,7 +11,7 @@ type LightboxProps = {
   closeLabel?: string;
   previousLabel?: string;
   nextLabel?: string;
-};
+}
 
 export function Lightbox({
   images,
@@ -26,7 +26,9 @@ export function Lightbox({
   const [index, setIndex] = useState(initialIndex);
   const [saveData, setSaveData] = useState(false);
   const isDesktopViewport = useCallback(() => {
-    if (typeof window === "undefined") return true;
+    if (typeof window === "undefined") {
+      return true;
+    }
     return window.matchMedia("(min-width: 640px)").matches;
   }, []);
 
@@ -44,7 +46,9 @@ export function Lightbox({
   const isMultiTouch = useRef(false);
 
   const setPinching = useCallback((value: boolean) => {
-    if (isMultiTouch.current === value) return;
+    if (isMultiTouch.current === value) {
+      return;
+    }
     isMultiTouch.current = value;
     setIsPinching(value);
   }, []);
@@ -54,24 +58,28 @@ export function Lightbox({
   const hasNext = index < images.length - 1;
 
   const goToPrev = useCallback(() => {
-    if (hasPrev) updateIndex(index - 1);
+    if (hasPrev) {
+      updateIndex(index - 1);
+    }
   }, [hasPrev, index, updateIndex]);
 
   const goToNext = useCallback(() => {
-    if (hasNext) updateIndex(index + 1);
+    if (hasNext) {
+      updateIndex(index + 1);
+    }
   }, [hasNext, index, updateIndex]);
 
   useEffect(() => {
-    if (typeof navigator === "undefined") return;
-    const connection = (
-      navigator as Navigator & {
-        connection?: {
-          saveData?: boolean;
-          addEventListener?: Function;
-          removeEventListener?: Function;
-        };
-      }
-    ).connection;
+    if (typeof navigator === "undefined") {
+      return;
+    }
+    const { connection } = navigator as Navigator & {
+      connection?: {
+        saveData?: boolean;
+        addEventListener?: (type: string, listener: EventListener) => void;
+        removeEventListener?: (type: string, listener: EventListener) => void;
+      };
+    };
     const update = () => setSaveData(Boolean(connection?.saveData));
     update();
     connection?.addEventListener?.("change", update);
@@ -79,7 +87,9 @@ export function Lightbox({
   }, []);
 
   useEffect(() => {
-    if (saveData) return;
+    if (saveData) {
+      return;
+    }
     const targets = [index - 1, index + 1].filter((i) => i >= 0 && i < images.length);
     targets.forEach((i) => {
       const img = new window.Image();
@@ -89,13 +99,19 @@ export function Lightbox({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft") goToPrev();
-      if (e.key === "ArrowRight") goToNext();
+      if (e.key === "Escape") {
+        onClose();
+      }
+      if (e.key === "ArrowLeft") {
+        goToPrev();
+      }
+      if (e.key === "ArrowRight") {
+        goToNext();
+      }
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    const scrollY = window.scrollY;
+    const { scrollY } = window;
     const originalStyle = {
       overflow: document.body.style.overflow,
       position: document.body.style.position,
@@ -148,7 +164,7 @@ export function Lightbox({
     }
   };
 
-  const handleDownload = async () => {
+  const handleDownload = () => {
     const a = document.createElement("a");
     a.href = current.src;
     a.download = current.src.split("/").pop() || "photo.jpg";
@@ -170,7 +186,7 @@ export function Lightbox({
         ))}
       </div>
 
-      <div className="absolute top-8 left-3 right-3 z-30 flex items-center justify-between text-white sm:hidden">
+      <div className="absolute top-8 right-3 left-3 z-30 flex items-center justify-between text-white sm:hidden">
         <button
           onClick={onClose}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
@@ -289,9 +305,11 @@ export function Lightbox({
       )}
 
       <div
-        className="relative flex h-full w-full items-center justify-center px-0 pb-0 pt-0 sm:px-16 sm:pb-16 sm:pt-24"
+        className="relative flex h-full w-full items-center justify-center px-0 pt-0 pb-0 sm:px-16 sm:pt-24 sm:pb-16"
         onClick={(e) => {
-          if (e.target === e.currentTarget) onClose();
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -301,7 +319,7 @@ export function Lightbox({
           src={current.src}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full scale-105 object-cover blur-lg opacity-70 sm:hidden"
+          className="absolute inset-0 h-full w-full scale-105 object-cover opacity-70 blur-lg sm:hidden"
         />
         <div className="absolute inset-0 bg-black/30 sm:hidden" />
         <div className="relative z-20 inline-flex max-h-[100svh] max-w-[100vw] items-center justify-center sm:max-h-full sm:max-w-full">
@@ -333,11 +351,13 @@ export function Lightbox({
             src={current.src}
             alt={current.alt}
             className={`block max-h-[100svh] max-w-[100vw] object-contain sm:max-h-full sm:max-w-full sm:transition-transform sm:duration-200 ${
-              isZoomed ? "sm:cursor-zoom-out sm:scale-150" : "sm:cursor-zoom-in"
+              isZoomed ? "sm:scale-150 sm:cursor-zoom-out" : "sm:cursor-zoom-in"
             }`}
             onClick={(e) => {
               e.stopPropagation();
-              if (isDesktopViewport()) setIsZoomed(!isZoomed);
+              if (isDesktopViewport()) {
+                setIsZoomed(!isZoomed);
+              }
             }}
           />
         </div>

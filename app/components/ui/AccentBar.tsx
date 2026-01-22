@@ -1,21 +1,21 @@
 type AccentBarSize = "sm" | "md" | "lg";
 
-type AccentBarProps = {
+interface AccentBarProps {
   size?: AccentBarSize;
   className?: string;
-};
+}
 
 const sizeClasses: Record<AccentBarSize, string> = {
-  sm: "h-5",
-  md: "h-6",
   lg: "h-7",
+  md: "h-6",
+  sm: "h-5",
 };
 
 export function AccentBar({ size = "md", className = "" }: AccentBarProps) {
   return (
     <span
       aria-hidden="true"
-      className={`w-1 rounded-full bg-gradient-to-b from-brand-500 to-rose-500 ${sizeClasses[size]} ${className}`}
+      className={`from-brand-500 w-1 rounded-full bg-gradient-to-b to-rose-500 ${sizeClasses[size]} ${className}`}
     />
   );
 }

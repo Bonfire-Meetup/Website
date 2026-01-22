@@ -1,11 +1,14 @@
-import { memo } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import { VideoCard } from "./VideoCard";
-import { EmptyState } from "../ui/EmptyState";
-import { Button } from "../ui/Button";
 import type { Recording } from "@/lib/recordings/recordings";
+import { useLocale, useTranslations } from "next-intl";
+import { memo } from "react";
+
 import { LOCATIONS } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+
+import { Button } from "../ui/Button";
+import { EmptyState } from "../ui/EmptyState";
+
+import { VideoCard } from "./VideoCard";
 
 type HomepageRecording = Pick<
   Recording,

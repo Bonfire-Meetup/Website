@@ -1,13 +1,16 @@
+import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
 import Link from "next/link";
-import { getLocale, getTranslations } from "next-intl/server";
-import { ThemeToggle } from "../theme/ThemeToggle";
-import { LanguageToggle } from "../theme/LanguageToggle";
-import { MobileMenu } from "./MobileMenu";
-import { Button } from "../ui/Button";
-import { AuthNavButton } from "../auth/AuthNavButton";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+
 import { type Locale } from "@/lib/i18n/locales";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+
+import { AuthNavButton } from "../auth/AuthNavButton";
+import { LanguageToggle } from "../theme/LanguageToggle";
+import { ThemeToggle } from "../theme/ThemeToggle";
+import { Button } from "../ui/Button";
+
+import { MobileMenu } from "./MobileMenu";
 
 export async function Header() {
   const t = await getTranslations("header");
@@ -26,7 +29,7 @@ export async function Header() {
 
   return (
     <header className="glass fixed top-0 right-0 left-0 z-50">
-      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4">
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 lg:px-8">
         <div className="flex items-center gap-3 md:justify-self-start">
           <Link
             href={PAGE_ROUTES.HOME}

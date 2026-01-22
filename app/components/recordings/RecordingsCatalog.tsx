@@ -1,39 +1,44 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useDeferredValue, useCallback, memo } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
-import { Button } from "@/components/ui/Button";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+
 import { InfoIcon } from "@/components/shared/icons";
 import { Skeleton } from "@/components/shared/Skeletons";
+import { Button } from "@/components/ui/Button";
 import { LOCATIONS } from "@/lib/config/constants";
 import { getEpisodeById } from "@/lib/recordings/episodes";
-import { RecordingRail } from "./RecordingRail";
-import { MemberPicksRail } from "./MemberPicksRail";
-import { HotPicksRail } from "./HotPicksRail";
-import { GridFiltersBar } from "./GridFiltersBar";
-import { FeaturedRecording } from "./FeaturedRecording";
-import { GridView } from "./GridView";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+
 import { EmptyStateMessage } from "./EmptyStateMessage";
+import { FeaturedRecording } from "./FeaturedRecording";
+import { GridFiltersBar } from "./GridFiltersBar";
+import { GridView } from "./GridView";
+import { HotPicksRail } from "./HotPicksRail";
+import { MemberPicksRail } from "./MemberPicksRail";
+import { RecordingRail } from "./RecordingRail";
 import {
   type CatalogRecording,
-  type MemberPickRecording,
   type HotRecording,
   type LocationFilter,
-  normalizeText,
+  type MemberPickRecording,
   UNRECORDED_EPISODES,
+  normalizeText,
 } from "./RecordingsCatalogTypes";
 
 function RailSkeleton() {
   return (
     <div className="space-y-4">
       <Skeleton className="h-6 w-40" />
-      <div className="flex gap-5 overflow-hidden pb-4 pt-1">
+      <div className="flex gap-5 overflow-hidden pt-1 pb-4">
         {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className="w-[75vw] shrink-0 sm:w-[45vw] lg:w-[280px] xl:w-[300px]">
+          <div
+            key={`rail-skeleton-${index}`}
+            className="w-[75vw] shrink-0 sm:w-[45vw] lg:w-[280px] xl:w-[300px]"
+          >
             <Skeleton className="aspect-video w-full !rounded-none" />
-            <div className="space-y-3 bg-white/85 px-4 pb-5 pt-4 dark:bg-black/75">
+            <div className="space-y-3 bg-white/85 px-4 pt-4 pb-5 dark:bg-black/75">
               <Skeleton className="h-3 w-32" />
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="h-3 w-2/3" />
@@ -53,9 +58,9 @@ function GridSkeleton() {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: 8 }).map((_, index) => (
-        <div key={index} className="overflow-hidden rounded-[28px]">
+        <div key={`grid-skeleton-${index}`} className="overflow-hidden rounded-[28px]">
           <Skeleton className="aspect-video w-full !rounded-none" />
-          <div className="space-y-3 bg-white/85 px-5 pb-6 pt-5 dark:bg-black/75">
+          <div className="space-y-3 bg-white/85 px-5 pt-5 pb-6 dark:bg-black/75">
             <Skeleton className="h-3 w-32" />
             <Skeleton className="h-4 w-3/4" />
             <Skeleton className="h-3 w-2/3" />
@@ -72,7 +77,7 @@ function BrowseAllButton({ label, onClick }: { label: string; onClick: () => voi
       onClick={onClick}
       variant="primary"
       size="xs"
-      className="rounded-full bg-gradient-to-r from-brand-500 to-rose-500 text-white shadow-lg shadow-brand-500/20"
+      className="from-brand-500 shadow-brand-500/20 rounded-full bg-gradient-to-r to-rose-500 text-white shadow-lg"
     >
       {label}
     </Button>
@@ -161,8 +166,8 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
         const title = recording.episode ?? recording.episodeId;
         if (!map.has(recording.episodeId)) {
           map.set(recording.episodeId, {
-            number: recording.episodeNumber,
             location: recording.location,
+            number: recording.episodeNumber,
             title,
           });
         }
@@ -170,21 +175,23 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     });
 
     for (const episodeId of UNRECORDED_EPISODES) {
-      if (map.has(episodeId)) continue;
-      const episode = getEpisodeById(episodeId);
-      if (!episode) continue;
-      map.set(episodeId, {
-        number: episode.number,
-        location: episode.city === "prague" ? LOCATIONS.PRAGUE : LOCATIONS.ZLIN,
-        title: episode.title,
-      });
+      if (!map.has(episodeId)) {
+        const episode = getEpisodeById(episodeId);
+        if (episode) {
+          map.set(episodeId, {
+            location: episode.city === "prague" ? LOCATIONS.PRAGUE : LOCATIONS.ZLIN,
+            number: episode.number,
+            title: episode.title,
+          });
+        }
+      }
     }
 
     return Array.from(map.entries()).map(([id, data]) => ({
-      value: id,
       label: data.number ? `${t("epShort")} ${data.number} — ${data.title}` : data.title,
-      number: data.number || 0,
       location: data.location,
+      number: data.number || 0,
+      value: id,
     }));
   }, [recordings, activeLocation, activeTag, t]);
 
@@ -205,14 +212,14 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   const tagDropdownOptions = useMemo(
     () =>
       tagOptions.map((tag) => ({
-        value: tag,
         label: tag === "all" ? tFilters("allTags") : tag,
+        value: tag,
       })),
     [tFilters, tagOptions],
   );
 
   const episodeDropdownOptions = useMemo(
-    () => [{ value: "all", label: tFilters("allEpisodes") }],
+    () => [{ label: tFilters("allEpisodes"), value: "all" }],
     [tFilters],
   );
 
@@ -221,8 +228,8 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
       groupedEpisodes.map((group) => ({
         label: group.label,
         options: group.options.map((option) => ({
-          value: option.value,
           label: option.label,
+          value: option.value,
         })),
       })),
     [groupedEpisodes],
@@ -233,24 +240,27 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     const tagParam = searchParams.get("tag") ?? "all";
     const episodeParam = searchParams.get("episode") ?? "all";
     const queryParam = searchParams.get("q") ?? "";
-    const normalizedLocation =
-      locationParam === LOCATIONS.PRAGUE || locationParam === LOCATIONS.ZLIN
-        ? locationParam
-        : "all";
-    const normalizedTag = tagOptions.includes(tagParam) ? tagParam : "all";
-    const normalizedEpisode =
-      episodeOptions.some((option) => option.value === episodeParam) ||
-      UNRECORDED_EPISODES.has(episodeParam)
-        ? episodeParam
-        : "all";
+    const isPragueLocation = locationParam === LOCATIONS.PRAGUE;
+    const isZlinLocation = locationParam === LOCATIONS.ZLIN;
+    const isValidLocation = isPragueLocation || isZlinLocation;
+    const normalizedLocation = isValidLocation ? locationParam : "all";
+
+    const isTagValid = tagOptions.includes(tagParam);
+    const normalizedTag = isTagValid ? tagParam : "all";
+
+    const isEpisodeInOptions = episodeOptions.some((option) => option.value === episodeParam);
+    const isUnrecordedEpisode = UNRECORDED_EPISODES.has(episodeParam);
+    const isValidEpisode = isEpisodeInOptions || isUnrecordedEpisode;
+    const normalizedEpisode = isValidEpisode ? episodeParam : "all";
     const normalizedQuery = queryParam.trim();
 
+    const hasInitialFilters = Boolean(initialFilters);
+    const isLocationMatch = normalizedLocation === initialFilters?.location;
+    const isTagMatch = normalizedTag === initialFilters?.tag;
+    const isEpisodeMatch = normalizedEpisode === initialFilters?.episode;
+    const isQueryMatch = normalizedQuery === initialFilters?.searchQuery.trim();
     const matchesInitialState =
-      initialFilters &&
-      normalizedLocation === initialFilters.location &&
-      normalizedTag === initialFilters.tag &&
-      normalizedEpisode === initialFilters.episode &&
-      normalizedQuery === initialFilters.searchQuery.trim();
+      hasInitialFilters && isLocationMatch && isTagMatch && isEpisodeMatch && isQueryMatch;
 
     if (matchesInitialState) {
       return;
@@ -259,7 +269,10 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     setActiveLocation(normalizedLocation);
     setActiveTag(normalizedTag);
     setActiveEpisode(normalizedEpisode);
-    if (!isSearchDirtyRef.current || normalizedQuery === lastCommittedSearchRef.current) {
+    const isSearchNotDirty = !isSearchDirtyRef.current;
+    const isQueryUnchanged = normalizedQuery === lastCommittedSearchRef.current;
+    const shouldUpdateSearch = isSearchNotDirty || isQueryUnchanged;
+    if (shouldUpdateSearch) {
       setSearchQuery(normalizedQuery);
       lastCommittedSearchRef.current = normalizedQuery;
       isSearchDirtyRef.current = false;
@@ -299,33 +312,59 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   );
 
   const filteredRecordings = useMemo(() => {
-    const filtersUnchanged =
-      initialFilters &&
-      activeLocation === initialFilters.location &&
-      activeTag === initialFilters.tag &&
-      activeEpisode === initialFilters.episode &&
-      deferredSearchQuery.trim() === initialFilters.searchQuery.trim();
+    const hasInitialFilters = Boolean(initialFilters);
+    const isLocationUnchanged = activeLocation === initialFilters?.location;
+    const isTagUnchanged = activeTag === initialFilters?.tag;
+    const isEpisodeUnchanged = activeEpisode === initialFilters?.episode;
+    const isSearchUnchanged = deferredSearchQuery.trim() === initialFilters?.searchQuery.trim();
+    const areFiltersUnchanged =
+      hasInitialFilters &&
+      isLocationUnchanged &&
+      isTagUnchanged &&
+      isEpisodeUnchanged &&
+      isSearchUnchanged;
+    const hasPreFilteredRecordings = Boolean(preFilteredRecordings);
 
-    if (filtersUnchanged && preFilteredRecordings) {
+    if (areFiltersUnchanged && hasPreFilteredRecordings && preFilteredRecordings) {
       return preFilteredRecordings;
     }
 
     const normalizedQuery = normalizeText(deferredSearchQuery.trim());
     return recordings.filter((recording) => {
-      const matchesLocation = activeLocation === "all" || recording.location === activeLocation;
-      const matchesTag = activeTag === "all" || recording.tags.includes(activeTag);
-      const matchesEpisode = activeEpisode === "all" || recording.episodeId === activeEpisode;
-      const matchesSearch =
-        normalizedQuery.length === 0 ||
-        normalizeText(recording.title).includes(normalizedQuery) ||
-        recording.speaker.some((name: string) => normalizeText(name).includes(normalizedQuery)) ||
-        recording.tags.some((tag: string) => normalizeText(tag).includes(normalizedQuery)) ||
-        normalizeText(recording.location).includes(normalizedQuery) ||
-        (recording.episode ? normalizeText(recording.episode).includes(normalizedQuery) : false) ||
-        (recording.description
+      const isLocationMatch = activeLocation === "all" || recording.location === activeLocation;
+      const isTagMatch = activeTag === "all" || recording.tags.includes(activeTag);
+      const isEpisodeMatch = activeEpisode === "all" || recording.episodeId === activeEpisode;
+
+      const isSearchEmpty = normalizedQuery.length === 0;
+      const isTitleMatch = normalizeText(recording.title).includes(normalizedQuery);
+      const isSpeakerMatch = recording.speaker.some((name: string) =>
+        normalizeText(name).includes(normalizedQuery),
+      );
+      const isTagInSearch = recording.tags.some((tag: string) =>
+        normalizeText(tag).includes(normalizedQuery),
+      );
+      const isLocationInSearch = normalizeText(recording.location).includes(normalizedQuery);
+      const hasEpisode = Boolean(recording.episode);
+      const isEpisodeInSearch =
+        hasEpisode && recording.episode
+          ? normalizeText(recording.episode).includes(normalizedQuery)
+          : false;
+      const hasDescription = Boolean(recording.description);
+      const isDescriptionMatch =
+        hasDescription && recording.description
           ? normalizeText(recording.description).includes(normalizedQuery)
-          : false);
-      return matchesLocation && matchesTag && matchesEpisode && matchesSearch;
+          : false;
+
+      const isSearchMatch =
+        isSearchEmpty ||
+        isTitleMatch ||
+        isSpeakerMatch ||
+        isTagInSearch ||
+        isLocationInSearch ||
+        isEpisodeInSearch ||
+        isDescriptionMatch;
+
+      return isLocationMatch && isTagMatch && isEpisodeMatch && isSearchMatch;
     });
   }, [
     recordings,
@@ -338,11 +377,12 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   ]);
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
+  const isLocationFiltered = activeLocation !== "all";
+  const isTagFiltered = activeTag !== "all";
+  const isEpisodeFiltered = activeEpisode !== "all";
+  const isSearchFiltered = deferredSearchQuery.trim() !== "";
   const hasActiveFilters =
-    activeLocation !== "all" ||
-    activeTag !== "all" ||
-    activeEpisode !== "all" ||
-    deferredSearchQuery.trim() !== "";
+    isLocationFiltered || isTagFiltered || isEpisodeFiltered || isSearchFiltered;
 
   useEffect(() => {
     if (isFirstFilter.current) {
@@ -363,7 +403,9 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   useEffect(() => {
     const trimmed = searchQuery.trim();
     const currentQueryParam = searchParams.get("q") ?? "";
-    if (trimmed === currentQueryParam) return;
+    if (trimmed === currentQueryParam) {
+      return;
+    }
     if (searchDebounceRef.current) {
       clearTimeout(searchDebounceRef.current);
     }
@@ -379,22 +421,20 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
 
   const handleBrowseAll = () => {
     setViewMode("grid");
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    window.scrollTo({ behavior: "instant" as ScrollBehavior, left: 0, top: 0 });
   };
 
-  type RailRow = {
+  interface RailRow {
     key: string;
     title: string;
     items: CatalogRecording[];
-  };
+  }
 
-  const featuredCandidates = filteredRecordings.slice(0, 5);
+  const featuredCandidates = filteredRecordings?.slice(0, 5) ?? [];
   const featured = featuredCandidates[0];
-  const gridRecordings = filteredRecordings;
+  const gridRecordings = filteredRecordings ?? [];
 
-  const latestRecordings = useMemo(() => {
-    return filteredRecordings.slice(0, 12);
-  }, [filteredRecordings]);
+  const latestRecordings = useMemo(() => filteredRecordings.slice(0, 12), [filteredRecordings]);
 
   const locationRows = useMemo(() => {
     const rows: RailRow[] = [];
@@ -404,16 +444,16 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     if (activeLocation === "all") {
       if (pragueItems.length > 0) {
         rows.push({
+          items: pragueItems,
           key: "location-prague",
           title: tRows("prague", { prague: tCommon("prague") }),
-          items: pragueItems,
         });
       }
       if (zlinItems.length > 0) {
         rows.push({
+          items: zlinItems,
           key: "location-zlin",
           title: tRows("zlin", { zlin: tCommon("zlin") }),
-          items: zlinItems,
         });
       }
       return rows;
@@ -421,16 +461,16 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
 
     if (activeLocation === LOCATIONS.PRAGUE && pragueItems.length > 0) {
       rows.push({
+        items: pragueItems,
         key: "location-prague",
         title: tRows("prague", { prague: tCommon("prague") }),
-        items: pragueItems,
       });
     }
     if (activeLocation === LOCATIONS.ZLIN && zlinItems.length > 0) {
       rows.push({
+        items: zlinItems,
         key: "location-zlin",
         title: tRows("zlin", { zlin: tCommon("zlin") }),
-        items: zlinItems,
       });
     }
 
@@ -456,9 +496,9 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
 
     return topTags
       .map((tag) => ({
+        items: filteredRecordings.filter((recording) => recording.tags.includes(tag)),
         key: `tag-${tag}`,
         title: tRows("topic", { tag }),
-        items: filteredRecordings.filter((recording) => recording.tags.includes(tag)),
       }))
       .filter((row) => row.items.length > 0);
   }, [activeTag, filteredRecordings, tRows]);
@@ -466,7 +506,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   const rows = useMemo(() => {
     const nextRows: RailRow[] = [];
     if (latestRecordings.length > 0) {
-      nextRows.push({ key: "latest", title: tRows("latest"), items: latestRecordings });
+      nextRows.push({ items: latestRecordings, key: "latest", title: tRows("latest") });
     }
     return [...nextRows, ...locationRows, ...tagRows];
   }, [latestRecordings, locationRows, tagRows, tRows]);
@@ -537,7 +577,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
                 isFiltering ? (
                   <div className="space-y-12">
                     {Array.from({ length: 3 }).map((_, index) => (
-                      <RailSkeleton key={index} />
+                      <RailSkeleton key={`filter-rail-skeleton-${index}`} />
                     ))}
                   </div>
                 ) : (
@@ -583,7 +623,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
         {!UNRECORDED_EPISODES.has(activeEpisode) && (
           <div className="mt-20 flex justify-center">
             <div className="glass-card no-hover-pop relative inline-flex items-center gap-4 px-6 py-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500/10 text-brand-500 dark:bg-brand-500/20 dark:text-brand-400">
+              <div className="bg-brand-500/10 text-brand-500 dark:bg-brand-500/20 dark:text-brand-400 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
                 <InfoIcon className="h-5 w-5" />
               </div>
               <p className="max-w-4xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">

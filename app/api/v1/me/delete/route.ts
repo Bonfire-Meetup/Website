@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+
+import { requireAuth } from "@/lib/api/auth";
 import { timingGuardHash, verifyOtpChallenge } from "@/lib/auth/challenge";
 import { getAuthUserById, markAuthChallengeUsed } from "@/lib/data/auth";
 import { runTransaction } from "@/lib/data/db";
@@ -11,11 +13,10 @@ import {
   logWarn,
 } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
-import { requireAuth } from "@/lib/api/auth";
 
 const deleteSchema = z.object({
-  code: z.string().regex(/^\d{1,6}$/),
   challenge_token: z.string().min(32),
+  code: z.string().regex(/^\d{1,6}$/),
 });
 
 export const POST = async (request: Request) =>
@@ -48,16 +49,16 @@ export const POST = async (request: Request) =>
     }
 
     const email = user.email.trim().toLowerCase();
-    const headers = request.headers;
+    const { headers } = request;
     const ip =
       headers.get("x-real-ip") || headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
     const userAgent = headers.get("user-agent");
     const emailFingerprint = getEmailFingerprint(email);
     const clientFingerprint = getClientFingerprint({ ip, userAgent });
     const verification = await verifyOtpChallenge({
-      email,
       challengeToken: result.data.challenge_token,
       code: result.data.code,
+      email,
       timingGuard: timingGuardHash,
     });
     if (!verification.ok) {

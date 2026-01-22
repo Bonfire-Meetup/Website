@@ -1,13 +1,16 @@
-import path from "path";
 import { promises as fs } from "fs";
+import path from "path";
+
 import { cache } from "react";
-import { getAllRecordings } from "./recordings";
+
 import { LOCATIONS, type LocationValue } from "../config/constants";
 
-type HeroImage = {
+import { getAllRecordings } from "./recordings";
+
+interface HeroImage {
   src: string;
   alt: string;
-};
+}
 
 export const getHeroImages = cache(async (altText: string): Promise<HeroImage[]> => {
   const heroDir = path.join(process.cwd(), "public", "hero");
@@ -15,8 +18,8 @@ export const getHeroImages = cache(async (altText: string): Promise<HeroImage[]>
   const webpFiles = heroFiles.filter((file) => file.toLowerCase().endsWith(".webp")).sort();
 
   return webpFiles.map((file) => ({
-    src: `/hero/${file}`,
     alt: altText,
+    src: `/hero/${file}`,
   }));
 });
 

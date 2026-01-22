@@ -1,14 +1,14 @@
 import episodesData from "../../data/episodes.json";
 
-export type Episode = {
+export interface Episode {
   id: string;
   city: "prague" | "zlin";
   number: number;
   title: string;
   date: string | null;
-};
+}
 
-export type EpisodeEntry = {
+export interface EpisodeEntry {
   id: string;
   title: string;
   city: "prague" | "zlin";
@@ -19,7 +19,7 @@ export type EpisodeEntry = {
   photosCover?: { src: string; width: number; height: number };
   videosHref: string;
   photosHref?: string;
-};
+}
 
 export const episodes = episodesData.episodes as Episode[];
 
@@ -42,9 +42,13 @@ export function formatEpisodeSlug(episode: Episode) {
 }
 
 export function buildAlbumSlug(albumId: string, episodeId?: string) {
-  if (!episodeId) return albumId;
+  if (!episodeId) {
+    return albumId;
+  }
   const episode = getEpisodeById(episodeId);
-  if (!episode) return albumId;
+  if (!episode) {
+    return albumId;
+  }
   const slug = formatEpisodeSlug(episode);
   return slug ? `${albumId}-${slug}` : albumId;
 }

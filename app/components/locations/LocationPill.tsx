@@ -1,14 +1,15 @@
-import type { ReactNode } from "react";
 import type { LocationValue } from "@/lib/config/constants";
+import type { ReactNode } from "react";
+
 import { Pill } from "../ui/Pill";
 
-type LocationPillProps = {
+interface LocationPillProps {
   location: LocationValue;
   className?: string;
   ariaLabel?: string;
   icon?: ReactNode;
   size?: "xxs" | "xs" | "sm" | "md";
-};
+}
 
 export function LocationPill({
   location,

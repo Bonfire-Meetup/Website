@@ -1,11 +1,13 @@
-import { headers } from "next/headers";
-import { checkBotId } from "botid/server";
-import { UAParser } from "ua-parser-js";
 import crypto from "crypto";
-import { serverEnv } from "@/lib/config/env";
-import { getRequestId } from "@/lib/utils/request-context";
-import { logWarn } from "@/lib/utils/log";
+
+import { checkBotId } from "botid/server";
+import { headers } from "next/headers";
+import { UAParser } from "ua-parser-js";
+
 import { verifyAccessToken } from "@/lib/auth/jwt";
+import { serverEnv } from "@/lib/config/env";
+import { logWarn } from "@/lib/utils/log";
+import { getRequestId } from "@/lib/utils/request-context";
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
 
@@ -26,14 +28,18 @@ export const getClientHashes = async () => {
   const uaSignature = [browser.name ?? "unknown", os.name ?? "unknown", device.type ?? "desktop"]
     .join("|")
     .toLowerCase();
-  return { ipHash: hashValue(ip), uaHash: hashValue(uaSignature), ip };
+  return { ip, ipHash: hashValue(ip), uaHash: hashValue(uaSignature) };
 };
 
 const getRateLimitStore = (storeKey: string) => {
   if (!rateLimitStores.has(storeKey)) {
     rateLimitStores.set(storeKey, new Map());
   }
-  return rateLimitStores.get(storeKey)!;
+  const store = rateLimitStores.get(storeKey);
+  if (!store) {
+    throw new Error(`Rate limit store not found for key: ${storeKey}`);
+  }
+  return store;
 };
 
 export const isRateLimited = (storeKey: string, key: string, maxHits: number) => {
@@ -55,7 +61,9 @@ export const isOriginAllowed = async () => {
   const requestHeaders = await headers();
   const origin = requestHeaders.get("origin");
   const host = requestHeaders.get("host");
-  if (!origin || !host) return true;
+  if (!origin || !host) {
+    return true;
+  }
   try {
     const originHost = new URL(origin).host;
     return originHost === host;
@@ -67,14 +75,14 @@ export const isOriginAllowed = async () => {
 export const getAuthUserId = async (request: Request) => {
   const authHeader = request.headers.get("authorization");
   if (!authHeader?.startsWith("Bearer ")) {
-    return { userId: null, status: "none" as const };
+    return { status: "none" as const, userId: null };
   }
   const token = authHeader.slice("Bearer ".length).trim();
   try {
     const payload = await verifyAccessToken(token);
-    return { userId: payload.sub ?? null, status: "valid" as const };
+    return { status: "valid" as const, userId: payload.sub ?? null };
   } catch {
-    return { userId: null, status: "invalid" as const };
+    return { status: "invalid" as const, userId: null };
   }
 };
 
@@ -84,26 +92,26 @@ export const validateVideoApiRequest = async (
   _requireAuth = false,
 ) => {
   if (!isValidVideoId(videoId)) {
-    logWarn("video.api.invalid_id", { videoId, requestId: getRequestId() });
-    return { valid: false, error: "Missing videoId", status: 400 };
+    logWarn("video.api.invalid_id", { requestId: getRequestId(), videoId });
+    return { error: "Missing videoId", status: 400, valid: false };
   }
 
   const originAllowed = await isOriginAllowed();
   if (!originAllowed) {
-    logWarn("video.api.invalid_origin", { videoId, requestId: getRequestId() });
-    return { valid: false, error: "Invalid origin", status: 403 };
+    logWarn("video.api.invalid_origin", { requestId: getRequestId(), videoId });
+    return { error: "Invalid origin", status: 403, valid: false };
   }
 
   const verification = await checkBotId();
   if (verification.isBot) {
-    logWarn("video.api.bot_blocked", { videoId, requestId: getRequestId() });
-    return { valid: false, error: "Bot traffic blocked", status: 403 };
+    logWarn("video.api.bot_blocked", { requestId: getRequestId(), videoId });
+    return { error: "Bot traffic blocked", status: 403, valid: false };
   }
 
   return { valid: true };
 };
 
-export const checkRateLimit = async (
+export const checkRateLimit = (
   videoId: string,
   operation: "read" | "write",
   identifier: string,
@@ -111,7 +119,7 @@ export const checkRateLimit = async (
 ) => {
   const rateLimitKey = `${operation}:${videoId}:${identifier}`;
   if (isRateLimited("video-api", rateLimitKey, maxHits)) {
-    logWarn("video.api.rate_limited", { videoId, operation, requestId: getRequestId() });
+    logWarn("video.api.rate_limited", { operation, requestId: getRequestId(), videoId });
     return { rateLimited: true };
   }
   return { rateLimited: false };

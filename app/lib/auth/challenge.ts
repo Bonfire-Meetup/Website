@@ -26,19 +26,27 @@ export const verifyOtpChallenge = async ({
   const challengeTokenHash = hashOtpCode(email, challengeToken);
   const challenge = await getChallengeByToken(challengeTokenHash, email);
   if (!challenge) {
-    if (timingGuard) timingSafeMatch(hashOtpCode(email, code), timingGuard);
+    if (timingGuard) {
+      timingSafeMatch(hashOtpCode(email, code), timingGuard);
+    }
     return { ok: false, reason: "missing" };
   }
   if (challenge.used_at) {
-    if (timingGuard) timingSafeMatch(hashOtpCode(email, code), timingGuard);
+    if (timingGuard) {
+      timingSafeMatch(hashOtpCode(email, code), timingGuard);
+    }
     return { ok: false, reason: "used" };
   }
   if (challenge.expires_at <= new Date()) {
-    if (timingGuard) timingSafeMatch(hashOtpCode(email, code), timingGuard);
+    if (timingGuard) {
+      timingSafeMatch(hashOtpCode(email, code), timingGuard);
+    }
     return { ok: false, reason: "expired" };
   }
   if (challenge.attempts >= challenge.max_attempts) {
-    if (timingGuard) timingSafeMatch(hashOtpCode(email, code), timingGuard);
+    if (timingGuard) {
+      timingSafeMatch(hashOtpCode(email, code), timingGuard);
+    }
     return { ok: false, reason: "max_attempts" };
   }
   const codeHash = hashOtpCode(email, code);
@@ -48,5 +56,5 @@ export const verifyOtpChallenge = async ({
     }
     return { ok: false, reason: "mismatch" };
   }
-  return { ok: true, id: challenge.id };
+  return { id: challenge.id, ok: true };
 };

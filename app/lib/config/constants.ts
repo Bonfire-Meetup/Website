@@ -9,8 +9,8 @@ export const WEBSITE_URLS = {
   BASE: "https://www.bnf.events",
   CDN: "https://cdn-img.bnf.events",
   CONTACT_EMAIL: "hello@bnf.events",
-  CONTACT_EMAIL_PROPOSAL: "hello+proposal@bnf.events",
+  CONTACT_EMAIL_COC: "hello+coc@bnf.events",
   CONTACT_EMAIL_CREW: "hello+crew@bnf.events",
   CONTACT_EMAIL_PRESS: "hello+press@bnf.events",
-  CONTACT_EMAIL_COC: "hello+coc@bnf.events",
+  CONTACT_EMAIL_PROPOSAL: "hello+proposal@bnf.events",
 } as const;

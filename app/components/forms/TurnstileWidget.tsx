@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useEffect, useRef } from "react";
+
 import { clientEnv } from "@/lib/config/env";
 
 declare global {
@@ -19,14 +20,18 @@ export function TurnstileWidget({ className = "" }: { className?: string }) {
   const widgetIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!siteKey || !containerRef.current) return;
+    if (!siteKey || !containerRef.current) {
+      return;
+    }
 
     const renderWidget = () => {
-      if (!window.turnstile || !containerRef.current || widgetIdRef.current) return;
+      if (!window.turnstile || !containerRef.current || widgetIdRef.current) {
+        return;
+      }
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
+        appearance: "interaction-only",
         sitekey: siteKey,
         theme: "auto",
-        appearance: "interaction-only",
       });
     };
 

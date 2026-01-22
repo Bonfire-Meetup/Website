@@ -1,14 +1,16 @@
+import type { RelatedRecording } from "./RecordingPlayer";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
-import type { RelatedRecording } from "./RecordingPlayer";
-import { LocationPill } from "../locations/LocationPill";
-import { PlayIcon } from "../shared/icons";
+
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-type RelatedVideosSectionProps = {
+import { LocationPill } from "../locations/LocationPill";
+import { PlayIcon } from "../shared/icons";
+
+interface RelatedVideosSectionProps {
   relatedRecordings: RelatedRecording[];
-};
+}
 
 export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSectionProps) {
   const t = useTranslations("recordings");
@@ -18,11 +20,11 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
   return (
     <section className="space-y-6 lg:sticky lg:top-24 lg:self-start">
       <div className="flex items-center gap-4 lg:gap-3">
-        <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10 lg:hidden" />
-        <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white lg:text-left">
+        <div className="h-px flex-1 bg-neutral-200/50 lg:hidden dark:bg-white/10" />
+        <h2 className="text-xl font-bold tracking-tight text-neutral-900 lg:text-left dark:text-white">
           {t("relatedTitle")}
         </h2>
-        <div className="h-px flex-1 bg-neutral-200/50 dark:bg-white/10 lg:hidden" />
+        <div className="h-px flex-1 bg-neutral-200/50 lg:hidden dark:bg-white/10" />
       </div>
 
       {nextUp ? (
@@ -39,16 +41,16 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
               className="object-cover transition duration-500 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-neutral-700 shadow-sm">
+            <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-semibold tracking-[0.2em] text-neutral-700 uppercase shadow-sm">
               <PlayIcon className="h-3 w-3" />
               {t("nextUp")}
             </div>
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
+            <p className="text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
               {t("nextUp")}
             </p>
-            <p className="mt-1 line-clamp-2 text-sm font-semibold text-neutral-900 group-hover:text-brand-500 dark:text-white dark:group-hover:text-brand-400">
+            <p className="group-hover:text-brand-500 dark:group-hover:text-brand-400 mt-1 line-clamp-2 text-sm font-semibold text-neutral-900 dark:text-white">
               {nextUp.title}
             </p>
           </div>
@@ -62,7 +64,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
             href={PAGE_ROUTES.WATCH(related.slug, related.shortId)}
             className={`group recording-card-enter opacity-0 stagger-${
               (index % 8) + 1
-            } relative flex flex-col overflow-hidden rounded-[24px] bg-white/90 text-neutral-900 shadow-xl shadow-black/5 ring-1 ring-black/5 transition-all hover:-translate-y-1 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10`}
+            } relative flex flex-col overflow-hidden rounded-[24px] bg-white/90 text-neutral-900 shadow-xl ring-1 shadow-black/5 ring-black/5 transition-all hover:-translate-y-1 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10`}
           >
             <div className="relative aspect-video w-full overflow-hidden">
               <Image
@@ -77,13 +79,13 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
 
             <div className="flex flex-1 flex-col p-4">
               <div className="flex flex-1 flex-col justify-start">
-                <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-neutral-900 group-hover:text-brand-500 transition-colors dark:text-white dark:group-hover:text-brand-400">
+                <h3 className="group-hover:text-brand-500 dark:group-hover:text-brand-400 line-clamp-2 text-sm leading-snug font-semibold text-neutral-900 transition-colors dark:text-white">
                   {related.title}
                 </h3>
                 <div className="mt-2 flex flex-col gap-1">
                   {related.speaker.map((name: string) => (
                     <div key={name} className="flex items-center gap-2">
-                      <span className="h-1 w-1 shrink-0 rounded-full bg-brand-500 shadow-[0_0_4px_rgba(59,130,246,0.3)] dark:bg-brand-400" />
+                      <span className="bg-brand-500 dark:bg-brand-400 h-1 w-1 shrink-0 rounded-full shadow-[0_0_4px_rgba(59,130,246,0.3)]" />
                       <span className="truncate text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
                         {name}
                       </span>
@@ -93,7 +95,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
               </div>
 
               <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-3 dark:border-white/5">
-                <span className="text-[10px] font-medium uppercase tracking-wider text-neutral-400">
+                <span className="text-[10px] font-medium tracking-wider text-neutral-400 uppercase">
                   {related.episode
                     ? related.episodeNumber
                       ? `${t("epShort")} ${related.episodeNumber}`

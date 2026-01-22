@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
+import { DEFAULT_LOCALE, type Locale, isValidLocale } from "@/lib/i18n/locales";
+
 import { LanguageToggle } from "../theme/LanguageToggle";
 import { ThemeToggle } from "../theme/ThemeToggle";
-import { DEFAULT_LOCALE, isValidLocale, type Locale } from "@/lib/i18n/locales";
 
 const getCookieValue = (name: string) => {
-  if (typeof document === "undefined") return null;
+  if (typeof document === "undefined") {
+    return null;
+  }
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
   return match ? decodeURIComponent(match[1] ?? "") : null;
 };

@@ -1,8 +1,9 @@
-import { getAllRecordings } from "@/lib/recordings/recordings";
-import photoAlbums from "@/data/photo-albums.json";
-import { buildSitemapIndexXml } from "@/lib/utils/sitemap-utils";
 import type { PhotoAlbum } from "@/lib/photos/types";
+
+import photoAlbums from "@/data/photo-albums.json";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { getAllRecordings } from "@/lib/recordings/recordings";
+import { buildSitemapIndexXml } from "@/lib/utils/sitemap-utils";
 const PAGE_SIZE = 10000;
 
 const { albums } = photoAlbums as { albums: Pick<PhotoAlbum, "id" | "episodeId">[] };
@@ -31,10 +32,10 @@ export async function GET() {
   const body = buildSitemapIndexXml(sitemapUrls);
 
   return new Response(body, {
-    status: 200,
     headers: {
-      "Content-Type": "application/xml; charset=utf-8",
       "Cache-Control": CACHE_CONTROL,
+      "Content-Type": "application/xml; charset=utf-8",
     },
+    status: 200,
   });
 }

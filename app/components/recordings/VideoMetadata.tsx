@@ -1,14 +1,15 @@
-import { useTranslations } from "next-intl";
 import type { Recording } from "@/lib/recordings/recordings";
+import { useTranslations } from "next-intl";
+
+import { CalendarIcon, MapPinIcon, UserIcon } from "@/components/shared/icons";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Pill } from "@/components/ui/Pill";
-import { CalendarIcon, MapPinIcon, UserIcon } from "@/components/shared/icons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-type VideoMetadataProps = {
+interface VideoMetadataProps {
   recording: Recording;
   formattedDate: string;
-};
+}
 
 export function VideoMetadata({ recording, formattedDate }: VideoMetadataProps) {
   const t = useTranslations("recordings");
@@ -32,7 +33,7 @@ export function VideoMetadata({ recording, formattedDate }: VideoMetadataProps) 
               size="sm"
               className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/20"
             >
-              <UserIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
+              <UserIcon className="text-brand-500 dark:text-brand-400 h-3.5 w-3.5" />
               {name}
             </Pill>
           ))}
@@ -40,7 +41,7 @@ export function VideoMetadata({ recording, formattedDate }: VideoMetadataProps) 
             size="sm"
             className="gap-2 bg-white font-semibold text-neutral-600 shadow-sm ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-300 dark:ring-white/10"
           >
-            <CalendarIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
+            <CalendarIcon className="text-brand-500 dark:text-brand-400 h-3.5 w-3.5" />
             {formattedDate}
           </Pill>
           <Pill
@@ -48,7 +49,7 @@ export function VideoMetadata({ recording, formattedDate }: VideoMetadataProps) 
             size="sm"
             className="gap-2 bg-white font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/20"
           >
-            <MapPinIcon className="h-3.5 w-3.5 text-brand-500 dark:text-brand-400" />
+            <MapPinIcon className="text-brand-500 dark:text-brand-400 h-3.5 w-3.5" />
             {recording.location}
           </Pill>
         </div>
@@ -56,7 +57,7 @@ export function VideoMetadata({ recording, formattedDate }: VideoMetadataProps) 
           <Pill
             href={`${PAGE_ROUTES.LIBRARY}?episode=${encodeURIComponent(recording.episodeId)}`}
             size="sm"
-            className="bg-neutral-900/5 font-semibold uppercase tracking-[0.15em] text-neutral-600 transition hover:bg-neutral-900/10 hover:text-neutral-800 dark:bg-white/10 dark:text-neutral-200 dark:hover:bg-white/20 dark:hover:text-white"
+            className="bg-neutral-900/5 font-semibold tracking-[0.15em] text-neutral-600 uppercase transition hover:bg-neutral-900/10 hover:text-neutral-800 dark:bg-white/10 dark:text-neutral-200 dark:hover:bg-white/20 dark:hover:text-white"
           >
             {recording.episodeNumber
               ? `${t("epShort")} ${recording.episodeNumber} · ${recording.episode ?? recording.episodeId}`
@@ -77,7 +78,7 @@ export function VideoMetadata({ recording, formattedDate }: VideoMetadataProps) 
                 key={tag}
                 href={`${PAGE_ROUTES.LIBRARY}?tag=${encodeURIComponent(tag)}`}
                 size="xs"
-                className="bg-brand-50 font-semibold uppercase tracking-[0.18em] text-brand-700 transition-colors hover:bg-brand-100 hover:text-brand-800 dark:bg-brand-500/10 dark:text-brand-200 dark:hover:bg-brand-500/20 dark:hover:text-brand-100"
+                className="bg-brand-50 text-brand-700 hover:bg-brand-100 hover:text-brand-800 dark:bg-brand-500/10 dark:text-brand-200 dark:hover:bg-brand-500/20 dark:hover:text-brand-100 font-semibold tracking-[0.18em] uppercase transition-colors"
               >
                 #{tag}
               </Pill>

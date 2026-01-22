@@ -1,24 +1,26 @@
-import type { Metadata, Viewport } from "next";
-import { getLocale, getTranslations } from "next-intl/server";
-import { NextIntlClientProvider } from "next-intl";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import "./globals.css";
+
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { ThemeProvider } from "./components/theme/ThemeProvider";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
+import type { Metadata, Viewport } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
+
 import { GlobalPlayerProvider } from "./components/shared/GlobalPlayerProvider";
 import { MotionManager } from "./components/theme/MotionManager";
+import { ThemeProvider } from "./components/theme/ThemeProvider";
 import { STORAGE_KEYS } from "./lib/storage/keys";
-import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
   const tCommon = await getTranslations("common");
   const commonValues = {
     brandName: tCommon("brandName"),
+    country: tCommon("country"),
     prague: tCommon("prague"),
     zlin: tCommon("zlin"),
-    country: tCommon("country"),
   };
   const keywords = t.raw("keywords") as string[];
   const processedKeywords = keywords.map((k) =>
@@ -31,35 +33,35 @@ export async function generateMetadata(): Promise<Metadata> {
           : k,
   );
   return {
-    title: t("siteTitle", commonValues),
+    authors: [{ name: t("author", commonValues) }],
     description: t("siteDescription", commonValues),
     keywords: processedKeywords,
-    authors: [{ name: t("author", commonValues) }],
     openGraph: {
-      title: t("siteTitle", commonValues),
       description: t("siteDescription", commonValues),
-      type: "website",
       siteName: t("siteName", commonValues),
-    },
-    twitter: {
-      card: "summary_large_image",
       title: t("siteTitle", commonValues),
-      description: t("siteDescription", commonValues),
+      type: "website",
     },
     robots: {
-      index: true,
       follow: true,
+      index: true,
+    },
+    title: t("siteTitle", commonValues),
+    twitter: {
+      card: "summary_large_image",
+      description: t("siteDescription", commonValues),
+      title: t("siteTitle", commonValues),
     },
   };
 }
 
 export const viewport: Viewport = {
-  width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { color: "#ffffff", media: "(prefers-color-scheme: light)" },
+    { color: "#0a0a0a", media: "(prefers-color-scheme: dark)" },
   ],
+  width: "device-width",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

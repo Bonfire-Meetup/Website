@@ -1,16 +1,18 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { Button } from "@/components/ui/Button";
-import { AlbumImage } from "@/components/shared/AlbumImage";
-import { AlbumGallery } from "./AlbumGallery";
-import { ArrowLeftIcon, ExternalLinkIcon } from "@/components/shared/icons";
-import photoAlbums from "@/data/photo-albums.json";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 import type { PhotoAlbum } from "@/lib/photos/types";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
+
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { AlbumImage } from "@/components/shared/AlbumImage";
+import { ArrowLeftIcon, ExternalLinkIcon } from "@/components/shared/icons";
+import { Button } from "@/components/ui/Button";
+import photoAlbums from "@/data/photo-albums.json";
+import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+
+import { AlbumGallery } from "./AlbumGallery";
 
 const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
 
@@ -18,9 +20,9 @@ function toAlbumSlug(album: PhotoAlbum) {
   return buildAlbumSlug(album.id, album.episodeId);
 }
 
-type PageProps = {
+interface PageProps {
   params: Promise<{ album: string }>;
-};
+}
 
 export function generateStaticParams() {
   return albums.map((album) => ({ album: toAlbumSlug(album) }));
@@ -31,32 +33,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const tCommon = await getTranslations("common");
   const commonValues = {
     brandName: tCommon("brandName"),
+    country: tCommon("country"),
     prague: tCommon("prague"),
     zlin: tCommon("zlin"),
-    country: tCommon("country"),
   };
   const { album: albumId } = await params;
   const album = albums.find((item) => albumId === item.id || albumId.startsWith(`${item.id}-`));
   if (!album) {
     return {
-      title: t("photosTitle", commonValues),
       description: t("photosDescription", commonValues),
+      title: t("photosTitle", commonValues),
     };
   }
   const episode = getEpisodeById(album.episodeId);
   const title = episode ? formatEpisodeTitle(episode) : album.id;
   return {
-    title: `${title} | ${t("photosTitle", commonValues)}`,
     description: t("photosDescription", commonValues),
     openGraph: {
-      title: `${title} | ${t("photosTitle", commonValues)}`,
       description: t("photosDescription", commonValues),
+      title: `${title} | ${t("photosTitle", commonValues)}`,
       type: "website",
     },
+    title: `${title} | ${t("photosTitle", commonValues)}`,
     twitter: {
       card: "summary_large_image",
-      title: `${title} | ${t("photosTitle", commonValues)}`,
       description: t("photosDescription", commonValues),
+      title: `${title} | ${t("photosTitle", commonValues)}`,
     },
   };
 }
@@ -84,7 +86,7 @@ export default async function AlbumPage({ params }: PageProps) {
     <>
       <Header />
       <main className="gradient-bg min-h-screen pt-28 pb-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-10">
+        <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6 lg:px-8">
           <div className="hidden items-center lg:flex">
             <Button
               href={PAGE_ROUTES.PHOTOS}

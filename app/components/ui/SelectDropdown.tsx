@@ -1,18 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useId } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+
 import { ChevronDownIcon } from "../shared/icons";
 
-export type DropdownOption = {
+export interface DropdownOption {
   value: string;
   label: string;
   disabled?: boolean;
-};
+}
 
-export type DropdownGroup = {
+export interface DropdownGroup {
   label: string;
   options: DropdownOption[];
-};
+}
 
 function getDropdownLabel(
   value: string,
@@ -20,10 +21,14 @@ function getDropdownLabel(
   groups: DropdownGroup[],
 ): string {
   const direct = options.find((option) => option.value === value);
-  if (direct) return direct.label;
+  if (direct) {
+    return direct.label;
+  }
   for (const group of groups) {
     const match = group.options.find((option) => option.value === value);
-    if (match) return match.label;
+    if (match) {
+      return match.label;
+    }
   }
   return value;
 }
@@ -64,7 +69,9 @@ export function SelectDropdown({
   const [isOpen, setIsOpen] = useState(false);
   const [menuWidth, setMenuWidth] = useState<number | null>(null);
   const [useNative, setUseNative] = useState(() => {
-    if (!nativeOnMobile || typeof window === "undefined") return false;
+    if (!nativeOnMobile || typeof window === "undefined") {
+      return false;
+    }
     return window.matchMedia("(max-width: 767px)").matches;
   });
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -75,9 +82,9 @@ export function SelectDropdown({
   const optionLabels = useMemo(
     () => [
       ...options.map((option) => option.label),
-      ...resolvedGroups.flatMap((group) => group.options.map((option) => option.label)),
+      ...(groups ?? []).flatMap((group) => group.options.map((option) => option.label)),
     ],
-    [options, resolvedGroups],
+    [options, groups],
   );
 
   useEffect(() => {
@@ -111,7 +118,9 @@ export function SelectDropdown({
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -122,15 +131,18 @@ export function SelectDropdown({
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      return;
+    }
     const raf = requestAnimationFrame(() => {
       const minWidth = containerRef.current?.clientWidth ?? 0;
       const maxWidth = Math.floor(window.innerWidth * 0.9);
       let widest = 0;
-      if (measureRef.current) {
+      const measureElement = measureRef.current;
+      if (measureElement) {
         optionLabels.forEach((text) => {
-          measureRef.current!.textContent = text;
-          widest = Math.max(widest, measureRef.current!.offsetWidth);
+          measureElement.textContent = text;
+          widest = Math.max(widest, measureElement.offsetWidth);
         });
       }
       const padded = widest + 48;
@@ -182,7 +194,7 @@ export function SelectDropdown({
       {name ? <input type="hidden" name={name} value={value} /> : null}
       <span
         ref={measureRef}
-        className="invisible absolute -z-10 whitespace-nowrap text-xs font-medium sm:text-sm"
+        className="invisible absolute -z-10 text-xs font-medium whitespace-nowrap sm:text-sm"
       />
       <button
         id={id}
@@ -205,7 +217,7 @@ export function SelectDropdown({
           id={listboxId}
           role="listbox"
           style={menuWidth ? { width: menuWidth } : undefined}
-          className={`absolute left-0 z-50 mt-2 max-h-64 min-w-full max-w-[min(36rem,90vw)] overflow-y-auto overflow-x-hidden rounded-xl border border-black/5 bg-white/95 p-2 text-xs shadow-lg shadow-black/10 backdrop-blur sm:text-sm dark:border-white/10 dark:bg-neutral-950/95 ${menuClassName}`}
+          className={`absolute left-0 z-50 mt-2 max-h-64 max-w-[min(36rem,90vw)] min-w-full overflow-x-hidden overflow-y-auto rounded-xl border border-black/5 bg-white/95 p-2 text-xs shadow-lg shadow-black/10 backdrop-blur sm:text-sm dark:border-white/10 dark:bg-neutral-950/95 ${menuClassName}`}
         >
           {options.map((option) => (
             <button
@@ -216,7 +228,7 @@ export function SelectDropdown({
               disabled={option.disabled}
               onClick={() => handleSelect(option.value)}
               data-option
-              className={`flex w-full items-center rounded-lg px-3 py-2 text-left font-medium transition whitespace-normal ${
+              className={`flex w-full items-center rounded-lg px-3 py-2 text-left font-medium whitespace-normal transition ${
                 option.value === value
                   ? activeOptionClassName ||
                     "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
@@ -233,7 +245,7 @@ export function SelectDropdown({
               key={group.label}
               className="mt-2 border-t border-black/5 pt-2 dark:border-white/10"
             >
-              <div className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
+              <div className="px-3 pb-1 text-[10px] font-semibold tracking-[0.2em] text-neutral-400 uppercase">
                 {group.label}
               </div>
               {group.options.map((option) => (
@@ -245,7 +257,7 @@ export function SelectDropdown({
                   disabled={option.disabled}
                   onClick={() => handleSelect(option.value)}
                   data-option
-                  className={`flex w-full items-center rounded-lg px-3 py-2 text-left font-medium transition whitespace-normal ${
+                  className={`flex w-full items-center rounded-lg px-3 py-2 text-left font-medium whitespace-normal transition ${
                     option.value === value
                       ? activeOptionClassName ||
                         "bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"

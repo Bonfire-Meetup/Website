@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { getAuthUserById, getAuthAttemptsByEmailHash } from "@/lib/data/auth";
+
+import { requireAuth } from "@/lib/api/auth";
+import { getAuthAttemptsByEmailHash, getAuthUserById } from "@/lib/data/auth";
 import { getUserBoosts } from "@/lib/data/boosts";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { getEmailFingerprint, logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
-import { requireAuth } from "@/lib/api/auth";
 
 const getWatchSlug = (recording: { slug: string; shortId: string }) =>
   `${recording.slug}-${recording.shortId}`;
@@ -32,8 +33,8 @@ export const GET = async (request: Request) =>
         fingerprint.emailHash
           ? getAuthAttemptsByEmailHash({
               emailHash: fingerprint.emailHash,
-              since,
               limit: 50,
+              since,
             })
           : Promise.resolve([]),
       ]);
@@ -44,33 +45,35 @@ export const GET = async (request: Request) =>
       const boostItems = boosts
         .map((boost) => {
           const recording = recordingMap.get(boost.video_id);
-          if (!recording) return null;
+          if (!recording) {
+            return null;
+          }
           return {
-            shortId: recording.shortId,
-            title: recording.title,
-            speaker: recording.speaker,
             date: recording.date,
+            shortId: recording.shortId,
             slug: getWatchSlug(recording),
+            speaker: recording.speaker,
+            title: recording.title,
           };
         })
         .filter((item) => item !== null);
 
       const attemptItems = attempts.map((attempt) => ({
+        createdAt: attempt.created_at.toISOString(),
         id: attempt.id,
         outcome: attempt.outcome,
-        createdAt: attempt.created_at.toISOString(),
       }));
 
       return respond({
-        profile: {
-          id: user.id,
-          email: user.email,
-          createdAt: user.created_at.toISOString(),
-          lastLoginAt: user.last_login_at ? user.last_login_at.toISOString() : null,
-          allowCommunityEmails: user.allow_community_emails,
-        },
-        boosts: { items: boostItems },
         attempts: { items: attemptItems },
+        boosts: { items: boostItems },
+        profile: {
+          allowCommunityEmails: user.allow_community_emails,
+          createdAt: user.created_at.toISOString(),
+          email: user.email,
+          id: user.id,
+          lastLoginAt: user.last_login_at ? user.last_login_at.toISOString() : null,
+        },
       });
     } catch (error) {
       logError("account.me.failed", error);

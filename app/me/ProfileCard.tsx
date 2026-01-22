@@ -1,21 +1,22 @@
 "use client";
 
-import { useTranslations, useLocale } from "next-intl";
-import { formatDate } from "@/lib/utils/locale";
-import { copyToClipboard } from "@/lib/utils/clipboard";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
-type Profile = {
+import { copyToClipboard } from "@/lib/utils/clipboard";
+import { formatDate } from "@/lib/utils/locale";
+
+interface Profile {
   id: string;
   email: string;
   createdAt: string;
   lastLoginAt: string | null;
   allowCommunityEmails: boolean;
-};
+}
 
-type ProfileCardProps = {
+interface ProfileCardProps {
   profile: Profile;
-};
+}
 
 export function ProfileCard({ profile }: ProfileCardProps) {
   const t = useTranslations("account");
@@ -31,16 +32,16 @@ export function ProfileCard({ profile }: ProfileCardProps) {
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
       <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-3 dark:border-white/5">
-        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
+        <span className="text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
           {t("email")}
         </span>
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-600 dark:bg-brand-500/20 dark:text-brand-300">
+        <div className="bg-brand-100 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300 flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold">
           {profile.email.charAt(0).toUpperCase()}
         </div>
       </div>
       <div className="space-y-4 p-5">
         <div>
-          <div className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
+          <div className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
             {t("email")}
           </div>
           <div className="mt-1 font-medium text-neutral-900 dark:text-neutral-100">
@@ -49,7 +50,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
+            <div className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
               {t("created")}
             </div>
             <div className="mt-1 text-sm text-neutral-700 dark:text-neutral-300">
@@ -57,7 +58,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
             </div>
           </div>
           <div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
+            <div className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
               {t("lastLogin")}
             </div>
             <div className="mt-1 text-sm text-neutral-700 dark:text-neutral-300">
@@ -66,11 +67,11 @@ export function ProfileCard({ profile }: ProfileCardProps) {
           </div>
         </div>
         <div className="border-t border-neutral-100 pt-4 dark:border-white/5">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 dark:text-neutral-500">
+          <div className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
             {t("userId")}
           </div>
           <div className="mt-1 flex items-center gap-2">
-            <code className="text-xs font-mono text-neutral-500 dark:text-neutral-400">
+            <code className="font-mono text-xs text-neutral-500 dark:text-neutral-400">
               {profile.id}
             </code>
             <button

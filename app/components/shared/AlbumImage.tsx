@@ -9,7 +9,9 @@ const callbacks = new WeakMap<Element, Callback>();
 let sharedObserver: IntersectionObserver | null = null;
 
 function getSharedObserver() {
-  if (sharedObserver) return sharedObserver;
+  if (sharedObserver) {
+    return sharedObserver;
+  }
 
   sharedObserver = new IntersectionObserver(
     (entries) => {
@@ -40,7 +42,7 @@ function unobserve(el: Element) {
   sharedObserver?.unobserve(el);
 }
 
-type AlbumImageProps = {
+interface AlbumImageProps {
   src: string;
   alt: string;
   className?: string;
@@ -50,7 +52,7 @@ type AlbumImageProps = {
   width?: number;
   height?: number;
   sizes?: string;
-};
+}
 
 export function AlbumImage({
   src,
@@ -75,7 +77,9 @@ export function AlbumImage({
     }
 
     const container = containerRef.current;
-    if (!container) return;
+    if (!container) {
+      return;
+    }
 
     observe(container, () => setInView(true));
     return () => unobserve(container);

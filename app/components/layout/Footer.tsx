@@ -1,7 +1,8 @@
 import { getTranslations } from "next-intl/server";
+
 import { DiscordIcon, FacebookIcon, MailIcon, YouTubeIcon } from "@/components/shared/icons";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export async function Footer() {
   const t = await getTranslations("footer");
@@ -24,7 +25,7 @@ export async function Footer() {
             <div className="flex items-center gap-2">
               <a
                 href={`mailto:${WEBSITE_URLS.CONTACT_EMAIL}`}
-                className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:bg-brand-100 hover:text-brand-700 hover:scale-105 dark:bg-white/5 dark:hover:bg-brand-500/15 dark:hover:text-brand-300"
+                className="hover:bg-brand-100 hover:text-brand-700 dark:hover:bg-brand-500/15 dark:hover:text-brand-300 flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:scale-105 dark:bg-white/5"
                 aria-label={t("emailLabel")}
               >
                 <MailIcon className="h-4 w-4" />
@@ -33,7 +34,7 @@ export async function Footer() {
                 href="https://www.youtube.com/playlist?list=PL5JjhpXFzfZp51YDuRgc9w6JVJUM9EQaN"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:bg-red-100 hover:text-red-600 hover:scale-105 dark:bg-white/5 dark:hover:bg-red-500/15 dark:hover:text-red-400"
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:scale-105 hover:bg-red-100 hover:text-red-600 dark:bg-white/5 dark:hover:bg-red-500/15 dark:hover:text-red-400"
                 aria-label={t("youtubeLabel")}
               >
                 <YouTubeIcon className="h-4 w-4" />
@@ -42,7 +43,7 @@ export async function Footer() {
                 href="https://www.facebook.com/bonfire.meetup"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:bg-neutral-200 hover:text-neutral-900 hover:scale-105 dark:bg-white/5 dark:hover:bg-white/10 dark:hover:text-white"
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:scale-105 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-white/5 dark:hover:bg-white/10 dark:hover:text-white"
                 aria-label={t("facebookLabel")}
               >
                 <FacebookIcon className="h-4 w-4" />
@@ -51,7 +52,7 @@ export async function Footer() {
                 href="https://discord.com/invite/8Tqm7vAd4h"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:bg-indigo-100 hover:text-indigo-600 hover:scale-105 dark:bg-white/5 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-400"
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:scale-105 hover:bg-indigo-100 hover:text-indigo-600 dark:bg-white/5 dark:hover:bg-indigo-500/15 dark:hover:text-indigo-400"
                 aria-label={t("discordLabel")}
               >
                 <DiscordIcon className="h-4 w-4" />
@@ -63,8 +64,8 @@ export async function Footer() {
         <div className="mt-4 flex flex-col items-center justify-between gap-4 border-t border-neutral-200 pt-4 text-center text-xs text-neutral-500 sm:flex-row sm:text-left dark:border-white/10 dark:text-neutral-500">
           <p>
             {t("copyright", {
-              year: new Date().getFullYear(),
               brandName: tCommon("brandName"),
+              year: new Date().getFullYear(),
             })}
           </p>
           <div className="flex items-center gap-4">

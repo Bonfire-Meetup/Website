@@ -1,8 +1,10 @@
 import { defaultLocale } from "@/i18n/routing";
-import { isValidLocale, type Locale } from "@/lib/i18n/locales";
+import { type Locale, isValidLocale } from "@/lib/i18n/locales";
 
 const getCookieValue = (cookieHeader: string | null, name: string) => {
-  if (!cookieHeader) return null;
+  if (!cookieHeader) {
+    return null;
+  }
   const parts = cookieHeader.split(";").map((part) => part.trim());
   for (const part of parts) {
     if (part.startsWith(`${name}=`)) {
@@ -22,7 +24,9 @@ const getLocaleFromCookie = (headers: Headers) => {
 
 const getLocaleFromAcceptLanguage = (headers: Headers) => {
   const acceptLanguage = headers.get("accept-language");
-  if (!acceptLanguage) return null;
+  if (!acceptLanguage) {
+    return null;
+  }
   const preferredLocale = acceptLanguage
     .split(",")
     .map((lang) => lang.split(";")[0]?.trim().substring(0, 2) ?? "")
@@ -35,8 +39,8 @@ export const getRequestLocale = (headers: Headers): Locale =>
 
 export function formatDate(date: string, locale: string) {
   return new Date(date).toLocaleDateString(locale, {
-    month: "short",
     day: "numeric",
+    month: "short",
     year: "numeric",
   });
 }

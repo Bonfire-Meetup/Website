@@ -1,15 +1,15 @@
-export type PhotoAlbumImage = {
+export interface PhotoAlbumImage {
   src: string;
   width: number;
   height: number;
-};
+}
 
-export type PhotoAlbumPhotographer = {
+export interface PhotoAlbumPhotographer {
   name: string;
   url?: string;
-};
+}
 
-export type PhotoAlbum = {
+export interface PhotoAlbum {
   id: string;
   folder: string;
   cover: PhotoAlbumImage;
@@ -17,4 +17,4 @@ export type PhotoAlbum = {
   count: number;
   episodeId: string;
   photographers?: PhotoAlbumPhotographer[];
-};
+}

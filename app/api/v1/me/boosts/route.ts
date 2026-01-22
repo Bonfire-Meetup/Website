@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+
+import { requireAuth } from "@/lib/api/auth";
 import { getUserBoosts } from "@/lib/data/boosts";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
-import { requireAuth } from "@/lib/api/auth";
 
 const getWatchSlug = (recording: { slug: string; shortId: string }) =>
   `${recording.slug}-${recording.shortId}`;
@@ -22,13 +23,15 @@ export async function GET(request: Request) {
       const items = boosts
         .map((boost) => {
           const recording = recordingMap.get(boost.video_id);
-          if (!recording) return null;
+          if (!recording) {
+            return null;
+          }
           return {
-            shortId: recording.shortId,
-            title: recording.title,
-            speaker: recording.speaker,
             date: recording.date,
+            shortId: recording.shortId,
             slug: getWatchSlug(recording),
+            speaker: recording.speaker,
+            title: recording.title,
           };
         })
         .filter((item) => item !== null);

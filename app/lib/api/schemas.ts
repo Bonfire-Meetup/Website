@@ -6,8 +6,8 @@ export const videoLikeStatsSchema = z.object({
 });
 
 export const videoLikeMutationSchema = z.object({
-  count: z.number().int().min(0),
   added: z.boolean().optional(),
+  count: z.number().int().min(0),
   removed: z.boolean().optional(),
 });
 
@@ -17,8 +17,8 @@ export const videoBoostStatsSchema = z.object({
 });
 
 export const videoBoostMutationSchema = z.object({
-  count: z.number().int().min(0),
   added: z.boolean().optional(),
+  count: z.number().int().min(0),
   removed: z.boolean().optional(),
 });
 

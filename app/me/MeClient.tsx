@@ -1,43 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
 import { LogOutIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
-import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
-import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
 import { API_ROUTES } from "@/lib/api/routes";
+import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
+
 import { BoostedVideosBlock } from "./BoostedVideosBlock";
 import { DangerZoneBlock } from "./DangerZoneBlock";
-import { PreferenceBlock } from "./PreferenceBlock";
-import { LoginAttemptsBlock } from "./LoginAttemptsBlock";
-import { ProfileCard } from "./ProfileCard";
 import { GuildCard } from "./GuildCard";
-import { ProfileSkeleton, GuildSkeleton } from "./ProfileSkeletons";
+import { LoginAttemptsBlock } from "./LoginAttemptsBlock";
+import { PreferenceBlock } from "./PreferenceBlock";
+import { ProfileCard } from "./ProfileCard";
+import { GuildSkeleton, ProfileSkeleton } from "./ProfileSkeletons";
 
-type Profile = {
+interface Profile {
   id: string;
   email: string;
   createdAt: string;
   lastLoginAt: string | null;
   allowCommunityEmails: boolean;
-};
+}
 
-type BoostedRecording = {
+interface BoostedRecording {
   shortId: string;
   title: string;
   speaker: string[];
   date: string;
   slug: string;
-};
+}
 
-type LoginAttempt = {
+interface LoginAttempt {
   id: string;
   outcome: string;
   createdAt: string;
-};
+}
 
 export function MeClient() {
   const t = useTranslations("account");
@@ -114,15 +116,17 @@ export function MeClient() {
   };
 
   const handleCommunityEmailsToggle = async () => {
-    if (!accessToken || !profile) return;
+    if (!accessToken || !profile) {
+      return;
+    }
     const nextValue = !profile.allowCommunityEmails;
     setProfile({ ...profile, allowCommunityEmails: nextValue });
     setUpdatingPreference(true);
     try {
       const response = await fetch(API_ROUTES.ME.PREFERENCES, {
-        method: "PATCH",
-        headers: createJsonAuthHeaders(accessToken),
         body: JSON.stringify({ allowCommunityEmails: nextValue }),
+        headers: createJsonAuthHeaders(accessToken),
+        method: "PATCH",
       });
       if (!response.ok) {
         setProfile({ ...profile, allowCommunityEmails: !nextValue });
@@ -135,7 +139,9 @@ export function MeClient() {
   };
 
   const handleDeleteRequest = async () => {
-    if (!accessToken) return;
+    if (!accessToken) {
+      return;
+    }
     if (!deleteIntent) {
       setDeleteError(tDelete("intentRequired"));
       return;
@@ -146,8 +152,8 @@ export function MeClient() {
 
     try {
       const response = await fetch(API_ROUTES.ME.DELETE_CHALLENGE, {
-        method: "POST",
         headers: createAuthHeaders(accessToken),
+        method: "POST",
       });
       if (!response.ok) {
         setDeleteError(tDelete("error"));
@@ -171,16 +177,18 @@ export function MeClient() {
   };
 
   const handleDeleteConfirm = async () => {
-    if (!accessToken || !deleteChallengeToken) return;
+    if (!accessToken || !deleteChallengeToken) {
+      return;
+    }
     setDeleteLoading(true);
     setDeleteError(null);
     setDeleteStatus(null);
 
     try {
       const response = await fetch(API_ROUTES.ME.DELETE, {
-        method: "POST",
+        body: JSON.stringify({ challenge_token: deleteChallengeToken, code: deleteCode }),
         headers: createJsonAuthHeaders(accessToken),
-        body: JSON.stringify({ code: deleteCode, challenge_token: deleteChallengeToken }),
+        method: "POST",
       });
       if (!response.ok) {
         const data = (await response.json().catch(() => null)) as { error?: string } | null;
@@ -233,13 +241,15 @@ export function MeClient() {
   };
 
   const handleRemoveBoost = async (shortId: string) => {
-    if (!accessToken) return;
+    if (!accessToken) {
+      return;
+    }
     const prev = boosts;
     setBoosts((current) => current.filter((item) => item.shortId !== shortId));
     try {
       const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
-        method: "DELETE",
         headers: createAuthHeaders(accessToken),
+        method: "DELETE",
       });
       if (!response.ok) {
         setBoosts(prev);
@@ -321,9 +331,9 @@ export function MeClient() {
         <div className="grid gap-3 sm:grid-cols-2">
           <a
             href={PAGE_ROUTES.CONTACT_WITH_TYPE("feature")}
-            className="group flex items-center gap-4 rounded-2xl border border-neutral-200/70 bg-white/70 p-4 transition hover:border-brand-200 hover:bg-brand-50/50 dark:border-white/10 dark:bg-white/5 dark:hover:border-brand-500/30 dark:hover:bg-brand-500/5"
+            className="group hover:border-brand-200 hover:bg-brand-50/50 dark:hover:border-brand-500/30 dark:hover:bg-brand-500/5 flex items-center gap-4 rounded-2xl border border-neutral-200/70 bg-white/70 p-4 transition dark:border-white/10 dark:bg-white/5"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-600 transition group-hover:bg-brand-200 dark:bg-brand-500/20 dark:text-brand-300 dark:group-hover:bg-brand-500/30">
+            <div className="bg-brand-100 text-brand-600 group-hover:bg-brand-200 dark:bg-brand-500/20 dark:text-brand-300 dark:group-hover:bg-brand-500/30 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition">
               <svg
                 className="h-5 w-5"
                 viewBox="0 0 24 24"

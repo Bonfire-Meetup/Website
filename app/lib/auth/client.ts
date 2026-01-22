@@ -2,14 +2,14 @@
 
 import { STORAGE_KEYS } from "../storage/keys";
 
-export type AccessTokenPayload = {
+export interface AccessTokenPayload {
   sub?: string;
   exp?: number;
   iat?: number;
   aud?: string | string[];
   iss?: string;
   jti?: string;
-};
+}
 
 const accessTokenStorageKey = STORAGE_KEYS.ACCESS_TOKEN;
 
@@ -20,23 +20,31 @@ const decodeBase64Url = (value: string) => {
 };
 
 export const readAccessToken = () => {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined") {
+    return null;
+  }
   return window.localStorage.getItem(accessTokenStorageKey);
 };
 
 export const writeAccessToken = (token: string) => {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
   window.localStorage.setItem(accessTokenStorageKey, token);
 };
 
 export const clearAccessToken = () => {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
   window.localStorage.removeItem(accessTokenStorageKey);
 };
 
 export const decodeAccessToken = (token: string): AccessTokenPayload | null => {
   const parts = token.split(".");
-  if (parts.length < 2) return null;
+  if (parts.length < 2) {
+    return null;
+  }
   try {
     const json = decodeBase64Url(parts[1] ?? "");
     return JSON.parse(json) as AccessTokenPayload;
@@ -47,6 +55,8 @@ export const decodeAccessToken = (token: string): AccessTokenPayload | null => {
 
 export const isAccessTokenValid = (token: string) => {
   const payload = decodeAccessToken(token);
-  if (!payload?.exp) return false;
+  if (!payload?.exp) {
+    return false;
+  }
   return payload.exp * 1000 > Date.now();
 };

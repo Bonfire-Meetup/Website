@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
-type NavLink = {
+interface NavLink {
   href: string;
   label: string;
-};
+}
 
-type MobileMenuProps = {
+interface MobileMenuProps {
   links: NavLink[];
   menuLabel: string;
   closeLabel: string;
-};
+}
 
 export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
   const pathname = usePathname();
@@ -25,8 +25,12 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isActiveLink = (href: string) => {
-    if (href === "/") return pathname === "/";
-    if (href.startsWith("/#")) return false;
+    if (href === "/") {
+      return pathname === "/";
+    }
+    if (href.startsWith("/#")) {
+      return false;
+    }
     return pathname.startsWith(href);
   };
 
@@ -44,7 +48,9 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
       return;
     }
 
-    if (!isRendered) return;
+    if (!isRendered) {
+      return;
+    }
 
     closeTimer.current = setTimeout(() => {
       setIsRendered(false);
@@ -74,7 +80,9 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeMenu();
+      if (e.key === "Escape") {
+        closeMenu();
+      }
     };
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);

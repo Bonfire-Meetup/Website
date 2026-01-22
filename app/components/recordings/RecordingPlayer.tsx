@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useTranslations, useLocale } from "next-intl";
 import type { Recording } from "@/lib/recordings/recordings";
-import { Button } from "@/components/ui/Button";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
+
 import { useGlobalPlayer } from "@/components/shared/GlobalPlayerProvider";
 import { ArrowLeftIcon, CinemaIcon } from "@/components/shared/icons";
+import { Button } from "@/components/ui/Button";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatDate } from "@/lib/utils/locale";
+
 import { LikeBoostButtons } from "./LikeBoostButtons";
+import { RelatedVideosSection } from "./RelatedVideosSection";
 import { ShareMenu } from "./ShareMenu";
 import { VideoMetadata } from "./VideoMetadata";
-import { RelatedVideosSection } from "./RelatedVideosSection";
-import { formatDate } from "@/lib/utils/locale";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export type RelatedRecording = Pick<
   Recording,
@@ -31,7 +33,7 @@ export function RecordingPlayer({
   const { setVideo, setInlineContainer, cinemaMode, setCinemaMode } = useGlobalPlayer();
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    window.scrollTo({ behavior: "instant" as ScrollBehavior, left: 0, top: 0 });
   }, [recording.youtubeId]);
 
   useEffect(() => {
@@ -51,9 +53,9 @@ export function RecordingPlayer({
 
   useEffect(() => {
     setVideo({
-      youtubeId: recording.youtubeId,
       title: recording.title,
       watchUrl: PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
+      youtubeId: recording.youtubeId,
     });
   }, [recording.youtubeId, recording.title, recording.slug, recording.shortId, setVideo]);
 
@@ -68,7 +70,7 @@ export function RecordingPlayer({
         <div className="flex flex-col gap-12 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
           <div className="min-w-0 space-y-8">
             <div className="glass-card no-hover-pop overflow-hidden">
-              <div className="hidden items-center justify-between border-b border-neutral-200/30 px-4 py-3 dark:border-neutral-700/30 lg:flex">
+              <div className="hidden items-center justify-between border-b border-neutral-200/30 px-4 py-3 lg:flex dark:border-neutral-700/30">
                 <div className="hidden lg:block">
                   <Button
                     href={PAGE_ROUTES.LIBRARY}
@@ -82,9 +84,9 @@ export function RecordingPlayer({
                 </div>
               </div>
 
-              <div ref={inlinePlayerRef} className="relative w-full aspect-video bg-black" />
+              <div ref={inlinePlayerRef} className="relative aspect-video w-full bg-black" />
 
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200/40 px-5 py-4 dark:border-neutral-700/40 sm:px-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200/40 px-5 py-4 sm:px-6 dark:border-neutral-700/40">
                 <LikeBoostButtons shortId={recording.shortId} />
 
                 <div className="flex items-center gap-3">
@@ -92,7 +94,7 @@ export function RecordingPlayer({
                   <button
                     type="button"
                     onClick={() => setCinemaMode(!cinemaMode)}
-                    className="hidden items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+                    className="hidden cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
                   >
                     <CinemaIcon className="h-3.5 w-3.5" />
                     {cinemaMode ? t("exitCinema") : t("cinema")}

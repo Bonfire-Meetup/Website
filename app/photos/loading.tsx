@@ -8,9 +8,9 @@ export default function Loading() {
           <Skeleton className="absolute inset-0 z-0 !rounded-none" />
           <div className="absolute inset-0 z-10 flex items-center justify-center">
             <div className="flex items-end gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_12px_rgba(59,130,246,0.45)] animate-bounce motion-reduce:animate-none dark:bg-brand-400" />
-              <span className="h-3 w-3 rounded-full bg-brand-500 shadow-[0_0_14px_rgba(59,130,246,0.5)] animate-bounce [animation-delay:150ms] motion-reduce:animate-none dark:bg-brand-400" />
-              <span className="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_12px_rgba(59,130,246,0.45)] animate-bounce [animation-delay:300ms] motion-reduce:animate-none dark:bg-brand-400" />
+              <span className="bg-brand-500 dark:bg-brand-400 h-2.5 w-2.5 animate-bounce rounded-full shadow-[0_0_12px_rgba(59,130,246,0.45)] motion-reduce:animate-none" />
+              <span className="bg-brand-500 dark:bg-brand-400 h-3 w-3 animate-bounce rounded-full shadow-[0_0_14px_rgba(59,130,246,0.5)] [animation-delay:150ms] motion-reduce:animate-none" />
+              <span className="bg-brand-500 dark:bg-brand-400 h-2.5 w-2.5 animate-bounce rounded-full shadow-[0_0_12px_rgba(59,130,246,0.45)] [animation-delay:300ms] motion-reduce:animate-none" />
             </div>
           </div>
           <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-32 sm:px-6 sm:pb-40 lg:px-8 lg:pb-48">
@@ -28,7 +28,10 @@ export default function Loading() {
           <div className="mx-auto max-w-7xl">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 lg:gap-6">
               {Array.from({ length: 4 }).map((_, index) => (
-                <Skeleton key={index} className="aspect-[3/4] rounded-2xl sm:rounded-3xl" />
+                <Skeleton
+                  key={`photo-skeleton-${index}`}
+                  className="aspect-[3/4] rounded-2xl sm:rounded-3xl"
+                />
               ))}
             </div>
           </div>
@@ -49,7 +52,7 @@ export default function Loading() {
           <div className="flex flex-wrap items-center gap-3">
             {Array.from({ length: 2 }).map((_, index) => (
               <div
-                key={index}
+                key={`filter-skeleton-${index}`}
                 className="inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-2 ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10"
               >
                 <Skeleton className="h-6 w-10" />
@@ -61,7 +64,10 @@ export default function Loading() {
         <section>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="overflow-hidden rounded-[24px] bg-white/80">
+              <div
+                key={`grid-skeleton-${index}`}
+                className="overflow-hidden rounded-[24px] bg-white/80"
+              >
                 <Skeleton className="aspect-[16/10] w-full !rounded-none" />
                 <div className="space-y-3 p-5">
                   <Skeleton className="h-5 w-3/4" />

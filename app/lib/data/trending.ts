@@ -1,19 +1,25 @@
 import { unstable_cache } from "next/cache";
+
 import { getDatabaseClient } from "@/lib/data/db";
 
 type LikeCounts = Record<string, number>;
 type BoostCounts = Record<string, number>;
 
-export type EngagementCounts = {
+export interface EngagementCounts {
   likes: LikeCounts;
   boosts: BoostCounts;
-};
+}
 
-type EngagementRow = { video_id: string; count: number };
+interface EngagementRow {
+  video_id: string;
+  count: number;
+}
 
 const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
   const sql = getDatabaseClient({ required: false });
-  if (!sql) return { likes: {}, boosts: {} };
+  if (!sql) {
+    return { boosts: {}, likes: {} };
+  }
 
   try {
     const [likeRows, boostRows] = (await Promise.all([
@@ -30,11 +36,11 @@ const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
     ])) as [EngagementRow[], EngagementRow[]];
 
     return {
-      likes: Object.fromEntries(likeRows.map((row) => [row.video_id, row.count])),
       boosts: Object.fromEntries(boostRows.map((row) => [row.video_id, row.count])),
+      likes: Object.fromEntries(likeRows.map((row) => [row.video_id, row.count])),
     };
   } catch {
-    return { likes: {}, boosts: {} };
+    return { boosts: {}, likes: {} };
   }
 };
 
@@ -42,6 +48,7 @@ export const fetchEngagementCounts = unstable_cache(
   fetchEngagementCountsUncached,
   ["engagement-counts"],
   {
-    revalidate: 900, // 15 minutes
+    // 15 minutes
+    revalidate: 900,
   },
 );

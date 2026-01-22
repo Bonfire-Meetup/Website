@@ -1,9 +1,11 @@
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import Image from "next/image";
+
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+
 import { FireIcon, MapPinIcon } from "../shared/icons";
 
-type LocationCardProps = {
+interface LocationCardProps {
   name: string;
   city: LocationValue;
   description: string;
@@ -11,7 +13,7 @@ type LocationCardProps = {
   sponsorsTitle: string;
   sponsors: { name: string; logo: string; url: string; logoClassName?: string }[];
   nextEvent?: string;
-};
+}
 
 export async function LocationCard({
   name,
@@ -93,14 +95,14 @@ export async function LocationCard({
         </div>
 
         <div className="mt-8">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
+          <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
             {sponsorsTitle}
           </p>
           <div className="flex flex-wrap gap-3">
             {sponsors.map((sponsor) => (
               <div
                 key={sponsor.name}
-                className="flex items-center justify-center rounded-2xl bg-neutral-900/85 px-3 py-2 ring-1 ring-black/20 shadow-sm shadow-black/20 backdrop-blur dark:bg-white/5 dark:ring-white/10 dark:shadow-black/30"
+                className="flex items-center justify-center rounded-2xl bg-neutral-900/85 px-3 py-2 shadow-sm ring-1 shadow-black/20 ring-black/20 backdrop-blur dark:bg-white/5 dark:shadow-black/30 dark:ring-white/10"
               >
                 <a
                   href={sponsor.url}

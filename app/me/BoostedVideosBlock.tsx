@@ -1,22 +1,23 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-type BoostedRecording = {
+interface BoostedRecording {
   shortId: string;
   title: string;
   speaker: string[];
   date: string;
   slug: string;
-};
+}
 
-type BoostedVideosBlockProps = {
+interface BoostedVideosBlockProps {
   loading: boolean;
   error: string | null;
   items: BoostedRecording[];
   onRemove: (shortId: string) => void;
-};
+}
 
 export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedVideosBlockProps) {
   const t = useTranslations("account.boosted");
@@ -27,7 +28,7 @@ export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedV
       </div>
       <div className="p-4">
         {loading ? (
-          <div className="space-y-2 max-h-[280px] sm:max-h-[320px] overflow-y-auto overscroll-contain">
+          <div className="max-h-[280px] space-y-2 overflow-y-auto overscroll-contain sm:max-h-[320px]">
             {Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={`boost-skeleton-${index}`}
@@ -50,7 +51,7 @@ export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedV
             {t("empty")}
           </div>
         ) : (
-          <div className="space-y-2 max-h-[280px] sm:max-h-[320px] overflow-y-auto overscroll-contain -mx-4 px-4">
+          <div className="-mx-4 max-h-[280px] space-y-2 overflow-y-auto overscroll-contain px-4 sm:max-h-[320px]">
             {items.map((boost) => (
               <div
                 key={boost.shortId}
@@ -59,7 +60,7 @@ export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedV
                 <div className="min-w-0">
                   <a
                     href={PAGE_ROUTES.WATCH(boost.slug, boost.shortId)}
-                    className="block truncate text-sm font-medium text-neutral-900 hover:text-brand-600 dark:text-white dark:hover:text-brand-300"
+                    className="hover:text-brand-600 dark:hover:text-brand-300 block truncate text-sm font-medium text-neutral-900 dark:text-white"
                   >
                     {boost.title}
                   </a>
@@ -70,7 +71,7 @@ export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedV
                 <button
                   type="button"
                   onClick={() => onRemove(boost.shortId)}
-                  className="shrink-0 cursor-pointer rounded-lg px-2 py-1 text-xs text-neutral-400 opacity-0 transition hover:bg-rose-50 hover:text-rose-600 group-hover:opacity-100 dark:hover:bg-rose-500/10 dark:hover:text-rose-300"
+                  className="shrink-0 cursor-pointer rounded-lg px-2 py-1 text-xs text-neutral-400 opacity-0 transition group-hover:opacity-100 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-500/10 dark:hover:text-rose-300"
                 >
                   {t("remove")}
                 </button>

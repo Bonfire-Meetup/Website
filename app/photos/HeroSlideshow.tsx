@@ -1,14 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useReducer, useState, useCallback } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
-type HeroSlideshowProps = {
+interface HeroSlideshowProps {
   images: { src: string; alt: string }[];
   interval?: number;
-};
+}
 
-type State = {
+interface State {
   ready: boolean;
   currentIndex: number;
   currentDirection: number;
@@ -16,7 +16,7 @@ type State = {
   nextDirection: number;
   isTransitioning: boolean;
   prefersReducedMotion: boolean;
-};
+}
 
 type Action =
   | { type: "START_TRANSITION"; nextIndex: number; nextDirection: number }
@@ -31,25 +31,25 @@ function reducer(state: State, action: Action): State {
     case "INIT":
       return {
         ...state,
-        ready: true,
-        currentIndex: action.index,
         currentDirection: action.direction,
+        currentIndex: action.index,
         prefersReducedMotion: action.reducedMotion,
+        ready: true,
       };
     case "START_TRANSITION":
       return {
         ...state,
-        nextIndex: action.nextIndex,
-        nextDirection: action.nextDirection,
         isTransitioning: true,
+        nextDirection: action.nextDirection,
+        nextIndex: action.nextIndex,
       };
     case "COMPLETE_TRANSITION":
       return {
         ...state,
-        currentIndex: state.nextIndex ?? state.currentIndex,
         currentDirection: state.nextDirection,
-        nextIndex: null,
+        currentIndex: state.nextIndex ?? state.currentIndex,
         isTransitioning: false,
+        nextIndex: null,
       };
     case "SET_REDUCED_MOTION":
       return { ...state, prefersReducedMotion: action.value };
@@ -60,13 +60,13 @@ function reducer(state: State, action: Action): State {
 
 export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) {
   const [state, dispatch] = useReducer(reducer, {
-    ready: false,
-    currentIndex: 0,
     currentDirection: 1,
-    nextIndex: null,
-    nextDirection: 1,
+    currentIndex: 0,
     isTransitioning: false,
+    nextDirection: 1,
+    nextIndex: null,
     prefersReducedMotion: false,
+    ready: false,
   });
   const [loadedIndices, setLoadedIndices] = useState<Set<number>>(() => new Set());
   const [isInView, setIsInView] = useState(true);
@@ -86,10 +86,10 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const randomIndex = Math.floor(Math.random() * images.length);
     dispatch({
-      type: "INIT",
-      index: randomIndex,
       direction: getRandomDirection(),
+      index: randomIndex,
       reducedMotion: mediaQuery.matches,
+      type: "INIT",
     });
     currentIndexRef.current = randomIndex;
 
@@ -112,7 +112,9 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
 
   useEffect(() => {
     const node = containerRef.current;
-    if (!node) return;
+    if (!node) {
+      return;
+    }
     const observer = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting), {
       rootMargin: "200px",
     });
@@ -121,16 +123,16 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   }, []);
 
   useEffect(() => {
-    if (typeof navigator === "undefined") return;
-    const connection = (
-      navigator as Navigator & {
-        connection?: {
-          saveData?: boolean;
-          addEventListener?: Function;
-          removeEventListener?: Function;
-        };
-      }
-    ).connection;
+    if (typeof navigator === "undefined") {
+      return;
+    }
+    const { connection } = navigator as Navigator & {
+      connection?: {
+        saveData?: boolean;
+        addEventListener?: (type: string, listener: EventListener) => void;
+        removeEventListener?: (type: string, listener: EventListener) => void;
+      };
+    };
     const update = () => setSaveData(Boolean(connection?.saveData));
     update();
     connection?.addEventListener?.("change", update);
@@ -139,7 +141,9 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
 
   const markLoaded = useCallback((index: number) => {
     setLoadedIndices((prev) => {
-      if (prev.has(index)) return prev;
+      if (prev.has(index)) {
+        return prev;
+      }
       const next = new Set(prev);
       next.add(index);
       return next;
@@ -148,8 +152,12 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
 
   const preloadIndex = useCallback(
     (index: number) => {
-      if (typeof window === "undefined") return;
-      if (loadedIndices.has(index)) return;
+      if (typeof window === "undefined") {
+        return;
+      }
+      if (loadedIndices.has(index)) {
+        return;
+      }
       const img = new window.Image();
       img.src = images[index].src;
       img.onload = () => markLoaded(index);
@@ -158,7 +166,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   );
 
   const currentImage = images[state.currentIndex];
-  const nextIndex = state.nextIndex;
+  const { nextIndex } = state;
   const nextImage = nextIndex !== null ? images[nextIndex] : null;
   const isCurrentLoaded = loadedIndices.has(state.currentIndex);
   const getNextRandomIndex = useCallback(() => {
@@ -170,8 +178,10 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   }, [images.length]);
   const startTransition = useCallback(
     (next: number, direction: number) => {
-      if (state.isTransitioning) return;
-      dispatch({ type: "START_TRANSITION", nextIndex: next, nextDirection: direction });
+      if (state.isTransitioning) {
+        return;
+      }
+      dispatch({ nextDirection: direction, nextIndex: next, type: "START_TRANSITION" });
       if (transitionTimeoutRef.current) {
         clearTimeout(transitionTimeoutRef.current);
       }
@@ -188,19 +198,31 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
       }`}
     >
       <div className="flex items-end gap-2">
-        <span className="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_12px_rgba(59,130,246,0.45)] animate-bounce motion-reduce:animate-none dark:bg-brand-400" />
-        <span className="h-3 w-3 rounded-full bg-brand-500 shadow-[0_0_14px_rgba(59,130,246,0.5)] animate-bounce [animation-delay:150ms] motion-reduce:animate-none dark:bg-brand-400" />
-        <span className="h-2.5 w-2.5 rounded-full bg-brand-500 shadow-[0_0_12px_rgba(59,130,246,0.45)] animate-bounce [animation-delay:300ms] motion-reduce:animate-none dark:bg-brand-400" />
+        <span className="bg-brand-500 dark:bg-brand-400 h-2.5 w-2.5 animate-bounce rounded-full shadow-[0_0_12px_rgba(59,130,246,0.45)] motion-reduce:animate-none" />
+        <span className="bg-brand-500 dark:bg-brand-400 h-3 w-3 animate-bounce rounded-full shadow-[0_0_14px_rgba(59,130,246,0.5)] [animation-delay:150ms] motion-reduce:animate-none" />
+        <span className="bg-brand-500 dark:bg-brand-400 h-2.5 w-2.5 animate-bounce rounded-full shadow-[0_0_12px_rgba(59,130,246,0.45)] [animation-delay:300ms] motion-reduce:animate-none" />
       </div>
     </div>
   );
   useEffect(() => {
-    if (!state.ready || images.length <= 1 || state.prefersReducedMotion) return;
-    if (!isInView || !isPageVisible) return;
-    if (!loadedIndices.has(state.currentIndex)) return;
-    if (state.isTransitioning) return;
-    if (saveData) return;
-    if (nextCandidateRef.current !== null) return;
+    if (!state.ready || images.length <= 1 || state.prefersReducedMotion) {
+      return;
+    }
+    if (!isInView || !isPageVisible) {
+      return;
+    }
+    if (!loadedIndices.has(state.currentIndex)) {
+      return;
+    }
+    if (state.isTransitioning) {
+      return;
+    }
+    if (saveData) {
+      return;
+    }
+    if (nextCandidateRef.current !== null) {
+      return;
+    }
     const next = getNextRandomIndex();
     nextCandidateRef.current = next;
     nextDirectionRef.current = getRandomDirection();
@@ -222,10 +244,18 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   ]);
 
   useEffect(() => {
-    if (!state.ready || images.length <= 1 || state.prefersReducedMotion) return;
-    if (!isInView || !isPageVisible) return;
-    if (!loadedIndices.has(state.currentIndex)) return;
-    if (state.isTransitioning) return;
+    if (!state.ready || images.length <= 1 || state.prefersReducedMotion) {
+      return;
+    }
+    if (!isInView || !isPageVisible) {
+      return;
+    }
+    if (!loadedIndices.has(state.currentIndex)) {
+      return;
+    }
+    if (state.isTransitioning) {
+      return;
+    }
     if (scheduleTimeoutRef.current) {
       clearTimeout(scheduleTimeoutRef.current);
     }
@@ -268,13 +298,25 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   ]);
 
   useEffect(() => {
-    if (!transitionDueRef.current) return;
+    if (!transitionDueRef.current) {
+      return;
+    }
     const next = nextCandidateRef.current;
-    if (next === null) return;
-    if (!loadedIndices.has(next)) return;
-    if (state.prefersReducedMotion || !state.ready || !isInView || !isPageVisible) return;
-    if (!loadedIndices.has(state.currentIndex)) return;
-    if (state.isTransitioning) return;
+    if (next === null) {
+      return;
+    }
+    if (!loadedIndices.has(next)) {
+      return;
+    }
+    if (state.prefersReducedMotion || !state.ready || !isInView || !isPageVisible) {
+      return;
+    }
+    if (!loadedIndices.has(state.currentIndex)) {
+      return;
+    }
+    if (state.isTransitioning) {
+      return;
+    }
     transitionDueRef.current = false;
     nextCandidateRef.current = null;
     startTransition(next, nextDirectionRef.current);
@@ -289,7 +331,9 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
     startTransition,
   ]);
 
-  if (images.length === 0) return null;
+  if (images.length === 0) {
+    return null;
+  }
 
   if (!state.ready) {
     return <div className="absolute inset-0 bg-neutral-200 dark:bg-neutral-900" />;
@@ -297,7 +341,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
 
   if (state.prefersReducedMotion) {
     return (
-      <div ref={containerRef} className="absolute inset-0 overflow-hidden z-0">
+      <div ref={containerRef} className="absolute inset-0 z-0 overflow-hidden">
         <Image
           src={currentImage.src}
           alt={currentImage.alt}
@@ -320,7 +364,7 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   }
 
   return (
-    <div ref={containerRef} className="absolute inset-0 overflow-hidden z-0">
+    <div ref={containerRef} className="absolute inset-0 z-0 overflow-hidden">
       <div
         className={`pointer-events-none absolute inset-0 z-10 bg-gradient-to-br from-neutral-200/80 via-white/70 to-neutral-200/60 transition-opacity duration-700 dark:from-neutral-900/80 dark:via-neutral-950/70 dark:to-neutral-900/60 ${
           isCurrentLoaded ? "opacity-0" : "opacity-100"

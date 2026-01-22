@@ -1,13 +1,13 @@
 import crypto from "crypto";
 import { AsyncLocalStorage } from "node:async_hooks";
 
-type RequestContext = {
+interface RequestContext {
   requestId: string;
-};
+}
 
 const storage = new AsyncLocalStorage<RequestContext>();
 
-export const runWithRequestContext = async <T>(
+export const runWithRequestContext = <T>(
   request: Request,
   handler: () => Promise<T>,
 ): Promise<T> => {

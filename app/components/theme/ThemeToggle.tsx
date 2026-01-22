@@ -1,14 +1,15 @@
 "use client";
 
-import { IconButton } from "../ui/IconButton";
 import { MoonIcon, SunIcon, SystemIcon } from "../shared/icons";
+import { IconButton } from "../ui/IconButton";
+
 import { useTheme } from "./ThemeProvider";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
   const cycleTheme = () => {
-    const themes: Array<"light" | "dark" | "system"> = ["light", "dark", "system"];
+    const themes: ("light" | "dark" | "system")[] = ["light", "dark", "system"];
     const currentIndex = themes.indexOf(theme);
     const nextIndex = (currentIndex + 1) % themes.length;
     setTheme(themes[nextIndex]);

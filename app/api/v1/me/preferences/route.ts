@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { updateAuthUserCommunityEmails } from "@/lib/data/auth";
-import { runWithRequestContext } from "@/lib/utils/request-context";
-import { logWarn, logError } from "@/lib/utils/log";
+
 import { requireAuth } from "@/lib/api/auth";
+import { updateAuthUserCommunityEmails } from "@/lib/data/auth";
+import { logError, logWarn } from "@/lib/utils/log";
+import { runWithRequestContext } from "@/lib/utils/request-context";
 
 const preferencesSchema = z.object({
   allowCommunityEmails: z.boolean(),
@@ -34,8 +35,8 @@ export const PATCH = async (request: Request) =>
 
     try {
       await updateAuthUserCommunityEmails({
-        userId: auth.userId,
         allowCommunityEmails: result.data.allowCommunityEmails,
+        userId: auth.userId,
       });
       return respond({ ok: true });
     } catch (error) {

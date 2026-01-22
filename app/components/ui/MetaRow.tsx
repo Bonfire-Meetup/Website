@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 
-type MetaRowProps = {
+interface MetaRowProps {
   icon: ReactNode;
   text: string;
   className?: string;
-};
+}
 
 export function MetaRow({ icon, text, className = "" }: MetaRowProps) {
   return (

@@ -12,13 +12,13 @@ export function EventsSectionSkeleton() {
           <Skeleton className="mx-auto mb-4 h-10 w-64" />
           <Skeleton className="mx-auto h-6 w-full max-w-lg" />
         </div>
-        <div className="flex justify-center gap-2 mb-12">
+        <div className="mb-12 flex justify-center gap-2">
           <Skeleton className="h-10 w-28 rounded-xl" />
           <Skeleton className="h-10 w-28 rounded-xl" />
         </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-3xl bg-white/50 dark:bg-white/5 p-6 space-y-4">
+            <div key={i} className="space-y-4 rounded-3xl bg-white/50 p-6 dark:bg-white/5">
               <Skeleton className="h-6 w-24" />
               <Skeleton className="h-8 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
@@ -40,7 +40,7 @@ export function RecordingsSectionSkeleton() {
           <Skeleton className="mx-auto h-6 w-full max-w-lg" />
         </div>
         <div className="mb-10 flex justify-center">
-          <div className="flex gap-2 rounded-2xl bg-white/50 dark:bg-white/5 p-1.5">
+          <div className="flex gap-2 rounded-2xl bg-white/50 p-1.5 dark:bg-white/5">
             <Skeleton className="h-10 w-16 rounded-xl" />
             <Skeleton className="h-10 w-20 rounded-xl" />
             <Skeleton className="h-10 w-16 rounded-xl" />
@@ -48,9 +48,9 @@ export function RecordingsSectionSkeleton() {
         </div>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-3xl bg-white/50 dark:bg-white/5 overflow-hidden">
+            <div key={i} className="overflow-hidden rounded-3xl bg-white/50 dark:bg-white/5">
               <Skeleton className="aspect-video w-full !rounded-none" />
-              <div className="p-6 space-y-3">
+              <div className="space-y-3 p-6">
                 <Skeleton className="h-5 w-3/4" />
                 <div className="flex justify-between">
                   <Skeleton className="h-4 w-24" />
@@ -70,7 +70,7 @@ export function RecordingsSectionSkeleton() {
 
 export function HeroSkeleton() {
   return (
-    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-[#fafafa] px-4 pb-20 pt-16 sm:min-h-[110vh] sm:pb-0 sm:pt-20 dark:bg-[#050505]">
+    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-[#fafafa] px-4 pt-16 pb-20 sm:min-h-[110vh] sm:pt-20 sm:pb-0 dark:bg-[#050505]">
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <div className="relative z-10 flex flex-col items-center text-center">
           <Skeleton className="mb-4 h-4 w-40 sm:mb-8" />
@@ -108,7 +108,7 @@ export function LocationsSectionSkeleton() {
         </div>
         <div className="grid gap-8 md:grid-cols-2">
           {[1, 2].map((i) => (
-            <div key={i} className="rounded-3xl bg-white/50 dark:bg-white/5 p-8 space-y-4">
+            <div key={i} className="space-y-4 rounded-3xl bg-white/50 p-8 dark:bg-white/5">
               <Skeleton className="h-6 w-32" />
               <Skeleton className="h-8 w-48" />
               <Skeleton className="h-4 w-full" />

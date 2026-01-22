@@ -1,9 +1,16 @@
 import crypto from "crypto";
+
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getAccessTokenTtlSeconds, signAccessToken } from "@/lib/auth/jwt";
+
 import { timingGuardHash, verifyOtpChallenge } from "@/lib/auth/challenge";
-import { insertAuthToken, markAuthChallengeUsed, upsertAuthUser } from "@/lib/data/auth";
+import { getAccessTokenTtlSeconds, signAccessToken } from "@/lib/auth/jwt";
+import {
+  insertAuthAttempt,
+  insertAuthToken,
+  markAuthChallengeUsed,
+  upsertAuthUser,
+} from "@/lib/data/auth";
 import {
   getClientFingerprint,
   getEmailFingerprint,
@@ -11,14 +18,12 @@ import {
   logInfo,
   logWarn,
 } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
-import { insertAuthAttempt } from "@/lib/data/auth";
-import { getRequestId } from "@/lib/utils/request-context";
+import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
 
 const tokenSchema = z.object({
-  email: z.string().email(),
-  code: z.string().regex(/^\d{1,6}$/),
   challenge_token: z.string().min(32),
+  code: z.string().regex(/^\d{1,6}$/),
+  email: z.string().email(),
 });
 
 const rateLimitWindowMs = 10 * 60_000;
@@ -51,7 +56,12 @@ const isRateLimited = (key: string, maxHits: number) => {
 export const POST = async (request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
-    const delay = () => new Promise((resolve) => setTimeout(resolve, failureDelayMs));
+    const delay = () =>
+      new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, failureDelayMs);
+      });
     const invalidResponse = async () => {
       await delay();
       return respond({ error: "invalid_code" }, { status: 400 });
@@ -87,7 +97,7 @@ export const POST = async (request: Request) =>
     }
 
     const email = normalizeEmail(result.data.email);
-    const headers = request.headers;
+    const { headers } = request;
     const ip = getClientIp(headers);
     const userAgent = headers.get("user-agent");
     const emailFingerprint = getEmailFingerprint(email);
@@ -95,15 +105,17 @@ export const POST = async (request: Request) =>
     const requestId = getRequestId();
 
     const recordAttempt = async (outcome: string, userId?: string | null) => {
-      if (!emailFingerprint.emailHash) return;
+      if (!emailFingerprint.emailHash) {
+        return;
+      }
       await insertAuthAttempt({
-        userId,
-        emailHash: emailFingerprint.emailHash,
         emailDomain: emailFingerprint.emailDomain,
-        outcome,
+        emailHash: emailFingerprint.emailHash,
         ipHash: clientFingerprint.ipHash ?? undefined,
-        userAgentHash: clientFingerprint.userAgentHash ?? undefined,
+        outcome,
         requestId,
+        userAgentHash: clientFingerprint.userAgentHash ?? undefined,
+        userId,
       });
     };
     if (isRateLimited(`email:${email}`, maxEmailVerifications)) {
@@ -127,9 +139,9 @@ export const POST = async (request: Request) =>
     }
 
     const verification = await verifyOtpChallenge({
-      email,
       challengeToken: result.data.challenge_token,
       code: result.data.code,
+      email,
       timingGuard: timingGuardHash,
     });
     if (!verification.ok) {
@@ -166,18 +178,18 @@ export const POST = async (request: Request) =>
     const expiresAt = new Date(Date.now() + expiresIn * 1000);
 
     await insertAuthToken({
-      jti,
-      userId,
       expiresAt,
       ip,
+      jti,
       userAgent,
+      userId,
     });
 
     await recordAttempt("success", userId);
     logInfo("auth.token.issued", { ...emailFingerprint, ...clientFingerprint, jti });
     return respond({
       access_token: accessToken,
-      token_type: "Bearer",
       expires_in: expiresIn,
+      token_type: "Bearer",
     });
   });

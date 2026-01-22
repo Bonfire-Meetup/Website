@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+
+import { requireAuth } from "@/lib/api/auth";
 import { getAuthAttemptsByEmailHash, getAuthUserById } from "@/lib/data/auth";
 import { getEmailFingerprint, logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
-import { requireAuth } from "@/lib/api/auth";
 
 export async function GET(request: Request) {
   return runWithRequestContext(request, async () => {
@@ -23,13 +24,13 @@ export async function GET(request: Request) {
       const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
       const attempts = await getAuthAttemptsByEmailHash({
         emailHash: fingerprint.emailHash,
-        since,
         limit: 50,
+        since,
       });
       const items = attempts.map((attempt) => ({
+        createdAt: attempt.created_at.toISOString(),
         id: attempt.id,
         outcome: attempt.outcome,
-        createdAt: attempt.created_at.toISOString(),
       }));
       return NextResponse.json({ items });
     } catch (error) {

@@ -1,4 +1,5 @@
 import Link from "next/link";
+
 import { PlayIcon } from "@/components/shared/icons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -8,8 +9,8 @@ export default function WatchNotFound() {
       <div className="text-center">
         <div className="mb-8 flex justify-center">
           <div className="relative">
-            <PlayIcon className="h-24 w-24 text-brand-500 opacity-20" />
-            <span className="absolute inset-0 flex items-center justify-center text-4xl font-black text-brand-500">
+            <PlayIcon className="text-brand-500 h-24 w-24 opacity-20" />
+            <span className="text-brand-500 absolute inset-0 flex items-center justify-center text-4xl font-black">
               ?
             </span>
           </div>

@@ -1,4 +1,4 @@
-type RichTextProps = {
+interface RichTextProps {
   t: {
     rich: (
       key: string,
@@ -9,11 +9,11 @@ type RichTextProps = {
     ) => React.ReactNode;
   };
   translationKey: string;
-};
+}
 
 export function RichText({ t, translationKey }: RichTextProps) {
   return (
-    <div className="text-neutral-600 dark:text-neutral-400 leading-relaxed space-y-2">
+    <div className="space-y-2 leading-relaxed text-neutral-600 dark:text-neutral-400">
       {t.rich(translationKey, {
         bold: (chunks) => <strong className="text-neutral-900 dark:text-white">{chunks}</strong>,
         bullet: (chunks) => (

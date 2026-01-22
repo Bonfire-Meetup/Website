@@ -1,16 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+
 import { AlbumImage } from "@/components/shared/AlbumImage";
+
 import { Lightbox } from "./Lightbox";
 
-type Image = {
+interface Image {
   src: string;
   width: number;
   height: number;
-};
+}
 
-type AlbumGalleryProps = {
+interface AlbumGalleryProps {
   images: Image[];
   baseUrl: string;
   title: string;
@@ -18,12 +20,16 @@ type AlbumGalleryProps = {
   closeLabel?: string;
   previousLabel?: string;
   nextLabel?: string;
-};
+}
 
 function parsePhotoHash(): number | null {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined") {
+    return null;
+  }
   const match = window.location.hash.match(/^#photo-(\d+)$/);
-  if (!match) return null;
+  if (!match) {
+    return null;
+  }
   const num = parseInt(match[1], 10);
   return num >= 1 ? num - 1 : null;
 }
@@ -62,8 +68,8 @@ export function AlbumGallery({
   }, []);
 
   const lightboxImages = images.map((img, i) => ({
-    src: `${baseUrl}/${img.src}`,
     alt: `${title} ${i + 1}`,
+    src: `${baseUrl}/${img.src}`,
   }));
 
   return (
@@ -74,7 +80,7 @@ export function AlbumGallery({
             key={image.src}
             type="button"
             onClick={() => openLightbox(index)}
-            className="glass-card no-hover-pop block w-full break-inside-avoid overflow-hidden rounded-2xl ring-1 ring-black/5 shadow-lg shadow-black/5 sm:mb-4 sm:cursor-zoom-in sm:transition-transform sm:hover:scale-[1.02] dark:ring-white/10 dark:shadow-black/20"
+            className="glass-card no-hover-pop block w-full break-inside-avoid overflow-hidden rounded-2xl shadow-lg ring-1 shadow-black/5 ring-black/5 sm:mb-4 sm:cursor-zoom-in sm:transition-transform sm:hover:scale-[1.02] dark:shadow-black/20 dark:ring-white/10"
           >
             <AlbumImage
               src={`${baseUrl}/${image.src}`}

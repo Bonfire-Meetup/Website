@@ -1,6 +1,6 @@
-import { buildSitemapXml } from "@/lib/utils/sitemap-utils";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { buildSitemapXml } from "@/lib/utils/sitemap-utils";
 
 const CACHE_CONTROL = "public, max-age=0, s-maxage=604800, stale-while-revalidate=86400";
 
@@ -21,10 +21,10 @@ export async function GET() {
   const body = buildSitemapXml(urls);
 
   return new Response(body, {
-    status: 200,
     headers: {
-      "Content-Type": "application/xml; charset=utf-8",
       "Cache-Control": CACHE_CONTROL,
+      "Content-Type": "application/xml; charset=utf-8",
     },
+    status: 200,
   });
 }

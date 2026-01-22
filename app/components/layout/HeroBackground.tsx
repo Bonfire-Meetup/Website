@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type HeroImage = {
+interface HeroImage {
   src: string;
   alt: string;
-};
+}
 
 export function HeroBackground({ images }: { images: HeroImage[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -14,7 +14,9 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!isInView || !isPageVisible) return;
+    if (!isInView || !isPageVisible) {
+      return;
+    }
     const nextIndex = (currentIndex + 1) % images.length;
     const nextImage = images[nextIndex];
     const img = new Image();
@@ -22,7 +24,9 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
   }, [currentIndex, images, isInView, isPageVisible]);
 
   useEffect(() => {
-    if (!isInView || !isPageVisible || images.length <= 1) return;
+    if (!isInView || !isPageVisible || images.length <= 1) {
+      return;
+    }
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
     }, 6000);
@@ -40,7 +44,9 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
 
   useEffect(() => {
     const node = containerRef.current;
-    if (!node) return;
+    if (!node) {
+      return;
+    }
     const observer = new IntersectionObserver(([entry]) => setIsInView(entry.isIntersecting), {
       rootMargin: "200px",
     });
@@ -53,7 +59,7 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 z-0 opacity-40 dark:opacity-40 mix-blend-multiply dark:mix-blend-normal"
+      className="absolute inset-0 z-0 opacity-40 mix-blend-multiply dark:opacity-40 dark:mix-blend-normal"
     >
       {images.map((image, index) => {
         const isActive = index === currentIndex;

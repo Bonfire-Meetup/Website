@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+
 import { verifyAccessToken } from "@/lib/auth/jwt";
-import { logWarn, logError } from "@/lib/utils/log";
+import { logError, logWarn } from "@/lib/utils/log";
 
 type AuthResult =
   | { success: true; userId: string; payload: { sub?: string } }
@@ -13,7 +14,7 @@ export const requireAuth = async (request: Request, endpoint: string): Promise<A
   const authHeader = request.headers.get("authorization");
   if (!authHeader?.startsWith("Bearer ")) {
     logWarn(`${endpoint}.unauthorized`, { reason: "missing_header" });
-    return { success: false, response: unauthorized() };
+    return { response: unauthorized(), success: false };
   }
 
   const token = authHeader.slice("Bearer ".length).trim();
@@ -22,12 +23,12 @@ export const requireAuth = async (request: Request, endpoint: string): Promise<A
     const userId = payload.sub;
     if (!userId) {
       logWarn(`${endpoint}.unauthorized`, { reason: "missing_user_id" });
-      return { success: false, response: unauthorized() };
+      return { response: unauthorized(), success: false };
     }
-    return { success: true, userId, payload };
+    return { payload, success: true, userId };
   } catch (error) {
     logError(`${endpoint}.auth_failed`, error);
     logWarn(`${endpoint}.unauthorized`, { reason: "token_verification_failed" });
-    return { success: false, response: unauthorized() };
+    return { response: unauthorized(), success: false };
   }
 };

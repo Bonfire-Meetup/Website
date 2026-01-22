@@ -1,9 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/Button";
 
-type DangerZoneBlockProps = {
+interface DangerZoneBlockProps {
   status: string | null;
   error: string | null;
   step: "idle" | "confirm" | "verify" | "done";
@@ -16,7 +17,7 @@ type DangerZoneBlockProps = {
   onCodeChange: (value: string) => void;
   onConfirm: () => void;
   onCancel: () => void;
-};
+}
 
 export function DangerZoneBlock({
   status,
@@ -45,7 +46,7 @@ export function DangerZoneBlock({
           {[t("steps.intent"), t("steps.send"), t("steps.verify")].map((label, i) => (
             <div
               key={label}
-              className={`flex flex-1 items-center justify-center gap-2 px-3 py-3 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors ${
+              className={`flex flex-1 items-center justify-center gap-2 px-3 py-3 text-[10px] font-semibold tracking-[0.2em] uppercase transition-colors ${
                 i <= stepIndex
                   ? "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-300"
                   : "text-neutral-400 dark:text-neutral-500"
@@ -90,13 +91,13 @@ export function DangerZoneBlock({
           {step === "verify" ? (
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <label className="block text-xs uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">
+                <label className="block text-xs tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
                   {t("codeLabel")}
                 </label>
                 <input
                   value={code}
                   onChange={(event) => onCodeChange(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-center text-lg tracking-[0.5em] text-neutral-900 outline-none transition focus:border-rose-400 focus:ring-2 focus:ring-rose-300/40 sm:w-48 dark:border-white/10 dark:bg-white/5 dark:text-neutral-100"
+                  className="mt-2 w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-center text-lg tracking-[0.5em] text-neutral-900 transition outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-300/40 sm:w-48 dark:border-white/10 dark:bg-white/5 dark:text-neutral-100"
                   inputMode="numeric"
                   autoComplete="one-time-code"
                   placeholder="000000"

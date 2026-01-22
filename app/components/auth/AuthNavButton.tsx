@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { IconButton } from "../ui/IconButton";
-import { LogInIcon, UserIcon } from "../shared/icons";
+
 import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+
+import { LogInIcon, UserIcon } from "../shared/icons";
+import { IconButton } from "../ui/IconButton";
 
 export function AuthNavButton() {
   const [href, setHref] = useState<string>(PAGE_ROUTES.LOGIN);

@@ -1,0 +1,45 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "quoteProps": "as-needed",
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "insertFinalNewline": true,
+  "embeddedLanguageFormatting": "auto",
+  "experimentalSortImports": {
+    "groups": [
+      ["side-effect"],
+      ["builtin"],
+      ["external", "external-type"],
+      ["internal", "internal-type"],
+      ["parent", "parent-type"],
+      ["sibling", "sibling-type"],
+      ["index", "index-type"]
+    ],
+    "internalPattern": ["@/"],
+    "newlinesBetween": true,
+    "removeUnusedImports": true
+  },
+  "experimentalSortPackageJson": true,
+  "experimentalTailwindcss": {
+    "enabled": true,
+    "classRegex": "className[s]?\\s*[:=]\\s*['\"`]([^'\"`]*)['\"`]"
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    ".next/**",
+    "dist/**",
+    "build/**",
+    "*.min.js",
+    "coverage/**",
+    "*.lock",
+    "bun.lock"
+  ]
+}

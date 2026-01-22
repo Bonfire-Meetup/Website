@@ -1,7 +1,14 @@
 import { getDatabaseClient } from "@/lib/data/db";
 
-type LikeStats = { count: number; hasLiked: boolean };
-type LikeMutationResult = { count: number; added?: boolean; removed?: boolean };
+interface LikeStats {
+  count: number;
+  hasLiked: boolean;
+}
+interface LikeMutationResult {
+  count: number;
+  added?: boolean;
+  removed?: boolean;
+}
 
 export const getVideoLikeStats = async (
   videoId: string,
@@ -34,7 +41,7 @@ export const addVideoLike = async (
     (await sql`select count(*)::int as count from video_likes where video_id = ${videoId}`) as {
       count: number;
     }[];
-  return { count, added: inserted.length > 0 };
+  return { added: inserted.length > 0, count };
 };
 
 export const removeVideoLike = async (

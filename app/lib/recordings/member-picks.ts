@@ -1,18 +1,25 @@
 import { unstable_cache } from "next/cache";
-import { getAllRecordings, type Recording } from "./recordings";
+
 import { getDatabaseClient } from "../data/db";
+
+import { type Recording, getAllRecordings } from "./recordings";
 
 export type MemberPickRecording = Recording & {
   boostCount: number;
 };
 
-type BoostRow = { video_id: string; count: number };
+interface BoostRow {
+  video_id: string;
+  count: number;
+}
 
 const fetchTopBoostedVideos = async (
   limit: number,
 ): Promise<{ videoId: string; count: number }[]> => {
   const sql = getDatabaseClient({ required: false });
-  if (!sql) return [];
+  if (!sql) {
+    return [];
+  }
 
   try {
     const rows = (await sql`
@@ -23,7 +30,7 @@ const fetchTopBoostedVideos = async (
       LIMIT ${limit * 2}
     `) as BoostRow[];
 
-    return rows.map((row) => ({ videoId: row.video_id, count: row.count }));
+    return rows.map((row) => ({ count: row.count, videoId: row.video_id }));
   } catch {
     return [];
   }

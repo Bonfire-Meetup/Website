@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { MouseEvent, ReactNode } from "react";
 
-type PillProps = {
+interface PillProps {
   children: ReactNode;
   className?: string;
   href?: string;
@@ -9,13 +9,13 @@ type PillProps = {
   size?: "xxs" | "xs" | "sm" | "md";
   ariaLabel?: string;
   title?: string;
-};
+}
 
 const sizeClasses: Record<NonNullable<PillProps["size"]>, string> = {
-  xxs: "px-2.5 py-1 text-[10px]",
-  xs: "px-3 py-1 text-[11px]",
-  sm: "px-3 py-1.5 text-xs",
   md: "px-4 py-2 text-sm",
+  sm: "px-3 py-1.5 text-xs",
+  xs: "px-3 py-1 text-[11px]",
+  xxs: "px-2.5 py-1 text-[10px]",
 };
 
 export function Pill({

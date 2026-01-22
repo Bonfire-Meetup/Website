@@ -2,10 +2,10 @@
 
 import { Button } from "../ui/Button";
 
-type ResetFiltersButtonProps = {
+interface ResetFiltersButtonProps {
   onClick: () => void;
   label: string;
-};
+}
 
 export function ResetFiltersButton({ onClick, label }: ResetFiltersButtonProps) {
   return (

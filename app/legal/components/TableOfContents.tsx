@@ -1,8 +1,6 @@
-type TableOfContentsProps = {
-  tToc: {
-    (key: string): string;
-  };
-};
+interface TableOfContentsProps {
+  tToc: (key: string) => string;
+}
 
 export function TableOfContents({ tToc }: TableOfContentsProps) {
   return (
@@ -13,27 +11,27 @@ export function TableOfContents({ tToc }: TableOfContentsProps) {
       <nav className="space-y-2">
         <a
           href="#code-of-conduct"
-          className="group flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-neutral-700 transition-all hover:bg-brand-500/10 hover:text-brand-600 hover:shadow-sm dark:text-neutral-300 dark:hover:bg-brand-400/10 dark:hover:text-brand-400"
+          className="group hover:bg-brand-500/10 hover:text-brand-600 dark:hover:bg-brand-400/10 dark:hover:text-brand-400 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-neutral-700 transition-all hover:shadow-sm dark:text-neutral-300"
         >
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-brand-500/10 text-xs font-semibold text-brand-600 transition-colors group-hover:bg-brand-500/20 group-hover:text-brand-700 dark:bg-brand-400/20 dark:text-brand-400 dark:group-hover:bg-brand-400/30 dark:group-hover:text-brand-300">
+          <span className="bg-brand-500/10 text-brand-600 group-hover:bg-brand-500/20 group-hover:text-brand-700 dark:bg-brand-400/20 dark:text-brand-400 dark:group-hover:bg-brand-400/30 dark:group-hover:text-brand-300 flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-semibold transition-colors">
             1
           </span>
           <span>{tToc("codeOfConduct")}</span>
         </a>
         <a
           href="#privacy-policy"
-          className="group flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-neutral-700 transition-all hover:bg-brand-500/10 hover:text-brand-600 hover:shadow-sm dark:text-neutral-300 dark:hover:bg-brand-400/10 dark:hover:text-brand-400"
+          className="group hover:bg-brand-500/10 hover:text-brand-600 dark:hover:bg-brand-400/10 dark:hover:text-brand-400 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-neutral-700 transition-all hover:shadow-sm dark:text-neutral-300"
         >
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-brand-500/10 text-xs font-semibold text-brand-600 transition-colors group-hover:bg-brand-500/20 group-hover:text-brand-700 dark:bg-brand-400/20 dark:text-brand-400 dark:group-hover:bg-brand-400/30 dark:group-hover:text-brand-300">
+          <span className="bg-brand-500/10 text-brand-600 group-hover:bg-brand-500/20 group-hover:text-brand-700 dark:bg-brand-400/20 dark:text-brand-400 dark:group-hover:bg-brand-400/30 dark:group-hover:text-brand-300 flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-semibold transition-colors">
             2
           </span>
           <span>{tToc("privacyPolicy")}</span>
         </a>
         <a
           href="#terms-of-service"
-          className="group flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-neutral-700 transition-all hover:bg-brand-500/10 hover:text-brand-600 hover:shadow-sm dark:text-neutral-300 dark:hover:bg-brand-400/10 dark:hover:text-brand-400"
+          className="group hover:bg-brand-500/10 hover:text-brand-600 dark:hover:bg-brand-400/10 dark:hover:text-brand-400 flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-neutral-700 transition-all hover:shadow-sm dark:text-neutral-300"
         >
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-brand-500/10 text-xs font-semibold text-brand-600 transition-colors group-hover:bg-brand-500/20 group-hover:text-brand-700 dark:bg-brand-400/20 dark:text-brand-400 dark:group-hover:bg-brand-400/30 dark:group-hover:text-brand-300">
+          <span className="bg-brand-500/10 text-brand-600 group-hover:bg-brand-500/20 group-hover:text-brand-700 dark:bg-brand-400/20 dark:text-brand-400 dark:group-hover:bg-brand-400/30 dark:group-hover:text-brand-300 flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-semibold transition-colors">
             3
           </span>
           <span>{tToc("termsOfService")}</span>

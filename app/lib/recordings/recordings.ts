@@ -1,10 +1,12 @@
 import { cache } from "react";
-import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+
 import pragueRecordingsData from "@/data/prague-recordings.json";
 import zlinRecordingsData from "@/data/zlin-recordings.json";
+import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+
 import { getEpisodeById } from "./episodes";
 
-export type Recording = {
+export interface Recording {
   youtubeId: string;
   shortId: string;
   slug: string;
@@ -20,12 +22,16 @@ export type Recording = {
   episodeId?: string;
   episode?: string;
   episodeNumber?: number;
-};
+}
 
 function withEpisode(recording: Recording) {
-  if (!recording.episodeId) return recording;
+  if (!recording.episodeId) {
+    return recording;
+  }
   const episode = getEpisodeById(recording.episodeId);
-  if (!episode) return recording;
+  if (!episode) {
+    return recording;
+  }
   return {
     ...recording,
     episode: episode.title,
@@ -33,22 +39,22 @@ function withEpisode(recording: Recording) {
   };
 }
 
-export const getAllRecordings = cache((): Recording[] => {
-  return [
+export const getAllRecordings = cache((): Recording[] =>
+  [
     ...pragueRecordingsData.recordings.map((recording) => ({
       ...recording,
-      tags: recording.tags.map((tag) => tag.toLowerCase()),
       location: LOCATIONS.PRAGUE,
+      tags: recording.tags.map((tag) => tag.toLowerCase()),
     })),
     ...zlinRecordingsData.recordings.map((recording) => ({
       ...recording,
-      tags: recording.tags.map((tag) => tag.toLowerCase()),
       location: LOCATIONS.ZLIN,
+      tags: recording.tags.map((tag) => tag.toLowerCase()),
     })),
   ]
     .map((recording) => withEpisode(recording))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-});
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+);
 
 export function getRecordingBySlug(slug: string): Recording | undefined {
   return getAllRecordings().find((recording) => recording.slug === slug);
@@ -73,8 +79,12 @@ export function getRelatedRecordings(
     const sharedSpeakers = Math.min(countSharedSpeakers(r.speaker), 2);
     const sameEpisode = Boolean(r.episode && recording.episode && r.episode === recording.episode);
 
-    if (sameEpisode) score += 6;
-    if (r.location === recording.location) score += 2;
+    if (sameEpisode) {
+      score += 6;
+    }
+    if (r.location === recording.location) {
+      score += 2;
+    }
     score += sharedTags * 3;
     score += sharedSpeakers * 4;
 
@@ -82,8 +92,11 @@ export function getRelatedRecordings(
       0,
       Math.floor((recordingDate - new Date(r.date).getTime()) / (1000 * 60 * 60 * 24)),
     );
-    if (daysSince <= 90) score += 2;
-    else if (daysSince <= 180) score += 1;
+    if (daysSince <= 90) {
+      score += 2;
+    } else if (daysSince <= 180) {
+      score += 1;
+    }
 
     return score;
   };
@@ -93,18 +106,19 @@ export function getRelatedRecordings(
     .map((r) => {
       const sharedTags = countSharedTags(r.tags);
       const sharedSpeakers = countSharedSpeakers(r.speaker);
-      const sameEpisode = Boolean(
-        r.episode && recording.episode && r.episode === recording.episode,
-      );
+      const hasRecordingEpisode = Boolean(recording.episode);
+      const hasREpisode = Boolean(r.episode);
+      const areEpisodesEqual = r.episode === recording.episode;
+      const sameEpisode = hasRecordingEpisode && hasREpisode && areEpisodesEqual;
       const sameLocation = r.location === recording.location;
       return {
+        date: new Date(r.date).getTime(),
         recording: r,
-        score: getScore(r),
-        sharedTags,
-        sharedSpeakers,
         sameEpisode,
         sameLocation,
-        date: new Date(r.date).getTime(),
+        score: getScore(r),
+        sharedSpeakers,
+        sharedTags,
         speakersLower: r.speaker.map((name) => name.toLowerCase()),
       };
     });
@@ -124,29 +138,29 @@ export function getRelatedRecordings(
 
   const poolDefinitions = [
     {
-      key: "tags",
       hasMatches: hasTagMatches,
       isMatch: (item: (typeof candidates)[number]) => item.sharedTags > 0,
+      key: "tags",
     },
     {
-      key: "speakers",
       hasMatches: hasSpeakerMatches,
       isMatch: (item: (typeof candidates)[number]) => item.sharedSpeakers > 0,
+      key: "speakers",
     },
     {
-      key: "episode",
       hasMatches: hasEpisodeMatches,
       isMatch: (item: (typeof candidates)[number]) => item.sameEpisode,
+      key: "episode",
     },
     {
-      key: "location",
       hasMatches: hasLocationMatches,
       isMatch: (item: (typeof candidates)[number]) => item.sameLocation,
+      key: "location",
     },
     {
-      key: "all",
       hasMatches: true,
       isMatch: () => true,
+      key: "all",
     },
   ];
 
@@ -169,7 +183,9 @@ export function getRelatedRecordings(
 
   const pickNextUp = (pool: (typeof candidates)[number][]) =>
     pool.reduce<(typeof pool)[number] | null>((best, candidate) => {
-      if (!best) return candidate;
+      if (!best) {
+        return candidate;
+      }
       if (candidate.sharedTags !== best.sharedTags) {
         return candidate.sharedTags > best.sharedTags ? candidate : best;
       }
@@ -196,35 +212,45 @@ export function getRelatedRecordings(
     let bestScore = -Infinity;
 
     for (const candidate of pool) {
-      if (usedIds.has(candidate.recording.shortId)) continue;
-      if (!options.allowSameEpisode) {
-        if (candidate.recording.episode && usedEpisodes.has(candidate.recording.episode)) continue;
-      }
+      const isNotUsed = !usedIds.has(candidate.recording.shortId);
+      if (isNotUsed) {
+        const isEpisodeAllowed = options.allowSameEpisode;
+        const hasNoEpisode = !candidate.recording.episode;
+        const isEpisodeNotUsed = candidate.recording.episode
+          ? !usedEpisodes.has(candidate.recording.episode)
+          : false;
+        const canUseCandidate = isEpisodeAllowed || hasNoEpisode || isEpisodeNotUsed;
 
-      const sharedWithSelectedTags = candidate.recording.tags.filter((tag) =>
-        usedTags.has(tag),
-      ).length;
-      const sharedWithSelectedSpeakers = candidate.speakersLower.filter((name) =>
-        usedSpeakers.has(name),
-      ).length;
-      const tagPenalty = options.tagPenaltyEnabled && candidate.sharedTags === 0 ? 4 : 0;
-      const diversityPenalty = sharedWithSelectedTags * 2 + sharedWithSelectedSpeakers * 4;
-      const rankedScore = candidate.score - diversityPenalty - tagPenalty;
+        if (canUseCandidate) {
+          const sharedWithSelectedTags = candidate.recording.tags.filter((tag) =>
+            usedTags.has(tag),
+          ).length;
+          const sharedWithSelectedSpeakers = candidate.speakersLower.filter((name) =>
+            usedSpeakers.has(name),
+          ).length;
+          const tagPenalty = options.tagPenaltyEnabled && candidate.sharedTags === 0 ? 4 : 0;
+          const diversityPenalty = sharedWithSelectedTags * 2 + sharedWithSelectedSpeakers * 4;
+          const rankedScore = candidate.score - diversityPenalty - tagPenalty;
 
-      if (rankedScore > bestScore) {
-        best = candidate;
-        bestScore = rankedScore;
-        continue;
-      }
+          const isBetterScore = rankedScore > bestScore;
+          const isSameScore = rankedScore === bestScore;
+          const hasBestCandidate = best !== null;
 
-      if (rankedScore === bestScore && best) {
-        if (candidate.date > best.date) {
-          best = candidate;
-          continue;
-        }
-        if (candidate.date === best.date) {
-          if (candidate.recording.title.localeCompare(best.recording.title) < 0) {
+          if (isBetterScore) {
             best = candidate;
+            bestScore = rankedScore;
+          } else if (isSameScore && hasBestCandidate && best) {
+            const currentBest = best;
+            const isNewerDate = candidate.date > currentBest.date;
+            const isSameDate = candidate.date === currentBest.date;
+            const isAlphabeticallyFirst =
+              candidate.recording.title.localeCompare(currentBest.recording.title) < 0;
+
+            if (isNewerDate) {
+              best = candidate;
+            } else if (isSameDate && isAlphabeticallyFirst) {
+              best = candidate;
+            }
           }
         }
       }
@@ -239,7 +265,9 @@ export function getRelatedRecordings(
   ) => {
     while (selected.length < maxCount) {
       const best = findBestCandidate(pool, options);
-      if (!best) break;
+      if (!best) {
+        break;
+      }
       addCandidate(best);
     }
   };
@@ -256,7 +284,9 @@ export function getRelatedRecordings(
   });
 
   for (const poolDefinition of orderedPools.slice(1)) {
-    if (selected.length >= maxCount) break;
+    if (selected.length >= maxCount) {
+      break;
+    }
     const pool = candidates.filter(poolDefinition.isMatch);
     fillFromPool(pool, { allowSameEpisode: false, tagPenaltyEnabled: false });
   }

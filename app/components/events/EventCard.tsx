@@ -1,6 +1,8 @@
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
-import { Card } from "../ui/Card";
+
+import { LocationPill } from "../locations/LocationPill";
 import {
   CalendarIcon,
   ClockIcon,
@@ -10,17 +12,17 @@ import {
   LumaIcon,
   MapPinIcon,
 } from "../shared/icons";
-import { LocationPill } from "../locations/LocationPill";
+import { Card } from "../ui/Card";
 import { MetaRow } from "../ui/MetaRow";
 import { Pill } from "../ui/Pill";
 
-type EventLinks = {
+interface EventLinks {
   luma?: string;
   facebook?: string;
   eventbrite?: string;
-};
+}
 
-type EventCardProps = {
+interface EventCardProps {
   id: string;
   title: string;
   episode?: string;
@@ -30,9 +32,9 @@ type EventCardProps = {
   venue: string;
   description: string;
   registrationUrl: string;
-  speakers: Array<{ name: string; topic: string }>;
+  speakers: { name: string; topic: string }[];
   links?: EventLinks;
-};
+}
 
 export function EventCard({
   title,
@@ -53,9 +55,9 @@ export function EventCard({
 
   const formattedDate = !isTba
     ? new Date(date).toLocaleDateString(locale, {
-        weekday: "long",
-        month: "long",
         day: "numeric",
+        month: "long",
+        weekday: "long",
         year: "numeric",
       })
     : "";
@@ -67,28 +69,28 @@ export function EventCard({
 
   const platformLinks = [
     {
-      key: "luma",
-      url: links?.luma || registrationUrl,
-      icon: LumaIcon,
-      label: t("platforms.luma"),
       colors:
         "bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 shadow-violet-500/25",
+      icon: LumaIcon,
+      key: "luma",
+      label: t("platforms.luma"),
+      url: links?.luma || registrationUrl,
     },
     {
-      key: "facebook",
-      url: links?.facebook,
-      icon: FacebookIcon,
-      label: t("platforms.facebook"),
       colors:
         "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-blue-500/25",
+      icon: FacebookIcon,
+      key: "facebook",
+      label: t("platforms.facebook"),
+      url: links?.facebook,
     },
     {
-      key: "eventbrite",
-      url: links?.eventbrite,
-      icon: EventbriteIcon,
-      label: t("platforms.eventbrite"),
       colors:
         "bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 shadow-brand-500/25",
+      icon: EventbriteIcon,
+      key: "eventbrite",
+      label: t("platforms.eventbrite"),
+      url: links?.eventbrite,
     },
   ].filter((link) => link.url && link.url.length > 0);
 
@@ -96,7 +98,7 @@ export function EventCard({
     return (
       <Card as="article" className="fire-glow group relative p-6 sm:p-7">
         <div
-          className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full blur-3xl opacity-50 ${
+          className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full opacity-50 blur-3xl ${
             location === LOCATIONS.PRAGUE
               ? "bg-gradient-to-br from-red-400/25 to-rose-500/15"
               : "bg-gradient-to-br from-blue-400/25 to-indigo-500/15"
@@ -112,7 +114,7 @@ export function EventCard({
             />
             <Pill
               size="sm"
-              className="bg-amber-100 font-semibold uppercase tracking-[0.2em] text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
+              className="bg-amber-100 font-semibold tracking-[0.2em] text-amber-700 uppercase dark:bg-amber-500/20 dark:text-amber-300"
             >
               Coming soon
             </Pill>
@@ -122,7 +124,7 @@ export function EventCard({
             {title}
           </h3>
           {episode && (
-            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
+            <p className="mb-2.5 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
               {t("episodeLabel")}: {episode}
             </p>
           )}
@@ -133,11 +135,11 @@ export function EventCard({
 
           <div className="mb-6 space-y-2.5">
             <MetaRow
-              icon={<CalendarIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
+              icon={<CalendarIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />}
               text={t("tba")}
             />
             <MetaRow
-              icon={<ClockIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
+              icon={<ClockIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />}
               text={time}
             />
             <a
@@ -147,7 +149,7 @@ export function EventCard({
               className="venue-link"
             >
               <div className="meta-icon-container">
-                <MapPinIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+                <MapPinIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />
               </div>
               <span className="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline">
                 {venue}
@@ -162,7 +164,7 @@ export function EventCard({
               <div className="space-y-2">
                 {speakers.map((speaker) => (
                   <div key={`${speaker.name}-${speaker.topic}`} className="speaker-card">
-                    <div className="mt-0.5 h-2.5 w-2.5 flex-none rounded-full bg-brand-500/80" />
+                    <div className="bg-brand-500/80 mt-0.5 h-2.5 w-2.5 flex-none rounded-full" />
                     <div>
                       <p className="font-semibold text-neutral-900 dark:text-white">
                         {speaker.name}
@@ -202,7 +204,7 @@ export function EventCard({
           {title}
         </h3>
         {episode && (
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 dark:text-neutral-400">
+          <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
             {t("episodeLabel")}: {episode}
           </p>
         )}
@@ -211,11 +213,11 @@ export function EventCard({
 
         <div className="mb-8 space-y-3.5">
           <MetaRow
-            icon={<CalendarIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
+            icon={<CalendarIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />}
             text={formattedDate}
           />
           <MetaRow
-            icon={<ClockIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />}
+            icon={<ClockIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />}
             text={time}
           />
           <a
@@ -225,7 +227,7 @@ export function EventCard({
             className="venue-link"
           >
             <div className="meta-icon-container">
-              <MapPinIcon className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+              <MapPinIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />
             </div>
             <span className="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline">
               {venue}
@@ -243,7 +245,7 @@ export function EventCard({
                   key={`${speaker.name}-${speaker.topic}`}
                   className="flex items-start gap-3 rounded-2xl bg-white/60 p-3 text-sm text-neutral-700 shadow-sm shadow-black/5 dark:bg-white/5 dark:text-neutral-200"
                 >
-                  <div className="mt-0.5 h-2.5 w-2.5 flex-none rounded-full bg-brand-500/80" />
+                  <div className="bg-brand-500/80 mt-0.5 h-2.5 w-2.5 flex-none rounded-full" />
                   <div>
                     <p className="font-semibold text-neutral-900 dark:text-white">{speaker.name}</p>
                     <p className="text-neutral-500 dark:text-neutral-400">{speaker.topic}</p>

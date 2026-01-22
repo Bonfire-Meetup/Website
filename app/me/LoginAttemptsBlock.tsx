@@ -1,27 +1,29 @@
 "use client";
 
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
-type Attempt = {
+interface Attempt {
   id: string;
   outcome: string;
   createdAt: string;
-};
+}
 
-type LoginAttemptsBlockProps = {
+interface LoginAttemptsBlockProps {
   items: Attempt[];
   loading: boolean;
   error: string | null;
-};
+}
 
 export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlockProps) {
   const t = useTranslations("account.attempts");
   const locale = useLocale();
   const getOutcomeStyle = (outcome: string) => {
-    if (outcome === "success")
+    if (outcome === "success") {
       return "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400";
-    if (outcome === "rate_limited" || outcome === "too_many_attempts")
+    }
+    if (outcome === "rate_limited" || outcome === "too_many_attempts") {
       return "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400";
+    }
     return "bg-neutral-100 text-neutral-500 dark:bg-white/5 dark:text-neutral-400";
   };
 
@@ -32,7 +34,7 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
       </div>
       <div className="p-4">
         {loading ? (
-          <div className="space-y-2 max-h-[280px] sm:max-h-[320px] overflow-y-auto overscroll-contain">
+          <div className="max-h-[280px] space-y-2 overflow-y-auto overscroll-contain sm:max-h-[320px]">
             {Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={`attempt-skeleton-${index}`}
@@ -55,7 +57,7 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
             {t("empty")}
           </div>
         ) : (
-          <div className="space-y-2 max-h-[280px] sm:max-h-[320px] overflow-y-auto overscroll-contain -mx-4 px-4">
+          <div className="-mx-4 max-h-[280px] space-y-2 overflow-y-auto overscroll-contain px-4 sm:max-h-[320px]">
             {items.map((attempt) => (
               <div
                 key={attempt.id}
@@ -70,7 +72,7 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
                   </div>
                 </div>
                 <span
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${getOutcomeStyle(attempt.outcome)}`}
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase ${getOutcomeStyle(attempt.outcome)}`}
                 >
                   {attempt.outcome}
                 </span>

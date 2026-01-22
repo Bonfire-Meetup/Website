@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Header } from "./components/layout/Header";
+
 import { Footer } from "./components/layout/Footer";
+import { Header } from "./components/layout/Header";
 import { FireIcon } from "./components/shared/icons";
 import { PAGE_ROUTES } from "./lib/routes/pages";
 
@@ -12,8 +13,8 @@ export default function NotFound() {
         <div className="text-center">
           <div className="mb-8 flex justify-center">
             <div className="relative">
-              <FireIcon className="h-24 w-24 text-brand-500 opacity-20" />
-              <span className="absolute inset-0 flex items-center justify-center text-5xl font-black text-brand-500">
+              <FireIcon className="text-brand-500 h-24 w-24 opacity-20" />
+              <span className="text-brand-500 absolute inset-0 flex items-center justify-center text-5xl font-black">
                 404
               </span>
             </div>

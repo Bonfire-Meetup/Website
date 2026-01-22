@@ -1,6 +1,6 @@
 import { RichText } from "./RichText";
 
-type PrivacyPolicySectionProps = {
+interface PrivacyPolicySectionProps {
   tPrivacy: {
     (key: string, values?: { date?: string }): string;
     rich: (
@@ -12,17 +12,17 @@ type PrivacyPolicySectionProps = {
     ) => React.ReactNode;
   };
   currentDate: string;
-};
+}
 
 export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySectionProps) {
   return (
     <section
       id="privacy-policy"
-      className="scroll-mt-24 pt-12 border-t border-neutral-200 dark:border-white/10 space-y-6"
+      className="scroll-mt-24 space-y-6 border-t border-neutral-200 pt-12 dark:border-white/10"
     >
       <div>
         <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">{tPrivacy("title")}</h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2">
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
           {tPrivacy("lastUpdated", { date: currentDate })}
         </p>
       </div>
@@ -36,7 +36,7 @@ export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tPrivacy("controller.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tPrivacy("controller.content")}
           </p>
         </div>
@@ -47,19 +47,19 @@ export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySec
           </h3>
           <div className="space-y-4">
             <div>
-              <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+              <h4 className="mb-2 text-xl font-semibold text-neutral-900 dark:text-white">
                 {tPrivacy("dataCollection.personal.title")}
               </h4>
               <RichText t={tPrivacy} translationKey="dataCollection.personal.content" />
             </div>
             <div>
-              <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+              <h4 className="mb-2 text-xl font-semibold text-neutral-900 dark:text-white">
                 {tPrivacy("dataCollection.technical.title")}
               </h4>
               <RichText t={tPrivacy} translationKey="dataCollection.technical.content" />
             </div>
             <div>
-              <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+              <h4 className="mb-2 text-xl font-semibold text-neutral-900 dark:text-white">
                 {tPrivacy("dataCollection.interactions.title")}
               </h4>
               <RichText t={tPrivacy} translationKey="dataCollection.interactions.content" />
@@ -73,34 +73,34 @@ export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySec
           </h3>
           <div className="space-y-4">
             <div>
-              <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+              <h4 className="mb-2 text-xl font-semibold text-neutral-900 dark:text-white">
                 {tPrivacy("howWeUse.authentication.title")}
               </h4>
-              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
                 {tPrivacy("howWeUse.authentication.content")}
               </p>
             </div>
             <div>
-              <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+              <h4 className="mb-2 text-xl font-semibold text-neutral-900 dark:text-white">
                 {tPrivacy("howWeUse.communication.title")}
               </h4>
-              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
                 {tPrivacy("howWeUse.communication.content")}
               </p>
             </div>
             <div>
-              <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+              <h4 className="mb-2 text-xl font-semibold text-neutral-900 dark:text-white">
                 {tPrivacy("howWeUse.analytics.title")}
               </h4>
-              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
                 {tPrivacy("howWeUse.analytics.content")}
               </p>
             </div>
             <div>
-              <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+              <h4 className="mb-2 text-xl font-semibold text-neutral-900 dark:text-white">
                 {tPrivacy("howWeUse.security.title")}
               </h4>
-              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
                 {tPrivacy("howWeUse.security.content")}
               </p>
             </div>
@@ -125,11 +125,11 @@ export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tPrivacy("dataStorage.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tPrivacy("dataStorage.location")}
           </p>
           <div>
-            <h4 className="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+            <h4 className="mb-2 text-xl font-semibold text-neutral-900 dark:text-white">
               {tPrivacy("dataStorage.retention.title")}
             </h4>
             <RichText t={tPrivacy} translationKey="dataStorage.retention.content" />
@@ -161,7 +161,7 @@ export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tPrivacy("internationalTransfers.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tPrivacy("internationalTransfers.content")}
           </p>
         </div>
@@ -170,7 +170,7 @@ export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tPrivacy("children.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tPrivacy("children.content")}
           </p>
         </div>
@@ -179,7 +179,7 @@ export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tPrivacy("changes.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tPrivacy("changes.content")}
           </p>
         </div>
@@ -188,7 +188,7 @@ export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tPrivacy("contactPrivacy.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tPrivacy("contactPrivacy.content")}
           </p>
         </div>

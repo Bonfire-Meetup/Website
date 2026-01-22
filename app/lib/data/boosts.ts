@@ -1,7 +1,14 @@
 import { getDatabaseClient } from "@/lib/data/db";
 
-type BoostStats = { count: number; hasBoosted: boolean };
-type BoostMutationResult = { count: number; added?: boolean; removed?: boolean };
+interface BoostStats {
+  count: number;
+  hasBoosted: boolean;
+}
+interface BoostMutationResult {
+  count: number;
+  added?: boolean;
+  removed?: boolean;
+}
 
 export const getVideoBoostStats = async (
   videoId: string,
@@ -35,7 +42,7 @@ export const addVideoBoost = async (
     (await sql`select count(*)::int as count from video_boosts where video_id = ${videoId}`) as {
       count: number;
     }[];
-  return { count, added: inserted.length > 0 };
+  return { added: inserted.length > 0, count };
 };
 
 export const removeVideoBoost = async (

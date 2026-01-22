@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { memo } from "react";
-import { type LocationValue } from "@/lib/config/constants";
-import { BoltIcon, FireIcon, MapPinIcon } from "@/components/shared/icons";
-import { LocationPill } from "@/components/locations/LocationPill";
-import { RecordingImage } from "./RecordingImage";
-import { formatDate } from "@/lib/utils/locale";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-type VideoCardProps = {
+import { LocationPill } from "@/components/locations/LocationPill";
+import { BoltIcon, FireIcon, MapPinIcon } from "@/components/shared/icons";
+import { type LocationValue } from "@/lib/config/constants";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatDate } from "@/lib/utils/locale";
+
+import { RecordingImage } from "./RecordingImage";
+
+interface VideoCardProps {
   shortId: string;
   slug: string;
   title: string;
@@ -20,7 +22,7 @@ type VideoCardProps = {
   locale?: string;
   likeCount?: number;
   boostCount?: number;
-};
+}
 
 export const VideoCard = memo(function VideoCard({
   shortId,
@@ -41,7 +43,7 @@ export const VideoCard = memo(function VideoCard({
   return (
     <Link
       href={PAGE_ROUTES.WATCH(slug, shortId)}
-      className="glass-card group flex flex-col h-full cursor-pointer"
+      className="glass-card group flex h-full cursor-pointer flex-col"
     >
       <div className="video-overlay relative shrink-0 overflow-hidden rounded-t-3xl">
         <RecordingImage
@@ -63,7 +65,7 @@ export const VideoCard = memo(function VideoCard({
       </div>
 
       <div className="flex flex-1 flex-col p-6">
-        <h3 className="mb-3 line-clamp-2 text-base font-semibold leading-snug text-neutral-900 transition-colors duration-300 group-hover:text-brand-600 dark:text-white dark:group-hover:text-brand-400">
+        <h3 className="group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-3 line-clamp-2 text-base leading-snug font-semibold text-neutral-900 transition-colors duration-300 dark:text-white">
           {title}
         </h3>
 

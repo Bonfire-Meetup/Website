@@ -1,6 +1,8 @@
 import { unstable_cache } from "next/cache";
-import { getAllRecordings, type Recording } from "./recordings";
+
 import { fetchEngagementCounts } from "../data/trending";
+
+import { type Recording, getAllRecordings } from "./recordings";
 
 export type HotRecording = Recording & {
   likeCount: number;
@@ -11,9 +13,13 @@ function calculateHotScore(likeCount: number, recordingDate: Date, now: number):
   let score = likeCount * 10;
 
   const daysSince = Math.floor((now - recordingDate.getTime()) / (1000 * 60 * 60 * 24));
-  if (daysSince <= 90) score += 3;
-  else if (daysSince <= 180) score += 2;
-  else if (daysSince <= 365) score += 1;
+  if (daysSince <= 90) {
+    score += 3;
+  } else if (daysSince <= 180) {
+    score += 2;
+  } else if (daysSince <= 365) {
+    score += 1;
+  }
 
   return score;
 }
@@ -30,11 +36,13 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
     .map((recording) => {
       const likeCount = engagement.likes[recording.shortId] ?? 0;
       const hotScore = calculateHotScore(likeCount, new Date(recording.date), now);
-      return { ...recording, likeCount, hotScore };
+      return { ...recording, hotScore, likeCount };
     })
     .filter((r) => r.likeCount > 0)
     .sort((a, b) => {
-      if (b.hotScore !== a.hotScore) return b.hotScore - a.hotScore;
+      if (b.hotScore !== a.hotScore) {
+        return b.hotScore - a.hotScore;
+      }
       return b.likeCount - a.likeCount;
     });
 
@@ -43,20 +51,25 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
   const maxPerLocation = Math.ceil(limit / 2) + 1;
 
   for (const recording of withLikes) {
-    if (selected.length >= limit) break;
+    if (selected.length >= limit) {
+      break;
+    }
 
     const locationCount = usedLocations.get(recording.location) ?? 0;
-    if (locationCount >= maxPerLocation) continue;
-
-    selected.push(recording);
-    usedLocations.set(recording.location, locationCount + 1);
+    if (locationCount < maxPerLocation) {
+      selected.push(recording);
+      usedLocations.set(recording.location, locationCount + 1);
+    }
   }
 
   if (selected.length < limit) {
     for (const recording of withLikes) {
-      if (selected.length >= limit) break;
-      if (selected.some((r) => r.shortId === recording.shortId)) continue;
-      selected.push(recording);
+      if (selected.length >= limit) {
+        break;
+      }
+      if (!selected.some((r) => r.shortId === recording.shortId)) {
+        selected.push(recording);
+      }
     }
   }
 
@@ -67,7 +80,7 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
       .filter((r) => !usedIds.has(r.shortId))
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
       .slice(0, limit - selected.length)
-      .map((r) => ({ ...r, likeCount: 0, hotScore: 0 }));
+      .map((r) => ({ ...r, hotScore: 0, likeCount: 0 }));
 
     selected.push(...olderClassicsBackfill);
   }
@@ -76,5 +89,6 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
 };
 
 export const getHotRecordings = unstable_cache(getHotRecordingsUncached, ["hot-picks"], {
-  revalidate: 1800, // 30 minutes
+  // 30 minutes
+  revalidate: 1800,
 });

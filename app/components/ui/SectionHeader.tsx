@@ -1,11 +1,11 @@
 import { AccentBar } from "./AccentBar";
 
-type SectionHeaderProps = {
+interface SectionHeaderProps {
   id?: string;
   title: string;
   subtitle?: string;
   className?: string;
-};
+}
 
 export function SectionHeader({ id, title, subtitle, className = "" }: SectionHeaderProps) {
   return (

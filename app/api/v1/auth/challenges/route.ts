@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { sendEmail, getAuthFrom } from "@/lib/email/email";
+
+import { createEmailChallenge } from "@/lib/auth/challenge-request";
+import { getAuthFrom, sendEmail } from "@/lib/email/email";
 import { renderEmailCodeTemplate } from "@/lib/email/email-templates";
+import { verifyTurnstileToken } from "@/lib/forms/turnstile";
+import { getRequestLocale } from "@/lib/utils/locale";
 import { logWarn } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
-import { getRequestLocale } from "@/lib/utils/locale";
-import { verifyTurnstileToken } from "@/lib/forms/turnstile";
-import { createEmailChallenge } from "@/lib/auth/challenge-request";
 
 const challengeSchema = z.object({
   email: z.string().email(),
-  type: z.literal("email"),
   turnstileToken: z.string().min(1),
+  type: z.literal("email"),
 });
 
 const challengeTtlMs = 10 * 60_000;
@@ -38,7 +39,7 @@ export const POST = async (request: Request) =>
       return respond({ error: "invalid_request" }, { status: 400 });
     }
 
-    const turnstileToken = result.data.turnstileToken;
+    const { turnstileToken } = result.data;
 
     const isTurnstileValid = await verifyTurnstileToken(turnstileToken);
     if (!isTurnstileValid) {
@@ -49,29 +50,29 @@ export const POST = async (request: Request) =>
     const locale = getRequestLocale(request.headers);
     const minutes = Math.round(challengeTtlMs / 60_000);
     const resultChallenge = await createEmailChallenge({
+      allowSilentFailure: true,
       email: result.data.email,
-      request,
+      logPrefix: "auth.challenge",
       maxAttempts,
       maxEmailChallenges,
       maxIpChallenges,
-      rateLimitWindowMs,
-      ttlMs: challengeTtlMs,
       rateLimitStore,
-      logPrefix: "auth.challenge",
-      allowSilentFailure: true,
+      rateLimitWindowMs,
+      request,
       sendEmail: async (normalizedEmail, code) => {
-        const emailTemplate = await renderEmailCodeTemplate({ locale, code, minutes });
+        const emailTemplate = await renderEmailCodeTemplate({ code, locale, minutes });
         await sendEmail({
-          to: normalizedEmail,
+          from: getAuthFrom(),
+          html: emailTemplate.html,
           subject: emailTemplate.subject,
           text: emailTemplate.text,
-          html: emailTemplate.html,
-          from: getAuthFrom(),
+          to: normalizedEmail,
         });
       },
+      ttlMs: challengeTtlMs,
     });
     if (!resultChallenge.ok) {
       return respond({ ok: true });
     }
-    return respond({ ok: true, challenge_token: resultChallenge.challenge_token });
+    return respond({ challenge_token: resultChallenge.challenge_token, ok: true });
   });

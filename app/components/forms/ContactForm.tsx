@@ -1,16 +1,19 @@
 "use client";
 
-import { useActionState, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
+import { useActionState, useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
+import { API_ROUTES } from "@/lib/api/routes";
+import { type ContactFormState, submitContactForm } from "@/lib/forms/form-actions";
+import { STORAGE_KEYS } from "@/lib/storage/keys";
+
+import { CheckIcon, CloseIcon, MailIcon } from "../shared/icons";
 import { Button } from "../ui/Button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
-import { CheckIcon, CloseIcon, MailIcon } from "../shared/icons";
-import { submitContactForm, type ContactFormState } from "@/lib/forms/form-actions";
-import { SelectDropdown, type DropdownOption } from "@/components/ui/SelectDropdown";
+
 import { TurnstileWidget } from "./TurnstileWidget";
-import { STORAGE_KEYS } from "@/lib/storage/keys";
-import { API_ROUTES } from "@/lib/api/routes";
 
 const initialState: ContactFormState = { success: false };
 
@@ -28,26 +31,36 @@ export function ContactForm() {
 
   const inquiryOptions = useMemo<DropdownOption[]>(
     () => [
-      { value: "general", label: t("inquiryTypeGeneral") },
-      { value: "feature", label: t("inquiryTypeFeature") },
-      { value: "support", label: t("inquiryTypeSupport") },
-      { value: "press", label: t("inquiryTypePress") },
-      { value: "crew", label: t("inquiryTypeCrew") },
-      { value: "coc", label: t("inquiryTypeConduct") },
+      { label: t("inquiryTypeGeneral"), value: "general" },
+      { label: t("inquiryTypeFeature"), value: "feature" },
+      { label: t("inquiryTypeSupport"), value: "support" },
+      { label: t("inquiryTypePress"), value: "press" },
+      { label: t("inquiryTypeCrew"), value: "crew" },
+      { label: t("inquiryTypeConduct"), value: "coc" },
     ],
     [t],
   );
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
     try {
       const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
       if (draft) {
         const parsed = JSON.parse(draft);
-        if (parsed.name) setName(parsed.name);
-        if (parsed.email) setEmail(parsed.email);
-        if (parsed.subject) setSubject(parsed.subject);
-        if (parsed.message) setMessage(parsed.message);
+        if (parsed.name) {
+          setName(parsed.name);
+        }
+        if (parsed.email) {
+          setEmail(parsed.email);
+        }
+        if (parsed.subject) {
+          setSubject(parsed.subject);
+        }
+        if (parsed.message) {
+          setMessage(parsed.message);
+        }
         if (
           parsed.inquiryType &&
           inquiryOptions.some((option) => option.value === parsed.inquiryType)
@@ -55,30 +68,36 @@ export function ContactForm() {
           setInquiryType(parsed.inquiryType);
         }
       }
-    } catch {}
+    } catch {
+      // Ignore localStorage errors
+    }
   }, [inquiryOptions]);
 
   useEffect(() => {
     const nextType = searchParams.get("type");
-    if (!nextType) return;
+    if (!nextType) {
+      return;
+    }
     if (inquiryOptions.some((option) => option.value === nextType)) {
       setInquiryType(nextType);
     }
   }, [searchParams, inquiryOptions]);
 
   const saveDraft = useCallback(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
     if (state.success) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
       return;
     }
 
     const draft = {
-      name,
       email,
-      subject,
-      message,
       inquiryType,
+      message,
+      name,
+      subject,
     };
 
     const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
@@ -101,19 +120,25 @@ export function ContactForm() {
           return;
         }
       }
-    } catch {}
+    } catch {
+      // Ignore localStorage errors
+    }
 
     localStorage.setItem(STORAGE_KEYS.DRAFT_CONTACT_FORM, JSON.stringify(draft));
   }, [name, email, subject, message, inquiryType, state.success]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
     const timeoutId = setTimeout(saveDraft, 1500);
     return () => clearTimeout(timeoutId);
-  }, [name, email, subject, message, inquiryType, state.success]);
+  }, [name, email, subject, message, inquiryType, state.success, saveDraft]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
     const handleBeforeUnload = () => {
       saveDraft();
     };
@@ -121,14 +146,16 @@ export function ContactForm() {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [name, email, subject, message, inquiryType, state.success]);
+  }, [name, email, subject, message, inquiryType, state.success, saveDraft]);
 
   useEffect(() => {
     let isActive = true;
     fetch(API_ROUTES.CSRF)
       .then((response) => (response.ok ? response.json() : null))
       .then((data) => {
-        if (isActive && data?.token) {
+        const hasToken = Boolean(data?.token);
+        const shouldSetToken = isActive && hasToken;
+        if (shouldSetToken) {
           setCsrfToken(data.token);
         }
       })
@@ -153,7 +180,12 @@ export function ContactForm() {
     }
   };
 
-  const hasDraft = name || email || subject || message || inquiryType !== "general";
+  const hasName = Boolean(name);
+  const hasEmail = Boolean(email);
+  const hasSubject = Boolean(subject);
+  const hasMessage = Boolean(message);
+  const isNotDefaultInquiryType = inquiryType !== "general";
+  const hasDraft = hasName || hasEmail || hasSubject || hasMessage || isNotDefaultInquiryType;
 
   if (state.success) {
     return (
@@ -176,7 +208,9 @@ export function ContactForm() {
 
   const getFieldError = (field: string) => {
     const errorKey = state.errors?.[field];
-    if (!errorKey) return null;
+    if (!errorKey) {
+      return null;
+    }
     return t(`errors.${errorKey}`) || errorKey;
   };
 

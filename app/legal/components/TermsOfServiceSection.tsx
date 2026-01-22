@@ -1,6 +1,6 @@
 import { RichText } from "./RichText";
 
-type TermsOfServiceSectionProps = {
+interface TermsOfServiceSectionProps {
   tTerms: {
     (key: string, values?: { date?: string }): string;
     rich: (
@@ -11,17 +11,17 @@ type TermsOfServiceSectionProps = {
     ) => React.ReactNode;
   };
   currentDate: string;
-};
+}
 
 export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSectionProps) {
   return (
     <section
       id="terms-of-service"
-      className="scroll-mt-24 pt-12 border-t border-neutral-200 dark:border-white/10 space-y-6"
+      className="scroll-mt-24 space-y-6 border-t border-neutral-200 pt-12 dark:border-white/10"
     >
       <div>
         <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">{tTerms("title")}</h2>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-2">
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
           {tTerms("lastUpdated", { date: currentDate })}
         </p>
       </div>
@@ -35,7 +35,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("acceptance.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("acceptance.content")}
           </p>
         </div>
@@ -44,7 +44,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("service.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("service.content")}
           </p>
         </div>
@@ -67,7 +67,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("intellectualProperty.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("intellectualProperty.content")}
           </p>
         </div>
@@ -76,7 +76,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("userContent.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("userContent.content")}
           </p>
         </div>
@@ -85,7 +85,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("availability.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("availability.content")}
           </p>
         </div>
@@ -94,7 +94,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("liability.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("liability.content")}
           </p>
         </div>
@@ -103,7 +103,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("indemnification.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("indemnification.content")}
           </p>
         </div>
@@ -112,7 +112,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("termination.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("termination.content")}
           </p>
         </div>
@@ -121,7 +121,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("governingLaw.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("governingLaw.content")}
           </p>
         </div>
@@ -130,7 +130,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("disputes.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("disputes.content")}
           </p>
         </div>
@@ -139,7 +139,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("changes.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("changes.content")}
           </p>
         </div>
@@ -148,7 +148,7 @@ export function TermsOfServiceSection({ tTerms, currentDate }: TermsOfServiceSec
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tTerms("contactTerms.title")}
           </h3>
-          <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          <p className="leading-relaxed text-neutral-600 dark:text-neutral-400">
             {tTerms("contactTerms.content")}
           </p>
         </div>

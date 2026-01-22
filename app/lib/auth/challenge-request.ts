@@ -8,7 +8,7 @@ import {
   logWarn,
 } from "@/lib/utils/log";
 
-type ChallengeRequestConfig = {
+interface ChallengeRequestConfig {
   email: string;
   request: Request;
   maxAttempts: number;
@@ -20,7 +20,7 @@ type ChallengeRequestConfig = {
   logPrefix: string;
   rateLimitStore: Map<string, number[]>;
   allowSilentFailure?: boolean;
-};
+}
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
@@ -62,7 +62,7 @@ export const createEmailChallenge = async (config: ChallengeRequestConfig) => {
     allowSilentFailure,
   } = config;
   const normalizedEmail = normalizeEmail(email);
-  const headers = request.headers;
+  const { headers } = request;
   const ip = getClientIp(headers);
   const userAgent = headers.get("user-agent");
   const emailFingerprint = getEmailFingerprint(normalizedEmail);
@@ -109,11 +109,11 @@ export const createEmailChallenge = async (config: ChallengeRequestConfig) => {
   try {
     await insertAuthChallenge({
       challengeTokenHash,
-      email: normalizedEmail,
       codeHash,
+      email: normalizedEmail,
       expiresAt,
-      maxAttempts,
       ip,
+      maxAttempts,
       userAgent,
     });
   } catch (error) {
@@ -127,5 +127,5 @@ export const createEmailChallenge = async (config: ChallengeRequestConfig) => {
   }
 
   logInfo(`${logPrefix}.created`, { ...emailFingerprint, ...clientFingerprint });
-  return { ok: true, challenge_token: challengeToken, email: normalizedEmail };
+  return { challenge_token: challengeToken, email: normalizedEmail, ok: true };
 };

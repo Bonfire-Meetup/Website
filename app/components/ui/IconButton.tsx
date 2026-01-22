@@ -4,7 +4,7 @@ type IconButtonSize = "sm" | "md" | "pill";
 type IconButtonShape = "rounded" | "full";
 type IconButtonVariant = "glass" | "plain";
 
-type IconButtonProps = {
+interface IconButtonProps {
   children: ReactNode;
   onClick?: () => void;
   ariaLabel?: string;
@@ -15,17 +15,17 @@ type IconButtonProps = {
   shape?: IconButtonShape;
   variant?: IconButtonVariant;
   type?: "button" | "submit" | "reset";
-};
+}
 
 const sizeClasses: Record<IconButtonSize, string> = {
-  sm: "h-9 w-9",
   md: "h-10 w-10",
   pill: "h-10 px-3",
+  sm: "h-9 w-9",
 };
 
 const shapeClasses: Record<IconButtonShape, string> = {
-  rounded: "rounded-xl",
   full: "rounded-full",
+  rounded: "rounded-xl",
 };
 
 const variantClasses: Record<IconButtonVariant, string> = {

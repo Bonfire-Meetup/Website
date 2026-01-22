@@ -1,9 +1,8 @@
 import crypto from "crypto";
+
 import { serverEnv } from "@/lib/config/env";
 
-const getOtpSecret = () => {
-  return serverEnv.BNF_OTP_SECRET;
-};
+const getOtpSecret = () => serverEnv.BNF_OTP_SECRET;
 
 export const generateOtpCode = () => {
   const value = crypto.randomInt(0, 1_000_000);

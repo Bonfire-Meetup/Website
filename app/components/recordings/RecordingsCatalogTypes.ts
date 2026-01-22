@@ -1,5 +1,5 @@
-import type { Recording } from "@/lib/recordings/recordings";
 import type { LocationValue } from "@/lib/config/constants";
+import type { Recording } from "@/lib/recordings/recordings";
 
 export type LocationFilter = "all" | LocationValue;
 

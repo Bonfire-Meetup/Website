@@ -1,15 +1,15 @@
 import { getDatabaseClient } from "@/lib/data/db";
 
-type ContactSubmission = {
+interface ContactSubmission {
   name: string;
   email: string;
   inquiryType: string;
   subject: string;
   message: string;
   ipHash: string;
-};
+}
 
-type TalkProposalSubmission = {
+interface TalkProposalSubmission {
   speakerName: string;
   email: string;
   talkTitle: string;
@@ -18,7 +18,7 @@ type TalkProposalSubmission = {
   experience: string | null;
   preferredLocation: string;
   ipHash: string;
-};
+}
 
 export const insertContactSubmission = async ({
   name,

@@ -1,25 +1,27 @@
-import { getTranslations } from "next-intl/server";
 import type { Recording } from "@/lib/recordings/recordings";
 import type { TrendingRecording } from "@/lib/recordings/trending";
+import { getTranslations } from "next-intl/server";
+
 import { SectionHeader } from "../ui/SectionHeader";
+
 import { RecordingsSectionClient } from "./RecordingsSectionClient";
 
-type RecordingsSectionProps = {
+interface RecordingsSectionProps {
   recordings: (Recording | TrendingRecording)[];
-};
+}
 
 export async function RecordingsSection({ recordings }: RecordingsSectionProps) {
   const t = await getTranslations("sections.recordings");
   const homepageRecordings = recordings.map((recording) => ({
+    boostCount: "boostCount" in recording ? recording.boostCount : undefined,
+    date: recording.date,
+    likeCount: "likeCount" in recording ? recording.likeCount : undefined,
+    location: recording.location,
     shortId: recording.shortId,
     slug: recording.slug,
-    title: recording.title,
     speaker: recording.speaker,
-    date: recording.date,
     thumbnail: recording.thumbnail,
-    location: recording.location,
-    likeCount: "likeCount" in recording ? recording.likeCount : undefined,
-    boostCount: "boostCount" in recording ? recording.boostCount : undefined,
+    title: recording.title,
   }));
 
   return (

@@ -1,4 +1,5 @@
-import { neon, type NeonQueryFunctionInTransaction } from "@neondatabase/serverless";
+import { type NeonQueryFunctionInTransaction, neon } from "@neondatabase/serverless";
+
 import { serverEnv } from "@/lib/config/env";
 
 const providers = {
@@ -9,9 +10,11 @@ type TransactionCallback = (
   sql: NeonQueryFunctionInTransaction<false, false>,
 ) => ReturnType<NeonQueryFunctionInTransaction<false, false>>[];
 
-export async function runTransaction(callback: TransactionCallback): Promise<unknown[][]> {
+export function runTransaction(callback: TransactionCallback): Promise<unknown[][]> {
   const url = serverEnv.BNF_NEON_DATABASE_URL;
-  if (!url) throw new Error("BNF_NEON_DATABASE_URL is not set");
+  if (!url) {
+    throw new Error("BNF_NEON_DATABASE_URL is not set");
+  }
   const sql = neon(url);
   return sql.transaction(callback);
 }
@@ -21,8 +24,12 @@ export type DatabaseClient = ReturnType<(typeof providers)[DatabaseProvider]>;
 
 const getDatabaseProvider = (): DatabaseProvider => {
   const provider = serverEnv.BNF_DB_PROVIDER;
-  if (!provider) return "neon";
-  if (provider in providers) return provider as DatabaseProvider;
+  if (!provider) {
+    return "neon";
+  }
+  if (provider in providers) {
+    return provider as DatabaseProvider;
+  }
   throw new Error(`Unsupported database provider: ${provider}`);
 };
 
@@ -48,6 +55,8 @@ export function getDatabaseClient(
   const required = options.required ?? true;
   const provider = options.provider ?? getDatabaseProvider();
   const url = getDatabaseUrl(required);
-  if (!url) return null;
+  if (!url) {
+    return null;
+  }
   return providers[provider](url);
 }

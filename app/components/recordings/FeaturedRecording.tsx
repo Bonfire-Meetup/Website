@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
-import { Pill } from "../ui/Pill";
-import { FEATURED_INTERVAL_MS } from "./RecordingsCatalogTypes";
-import type { CatalogRecording } from "./RecordingsCatalogTypes";
+import { useEffect, useRef, useState } from "react";
+
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+
+import { Pill } from "../ui/Pill";
+
+import { FEATURED_INTERVAL_MS, type CatalogRecording } from "./RecordingsCatalogTypes";
 
 export function FeaturedRecording({
   featured: _featured,
@@ -46,7 +48,9 @@ export function FeaturedRecording({
   }, [filterKey]);
 
   useEffect(() => {
-    if (candidates.length <= 1) return;
+    if (candidates.length <= 1) {
+      return;
+    }
     featuredRemainingRef.current = FEATURED_INTERVAL_MS;
     featuredStartRef.current = performance.now();
   }, [featuredIndex, candidates.length]);
@@ -59,7 +63,9 @@ export function FeaturedRecording({
     : currentFeatured?.thumbnail;
 
   useEffect(() => {
-    if (candidates.length <= 1) return;
+    if (candidates.length <= 1) {
+      return;
+    }
 
     if (isAutoPlayPaused) {
       const elapsed = performance.now() - featuredStartRef.current;
@@ -97,7 +103,7 @@ export function FeaturedRecording({
       aria-label={currentFeatured.title}
       onMouseEnter={canHover ? () => setIsFeaturedPaused(true) : undefined}
       onMouseLeave={canHover ? () => setIsFeaturedPaused(false) : undefined}
-      className={`group recording-card-enter relative mb-8 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10 ${
+      className={`group recording-card-enter relative mb-8 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-xl ring-1 shadow-black/10 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10 ${
         hasFeaturedHero ? "min-h-[420px] sm:min-h-0" : ""
       }`}
     >
@@ -119,7 +125,7 @@ export function FeaturedRecording({
         />
         {candidates.length > 1 && (
           <>
-            <div className="absolute inset-0 z-10 pointer-events-none">
+            <div className="pointer-events-none absolute inset-0 z-10">
               <button
                 type="button"
                 aria-label={previousLabel ?? "Previous featured"}
@@ -141,7 +147,7 @@ export function FeaturedRecording({
                 className="pointer-events-auto absolute inset-y-0 right-0 w-1/5 cursor-pointer"
               />
             </div>
-            <div className="absolute top-4 left-6 right-6 z-10 flex gap-2">
+            <div className="absolute top-4 right-6 left-6 z-10 flex gap-2">
               {candidates.map((item, index) => {
                 const isActive = index === featuredIndex;
                 return (
@@ -180,7 +186,7 @@ export function FeaturedRecording({
           </>
         )}
       </div>
-      <div className="absolute bottom-4 left-4 right-4 z-20 sm:bottom-6 sm:left-6 sm:right-6">
+      <div className="absolute right-4 bottom-4 left-4 z-20 sm:right-6 sm:bottom-6 sm:left-6">
         <div
           className={`flex max-w-2xl flex-col gap-2 rounded-3xl px-4 py-4 sm:px-5 sm:py-4 ${
             hasFeaturedHero
@@ -189,7 +195,7 @@ export function FeaturedRecording({
           }`}
         >
           <div
-            className={`flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] ${
+            className={`flex flex-wrap items-center gap-2 text-[11px] font-semibold tracking-[0.28em] uppercase ${
               hasFeaturedHero
                 ? "text-white/80 sm:text-neutral-600 dark:sm:text-white/70"
                 : "text-neutral-600 dark:text-white/70"
@@ -207,14 +213,14 @@ export function FeaturedRecording({
             </Pill>
             <span>
               {new Date(currentFeatured.date).toLocaleDateString(locale, {
-                month: "short",
                 day: "numeric",
+                month: "short",
                 year: "numeric",
               })}
             </span>
           </div>
           <h2
-            className={`break-words text-xl font-semibold leading-tight line-clamp-2 sm:text-3xl lg:text-4xl ${
+            className={`line-clamp-2 text-xl leading-tight font-semibold break-words sm:text-3xl lg:text-4xl ${
               hasFeaturedHero
                 ? "text-white sm:text-neutral-900 dark:sm:text-white"
                 : "text-neutral-900 dark:text-white"

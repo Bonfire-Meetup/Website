@@ -1,32 +1,33 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+
 import { CloseIcon } from "./icons";
 
 export const ENABLE_GLOBAL_MINI_PLAYER = true;
 
-type VideoInfo = {
+interface VideoInfo {
   youtubeId: string;
   title: string;
   watchUrl: string;
-};
+}
 
-type Rect = {
+interface Rect {
   top: number;
   left: number;
   width: number;
   height: number;
-};
+}
 
-type GlobalPlayerContextValue = {
+interface GlobalPlayerContextValue {
   setVideo: (video: VideoInfo) => void;
   setInlineContainer: (element: HTMLDivElement | null) => void;
   clearVideo: () => void;
   cinemaMode: boolean;
   setCinemaMode: (value: boolean) => void;
-};
+}
 
 const GlobalPlayerContext = createContext<GlobalPlayerContextValue | null>(null);
 
@@ -73,11 +74,13 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
   }, [video?.youtubeId]);
 
   useEffect(() => {
-    if (!inlineElement) return;
+    if (!inlineElement) {
+      return;
+    }
     const updateRect = () => {
       const rect = inlineElement.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
-        const newRect = { top: rect.top, left: rect.left, width: rect.width, height: rect.height };
+        const newRect = { height: rect.height, left: rect.left, top: rect.top, width: rect.width };
         lastInlineRectRef.current = newRect;
         if (!cinemaMode) {
           setPlayerRect(newRect);
@@ -102,15 +105,17 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
       const width = Math.min(vw * 0.92, 1200);
       const height = (width * 9) / 16;
       setPlayerRect({
-        top: (window.innerHeight - height) / 2,
-        left: (vw - width) / 2,
-        width,
         height,
+        left: (vw - width) / 2,
+        top: (window.innerHeight - height) / 2,
+        width,
       });
       return;
     }
 
-    if (isInline) return;
+    if (isInline) {
+      return;
+    }
 
     if (!canMiniPlayer || !video || !hasPlaybackStarted) {
       setPlayerRect(null);
@@ -118,10 +123,10 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     }
 
     const miniRect = {
-      top: window.innerHeight - 24 - MINI_HEIGHT,
-      left: window.innerWidth - 24 - MINI_WIDTH,
-      width: MINI_WIDTH,
       height: MINI_HEIGHT,
+      left: window.innerWidth - 24 - MINI_WIDTH,
+      top: window.innerHeight - 24 - MINI_HEIGHT,
+      width: MINI_WIDTH,
     };
 
     if (lastInlineRectRef.current) {
@@ -140,13 +145,15 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
   }, [isInline, canMiniPlayer, video, cinemaMode, hasPlaybackStarted]);
 
   useEffect(() => {
-    if (isInline || isAnimating || cinemaMode || !canMiniPlayer || !hasPlaybackStarted) return;
+    if (isInline || isAnimating || cinemaMode || !canMiniPlayer || !hasPlaybackStarted) {
+      return;
+    }
     const update = () => {
       setPlayerRect({
-        top: window.innerHeight - 24 - MINI_HEIGHT,
-        left: window.innerWidth - 24 - MINI_WIDTH,
-        width: MINI_WIDTH,
         height: MINI_HEIGHT,
+        left: window.innerWidth - 24 - MINI_WIDTH,
+        top: window.innerHeight - 24 - MINI_HEIGHT,
+        width: MINI_WIDTH,
       });
     };
     window.addEventListener("resize", update);
@@ -154,12 +161,22 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
   }, [isInline, isAnimating, cinemaMode, canMiniPlayer, hasPlaybackStarted]);
 
   useEffect(() => {
-    if (!video) return;
+    if (!video) {
+      return;
+    }
     const handleMessage = (event: MessageEvent) => {
-      if (!iframeRef.current?.contentWindow) return;
-      if (event.source !== iframeRef.current.contentWindow) return;
-      if (!event.origin.includes("youtube")) return;
-      if (typeof event.data !== "string" && typeof event.data !== "object") return;
+      if (!iframeRef.current?.contentWindow) {
+        return;
+      }
+      if (event.source !== iframeRef.current.contentWindow) {
+        return;
+      }
+      if (!event.origin.includes("youtube")) {
+        return;
+      }
+      if (typeof event.data !== "string" && typeof event.data !== "object") {
+        return;
+      }
       const parsed =
         typeof event.data === "string"
           ? (() => {
@@ -170,10 +187,14 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
               }
             })()
           : (event.data as { event?: string; info?: unknown });
-      if (!parsed) return;
+      if (!parsed) {
+        return;
+      }
       const eventName = parsed.event;
-      if (!eventName) return;
-      const info = parsed.info;
+      if (!eventName) {
+        return;
+      }
+      const { info } = parsed;
       const playerState =
         typeof info === "number"
           ? info
@@ -188,17 +209,19 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     };
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, [video?.youtubeId]);
+  }, [video]);
 
   const registerPlayerListener = () => {
     const target = iframeRef.current?.contentWindow;
-    if (!target) return;
+    if (!target) {
+      return;
+    }
     target.postMessage(JSON.stringify({ event: "listening", id: "global-player" }), "*");
     target.postMessage(
       JSON.stringify({
+        args: ["onStateChange"],
         event: "command",
         func: "addEventListener",
-        args: ["onStateChange"],
       }),
       "*",
     );
@@ -206,31 +229,40 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
 
   const value = useMemo(
     () => ({
+      cinemaMode,
+      clearVideo: () => setVideo(null),
+      setCinemaMode,
+      setInlineContainer: setInlineElement,
       setVideo: (next: VideoInfo) =>
         setVideo((current) => {
-          if (
-            current &&
-            current.youtubeId === next.youtubeId &&
-            current.watchUrl === next.watchUrl
-          ) {
+          const hasCurrentVideo = Boolean(current);
+          const isSameYoutubeId = current?.youtubeId === next.youtubeId;
+          const isSameWatchUrl = current?.watchUrl === next.watchUrl;
+          const isSameVideo = hasCurrentVideo && isSameYoutubeId && isSameWatchUrl;
+
+          if (isSameVideo) {
             return current;
           }
           return next;
         }),
-      setInlineContainer: setInlineElement,
-      clearVideo: () => setVideo(null),
-      cinemaMode,
-      setCinemaMode,
     }),
     [cinemaMode],
   );
 
-  const showMiniControls = !isInline && !cinemaMode && canMiniPlayer && playerRect;
+  const isNotInline = !isInline;
+  const isNotCinemaMode = !cinemaMode;
+  const showMiniControls = isNotInline && isNotCinemaMode && canMiniPlayer && playerRect;
+
+  const isMiniPlayerEnabled = ENABLE_GLOBAL_MINI_PLAYER;
+  const hasVideo = Boolean(video);
+  const hasPlayerRect = Boolean(playerRect);
+  const canShowPlayer = isInline || canMiniPlayer;
+  const shouldShowPlayer = isMiniPlayerEnabled && hasVideo && hasPlayerRect && canShowPlayer;
 
   return (
     <GlobalPlayerContext.Provider value={value}>
       {children}
-      {ENABLE_GLOBAL_MINI_PLAYER && video && playerRect && (isInline || canMiniPlayer) && (
+      {shouldShowPlayer && video && playerRect && (
         <>
           {cinemaMode && (
             <>
@@ -241,7 +273,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
               <button
                 type="button"
                 onClick={() => setCinemaMode(false)}
-                className="fixed right-6 top-6 z-[90] inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white/80 backdrop-blur-sm transition hover:bg-white/20 hover:text-white"
+                className="fixed top-6 right-6 z-[90] inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white/80 backdrop-blur-sm transition hover:bg-white/20 hover:text-white"
                 aria-label={t("exitCinema")}
               >
                 <CloseIcon className="h-5 w-5" />
@@ -256,14 +288,14 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
             >
               <Link
                 href={video.watchUrl}
-                className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-neutral-700 shadow-lg ring-1 ring-black/5 transition dark:bg-neutral-950/90 dark:text-neutral-200 dark:ring-white/10"
+                className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold tracking-[0.2em] text-neutral-700 uppercase shadow-lg ring-1 ring-black/5 transition dark:bg-neutral-950/90 dark:text-neutral-200 dark:ring-white/10"
               >
                 {t("returnToPlayer")}
               </Link>
               <button
                 type="button"
                 onClick={() => setVideo(null)}
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white/80 shadow-lg transition cursor-pointer hover:bg-black/90 hover:text-white"
+                className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/70 text-white/80 shadow-lg transition hover:bg-black/90 hover:text-white"
                 aria-label={t("closePlayer")}
               >
                 <CloseIcon className="h-4 w-4" />
@@ -280,10 +312,10 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
                   : "z-50 rounded-2xl shadow-2xl ring-1 ring-black/20"
             } ${isAnimating ? "transition-all duration-300" : ""}`}
             style={{
-              top: playerRect.top,
-              left: playerRect.left,
-              width: playerRect.width,
               height: playerRect.height,
+              left: playerRect.left,
+              top: playerRect.top,
+              width: playerRect.width,
             }}
           >
             {isLoading && (
@@ -297,6 +329,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
               title={video.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
+              sandbox="allow-scripts allow-presentation allow-popups allow-popups-to-escape-sandbox"
               onLoad={() => {
                 setIsLoading(false);
                 registerPlayerListener();

@@ -1,12 +1,13 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import dynamic from "next/dynamic";
-import type { Metadata } from "next";
-import { Header } from "@/components/layout/Header";
+
 import { Footer } from "@/components/layout/Footer";
-import { getAllRecordings } from "@/lib/recordings/recordings";
-import { getMemberPicks } from "@/lib/recordings/member-picks";
-import { getHotRecordings } from "@/lib/recordings/hot-picks";
+import { Header } from "@/components/layout/Header";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { getHotRecordings } from "@/lib/recordings/hot-picks";
+import { getMemberPicks } from "@/lib/recordings/member-picks";
+import { getAllRecordings } from "@/lib/recordings/recordings";
 
 const RecordingsCatalog = dynamic(() =>
   import("@/components/recordings/RecordingsCatalog").then((mod) => mod.RecordingsCatalog),
@@ -30,89 +31,109 @@ export default async function LibraryPage({
     getHotRecordings(6),
   ]);
 
-  const initialLocation: LocationFilter =
-    params.location === LOCATIONS.PRAGUE || params.location === LOCATIONS.ZLIN
-      ? params.location
-      : "all";
+  const locationParam = params.location;
+  const isPragueLocation = locationParam === LOCATIONS.PRAGUE;
+  const isZlinLocation = locationParam === LOCATIONS.ZLIN;
+  const isValidLocation = isPragueLocation || isZlinLocation;
+  const initialLocation: LocationFilter = isValidLocation && locationParam ? locationParam : "all";
   const initialTag = params.tag ?? "all";
   const initialEpisode = params.episode ?? "all";
   const initialSearchQuery = params.q ?? "";
 
   const normalizedSearchQuery = normalizeText(initialSearchQuery.trim());
   const serverFilteredRecordings = allRecordings.filter((recording) => {
-    const matchesLocation = initialLocation === "all" || recording.location === initialLocation;
-    const matchesTag = initialTag === "all" || recording.tags.includes(initialTag);
-    const matchesEpisode = initialEpisode === "all" || recording.episodeId === initialEpisode;
-    const matchesSearch =
-      normalizedSearchQuery.length === 0 ||
-      normalizeText(recording.title).includes(normalizedSearchQuery) ||
-      recording.speaker.some((name) => normalizeText(name).includes(normalizedSearchQuery)) ||
-      recording.tags.some((tag) => normalizeText(tag).includes(normalizedSearchQuery)) ||
-      normalizeText(recording.location).includes(normalizedSearchQuery) ||
-      (recording.episode
+    const isLocationMatch = initialLocation === "all" || recording.location === initialLocation;
+    const isTagMatch = initialTag === "all" || recording.tags.includes(initialTag);
+    const isEpisodeMatch = initialEpisode === "all" || recording.episodeId === initialEpisode;
+
+    const isSearchEmpty = normalizedSearchQuery.length === 0;
+    const isTitleMatch = normalizeText(recording.title).includes(normalizedSearchQuery);
+    const isSpeakerMatch = recording.speaker.some((name) =>
+      normalizeText(name).includes(normalizedSearchQuery),
+    );
+    const isTagInSearch = recording.tags.some((tag) =>
+      normalizeText(tag).includes(normalizedSearchQuery),
+    );
+    const isLocationInSearch = normalizeText(recording.location).includes(normalizedSearchQuery);
+    const hasEpisode = Boolean(recording.episode);
+    const isEpisodeInSearch =
+      hasEpisode && recording.episode
         ? normalizeText(recording.episode).includes(normalizedSearchQuery)
-        : false) ||
-      (recording.description
+        : false;
+    const hasDescription = Boolean(recording.description);
+    const isDescriptionMatch =
+      hasDescription && recording.description
         ? normalizeText(recording.description).includes(normalizedSearchQuery)
-        : false);
-    return matchesLocation && matchesTag && matchesEpisode && matchesSearch;
+        : false;
+
+    const isSearchMatch =
+      isSearchEmpty ||
+      isTitleMatch ||
+      isSpeakerMatch ||
+      isTagInSearch ||
+      isLocationInSearch ||
+      isEpisodeInSearch ||
+      isDescriptionMatch;
+
+    return isLocationMatch && isTagMatch && isEpisodeMatch && isSearchMatch;
   });
 
+  const isLocationFiltered = initialLocation !== "all";
+  const isTagFiltered = initialTag !== "all";
+  const isEpisodeFiltered = initialEpisode !== "all";
+  const isSearchFiltered = initialSearchQuery.trim() !== "";
   const hasActiveFilters =
-    initialLocation !== "all" ||
-    initialTag !== "all" ||
-    initialEpisode !== "all" ||
-    initialSearchQuery.trim() !== "";
+    isLocationFiltered || isTagFiltered || isEpisodeFiltered || isSearchFiltered;
   const initialViewMode: "rows" | "grid" = hasActiveFilters ? "grid" : "rows";
 
   const recordings = allRecordings.map((recording) => ({
+    date: recording.date,
+    description: recording.description,
+    episode: recording.episode,
+    episodeId: recording.episodeId,
+    episodeNumber: recording.episodeNumber,
+    featureHeroThumbnail: recording.featureHeroThumbnail,
+    location: recording.location,
     shortId: recording.shortId,
     slug: recording.slug,
-    title: recording.title,
     speaker: recording.speaker,
-    date: recording.date,
-    thumbnail: recording.thumbnail,
-    featureHeroThumbnail: recording.featureHeroThumbnail,
-    description: recording.description,
     tags: recording.tags,
-    location: recording.location,
-    episodeId: recording.episodeId,
-    episode: recording.episode,
-    episodeNumber: recording.episodeNumber,
+    thumbnail: recording.thumbnail,
+    title: recording.title,
   }));
 
   const memberPicks = memberPicksData.map((recording) => ({
+    boostCount: recording.boostCount,
+    date: recording.date,
+    description: recording.description,
+    episode: recording.episode,
+    episodeId: recording.episodeId,
+    episodeNumber: recording.episodeNumber,
+    featureHeroThumbnail: recording.featureHeroThumbnail,
+    location: recording.location,
     shortId: recording.shortId,
     slug: recording.slug,
-    title: recording.title,
     speaker: recording.speaker,
-    date: recording.date,
-    thumbnail: recording.thumbnail,
-    featureHeroThumbnail: recording.featureHeroThumbnail,
-    description: recording.description,
     tags: recording.tags,
-    location: recording.location,
-    episodeId: recording.episodeId,
-    episode: recording.episode,
-    episodeNumber: recording.episodeNumber,
-    boostCount: recording.boostCount,
+    thumbnail: recording.thumbnail,
+    title: recording.title,
   }));
 
   const hotPicks = hotPicksData.map((recording) => ({
+    date: recording.date,
+    description: recording.description,
+    episode: recording.episode,
+    episodeId: recording.episodeId,
+    episodeNumber: recording.episodeNumber,
+    featureHeroThumbnail: recording.featureHeroThumbnail,
+    likeCount: recording.likeCount,
+    location: recording.location,
     shortId: recording.shortId,
     slug: recording.slug,
-    title: recording.title,
     speaker: recording.speaker,
-    date: recording.date,
-    thumbnail: recording.thumbnail,
-    featureHeroThumbnail: recording.featureHeroThumbnail,
-    description: recording.description,
     tags: recording.tags,
-    location: recording.location,
-    episodeId: recording.episodeId,
-    episode: recording.episode,
-    episodeNumber: recording.episodeNumber,
-    likeCount: recording.likeCount,
+    thumbnail: recording.thumbnail,
+    title: recording.title,
   }));
 
   return (
@@ -128,26 +149,26 @@ export default async function LibraryPage({
           previousFeaturedLabel={tCommon("previousFeatured")}
           nextFeaturedLabel={tCommon("nextFeatured")}
           initialFilters={{
-            location: initialLocation,
-            tag: initialTag,
             episode: initialEpisode,
+            location: initialLocation,
             searchQuery: initialSearchQuery,
+            tag: initialTag,
             viewMode: initialViewMode,
           }}
           preFilteredRecordings={serverFilteredRecordings.map((recording) => ({
+            date: recording.date,
+            description: recording.description,
+            episode: recording.episode,
+            episodeId: recording.episodeId,
+            episodeNumber: recording.episodeNumber,
+            featureHeroThumbnail: recording.featureHeroThumbnail,
+            location: recording.location,
             shortId: recording.shortId,
             slug: recording.slug,
-            title: recording.title,
             speaker: recording.speaker,
-            date: recording.date,
-            thumbnail: recording.thumbnail,
-            featureHeroThumbnail: recording.featureHeroThumbnail,
-            description: recording.description,
             tags: recording.tags,
-            location: recording.location,
-            episodeId: recording.episodeId,
-            episode: recording.episode,
-            episodeNumber: recording.episodeNumber,
+            thumbnail: recording.thumbnail,
+            title: recording.title,
           }))}
         />
       </main>
@@ -161,22 +182,22 @@ export async function generateMetadata(): Promise<Metadata> {
   const tCommon = await getTranslations("common");
   const commonValues = {
     brandName: tCommon("brandName"),
+    country: tCommon("country"),
     prague: tCommon("prague"),
     zlin: tCommon("zlin"),
-    country: tCommon("country"),
   };
   return {
-    title: t("libraryTitle", commonValues),
     description: t("libraryDescription"),
     openGraph: {
-      title: t("libraryTitle", commonValues),
       description: t("libraryDescription"),
+      title: t("libraryTitle", commonValues),
       type: "website",
     },
+    title: t("libraryTitle", commonValues),
     twitter: {
       card: "summary_large_image",
-      title: t("libraryTitle", commonValues),
       description: t("libraryDescription"),
+      title: t("libraryTitle", commonValues),
     },
   };
 }

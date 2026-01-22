@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { Header } from "@/components/layout/Header";
+import Image from "next/image";
+
 import { Footer } from "@/components/layout/Footer";
-import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Header } from "@/components/layout/Header";
 import { CopyButton } from "@/components/ui/CopyButton";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -12,22 +13,22 @@ export async function generateMetadata(): Promise<Metadata> {
   const tCommon = await getTranslations("common");
   const commonValues = {
     brandName: tCommon("brandName"),
+    country: tCommon("country"),
     prague: tCommon("prague"),
     zlin: tCommon("zlin"),
-    country: tCommon("country"),
   };
   return {
-    title: t("pressTitle", commonValues),
     description: t("pressDescription", commonValues),
     openGraph: {
-      title: t("pressTitle", commonValues),
       description: t("pressDescription", commonValues),
+      title: t("pressTitle", commonValues),
       type: "website",
     },
+    title: t("pressTitle", commonValues),
     twitter: {
       card: "summary_large_image",
-      title: t("pressTitle", commonValues),
       description: t("pressDescription", commonValues),
+      title: t("pressTitle", commonValues),
     },
   };
 }
@@ -51,20 +52,20 @@ export default async function PressPage() {
       title: t("logos.brands.bonfire"),
       variants: [
         {
-          label: t("logos.variants.black"),
           bg: "bg-white",
+          label: t("logos.variants.black"),
           png: "/assets/brand/RGB_PNG_01_bonfire_black.png",
           svg: "/assets/brand/RGB_SVG_01_bonfire_black.svg",
         },
         {
-          label: t("logos.variants.gradient"),
           bg: "bg-white",
+          label: t("logos.variants.gradient"),
           png: "/assets/brand/RGB_PNG_01_bonfire_black_gradient.png",
           svg: "/assets/brand/RGB_SVG_01_bonfire_black_gradient.svg",
         },
         {
-          label: t("logos.variants.white"),
           bg: "bg-neutral-900",
+          label: t("logos.variants.white"),
           png: "/assets/brand/RGB_PNG_03_bonfire_white.png",
           svg: "/assets/brand/RGB_SVG_03_bonfire_white.svg",
         },
@@ -74,20 +75,20 @@ export default async function PressPage() {
       title: t("logos.brands.prague", commonValues),
       variants: [
         {
-          label: t("logos.variants.black"),
           bg: "bg-white",
+          label: t("logos.variants.black"),
           png: "/assets/brand/RGB_PNG_04_bonfire-prague_black.png",
           svg: "/assets/brand/RGB_SVG_04_bonfire-prague_black.svg",
         },
         {
-          label: t("logos.variants.gradient"),
           bg: "bg-white",
+          label: t("logos.variants.gradient"),
           png: "/assets/brand/RGB_PNG_04_bonfire-prague_black_gradient.png",
           svg: "/assets/brand/RGB_SVG_04_bonfire-prague_black_gradient.svg",
         },
         {
-          label: t("logos.variants.white"),
           bg: "bg-neutral-900",
+          label: t("logos.variants.white"),
           png: "/assets/brand/RGB_PNG_06_bonfire-prague_white.png",
           svg: "/assets/brand/RGB_SVG_06_bonfire-prague_white.svg",
         },
@@ -97,20 +98,20 @@ export default async function PressPage() {
       title: t("logos.brands.zlin", commonValues),
       variants: [
         {
-          label: t("logos.variants.black"),
           bg: "bg-white",
+          label: t("logos.variants.black"),
           png: "/assets/brand/RGB_PNG_07_bonfire-zlin_black.png",
           svg: "/assets/brand/RGB_SVG_07_bonfire-zlin_black.svg",
         },
         {
-          label: t("logos.variants.gradient"),
           bg: "bg-white",
+          label: t("logos.variants.gradient"),
           png: "/assets/brand/RGB_PNG_07_bonfire-zlin_black_symbol_gradient.png",
           svg: "/assets/brand/RGB_SVG_07_bonfire-zlin_black_symbol_gradient.svg",
         },
         {
-          label: t("logos.variants.white"),
           bg: "bg-neutral-900",
+          label: t("logos.variants.white"),
           png: "/assets/brand/RGB_PNG_09_bonfire-zlin_white.png",
           svg: "/assets/brand/RGB_SVG_09_bonfire-zlin_white.svg",
         },
@@ -119,25 +120,25 @@ export default async function PressPage() {
   ];
 
   const colors = [
-    { name: t("colors.brand"), hex: "#8b5cf6" },
-    { name: t("colors.brandDeep"), hex: "#6d28d9" },
-    { name: t("colors.fireMid"), hex: "#d946ef" },
-    { name: t("colors.fireEnd"), hex: "#f43f5e" },
+    { hex: "#8b5cf6", name: t("colors.brand") },
+    { hex: "#6d28d9", name: t("colors.brandDeep") },
+    { hex: "#d946ef", name: t("colors.fireMid") },
+    { hex: "#f43f5e", name: t("colors.fireEnd") },
   ];
 
   const stats = [
-    { label: tHero("stats.locations"), value: tHero("stats.locationsValue"), emphasis: "xl" },
-    { label: tHero("stats.talks"), value: tHero("stats.talksValue"), emphasis: "xl" },
-    { label: tHero("stats.attendees"), value: tHero("stats.attendeesValue"), emphasis: "xl" },
+    { emphasis: "xl", label: tHero("stats.locations"), value: tHero("stats.locationsValue") },
+    { emphasis: "xl", label: tHero("stats.talks"), value: tHero("stats.talksValue") },
+    { emphasis: "xl", label: tHero("stats.attendees"), value: tHero("stats.attendeesValue") },
     {
+      emphasis: "sm",
       label: t("stats.firstPragueLabel", { prague: tCommon("prague") }),
       value: t("stats.firstPragueDate"),
-      emphasis: "sm",
     },
     {
+      emphasis: "sm",
       label: t("stats.firstZlinLabel", { zlin: tCommon("zlin") }),
       value: t("stats.firstZlinDate"),
-      emphasis: "sm",
     },
   ];
 
@@ -145,9 +146,9 @@ export default async function PressPage() {
     <>
       <Header />
       <main className="gradient-bg min-h-screen pt-28 pb-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-20">
+        <div className="mx-auto max-w-6xl space-y-20 px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-brand-600 dark:text-brand-400">
+            <p className="text-brand-600 dark:text-brand-400 text-sm font-semibold tracking-[0.3em] uppercase">
               {t("eyebrow")}
             </p>
             <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
@@ -254,7 +255,7 @@ export default async function PressPage() {
                 {t("logos.preferenceNote")}
               </p>
 
-              <div className="glass-card no-hover-pop p-8 sm:p-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+              <div className="glass-card no-hover-pop flex flex-col gap-6 p-8 sm:p-10 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h3 className="text-2xl font-semibold text-neutral-900 dark:text-white">
                     {t("logos.downloadAllTitle")}
@@ -266,7 +267,7 @@ export default async function PressPage() {
                 <a
                   href={`/assets/${pressKitFilename}`}
                   download
-                  className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand-600 to-rose-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/25 transition hover:from-brand-500 hover:to-rose-400 dark:from-brand-500 dark:to-rose-400 dark:shadow-rose-400/30 dark:hover:from-brand-400 dark:hover:to-rose-300"
+                  className="from-brand-600 hover:from-brand-500 dark:from-brand-500 dark:hover:from-brand-400 inline-flex items-center justify-center rounded-xl bg-gradient-to-r to-rose-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/25 transition hover:to-rose-400 dark:to-rose-400 dark:shadow-rose-400/30 dark:hover:to-rose-300"
                 >
                   {t("logos.downloadAllCta", { fileName: pressKitFilename })}
                 </a>
@@ -286,7 +287,7 @@ export default async function PressPage() {
                   <div className="mt-4 text-sm font-semibold text-neutral-900 dark:text-white">
                     {color.name}
                   </div>
-                  <div className="mt-1 text-xs font-mono text-neutral-600 dark:text-neutral-400">
+                  <div className="mt-1 font-mono text-xs text-neutral-600 dark:text-neutral-400">
                     {color.hex}
                   </div>
                   <CopyButton
@@ -389,7 +390,7 @@ export default async function PressPage() {
             </div>
           </section>
 
-          <section className="glass-card no-hover-pop p-8 sm:p-12 text-center">
+          <section className="glass-card no-hover-pop p-8 text-center sm:p-12">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
               {t("photos.title")}
             </h2>
@@ -397,14 +398,14 @@ export default async function PressPage() {
             <div className="mt-4">
               <a
                 href={t("photos.link")}
-                className="inline-flex items-center gap-2 font-semibold text-brand-600 hover:underline dark:text-brand-400"
+                className="text-brand-600 dark:text-brand-400 inline-flex items-center gap-2 font-semibold hover:underline"
               >
                 {t("photos.cta")}
               </a>
             </div>
           </section>
 
-          <section className="glass-card no-hover-pop p-8 sm:p-12 text-center">
+          <section className="glass-card no-hover-pop p-8 text-center sm:p-12">
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
               {t("help.title")}
             </h2>
@@ -412,14 +413,14 @@ export default async function PressPage() {
               {t("help.body")}{" "}
               <a
                 href={`mailto:${t("help.email")}`}
-                className="font-semibold text-brand-600 hover:underline dark:text-brand-400"
+                className="text-brand-600 dark:text-brand-400 font-semibold hover:underline"
               >
                 {t("help.email")}
               </a>
               <span className="mx-1">{t("help.orContact")}</span>
               <a
                 href={PAGE_ROUTES.CONTACT_WITH_TYPE("press")}
-                className="font-semibold text-brand-600 hover:underline dark:text-brand-400"
+                className="text-brand-600 dark:text-brand-400 font-semibold hover:underline"
               >
                 {t("help.contactLink")}
               </a>

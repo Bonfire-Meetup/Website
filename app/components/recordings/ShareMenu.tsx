@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { CheckIcon, FacebookIcon, LinkIcon, LinkedInIcon, ShareIcon, XIcon } from "../shared/icons";
+import { useState } from "react";
+
 import { copyToClipboard } from "@/lib/utils/clipboard";
 
-type ShareMenuProps = {
+import { CheckIcon, FacebookIcon, LinkIcon, LinkedInIcon, ShareIcon, XIcon } from "../shared/icons";
+
+interface ShareMenuProps {
   shareUrl: string;
   shareText: string;
-};
+}
 
 export function ShareMenu({ shareUrl, shareText }: ShareMenuProps) {
   const t = useTranslations("recordings");
@@ -17,17 +19,17 @@ export function ShareMenu({ shareUrl, shareText }: ShareMenuProps) {
   const [showCopyToast, setShowCopyToast] = useState(false);
 
   const shareLinks = {
-    x: `https://x.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
+    x: `https://x.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
   };
 
   const handleShare = async () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: shareText.split(" - ")[0],
           text: shareText,
+          title: shareText.split(" - ")[0],
           url: shareUrl,
         });
       } catch (err) {
@@ -57,7 +59,7 @@ export function ShareMenu({ shareUrl, shareText }: ShareMenuProps) {
         <button
           type="button"
           onClick={handleShare}
-          className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all cursor-pointer hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+          className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
         >
           <ShareIcon className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">{t("share")}</span>
@@ -65,7 +67,7 @@ export function ShareMenu({ shareUrl, shareText }: ShareMenuProps) {
         {showShareMenu && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setShowShareMenu(false)} />
-            <div className="absolute right-0 top-full z-50 mt-1 w-48 overflow-hidden rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/10">
+            <div className="absolute top-full right-0 z-50 mt-1 w-48 overflow-hidden rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-black/5 dark:bg-neutral-900 dark:ring-white/10">
               <button
                 type="button"
                 onClick={handleCopyLink}
@@ -116,7 +118,7 @@ export function ShareMenu({ shareUrl, shareText }: ShareMenuProps) {
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-full bg-neutral-900/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-black/30 backdrop-blur"
+          className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-full bg-neutral-900/90 px-4 py-2 text-xs font-semibold tracking-[0.2em] text-white uppercase shadow-lg shadow-black/30 backdrop-blur"
         >
           {t("copied")}
         </div>

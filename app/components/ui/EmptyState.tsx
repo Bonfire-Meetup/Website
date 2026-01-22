@@ -1,14 +1,15 @@
-import { AccentBar } from "./AccentBar";
-import { Card } from "./Card";
 import type { ReactNode } from "react";
 
-type EmptyStateProps = {
+import { AccentBar } from "./AccentBar";
+import { Card } from "./Card";
+
+interface EmptyStateProps {
   message: string;
   icon?: ReactNode;
   className?: string;
   messageClassName?: string;
   accentClassName?: string;
-};
+}
 
 export function EmptyState({
   message,

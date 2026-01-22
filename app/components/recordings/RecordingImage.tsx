@@ -9,7 +9,9 @@ const callbacks = new WeakMap<Element, Callback>();
 let sharedObserver: IntersectionObserver | null = null;
 
 function getSharedObserver() {
-  if (sharedObserver) return sharedObserver;
+  if (sharedObserver) {
+    return sharedObserver;
+  }
 
   sharedObserver = new IntersectionObserver(
     (entries) => {
@@ -40,7 +42,7 @@ function unobserve(el: Element) {
   sharedObserver?.unobserve(el);
 }
 
-type RecordingImageProps = {
+interface RecordingImageProps {
   src: string;
   alt: string;
   className?: string;
@@ -48,7 +50,7 @@ type RecordingImageProps = {
   sizes?: string;
   loading?: "eager" | "lazy";
   fetchPriority?: "high" | "low" | "auto";
-};
+}
 
 export function RecordingImage({
   src,
@@ -70,7 +72,9 @@ export function RecordingImage({
     }
 
     const container = containerRef.current;
-    if (!container) return;
+    if (!container) {
+      return;
+    }
 
     observe(container, () => setInView(true));
     return () => unobserve(container);
@@ -89,7 +93,7 @@ export function RecordingImage({
           sizes={sizes}
           priority={fetchPriority === "high"}
           onLoad={() => setLoaded(true)}
-          className={`object-cover transition-transform duration-700 ease-out transition-opacity duration-500 ${imgClassName} ${
+          className={`object-cover transition-opacity transition-transform duration-500 duration-700 ease-out ${imgClassName} ${
             loaded ? "opacity-100" : "opacity-0"
           }`}
         />

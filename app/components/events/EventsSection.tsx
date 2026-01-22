@@ -1,4 +1,4 @@
-import { EventsSectionClient, type EventItem } from "./EventsSectionClient";
+import { type EventItem, EventsSectionClient } from "./EventsSectionClient";
 
 export type { EventItem };
 

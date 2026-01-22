@@ -1,7 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { LocationCard } from "./LocationCard";
-import { SectionHeader } from "../ui/SectionHeader";
+
 import { LOCATIONS } from "@/lib/config/constants";
+
+import { SectionHeader } from "../ui/SectionHeader";
+
+import { LocationCard } from "./LocationCard";
 
 export async function LocationsSection() {
   const t = await getTranslations("sections.locations");
@@ -29,20 +32,20 @@ export async function LocationsSection() {
             sponsorsTitle={t("sponsorsTitle")}
             sponsors={[
               {
-                name: "Flying Rat Studio",
                 logo: "/partners/flyingrat_light.png",
+                name: "Flying Rat Studio",
                 url: "https://flying-rat.studio",
               },
               {
-                name: "Visiongame",
                 logo: "/partners/visiongame_light.png",
+                name: "Visiongame",
                 url: "http://visiongame.cz/",
               },
               {
-                name: "Space Break",
                 logo: "/partners/space_break_light.png",
-                url: "https://www.instagram.com/spacebreakcoffee/",
                 logoClassName: "h-7 sm:h-8",
+                name: "Space Break",
+                url: "https://www.instagram.com/spacebreakcoffee/",
               },
             ]}
           />
@@ -54,28 +57,28 @@ export async function LocationsSection() {
             sponsorsTitle={t("sponsorsTitle")}
             sponsors={[
               {
-                name: "Flying Rat Studio",
                 logo: "/partners/flyingrat_light.png",
+                name: "Flying Rat Studio",
                 url: "https://flying-rat.studio",
               },
               {
-                name: "Visiongame",
                 logo: "/partners/visiongame_light.png",
+                name: "Visiongame",
                 url: "http://visiongame.cz/",
               },
               {
-                name: "Polyperfect",
                 logo: "/partners/polyperfect_light.png",
+                name: "Polyperfect",
                 url: "https://www.polyperfect.com/",
               },
               {
-                name: "Tomas Bata University",
                 logo: "/partners/tomas_bata_university_light.png",
+                name: "Tomas Bata University",
                 url: "https://www.utb.cz/",
               },
               {
-                name: "Upper",
                 logo: "/partners/upper_light.png",
+                name: "Upper",
                 url: "https://upper.utb.cz/",
               },
             ]}

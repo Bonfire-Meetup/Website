@@ -1,7 +1,9 @@
+import type { MemberPickRecording } from "./RecordingsCatalogTypes";
+
 import { BoltIcon } from "../shared/icons";
+
 import { Rail } from "./Rail";
 import { RailCard } from "./RailCard";
-import type { MemberPickRecording } from "./RecordingsCatalogTypes";
 
 export function MemberPicksRail({
   title,
@@ -26,9 +28,9 @@ export function MemberPicksRail({
           badge={
             recording.boostCount > 0
               ? {
-                  icon: <BoltIcon className="h-3.5 w-3.5" />,
                   count: recording.boostCount,
                   gradient: "bg-gradient-to-r from-emerald-500 to-teal-500",
+                  icon: <BoltIcon className="h-3.5 w-3.5" />,
                 }
               : undefined
           }

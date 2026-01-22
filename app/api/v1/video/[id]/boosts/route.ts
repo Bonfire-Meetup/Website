@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+
+import { checkRateLimit, getAuthUserId, validateVideoApiRequest } from "@/lib/api/rate-limit";
+import { videoBoostMutationSchema, videoBoostStatsSchema } from "@/lib/api/schemas";
 import { addVideoBoost, getVideoBoostStats, removeVideoBoost } from "@/lib/data/boosts";
-import { validateVideoApiRequest, getAuthUserId, checkRateLimit } from "@/lib/api/rate-limit";
-import { videoBoostStatsSchema, videoBoostMutationSchema } from "@/lib/api/schemas";
 import { logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
 

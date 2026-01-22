@@ -1,14 +1,16 @@
+import type { PhotoAlbum } from "@/lib/photos/types";
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
-import { Header } from "@/components/layout/Header";
+
 import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
 import { AlbumImage } from "@/components/shared/AlbumImage";
 import { AccentBar } from "@/components/ui/AccentBar";
-import { HeroSlideshow } from "./HeroSlideshow";
 import photoAlbums from "@/data/photo-albums.json";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
-import type { PhotoAlbum } from "@/lib/photos/types";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+
+import { HeroSlideshow } from "./HeroSlideshow";
 
 const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
 
@@ -27,7 +29,9 @@ function hashSeed(input: string) {
 function pickDailyRandomImage(album: PhotoAlbum, seed: string) {
   const coverSrc = album.cover.src;
   const candidates = album.images.filter((img) => img.src !== coverSrc);
-  if (candidates.length === 0) return album.cover;
+  if (candidates.length === 0) {
+    return album.cover;
+  }
   const index = hashSeed(`${seed}-${album.id}`) % candidates.length;
   return candidates[index];
 }
@@ -38,7 +42,7 @@ const statPillClass =
 function StatPill({ value, label }: { value: string | number; label: string }) {
   return (
     <div className={statPillClass}>
-      <span className="text-lg font-bold tabular-nums text-neutral-900 dark:text-white">
+      <span className="text-lg font-bold text-neutral-900 tabular-nums dark:text-white">
         {value}
       </span>
       {label}
@@ -51,22 +55,22 @@ export async function generateMetadata(): Promise<Metadata> {
   const tCommon = await getTranslations("common");
   const commonValues = {
     brandName: tCommon("brandName"),
+    country: tCommon("country"),
     prague: tCommon("prague"),
     zlin: tCommon("zlin"),
-    country: tCommon("country"),
   };
   return {
-    title: t("photosTitle", commonValues),
     description: t("photosDescription", commonValues),
     openGraph: {
-      title: t("photosTitle", commonValues),
       description: t("photosDescription", commonValues),
+      title: t("photosTitle", commonValues),
       type: "website",
     },
+    title: t("photosTitle", commonValues),
     twitter: {
       card: "summary_large_image",
-      title: t("photosTitle", commonValues),
       description: t("photosDescription", commonValues),
+      title: t("photosTitle", commonValues),
     },
   };
 }
@@ -83,10 +87,11 @@ export default async function PhotosPage() {
     album.images
       .filter((img) => img.width > img.height)
       .map((img) => ({
+        alt: (() => {
+          const episode = getEpisodeById(album.episodeId);
+          return episode ? formatEpisodeTitle(episode) : album.id;
+        })(),
         src: `${baseUrl}/${img.src}`,
-        alt: getEpisodeById(album.episodeId)
-          ? formatEpisodeTitle(getEpisodeById(album.episodeId)!)
-          : album.id,
       })),
   );
 
@@ -104,7 +109,7 @@ export default async function PhotosPage() {
               <div className="mx-auto max-w-7xl">
                 <div className="max-w-3xl space-y-6">
                   <div className="inline-flex items-center gap-2 rounded-full bg-black/10 px-4 py-1.5 text-sm font-medium text-neutral-900 backdrop-blur-sm dark:bg-white/10 dark:text-white">
-                    <span className="h-1.5 w-1.5 rounded-full bg-brand-500 dark:bg-brand-400" />
+                    <span className="bg-brand-500 dark:bg-brand-400 h-1.5 w-1.5 rounded-full" />
                     {t("eyebrow")}
                   </div>
                   <h1 className="text-5xl font-black tracking-tight text-neutral-900 sm:text-7xl lg:text-8xl dark:text-white">

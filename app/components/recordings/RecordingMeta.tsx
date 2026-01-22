@@ -1,5 +1,7 @@
-import { Pill } from "../ui/Pill";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+
+import { Pill } from "../ui/Pill";
+
 import { formatDate } from "./RecordingsCatalogTypes";
 
 const metaBaseClass =

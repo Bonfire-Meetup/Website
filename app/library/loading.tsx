@@ -2,12 +2,12 @@ import { Skeleton } from "@/components/shared/Skeletons";
 
 function FeaturedSkeleton() {
   return (
-    <div className="relative mb-12 overflow-hidden rounded-[32px] bg-white/90 shadow-xl shadow-black/10 ring-1 ring-black/5 dark:bg-neutral-950 dark:shadow-black/20 dark:ring-white/10">
+    <div className="relative mb-12 overflow-hidden rounded-[32px] bg-white/90 shadow-xl ring-1 shadow-black/10 ring-black/5 dark:bg-neutral-950 dark:shadow-black/20 dark:ring-white/10">
       <div className="relative aspect-[16/7] w-full">
         <Skeleton className="absolute inset-0 !rounded-none" />
       </div>
-      <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6">
-        <div className="rounded-3xl bg-white/85 p-4 ring-1 ring-black/5 dark:bg-black/60 dark:ring-white/10 sm:p-5">
+      <div className="absolute right-4 bottom-4 left-4 sm:right-6 sm:bottom-6 sm:left-6">
+        <div className="rounded-3xl bg-white/85 p-4 ring-1 ring-black/5 sm:p-5 dark:bg-black/60 dark:ring-white/10">
           <div className="flex flex-wrap items-center gap-2">
             <Skeleton className="h-4 w-20 rounded-full" />
             <Skeleton className="h-4 w-24" />
@@ -41,16 +41,16 @@ export default function LibraryLoading() {
 
           <div className="mt-10 space-y-12">
             {Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="space-y-4">
+              <div key={`section-skeleton-${index}`} className="space-y-4">
                 <Skeleton className="h-6 w-40" />
-                <div className="flex gap-5 overflow-hidden pb-4 pt-1">
+                <div className="flex gap-5 overflow-hidden pt-1 pb-4">
                   {Array.from({ length: 4 }).map((_, itemIndex) => (
                     <div
-                      key={itemIndex}
+                      key={`item-skeleton-${index}-${itemIndex}`}
                       className="w-[75vw] shrink-0 sm:w-[45vw] lg:w-[280px] xl:w-[300px]"
                     >
                       <Skeleton className="aspect-video w-full !rounded-none" />
-                      <div className="space-y-3 bg-white/85 px-4 pb-5 pt-4 dark:bg-black/75">
+                      <div className="space-y-3 bg-white/85 px-4 pt-4 pb-5 dark:bg-black/75">
                         <Skeleton className="h-3 w-32" />
                         <Skeleton className="h-4 w-3/4" />
                         <Skeleton className="h-3 w-2/3" />

@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { getAuthUserById } from "@/lib/data/auth";
-import { renderAccountDeleteTemplate } from "@/lib/email/email-templates";
-import { sendEmail, getAuthFrom } from "@/lib/email/email";
-import { runWithRequestContext } from "@/lib/utils/request-context";
-import { getRequestLocale } from "@/lib/utils/locale";
-import { createEmailChallenge } from "@/lib/auth/challenge-request";
+
 import { requireAuth } from "@/lib/api/auth";
+import { createEmailChallenge } from "@/lib/auth/challenge-request";
+import { getAuthUserById } from "@/lib/data/auth";
+import { getAuthFrom, sendEmail } from "@/lib/email/email";
+import { renderAccountDeleteTemplate } from "@/lib/email/email-templates";
+import { getRequestLocale } from "@/lib/utils/locale";
+import { runWithRequestContext } from "@/lib/utils/request-context";
 
 const challengeTtlMs = 10 * 60_000;
 const maxAttempts = 5;
@@ -32,24 +33,24 @@ export const POST = async (request: Request) =>
     const minutes = Math.round(challengeTtlMs / 60_000);
     const resultChallenge = await createEmailChallenge({
       email: user.email,
-      request,
+      logPrefix: "account.delete",
       maxAttempts,
       maxEmailChallenges,
       maxIpChallenges,
-      rateLimitWindowMs,
-      ttlMs: challengeTtlMs,
       rateLimitStore,
-      logPrefix: "account.delete",
+      rateLimitWindowMs,
+      request,
       sendEmail: async (normalizedEmail, code) => {
-        const emailTemplate = await renderAccountDeleteTemplate({ locale, code, minutes });
+        const emailTemplate = await renderAccountDeleteTemplate({ code, locale, minutes });
         await sendEmail({
-          to: normalizedEmail,
+          from: getAuthFrom(),
+          html: emailTemplate.html,
           subject: emailTemplate.subject,
           text: emailTemplate.text,
-          html: emailTemplate.html,
-          from: getAuthFrom(),
+          to: normalizedEmail,
         });
       },
+      ttlMs: challengeTtlMs,
     });
     if (!resultChallenge.ok) {
       if (resultChallenge.reason === "rate_limited") {
@@ -58,5 +59,5 @@ export const POST = async (request: Request) =>
       const error = resultChallenge.reason === "persist_failed" ? "persist_failed" : "email_failed";
       return respond({ error }, { status: 500 });
     }
-    return respond({ ok: true, challenge_token: resultChallenge.challenge_token });
+    return respond({ challenge_token: resultChallenge.challenge_token, ok: true });
   });

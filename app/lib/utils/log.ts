@@ -1,27 +1,30 @@
 import crypto from "crypto";
+
 import { serverEnv } from "@/lib/config/env";
 import { getRequestId } from "@/lib/utils/request-context";
 
 type LogLevel = "info" | "warn" | "error";
 
-type LogPayload = {
+interface LogPayload {
   ts: string;
   level: LogLevel;
   event: string;
   data?: Record<string, unknown>;
-};
+}
 
 const getLogSalt = () => serverEnv.BNF_LOG_SALT;
 
 const hashValue = (value: string | null | undefined) => {
   const salt = getLogSalt();
-  if (!salt || !value) return null;
+  if (!salt || !value) {
+    return null;
+  }
   return crypto.createHmac("sha256", salt).update(value).digest("hex");
 };
 
 const normalizeError = (error: unknown) => {
   if (error instanceof Error) {
-    return { name: error.name, message: error.message };
+    return { message: error.message, name: error.name };
   }
   return { message: "unknown_error" };
 };
@@ -31,10 +34,10 @@ const log = (level: LogLevel, event: string, data?: Record<string, unknown>) => 
   const payloadData =
     requestId && (!data || !("requestId" in data)) ? { ...data, requestId } : data;
   const payload: LogPayload = {
-    ts: new Date().toISOString(),
-    level,
-    event,
     data: payloadData,
+    event,
+    level,
+    ts: new Date().toISOString(),
   };
   const line = JSON.stringify(payload);
   if (level === "error") {
@@ -45,6 +48,7 @@ const log = (level: LogLevel, event: string, data?: Record<string, unknown>) => 
     console.warn(line);
     return;
   }
+  // eslint-disable-next-line no-console
   console.log(line);
 };
 

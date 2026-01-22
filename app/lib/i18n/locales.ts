@@ -1,6 +1,6 @@
 export const LOCALES = {
-  EN: "en",
   CS: "cs",
+  EN: "en",
 } as const;
 
 export const LOCALES_ARRAY = [LOCALES.EN, LOCALES.CS] as const;

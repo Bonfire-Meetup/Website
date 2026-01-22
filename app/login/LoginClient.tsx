@@ -1,17 +1,18 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+
 import { AuthControls } from "@/components/auth/AuthControls";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
-import { isAccessTokenValid, readAccessToken, writeAccessToken } from "@/lib/auth/client";
-import { getAuthChallengeKey } from "@/lib/storage/keys";
 import { API_ROUTES } from "@/lib/api/routes";
+import { isAccessTokenValid, readAccessToken, writeAccessToken } from "@/lib/auth/client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { getAuthChallengeKey } from "@/lib/storage/keys";
 
 type Step = "request" | "verify";
 
@@ -49,16 +50,22 @@ export function LoginClient() {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const storeChallengeEmail = (token: string, value: string) => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
     window.localStorage.setItem(getAuthChallengeKey(token), value);
   };
 
   const readChallengeEmail = (token: string) => {
-    if (typeof window === "undefined") return null;
+    if (typeof window === "undefined") {
+      return null;
+    }
     return window.localStorage.getItem(getAuthChallengeKey(token));
   };
   const clearChallengeEmail = (token: string) => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
     window.localStorage.removeItem(getAuthChallengeKey(token));
   };
 
@@ -71,7 +78,9 @@ export function LoginClient() {
 
   useEffect(() => {
     const token = searchParams.get("challenge");
-    if (!token) return;
+    if (!token) {
+      return;
+    }
     const storedEmail = readChallengeEmail(token);
     if (storedEmail) {
       setEmail(storedEmail);
@@ -100,9 +109,9 @@ export function LoginClient() {
     }
 
     const response = await fetch(API_ROUTES.AUTH.CHALLENGES, {
-      method: "POST",
+      body: JSON.stringify({ email, turnstileToken, type: "email" }),
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, type: "email", turnstileToken }),
+      method: "POST",
     });
 
     if (!response.ok) {
@@ -140,16 +149,18 @@ export function LoginClient() {
     }
 
     const response = await fetch(API_ROUTES.AUTH.TOKENS, {
-      method: "POST",
+      body: JSON.stringify({ challenge_token: challengeToken, code, email }),
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, code, challenge_token: challengeToken }),
+      method: "POST",
     });
 
     if (!response.ok) {
       const data = (await response.json().catch(() => null)) as { error?: string } | null;
       const reason = data?.error;
       if (reason === "expired") {
-        if (challengeToken) clearChallengeEmail(challengeToken);
+        if (challengeToken) {
+          clearChallengeEmail(challengeToken);
+        }
         setChallengeToken(null);
         setStep("request");
         router.replace(PAGE_ROUTES.LOGIN);
@@ -157,7 +168,9 @@ export function LoginClient() {
       } else if (reason === "rate_limited") {
         setError(t("errorRateLimited"));
       } else if (reason === "too_many_attempts") {
-        if (challengeToken) clearChallengeEmail(challengeToken);
+        if (challengeToken) {
+          clearChallengeEmail(challengeToken);
+        }
         setChallengeToken(null);
         setStep("request");
         router.replace(PAGE_ROUTES.LOGIN);
@@ -186,13 +199,13 @@ export function LoginClient() {
   return (
     <main className="relative flex min-h-screen flex-col bg-[#f6f7fb] text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-24 top-20 h-64 w-64 rounded-full bg-gradient-to-br from-brand-200/40 via-white to-transparent blur-3xl dark:from-brand-500/20 dark:via-rose-500/20" />
-        <div className="absolute -right-16 top-40 h-72 w-72 rounded-full bg-gradient-to-br from-rose-200/30 via-slate-100 to-transparent blur-3xl dark:from-brand-500/20 dark:via-amber-500/10" />
+        <div className="from-brand-200/40 dark:from-brand-500/20 absolute top-20 -left-24 h-64 w-64 rounded-full bg-gradient-to-br via-white to-transparent blur-3xl dark:via-rose-500/20" />
+        <div className="dark:from-brand-500/20 absolute top-40 -right-16 h-72 w-72 rounded-full bg-gradient-to-br from-rose-200/30 via-slate-100 to-transparent blur-3xl dark:via-amber-500/10" />
       </div>
 
       <div className="relative flex flex-1 items-center justify-center px-4 py-6 sm:px-6 sm:py-12">
         <div className="flex w-full max-w-md flex-col gap-4 md:max-w-4xl">
-          <div className="flex items-center justify-center gap-3 text-xs uppercase tracking-[0.3em] text-neutral-500 dark:text-neutral-400">
+          <div className="flex items-center justify-center gap-3 text-xs tracking-[0.3em] text-neutral-500 uppercase dark:text-neutral-400">
             <span>{t("eyebrow")}</span>
             <span className="h-1 w-1 rounded-full bg-neutral-400/60" />
             <span>{t("brand", { brandName: tCommon("brandName") })}</span>
@@ -222,17 +235,17 @@ export function LoginClient() {
                   <span>{t("boostHint")}</span>
                 </div>
               )}
-              <div className="space-y-2 rounded-2xl border border-neutral-200/70 bg-white/80 px-5 py-4 text-sm text-neutral-700 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-neutral-200">
-                <div className="text-xs uppercase tracking-[0.2em] text-neutral-500 dark:text-brand-200/80">
+              <div className="dark:border-brand-500/20 dark:bg-brand-500/10 space-y-2 rounded-2xl border border-neutral-200/70 bg-white/80 px-5 py-4 text-sm text-neutral-700 dark:text-neutral-200">
+                <div className="dark:text-brand-200/80 text-xs tracking-[0.2em] text-neutral-500 uppercase">
                   {t("secureTitle")}
                 </div>
                 <p>{t("secureBody")}</p>
               </div>
             </div>
 
-            <div className="relative flex flex-col overflow-hidden bg-gradient-to-br from-brand-50/30 via-white to-rose-50/20 p-5 sm:p-6 md:p-8 lg:p-10 dark:from-neutral-900/50 dark:via-neutral-900 dark:to-neutral-950/50">
+            <div className="from-brand-50/30 relative flex flex-col overflow-hidden bg-gradient-to-br via-white to-rose-50/20 p-5 sm:p-6 md:p-8 lg:p-10 dark:from-neutral-900/50 dark:via-neutral-900 dark:to-neutral-950/50">
               <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                <div className="absolute -right-12 top-1/4 h-64 w-64 rounded-full bg-gradient-to-br from-brand-200/30 to-transparent blur-3xl dark:from-brand-500/10" />
+                <div className="from-brand-200/30 dark:from-brand-500/10 absolute top-1/4 -right-12 h-64 w-64 rounded-full bg-gradient-to-br to-transparent blur-3xl" />
                 <div className="absolute -bottom-12 -left-12 h-72 w-72 rounded-full bg-gradient-to-tr from-rose-200/20 to-transparent blur-3xl dark:from-rose-500/5" />
               </div>
 
@@ -305,7 +318,7 @@ export function LoginClient() {
                       required
                       value={code}
                       onChange={(event) => setCode(event.target.value)}
-                      className={`${inputBaseClass} ${inputNormalClass} text-center text-lg tracking-[0.5em] font-mono`}
+                      className={`${inputBaseClass} ${inputNormalClass} text-center font-mono text-lg tracking-[0.5em]`}
                       placeholder="123456"
                       autoFocus
                     />

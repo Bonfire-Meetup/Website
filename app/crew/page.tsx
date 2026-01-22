@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Header } from "@/components/layout/Header";
+
 import { Footer } from "@/components/layout/Footer";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { WEBSITE_URLS } from "@/lib/config/constants";
+import { Header } from "@/components/layout/Header";
 import {
   BoltIcon,
   BuildingIcon,
@@ -14,34 +13,36 @@ import {
   ShieldIcon,
   VideoIcon,
 } from "@/components/shared/icons";
+import { WEBSITE_URLS } from "@/lib/config/constants";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-type TeamMember = {
+interface TeamMember {
   name: string;
   role: string;
-};
+}
 
-type TeamCity = {
+interface TeamCity {
   name: string;
   tagline: string;
   members: TeamMember[];
-};
+}
 
 type RoleIconType = "mic" | "video" | "camera" | "bolt" | "shield" | "building" | "film" | "fire";
 
 const roleIconMap: Record<string, RoleIconType> = {
+  fotografie: "camera",
   moderator: "mic",
   moderátor: "mic",
-  recording: "video",
   nahrávání: "video",
-  photography: "camera",
-  fotografie: "camera",
   operations: "bolt",
-  produkce: "bolt",
-  "video, audio": "film",
   "operations, bodyguard": "shield",
-  "produkce, bodyguard": "shield",
   "operations, venue": "building",
+  photography: "camera",
+  produkce: "bolt",
+  "produkce, bodyguard": "shield",
   "produkce, prostor": "building",
+  recording: "video",
+  "video, audio": "film",
 };
 
 function getInitials(name: string) {
@@ -58,14 +59,14 @@ function RoleIcon({ role, className }: { role: string; className?: string }) {
   const iconType = roleIconMap[normalizedRole] || "fire";
 
   const icons: Record<RoleIconType, React.ReactNode> = {
-    mic: <MicIcon className={className} />,
-    video: <VideoIcon className={className} />,
-    camera: <CameraIcon className={className} />,
     bolt: <BoltIcon className={className} />,
-    shield: <ShieldIcon className={className} />,
     building: <BuildingIcon className={className} />,
+    camera: <CameraIcon className={className} />,
     film: <FilmIcon className={className} />,
     fire: <FireIcon className={className} />,
+    mic: <MicIcon className={className} />,
+    shield: <ShieldIcon className={className} />,
+    video: <VideoIcon className={className} />,
   };
 
   return icons[iconType];
@@ -77,12 +78,15 @@ function renderWithBold(text: string) {
     if (part.startsWith("**") && part.endsWith("**")) {
       const content = part.slice(2, -2);
       return (
-        <strong key={i} className="font-semibold text-neutral-700 dark:text-neutral-200">
+        <strong
+          key={`bold-${i}-${content.slice(0, 10)}`}
+          className="font-semibold text-neutral-700 dark:text-neutral-200"
+        >
           {content}
         </strong>
       );
     }
-    return part;
+    return <span key={`text-${i}`}>{part}</span>;
   });
 }
 
@@ -91,22 +95,22 @@ export async function generateMetadata(): Promise<Metadata> {
   const tCommon = await getTranslations("common");
   const commonValues = {
     brandName: tCommon("brandName"),
+    country: tCommon("country"),
     prague: tCommon("prague"),
     zlin: tCommon("zlin"),
-    country: tCommon("country"),
   };
   return {
-    title: t("crewTitle", commonValues),
     description: t("crewDescription", commonValues),
     openGraph: {
-      title: t("crewTitle", commonValues),
       description: t("crewDescription", commonValues),
+      title: t("crewTitle", commonValues),
       type: "website",
     },
+    title: t("crewTitle", commonValues),
     twitter: {
       card: "summary_large_image",
-      title: t("crewTitle", commonValues),
       description: t("crewDescription", commonValues),
+      title: t("crewTitle", commonValues),
     },
   };
 }
@@ -137,7 +141,7 @@ function MemberCard({
 
   return (
     <div
-      className={`group relative recording-card-enter stagger-${Math.min(index + 1, 8)}`}
+      className={`group recording-card-enter relative stagger-${Math.min(index + 1, 8)}`}
       style={{ opacity: 0 }}
     >
       <div
@@ -148,16 +152,16 @@ function MemberCard({
             className={`relative flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${avatarTheme} shadow-lg transition-transform duration-300 group-hover:scale-110`}
           >
             <span className="text-lg font-bold text-white">{getInitials(member.name)}</span>
-            <span className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg dark:bg-white/10">
+            <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg dark:bg-white/10">
               <RoleIcon role={member.role} className="h-3.5 w-3.5" />
             </span>
           </div>
 
           <div className="min-w-0 flex-1">
-            <h3 className="truncate text-lg font-bold text-neutral-900 transition-colors group-hover:text-brand-600 dark:text-white dark:group-hover:text-brand-400">
+            <h3 className="group-hover:text-brand-600 dark:group-hover:text-brand-400 truncate text-lg font-bold text-neutral-900 transition-colors dark:text-white">
               {member.name}
             </h3>
-            <p className="truncate text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+            <p className="truncate text-sm font-medium tracking-wider text-neutral-500 uppercase dark:text-neutral-400">
               {member.role}
             </p>
           </div>
@@ -186,7 +190,7 @@ function CitySection({
       <div className="relative">
         <div className="mb-8 flex items-end gap-4">
           <div className="flex-1">
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500 dark:text-neutral-400">
+            <p className="mb-2 text-xs font-bold tracking-[0.3em] text-neutral-500 uppercase dark:text-neutral-400">
               {t("crewEyebrow")}
             </p>
             <h2
@@ -195,8 +199,8 @@ function CitySection({
               {city.name}
             </h2>
           </div>
-          <p className="hidden pb-2 text-sm italic text-neutral-500 sm:block dark:text-neutral-400">
-            "{city.tagline}"
+          <p className="hidden pb-2 text-sm text-neutral-500 italic sm:block dark:text-neutral-400">
+            &ldquo;{city.tagline}&rdquo;
           </p>
         </div>
 
@@ -232,24 +236,24 @@ export default async function TeamPage() {
     <>
       <Header />
       <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
-        <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-4 pb-16 pt-28 sm:min-h-[80vh] sm:pb-24">
+        <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-4 pt-28 pb-16 sm:min-h-[80vh] sm:pb-24">
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -top-24 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(124,58,237,0.15),transparent_60%)]" />
-            <div className="absolute left-0 top-1/3 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,rgba(217,70,239,0.1),transparent_60%)]" />
-            <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.1),transparent_60%)]" />
+            <div className="absolute top-1/3 left-0 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,rgba(217,70,239,0.1),transparent_60%)]" />
+            <div className="absolute right-0 bottom-0 h-96 w-96 rounded-full bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.1),transparent_60%)]" />
           </div>
 
-          <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap">
-            <span className="text-outline block text-[20vw] font-black leading-none opacity-[0.03] sm:text-[18vw] dark:opacity-[0.02]">
+          <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap select-none">
+            <span className="text-outline block text-[20vw] leading-none font-black opacity-[0.03] sm:text-[18vw] dark:opacity-[0.02]">
               THE CREW
             </span>
           </div>
 
           <div className="relative z-10 mx-auto max-w-4xl text-center">
-            <p className="mb-6 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.4em] text-brand-600 sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-brand-300">
-              <span className="h-px w-8 bg-gradient-to-r from-transparent to-brand-400 sm:w-12" />
+            <p className="text-brand-600 dark:text-brand-300 mb-6 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em]">
+              <span className="to-brand-400 h-px w-8 bg-gradient-to-r from-transparent sm:w-12" />
               {t("eyebrow")}
-              <span className="h-px w-8 bg-gradient-to-l from-transparent to-brand-400 sm:w-12" />
+              <span className="to-brand-400 h-px w-8 bg-gradient-to-l from-transparent sm:w-12" />
             </p>
 
             <h1 className="mb-4 text-4xl font-black tracking-tight text-neutral-900 sm:text-6xl lg:text-7xl dark:text-white">
@@ -269,8 +273,8 @@ export default async function TeamPage() {
 
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
             <div className="flex flex-col items-center gap-2 text-neutral-500">
-              <span className="text-xs uppercase tracking-widest">scroll</span>
-              <div className="h-8 w-px bg-gradient-to-b from-brand-500 to-transparent" />
+              <span className="text-xs tracking-widest uppercase">scroll</span>
+              <div className="from-brand-500 h-8 w-px bg-gradient-to-b to-transparent" />
             </div>
           </div>
         </section>
@@ -279,8 +283,8 @@ export default async function TeamPage() {
           {cities[0] && <CitySection city={cities[0]} theme="prague" t={t} />}
 
           <div className="relative py-8">
-            <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-brand-500/30 to-transparent" />
-            <div className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-sm bg-brand-500/50" />
+            <div className="via-brand-500/30 absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent to-transparent" />
+            <div className="bg-brand-500/50 absolute top-1/2 left-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-sm" />
           </div>
 
           {cities[1] && <CitySection city={cities[1]} theme="zlin" t={t} />}
@@ -290,14 +294,14 @@ export default async function TeamPage() {
               {t("joinCallout")}{" "}
               <a
                 href={`mailto:${WEBSITE_URLS.CONTACT_EMAIL_CREW}`}
-                className="font-medium text-brand-600 underline decoration-brand-600/30 underline-offset-2 transition-colors hover:text-brand-700 hover:decoration-brand-600 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300"
+                className="text-brand-600 decoration-brand-600/30 hover:text-brand-700 hover:decoration-brand-600 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300 font-medium underline underline-offset-2 transition-colors"
               >
                 {WEBSITE_URLS.CONTACT_EMAIL_CREW}
               </a>
               <span className="mx-1">{t("joinCalloutOr")}</span>
               <a
                 href={PAGE_ROUTES.CONTACT_WITH_TYPE("crew")}
-                className="font-medium text-brand-600 underline decoration-brand-600/30 underline-offset-2 transition-colors hover:text-brand-700 hover:decoration-brand-600 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300"
+                className="text-brand-600 decoration-brand-600/30 hover:text-brand-700 hover:decoration-brand-600 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300 font-medium underline underline-offset-2 transition-colors"
               >
                 {t("joinCalloutContact")}
               </a>
@@ -305,9 +309,9 @@ export default async function TeamPage() {
           </div>
 
           <section className="relative mx-auto max-w-3xl">
-            <div className="relative overflow-hidden rounded-2xl border border-brand-500/10 bg-gradient-to-br from-brand-500/5 via-transparent to-rose-500/5 px-6 py-8">
+            <div className="border-brand-500/10 from-brand-500/5 relative overflow-hidden rounded-2xl border bg-gradient-to-br via-transparent to-rose-500/5 px-6 py-8">
               <div className="relative text-center">
-                <p className="mb-2 text-xs font-medium uppercase tracking-widest text-brand-600/70 dark:text-brand-400/70">
+                <p className="text-brand-600/70 dark:text-brand-400/70 mb-2 text-xs font-medium tracking-widest uppercase">
                   {t("founderEyebrow")}
                 </p>
 
@@ -316,8 +320,8 @@ export default async function TeamPage() {
                 </h2>
 
                 <blockquote className="mx-auto max-w-2xl">
-                  <p className="text-base italic leading-relaxed text-neutral-500 sm:text-lg dark:text-neutral-400">
-                    "{renderWithBold(t("founderNote"))}"
+                  <p className="text-base leading-relaxed text-neutral-500 italic sm:text-lg dark:text-neutral-400">
+                    &ldquo;{renderWithBold(t("founderNote"))}&rdquo;
                   </p>
                   <p className="mt-4 text-right text-sm font-medium text-neutral-600 dark:text-neutral-300">
                     — {t("founderSignature")}

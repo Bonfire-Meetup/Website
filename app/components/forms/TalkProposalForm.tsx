@@ -1,15 +1,18 @@
 "use client";
 
-import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
+
+import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
+import { API_ROUTES } from "@/lib/api/routes";
+import { type TalkProposalFormState, submitTalkProposal } from "@/lib/forms/form-actions";
+import { STORAGE_KEYS } from "@/lib/storage/keys";
+
+import { CheckIcon, CloseIcon, MicIcon } from "../shared/icons";
 import { Button } from "../ui/Button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
-import { CheckIcon, CloseIcon, MicIcon } from "../shared/icons";
-import { submitTalkProposal, type TalkProposalFormState } from "@/lib/forms/form-actions";
-import { SelectDropdown, type DropdownOption } from "@/components/ui/SelectDropdown";
+
 import { TurnstileWidget } from "./TurnstileWidget";
-import { STORAGE_KEYS } from "@/lib/storage/keys";
-import { API_ROUTES } from "@/lib/api/routes";
 
 const initialState: TalkProposalFormState = { success: false };
 
@@ -28,40 +31,64 @@ export function TalkProposalForm() {
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
     try {
       const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
       if (draft) {
         const parsed = JSON.parse(draft);
-        if (parsed.speakerName) setSpeakerName(parsed.speakerName);
-        if (parsed.email) setEmail(parsed.email);
-        if (parsed.talkTitle) setTalkTitle(parsed.talkTitle);
-        if (parsed.abstract) setAbstract(parsed.abstract);
-        if (parsed.experience) setExperience(parsed.experience);
-        if (parsed.duration) setDuration(parsed.duration);
-        if (parsed.preferredLocation) setPreferredLocation(parsed.preferredLocation);
+        if (parsed.speakerName) {
+          setSpeakerName(parsed.speakerName);
+        }
+        if (parsed.email) {
+          setEmail(parsed.email);
+        }
+        if (parsed.talkTitle) {
+          setTalkTitle(parsed.talkTitle);
+        }
+        if (parsed.abstract) {
+          setAbstract(parsed.abstract);
+        }
+        if (parsed.experience) {
+          setExperience(parsed.experience);
+        }
+        if (parsed.duration) {
+          setDuration(parsed.duration);
+        }
+        if (parsed.preferredLocation) {
+          setPreferredLocation(parsed.preferredLocation);
+        }
       }
-    } catch {}
+    } catch {
+      // Ignore localStorage errors
+    }
   }, []);
 
   const saveDraft = useCallback(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
     if (state.success) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
       return;
     }
 
     const draft = {
-      speakerName,
-      email,
-      talkTitle,
       abstract,
-      experience,
       duration,
+      email,
+      experience,
       preferredLocation,
+      speakerName,
+      talkTitle,
     };
 
-    const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
+    const hasContent = Object.values(draft).some((value) => {
+      const hasValue = Boolean(value);
+      const hasNonEmptyValue = hasValue && value.trim().length > 0;
+      return hasNonEmptyValue;
+    });
     if (!hasContent) {
       localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
       return;
@@ -83,7 +110,9 @@ export function TalkProposalForm() {
           return;
         }
       }
-    } catch {}
+    } catch {
+      // Ignore localStorage errors
+    }
 
     localStorage.setItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL, JSON.stringify(draft));
   }, [
@@ -98,7 +127,9 @@ export function TalkProposalForm() {
   ]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
     const timeoutId = setTimeout(saveDraft, 1500);
     return () => clearTimeout(timeoutId);
   }, [
@@ -110,10 +141,13 @@ export function TalkProposalForm() {
     duration,
     preferredLocation,
     state.success,
+    saveDraft,
   ]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") {
+      return;
+    }
     const handleBeforeUnload = () => {
       saveDraft();
     };
@@ -130,6 +164,7 @@ export function TalkProposalForm() {
     duration,
     preferredLocation,
     state.success,
+    saveDraft,
   ]);
 
   useEffect(() => {
@@ -164,14 +199,21 @@ export function TalkProposalForm() {
     }
   };
 
+  const hasSpeakerName = Boolean(speakerName);
+  const hasEmail = Boolean(email);
+  const hasTalkTitle = Boolean(talkTitle);
+  const hasAbstract = Boolean(abstract);
+  const hasExperience = Boolean(experience);
+  const hasDuration = Boolean(duration);
+  const isLocationSelected = preferredLocation !== "either";
   const hasDraft =
-    speakerName ||
-    email ||
-    talkTitle ||
-    abstract ||
-    experience ||
-    duration ||
-    preferredLocation !== "either";
+    hasSpeakerName ||
+    hasEmail ||
+    hasTalkTitle ||
+    hasAbstract ||
+    hasExperience ||
+    hasDuration ||
+    isLocationSelected;
 
   if (state.success) {
     return (
@@ -194,7 +236,9 @@ export function TalkProposalForm() {
 
   const getFieldError = (field: string) => {
     const errorKey = state.errors?.[field];
-    if (!errorKey) return null;
+    if (!errorKey) {
+      return null;
+    }
     return t(`errors.${errorKey}`) || errorKey;
   };
 
@@ -202,18 +246,18 @@ export function TalkProposalForm() {
   const inputNormalClass = "form-input";
   const inputErrorClass = "form-input-error";
   const durationOptions: DropdownOption[] = [
-    { value: "", label: t("durationPlaceholder"), disabled: true },
-    { value: "15", label: t("duration15") },
-    { value: "30", label: t("duration30") },
-    { value: "45", label: t("duration45") },
+    { disabled: true, label: t("durationPlaceholder"), value: "" },
+    { label: t("duration15"), value: "15" },
+    { label: t("duration30"), value: "30" },
+    { label: t("duration45"), value: "45" },
   ];
   const locationOptions: DropdownOption[] = [
     {
-      value: "either",
       label: t("locationEither", { prague: tCommon("prague"), zlin: tCommon("zlin") }),
+      value: "either",
     },
-    { value: "prague", label: tCommon("prague") },
-    { value: "zlin", label: tCommon("zlin") },
+    { label: tCommon("prague"), value: "prague" },
+    { label: tCommon("zlin"), value: "zlin" },
   ];
 
   return (

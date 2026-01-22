@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 export function NeonText({ children, className }: { children: ReactNode; className?: string }) {
   const [isActive, setIsActive] = useState(false);
@@ -10,13 +10,17 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
     let isMounted = true;
 
     const triggerGlitch = () => {
-      if (!isMounted) return;
+      if (!isMounted) {
+        return;
+      }
 
       const duration = Math.random() * 500 + 100;
       const endTime = Date.now() + duration;
 
       const flicker = () => {
-        if (!isMounted) return;
+        if (!isMounted) {
+          return;
+        }
 
         if (Date.now() < endTime) {
           setIsActive(Math.random() > 0.5);

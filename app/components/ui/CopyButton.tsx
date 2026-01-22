@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "./Button";
+
 import { copyToClipboard } from "@/lib/utils/clipboard";
 
-type CopyButtonProps = {
+import { Button } from "./Button";
+
+interface CopyButtonProps {
   text: string;
   label: string;
   copiedLabel: string;
@@ -12,7 +14,7 @@ type CopyButtonProps = {
   variant?: "primary" | "secondary" | "ghost" | "glass" | "plain" | "glass-secondary";
   size?: "xs" | "sm" | "md" | "lg";
   ariaLabel?: string;
-};
+}
 
 export function CopyButton({
   text,

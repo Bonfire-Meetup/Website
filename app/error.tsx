@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
+
 import { Button } from "./components/ui/Button";
 import { PAGE_ROUTES } from "./lib/routes/pages";
 
@@ -23,7 +24,7 @@ export default function Error({
       <div className="text-center">
         <h1 className="mb-4 text-4xl font-bold text-neutral-900 dark:text-white">{t("title")}</h1>
         <p className="mb-8 text-neutral-600 dark:text-neutral-400">{t("message")}</p>
-        <div className="flex gap-4 justify-center">
+        <div className="flex justify-center gap-4">
           <Button onClick={reset} variant="primary">
             {t("tryAgain")}
           </Button>

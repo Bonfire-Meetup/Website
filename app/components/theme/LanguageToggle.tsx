@@ -1,15 +1,17 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { IconButton } from "../ui/IconButton";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+
 import { LOCALES, type Locale } from "@/lib/i18n/locales";
 
-type LanguageToggleProps = {
+import { IconButton } from "../ui/IconButton";
+
+interface LanguageToggleProps {
   locale: Locale;
   onLocaleChange?: (locale: Locale) => void;
-};
+}
 
 export function LanguageToggle({ locale, onLocaleChange }: LanguageToggleProps) {
   const t = useTranslations("language");

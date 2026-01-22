@@ -1,9 +1,10 @@
-import photoAlbums from "@/data/photo-albums.json";
-import { buildAlbumSlug, getEpisodeById } from "@/lib/recordings/episodes";
-import { buildSitemapXml } from "@/lib/utils/sitemap-utils";
 import type { PhotoAlbum } from "@/lib/photos/types";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+
+import photoAlbums from "@/data/photo-albums.json";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { buildAlbumSlug, getEpisodeById } from "@/lib/recordings/episodes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { buildSitemapXml } from "@/lib/utils/sitemap-utils";
 const PAGE_SIZE = 10000;
 
 const { albums } = photoAlbums as { albums: Pick<PhotoAlbum, "id" | "episodeId">[] };
@@ -24,18 +25,18 @@ export async function GET(request: Request) {
     const lastmod = episode?.date ? new Date(episode.date).toISOString() : undefined;
 
     return {
-      loc: `${WEBSITE_URLS.BASE}${PAGE_ROUTES.PHOTOS_ALBUM(slug)}`,
       lastmod,
+      loc: `${WEBSITE_URLS.BASE}${PAGE_ROUTES.PHOTOS_ALBUM(slug)}`,
     };
   });
 
   const body = buildSitemapXml(urls);
 
   return new Response(body, {
-    status: 200,
     headers: {
-      "Content-Type": "application/xml; charset=utf-8",
       "Cache-Control": CACHE_CONTROL,
+      "Content-Type": "application/xml; charset=utf-8",
     },
+    status: 200,
   });
 }

@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+
 import mustache from "mustache";
+
 import { defaultLocale } from "@/i18n/routing";
 import { LOCALES, type Locale } from "@/lib/i18n/locales";
 
@@ -8,13 +10,17 @@ const templateCache = new Map<string, string>();
 const localeCache = new Map<string, Record<string, unknown>>();
 
 const ttlTextByLocale = (locale: Locale, minutes: number) => {
-  if (locale === LOCALES.CS) return `${minutes} minut`;
+  if (locale === LOCALES.CS) {
+    return `${minutes} minut`;
+  }
   return `${minutes} minutes`;
 };
 
 const loadTemplate = async (path: string) => {
   const cached = templateCache.get(path);
-  if (cached) return cached;
+  if (cached) {
+    return cached;
+  }
   const content = await readFile(path, "utf8");
   templateCache.set(path, content);
   return content;
@@ -22,7 +28,9 @@ const loadTemplate = async (path: string) => {
 
 const loadLocaleMessages = async (locale: Locale) => {
   const cached = localeCache.get(locale);
-  if (cached) return cached;
+  if (cached) {
+    return cached;
+  }
   const path = join(process.cwd(), "app", "locales", `${locale}.json`);
   const content = await readFile(path, "utf8");
   const json = JSON.parse(content) as Record<string, unknown>;
@@ -85,25 +93,25 @@ export const renderEmailCodeTemplate = async ({
   const html = await loadTemplate(htmlPath);
   const text = await loadTemplate(textPath);
   const ttl = ttlTextByLocale(resolvedLocale, minutes);
-  const baseView = { code, ttl, brandName: common.brandName, tagline: common.tagline };
+  const baseView = { brandName: common.brandName, code, tagline: common.tagline, ttl };
   const view = {
-    lang: resolvedLocale,
-    code,
-    ttl,
     brandName: common.brandName,
+    code,
+    codeLabel: mustache.render(translations.codeLabel ?? "", baseView),
+    expires: mustache.render(translations.expires ?? "", baseView),
+    footer: mustache.render(translations.footer ?? "", baseView),
+    ignore: mustache.render(translations.ignore ?? "", baseView),
+    lang: resolvedLocale,
+    securityTip: mustache.render(translations.securityTip ?? "", baseView),
+    subtitle: mustache.render(translations.subtitle ?? "", baseView),
     tagline: common.tagline,
     title: mustache.render(translations.title ?? "", baseView),
-    subtitle: mustache.render(translations.subtitle ?? "", baseView),
-    expires: mustache.render(translations.expires ?? "", baseView),
-    ignore: mustache.render(translations.ignore ?? "", baseView),
-    footer: mustache.render(translations.footer ?? "", baseView),
-    codeLabel: mustache.render(translations.codeLabel ?? "", baseView),
-    securityTip: mustache.render(translations.securityTip ?? "", baseView),
+    ttl,
   };
   const subject = mustache.render(translations.subject ?? "", baseView);
   return {
-    subject,
     html: mustache.render(html, view),
+    subject,
     text: mustache.render(text, view),
   };
 };
@@ -125,25 +133,25 @@ export const renderAccountDeleteTemplate = async ({
   const html = await loadTemplate(htmlPath);
   const text = await loadTemplate(textPath);
   const ttl = ttlTextByLocale(resolvedLocale, minutes);
-  const baseView = { code, ttl, brandName: common.brandName, tagline: common.tagline };
+  const baseView = { brandName: common.brandName, code, tagline: common.tagline, ttl };
   const view = {
-    lang: resolvedLocale,
-    code,
-    ttl,
     brandName: common.brandName,
+    code,
+    codeLabel: mustache.render(translations.codeLabel ?? "", baseView),
+    expires: mustache.render(translations.expires ?? "", baseView),
+    footer: mustache.render(translations.footer ?? "", baseView),
+    ignore: mustache.render(translations.ignore ?? "", baseView),
+    lang: resolvedLocale,
+    securityTip: mustache.render(translations.securityTip ?? "", baseView),
+    subtitle: mustache.render(translations.subtitle ?? "", baseView),
     tagline: common.tagline,
     title: mustache.render(translations.title ?? "", baseView),
-    subtitle: mustache.render(translations.subtitle ?? "", baseView),
-    expires: mustache.render(translations.expires ?? "", baseView),
-    ignore: mustache.render(translations.ignore ?? "", baseView),
-    footer: mustache.render(translations.footer ?? "", baseView),
-    codeLabel: mustache.render(translations.codeLabel ?? "", baseView),
-    securityTip: mustache.render(translations.securityTip ?? "", baseView),
+    ttl,
   };
   const subject = mustache.render(translations.subject ?? "", baseView);
   return {
-    subject,
     html: mustache.render(html, view),
+    subject,
     text: mustache.render(text, view),
   };
 };

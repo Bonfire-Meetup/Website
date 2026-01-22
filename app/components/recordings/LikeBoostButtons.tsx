@@ -1,17 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { BoltIcon, FireIcon, FrownIcon } from "../shared/icons";
-import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
-import { createAuthHeaders } from "@/lib/utils/http";
-import { API_ROUTES } from "@/lib/api/routes";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-type LikeBoostButtonsProps = {
+import { API_ROUTES } from "@/lib/api/routes";
+import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { createAuthHeaders } from "@/lib/utils/http";
+
+import { BoltIcon, FireIcon, FrownIcon } from "../shared/icons";
+
+interface LikeBoostButtonsProps {
   shortId: string;
-};
+}
 
 export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
   const t = useTranslations("recordings");
@@ -44,7 +46,9 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
         setLikeLoadError(false);
         const response = await fetch(API_ROUTES.VIDEO.LIKES(shortId));
         if (!response.ok) {
-          if (isActive) setLikeLoadError(true);
+          if (isActive) {
+            setLikeLoadError(true);
+          }
           return;
         }
         const data = (await response.json()) as { count: number; hasLiked: boolean };
@@ -53,7 +57,9 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
           setHasLiked(Boolean(data.hasLiked));
         }
       } catch {
-        if (isActive) setLikeLoadError(true);
+        if (isActive) {
+          setLikeLoadError(true);
+        }
       }
     };
     loadLikes();
@@ -71,7 +77,9 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
           headers: createAuthHeaders(accessToken),
         });
         if (!response.ok) {
-          if (isActive) setBoostLoadError(true);
+          if (isActive) {
+            setBoostLoadError(true);
+          }
           return;
         }
         const data = (await response.json()) as { count: number; hasBoosted: boolean };
@@ -80,7 +88,9 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
           setHasBoosted(Boolean(data.hasBoosted));
         }
       } catch {
-        if (isActive) setBoostLoadError(true);
+        if (isActive) {
+          setBoostLoadError(true);
+        }
       }
     };
     loadBoosts();
@@ -90,7 +100,9 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
   }, [shortId, accessToken]);
 
   const handleLike = async () => {
-    if (isLiking) return;
+    if (isLiking) {
+      return;
+    }
     setIsLiking(true);
     setLikePulse(true);
     setTimeout(() => setLikePulse(false), 550);
@@ -126,7 +138,9 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
       router.push(PAGE_ROUTES.LOGIN_WITH_REASON("video-boost"));
       return;
     }
-    if (isBoosting) return;
+    if (isBoosting) {
+      return;
+    }
     setIsBoosting(true);
     setBoostPulse(true);
     setTimeout(() => setBoostPulse(false), 550);
@@ -140,8 +154,8 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
 
     try {
       const res = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
-        method: adding ? "POST" : "DELETE",
         headers: createAuthHeaders(accessToken),
+        method: adding ? "POST" : "DELETE",
       });
       if (!res.ok) {
         setHasBoosted(prevBoosted);
@@ -168,7 +182,7 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
           onClick={handleLike}
           aria-pressed={hasLiked}
           disabled={isLiking || likeCount === null}
-          className={`relative inline-flex h-11 items-center justify-center gap-3 rounded-l-full border border-r-0 border-neutral-200/60 px-5 py-2.5 text-sm font-semibold leading-none transition-shadow min-w-[8.5rem] dark:border-white/10 ${
+          className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-l-full border border-r-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-shadow dark:border-white/10 ${
             hasLiked
               ? "bg-gradient-to-r from-orange-500 to-rose-500 text-white shadow-orange-500/30"
               : "bg-white text-rose-400 dark:bg-white/5 dark:text-rose-300"
@@ -176,7 +190,7 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
             likeCount === null ? "cursor-not-allowed" : "cursor-pointer hover:shadow-rose-500/20"
           }`}
         >
-          <span className="pointer-events-none absolute right-0 top-2 bottom-2 w-px bg-white/80 opacity-70 transition-opacity group-hover:opacity-0 dark:bg-white/25" />
+          <span className="pointer-events-none absolute top-2 right-0 bottom-2 w-px bg-white/80 opacity-70 transition-opacity group-hover:opacity-0 dark:bg-white/25" />
           <FireIcon
             className={`h-5 w-5 shrink-0 ${hasLiked ? "fill-white stroke-white" : ""} ${
               likePulse ? "like-pop" : ""
@@ -187,13 +201,13 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
               <FrownIcon className="h-4 w-4" />
             ) : (
               <span className="flex items-center gap-1 text-[11px]">
-                <span className="h-1.5 w-1.5 rounded-full bg-current animate-bounce [animation-delay:0ms]" />
-                <span className="h-1.5 w-1.5 rounded-full bg-current animate-bounce [animation-delay:120ms]" />
-                <span className="h-1.5 w-1.5 rounded-full bg-current animate-bounce [animation-delay:240ms]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:0ms]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:120ms]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:240ms]" />
               </span>
             )
           ) : likeCount > 0 ? (
-            <span className="tabular-nums text-base">{likeCount}</span>
+            <span className="text-base tabular-nums">{likeCount}</span>
           ) : (
             <span className="text-[11px]">{t("lightItUp")}</span>
           )}
@@ -207,7 +221,7 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
           onClick={handleBoost}
           aria-pressed={hasBoosted}
           disabled={boostCount === null || isBoosting}
-          className={`relative inline-flex h-11 items-center justify-center gap-3 rounded-r-full border border-l-0 border-neutral-200/60 px-5 py-2.5 text-sm font-semibold leading-none transition-shadow min-w-[8.5rem] dark:border-white/10 ${
+          className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-r-full border border-l-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-shadow dark:border-white/10 ${
             hasBoosted
               ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-emerald-500/30"
               : "bg-white text-emerald-600 dark:bg-white/5 dark:text-emerald-400"
@@ -227,13 +241,13 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
               <FrownIcon className="h-4 w-4" />
             ) : (
               <span className="flex items-center gap-1 text-[11px]">
-                <span className="h-1.5 w-1.5 rounded-full bg-current animate-bounce [animation-delay:0ms]" />
-                <span className="h-1.5 w-1.5 rounded-full bg-current animate-bounce [animation-delay:120ms]" />
-                <span className="h-1.5 w-1.5 rounded-full bg-current animate-bounce [animation-delay:240ms]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:0ms]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:120ms]" />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:240ms]" />
               </span>
             )
           ) : boostCount > 0 ? (
-            <span className="tabular-nums text-base">{boostCount}</span>
+            <span className="text-base tabular-nums">{boostCount}</span>
           ) : (
             <span className="text-[11px]">{t("boostItUp")}</span>
           )}

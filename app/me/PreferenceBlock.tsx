@@ -2,11 +2,11 @@
 
 import { useTranslations } from "next-intl";
 
-type PreferenceBlockProps = {
+interface PreferenceBlockProps {
   enabled: boolean;
   disabled?: boolean;
   onToggle: () => void;
-};
+}
 
 export function PreferenceBlock({ enabled, disabled, onToggle }: PreferenceBlockProps) {
   const t = useTranslations("account.communityEmails");

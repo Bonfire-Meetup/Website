@@ -1,24 +1,24 @@
 import { getDatabaseClient } from "@/lib/data/db";
 
-type AuthChallengeRow = {
+interface AuthChallengeRow {
   id: string;
   code_hash: string;
   attempts: number;
   max_attempts: number;
   expires_at: Date;
-};
+}
 
 type AuthChallengeStatusRow = AuthChallengeRow & {
   used_at: Date | null;
 };
 
-type AuthUserRow = {
+interface AuthUserRow {
   id: string;
   email: string;
   created_at: Date;
   last_login_at: Date | null;
   allow_community_emails: boolean;
-};
+}
 
 export const insertAuthChallenge = async ({
   challengeTokenHash,

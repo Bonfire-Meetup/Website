@@ -1,11 +1,13 @@
 "use server";
 
-import { headers, cookies } from "next/headers";
 import crypto from "crypto";
-import { z } from "zod";
+
 import { checkBotId } from "botid/server";
-import { insertContactSubmission, insertTalkProposal } from "../data/forms";
+import { cookies, headers } from "next/headers";
+import { z } from "zod";
+
 import { serverEnv } from "../config/env";
+import { insertContactSubmission, insertTalkProposal } from "../data/forms";
 
 const RATE_LIMIT_WINDOW_MS = 3600_000;
 const RATE_LIMIT_MAX_CONTACT = 5;
@@ -40,50 +42,54 @@ const isRateLimited = (key: string, maxHits: number) => {
 };
 
 const contactSchema = z.object({
-  name: z.string().min(2, "nameRequired").max(100),
   email: z.string().email("emailInvalid").max(255),
-  subject: z.string().min(3, "subjectRequired").max(200),
-  message: z.string().min(10, "messageRequired").max(5000),
   inquiryType: z.enum(["general", "press", "crew", "coc"]).optional(),
+  message: z.string().min(10, "messageRequired").max(5000),
+  name: z.string().min(2, "nameRequired").max(100),
+  subject: z.string().min(3, "subjectRequired").max(200),
 });
 
 const talkProposalSchema = z.object({
-  speakerName: z.string().min(2, "nameRequired").max(100),
-  email: z.string().email("emailInvalid").max(255),
-  talkTitle: z.string().min(5, "titleRequired").max(200),
   abstract: z.string().min(50, "abstractRequired").max(5000),
   duration: z.enum(["15", "30", "45"], { message: "durationRequired" }),
+  email: z.string().email("emailInvalid").max(255),
   experience: z.string().max(2000).optional(),
   preferredLocation: z.enum(["prague", "zlin", "either"]).optional(),
+  speakerName: z.string().min(2, "nameRequired").max(100),
+  talkTitle: z.string().min(5, "titleRequired").max(200),
 });
 
-export type ContactFormState = {
+export interface ContactFormState {
   success: boolean;
   errors?: Record<string, string>;
   message?: string;
-};
+}
 
-export type TalkProposalFormState = {
+export interface TalkProposalFormState {
   success: boolean;
   errors?: Record<string, string>;
   message?: string;
-};
+}
 
 const verifyTurnstile = async (token: FormDataEntryValue | null) => {
   const secret = serverEnv.BNF_TURNSTILE_SECRET_KEY;
-  if (!token || typeof token !== "string") return false;
+  if (!token || typeof token !== "string") {
+    return false;
+  }
 
   try {
     const response = await fetch(TURNSTILE_VERIFY_URL, {
-      method: "POST",
       body: new URLSearchParams({
-        secret,
         response: token,
+        secret,
       }),
       cache: "no-store",
+      method: "POST",
     });
 
-    if (!response.ok) return false;
+    if (!response.ok) {
+      return false;
+    }
     const data = (await response.json()) as { success?: boolean };
     return Boolean(data.success);
   } catch (error) {
@@ -93,7 +99,9 @@ const verifyTurnstile = async (token: FormDataEntryValue | null) => {
 };
 
 const verifyCsrfToken = async (token: FormDataEntryValue | null) => {
-  if (!token || typeof token !== "string") return false;
+  if (!token || typeof token !== "string") {
+    return false;
+  }
   const cookieStore = await cookies();
   const cookieValue = cookieStore.get(CSRF_COOKIE_NAME)?.value;
   return Boolean(cookieValue && cookieValue === token);
@@ -110,29 +118,29 @@ export async function submitContactForm(
 
   const verification = await checkBotId();
   if (verification.isBot) {
-    return { success: false, message: "botBlocked" };
+    return { message: "botBlocked", success: false };
   }
 
   const ipHash = await getClientIpHash();
 
   if (isRateLimited(`contact:${ipHash}`, RATE_LIMIT_MAX_CONTACT)) {
-    return { success: false, message: "rateLimited" };
+    return { message: "rateLimited", success: false };
   }
 
   if (!(await verifyCsrfToken(formData.get("csrfToken")))) {
-    return { success: false, message: "csrfInvalid" };
+    return { message: "csrfInvalid", success: false };
   }
 
   if (!(await verifyTurnstile(formData.get("cf-turnstile-response")))) {
-    return { success: false, message: "captchaFailed" };
+    return { message: "captchaFailed", success: false };
   }
 
   const rawData = {
-    name: formData.get("name"),
     email: formData.get("email"),
-    subject: formData.get("subject"),
-    message: formData.get("message"),
     inquiryType: formData.get("inquiryType") || undefined,
+    message: formData.get("message"),
+    name: formData.get("name"),
+    subject: formData.get("subject"),
   };
 
   const result = contactSchema.safeParse(rawData);
@@ -143,24 +151,24 @@ export async function submitContactForm(
       const field = issue.path[0] as string;
       errors[field] = issue.message;
     }
-    return { success: false, errors };
+    return { errors, success: false };
   }
 
   try {
     const { name, email, subject, message, inquiryType } = result.data;
     await insertContactSubmission({
-      name: name.trim(),
       email: email.trim().toLowerCase(),
       inquiryType: inquiryType || "general",
-      subject: subject.trim(),
-      message: message.trim(),
       ipHash,
+      message: message.trim(),
+      name: name.trim(),
+      subject: subject.trim(),
     });
 
     return { success: true };
   } catch (error) {
     console.error("Contact form error:", error);
-    return { success: false, message: "generic" };
+    return { message: "generic", success: false };
   }
 }
 
@@ -175,31 +183,31 @@ export async function submitTalkProposal(
 
   const verification = await checkBotId();
   if (verification.isBot) {
-    return { success: false, message: "botBlocked" };
+    return { message: "botBlocked", success: false };
   }
 
   const ipHash = await getClientIpHash();
 
   if (isRateLimited(`talk:${ipHash}`, RATE_LIMIT_MAX_TALK)) {
-    return { success: false, message: "rateLimited" };
+    return { message: "rateLimited", success: false };
   }
 
   if (!(await verifyCsrfToken(formData.get("csrfToken")))) {
-    return { success: false, message: "csrfInvalid" };
+    return { message: "csrfInvalid", success: false };
   }
 
   if (!(await verifyTurnstile(formData.get("cf-turnstile-response")))) {
-    return { success: false, message: "captchaFailed" };
+    return { message: "captchaFailed", success: false };
   }
 
   const rawData = {
-    speakerName: formData.get("speakerName"),
-    email: formData.get("email"),
-    talkTitle: formData.get("talkTitle"),
     abstract: formData.get("abstract"),
     duration: formData.get("duration"),
+    email: formData.get("email"),
     experience: formData.get("experience") || undefined,
     preferredLocation: formData.get("preferredLocation") || undefined,
+    speakerName: formData.get("speakerName"),
+    talkTitle: formData.get("talkTitle"),
   };
 
   const result = talkProposalSchema.safeParse(rawData);
@@ -210,26 +218,26 @@ export async function submitTalkProposal(
       const field = issue.path[0] as string;
       errors[field] = issue.message;
     }
-    return { success: false, errors };
+    return { errors, success: false };
   }
 
   try {
     const { speakerName, email, talkTitle, abstract, duration, experience, preferredLocation } =
       result.data;
     await insertTalkProposal({
-      speakerName: speakerName.trim(),
-      email: email.trim().toLowerCase(),
-      talkTitle: talkTitle.trim(),
       abstract: abstract.trim(),
       duration,
+      email: email.trim().toLowerCase(),
       experience: experience?.trim() || null,
-      preferredLocation: preferredLocation || "either",
       ipHash,
+      preferredLocation: preferredLocation || "either",
+      speakerName: speakerName.trim(),
+      talkTitle: talkTitle.trim(),
     });
 
     return { success: true };
   } catch (error) {
     console.error("Talk proposal error:", error);
-    return { success: false, message: "generic" };
+    return { message: "generic", success: false };
   }
 }

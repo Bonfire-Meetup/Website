@@ -1,18 +1,20 @@
 "use client";
 
+import type { CatalogRecording, LocationFilter } from "./RecordingsCatalogTypes";
 import { useTranslations } from "next-intl";
-import { Button } from "../ui/Button";
-import { SelectDropdown, type DropdownGroup, type DropdownOption } from "../ui/SelectDropdown";
+
 import { LOCATIONS } from "@/lib/config/constants";
-import type { LocationFilter, CatalogRecording } from "./RecordingsCatalogTypes";
+
+import { Button } from "../ui/Button";
+import { type DropdownGroup, type DropdownOption, SelectDropdown } from "../ui/SelectDropdown";
 
 const locationOptions: {
   value: LocationFilter;
   labelKey: "allLocations" | "prague" | "zlin";
 }[] = [
-  { value: "all", labelKey: "allLocations" },
-  { value: LOCATIONS.PRAGUE, labelKey: "prague" },
-  { value: LOCATIONS.ZLIN, labelKey: "zlin" },
+  { labelKey: "allLocations", value: "all" },
+  { labelKey: "prague", value: LOCATIONS.PRAGUE },
+  { labelKey: "zlin", value: LOCATIONS.ZLIN },
 ];
 
 export function GridFiltersBar({
@@ -57,41 +59,62 @@ export function GridFiltersBar({
       <div className="flex flex-wrap items-center gap-3 lg:flex-nowrap lg:gap-2">
         <div className="flex items-center gap-2">
           {locationOptions.map((option) => {
-            const hasResults =
-              option.value === "all" ||
-              recordings.some(
-                (r) =>
-                  r.location === option.value &&
-                  (activeTag === "all" || r.tags.includes(activeTag)) &&
-                  (activeEpisode === "all" || r.episodeId === activeEpisode),
-              );
+            const isAllOption = option.value === "all";
+            const hasMatchingRecordings = recordings.some((r) => {
+              const isLocationMatch = r.location === option.value;
+              const isTagMatch = activeTag === "all" || r.tags.includes(activeTag);
+              const isEpisodeMatch = activeEpisode === "all" || r.episodeId === activeEpisode;
+              return isLocationMatch && isTagMatch && isEpisodeMatch;
+            });
+            const hasResults = isAllOption || hasMatchingRecordings;
+
+            const shouldPreventClick = !hasResults && activeLocation !== option.value;
 
             return (
               <Button
                 key={option.value}
                 onClick={() => {
-                  if (!hasResults && activeLocation !== option.value) return;
+                  if (shouldPreventClick) {
+                    return;
+                  }
                   onLocationChange(option.value);
                 }}
                 variant="plain"
                 size="sm"
-                className={`rounded-full font-medium transition ${
-                  activeLocation === option.value
-                    ? option.value === LOCATIONS.PRAGUE
-                      ? "bg-red-500 text-white shadow-sm shadow-red-500/25"
-                      : option.value === LOCATIONS.ZLIN
-                        ? "bg-blue-500 text-white shadow-sm shadow-blue-500/25"
-                        : "bg-rose-500 text-white shadow-sm shadow-rose-500/25"
-                    : !hasResults
-                      ? "cursor-not-allowed bg-neutral-100 text-neutral-400 opacity-50 dark:bg-white/5 dark:text-neutral-600"
-                      : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/15"
-                }`}
+                className={(() => {
+                  const isActive = activeLocation === option.value;
+                  const isPrague = option.value === LOCATIONS.PRAGUE;
+                  const isZlin = option.value === LOCATIONS.ZLIN;
+                  const isDisabled = !hasResults;
+
+                  if (isActive) {
+                    if (isPrague) {
+                      return "rounded-full font-medium transition bg-red-500 text-white shadow-sm shadow-red-500/25";
+                    }
+                    if (isZlin) {
+                      return "rounded-full font-medium transition bg-blue-500 text-white shadow-sm shadow-blue-500/25";
+                    }
+                    return "rounded-full font-medium transition bg-rose-500 text-white shadow-sm shadow-rose-500/25";
+                  }
+
+                  if (isDisabled) {
+                    return "rounded-full font-medium transition cursor-not-allowed bg-neutral-100 text-neutral-400 opacity-50 dark:bg-white/5 dark:text-neutral-600";
+                  }
+
+                  return "rounded-full font-medium transition bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/15";
+                })()}
               >
-                {option.labelKey === "prague"
-                  ? t(option.labelKey, { prague: tCommon("prague") })
-                  : option.labelKey === "zlin"
-                    ? t(option.labelKey, { zlin: tCommon("zlin") })
-                    : t(option.labelKey)}
+                {(() => {
+                  const isPragueLabel = option.labelKey === "prague";
+                  const isZlinLabel = option.labelKey === "zlin";
+                  if (isPragueLabel) {
+                    return t(option.labelKey, { prague: tCommon("prague") });
+                  }
+                  if (isZlinLabel) {
+                    return t(option.labelKey, { zlin: tCommon("zlin") });
+                  }
+                  return t(option.labelKey);
+                })()}
               </Button>
             );
           })}
@@ -148,7 +171,7 @@ export function GridFiltersBar({
             }}
             placeholder={tSearch("placeholder")}
             aria-label={tSearch("label")}
-            className="w-full min-w-[220px] rounded-lg border-0 bg-white/90 px-3 py-1.5 text-xs font-medium text-neutral-700 shadow-sm ring-1 ring-black/5 transition placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:placeholder:text-neutral-500 dark:focus:ring-brand-400/50"
+            className="focus:ring-brand-500/50 dark:focus:ring-brand-400/50 w-full min-w-[220px] rounded-lg border-0 bg-white/90 px-3 py-1.5 text-xs font-medium text-neutral-700 shadow-sm ring-1 ring-black/5 transition placeholder:text-neutral-400 focus:ring-2 focus:outline-none dark:bg-white/10 dark:text-neutral-200 dark:ring-white/10 dark:placeholder:text-neutral-500"
           />
         </div>
 

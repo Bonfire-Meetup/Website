@@ -1,15 +1,16 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 
 type Theme = "light" | "dark" | "system";
 
-type ThemeContextType = {
+interface ThemeContextType {
   theme: Theme;
   resolvedTheme: "light" | "dark";
   setTheme: (theme: Theme) => void;
-};
+}
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -27,7 +28,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   const getSystemTheme = useCallback((): "light" | "dark" => {
-    if (typeof window === "undefined") return "light";
+    if (typeof window === "undefined") {
+      return "light";
+    }
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }, []);
 
@@ -78,14 +81,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   if (!mounted) {
     return (
-      <ThemeContext.Provider value={{ theme: "system", resolvedTheme: "light", setTheme }}>
+      <ThemeContext.Provider value={{ resolvedTheme: "light", setTheme, theme: "system" }}>
         {children}
       </ThemeContext.Provider>
     );
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
+    <ThemeContext.Provider value={{ resolvedTheme, setTheme, theme }}>
       {children}
     </ThemeContext.Provider>
   );

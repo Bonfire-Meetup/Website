@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState, useEffect, type ReactNode } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
+
 import { ChevronLeftIcon, ChevronRightIcon } from "../shared/icons";
 import { AccentBar } from "../ui/AccentBar";
 
-type RailProps<T> = {
+interface RailProps<T> {
   title: string;
   items: T[];
   renderItem: (item: T, index: number) => ReactNode;
@@ -15,7 +16,7 @@ type RailProps<T> = {
   gradientTo?: string;
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
-};
+}
 
 export function Rail<T>({
   title,
@@ -34,7 +35,9 @@ export function Rail<T>({
   const [canScrollRight, setCanScrollRight] = useState(false);
 
   const updateScrollState = () => {
-    if (!railRef.current) return;
+    if (!railRef.current) {
+      return;
+    }
     const { scrollLeft, scrollWidth, clientWidth } = railRef.current;
     setCanScrollLeft(scrollLeft > 0);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
@@ -42,7 +45,9 @@ export function Rail<T>({
 
   useEffect(() => {
     const rail = railRef.current;
-    if (!rail) return;
+    if (!rail) {
+      return;
+    }
 
     updateScrollState();
     rail.addEventListener("scroll", updateScrollState);
@@ -57,14 +62,18 @@ export function Rail<T>({
   }, [items.length]);
 
   const scrollByAmount = (direction: number) => {
-    if (!railRef.current) return;
+    if (!railRef.current) {
+      return;
+    }
     railRef.current.scrollBy({
-      left: direction * railRef.current.clientWidth * 0.85,
       behavior: "smooth",
+      left: direction * railRef.current.clientWidth * 0.85,
     });
   };
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return null;
+  }
 
   const getGradientClasses = () => {
     if (!gradientFrom || !gradientTo) {
@@ -105,7 +114,7 @@ export function Rail<T>({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {headerAccent || <AccentBar />}
-          <h3 className="text-lg font-semibold tracking-tight text-neutral-900 dark:text-white sm:text-xl">
+          <h3 className="text-lg font-semibold tracking-tight text-neutral-900 sm:text-xl dark:text-white">
             {title}
           </h3>
           {headerIcon}
@@ -118,8 +127,8 @@ export function Rail<T>({
             aria-label={scrollLeftLabel}
             className={`inline-flex h-9 w-9 items-center justify-center rounded-full shadow-sm ring-1 transition ${
               canScrollLeft
-                ? "bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800 cursor-pointer"
-                : "bg-neutral-100 text-neutral-400 ring-neutral-200 cursor-not-allowed dark:bg-neutral-900 dark:text-neutral-600 dark:ring-neutral-800"
+                ? "cursor-pointer bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
+                : "cursor-not-allowed bg-neutral-100 text-neutral-400 ring-neutral-200 dark:bg-neutral-900 dark:text-neutral-600 dark:ring-neutral-800"
             }`}
           >
             <ChevronLeftIcon className="h-4 w-4" />
@@ -131,8 +140,8 @@ export function Rail<T>({
             aria-label={scrollRightLabel}
             className={`inline-flex h-9 w-9 items-center justify-center rounded-full shadow-sm ring-1 transition ${
               canScrollRight
-                ? "bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800 cursor-pointer"
-                : "bg-neutral-100 text-neutral-400 ring-neutral-200 cursor-not-allowed dark:bg-neutral-900 dark:text-neutral-600 dark:ring-neutral-800"
+                ? "cursor-pointer bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
+                : "cursor-not-allowed bg-neutral-100 text-neutral-400 ring-neutral-200 dark:bg-neutral-900 dark:text-neutral-600 dark:ring-neutral-800"
             }`}
           >
             <ChevronRightIcon className="h-4 w-4" />
@@ -142,7 +151,7 @@ export function Rail<T>({
       <div className={gradients.container}>
         <div
           ref={railRef}
-          className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 pt-1 scroll-smooth"
+          className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pt-1 pb-4"
         >
           {items.map((item, index) => renderItem(item, index))}
         </div>

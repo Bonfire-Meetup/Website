@@ -3,12 +3,12 @@ import { getEmailFingerprint, logError, logInfo } from "@/lib/utils/log";
 
 type EmailAddress = string | string[];
 
-type EmailTag = {
+interface EmailTag {
   name: string;
   value: string;
-};
+}
 
-export type SendEmailInput = {
+export interface SendEmailInput {
   to: EmailAddress;
   subject: string;
   html?: string;
@@ -18,30 +18,24 @@ export type SendEmailInput = {
   cc?: string[];
   bcc?: string[];
   tags?: EmailTag[];
-};
+}
 
-type ResendSuccessResponse = {
+interface ResendSuccessResponse {
   id: string;
-};
+}
 
-type ResendErrorResponse = {
+interface ResendErrorResponse {
   message?: string;
   name?: string;
-};
+}
 
 const resendEndpoint = "https://api.resend.com/emails";
 
-const getResendApiKey = () => {
-  return serverEnv.BNF_RESEND_API_KEY;
-};
+const getResendApiKey = () => serverEnv.BNF_RESEND_API_KEY;
 
-const getDefaultFrom = () => {
-  return serverEnv.BNF_RESEND_FROM;
-};
+const getDefaultFrom = () => serverEnv.BNF_RESEND_FROM;
 
-export const getAuthFrom = () => {
-  return serverEnv.BNF_RESEND_AUTH_FROM ?? serverEnv.BNF_RESEND_FROM;
-};
+export const getAuthFrom = () => serverEnv.BNF_RESEND_AUTH_FROM ?? serverEnv.BNF_RESEND_FROM;
 
 const validateEmailPayload = (input: SendEmailInput) => {
   if (!input.html && !input.text) {
@@ -58,15 +52,15 @@ export const sendEmail = async (input: SendEmailInput): Promise<ResendSuccessRes
   const emailFingerprint = recipient ? getEmailFingerprint(recipient) : null;
 
   const payload = {
-    from,
-    to: input.to,
-    subject: input.subject,
-    html: input.html,
-    text: input.text,
-    reply_to: input.replyTo,
-    cc: input.cc,
     bcc: input.bcc,
+    cc: input.cc,
+    from,
+    html: input.html,
+    reply_to: input.replyTo,
+    subject: input.subject,
     tags: input.tags,
+    text: input.text,
+    to: input.to,
   };
 
   const body = JSON.stringify(
@@ -74,12 +68,12 @@ export const sendEmail = async (input: SendEmailInput): Promise<ResendSuccessRes
   );
 
   const response = await fetch(resendEndpoint, {
-    method: "POST",
+    body,
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
-    body,
+    method: "POST",
   });
 
   const data = (await response.json()) as ResendSuccessResponse | ResendErrorResponse;

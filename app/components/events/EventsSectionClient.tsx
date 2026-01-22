@@ -1,15 +1,18 @@
 "use client";
 
-import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { EventCard } from "./EventCard";
+import { useMemo, useState } from "react";
+
+import { type LocationValue } from "@/lib/config/constants";
+
 import { Button } from "../ui/Button";
 import { EmptyState } from "../ui/EmptyState";
 import { Pill } from "../ui/Pill";
 import { SectionHeader } from "../ui/SectionHeader";
-import { type LocationValue } from "@/lib/config/constants";
 
-export type EventItem = {
+import { EventCard } from "./EventCard";
+
+export interface EventItem {
   id: string;
   title: string;
   episode?: string;
@@ -19,13 +22,13 @@ export type EventItem = {
   venue: string;
   description: string;
   registrationUrl?: string;
-  speakers: Array<{ name: string; topic: string }>;
+  speakers: { name: string; topic: string }[];
   links?: {
     luma?: string;
     facebook?: string;
     eventbrite?: string;
   };
-};
+}
 
 export function EventsSectionClient({
   events,
@@ -65,7 +68,7 @@ export function EventsSectionClient({
         <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
           <Pill
             size="sm"
-            className="bg-neutral-900/5 font-semibold uppercase tracking-[0.2em] text-neutral-600 dark:bg-white/10 dark:text-neutral-300"
+            className="bg-neutral-900/5 font-semibold tracking-[0.2em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-300"
           >
             {t("filter.label")}
           </Pill>
@@ -75,7 +78,7 @@ export function EventsSectionClient({
             size="xs"
             className={`rounded-full font-semibold ${
               activeEpisode === "all"
-                ? "bg-brand-500 text-white shadow-lg shadow-brand-500/25"
+                ? "bg-brand-500 shadow-brand-500/25 text-white shadow-lg"
                 : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20"
             }`}
           >
