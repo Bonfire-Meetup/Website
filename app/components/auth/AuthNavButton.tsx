@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { Link } from "@/i18n/navigation";
 import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -25,7 +26,7 @@ export function AuthNavButton() {
   }, []);
 
   return (
-    <a href={href} aria-label={isAuthed ? "Account" : "Login"} className="cursor-pointer">
+    <Link href={href} aria-label={isAuthed ? "Account" : "Login"} className="cursor-pointer">
       <IconButton
         ariaLabel={isAuthed ? "Account" : "Login"}
         size="md"
@@ -35,6 +36,6 @@ export function AuthNavButton() {
       >
         {isAuthed ? <UserIcon className="h-5 w-5" /> : <LogInIcon className="h-5 w-5" />}
       </IconButton>
-    </a>
+    </Link>
   );
 }

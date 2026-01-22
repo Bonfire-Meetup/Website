@@ -64,7 +64,7 @@ const log = (level: LogLevel, event: string, data?: Record<string, unknown>) => 
     return;
   }
 
-  console.log(line);
+  console.warn(line);
 };
 
 export const logInfo = (event: string, data?: Record<string, unknown>) => log("info", event, data);

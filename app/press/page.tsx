@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Link } from "@/i18n/navigation";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -419,12 +420,12 @@ export default async function PressPage() {
                 {t("help.email")}
               </a>
               <span className="mx-1">{t("help.orContact")}</span>
-              <a
+              <Link
                 href={PAGE_ROUTES.CONTACT_WITH_TYPE("press")}
                 className="text-brand-600 dark:text-brand-400 font-semibold hover:underline"
               >
                 {t("help.contactLink")}
-              </a>
+              </Link>
             </p>
           </section>
         </div>

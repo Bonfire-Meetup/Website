@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import { DiscordIcon, FacebookIcon, MailIcon, YouTubeIcon } from "@/components/shared/icons";
+import { Link } from "@/i18n/navigation";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -69,26 +70,26 @@ export async function Footer() {
             })}
           </p>
           <div className="flex items-center gap-4">
-            <a
+            <Link
               href={PAGE_ROUTES.TIMELINE}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("timelineLabel")}
-            </a>
+            </Link>
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
-            <a
+            <Link
               href={PAGE_ROUTES.PRESS}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("pressLabel")}
-            </a>
+            </Link>
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
-            <a
+            <Link
               href={PAGE_ROUTES.LEGAL}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("legalLabel")}
-            </a>
+            </Link>
           </div>
         </div>
       </div>

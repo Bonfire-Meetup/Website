@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { Link } from "@/i18n/navigation";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 interface BoostedRecording {
@@ -59,12 +60,12 @@ export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedV
                 className="group flex items-center justify-between gap-3 rounded-xl bg-neutral-50 px-3 py-2.5 transition hover:bg-neutral-100 dark:bg-white/5 dark:hover:bg-white/10"
               >
                 <div className="min-w-0">
-                  <a
+                  <Link
                     href={PAGE_ROUTES.WATCH(boost.slug, boost.shortId)}
                     className="hover:text-brand-600 dark:hover:text-brand-300 block truncate text-sm font-medium text-neutral-900 dark:text-white"
                   >
                     {boost.title}
-                  </a>
+                  </Link>
                   <div className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
                     {boost.speaker.join(", ")}
                   </div>

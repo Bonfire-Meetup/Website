@@ -9,6 +9,7 @@ import { AuthControls } from "@/components/auth/AuthControls";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Link } from "@/i18n/navigation";
 import { API_ROUTES } from "@/lib/api/routes";
 import { isAccessTokenValid, readAccessToken, writeAccessToken } from "@/lib/auth/client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -437,12 +438,12 @@ export function LoginClient() {
               </div>
               <div className="leading-relaxed">
                 {t("termsPrefix")}
-                <a
+                <Link
                   className="underline decoration-neutral-400/60 underline-offset-2 hover:text-neutral-700 dark:hover:text-neutral-200"
                   href={PAGE_ROUTES.LEGAL}
                 >
                   {t("termsLink")}
-                </a>
+                </Link>
                 {t("termsSuffix")}
               </div>
             </div>

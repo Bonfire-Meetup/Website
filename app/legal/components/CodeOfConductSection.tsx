@@ -1,3 +1,4 @@
+import { Link } from "@/i18n/navigation";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { RichText } from "./RichText";
@@ -85,12 +86,12 @@ export function CodeOfConductSection({ t, tToc }: CodeOfConductSectionProps) {
               {t("contact.email")}
             </a>
             <span className="mx-1">{t("contact.orContact")}</span>
-            <a
+            <Link
               href={PAGE_ROUTES.CONTACT_WITH_TYPE("coc")}
               className="text-brand-600 font-medium hover:underline"
             >
               {t("contact.contactLink")}
-            </a>
+            </Link>
           </p>
           <p className="leading-relaxed text-neutral-600 italic dark:text-neutral-400">
             {t("contact.closing")}

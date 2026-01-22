@@ -13,6 +13,7 @@ import {
   ShieldIcon,
   VideoIcon,
 } from "@/components/shared/icons";
+import { Link } from "@/i18n/navigation";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -303,12 +304,12 @@ export default async function TeamPage() {
                 {WEBSITE_URLS.CONTACT_EMAIL_CREW}
               </a>
               <span className="mx-1">{t("joinCalloutOr")}</span>
-              <a
+              <Link
                 href={PAGE_ROUTES.CONTACT_WITH_TYPE("crew")}
                 className="text-brand-600 decoration-brand-600/30 hover:text-brand-700 hover:decoration-brand-600 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300 font-medium underline underline-offset-2 transition-colors"
               >
                 {t("joinCalloutContact")}
-              </a>
+              </Link>
             </p>
           </div>
 

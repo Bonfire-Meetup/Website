@@ -7,6 +7,7 @@ import { Header } from "@/components/layout/Header";
 import { AlbumImage } from "@/components/shared/AlbumImage";
 import { AccentBar } from "@/components/ui/AccentBar";
 import photoAlbums from "@/data/photo-albums.json";
+import { Link } from "@/i18n/navigation";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -187,7 +188,7 @@ export default async function PhotosPage() {
                 const title = episode ? formatEpisodeTitle(episode) : album.id;
 
                 return (
-                  <a
+                  <Link
                     key={album.id}
                     href={PAGE_ROUTES.PHOTOS_ALBUM(toAlbumSlug(album))}
                     className="glass-card group no-hover-pop overflow-hidden"
@@ -207,7 +208,7 @@ export default async function PhotosPage() {
                         {t("albumPhotos", { count: album.count })}
                       </p>
                     </div>
-                  </a>
+                  </Link>
                 );
               })}
             </div>

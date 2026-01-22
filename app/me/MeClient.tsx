@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { LogOutIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
+import { Link } from "@/i18n/navigation";
 import { API_ROUTES } from "@/lib/api/routes";
 import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -354,7 +355,7 @@ export function MeClient() {
           {t("support.title")}
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
-          <a
+          <Link
             href={PAGE_ROUTES.CONTACT_WITH_TYPE("feature")}
             className="group hover:border-brand-200 hover:bg-brand-50/50 dark:hover:border-brand-500/30 dark:hover:bg-brand-500/5 flex items-center gap-4 rounded-2xl border border-neutral-200/70 bg-white/70 p-4 transition dark:border-white/10 dark:bg-white/5"
           >
@@ -375,8 +376,8 @@ export function MeClient() {
             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
               {t("support.featureRequest")}
             </span>
-          </a>
-          <a
+          </Link>
+          <Link
             href={PAGE_ROUTES.CONTACT_WITH_TYPE("support")}
             className="group flex items-center gap-4 rounded-2xl border border-neutral-200/70 bg-white/70 p-4 transition hover:border-amber-200 hover:bg-amber-50/50 dark:border-white/10 dark:bg-white/5 dark:hover:border-amber-500/30 dark:hover:bg-amber-500/5"
           >
@@ -398,7 +399,7 @@ export function MeClient() {
             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
               {t("support.technicalIssue")}
             </span>
-          </a>
+          </Link>
         </div>
       </div>
 
