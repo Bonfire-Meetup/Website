@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { checkRateLimit, getAuthUserId, validateVideoApiRequest } from "@/lib/api/rate-limit";
 import { videoBoostMutationSchema, videoBoostStatsSchema } from "@/lib/api/schemas";
 import { addVideoBoost, getVideoBoostStats, removeVideoBoost } from "@/lib/data/boosts";
-import { logError } from "@/lib/utils/log";
+import { logError, logWarn } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -14,20 +14,28 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: validation.error }, { status: validation.status });
     }
 
+    let userId: string | null = null;
     try {
-      const { userId, status } = await getAuthUserId(request);
-      if (status === "invalid") {
+      const authResult = await getAuthUserId(request);
+      ({ userId } = authResult);
+      if (authResult.status === "invalid") {
+        logWarn("video.boosts.unauthorized", { operation: "get", videoId });
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
       const rateLimit = await checkRateLimit(videoId, "read", userId ?? "anonymous", 60);
       if (rateLimit.rateLimited) {
+        logWarn("video.boosts.rate_limited", { operation: "get", userId, videoId });
         return NextResponse.json({ error: "Rate limited" }, { status: 429 });
       }
       const stats = await getVideoBoostStats(videoId, userId);
       const validated = videoBoostStatsSchema.parse(stats);
       return NextResponse.json(validated, { headers: { "Cache-Control": "no-store" } });
     } catch (error) {
-      logError("video.boosts.get_failed", error, { videoId });
+      logError("video.boosts.get_failed", error, {
+        operation: "get",
+        userId,
+        videoId,
+      });
       return NextResponse.json({ error: "Failed to load boosts" }, { status: 500 });
     }
   });
@@ -44,17 +52,19 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     try {
       const { userId, status } = await getAuthUserId(request);
       if (status !== "valid" || !userId) {
+        logWarn("video.boosts.unauthorized", { operation: "post", videoId });
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
       const rateLimit = await checkRateLimit(videoId, "write", userId, 10);
       if (rateLimit.rateLimited) {
+        logWarn("video.boosts.rate_limited", { operation: "post", userId, videoId });
         return NextResponse.json({ error: "Rate limited" }, { status: 429 });
       }
       const result = await addVideoBoost(videoId, userId);
       const validated = videoBoostMutationSchema.parse(result);
       return NextResponse.json(validated);
     } catch (error) {
-      logError("video.boosts.post_failed", error, { videoId });
+      logError("video.boosts.post_failed", error, { operation: "post", videoId });
       return NextResponse.json({ error: "Failed to save boost" }, { status: 500 });
     }
   });
@@ -71,17 +81,19 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     try {
       const { userId, status } = await getAuthUserId(request);
       if (status !== "valid" || !userId) {
+        logWarn("video.boosts.unauthorized", { operation: "delete", videoId });
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
       const rateLimit = await checkRateLimit(videoId, "write", userId, 10);
       if (rateLimit.rateLimited) {
+        logWarn("video.boosts.rate_limited", { operation: "delete", userId, videoId });
         return NextResponse.json({ error: "Rate limited" }, { status: 429 });
       }
       const result = await removeVideoBoost(videoId, userId);
       const validated = videoBoostMutationSchema.parse(result);
       return NextResponse.json(validated);
     } catch (error) {
-      logError("video.boosts.delete_failed", error, { videoId });
+      logError("video.boosts.delete_failed", error, { operation: "delete", videoId });
       return NextResponse.json({ error: "Failed to remove boost" }, { status: 500 });
     }
   });

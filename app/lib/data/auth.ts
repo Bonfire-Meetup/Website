@@ -195,16 +195,25 @@ export const getAuthAttemptsByEmailHash = async ({
   emailHash,
   since,
   limit,
+  userId,
+  accountCreatedAt,
 }: {
   emailHash: string;
   since: Date;
   limit: number;
+  userId: string;
+  accountCreatedAt: Date;
 }) => {
   const sql = getDatabaseClient();
   const rows = (await sql`
     SELECT id, outcome, created_at
     FROM auth_attempt
-    WHERE email_hash = ${emailHash} AND created_at >= ${since}
+    WHERE email_hash = ${emailHash}
+      AND created_at >= ${since}
+      AND (
+        user_id = ${userId}
+        OR (user_id IS NULL AND created_at >= ${accountCreatedAt})
+      )
     ORDER BY created_at DESC
     LIMIT ${limit}
   `) as { id: string; outcome: string; created_at: Date }[];

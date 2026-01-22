@@ -32,9 +32,11 @@ export const GET = async (request: Request) =>
         getUserBoosts(auth.userId),
         fingerprint.emailHash
           ? getAuthAttemptsByEmailHash({
+              accountCreatedAt: user.created_at,
               emailHash: fingerprint.emailHash,
               limit: 50,
               since,
+              userId: auth.userId,
             })
           : Promise.resolve([]),
       ]);

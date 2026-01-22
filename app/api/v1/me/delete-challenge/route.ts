@@ -6,6 +6,7 @@ import { getAuthUserById } from "@/lib/data/auth";
 import { getAuthFrom, sendEmail } from "@/lib/email/email";
 import { renderAccountDeleteTemplate } from "@/lib/email/email-templates";
 import { getRequestLocale } from "@/lib/utils/locale";
+import { getClientFingerprint, getEmailFingerprint, logWarn } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
 
 const challengeTtlMs = 10 * 60_000;
@@ -26,6 +27,7 @@ export const POST = async (request: Request) =>
 
     const user = await getAuthUserById(auth.userId);
     if (!user) {
+      logWarn("account.delete-challenge.user_not_found", { userId: auth.userId });
       return respond({ error: "not_found" }, { status: 404 });
     }
 
@@ -53,7 +55,17 @@ export const POST = async (request: Request) =>
       ttlMs: challengeTtlMs,
     });
     if (!resultChallenge.ok) {
+      const emailFingerprint = getEmailFingerprint(user.email);
+      const { headers } = request;
+      const ip =
+        headers.get("x-real-ip") || headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
+      const userAgent = headers.get("user-agent");
+      const clientFingerprint = getClientFingerprint({ ip, userAgent });
       if (resultChallenge.reason === "rate_limited") {
+        logWarn("account.delete-challenge.rate_limited", {
+          ...emailFingerprint,
+          ...clientFingerprint,
+        });
         return respond({ error: "rate_limited" }, { status: 429 });
       }
       const error = resultChallenge.reason === "persist_failed" ? "persist_failed" : "email_failed";

@@ -24,7 +24,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
       const validated = videoLikeStatsSchema.parse(stats);
       return NextResponse.json(validated, { headers: { "Cache-Control": "no-store" } });
     } catch (error) {
-      logError("video.likes.get_failed", error, { videoId });
+      logError("video.likes.get_failed", error, { operation: "get", videoId });
       return NextResponse.json({ error: "Failed to load likes" }, { status: 500 });
     }
   });
@@ -48,7 +48,7 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
       const validated = videoLikeMutationSchema.parse(result);
       return NextResponse.json(validated);
     } catch (error) {
-      logError("video.likes.post_failed", error, { videoId });
+      logError("video.likes.post_failed", error, { operation: "post", videoId });
       return NextResponse.json({ error: "Failed to save like" }, { status: 500 });
     }
   });
@@ -72,7 +72,7 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
       const validated = videoLikeMutationSchema.parse(result);
       return NextResponse.json(validated);
     } catch (error) {
-      logError("video.likes.delete_failed", error, { videoId });
+      logError("video.likes.delete_failed", error, { operation: "delete", videoId });
       return NextResponse.json({ error: "Failed to remove like" }, { status: 500 });
     }
   });

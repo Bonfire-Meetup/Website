@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { requireAuth } from "@/lib/api/auth";
 import { getUserBoosts } from "@/lib/data/boosts";
 import { getAllRecordings } from "@/lib/recordings/recordings";
-import { logError } from "@/lib/utils/log";
+import { logError, logWarn } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
 
 const getWatchSlug = (recording: { slug: string; shortId: string }) =>
@@ -24,6 +24,10 @@ export async function GET(request: Request) {
         .map((boost) => {
           const recording = recordingMap.get(boost.video_id);
           if (!recording) {
+            logWarn("account.boosts.recording_missing", {
+              userId: auth.userId,
+              videoId: boost.video_id,
+            });
             return null;
           }
           return {
@@ -38,7 +42,7 @@ export async function GET(request: Request) {
 
       return NextResponse.json({ items });
     } catch (error) {
-      logError("account.boosts.failed", error);
+      logError("account.boosts.failed", error, { userId: auth.userId });
       return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   });

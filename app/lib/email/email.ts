@@ -35,7 +35,12 @@ const getResendApiKey = () => serverEnv.BNF_RESEND_API_KEY;
 
 const getDefaultFrom = () => serverEnv.BNF_RESEND_FROM;
 
-export const getAuthFrom = () => serverEnv.BNF_RESEND_AUTH_FROM ?? serverEnv.BNF_RESEND_FROM;
+const AUTH_EMAIL_DISPLAY_NAME = "Bonfire Events Auth";
+
+export const getAuthFrom = () => {
+  const email = serverEnv.BNF_RESEND_AUTH_FROM ?? serverEnv.BNF_RESEND_FROM;
+  return `${AUTH_EMAIL_DISPLAY_NAME} <${email}>`;
+};
 
 const validateEmailPayload = (input: SendEmailInput) => {
   if (!input.html && !input.text) {

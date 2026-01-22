@@ -119,7 +119,14 @@ export const checkRateLimit = (
 ) => {
   const rateLimitKey = `${operation}:${videoId}:${identifier}`;
   if (isRateLimited("video-api", rateLimitKey, maxHits)) {
-    logWarn("video.api.rate_limited", { operation, requestId: getRequestId(), videoId });
+    logWarn("rate_limit.hit", {
+      key: rateLimitKey,
+      maxHits,
+      operation,
+      requestId: getRequestId(),
+      storeKey: "video-api",
+      videoId,
+    });
     return { rateLimited: true };
   }
   return { rateLimited: false };

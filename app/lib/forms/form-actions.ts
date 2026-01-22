@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { serverEnv } from "../config/env";
 import { insertContactSubmission, insertTalkProposal } from "../data/forms";
+import { logError, logInfo, logWarn } from "../utils/log";
 
 const RATE_LIMIT_WINDOW_MS = 3600_000;
 const RATE_LIMIT_MAX_CONTACT = 5;
@@ -93,7 +94,7 @@ const verifyTurnstile = async (token: FormDataEntryValue | null) => {
     const data = (await response.json()) as { success?: boolean };
     return Boolean(data.success);
   } catch (error) {
-    console.error("Turnstile verification error:", error);
+    logError("form.turnstile_failed", error);
     return false;
   }
 };
@@ -118,20 +119,25 @@ export async function submitContactForm(
 
   const verification = await checkBotId();
   if (verification.isBot) {
+    const ipHash = await getClientIpHash();
+    logWarn("form.bot_blocked", { formType: "contact", ipHash });
     return { message: "botBlocked", success: false };
   }
 
   const ipHash = await getClientIpHash();
 
   if (isRateLimited(`contact:${ipHash}`, RATE_LIMIT_MAX_CONTACT)) {
+    logWarn("form.rate_limited", { formType: "contact", ipHash });
     return { message: "rateLimited", success: false };
   }
 
   if (!(await verifyCsrfToken(formData.get("csrfToken")))) {
+    logWarn("form.csrf_invalid", { formType: "contact", ipHash });
     return { message: "csrfInvalid", success: false };
   }
 
   if (!(await verifyTurnstile(formData.get("cf-turnstile-response")))) {
+    logWarn("form.captcha_failed", { formType: "contact", ipHash });
     return { message: "captchaFailed", success: false };
   }
 
@@ -165,9 +171,10 @@ export async function submitContactForm(
       subject: subject.trim(),
     });
 
+    logInfo("form.contact_submitted", { inquiryType: inquiryType || "general", ipHash });
     return { success: true };
   } catch (error) {
-    console.error("Contact form error:", error);
+    logError("form.contact_failed", error, { ipHash });
     return { message: "generic", success: false };
   }
 }
@@ -183,20 +190,25 @@ export async function submitTalkProposal(
 
   const verification = await checkBotId();
   if (verification.isBot) {
+    const ipHash = await getClientIpHash();
+    logWarn("form.bot_blocked", { formType: "talk_proposal", ipHash });
     return { message: "botBlocked", success: false };
   }
 
   const ipHash = await getClientIpHash();
 
   if (isRateLimited(`talk:${ipHash}`, RATE_LIMIT_MAX_TALK)) {
+    logWarn("form.rate_limited", { formType: "talk_proposal", ipHash });
     return { message: "rateLimited", success: false };
   }
 
   if (!(await verifyCsrfToken(formData.get("csrfToken")))) {
+    logWarn("form.csrf_invalid", { formType: "talk_proposal", ipHash });
     return { message: "csrfInvalid", success: false };
   }
 
   if (!(await verifyTurnstile(formData.get("cf-turnstile-response")))) {
+    logWarn("form.captcha_failed", { formType: "talk_proposal", ipHash });
     return { message: "captchaFailed", success: false };
   }
 
@@ -235,9 +247,13 @@ export async function submitTalkProposal(
       talkTitle: talkTitle.trim(),
     });
 
+    logInfo("form.talk_proposal_submitted", {
+      ipHash,
+      preferredLocation: preferredLocation || "either",
+    });
     return { success: true };
   } catch (error) {
-    console.error("Talk proposal error:", error);
+    logError("form.talk_proposal_failed", error, { ipHash });
     return { message: "generic", success: false };
   }
 }
