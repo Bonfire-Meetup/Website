@@ -73,13 +73,20 @@ export async function Header() {
         </nav>
 
         <div className="flex items-center gap-2 md:justify-self-end">
-          <LanguageToggle locale={locale} />
-          <ThemeToggle />
+          <div className="hidden md:flex md:items-center md:gap-2">
+            <LanguageToggle locale={locale} />
+            <ThemeToggle />
+          </div>
           <AuthNavButton />
           <Button href={PAGE_ROUTES.LIBRARY} variant="primary">
             {t("library")}
           </Button>
-          <MobileMenu links={mobileLinks} menuLabel={t("menu")} closeLabel={t("close")} />
+          <MobileMenu
+            links={mobileLinks}
+            menuLabel={t("menu")}
+            closeLabel={t("close")}
+            locale={locale}
+          />
         </div>
       </div>
     </header>
