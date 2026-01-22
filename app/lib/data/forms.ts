@@ -1,4 +1,4 @@
-import { getDatabaseClient } from "@/app/lib/db";
+import { getDatabaseClient } from "@/app/lib/data/db";
 
 type ContactSubmission = {
   name: string;

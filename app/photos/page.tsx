@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
-import { AlbumImage } from "../components/AlbumImage";
-import { AccentBar } from "../components/AccentBar";
+import { Header } from "../components/layout/Header";
+import { Footer } from "../components/layout/Footer";
+import { AlbumImage } from "../components/shared/AlbumImage";
+import { AccentBar } from "../components/ui/AccentBar";
 import { HeroSlideshow } from "./HeroSlideshow";
 import photoAlbums from "../data/photo-albums.json";
-import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "../lib/episodes";
+import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "../lib/recordings/episodes";
 import type { PhotoAlbum } from "../lib/photos/types";
 
 const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
@@ -47,18 +47,25 @@ function StatPill({ value, label }: { value: string | number; label: string }) {
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
+  const tCommon = await getTranslations("common");
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+    country: tCommon("country"),
+  };
   return {
-    title: t("photosTitle"),
-    description: t("photosDescription"),
+    title: t("photosTitle", commonValues),
+    description: t("photosDescription", commonValues),
     openGraph: {
-      title: t("photosTitle"),
-      description: t("photosDescription"),
+      title: t("photosTitle", commonValues),
+      description: t("photosDescription", commonValues),
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: t("photosTitle"),
-      description: t("photosDescription"),
+      title: t("photosTitle", commonValues),
+      description: t("photosDescription", commonValues),
     },
   };
 }

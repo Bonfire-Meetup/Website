@@ -1,23 +1,19 @@
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
-import { Header } from "./components/Header";
-import { Footer } from "./components/Footer";
-import { Hero } from "./components/Hero";
-import type { EventItem } from "./components/EventsSection";
-import { LocationsSection } from "./components/LocationsSection";
-import { RecordingsSection } from "./components/RecordingsSection";
-import { TalkBanner } from "./components/TalkBanner";
-import { RecordingsSectionSkeleton, LocationsSectionSkeleton } from "./components/Skeletons";
+import { Header } from "./components/layout/Header";
+import { Footer } from "./components/layout/Footer";
+import { Hero } from "./components/layout/Hero";
+import type { EventsSectionLabels } from "./components/events/EventsSection";
+import { LocationsSection } from "./components/locations/LocationsSection";
+import { RecordingsSection } from "./components/recordings/RecordingsSection";
+import { TalkBanner } from "./components/shared/TalkBanner";
+import { RecordingsSectionSkeleton, LocationsSectionSkeleton } from "./components/shared/Skeletons";
 
-import upcomingEventsData from "./data/upcoming-events.json";
-import { getHeroImages } from "./lib/data";
-import { getTrendingRecordings } from "./lib/trending";
-
-const EventsSection = dynamic(() =>
-  import("./components/EventsSection").then((mod) => mod.EventsSection),
-);
+import { upcomingEvents } from "./data/upcoming-events";
+import { getHeroImages } from "./lib/recordings/data";
+import { getTrendingRecordings } from "./lib/recordings/trending";
+import { EventsSection } from "./components/events/EventsSection";
 
 export const revalidate = 3600;
 
@@ -47,7 +43,7 @@ export default async function HomePage() {
         eventbrite: t("events.platforms.eventbrite"),
       },
     },
-  };
+  } satisfies EventsSectionLabels;
 
   return (
     <>
@@ -56,11 +52,7 @@ export default async function HomePage() {
       <main id="top" className="relative">
         <Hero images={heroImages} />
 
-        <EventsSection
-          events={upcomingEventsData.events as unknown as EventItem[]}
-          labels={eventsLabels}
-          locale={locale}
-        />
+        <EventsSection events={upcomingEvents} labels={eventsLabels} locale={locale} />
 
         <div className="section-divider mx-auto max-w-4xl" />
 
@@ -86,18 +78,25 @@ export default async function HomePage() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
+  const tCommon = await getTranslations("common");
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+    country: tCommon("country"),
+  };
   return {
-    title: t("homeTitle"),
-    description: t("homeDescription"),
+    title: t("homeTitle", commonValues),
+    description: t("homeDescription", commonValues),
     openGraph: {
-      title: t("homeTitle"),
-      description: t("homeDescription"),
+      title: t("homeTitle", commonValues),
+      description: t("homeDescription", commonValues),
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: t("homeTitle"),
-      description: t("homeDescription"),
+      title: t("homeTitle", commonValues),
+      description: t("homeDescription", commonValues),
     },
   };
 }

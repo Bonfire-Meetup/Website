@@ -1,23 +1,30 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
-import { ContactForm } from "../components/ContactForm";
+import { Header } from "../components/layout/Header";
+import { Footer } from "../components/layout/Footer";
+import { ContactForm } from "../components/forms/ContactForm";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
+  const tCommon = await getTranslations("common");
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+    country: tCommon("country"),
+  };
   return {
-    title: t("contactTitle"),
-    description: t("contactDescription"),
+    title: t("contactTitle", commonValues),
+    description: t("contactDescription", commonValues),
     openGraph: {
-      title: t("contactTitle"),
-      description: t("contactDescription"),
+      title: t("contactTitle", commonValues),
+      description: t("contactDescription", commonValues),
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: t("contactTitle"),
-      description: t("contactDescription"),
+      title: t("contactTitle", commonValues),
+      description: t("contactDescription", commonValues),
     },
   };
 }
@@ -39,6 +46,8 @@ export default async function ContactPage() {
       messagePlaceholder: t("form.messagePlaceholder"),
       inquiryType: t("form.inquiryType"),
       inquiryTypeGeneral: t("form.inquiryTypeGeneral"),
+      inquiryTypeFeature: t("form.inquiryTypeFeature"),
+      inquiryTypeSupport: t("form.inquiryTypeSupport"),
       inquiryTypePress: t("form.inquiryTypePress"),
       inquiryTypeCrew: t("form.inquiryTypeCrew"),
       inquiryTypeConduct: t("form.inquiryTypeConduct"),

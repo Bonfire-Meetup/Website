@@ -1,7 +1,11 @@
-import { getTranslations } from "next-intl/server";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Header } from "../components/layout/Header";
+import { Footer } from "../components/layout/Footer";
 import type { Metadata } from "next";
+import { TableOfContents } from "./components/TableOfContents";
+import { CodeOfConductSection } from "./components/CodeOfConductSection";
+import { PrivacyPolicySection } from "./components/PrivacyPolicySection";
+import { TermsOfServiceSection } from "./components/TermsOfServiceSection";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("legal");
@@ -13,6 +17,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function LegalPage() {
   const t = await getTranslations("legal");
+  const tPrivacy = await getTranslations("legal.privacy");
+  const tTerms = await getTranslations("legal.terms");
+  const tToc = await getTranslations("legal.toc");
+  const locale = await getLocale();
+
+  const currentDate = new Date().toLocaleDateString(locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <>
@@ -27,107 +41,10 @@ export default async function LegalPage() {
           </div>
 
           <div className="glass-card no-hover-pop p-8 sm:p-12 space-y-12">
-            <section>
-              <p className="text-lg leading-relaxed text-neutral-700 dark:text-neutral-300">
-                {t("intro")}
-              </p>
-            </section>
-
-            <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
-                {t("scope.title")}
-              </h2>
-              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                {t("scope.content")}
-              </p>
-            </section>
-
-            <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
-                {t("community.title")}
-              </h2>
-              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                {t("community.content")}
-              </p>
-            </section>
-
-            <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
-                {t("rules.title")}
-              </h2>
-              <div className="text-neutral-600 dark:text-neutral-400 leading-relaxed space-y-2">
-                {t.rich("rules.content", {
-                  bold: (chunks) => (
-                    <strong className="text-neutral-900 dark:text-white">{chunks}</strong>
-                  ),
-                  bullet: (chunks) => (
-                    <div className="flex gap-2">
-                      <span>•</span>
-                      <div>{chunks}</div>
-                    </div>
-                  ),
-                })}
-              </div>
-            </section>
-
-            <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
-                {t("consequences.title")}
-              </h2>
-              <div className="text-neutral-600 dark:text-neutral-400 leading-relaxed space-y-2">
-                {t.rich("consequences.content", {
-                  bullet: (chunks) => (
-                    <div className="flex gap-2">
-                      <span>•</span>
-                      <div>{chunks}</div>
-                    </div>
-                  ),
-                })}
-              </div>
-            </section>
-
-            <section className="space-y-4">
-              <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
-                {t("photos.title")}
-              </h2>
-              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                {t("photos.content")}
-              </p>
-            </section>
-
-            <section className="pt-8 border-t border-neutral-200 dark:border-white/10 space-y-4">
-              <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
-                {t("contact.title")}
-              </h2>
-              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                {t("contact.content")}
-              </p>
-              <div className="text-neutral-600 dark:text-neutral-400 leading-relaxed space-y-2">
-                {t.rich("contact.methods", {
-                  bullet: (chunks) => (
-                    <div className="flex gap-2">
-                      <span>•</span>
-                      <div>{chunks}</div>
-                    </div>
-                  ),
-                })}
-              </div>
-              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                <a
-                  href={`mailto:${t("contact.email")}`}
-                  className="font-medium text-brand-600 hover:underline"
-                >
-                  {t("contact.email")}
-                </a>
-                <span className="mx-1">{t("contact.orContact")}</span>
-                <a href="/contact?type=coc" className="font-medium text-brand-600 hover:underline">
-                  {t("contact.contactLink")}
-                </a>
-              </p>
-              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed italic">
-                {t("contact.closing")}
-              </p>
-            </section>
+            <TableOfContents tToc={tToc} />
+            <CodeOfConductSection t={t} tToc={tToc} />
+            <PrivacyPolicySection tPrivacy={tPrivacy} currentDate={currentDate} />
+            <TermsOfServiceSection tTerms={tTerms} currentDate={currentDate} />
           </div>
         </div>
       </main>

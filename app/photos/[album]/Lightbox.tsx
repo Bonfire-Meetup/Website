@@ -8,6 +8,9 @@ type LightboxProps = {
   onClose: () => void;
   onIndexChange?: (index: number) => void;
   downloadLabel: string;
+  closeLabel?: string;
+  previousLabel?: string;
+  nextLabel?: string;
 };
 
 export function Lightbox({
@@ -16,6 +19,9 @@ export function Lightbox({
   onClose,
   onIndexChange,
   downloadLabel,
+  closeLabel = "Close",
+  previousLabel = "Previous",
+  nextLabel = "Next",
 }: LightboxProps) {
   const [index, setIndex] = useState(initialIndex);
   const [saveData, setSaveData] = useState(false);
@@ -168,7 +174,7 @@ export function Lightbox({
         <button
           onClick={onClose}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
-          aria-label="Close"
+          aria-label={closeLabel}
         >
           <svg
             className="h-5 w-5"
@@ -250,7 +256,7 @@ export function Lightbox({
         <button
           onClick={goToPrev}
           className="absolute left-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
-          aria-label="Previous"
+          aria-label={previousLabel}
         >
           <svg
             className="h-6 w-6"
@@ -309,7 +315,7 @@ export function Lightbox({
                 goToPrev();
               }}
               disabled={!hasPrev}
-              aria-label="Previous"
+              aria-label={previousLabel}
               className="flex-1 disabled:opacity-0"
             />
             <button
@@ -319,7 +325,7 @@ export function Lightbox({
                 goToNext();
               }}
               disabled={!hasNext}
-              aria-label="Next"
+              aria-label={nextLabel}
               className="flex-1 disabled:opacity-0"
             />
           </div>

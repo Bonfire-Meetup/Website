@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { AlbumImage } from "../../components/AlbumImage";
+import { AlbumImage } from "../../components/shared/AlbumImage";
 import { Lightbox } from "./Lightbox";
 
 type Image = {
@@ -15,6 +15,9 @@ type AlbumGalleryProps = {
   baseUrl: string;
   title: string;
   downloadLabel: string;
+  closeLabel?: string;
+  previousLabel?: string;
+  nextLabel?: string;
 };
 
 function parsePhotoHash(): number | null {
@@ -25,7 +28,15 @@ function parsePhotoHash(): number | null {
   return num >= 1 ? num - 1 : null;
 }
 
-export function AlbumGallery({ images, baseUrl, title, downloadLabel }: AlbumGalleryProps) {
+export function AlbumGallery({
+  images,
+  baseUrl,
+  title,
+  downloadLabel,
+  closeLabel,
+  previousLabel,
+  nextLabel,
+}: AlbumGalleryProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -82,6 +93,9 @@ export function AlbumGallery({ images, baseUrl, title, downloadLabel }: AlbumGal
           onClose={closeLightbox}
           onIndexChange={handleIndexChange}
           downloadLabel={downloadLabel}
+          closeLabel={closeLabel}
+          previousLabel={previousLabel}
+          nextLabel={nextLabel}
         />
       )}
     </>

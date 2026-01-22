@@ -1,4 +1,4 @@
-import { buildSitemapXml } from "../lib/sitemap-utils";
+import { buildSitemapXml } from "../lib/utils/sitemap-utils";
 
 const BASE_URL = "https://www.bnf.events";
 

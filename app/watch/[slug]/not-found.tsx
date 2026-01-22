@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PlayIcon } from "../../components/icons";
+import { PlayIcon } from "../../components/shared/icons";
 
 export default function WatchNotFound() {
   return (

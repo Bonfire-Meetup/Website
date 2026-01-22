@@ -1,5 +1,5 @@
-import { getAllRecordings } from "../lib/recordings";
-import { buildSitemapXml } from "../lib/sitemap-utils";
+import { getAllRecordings } from "../lib/recordings/recordings";
+import { buildSitemapXml } from "../lib/utils/sitemap-utils";
 
 const BASE_URL = "https://www.bnf.events";
 const PAGE_SIZE = 10000;

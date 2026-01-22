@@ -1,10 +1,14 @@
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 import { getLocale, getTranslations } from "next-intl/server";
-import { getAllRecordings, getRelatedRecordings } from "../../lib/recordings";
+import {
+  getAllRecordings,
+  getRelatedRecordings,
+  type Recording,
+} from "../../lib/recordings/recordings";
 
 const RecordingPlayer = dynamic(() =>
-  import("../../components/RecordingPlayer").then((mod) => mod.RecordingPlayer),
+  import("../../components/recordings/RecordingPlayer").then((mod) => mod.RecordingPlayer),
 );
 
 function getWatchSlug(recording: { slug: string; shortId: string }) {
@@ -16,7 +20,7 @@ function parseShortId(slug: string) {
 }
 
 export function generateStaticParams() {
-  return getAllRecordings().map((recording) => ({
+  return getAllRecordings().map((recording: Recording) => ({
     slug: getWatchSlug(recording),
   }));
 }
@@ -24,7 +28,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const shortId = parseShortId(slug);
-  const recording = getAllRecordings().find((item) => item.shortId === shortId);
+  const recording = getAllRecordings().find((item: Recording) => item.shortId === shortId);
   const t = await getTranslations("meta");
 
   if (!recording) {
@@ -54,7 +58,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function WatchPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const shortId = parseShortId(slug);
-  const recording = getAllRecordings().find((item) => item.shortId === shortId);
+  const recording = getAllRecordings().find((item: Recording) => item.shortId === shortId);
 
   if (!recording) {
     notFound();
@@ -69,6 +73,9 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
     spark: t("spark"),
     sparks: t("sparks"),
     lightItUp: t("lightItUp"),
+    boost: t("boost"),
+    boosts: t("boosts"),
+    boostItUp: t("boostItUp"),
     nextUp: t("nextUp"),
     speaker: t("speaker"),
     date: t("date"),

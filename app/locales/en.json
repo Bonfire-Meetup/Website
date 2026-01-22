@@ -1,4 +1,19 @@
 {
+  "common": {
+    "prague": "Prague",
+    "zlin": "Zlín",
+    "brandName": "Bonfire Events",
+    "country": "Czech Republic",
+    "tagline": "Game Dev Meetups in the Czech Republic",
+    "loading": "Loading",
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
+    "scrollLeft": "Scroll left",
+    "scrollRight": "Scroll right",
+    "previousFeatured": "Previous featured",
+    "nextFeatured": "Next featured"
+  },
   "header": {
     "home": "Home",
     "upcoming": "Upcoming",
@@ -21,7 +36,7 @@
       "highlight": "Game Devs",
       "part2": "Meet"
     },
-    "subtitle": "Join the Czech game development community at our meetups in Prague and Zlín for talks and networking.",
+    "subtitle": "Join the Czech game development community at our meetups in {prague} and {zlin} for talks and networking.",
     "cta": {
       "events": "Upcoming Events",
       "recordings": "Watch Recordings"
@@ -60,17 +75,17 @@
     },
     "locations": {
       "title": "Our Locations",
-      "subtitle": "Bonfire brings game developers together in two cities across the Czech Republic.",
-      "country": "Czech Republic",
+      "subtitle": "Bonfire brings game developers together in two cities across the {country}.",
+      "country": "{country}",
       "eventsHosted": "{count} events hosted",
       "sponsorsTitle": "Partners",
       "websiteLabel": "{name} website",
       "prague": {
-        "name": "Bonfire@Prague",
-        "description": "Our main Prague venue in the heart of the Czech capital, with meetups featuring talks from local and international game developers."
+        "name": "Bonfire@{prague}",
+        "description": "Our main {prague} venue in the heart of the Czech capital, with meetups featuring talks from local and international game developers."
       },
       "zlin": {
-        "name": "Bonfire@Zlín",
+        "name": "Bonfire@{zlin}",
         "description": "Bringing the game dev community to Moravia. Regular meetups at UTB university with focus on indie development and student projects."
       }
     },
@@ -111,6 +126,9 @@
     "spark": "Spark",
     "sparks": "Sparks",
     "lightItUp": "Light it up",
+    "boost": "Boost",
+    "boosts": "Boosts",
+    "boostItUp": "Boost it",
     "returnToPlayer": "Return to player",
     "closePlayer": "Close player"
   },
@@ -120,16 +138,16 @@
     "subtitle": "Download logos, grab brand colors, and reference usage guidelines.",
     "about": {
       "title": "About Bonfire",
-      "body": "Bonfire Events is a Czech game dev community that runs meetups in Prague and Zlín. Bonfire curates talks, panels, and networking nights connecting professionals, students, and indie creators. Bonfire is powered by volunteers and partners who believe in sharing craft and building a welcoming scene.",
+      "body": "{brandName} is a Czech game dev community that runs meetups in {prague} and {zlin}. Bonfire curates talks, panels, and networking nights connecting professionals, students, and indie creators. Bonfire is powered by volunteers and partners who believe in sharing craft and building a welcoming scene.",
       "copy": "Copy about text",
       "copied": "Copied"
     },
     "stats": {
       "title": "Key Stats",
       "subtitle": "Snapshot numbers for quick reference.",
-      "firstPragueLabel": "First Prague event",
+      "firstPragueLabel": "First {prague} event",
       "firstPragueDate": "THU, NOV 9, 2023",
-      "firstZlinLabel": "First Zlín event",
+      "firstZlinLabel": "First {zlin} event",
       "firstZlinDate": "MON, DEC 4, 2023"
     },
     "logos": {
@@ -137,8 +155,8 @@
       "subtitle": "Use the right logo for light or dark backgrounds and download in PNG or SVG.",
       "brands": {
         "bonfire": "Bonfire",
-        "prague": "Bonfire Prague",
-        "zlin": "Bonfire Zlín"
+        "prague": "{brandName} {prague}",
+        "zlin": "{brandName} {zlin}"
       },
       "variants": {
         "black": "Black",
@@ -241,9 +259,11 @@
     "subtitle": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
     "rows": {
       "latest": "Latest uploads",
-      "prague": "Prague sessions",
-      "zlin": "Zlín sessions",
-      "topic": "Topic: {tag}"
+      "prague": "{prague} sessions",
+      "zlin": "{zlin} sessions",
+      "topic": "Topic: {tag}",
+      "memberPicks": "Member Picks",
+      "hot": "Hot Right Now"
     },
     "view": {
       "all": "Browse all",
@@ -262,8 +282,8 @@
       "allLocations": "All Locations",
       "allTags": "All Topics",
       "allEpisodes": "All Episodes",
-      "prague": "Prague",
-      "zlin": "Zlín"
+      "prague": "{prague}",
+      "zlin": "{zlin}"
     },
     "empty": "No recordings match your filters yet.",
     "notRecorded": {
@@ -271,13 +291,13 @@
       "body": "{episode} had no video recordings.\nCheck the photo album or browse other sessions.",
       "cta": "Browse all recordings"
     },
-    "disclaimer": "Bonfire@Prague #1 (The Gathering) and #2 (The Dreamweavers) were not recorded.",
+    "disclaimer": "Bonfire@{prague} #1 (The Gathering) and #2 (The Dreamweavers) were not recorded.",
     "noteLabel": "Note:"
   },
   "teamPage": {
     "eyebrow": "Team",
     "title": "Meet the beautiful chaos crew",
-    "subtitle": "We run meetups, wrangle cables, and keep the vibes sharp in Prague and Zlín.",
+    "subtitle": "We run meetups, wrangle cables, and keep the vibes sharp in {prague} and {zlin}.",
     "introEyebrow": "How it works",
     "introLines": [
       "No capes. Just checklists, coffee, and a stubborn love for game dev.",
@@ -288,7 +308,7 @@
     "crewEyebrow": "Local crew",
     "cities": [
       {
-        "name": "Prague",
+        "name": "{prague}",
         "tagline": "Where it all started.",
         "members": [
           { "name": "Jan Hrušovský", "role": "moderator" },
@@ -301,7 +321,7 @@
         ]
       },
       {
-        "name": "Zlín",
+        "name": "{zlin}",
         "tagline": "Moravian heart, students' pulse.",
         "members": [
           { "name": "Michael Petr", "role": "recording" },
@@ -320,48 +340,48 @@
     "founderSignature": "Martin Pernica"
   },
   "footer": {
-    "tagline": "Game Dev Meetups in the Czech Republic",
-    "brandName": "Bonfire Events",
+    "tagline": "{tagline}",
+    "brandName": "{brandName}",
     "vibes": "Casual meetups, big ideas, and good vibes. 🔥🎮",
     "emailLabel": "Email",
     "youtubeLabel": "YouTube",
     "facebookLabel": "Facebook",
     "discordLabel": "Discord",
-    "copyright": "© {year} Bonfire Events. Made with love for the gamedev community.",
+    "copyright": "© {year} {brandName}. Made with love for the gamedev community.",
     "crewLabel": "Crew",
     "timelineLabel": "Timeline",
     "pressLabel": "Press",
     "legalLabel": "Code of Conduct & Legal"
   },
   "meta": {
-    "siteTitle": "Bonfire Events - Game Dev Meetups",
-    "siteDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlín, Czech Republic.",
-    "homeTitle": "Bonfire Events - Game Dev Meetups",
-    "homeDescription": "Bonfire Events is a game development community hosting meetups in Prague and Zlín, Czech Republic. Join us for talks and networking.",
-    "libraryTitle": "Library | Bonfire Events",
+    "siteTitle": "{brandName} - Game Dev Meetups",
+    "siteDescription": "{brandName} is a game development community hosting meetups in {prague} and {zlin}, {country}.",
+    "homeTitle": "{brandName} - Game Dev Meetups",
+    "homeDescription": "{brandName} is a game development community hosting meetups in {prague} and {zlin}, {country}. Join us for talks and networking.",
+    "libraryTitle": "Library | {brandName}",
     "libraryDescription": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
-    "crewTitle": "Crew | Bonfire Events",
-    "crewDescription": "Meet the crew behind Bonfire events in Prague and Zlín.",
-    "pressTitle": "Press Kit | Bonfire Events",
-    "pressDescription": "Download logos, brand colors, and usage guidelines for Bonfire Events.",
-    "photosTitle": "Photos | Bonfire Events",
-    "photosDescription": "Browse photo albums from Bonfire meetups in Prague and Zlín.",
-    "timelineTitle": "Timeline | Bonfire Events",
+    "crewTitle": "Crew | {brandName}",
+    "crewDescription": "Meet the crew behind Bonfire events in {prague} and {zlin}.",
+    "pressTitle": "Press Kit | {brandName}",
+    "pressDescription": "Download logos, brand colors, and usage guidelines for {brandName}.",
+    "photosTitle": "Photos | {brandName}",
+    "photosDescription": "Browse photo albums from Bonfire meetups in {prague} and {zlin}.",
+    "timelineTitle": "Timeline | {brandName}",
     "timelineDescription": "Explore Bonfire episodes with links to recordings and photo albums.",
-    "contactTitle": "Contact Us | Bonfire Events",
-    "contactDescription": "Get in touch with the Bonfire Events team. Questions, feedback, or partnership inquiries welcome.",
-    "talkProposalTitle": "Propose a Talk | Bonfire Events",
-    "talkProposalDescription": "Submit your talk proposal for Bonfire Events. Share your knowledge with the Czech game dev community.",
+    "contactTitle": "Contact Us | {brandName}",
+    "contactDescription": "Get in touch with the {brandName} team. Questions, feedback, or partnership inquiries welcome.",
+    "talkProposalTitle": "Propose a Talk | {brandName}",
+    "talkProposalDescription": "Submit your talk proposal for {brandName}. Share your knowledge with the Czech game dev community.",
     "recordingNotFound": "Recording Not Found",
-    "siteName": "Bonfire Events",
-    "author": "Bonfire Events",
+    "siteName": "{brandName}",
+    "author": "{brandName}",
     "keywords": [
       "game development",
       "gamedev",
       "meetup",
-      "Prague",
-      "Zlín",
-      "Czech Republic",
+      "{prague}",
+      "{zlin}",
+      "{country}",
       "indie games",
       "unity",
       "unreal",
@@ -408,6 +428,160 @@
       "orContact": "or use the",
       "contactLink": "contact form",
       "closing": "We take all reports seriously and are committed to addressing concerns promptly. You will not face retaliation for making a good-faith report."
+    },
+    "toc": {
+      "title": "Table of Contents",
+      "codeOfConduct": "Code of Conduct",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service"
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "lastUpdated": "Last updated: {date}",
+      "intro": "This Privacy Policy explains how Bonfire Events collects, uses, and protects your personal information when you use our website and services.",
+      "controller": {
+        "title": "Data Controller",
+        "content": "Bonfire Events is the data controller for your personal data. If you have questions about this privacy policy, contact us at hello@bnf.events."
+      },
+      "dataCollection": {
+        "title": "What Data We Collect",
+        "personal": {
+          "title": "Personal Data",
+          "content": "We collect the following personal data:\n\n<bullet><bold>Account Information</bold>: Email address (required for account creation)</bullet>\n<bullet><bold>Form Submissions</bold>: Name, email, and message content when you submit contact forms or talk proposals</bullet>\n<bullet><bold>Authentication Data</bold>: Login attempts, authentication challenges, and access tokens</bullet>\n<bullet><bold>Preferences</bold>: Email communication preferences</bullet>"
+        },
+        "technical": {
+          "title": "Technical Data",
+          "content": "We automatically collect:\n\n<bullet><bold>IP Addresses</bold>: Hashed for security and rate limiting purposes</bullet>\n<bullet><bold>User Agent Strings</bold>: Hashed for security and analytics</bullet>\n<bullet><bold>Usage Data</bold>: Page views, interactions, and performance metrics</bullet>\n<bullet><bold>Cookies</bold>: Essential cookies for CSRF protection, locale preferences, and theme settings</bullet>"
+        },
+        "interactions": {
+          "title": "User Interactions",
+          "content": "We store:\n\n<bullet><bold>Video Likes</bold>: Based on hashed IP and user agent (no account required)</bullet>\n<bullet><bold>Video Boosts</bold>: Linked to your user account</bullet>\n<bullet><bold>Login History</bold>: Authentication attempts and outcomes for security purposes</bullet>"
+        }
+      },
+      "howWeUse": {
+        "title": "How We Use Your Data",
+        "authentication": {
+          "title": "Authentication",
+          "content": "We use your email address to send one-time verification codes for secure, passwordless login. Authentication data is used to verify your identity and protect your account."
+        },
+        "communication": {
+          "title": "Communication",
+          "content": "We use your email address to respond to your inquiries, send account-related notifications, and (with your consent) send community updates about Bonfire events."
+        },
+        "analytics": {
+          "title": "Analytics & Performance",
+          "content": "We use anonymized usage data to understand how our website is used, improve performance, and enhance user experience."
+        },
+        "security": {
+          "title": "Security",
+          "content": "We use IP addresses, user agent strings, and login attempt data to detect and prevent abuse, spam, and unauthorized access."
+        }
+      },
+      "legalBasis": {
+        "title": "Legal Basis for Processing",
+        "content": "We process your personal data based on:\n\n<bullet><bold>Consent</bold>: Email preferences, form submissions, and account creation</bullet>\n<bullet><bold>Legitimate Interest</bold>: Security, fraud prevention, and website analytics</bullet>\n<bullet><bold>Contract</bold>: Providing authentication and account services</bullet>"
+      },
+      "dataSharing": {
+        "title": "Data Sharing & Third-Party Services",
+        "content": "We use the following third-party services that may process your data:\n\n<bullet><bold>Vercel</bold>: Hosting, analytics, and performance monitoring. Privacy policy: https://vercel.com/legal/privacy-policy</bullet>\n<bullet><bold>Resend</bold>: Email delivery service for OTP codes and notifications. Privacy policy: https://resend.com/legal/privacy-policy</bullet>\n<bullet><bold>Cloudflare Turnstile</bold>: Bot detection and spam prevention. Privacy policy: https://www.cloudflare.com/privacypolicy/</bullet>\n<bullet><bold>Neon Database</bold>: Database hosting for user data and form submissions. Privacy policy: https://neon.tech/legal/privacy-policy</bullet>\n\nWe do not sell your personal data. We only share data with service providers necessary to operate our website and services."
+      },
+      "dataStorage": {
+        "title": "Data Storage & Retention",
+        "location": "Your data is stored in databases hosted by Neon. We use service providers that comply with GDPR requirements.",
+        "retention": {
+          "title": "Retention Periods",
+          "content": "We retain your data for the following periods:\n\n<bullet><bold>Account Data</bold>: Until you delete your account or request deletion</bullet>\n<bullet><bold>Form Submissions</bold>: Until you request deletion or for up to 2 years</bullet>\n<bullet><bold>Login Attempts</bold>: 30 days for security audit purposes</bullet>\n<bullet><bold>Authentication Challenges</bold>: Until used or expired (typically 10 minutes)</bullet>\n<bullet><bold>Video Interactions</bold>: Until you delete your account (for boosts) or indefinitely (for likes, as they're anonymized)</bullet>"
+        }
+      },
+      "yourRights": {
+        "title": "Your Rights (GDPR)",
+        "content": "Under GDPR, you have the following rights:\n\n<bullet><bold>Right to Access</bold>: You can view your account data on the /me page</bullet>\n<bullet><bold>Right to Rectification</bold>: You can update your email preferences in your account settings</bullet>\n<bullet><bold>Right to Erasure</bold>: You can delete your account at any time from the /me page</bullet>\n<bullet><bold>Right to Data Portability</bold>: Contact us to request a copy of your data</bullet>\n<bullet><bold>Right to Object</bold>: You can opt out of community emails in your preferences</bullet>\n<bullet><bold>Right to Withdraw Consent</bold>: You can withdraw consent for email communications at any time</bullet>\n\nTo exercise these rights, contact us at hello@bnf.events or use the contact form."
+      },
+      "cookies": {
+        "title": "Cookies & Tracking",
+        "content": "We use the following cookies:\n\n<bullet><bold>Essential Cookies</bold>: bnf_csrf (CSRF protection), NEXT_LOCALE (language preference), bonfire-theme (theme preference)</bullet>\n<bullet><bold>Analytics</bold>: Vercel Analytics collects anonymized usage data</bullet>\n\nYou can manage cookies through your browser settings. Essential cookies are required for the website to function properly."
+      },
+      "security": {
+        "title": "Security",
+        "content": "We implement security measures to protect your data:\n\n<bullet>Passwordless authentication with time-limited OTP codes</bullet>\n<bullet>IP addresses and user agent strings are hashed before storage</bullet>\n<bullet>HTTPS encryption for all data transmission</bullet>\n<bullet>Rate limiting to prevent abuse</bullet>\n<bullet>Regular security audits and updates</bullet>"
+      },
+      "internationalTransfers": {
+        "title": "International Data Transfers",
+        "content": "Your data may be processed by service providers located outside the European Economic Area (EEA). We ensure appropriate safeguards are in place, including GDPR-compliant data processing agreements with all service providers."
+      },
+      "children": {
+        "title": "Children's Privacy",
+        "content": "Our services are not directed to individuals under the age of 16. We do not knowingly collect personal information from children. If you believe we have collected information from a child, please contact us immediately."
+      },
+      "changes": {
+        "title": "Changes to This Privacy Policy",
+        "content": "We may update this Privacy Policy from time to time. We will notify you of significant changes by updating the \"Last updated\" date at the top of this policy. Continued use of our services after changes constitutes acceptance of the updated policy."
+      },
+      "contactPrivacy": {
+        "title": "Contact Us About Privacy",
+        "content": "If you have questions about this Privacy Policy or wish to exercise your rights, contact us at hello@bnf.events or use our contact form."
+      }
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "lastUpdated": "Last updated: {date}",
+      "intro": "By accessing and using the Bonfire Events website and services, you agree to be bound by these Terms of Service.",
+      "acceptance": {
+        "title": "Acceptance of Terms",
+        "content": "By creating an account, submitting forms, or using our website, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, please do not use our services."
+      },
+      "service": {
+        "title": "Description of Service",
+        "content": "Bonfire Events provides a platform for game development community meetups, including event information, video recordings, and community features. We reserve the right to modify, suspend, or discontinue any aspect of the service at any time."
+      },
+      "accounts": {
+        "title": "Account Registration",
+        "content": "To use certain features, you must create an account:\n\n<bullet>You must provide a valid email address</bullet>\n<bullet>You are responsible for maintaining the security of your account</bullet>\n<bullet>You must be at least 16 years old to create an account</bullet>\n<bullet>You agree to provide accurate and complete information</bullet>\n<bullet>You are responsible for all activities under your account</bullet>"
+      },
+      "userConduct": {
+        "title": "User Conduct",
+        "content": "You agree to:\n\n<bullet>Use the service only for lawful purposes</bullet>\n<bullet>Not attempt to gain unauthorized access to any part of the service</bullet>\n<bullet>Not interfere with or disrupt the service or servers</bullet>\n<bullet>Not use automated systems to access the service without permission</bullet>\n<bullet>Comply with our Code of Conduct</bullet>\n<bullet>Not submit false, misleading, or harmful content</bullet>"
+      },
+      "intellectualProperty": {
+        "title": "Intellectual Property",
+        "content": "The website content, including text, graphics, logos, and software, is owned by Bonfire Events or its licensors and is protected by copyright and trademark laws. You may not reproduce, distribute, or create derivative works without permission. For logo and brand usage, see our Press Kit page."
+      },
+      "userContent": {
+        "title": "User-Generated Content",
+        "content": "By submitting content (forms, proposals, comments), you grant Bonfire Events a non-exclusive, royalty-free license to use, modify, and display your content for the purpose of operating and promoting our services."
+      },
+      "availability": {
+        "title": "Service Availability",
+        "content": "We strive to provide reliable service but do not guarantee uninterrupted or error-free operation. We reserve the right to perform maintenance, updates, or modifications that may temporarily affect service availability."
+      },
+      "liability": {
+        "title": "Limitation of Liability",
+        "content": "To the maximum extent permitted by law, Bonfire Events shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the service. Our total liability shall not exceed the amount you paid to us (if any) in the past 12 months."
+      },
+      "indemnification": {
+        "title": "Indemnification",
+        "content": "You agree to indemnify and hold harmless Bonfire Events from any claims, damages, or expenses arising from your use of the service, violation of these terms, or infringement of any rights of another party."
+      },
+      "termination": {
+        "title": "Termination",
+        "content": "We may suspend or terminate your account at any time for violation of these terms or our Code of Conduct. You may delete your account at any time from your account settings."
+      },
+      "governingLaw": {
+        "title": "Governing Law",
+        "content": "These Terms of Service are governed by the laws of the Czech Republic. Any disputes shall be subject to the exclusive jurisdiction of the courts of the Czech Republic."
+      },
+      "disputes": {
+        "title": "Dispute Resolution",
+        "content": "If you have a dispute, please contact us first at hello@bnf.events. We will attempt to resolve disputes amicably. If a resolution cannot be reached, disputes will be resolved through the courts of the Czech Republic."
+      },
+      "changes": {
+        "title": "Changes to Terms",
+        "content": "We reserve the right to modify these terms at any time. We will notify users of significant changes. Continued use of the service after changes constitutes acceptance of the updated terms."
+      },
+      "contactTerms": {
+        "title": "Contact Us",
+        "content": "If you have questions about these Terms of Service, contact us at hello@bnf.events or use our contact form."
+      }
     }
   },
   "contactPage": {
@@ -429,6 +603,8 @@
       "messagePlaceholder": "Tell us what's on your mind...",
       "inquiryType": "Inquiry type",
       "inquiryTypeGeneral": "General",
+      "inquiryTypeFeature": "Feature Request",
+      "inquiryTypeSupport": "Technical Support",
       "inquiryTypePress": "Press",
       "inquiryTypeCrew": "Crew",
       "inquiryTypeConduct": "Code of Conduct",
@@ -481,9 +657,9 @@
       "duration30": "30 minutes (Standard)",
       "duration45": "45 minutes (Deep dive)",
       "preferredLocation": "Preferred Location",
-      "locationEither": "Either Prague or Zlín",
-      "locationPrague": "Prague",
-      "locationZlin": "Zlín",
+      "locationEither": "Either {prague} or {zlin}",
+      "locationPrague": "{prague}",
+      "locationZlin": "{zlin}",
       "experience": "Speaker Experience",
       "experiencePlaceholder": "Tell us about your background and any previous speaking experience...",
       "experienceHint": "Optional. First-time speakers are welcome!",
@@ -504,6 +680,165 @@
         "csrfInvalid": "Please refresh the page and try again.",
         "generic": "Something went wrong. Please try again or email us directly."
       }
+    }
+  },
+  "email": {
+    "authCode": {
+      "subject": "Your {{brandName}} verification code",
+      "title": "Verify your email",
+      "subtitle": "Enter this code to complete your sign-in to {{brandName}}.",
+      "codeLabel": "Your verification code is {{code}}.",
+      "expires": "This code expires in {{ttl}}.",
+      "ignore": "If you didn't request this code, you can safely ignore this email.",
+      "securityTip": "Never share this code. {{brandName}} will never ask for it via phone, chat, or social media.",
+      "tagline": "{{tagline}}",
+      "footer": "{{brandName}}"
+    },
+    "accountDelete": {
+      "subject": "Important: Confirm your {{brandName}} account deletion",
+      "title": "Important: Delete your account",
+      "subtitle": "Enter this code to permanently delete your {{brandName}} account and all associated data.",
+      "codeLabel": "Your deletion code is {{code}}.",
+      "expires": "This code expires in {{ttl}}.",
+      "ignore": "If you have questions or need help, contact us at hello@bnf.events",
+      "securityTip": "Only enter this code if you requested account deletion. This action cannot be undone.",
+      "tagline": "{{tagline}}",
+      "footer": "{{brandName}}"
+    }
+  },
+  "authLogin": {
+    "eyebrow": "Welcome",
+    "brand": "{brandName}",
+    "title": "Sign in to Bonfire",
+    "subtitle": "We will send a one-time code to confirm your address.",
+    "secureTitle": "No password needed",
+    "secureBody": "We'll send a code to your email. Quick, simple, and secure.",
+    "codeHint": "Enter the 6-digit code we sent to your inbox.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "lara@croft.com",
+    "codeLabel": "Code",
+    "sendCode": "Send code",
+    "sendingCode": "Sending code",
+    "verify": "Verify and sign in",
+    "verifying": "Verifying",
+    "cancel": "Cancel",
+    "boostHint": "Boosting is for members. Sign in to boost this video.",
+    "termsPrefix": "By continuing you agree to the ",
+    "termsLink": "terms and acknowledge the privacy policy",
+    "termsSuffix": ".",
+    "errorInvalidCode": "Invalid code. Try again.",
+    "errorExpired": "Code expired. Please request a new one.",
+    "errorRateLimited": "Too many attempts. Try again shortly.",
+    "errorTooManyAttempts": "Too many attempts. Request a new code.",
+    "errorInvalidRequest": "Invalid request. Please try again."
+  },
+  "account": {
+    "title": "Your account",
+    "subtitle": "Keep this info handy for support.",
+    "signOut": "Sign out",
+    "loading": "Loading profile…",
+    "error": "Unable to load profile",
+    "email": "Email",
+    "userId": "User ID",
+    "created": "Created",
+    "lastLogin": "Last login",
+    "empty": "—",
+    "guild": {
+      "kicker": "Bonfire Guild",
+      "title": "Guild unlocks are coming soon.",
+      "body": "Backstage intel, early access drops, and bonus guild perks.",
+      "soon": "Soon",
+      "perks": [
+        "Early access to event recordings",
+        "Exclusive behind-the-scenes content",
+        "Member-only Discord channels",
+        "Vote on future talk topics",
+        "Special badge on your profile"
+      ]
+    },
+    "preferences": {
+      "title": "Preferences"
+    },
+    "activity": {
+      "title": "Activity"
+    },
+    "boosted": {
+      "title": "Boosted videos",
+      "empty": "No boosted videos yet.",
+      "error": "Unable to load boosted videos.",
+      "remove": "Remove"
+    },
+    "communityEmails": {
+      "title": "Community updates",
+      "body": "Allow occasional emails about news in the Bonfire community.",
+      "enabled": "Community emails enabled",
+      "disabled": "Community emails disabled"
+    },
+    "delete": {
+      "title": "Delete your account",
+      "body": "Immediate, non-recoverable deletion. You will confirm with a one-time code.",
+      "steps": {
+        "intent": "Initiate",
+        "send": "Send code",
+        "verify": "Verify and delete"
+      },
+      "intentLabel": "I understand this is immediate and cannot be undone.",
+      "intentRequired": "Please confirm you want to delete your account immediately.",
+      "proceed": "Proceed",
+      "sendIntro": "Click send to email your confirmation code.",
+      "completed": "Deletion completed. Redirecting you to the homepage.",
+      "dangerZone": "Danger zone",
+      "codeLabel": "Deletion code",
+      "sendCode": "Send deletion code",
+      "sendingCode": "Sending code",
+      "confirm": "Delete my account",
+      "confirming": "Deleting account",
+      "cancel": "Cancel",
+      "status": "Code sent. Check your inbox.",
+      "error": "Unable to start deletion. Please try again.",
+      "invalid": "Invalid code. Try again.",
+      "expired": "Code expired. Request a new one.",
+      "tooManyAttempts": "Too many attempts. Request a new code."
+    },
+    "attempts": {
+      "title": "Recent login attempts",
+      "empty": "No login attempts in the last 30 days.",
+      "error": "Unable to load login attempts.",
+      "outcomes": {
+        "success": "Successful login",
+        "expired": "Code expired",
+        "maxAttempts": "Too many attempts",
+        "invalidCode": "Invalid code",
+        "rateLimited": "Rate limited",
+        "error": "Login error"
+      }
+    },
+    "support": {
+      "title": "Need help?",
+      "featureRequest": "Missing a feature? Let us know!",
+      "technicalIssue": "Something not working? Report it"
+    },
+    "copySuccess": "Copied!",
+    "copyError": "Failed to copy",
+    "copyIdLabel": "Copy ID"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "message": "We encountered an unexpected error. Please try again.",
+    "tryAgain": "Try again",
+    "goHome": "Go home",
+    "browseLibrary": "Browse Library",
+    "library": {
+      "title": "Library Error",
+      "message": "Failed to load the library. Please try again."
+    },
+    "video": {
+      "title": "Video Error",
+      "message": "Failed to load the video. Please try again."
+    },
+    "api": {
+      "title": "API Error",
+      "message": "Failed to load video data. Please try again."
     }
   }
 }

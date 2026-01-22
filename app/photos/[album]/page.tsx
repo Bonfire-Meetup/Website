@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
-import { Button } from "../../components/Button";
-import { AlbumImage } from "../../components/AlbumImage";
+import { Header } from "../../components/layout/Header";
+import { Footer } from "../../components/layout/Footer";
+import { Button } from "../../components/ui/Button";
+import { AlbumImage } from "../../components/shared/AlbumImage";
 import { AlbumGallery } from "./AlbumGallery";
-import { ArrowLeftIcon, ExternalLinkIcon } from "../../components/icons";
+import { ArrowLeftIcon, ExternalLinkIcon } from "../../components/shared/icons";
 import photoAlbums from "../../data/photo-albums.json";
-import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "../../lib/episodes";
+import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "../../lib/recordings/episodes";
 import type { PhotoAlbum } from "../../lib/photos/types";
 
 const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
@@ -27,34 +27,42 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const t = await getTranslations("meta");
+  const tCommon = await getTranslations("common");
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+    country: tCommon("country"),
+  };
   const { album: albumId } = await params;
   const album = albums.find((item) => albumId === item.id || albumId.startsWith(`${item.id}-`));
   if (!album) {
     return {
-      title: t("photosTitle"),
-      description: t("photosDescription"),
+      title: t("photosTitle", commonValues),
+      description: t("photosDescription", commonValues),
     };
   }
   const episode = getEpisodeById(album.episodeId);
   const title = episode ? formatEpisodeTitle(episode) : album.id;
   return {
-    title: `${title} | ${t("photosTitle")}`,
-    description: t("photosDescription"),
+    title: `${title} | ${t("photosTitle", commonValues)}`,
+    description: t("photosDescription", commonValues),
     openGraph: {
-      title: `${title} | ${t("photosTitle")}`,
-      description: t("photosDescription"),
+      title: `${title} | ${t("photosTitle", commonValues)}`,
+      description: t("photosDescription", commonValues),
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | ${t("photosTitle")}`,
-      description: t("photosDescription"),
+      title: `${title} | ${t("photosTitle", commonValues)}`,
+      description: t("photosDescription", commonValues),
     },
   };
 }
 
 export default async function AlbumPage({ params }: PageProps) {
   const t = await getTranslations("photos");
+  const tCommon = await getTranslations("common");
   const { album: albumId } = await params;
   const album = albums.find((item) => albumId === item.id || albumId.startsWith(`${item.id}-`));
 
@@ -151,6 +159,9 @@ export default async function AlbumPage({ params }: PageProps) {
             baseUrl={baseUrl}
             title={title}
             downloadLabel={t("download")}
+            closeLabel={tCommon("close")}
+            previousLabel={tCommon("previous")}
+            nextLabel={tCommon("next")}
           />
         </div>
       </main>

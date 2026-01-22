@@ -1,6 +1,6 @@
 import photoAlbums from "../data/photo-albums.json";
-import { buildAlbumSlug, getEpisodeById } from "../lib/episodes";
-import { buildSitemapXml } from "../lib/sitemap-utils";
+import { buildAlbumSlug, getEpisodeById } from "../lib/recordings/episodes";
+import { buildSitemapXml } from "../lib/utils/sitemap-utils";
 import type { PhotoAlbum } from "../lib/photos/types";
 
 const BASE_URL = "https://www.bnf.events";

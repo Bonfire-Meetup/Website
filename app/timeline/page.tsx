@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
-import { AccentBar } from "../components/AccentBar";
-import { Button } from "../components/Button";
-import { Pill } from "../components/Pill";
-import { AlbumImage } from "../components/AlbumImage";
+import { Header } from "../components/layout/Header";
+import { Footer } from "../components/layout/Footer";
+import { AccentBar } from "../components/ui/AccentBar";
+import { Button } from "../components/ui/Button";
+import { Pill } from "../components/ui/Pill";
+import { AlbumImage } from "../components/shared/AlbumImage";
 import photoAlbums from "../data/photo-albums.json";
-import { episodes, buildAlbumSlug } from "../lib/episodes";
-import type { EpisodeEntry } from "../lib/episodes";
-import { getAllRecordings } from "../lib/recordings";
+import { episodes, buildAlbumSlug } from "../lib/recordings/episodes";
+import type { EpisodeEntry } from "../lib/recordings/episodes";
+import { getAllRecordings } from "../lib/recordings/recordings";
 import type { PhotoAlbum } from "../lib/photos/types";
 
 const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
@@ -46,17 +46,24 @@ function getEpisodeEntries(): EpisodeEntry[] {
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
+  const tCommon = await getTranslations("common");
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+    country: tCommon("country"),
+  };
   return {
-    title: t("timelineTitle"),
+    title: t("timelineTitle", commonValues),
     description: t("timelineDescription"),
     openGraph: {
-      title: t("timelineTitle"),
+      title: t("timelineTitle", commonValues),
       description: t("timelineDescription"),
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: t("timelineTitle"),
+      title: t("timelineTitle", commonValues),
       description: t("timelineDescription"),
     },
   };

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
+import { Header } from "../components/layout/Header";
+import { Footer } from "../components/layout/Footer";
 import {
   BoltIcon,
   BuildingIcon,
@@ -11,7 +11,7 @@ import {
   MicIcon,
   ShieldIcon,
   VideoIcon,
-} from "../components/icons";
+} from "../components/shared/icons";
 
 type TeamMember = {
   name: string;
@@ -86,18 +86,25 @@ function renderWithBold(text: string) {
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
+  const tCommon = await getTranslations("common");
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+    country: tCommon("country"),
+  };
   return {
-    title: t("crewTitle"),
-    description: t("crewDescription"),
+    title: t("crewTitle", commonValues),
+    description: t("crewDescription", commonValues),
     openGraph: {
-      title: t("crewTitle"),
-      description: t("crewDescription"),
+      title: t("crewTitle", commonValues),
+      description: t("crewDescription", commonValues),
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: t("crewTitle"),
-      description: t("crewDescription"),
+      title: t("crewTitle", commonValues),
+      description: t("crewDescription", commonValues),
     },
   };
 }
@@ -210,7 +217,14 @@ function CitySection({
 
 export default async function TeamPage() {
   const t = await getTranslations("teamPage");
-  const cities = t.raw("cities") as TeamCity[];
+  const tCommon = await getTranslations("common");
+  const citiesRaw = t.raw("cities") as TeamCity[];
+
+  const cities = citiesRaw.map((city) => ({
+    ...city,
+    name: city.name.replace("{prague}", tCommon("prague")).replace("{zlin}", tCommon("zlin")),
+    tagline: city.tagline.replace("{prague}", tCommon("prague")).replace("{zlin}", tCommon("zlin")),
+  }));
 
   return (
     <>
@@ -242,7 +256,9 @@ export default async function TeamPage() {
               <span className="block">crew</span>
             </h1>
 
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("stats")}</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              {t("stats", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
+            </p>
           </div>
 
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2">

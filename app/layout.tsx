@@ -4,29 +4,45 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { ThemeProvider } from "./components/ThemeProvider";
-import { GlobalPlayerProvider } from "./components/GlobalPlayerProvider";
-import { MotionManager } from "./components/MotionManager";
+import { ThemeProvider } from "./components/theme/ThemeProvider";
+import { GlobalPlayerProvider } from "./components/shared/GlobalPlayerProvider";
+import { MotionManager } from "./components/theme/MotionManager";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
-
+  const tCommon = await getTranslations("common");
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+    country: tCommon("country"),
+  };
+  const keywords = t.raw("keywords") as string[];
+  const processedKeywords = keywords.map((k) =>
+    k === "{prague}"
+      ? commonValues.prague
+      : k === "{zlin}"
+        ? commonValues.zlin
+        : k === "{country}"
+          ? commonValues.country
+          : k,
+  );
   return {
-    title: t("siteTitle"),
-    description: t("siteDescription"),
-    keywords: t.raw("keywords"),
-    authors: [{ name: t("author") }],
+    title: t("siteTitle", commonValues),
+    description: t("siteDescription", commonValues),
+    keywords: processedKeywords,
+    authors: [{ name: t("author", commonValues) }],
     openGraph: {
-      title: t("siteTitle"),
-      description: t("siteDescription"),
+      title: t("siteTitle", commonValues),
+      description: t("siteDescription", commonValues),
       type: "website",
-      siteName: t("siteName"),
+      siteName: t("siteName", commonValues),
     },
     twitter: {
       card: "summary_large_image",
-      title: t("siteTitle"),
-      description: t("siteDescription"),
+      title: t("siteTitle", commonValues),
+      description: t("siteDescription", commonValues),
     },
     robots: {
       index: true,

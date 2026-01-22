@@ -1,4 +1,19 @@
 {
+  "common": {
+    "prague": "Praha",
+    "zlin": "Zlín",
+    "brandName": "Bonfire Events",
+    "country": "Česká republika",
+    "tagline": "Game Dev Meetupy v Česku",
+    "loading": "Načítání",
+    "close": "Zavřít",
+    "previous": "Předchozí",
+    "next": "Další",
+    "scrollLeft": "Posunout doleva",
+    "scrollRight": "Posunout doprava",
+    "previousFeatured": "Předchozí doporučené",
+    "nextFeatured": "Další doporučené"
+  },
   "header": {
     "home": "Dom\u016f",
     "upcoming": "Nadch\u00e1zej\u00edc\u00ed",
@@ -21,7 +36,7 @@
       "highlight": "Game Devs",
       "part2": "Potkávají"
     },
-    "subtitle": "Přidej se k české gamedev komunitě na našich meetupech v Praze a Zlíně. Přednášky, pivo a networking.",
+    "subtitle": "Přidej se k české gamedev komunitě na našich meetupech v {prague} a {zlin}. Přednášky, pivo a networking.",
     "cta": {
       "events": "Mrkni na akce",
       "recordings": "Pusť si záznamy"
@@ -60,17 +75,17 @@
     },
     "locations": {
       "title": "Kde nás najdeš",
-      "subtitle": "Bonfire propojuje herní vývojáře v Praze i Zlíně.",
-      "country": "Česká republika",
+      "subtitle": "Bonfire propojuje herní vývojáře v {prague} i {zlin}.",
+      "country": "{country}",
       "eventsHosted": "Proběhlo {count} akcí",
       "sponsorsTitle": "Partneři",
       "websiteLabel": "Webové stránky {name}",
       "prague": {
-        "name": "Bonfire@Prague",
+        "name": "Bonfire@{prague}",
         "description": "Naše hlavní pražská zastávka v srdci metropole. Meetupy s přednáškami od lokálních i zahraničních hostů."
       },
       "zlin": {
-        "name": "Bonfire@Zlín",
+        "name": "Bonfire@{zlin}",
         "description": "Tvoříme gamedev komunitu i na Moravě. Pravidelné akce na UTB se zaměřením na indie scenu a studentské projekty."
       }
     },
@@ -111,6 +126,9 @@
     "spark": "Zážeh",
     "sparks": "Zážehů",
     "lightItUp": "Rozžehni to",
+    "boost": "Boost",
+    "boosts": "Boosty",
+    "boostItUp": "Přidat boost",
     "returnToPlayer": "Zpět k přehrávači",
     "closePlayer": "Zavřít přehrávač"
   },
@@ -120,16 +138,16 @@
     "subtitle": "Stáhněte loga, brand barvy a pravidla použití.",
     "about": {
       "title": "O Bonfire",
-      "body": "Bonfire Events je česká game dev komunita, která pořádá meetupy v Praze a Zlíně. Bonfire připravuje přednášky, panely a networkingové večery pro profíky, studenty i indie tvůrce. Bonfire stojí na dobrovolnících a partnerech, kteří věří ve sdílení know-how a přátelskou scénu.",
+      "body": "{brandName} je česká game dev komunita, která pořádá meetupy v {prague} a {zlin}. Bonfire připravuje přednášky, panely a networkingové večery pro profíky, studenty i indie tvůrce. Bonfire stojí na dobrovolnících a partnerech, kteří věří ve sdílení know-how a přátelskou scénu.",
       "copy": "Kopírovat text",
       "copied": "Zkopírováno"
     },
     "stats": {
       "title": "Klíčová čísla",
       "subtitle": "Rychlý přehled pro reference.",
-      "firstPragueLabel": "První akce v Praze",
+      "firstPragueLabel": "První akce v {prague}",
       "firstPragueDate": "ČTV, 9. 11. 2023",
-      "firstZlinLabel": "První akce ve Zlíně",
+      "firstZlinLabel": "První akce v {zlin}",
       "firstZlinDate": "PON, 4. 12. 2023"
     },
     "logos": {
@@ -137,8 +155,8 @@
       "subtitle": "Vyberte správné logo pro světlé nebo tmavé pozadí a stáhněte PNG nebo SVG.",
       "brands": {
         "bonfire": "Bonfire",
-        "prague": "Bonfire Praha",
-        "zlin": "Bonfire Zlín"
+        "prague": "{brandName} {prague}",
+        "zlin": "{brandName} {zlin}"
       },
       "variants": {
         "black": "Černé",
@@ -241,9 +259,11 @@
     "subtitle": "Projdi si kompletní archiv Bonfire přednášek o techu, artu i produkci, plus záznamy z live podcastů a rozhovorů.",
     "rows": {
       "latest": "Nejnovější záznamy",
-      "prague": "Pražské přednášky",
-      "zlin": "Zlínské přednášky",
-      "topic": "Téma: {tag}"
+      "prague": "{prague} sessions",
+      "zlin": "{zlin} sessions",
+      "topic": "Téma: {tag}",
+      "memberPicks": "Členské tipy",
+      "hot": "Právě v kurzu"
     },
     "view": {
       "all": "Procházet vše",
@@ -262,8 +282,8 @@
       "allLocations": "Všechny lokace",
       "allTags": "Všechna témata",
       "allEpisodes": "Všechny epizody",
-      "prague": "Praha",
-      "zlin": "Zlín"
+      "prague": "{prague}",
+      "zlin": "{zlin}"
     },
     "empty": "Filtruješ moc přísně, nic tu není.",
     "notRecorded": {
@@ -271,13 +291,13 @@
       "body": "{episode} nemá žádné videozáznamy.\nProhlédněte si fotky nebo další přednášky.",
       "cta": "Zobrazit všechny záznamy"
     },
-    "disclaimer": "Akce Bonfire@Prague #1 (The Gathering) a #2 (The Dreamweavers) nebyly nahrávány.",
+    "disclaimer": "Akce Bonfire@{prague} #1 (The Gathering) a #2 (The Dreamweavers) nebyly nahrávány.",
     "noteLabel": "Poznámka:"
   },
   "teamPage": {
     "eyebrow": "Tým",
     "title": "Poznej krásně chaotickou crew",
-    "subtitle": "Děláme meetupy, hlídáme kabely a držíme vibe v Praze a Zlíně.",
+    "subtitle": "Děláme meetupy, hlídáme kabely a držíme vibe v {prague} a {zlin}.",
     "introEyebrow": "Jak to funguje",
     "introLines": [
       "Žádné pláště. Jen checklisty, kafe a tvrdohlavá láska ke gamedevu.",
@@ -288,7 +308,7 @@
     "crewEyebrow": "Lokální crew",
     "cities": [
       {
-        "name": "Praha",
+        "name": "{prague}",
         "tagline": "Kde to všechno začalo.",
         "members": [
           { "name": "Jan Hrušovský", "role": "moderátor" },
@@ -301,7 +321,7 @@
         ]
       },
       {
-        "name": "Zlín",
+        "name": "{zlin}",
         "tagline": "Moravské srdce a studentský puls.",
         "members": [
           { "name": "Michael Petr", "role": "nahrávání" },
@@ -320,48 +340,48 @@
     "founderSignature": "Martin Pernica"
   },
   "footer": {
-    "tagline": "Game Dev Meetupy v Česku",
-    "brandName": "Bonfire Events",
+    "tagline": "{tagline}",
+    "brandName": "{brandName}",
     "vibes": "Neformální pivo, velké nápady a super vibes. 🔥🎮",
     "emailLabel": "Email",
     "youtubeLabel": "YouTube",
     "facebookLabel": "Facebook",
     "discordLabel": "Discord",
-    "copyright": "© {year} Bonfire Events. Ukuchtěno s láskou pro gamedev komunitu.",
+    "copyright": "© {year} {brandName}. Ukuchtěno s láskou pro gamedev komunitu.",
     "crewLabel": "Crew",
     "timelineLabel": "Timeline",
     "pressLabel": "Press",
     "legalLabel": "Právní info & Etický kodex"
   },
   "meta": {
-    "siteTitle": "Bonfire Events - Game Dev Meetupy",
-    "siteDescription": "Bonfire Events je gamedev komunita pořádající meetupy v Praze a Zlíně.",
-    "homeTitle": "Bonfire Events - Game Dev Meetupy",
-    "homeDescription": "Bonfire Events je komunita herních vývojářů. Pořádáme meetupy v Praze a Zlíně. Doraž na přednášku a pokec.",
-    "libraryTitle": "Knihovna | Bonfire Events",
+    "siteTitle": "{brandName} - Game Dev Meetupy",
+    "siteDescription": "{brandName} je gamedev komunita pořádající meetupy v {prague} a {zlin}.",
+    "homeTitle": "{brandName} - Game Dev Meetupy",
+    "homeDescription": "{brandName} je komunita herních vývojářů. Pořádáme meetupy v {prague} a {zlin}. Doraž na přednášku a pokec.",
+    "libraryTitle": "Knihovna | {brandName}",
     "libraryDescription": "Archiv Bonfire přednášek o techu, artu a produkci, včetně live podcastů.",
-    "crewTitle": "Crew | Bonfire Events",
-    "crewDescription": "Poznej crew Bonfire v Praze a Zlíně.",
-    "pressTitle": "Press kit | Bonfire Events",
-    "pressDescription": "Stáhněte loga, brand barvy a pravidla použití pro Bonfire Events.",
-    "photosTitle": "Fotky | Bonfire Events",
-    "photosDescription": "Fotoalba z Bonfire meetupů v Praze a Zlíně.",
-    "timelineTitle": "Timeline | Bonfire Events",
+    "crewTitle": "Crew | {brandName}",
+    "crewDescription": "Poznej crew Bonfire v {prague} a {zlin}.",
+    "pressTitle": "Press kit | {brandName}",
+    "pressDescription": "Stáhněte loga, brand barvy a pravidla použití pro {brandName}.",
+    "photosTitle": "Fotky | {brandName}",
+    "photosDescription": "Fotoalba z Bonfire meetupů v {prague} a {zlin}.",
+    "timelineTitle": "Timeline | {brandName}",
     "timelineDescription": "Projděte si epizody Bonfire se záznamy a fotoalby.",
-    "contactTitle": "Kontakt | Bonfire Events",
+    "contactTitle": "Kontakt | {brandName}",
     "contactDescription": "Napište nám. Otázky, zpětná vazba nebo partnerská spolupráce.",
-    "talkProposalTitle": "Navrhnout přednášku | Bonfire Events",
-    "talkProposalDescription": "Pošlete návrh přednášky pro Bonfire Events. Sdílejte své znalosti s českou gamedev komunitou.",
+    "talkProposalTitle": "Navrhnout přednášku | {brandName}",
+    "talkProposalDescription": "Pošlete návrh přednášky pro {brandName}. Sdílejte své znalosti s českou gamedev komunitou.",
     "recordingNotFound": "Záznam nenalezen",
-    "siteName": "Bonfire Events",
-    "author": "Bonfire Events",
+    "siteName": "{brandName}",
+    "author": "{brandName}",
     "keywords": [
       "vývoj her",
       "gamedev",
       "meetup",
-      "Praha",
-      "Zlín",
-      "Česká republika",
+      "{prague}",
+      "{zlin}",
+      "{country}",
       "indie hry",
       "unity",
       "unreal",
@@ -408,6 +428,160 @@
       "orContact": "nebo použij",
       "contactLink": "kontaktní formulář",
       "closing": "Všechna hlášení bereme vážně a zavazujeme se je řešit bez prodlení. Nebudeš čelit odvetě za podání hlášení v dobré víře."
+    },
+    "toc": {
+      "title": "Obsah",
+      "codeOfConduct": "Etický kodex",
+      "privacyPolicy": "Zásady ochrany osobních údajů",
+      "termsOfService": "Podmínky použití"
+    },
+    "privacy": {
+      "title": "Zásady ochrany osobních údajů",
+      "lastUpdated": "Poslední aktualizace: {date}",
+      "intro": "Tyto Zásady ochrany osobních údajů vysvětlují, jak Bonfire Events shromažďuje, používá a chrání vaše osobní údaje při používání našeho webu a služeb.",
+      "controller": {
+        "title": "Správce údajů",
+        "content": "Bonfire Events je správcem vašich osobních údajů. Pokud máte dotazy k těmto zásadám ochrany osobních údajů, kontaktujte nás na hello@bnf.events."
+      },
+      "dataCollection": {
+        "title": "Jaké údaje shromažďujeme",
+        "personal": {
+          "title": "Osobní údaje",
+          "content": "Shromažďujeme následující osobní údaje:\n\n<bullet><bold>Informace o účtu</bold>: E-mailová adresa (povinná pro vytvoření účtu)</bullet>\n<bullet><bold>Odeslané formuláře</bold>: Jméno, e-mail a obsah zprávy při odeslání kontaktních formulářů nebo návrhů přednášek</bullet>\n<bullet><bold>Autentifikační údaje</bold>: Pokusy o přihlášení, autentifikační výzvy a přístupové tokeny</bullet>\n<bullet><bold>Předvolby</bold>: Předvolby e-mailové komunikace</bullet>"
+        },
+        "technical": {
+          "title": "Technické údaje",
+          "content": "Automaticky shromažďujeme:\n\n<bullet><bold>IP adresy</bold>: Hashované pro účely zabezpečení a omezení rychlosti</bullet>\n<bullet><bold>Uživatelské agenty</bold>: Hashované pro zabezpečení a analýzu</bullet>\n<bullet><bold>Údaje o použití</bold>: Zobrazení stránek, interakce a metriky výkonu</bullet>\n<bullet><bold>Cookies</bold>: Základní cookies pro ochranu CSRF, předvolby jazyka a nastavení motivu</bullet>"
+        },
+        "interactions": {
+          "title": "Uživatelské interakce",
+          "content": "Ukládáme:\n\n<bullet><bold>Líbí se u videí</bold>: Na základě hashované IP a uživatelského agenta (účet není vyžadován)</bullet>\n<bullet><bold>Boostnutí videí</bold>: Propojeno s vaším uživatelským účtem</bullet>\n<bullet><bold>Historie přihlášení</bold>: Pokusy o autentifikaci a výsledky pro účely zabezpečení</bullet>"
+        }
+      },
+      "howWeUse": {
+        "title": "Jak používáme vaše údaje",
+        "authentication": {
+          "title": "Autentifikace",
+          "content": "Používáme vaši e-mailovou adresu k odesílání jednorázových ověřovacích kódů pro bezpečné přihlášení bez hesla. Autentifikační údaje slouží k ověření vaší identity a ochraně vašeho účtu."
+        },
+        "communication": {
+          "title": "Komunikace",
+          "content": "Používáme vaši e-mailovou adresu k odpovědím na vaše dotazy, odesílání oznámení souvisejících s účtem a (s vaším souhlasem) odesílání aktualizací komunity o akcích Bonfire."
+        },
+        "analytics": {
+          "title": "Analýza a výkon",
+          "content": "Používáme anonymizované údaje o použití k pochopení, jak je náš web používán, ke zlepšení výkonu a zlepšení uživatelského zážitku."
+        },
+        "security": {
+          "title": "Zabezpečení",
+          "content": "Používáme IP adresy, uživatelské agenty a údaje o pokusech o přihlášení k detekci a prevenci zneužití, spamu a neoprávněného přístupu."
+        }
+      },
+      "legalBasis": {
+        "title": "Právní základ zpracování",
+        "content": "Zpracováváme vaše osobní údaje na základě:\n\n<bullet><bold>Souhlas</bold>: E-mailové předvolby, odeslané formuláře a vytvoření účtu</bullet>\n<bullet><bold>Oprávněný zájem</bold>: Zabezpečení, prevence podvodů a analýza webu</bullet>\n<bullet><bold>Smlouva</bold>: Poskytování autentifikace a služeb účtu</bullet>"
+      },
+      "dataSharing": {
+        "title": "Sdílení údajů a služby třetích stran",
+        "content": "Používáme následující služby třetích stran, které mohou zpracovávat vaše údaje:\n\n<bullet><bold>Vercel</bold>: Hosting, analýza a monitorování výkonu. Zásady ochrany osobních údajů: https://vercel.com/legal/privacy-policy</bullet>\n<bullet><bold>Resend</bold>: Služba doručování e-mailů pro OTP kódy a oznámení. Zásady ochrany osobních údajů: https://resend.com/legal/privacy-policy</bullet>\n<bullet><bold>Cloudflare Turnstile</bold>: Detekce botů a prevence spamu. Zásady ochrany osobních údajů: https://www.cloudflare.com/privacypolicy/</bullet>\n<bullet><bold>Neon Database</bold>: Hostování databáze pro uživatelské údaje a odeslané formuláře. Zásady ochrany osobních údajů: https://neon.tech/legal/privacy-policy</bullet>\n\nNeprodáváme vaše osobní údaje. Sdílíme údaje pouze se poskytovateli služeb nezbytnými pro provoz našeho webu a služeb."
+      },
+      "dataStorage": {
+        "title": "Ukládání a uchovávání údajů",
+        "location": "Vaše údaje jsou uloženy v databázích hostovaných společností Neon. Používáme poskytovatele služeb, kteří splňují požadavky GDPR.",
+        "retention": {
+          "title": "Doba uchovávání",
+          "content": "Uchováváme vaše údaje po následující období:\n\n<bullet><bold>Údaje o účtu</bold>: Do smazání vašeho účtu nebo do žádosti o smazání</bullet>\n<bullet><bold>Odeslané formuláře</bold>: Do žádosti o smazání nebo po dobu až 2 let</bullet>\n<bullet><bold>Pokusy o přihlášení</bold>: 30 dní pro účely bezpečnostního auditu</bullet>\n<bullet><bold>Autentifikační výzvy</bold>: Do použití nebo vypršení platnosti (obvykle 10 minut)</bullet>\n<bullet><bold>Interakce s videi</bold>: Do smazání vašeho účtu (pro boosty) nebo trvale (pro lajky, protože jsou anonymizované)</bullet>"
+        }
+      },
+      "yourRights": {
+        "title": "Vaše práva (GDPR)",
+        "content": "V souladu s GDPR máte následující práva:\n\n<bullet><bold>Právo na přístup</bold>: Údaje o účtu můžete zobrazit na stránce /me</bullet>\n<bullet><bold>Právo na opravu</bold>: E-mailové předvolby můžete aktualizovat v nastavení účtu</bullet>\n<bullet><bold>Právo na výmaz</bold>: Účet můžete kdykoli smazat ze stránky /me</bullet>\n<bullet><bold>Právo na přenositelnost údajů</bold>: Kontaktujte nás pro žádost o kopii vašich údajů</bullet>\n<bullet><bold>Právo na námitku</bold>: Komunitní e-maily můžete vypnout v předvolbách</bullet>\n<bullet><bold>Právo na odvolání souhlasu</bold>: Souhlas s e-mailovou komunikací můžete kdykoli odvolat</bullet>\n\nPro uplatnění těchto práv nás kontaktujte na hello@bnf.events nebo použijte kontaktní formulář."
+      },
+      "cookies": {
+        "title": "Cookies a sledování",
+        "content": "Používáme následující cookies:\n\n<bullet><bold>Základní cookies</bold>: bnf_csrf (ochrana CSRF), NEXT_LOCALE (předvolba jazyka), bonfire-theme (předvolba motivu)</bullet>\n<bullet><bold>Analýza</bold>: Vercel Analytics shromažďuje anonymizované údaje o použití</bullet>\n\nCookies můžete spravovat prostřednictvím nastavení prohlížeče. Základní cookies jsou nezbytné pro správné fungování webu."
+      },
+      "security": {
+        "title": "Zabezpečení",
+        "content": "Implementujeme bezpečnostní opatření na ochranu vašich údajů:\n\n<bullet>Autentifikace bez hesla s časově omezenými OTP kódy</bullet>\n<bullet>IP adresy a uživatelské agenty jsou před uložením hashované</bullet>\n<bullet>Šifrování HTTPS pro veškerý přenos dat</bullet>\n<bullet>Omezení rychlosti k prevenci zneužití</bullet>\n<bullet>Pravidelné bezpečnostní audity a aktualizace</bullet>"
+      },
+      "internationalTransfers": {
+        "title": "Mezinárodní přenosy údajů",
+        "content": "Vaše údaje mohou být zpracovávány poskytovateli služeb nacházejícími se mimo Evropský hospodářský prostor (EHP). Zajišťujeme vhodné záruky, včetně smluv o zpracování údajů v souladu s GDPR se všemi poskytovateli služeb."
+      },
+      "children": {
+        "title": "Soukromí dětí",
+        "content": "Naše služby nejsou určeny osobám mladším 16 let. Vědomě neshromažďujeme osobní údaje od dětí. Pokud se domníváte, že jsme shromáždili informace od dítěte, okamžitě nás kontaktujte."
+      },
+      "changes": {
+        "title": "Změny těchto zásad ochrany osobních údajů",
+        "content": "Tyto Zásady ochrany osobních údajů můžeme čas od času aktualizovat. O významných změnách vás budeme informovat aktualizací data \"Poslední aktualizace\" v horní části těchto zásad. Pokračováním v používání našich služeb po změnách souhlasíte s aktualizovanými zásadami."
+      },
+      "contactPrivacy": {
+        "title": "Kontaktujte nás ohledně ochrany osobních údajů",
+        "content": "Pokud máte dotazy k těmto Zásadám ochrany osobních údajů nebo si přejete uplatnit svá práva, kontaktujte nás na hello@bnf.events nebo použijte náš kontaktní formulář."
+      }
+    },
+    "terms": {
+      "title": "Podmínky použití",
+      "lastUpdated": "Poslední aktualizace: {date}",
+      "intro": "Přístupem a používáním webu a služeb Bonfire Events souhlasíte s těmito Podmínkami použití.",
+      "acceptance": {
+        "title": "Přijetí podmínek",
+        "content": "Vytvořením účtu, odesláním formulářů nebo používáním našeho webu potvrzujete, že jste si přečetli, porozuměli a souhlasíte s těmito Podmínkami použití a našimi Zásadami ochrany osobních údajů. Pokud nesouhlasíte, nepoužívejte prosím naše služby."
+      },
+      "service": {
+        "title": "Popis služby",
+        "content": "Bonfire Events poskytuje platformu pro komunitní setkání vývojářů her, včetně informací o akcích, videozáznamů a komunitních funkcí. Vyhrazujeme si právo kdykoli upravit, pozastavit nebo ukončit jakýkoli aspekt služby."
+      },
+      "accounts": {
+        "title": "Registrace účtu",
+        "content": "Pro použití určitých funkcí musíte vytvořit účet:\n\n<bullet>Musíte poskytnout platnou e-mailovou adresu</bullet>\n<bullet>Jste odpovědní za udržení zabezpečení vašeho účtu</bullet>\n<bullet>Musíte být alespoň 16 let, abyste mohli vytvořit účet</bullet>\n<bullet>Souhlasíte s poskytnutím přesných a úplných informací</bullet>\n<bullet>Jste odpovědní za všechny aktivity pod vaším účtem</bullet>"
+      },
+      "userConduct": {
+        "title": "Chování uživatele",
+        "content": "Souhlasíte s:\n\n<bullet>Používáním služby pouze pro zákonné účely</bullet>\n<bullet>Nepokusem o získání neoprávněného přístupu k jakékoli části služby</bullet>\n<bullet>Nenarušováním nebo přerušením služby nebo serverů</bullet>\n<bullet>Nepoužíváním automatizovaných systémů pro přístup ke službě bez povolení</bullet>\n<bullet>Dodržováním našeho Etického kodexu</bullet>\n<bullet>Neodesíláním nepravdivého, zavádějícího nebo škodlivého obsahu</bullet>"
+      },
+      "intellectualProperty": {
+        "title": "Duševní vlastnictví",
+        "content": "Obsah webu, včetně textu, grafiky, log a softwaru, je vlastnictvím Bonfire Events nebo jeho poskytovatelů licencí a je chráněn autorským právem a zákony o ochranných známkách. Bez povolení nesmíte reprodukovat, distribuovat nebo vytvářet odvozená díla. Pro použití loga a značky viz naši stránku Press Kit."
+      },
+      "userContent": {
+        "title": "Obsah vytvořený uživateli",
+        "content": "Odesláním obsahu (formulářů, návrhů, komentářů) udělujete Bonfire Events nevýhradní, bezplatnou licenci k použití, úpravě a zobrazení vašeho obsahu za účelem provozu a propagace našich služeb."
+      },
+      "availability": {
+        "title": "Dostupnost služby",
+        "content": "Usilujeme o poskytování spolehlivé služby, ale nezaručujeme nepřerušovaný nebo bezchybný provoz. Vyhrazujeme si právo provádět údržbu, aktualizace nebo úpravy, které mohou dočasně ovlivnit dostupnost služby."
+      },
+      "liability": {
+        "title": "Omezení odpovědnosti",
+        "content": "V maximální míře povolené zákonem nebude Bonfire Events odpovědný za jakékoli nepřímé, náhodné, zvláštní, následné nebo trestní škody vyplývající z vašeho používání služby. Naše celková odpovědnost nepřesáhne částku, kterou jste nám zaplatili (pokud existuje) v posledních 12 měsících."
+      },
+      "indemnification": {
+        "title": "Odškodnění",
+        "content": "Souhlasíte s tím, že budete odškodňovat a osvobozovat Bonfire Events od jakýchkoli nároků, škod nebo výdajů vyplývajících z vašeho používání služby, porušení těchto podmínek nebo porušení jakýchkoli práv jiné strany."
+      },
+      "termination": {
+        "title": "Ukončení",
+        "content": "Můžeme kdykoli pozastavit nebo ukončit váš účet za porušení těchto podmínek nebo našeho Etického kodexu. Účet můžete kdykoli smazat z nastavení účtu."
+      },
+      "governingLaw": {
+        "title": "Governing Law",
+        "content": "Tyto Podmínky použití se řídí zákony České republiky. Jakékoli spory budou podléhat výhradní pravomoci soudů České republiky."
+      },
+      "disputes": {
+        "title": "Řešení sporů",
+        "content": "Pokud máte spor, nejprve nás kontaktujte na hello@bnf.events. Pokusíme se spory řešit smírným způsobem. Pokud nelze dosáhnout řešení, spory budou řešeny prostřednictvím soudů České republiky."
+      },
+      "changes": {
+        "title": "Změny podmínek",
+        "content": "Vyhrazujeme si právo kdykoli upravit tyto podmínky. O významných změnách budeme uživatele informovat. Pokračováním v používání služby po změnách souhlasíte s aktualizovanými podmínkami."
+      },
+      "contactTerms": {
+        "title": "Kontaktujte nás",
+        "content": "Pokud máte dotazy k těmto Podmínkám použití, kontaktujte nás na hello@bnf.events nebo použijte náš kontaktní formulář."
+      }
     }
   },
   "contactPage": {
@@ -429,6 +603,8 @@
       "messagePlaceholder": "Napište nám, co máte na srdci...",
       "inquiryType": "Typ dotazu",
       "inquiryTypeGeneral": "Obecné",
+      "inquiryTypeFeature": "Návrh funkce",
+      "inquiryTypeSupport": "Technická podpora",
       "inquiryTypePress": "Média",
       "inquiryTypeCrew": "Crew",
       "inquiryTypeConduct": "Kodex chování",
@@ -481,9 +657,9 @@
       "duration30": "30 minut (Standardní)",
       "duration45": "45 minut (Hluboký ponor)",
       "preferredLocation": "Preferovaná lokace",
-      "locationEither": "Praha nebo Zlín",
-      "locationPrague": "Praha",
-      "locationZlin": "Zlín",
+      "locationEither": "{prague} nebo {zlin}",
+      "locationPrague": "{prague}",
+      "locationZlin": "{zlin}",
       "experience": "Zkušenosti speakera",
       "experiencePlaceholder": "Řekněte nám o svém pozadí a předchozích zkušenostech s přednášením...",
       "experienceHint": "Volitelné. Vítáme i ty, co přednáší poprvé!",
@@ -504,6 +680,165 @@
         "csrfInvalid": "Obnovte prosím stránku a zkuste to znovu.",
         "generic": "Něco se pokazilo. Zkuste to znovu nebo nám napište přímo."
       }
+    }
+  },
+  "email": {
+    "authCode": {
+      "subject": "Váš přihlašovací kód {{brandName}}",
+      "title": "Přihlášení do Bonfire",
+      "subtitle": "Použijte kód níže pro dokončení přihlášení.",
+      "codeLabel": "Váš přihlašovací kód je {{code}}.",
+      "expires": "Kód vyprší za {{ttl}}.",
+      "ignore": "Pokud jste o e-mail nežádali, můžete ho ignorovat.",
+      "securityTip": "Tento kód nikdy nesdílejte. {{brandName}} vás o něj nikdy nepožádá telefonicky, chatem ani na sociálních sítích.",
+      "tagline": "{{tagline}}",
+      "footer": "{{brandName}}"
+    },
+    "accountDelete": {
+      "subject": "Důležité: Potvrzení smazání účtu {{brandName}}",
+      "title": "Důležité: Smazání účtu",
+      "subtitle": "Použijte kód níže k trvalému smazání účtu {{brandName}}.",
+      "codeLabel": "Váš kód pro smazání je {{code}}.",
+      "expires": "Kód vyprší za {{ttl}}.",
+      "ignore": "Máte-li dotazy nebo potřebujete pomoc, kontaktujte nás na hello@bnf.events",
+      "securityTip": "Tento kód zadejte pouze pokud jste požádali o smazání účtu. Tuto akci nelze vrátit zpět.",
+      "tagline": "{{tagline}}",
+      "footer": "{{brandName}}"
+    }
+  },
+  "authLogin": {
+    "eyebrow": "Vítejte",
+    "brand": "{brandName}",
+    "title": "Přihlaste se",
+    "subtitle": "Pošleme vám jednorázový kód pro potvrzení adresy.",
+    "secureTitle": "Bez hesla",
+    "secureBody": "Pošleme vám kód na e-mail. Rychle, jednoduše a bezpečně.",
+    "codeHint": "Zadejte 6místný kód z e-mailu.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "lara@croft.com",
+    "codeLabel": "Kód",
+    "sendCode": "Poslat kód",
+    "sendingCode": "Posílám kód",
+    "verify": "Ověřit a přihlásit",
+    "verifying": "Ověřuji",
+    "cancel": "Zrušit",
+    "boostHint": "Boostování je pro členy. Přihlaste se pro boost videa.",
+    "termsPrefix": "Pokračováním souhlasíte s ",
+    "termsLink": "podmínkami a zpracováním osobních údajů",
+    "termsSuffix": ".",
+    "errorInvalidCode": "Neplatný kód. Zkuste to znovu.",
+    "errorExpired": "Platnost kódu vypršela. Požádejte o nový.",
+    "errorRateLimited": "Příliš mnoho pokusů. Zkuste to za chvíli.",
+    "errorTooManyAttempts": "Příliš mnoho pokusů. Požádejte o nový kód.",
+    "errorInvalidRequest": "Neplatný požadavek. Zkuste to znovu."
+  },
+  "account": {
+    "title": "Váš účet",
+    "subtitle": "Mějte tyto údaje po ruce pro podporu.",
+    "signOut": "Odhlásit se",
+    "loading": "Načítání profilu…",
+    "error": "Profil se nepodařilo načíst",
+    "email": "E-mail",
+    "userId": "ID uživatele",
+    "created": "Vytvořeno",
+    "lastLogin": "Poslední přihlášení",
+    "empty": "—",
+    "guild": {
+      "kicker": "Bonfire Guild",
+      "title": "Odemčení cechu přijde brzy.",
+      "body": "Backstage informace, přednostní přístup a další cechovní výhody.",
+      "soon": "Brzy",
+      "perks": [
+        "Předběžný přístup k nahrávkám akcí",
+        "Exkluzivní zákulisní obsah",
+        "Členské Discord kanály",
+        "Hlasování o tématech přednášek",
+        "Speciální odznak na profilu"
+      ]
+    },
+    "preferences": {
+      "title": "Předvolby"
+    },
+    "activity": {
+      "title": "Aktivita"
+    },
+    "boosted": {
+      "title": "Boostnutá videa",
+      "empty": "Zatím žádná boostnutá videa.",
+      "error": "Boostnutá videa se nepodařilo načíst.",
+      "remove": "Odebrat"
+    },
+    "communityEmails": {
+      "title": "Novinky z komunity",
+      "body": "Souhlasím s občasnými e-maily o novinkách v komunitě Bonfire.",
+      "enabled": "Novinky povoleny",
+      "disabled": "Novinky vypnuty"
+    },
+    "delete": {
+      "title": "Smazat účet",
+      "body": "Okamžité a nevratné smazání. Potvrdíte jednorázovým kódem.",
+      "steps": {
+        "intent": "Zahájit",
+        "send": "Poslat kód",
+        "verify": "Ověřit a smazat"
+      },
+      "intentLabel": "Rozumím, že je to okamžité a nevratné.",
+      "intentRequired": "Potvrďte prosím, že chcete účet smazat okamžitě.",
+      "proceed": "Pokračovat",
+      "sendIntro": "Klikněte na odeslání a přijde vám potvrzovací kód.",
+      "completed": "Smazání dokončeno. Přesměrováváme na úvod.",
+      "dangerZone": "Nebezpečná zóna",
+      "codeLabel": "Kód pro smazání",
+      "sendCode": "Poslat kód ke smazání",
+      "sendingCode": "Posílám kód",
+      "confirm": "Smazat účet",
+      "confirming": "Mažu účet",
+      "cancel": "Zrušit",
+      "status": "Kód odeslán. Zkontrolujte e-mail.",
+      "error": "Smazání nelze spustit. Zkuste to prosím znovu.",
+      "invalid": "Neplatný kód. Zkuste to znovu.",
+      "expired": "Platnost kódu vypršela. Požádejte o nový.",
+      "tooManyAttempts": "Příliš mnoho pokusů. Požádejte o nový kód."
+    },
+    "attempts": {
+      "title": "Poslední pokusy o přihlášení",
+      "empty": "Za posledních 30 dní žádné pokusy.",
+      "error": "Pokusy o přihlášení se nepodařilo načíst.",
+      "outcomes": {
+        "success": "Úspěšné přihlášení",
+        "expired": "Kód vypršel",
+        "maxAttempts": "Příliš mnoho pokusů",
+        "invalidCode": "Neplatný kód",
+        "rateLimited": "Omezeno limitem",
+        "error": "Chyba přihlášení"
+      }
+    },
+    "support": {
+      "title": "Potřebujete pomoct?",
+      "featureRequest": "Chybí vám funkce? Dejte nám vědět!",
+      "technicalIssue": "Něco nefunguje? Nahlaste to"
+    },
+    "copySuccess": "Zkopírováno!",
+    "copyError": "Kopírování se nezdařilo",
+    "copyIdLabel": "Kopírovat ID"
+  },
+  "error": {
+    "title": "Něco se pokazilo",
+    "message": "Došlo k neočekávané chybě. Zkus to prosím znovu.",
+    "tryAgain": "Zkusit znovu",
+    "goHome": "Domů",
+    "browseLibrary": "Procházet knihovnu",
+    "library": {
+      "title": "Chyba knihovny",
+      "message": "Nepodařilo se načíst knihovnu. Zkus to prosím znovu."
+    },
+    "video": {
+      "title": "Chyba videa",
+      "message": "Nepodařilo se načíst video. Zkus to prosím znovu."
+    },
+    "api": {
+      "title": "Chyba API",
+      "message": "Nepodařilo se načíst data videa. Zkus to prosím znovu."
     }
   }
 }

@@ -1,25 +1,32 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
-import { SectionHeader } from "../components/SectionHeader";
-import { CopyButton } from "../components/CopyButton";
+import { Header } from "../components/layout/Header";
+import { Footer } from "../components/layout/Footer";
+import { SectionHeader } from "../components/ui/SectionHeader";
+import { CopyButton } from "../components/ui/CopyButton";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
+  const tCommon = await getTranslations("common");
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+    country: tCommon("country"),
+  };
   return {
-    title: t("pressTitle"),
-    description: t("pressDescription"),
+    title: t("pressTitle", commonValues),
+    description: t("pressDescription", commonValues),
     openGraph: {
-      title: t("pressTitle"),
-      description: t("pressDescription"),
+      title: t("pressTitle", commonValues),
+      description: t("pressDescription", commonValues),
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: t("pressTitle"),
-      description: t("pressDescription"),
+      title: t("pressTitle", commonValues),
+      description: t("pressDescription", commonValues),
     },
   };
 }
@@ -27,9 +34,16 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PressPage() {
   const t = await getTranslations("press");
   const tHero = await getTranslations("hero");
+  const tCommon = await getTranslations("common");
   const pressKitFilename = "bonfire-press-kit.zip";
 
-  const aboutText = t("about.body");
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+  };
+
+  const aboutText = t("about.body", commonValues);
 
   const logoGroups = [
     {
@@ -56,7 +70,7 @@ export default async function PressPage() {
       ],
     },
     {
-      title: t("logos.brands.prague"),
+      title: t("logos.brands.prague", commonValues),
       variants: [
         {
           label: t("logos.variants.black"),
@@ -79,7 +93,7 @@ export default async function PressPage() {
       ],
     },
     {
-      title: t("logos.brands.zlin"),
+      title: t("logos.brands.zlin", commonValues),
       variants: [
         {
           label: t("logos.variants.black"),
@@ -114,8 +128,16 @@ export default async function PressPage() {
     { label: tHero("stats.locations"), value: tHero("stats.locationsValue"), emphasis: "xl" },
     { label: tHero("stats.talks"), value: tHero("stats.talksValue"), emphasis: "xl" },
     { label: tHero("stats.attendees"), value: tHero("stats.attendeesValue"), emphasis: "xl" },
-    { label: t("stats.firstPragueLabel"), value: t("stats.firstPragueDate"), emphasis: "sm" },
-    { label: t("stats.firstZlinLabel"), value: t("stats.firstZlinDate"), emphasis: "sm" },
+    {
+      label: t("stats.firstPragueLabel", { prague: tCommon("prague") }),
+      value: t("stats.firstPragueDate"),
+      emphasis: "sm",
+    },
+    {
+      label: t("stats.firstZlinLabel", { zlin: tCommon("zlin") }),
+      value: t("stats.firstZlinDate"),
+      emphasis: "sm",
+    },
   ];
 
   return (

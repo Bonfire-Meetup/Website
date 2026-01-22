@@ -1,4 +1,4 @@
-import { getAllRecordings } from "../lib/recordings";
+import { getAllRecordings } from "../lib/recordings/recordings";
 
 const FEATURED_PRELOAD_COUNT = 5;
 

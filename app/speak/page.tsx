@@ -1,29 +1,37 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
-import { TalkProposalForm } from "../components/TalkProposalForm";
+import { Header } from "../components/layout/Header";
+import { Footer } from "../components/layout/Footer";
+import { TalkProposalForm } from "../components/forms/TalkProposalForm";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
+  const tCommon = await getTranslations("common");
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+    country: tCommon("country"),
+  };
   return {
-    title: t("talkProposalTitle"),
-    description: t("talkProposalDescription"),
+    title: t("talkProposalTitle", commonValues),
+    description: t("talkProposalDescription", commonValues),
     openGraph: {
-      title: t("talkProposalTitle"),
-      description: t("talkProposalDescription"),
+      title: t("talkProposalTitle", commonValues),
+      description: t("talkProposalDescription", commonValues),
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: t("talkProposalTitle"),
-      description: t("talkProposalDescription"),
+      title: t("talkProposalTitle", commonValues),
+      description: t("talkProposalDescription", commonValues),
     },
   };
 }
 
 export default async function TalkProposalPage() {
   const t = await getTranslations("talkProposalPage");
+  const tCommon = await getTranslations("common");
 
   const formTranslations = {
     form: {
@@ -44,9 +52,12 @@ export default async function TalkProposalPage() {
       duration30: t("form.duration30"),
       duration45: t("form.duration45"),
       preferredLocation: t("form.preferredLocation"),
-      locationEither: t("form.locationEither"),
-      locationPrague: t("form.locationPrague"),
-      locationZlin: t("form.locationZlin"),
+      locationEither: t("form.locationEither", {
+        prague: tCommon("prague"),
+        zlin: tCommon("zlin"),
+      }),
+      locationPrague: tCommon("prague"),
+      locationZlin: tCommon("zlin"),
       experience: t("form.experience"),
       experiencePlaceholder: t("form.experiencePlaceholder"),
       experienceHint: t("form.experienceHint"),

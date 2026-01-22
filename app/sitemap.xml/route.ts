@@ -1,6 +1,6 @@
-import { getAllRecordings } from "../lib/recordings";
+import { getAllRecordings } from "../lib/recordings/recordings";
 import photoAlbums from "../data/photo-albums.json";
-import { buildSitemapIndexXml } from "../lib/sitemap-utils";
+import { buildSitemapIndexXml } from "../lib/utils/sitemap-utils";
 import type { PhotoAlbum } from "../lib/photos/types";
 
 const BASE_URL = "https://www.bnf.events";

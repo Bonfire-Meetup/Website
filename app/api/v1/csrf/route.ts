@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
+import { serverEnv } from "@/app/lib/config/env";
 
 const CSRF_COOKIE_NAME = "bnf_csrf";
 const CSRF_TTL_SECONDS = 60 * 60;
@@ -10,7 +11,7 @@ export async function GET() {
   response.cookies.set(CSRF_COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
+    secure: serverEnv.NODE_ENV === "production",
     path: "/",
     maxAge: CSRF_TTL_SECONDS,
   });

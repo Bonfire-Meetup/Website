@@ -1,0 +1,456 @@
+"use client";
+
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { AuthControls } from "@/app/components/auth/AuthControls";
+import { Button } from "@/app/components/ui/Button";
+import { LoadingSpinner } from "@/app/components/ui/LoadingSpinner";
+import { TurnstileWidget } from "@/app/components/forms/TurnstileWidget";
+import { isAccessTokenValid, readAccessToken, writeAccessToken } from "@/app/lib/auth/client";
+
+type Step = "request" | "verify";
+
+const emailPlaceholders = [
+  "lara@croft.com",
+  "solid@snake.dev",
+  "gordon@freeman.io",
+  "master@chief.net",
+  "glados@aperture.sci",
+  "link@hyrule.gov",
+  "kratos@sparta.gr",
+  "samus@aran.space",
+  "cloud@strife.jp",
+  "geralt@rivia.pl",
+];
+
+type LoginLabels = {
+  eyebrow: string;
+  brand: string;
+  brandName: string;
+  title: string;
+  subtitle: string;
+  secureTitle: string;
+  secureBody: string;
+  codeHint: string;
+  emailLabel: string;
+  emailPlaceholder: string;
+  codeLabel: string;
+  sendCode: string;
+  verify: string;
+  sendingCode: string;
+  verifying: string;
+  cancel: string;
+  boostHint: string;
+  termsPrefix: string;
+  termsLink: string;
+  termsSuffix: string;
+  errorInvalidCode: string;
+  errorExpired: string;
+  errorRateLimited: string;
+  errorTooManyAttempts: string;
+  errorInvalidRequest: string;
+};
+
+type LanguageLabels = {
+  csLabel: string;
+  enLabel: string;
+  switchToCs: string;
+  switchToEn: string;
+};
+
+export function LoginClient({
+  labels,
+  languageLabels,
+}: {
+  labels: LoginLabels;
+  languageLabels: LanguageLabels;
+}) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [step, setStep] = useState<Step>("request");
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [status, setStatus] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [challengeToken, setChallengeToken] = useState<string | null>(null);
+  const [placeholder, setPlaceholder] = useState(emailPlaceholders[0]);
+
+  useEffect(() => {
+    setPlaceholder(emailPlaceholders[Math.floor(Math.random() * emailPlaceholders.length)]);
+  }, []);
+  const reasonHint = searchParams.get("reason-hint");
+  const formRef = useRef<HTMLFormElement | null>(null);
+
+  const storeChallengeEmail = (token: string, value: string) => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(`bnf_auth_challenge:${token}`, value);
+  };
+
+  const readChallengeEmail = (token: string) => {
+    if (typeof window === "undefined") return null;
+    return window.localStorage.getItem(`bnf_auth_challenge:${token}`);
+  };
+  const clearChallengeEmail = (token: string) => {
+    if (typeof window === "undefined") return;
+    window.localStorage.removeItem(`bnf_auth_challenge:${token}`);
+  };
+
+  useEffect(() => {
+    const token = readAccessToken();
+    if (token && isAccessTokenValid(token)) {
+      router.replace("/me");
+    }
+  }, [router]);
+
+  useEffect(() => {
+    const token = searchParams.get("challenge");
+    if (!token) return;
+    const storedEmail = readChallengeEmail(token);
+    if (storedEmail) {
+      setEmail(storedEmail);
+      setStep("verify");
+      setChallengeToken(token);
+    }
+  }, [searchParams]);
+
+  const inputBaseClass =
+    "w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-900 placeholder-neutral-400 transition-all duration-200 focus:outline-none focus:ring-2 dark:bg-white/5 dark:text-white dark:placeholder-neutral-500";
+  const inputNormalClass =
+    "border-neutral-200 focus:border-brand-500 focus:ring-brand-500/20 dark:border-white/10 dark:focus:border-brand-400";
+
+  const handleRequest = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+    setStatus(null);
+
+    const formData = new FormData(formRef.current ?? undefined);
+    const turnstileToken = formData.get("cf-turnstile-response");
+    if (!turnstileToken || typeof turnstileToken !== "string") {
+      setError("Please verify that you're human.");
+      setLoading(false);
+      return;
+    }
+
+    const response = await fetch("/api/v1/auth/challenges", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, type: "email", turnstileToken }),
+    });
+
+    if (!response.ok) {
+      const data = (await response.json().catch(() => null)) as { error?: string } | null;
+      setError(data?.error ?? "Unable to send code");
+      setLoading(false);
+      return;
+    }
+
+    const data = (await response.json().catch(() => null)) as { challenge_token?: string } | null;
+    const nextChallengeToken = data?.challenge_token;
+    if (!nextChallengeToken) {
+      setError("Unable to start challenge");
+      setLoading(false);
+      return;
+    }
+    storeChallengeEmail(nextChallengeToken, email);
+    setChallengeToken(nextChallengeToken);
+    setStep("verify");
+    setStatus("Code sent. Check your inbox.");
+    router.replace(`/login?challenge=${nextChallengeToken}`);
+    setLoading(false);
+  };
+
+  const handleVerify = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+    setStatus(null);
+
+    if (!challengeToken) {
+      setError("Missing challenge");
+      setLoading(false);
+      return;
+    }
+
+    const response = await fetch("/api/v1/auth/tokens", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, code, challenge_token: challengeToken }),
+    });
+
+    if (!response.ok) {
+      const data = (await response.json().catch(() => null)) as { error?: string } | null;
+      const reason = data?.error;
+      if (reason === "expired") {
+        if (challengeToken) clearChallengeEmail(challengeToken);
+        setChallengeToken(null);
+        setStep("request");
+        router.replace("/login");
+        setError(labels.errorExpired);
+      } else if (reason === "rate_limited") {
+        setError(labels.errorRateLimited);
+      } else if (reason === "too_many_attempts") {
+        if (challengeToken) clearChallengeEmail(challengeToken);
+        setChallengeToken(null);
+        setStep("request");
+        router.replace("/login");
+        setError(labels.errorTooManyAttempts);
+      } else if (reason === "invalid_request") {
+        setError(labels.errorInvalidRequest);
+      } else {
+        setError(labels.errorInvalidCode);
+      }
+      setLoading(false);
+      return;
+    }
+
+    const data = (await response.json()) as { access_token?: string };
+    if (data.access_token) {
+      clearChallengeEmail(challengeToken);
+      writeAccessToken(data.access_token);
+      router.replace("/me");
+      return;
+    }
+
+    setError("Invalid response");
+    setLoading(false);
+  };
+
+  return (
+    <main className="relative flex min-h-screen flex-col bg-[#f6f7fb] text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-24 top-20 h-64 w-64 rounded-full bg-gradient-to-br from-brand-200/40 via-white to-transparent blur-3xl dark:from-brand-500/20 dark:via-rose-500/20" />
+        <div className="absolute -right-16 top-40 h-72 w-72 rounded-full bg-gradient-to-br from-rose-200/30 via-slate-100 to-transparent blur-3xl dark:from-brand-500/20 dark:via-amber-500/10" />
+      </div>
+
+      <div className="relative flex flex-1 items-center justify-center px-4 py-6 sm:px-6 sm:py-12">
+        <div className="flex w-full max-w-md flex-col gap-4 md:max-w-4xl">
+          <div className="flex items-center justify-center gap-3 text-xs uppercase tracking-[0.3em] text-neutral-500 dark:text-neutral-400">
+            <span>{labels.eyebrow}</span>
+            <span className="h-1 w-1 rounded-full bg-neutral-400/60" />
+            <span>{labels.brand}</span>
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_20px_60px_rgba(18,18,18,0.1)] backdrop-blur sm:rounded-3xl md:grid md:grid-cols-[1.35fr_1fr] dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+            <div className="hidden flex-col gap-6 bg-gradient-to-br from-white to-[#f4f5f9] p-8 md:flex lg:p-10 dark:from-neutral-900 dark:to-neutral-950">
+              <div>
+                <h1 className="text-2xl font-semibold tracking-tight lg:text-3xl">
+                  {labels.title}
+                </h1>
+                <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                  {labels.subtitle}
+                </p>
+              </div>
+              {reasonHint === "video-boost" && (
+                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200/70 bg-emerald-50 px-4 py-2 text-sm text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200">
+                  <svg
+                    className="h-4 w-4 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+                  </svg>
+                  <span>{labels.boostHint}</span>
+                </div>
+              )}
+              <div className="space-y-2 rounded-2xl border border-neutral-200/70 bg-white/80 px-5 py-4 text-sm text-neutral-700 dark:border-brand-500/20 dark:bg-brand-500/10 dark:text-neutral-200">
+                <div className="text-xs uppercase tracking-[0.2em] text-neutral-500 dark:text-brand-200/80">
+                  {labels.secureTitle}
+                </div>
+                <p>{labels.secureBody}</p>
+              </div>
+            </div>
+
+            <div className="relative flex flex-col overflow-hidden bg-gradient-to-br from-brand-50/30 via-white to-rose-50/20 p-5 sm:p-6 md:p-8 lg:p-10 dark:from-neutral-900/50 dark:via-neutral-900 dark:to-neutral-950/50">
+              <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                <div className="absolute -right-12 top-1/4 h-64 w-64 rounded-full bg-gradient-to-br from-brand-200/30 to-transparent blur-3xl dark:from-brand-500/10" />
+                <div className="absolute -bottom-12 -left-12 h-72 w-72 rounded-full bg-gradient-to-tr from-rose-200/20 to-transparent blur-3xl dark:from-rose-500/5" />
+              </div>
+
+              <div className="relative z-10 mb-4 flex items-center justify-between md:mb-6 md:justify-end">
+                <h1 className="text-xl font-semibold tracking-tight md:hidden">{labels.title}</h1>
+                <AuthControls labels={languageLabels} />
+              </div>
+
+              {reasonHint === "video-boost" && (
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200/70 bg-emerald-50 px-4 py-2 text-sm text-emerald-700 md:hidden dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200">
+                  <svg
+                    className="h-4 w-4 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+                  </svg>
+                  <span>{labels.boostHint}</span>
+                </div>
+              )}
+
+              {step === "verify" && (
+                <p className="mb-4 text-sm text-neutral-600 dark:text-neutral-400">
+                  {labels.codeHint}
+                </p>
+              )}
+
+              <form
+                className="flex flex-1 flex-col gap-5"
+                onSubmit={step === "request" ? handleRequest : handleVerify}
+                ref={formRef}
+              >
+                <div>
+                  <label
+                    htmlFor="login-email"
+                    className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
+                  >
+                    {labels.emailLabel}
+                  </label>
+                  <input
+                    id="login-email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    className={`${inputBaseClass} ${inputNormalClass}`}
+                    placeholder={placeholder}
+                  />
+                </div>
+
+                {step === "verify" && (
+                  <div>
+                    <label
+                      htmlFor="login-code"
+                      className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-neutral-300"
+                    >
+                      {labels.codeLabel}
+                    </label>
+                    <input
+                      id="login-code"
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      required
+                      value={code}
+                      onChange={(event) => setCode(event.target.value)}
+                      className={`${inputBaseClass} ${inputNormalClass} text-center text-lg tracking-[0.5em] font-mono`}
+                      placeholder="123456"
+                      autoFocus
+                    />
+                  </div>
+                )}
+
+                {step === "request" && <TurnstileWidget />}
+
+                {status && (
+                  <div className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
+                    <svg
+                      className="mt-0.5 h-5 w-5 shrink-0"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                    <span>{status}</span>
+                  </div>
+                )}
+
+                {error && (
+                  <div className="flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
+                    <svg
+                      className="mt-0.5 h-5 w-5 shrink-0"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="m15 9-6 6" />
+                      <path d="m9 9 6 6" />
+                    </svg>
+                    <span>{error}</span>
+                  </div>
+                )}
+
+                <div className="mt-auto flex flex-col gap-3 pt-4 sm:flex-row-reverse">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="md"
+                    disabled={loading}
+                    className="w-full sm:flex-1"
+                  >
+                    <span className="flex items-center justify-center gap-2 whitespace-nowrap">
+                      {loading && <LoadingSpinner size="sm" />}
+                      {loading
+                        ? step === "request"
+                          ? labels.sendingCode
+                          : labels.verifying
+                        : step === "request"
+                          ? labels.sendCode
+                          : labels.verify}
+                    </span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="md"
+                    disabled={loading}
+                    className="w-full sm:flex-1"
+                    onClick={() => router.back()}
+                  >
+                    {labels.cancel}
+                  </Button>
+                </div>
+              </form>
+            </div>
+
+            <div className="flex flex-col items-center justify-between gap-3 border-t border-neutral-200/60 bg-gradient-to-r from-slate-50 via-white to-slate-50 px-5 py-4 text-center text-xs text-neutral-500 sm:flex-row sm:px-8 sm:text-left md:col-span-2 dark:border-white/10 dark:from-neutral-900 dark:via-neutral-950 dark:to-neutral-900 dark:text-neutral-400">
+              <div className="flex items-center gap-2">
+                <Image
+                  src="/assets/brand/RGB_PNG_01_bonfire_black_gradient.png"
+                  alt={labels.brandName}
+                  width={100}
+                  height={28}
+                  className="h-5 w-auto dark:hidden"
+                />
+                <Image
+                  src="/assets/brand/RGB_PNG_03_bonfire_white_gradient.png"
+                  alt={labels.brandName}
+                  width={100}
+                  height={28}
+                  className="hidden h-5 w-auto dark:block"
+                />
+              </div>
+              <div className="leading-relaxed">
+                {labels.termsPrefix}
+                <a
+                  className="underline decoration-neutral-400/60 underline-offset-2 hover:text-neutral-700 dark:hover:text-neutral-200"
+                  href="/legal"
+                >
+                  {labels.termsLink}
+                </a>
+                {labels.termsSuffix}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
