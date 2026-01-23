@@ -329,7 +329,7 @@ export default async function TeamPage() {
                     &ldquo;{renderWithBold(t("founderNote"))}&rdquo;
                   </p>
                   <p className="mt-4 text-right text-sm font-medium text-neutral-600 dark:text-neutral-300">
-                    — {t("founderSignature")}
+                    - {t("founderSignature")}
                   </p>
                 </blockquote>
               </div>

@@ -20,6 +20,7 @@
     "library": "Knihovna",
     "crew": "Crew",
     "photos": "Fotky",
+    "faq": "FAQ",
     "press": "Pro m\u00e9dia",
     "contact": "Kontakt",
     "codeOfConduct": "Kodex chov\u00e1n\u00ed",
@@ -399,6 +400,7 @@
     "copyright": "© {year} {brandName}. Ukuchtěno s láskou pro gamedev komunitu.",
     "crewLabel": "Crew",
     "timelineLabel": "Timeline",
+    "faqLabel": "FAQ",
     "pressLabel": "Press",
     "legalLabel": "Právní info & Etický kodex"
   },
@@ -417,6 +419,8 @@
     "photosDescription": "Fotoalba z Bonfire meetupů v {prague} a {zlin}.",
     "timelineTitle": "Timeline | {brandName}",
     "timelineDescription": "Projděte si epizody Bonfire se záznamy a fotoalby.",
+    "faqTitle": "FAQ | {brandName}",
+    "faqDescription": "Zjistěte, jak fungují Sparks a Boosty a jak ovlivňují viditelnost přednášek na {brandName}.",
     "contactTitle": "Kontakt | {brandName}",
     "contactDescription": "Napište nám. Otázky, zpětná vazba nebo partnerská spolupráce.",
     "talkProposalTitle": "Navrhnout přednášku | {brandName}",
@@ -438,6 +442,26 @@
     ],
     "titleSuffix": " | Bonfire"
   },
+  "faqPage": {
+    "eyebrow": "FAQ",
+    "title": "Často kladené dotazy",
+    "subtitle": "Rychlé odpovědi k tomu, jak web funguje - včetně engagementu, viditelnosti videí a členských funkcí.",
+    "impact": {
+      "title": "Jak to ovlivňuje viditelnost"
+    },
+    "sparks": {
+      "title": "Co jsou Sparks?",
+      "body": "Sparks jsou lehké lajky. Ukládají se přes hashovanou IP a user-agent, takže není potřeba účet. Protože se dají snáz vytvořit, berou se jako slabší signál.",
+      "impact": "Sparks zvyšují trending score a mohou pomoct videu dostat se mezi Trending Talks, hlavně v kombinaci s čerstvostí."
+    },
+    "boosts": {
+      "title": "Co jsou Boosty?",
+      "body": "Boosty jsou silnější hlas od přihlášených členů. Každý účet může boostnout dané video jen jednou, takže je to hůř zneužitelné a je to lepší signál opravdového zájmu.",
+      "impact": "Boosty mají ve výpočtu trending score vyšší váhu než Sparks, takže i pár boostů může viditelnost výrazně zvednout.",
+      "limitsTitle": "Limity",
+      "limits": "Boosty jsou omezené na 2 za měsíc, s maximem 6 dostupných v jednu chvíli. Nevyužité boosty se mohou nasčítat až do tohoto maxima."
+    }
+  },
   "language": {
     "switchTo": "Přepnout na {language}",
     "czech": "češtinu",
@@ -451,7 +475,7 @@
     "intro": "Bonfire stojí na vzájemném respektu. Chceme, aby se u nás každý cítil v pohodě a vítaný, bez ohledu na pohlaví, orientaci, vzhled, věk, rasu, národnost, etnicitu nebo náboženství. Jakékoliv obtěžování u nás nemá místo a nebude tolerováno.",
     "scope": {
       "title": "Platnost kodexu",
-      "content": "Tento Etický kodex platí pro všechny prostory Bonfire, včetně našich osobních setkání, online komunit (Discord, sociální sítě) a souvisejících akcí. Vztahuje se na všechny účastníky – návštěvníky, přednášející, sponzory, dobrovolníky i organizátory."
+      "content": "Tento Etický kodex platí pro všechny prostory Bonfire, včetně našich osobních setkání, online komunit (Discord, sociální sítě) a souvisejících akcí. Vztahuje se na všechny účastníky - návštěvníky, přednášející, sponzory, dobrovolníky i organizátory."
     },
     "community": {
       "title": "Naše hodnoty",
@@ -467,7 +491,7 @@
     },
     "photos": {
       "title": "Focení a záznamy",
-      "content": "Rádi zachycujeme atmosféru a energii našich akcí! Účastí na Bonfire souhlasíš s tím, že se tvoje fotka nebo záznam může objevit na našem webu, sociálních sítích nebo v marketingu. Respektujeme ale tvoje soukromí – pokud nechceš být fotografován/a, dej nám vědět při příchodu. Pokud budeš chtít nějaký konkrétní záběr smazat, stačí nám napsat a vyhovíme ti."
+      "content": "Rádi zachycujeme atmosféru a energii našich akcí! Účastí na Bonfire souhlasíš s tím, že se tvoje fotka nebo záznam může objevit na našem webu, sociálních sítích nebo v marketingu. Respektujeme ale tvoje soukromí - pokud nechceš být fotografován/a, dej nám vědět při příchodu. Pokud budeš chtít nějaký konkrétní záběr smazat, stačí nám napsat a vyhovíme ti."
     },
     "contact": {
       "title": "Podpora a hlášení",
@@ -817,7 +841,7 @@
     "userId": "ID uživatele",
     "created": "Vytvořeno",
     "lastLogin": "Poslední přihlášení",
-    "empty": "—",
+    "empty": "-",
     "guild": {
       "kicker": "Bonfire Guild",
       "title": "Odemčení cechu přijde brzy.",

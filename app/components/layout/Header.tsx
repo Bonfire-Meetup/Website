@@ -23,6 +23,7 @@ export async function Header() {
     { href: PAGE_ROUTES.PHOTOS, label: t("photos") },
     { href: PAGE_ROUTES.CREW, label: t("crew") },
     { href: PAGE_ROUTES.PRESS, label: t("press") },
+    { href: PAGE_ROUTES.FAQ, label: t("faq") },
     { href: PAGE_ROUTES.CONTACT_WITH_TYPE("general"), label: t("contact") },
     { href: PAGE_ROUTES.LEGAL, label: t("codeOfConduct") },
   ];
@@ -66,6 +67,9 @@ export async function Header() {
           </Button>
           <Button href={PAGE_ROUTES.CREW} variant="ghost" size="sm">
             {t("crew")}
+          </Button>
+          <Button href={PAGE_ROUTES.FAQ} variant="ghost" size="sm">
+            {t("faq")}
           </Button>
           <Button href={PAGE_ROUTES.CONTACT_WITH_TYPE("general")} variant="ghost" size="sm">
             {t("contact")}

@@ -20,6 +20,7 @@
     "library": "Library",
     "crew": "Crew",
     "photos": "Photos",
+    "faq": "FAQ",
     "press": "Press Kit",
     "contact": "Contact",
     "codeOfConduct": "Code of Conduct",
@@ -399,6 +400,7 @@
     "copyright": "© {year} {brandName}. Made with love for the gamedev community.",
     "crewLabel": "Crew",
     "timelineLabel": "Timeline",
+    "faqLabel": "FAQ",
     "pressLabel": "Press",
     "legalLabel": "Code of Conduct & Legal"
   },
@@ -417,6 +419,8 @@
     "photosDescription": "Browse photo albums from Bonfire meetups in {prague} and {zlin}.",
     "timelineTitle": "Timeline | {brandName}",
     "timelineDescription": "Explore Bonfire episodes with links to recordings and photo albums.",
+    "faqTitle": "FAQ | {brandName}",
+    "faqDescription": "Learn how Sparks and Boosts work and how they affect talk visibility on {brandName}.",
     "contactTitle": "Contact Us | {brandName}",
     "contactDescription": "Get in touch with the {brandName} team. Questions, feedback, or partnership inquiries welcome.",
     "talkProposalTitle": "Propose a Talk | {brandName}",
@@ -437,6 +441,26 @@
       "godot"
     ],
     "titleSuffix": " | Bonfire"
+  },
+  "faqPage": {
+    "eyebrow": "FAQ",
+    "title": "Frequently asked questions",
+    "subtitle": "Quick answers about how the site works - including video engagement, visibility, and member features.",
+    "impact": {
+      "title": "How it impacts visibility"
+    },
+    "sparks": {
+      "title": "What are Sparks?",
+      "body": "Sparks are lightweight likes. They’re stored using a hashed IP and user-agent, so you don’t need an account. Because they’re easier to generate, they’re treated as a softer signal.",
+      "impact": "Sparks increase a talk’s trending score and can help it surface in Trending Talks, especially when combined with recency."
+    },
+    "boosts": {
+      "title": "What are Boosts?",
+      "body": "Boosts are stronger votes from logged-in members. Each account can boost a talk once, making boosts harder to game and a better signal of committed interest.",
+      "impact": "Boosts have a higher weight than Sparks in the trending score, so a few boosts can noticeably lift a talk’s visibility.",
+      "limitsTitle": "Limits",
+      "limits": "Boosts are limited to 2 per month, with a maximum of 6 available at any time. Boosts you don’t use can stack up to that cap."
+    }
   },
   "language": {
     "switchTo": "Switch to {language}",
@@ -817,7 +841,7 @@
     "userId": "User ID",
     "created": "Created",
     "lastLogin": "Last login",
-    "empty": "—",
+    "empty": "-",
     "guild": {
       "kicker": "Bonfire Guild",
       "title": "Guild unlocks are coming soon.",

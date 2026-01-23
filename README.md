@@ -149,4 +149,4 @@ Selection flow:
 
 ## Contributing
 
-PRs welcome — especially for performance fixes, layout tweaks, and “why is this pixel doing that” mysteries. If you spot a bug, send a PR (or at least a good meme with the issue).
+PRs welcome - especially for performance fixes, layout tweaks, and “why is this pixel doing that” mysteries. If you spot a bug, send a PR (or at least a good meme with the issue).

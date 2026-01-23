@@ -6,6 +6,7 @@ export const PAGE_ROUTES = {
   CONTACT: "/contact",
   CONTACT_WITH_TYPE: (type: string) => `/contact?type=${type}`,
   CREW: "/crew",
+  FAQ: "/faq",
   HOME: "/",
   LEGAL: "/legal",
   LIBRARY: "/library",

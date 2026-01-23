@@ -205,7 +205,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     }
 
     return Array.from(map.entries()).map(([id, data]) => ({
-      label: data.number ? `${t("epShort")} ${data.number} — ${data.title}` : data.title,
+      label: data.number ? `${t("epShort")} ${data.number} - ${data.title}` : data.title,
       location: data.location,
       number: data.number || 0,
       value: id,

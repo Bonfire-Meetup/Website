@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 
 import { getDatabaseClient } from "@/lib/data/db";
+import { logError, logWarn } from "@/lib/utils/log";
 
 type LikeCounts = Record<string, number>;
 type BoostCounts = Record<string, number>;
@@ -19,6 +20,10 @@ const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
   const sql = getDatabaseClient({ required: false });
 
   if (!sql) {
+    logWarn("data.trending.db_client_unavailable", {
+      reason: "database_client_null",
+    });
+
     return { boosts: {}, likes: {} };
   }
 
@@ -40,7 +45,11 @@ const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
       boosts: Object.fromEntries(boostRows.map((row) => [row.video_id, row.count])),
       likes: Object.fromEntries(likeRows.map((row) => [row.video_id, row.count])),
     };
-  } catch {
+  } catch (error) {
+    logError("data.trending.engagement_fetch_failed", error, {
+      operation: "fetch_engagement_counts",
+    });
+
     return { boosts: {}, likes: {} };
   }
 };

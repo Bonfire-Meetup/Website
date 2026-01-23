@@ -24,7 +24,7 @@ export function EmptyStateMessage({
 
   if (notRecordedEpisode) {
     const episodeLabel = notRecordedEpisode.number
-      ? `${t("epShort")} ${notRecordedEpisode.number} — ${notRecordedEpisode.title}`
+      ? `${t("epShort")} ${notRecordedEpisode.number} - ${notRecordedEpisode.title}`
       : notRecordedEpisode.title;
 
     return (
