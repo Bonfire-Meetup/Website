@@ -71,6 +71,7 @@ export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedV
                   <div className="min-w-0 flex-1">
                     <Link
                       href={PAGE_ROUTES.WATCH(boost.slug, boost.shortId)}
+                      prefetch={false}
                       className="hover:text-brand-600 dark:hover:text-brand-300 block truncate text-sm font-medium text-neutral-900 dark:text-white"
                     >
                       {boost.title}

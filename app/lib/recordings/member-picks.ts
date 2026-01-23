@@ -89,4 +89,5 @@ const getMemberPicksUncached = async (limit = 6): Promise<MemberPickRecording[]>
 
 export const getMemberPicks = unstable_cache(getMemberPicksUncached, ["member-picks"], {
   revalidate: 3600,
+  tags: ["member-picks"],
 });

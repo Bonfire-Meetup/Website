@@ -108,6 +108,7 @@ export const getTrendingRecordings = (limit = 6): Promise<TrendingRecording[]> =
     [`trending-recordings-${limit}`],
     {
       revalidate: 3600,
+      tags: [`trending-recordings-${limit}`],
     },
   );
 

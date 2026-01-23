@@ -58,5 +58,6 @@ export const fetchEngagementCounts = unstable_cache(
   ["engagement-counts"],
   {
     revalidate: 900,
+    tags: ["engagement-counts"],
   },
 );

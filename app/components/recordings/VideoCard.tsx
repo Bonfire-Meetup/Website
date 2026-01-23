@@ -43,6 +43,7 @@ export const VideoCard = memo(function VideoCard({
   return (
     <Link
       href={PAGE_ROUTES.WATCH(slug, shortId)}
+      prefetch={false}
       className="glass-card group flex h-full cursor-pointer flex-col"
     >
       <div className="video-overlay relative shrink-0 overflow-hidden rounded-t-3xl">

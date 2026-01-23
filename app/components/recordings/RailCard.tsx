@@ -30,6 +30,7 @@ export function RailCard({ recording, isFirst = false, badge }: RailCardProps) {
   return (
     <Link
       href={PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}
+      prefetch={false}
       className="group relative flex w-[75vw] shrink-0 snap-start flex-col overflow-hidden rounded-[24px] bg-white/90 text-neutral-900 shadow-lg ring-1 shadow-black/5 ring-black/5 transition-all hover:-translate-y-1 sm:w-[45vw] lg:w-[280px] xl:w-[300px] dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10"
       aria-label={recording.title}
     >

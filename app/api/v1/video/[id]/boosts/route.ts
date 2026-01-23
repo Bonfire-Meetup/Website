@@ -1,3 +1,4 @@
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { checkRateLimit, getAuthUserId, validateVideoApiRequest } from "@/lib/api/rate-limit";
@@ -133,6 +134,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       const result = await addVideoBoost(videoId, userId);
       const allocation = await getUserBoostAllocation(userId);
 
+      // Invalidate cache for engagement counts, trending, and member picks
+      revalidateTag("engagement-counts", "max");
+      revalidateTag("trending-recordings-6", "max");
+      revalidateTag("member-picks", "max");
+
       // Add availableBoosts to response
       const response = {
         ...result,
@@ -181,6 +187,11 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       if (result.removed) {
         await refundBoost(userId);
       }
+
+      // Invalidate cache for engagement counts, trending, and member picks
+      revalidateTag("engagement-counts", "max");
+      revalidateTag("trending-recordings-6", "max");
+      revalidateTag("member-picks", "max");
 
       const allocation = await getUserBoostAllocation(userId);
       const validated = videoBoostMutationSchema.parse(result);
