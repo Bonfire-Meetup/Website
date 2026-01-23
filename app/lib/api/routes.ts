@@ -13,6 +13,9 @@ export const API_ROUTES = {
     DELETE_CHALLENGE: "/api/v1/me/delete-challenge",
     PREFERENCES: "/api/v1/me/preferences",
   },
+  NEWSLETTER: {
+    SUBSCRIBE: "/api/v1/newsletter/subscribe",
+  },
   VIDEO: {
     BOOSTS: (id: string) => `/api/v1/video/${id}/boosts`,
     BOOSTS_PATTERN: "/api/v1/video/*/boosts",

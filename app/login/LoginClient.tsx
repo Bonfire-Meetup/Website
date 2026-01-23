@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AuthControls } from "@/components/auth/AuthControls";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
@@ -43,10 +43,12 @@ export function LoginClient() {
   const [loading, setLoading] = useState(false);
   const [challengeToken, setChallengeToken] = useState<string | null>(null);
   const [placeholder, setPlaceholder] = useState(emailPlaceholders[0]);
+  const autoSubmitRef = useRef(false);
 
   useEffect(() => {
     setPlaceholder(emailPlaceholders[Math.floor(Math.random() * emailPlaceholders.length)]);
   }, []);
+
   const reasonHint = searchParams.get("reason-hint");
   const formRef = useRef<HTMLFormElement | null>(null);
 
@@ -151,73 +153,109 @@ export function LoginClient() {
     setLoading(false);
   };
 
-  const handleVerify = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
-    setStatus(null);
+  const handleVerify = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
+      autoSubmitRef.current = true;
+      setLoading(true);
+      setError(null);
+      setStatus(null);
 
-    if (!challengeToken) {
-      setError("Missing challenge");
-      setLoading(false);
+      if (!challengeToken) {
+        setError("Missing challenge");
+        setLoading(false);
+        autoSubmitRef.current = false;
 
-      return;
-    }
-
-    const response = await fetch(API_ROUTES.AUTH.TOKENS, {
-      body: JSON.stringify({ challenge_token: challengeToken, code, email }),
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-    });
-
-    if (!response.ok) {
-      const data = (await response.json().catch(() => null)) as { error?: string } | null;
-      const reason = data?.error;
-
-      if (reason === "expired") {
-        if (challengeToken) {
-          clearChallengeEmail(challengeToken);
-        }
-
-        setChallengeToken(null);
-        setStep("request");
-        router.replace(PAGE_ROUTES.LOGIN);
-        setError(t("errorExpired"));
-      } else if (reason === "rate_limited") {
-        setError(t("errorRateLimited"));
-      } else if (reason === "too_many_attempts") {
-        if (challengeToken) {
-          clearChallengeEmail(challengeToken);
-        }
-
-        setChallengeToken(null);
-        setStep("request");
-        router.replace(PAGE_ROUTES.LOGIN);
-        setError(t("errorTooManyAttempts"));
-      } else if (reason === "invalid_request") {
-        setError(t("errorInvalidRequest"));
-      } else {
-        setError(t("errorInvalidCode"));
+        return;
       }
 
+      const response = await fetch(API_ROUTES.AUTH.TOKENS, {
+        body: JSON.stringify({ challenge_token: challengeToken, code: code.trim(), email }),
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const data = (await response.json().catch(() => null)) as { error?: string } | null;
+        const reason = data?.error;
+
+        if (reason === "expired") {
+          if (challengeToken) {
+            clearChallengeEmail(challengeToken);
+          }
+
+          setChallengeToken(null);
+          setStep("request");
+          router.replace(PAGE_ROUTES.LOGIN);
+          setError(t("errorExpired"));
+        } else if (reason === "rate_limited") {
+          setError(t("errorRateLimited"));
+        } else if (reason === "too_many_attempts") {
+          if (challengeToken) {
+            clearChallengeEmail(challengeToken);
+          }
+
+          setChallengeToken(null);
+          setStep("request");
+          router.replace(PAGE_ROUTES.LOGIN);
+          setError(t("errorTooManyAttempts"));
+        } else if (reason === "invalid_request") {
+          setError(t("errorInvalidRequest"));
+        } else {
+          setError(t("errorInvalidCode"));
+        }
+
+        setLoading(false);
+        autoSubmitRef.current = false;
+
+        return;
+      }
+
+      const data = (await response.json()) as { access_token?: string };
+
+      if (data.access_token) {
+        clearChallengeEmail(challengeToken);
+        writeAccessToken(data.access_token);
+        router.replace(PAGE_ROUTES.ME);
+
+        return;
+      }
+
+      setError("Invalid response");
       setLoading(false);
+      autoSubmitRef.current = false;
+    },
+    [challengeToken, code, email, router, t],
+  );
 
-      return;
+  useEffect(() => {
+    if (
+      step === "verify" &&
+      code.length === 6 &&
+      /^\d{6}$/.test(code) &&
+      challengeToken &&
+      !loading &&
+      !autoSubmitRef.current
+    ) {
+      autoSubmitRef.current = true;
+      const timer = setTimeout(() => {
+        if (formRef.current) {
+          const syntheticEvent = {
+            preventDefault: () => {
+              // No-op to satisfy form event interface
+            },
+          } as unknown as React.FormEvent<HTMLFormElement>;
+          handleVerify(syntheticEvent);
+        }
+      }, 300);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    } else if (code.length !== 6) {
+      autoSubmitRef.current = false;
     }
-
-    const data = (await response.json()) as { access_token?: string };
-
-    if (data.access_token) {
-      clearChallengeEmail(challengeToken);
-      writeAccessToken(data.access_token);
-      router.replace(PAGE_ROUTES.ME);
-
-      return;
-    }
-
-    setError("Invalid response");
-    setLoading(false);
-  };
+  }, [code, step, challengeToken, loading, handleVerify]);
 
   return (
     <main className="relative flex min-h-screen flex-col bg-[#f6f7fb] text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
@@ -258,11 +296,42 @@ export function LoginClient() {
                   <span>{t("boostHint")}</span>
                 </div>
               )}
-              <div className="dark:border-brand-500/20 dark:bg-brand-500/10 space-y-2 rounded-2xl border border-neutral-200/70 bg-white/80 px-5 py-4 text-sm text-neutral-700 dark:text-neutral-200">
+              <div className="dark:border-brand-500/20 dark:bg-brand-500/10 space-y-3 rounded-2xl border border-neutral-200/70 bg-white/80 px-5 py-4 text-sm text-neutral-700 dark:text-neutral-200">
                 <div className="dark:text-brand-200/80 text-xs tracking-[0.2em] text-neutral-500 uppercase">
                   {t("secureTitle")}
                 </div>
-                <p>{t("secureBody")}</p>
+                <ul className="space-y-2.5">
+                  <li className="flex items-start gap-2.5">
+                    <span className="bg-brand-500/10 text-brand-600 dark:bg-brand-400/20 dark:text-brand-400 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                      1
+                    </span>
+                    <span>{t("steps.step1")}</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="bg-brand-500/10 text-brand-600 dark:bg-brand-400/20 dark:text-brand-400 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                      2
+                    </span>
+                    <span>{t("steps.step2")}</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="bg-brand-500/10 text-brand-600 dark:bg-brand-400/20 dark:text-brand-400 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                      3
+                    </span>
+                    <span>{t("steps.step3")}</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="bg-brand-500/10 text-brand-600 dark:bg-brand-400/20 dark:text-brand-400 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                      4
+                    </span>
+                    <span>{t("steps.step4")}</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="bg-brand-500/10 text-brand-600 dark:bg-brand-400/20 dark:text-brand-400 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                      5
+                    </span>
+                    <span>{t("steps.step5")}</span>
+                  </li>
+                </ul>
               </div>
             </div>
 
@@ -291,6 +360,25 @@ export function LoginClient() {
                     <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
                   </svg>
                   <span>{t("boostHint")}</span>
+                </div>
+              )}
+
+              {step === "request" && (
+                <div className="mb-4 inline-flex items-start gap-2.5 rounded-xl border border-blue-200/70 bg-blue-50/80 px-4 py-3 text-sm text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-200">
+                  <svg
+                    className="mt-0.5 h-4 w-4 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4" />
+                    <path d="M12 8h.01" />
+                  </svg>
+                  <span>{t("noRegistrationHint")}</span>
                 </div>
               )}
 
@@ -340,7 +428,7 @@ export function LoginClient() {
                       pattern="[0-9]*"
                       required
                       value={code}
-                      onChange={(event) => setCode(event.target.value)}
+                      onChange={(event) => setCode(event.target.value.trim())}
                       className={`${inputBaseClass} ${inputNormalClass} text-center font-mono text-lg tracking-[0.5em]`}
                       placeholder="123456"
                       autoFocus

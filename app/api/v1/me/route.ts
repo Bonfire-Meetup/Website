@@ -79,6 +79,8 @@ export const GET = async (request: Request) =>
           email: user.email,
           id: user.id,
           lastLoginAt: user.last_login_at ? user.last_login_at.toISOString() : null,
+          name: user.name,
+          publicProfile: user.public_profile,
         },
       });
     } catch (error) {

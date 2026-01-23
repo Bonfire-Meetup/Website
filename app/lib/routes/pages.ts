@@ -18,5 +18,6 @@ export const PAGE_ROUTES = {
   PRESS: "/press",
   SPEAK: "/speak",
   TIMELINE: "/timeline",
+  USER: (compressedId: string) => `/user/${compressedId}`,
   WATCH: (slug: string, shortId: string) => `/watch/${slug}-${shortId}`,
 } as const;

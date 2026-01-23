@@ -4,13 +4,14 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { LogOutIcon } from "@/components/shared/icons";
+import { LogOutIcon, UserIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { API_ROUTES } from "@/lib/api/routes";
 import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
+import { compressUuid } from "@/lib/utils/uuid-compress";
 
 import { BoostedVideosBlock } from "./BoostedVideosBlock";
 import { DangerZoneBlock } from "./DangerZoneBlock";
@@ -18,7 +19,12 @@ import { GuildCard } from "./GuildCard";
 import { LoginAttemptsBlock } from "./LoginAttemptsBlock";
 import { PreferenceBlock } from "./PreferenceBlock";
 import { ProfileCard } from "./ProfileCard";
-import { GuildSkeleton, ProfileSkeleton } from "./ProfileSkeletons";
+import {
+  GuildSkeleton,
+  HeaderButtonsSkeleton,
+  PreferencesSkeleton,
+  ProfileSkeleton,
+} from "./ProfileSkeletons";
 
 interface Profile {
   id: string;
@@ -26,6 +32,8 @@ interface Profile {
   createdAt: string;
   lastLoginAt: string | null;
   allowCommunityEmails: boolean;
+  publicProfile: boolean;
+  name: string | null;
 }
 
 interface BoostedRecording {
@@ -141,6 +149,32 @@ export function MeClient() {
       }
     } catch {
       setProfile({ ...profile, allowCommunityEmails: !nextValue });
+    } finally {
+      setUpdatingPreference(false);
+    }
+  };
+
+  const handlePublicProfileToggle = async () => {
+    if (!accessToken || !profile) {
+      return;
+    }
+
+    const nextValue = !profile.publicProfile;
+    setProfile({ ...profile, publicProfile: nextValue });
+    setUpdatingPreference(true);
+
+    try {
+      const response = await fetch(API_ROUTES.ME.PREFERENCES, {
+        body: JSON.stringify({ publicProfile: nextValue }),
+        headers: createJsonAuthHeaders(accessToken),
+        method: "PATCH",
+      });
+
+      if (!response.ok) {
+        setProfile({ ...profile, publicProfile: !nextValue });
+      }
+    } catch {
+      setProfile({ ...profile, publicProfile: !nextValue });
     } finally {
       setUpdatingPreference(false);
     }
@@ -291,15 +325,33 @@ export function MeClient() {
         <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
           {t("title")}
         </h1>
-        <Button
-          onClick={handleSignOut}
-          variant="ghost"
-          size="sm"
-          className="group border border-neutral-200/70 bg-white/60 text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
-        >
-          <LogOutIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          {t("signOut")}
-        </Button>
+        {loading ? (
+          <HeaderButtonsSkeleton />
+        ) : (
+          <div className="flex gap-2">
+            {profile && (
+              <Link href={PAGE_ROUTES.USER(compressUuid(profile.id))}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="group border border-neutral-200/70 bg-white/60 text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                >
+                  <UserIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
+                  {t("viewProfile")}
+                </Button>
+              </Link>
+            )}
+            <Button
+              onClick={handleSignOut}
+              variant="ghost"
+              size="sm"
+              className="group border border-neutral-200/70 bg-white/60 text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+            >
+              <LogOutIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              {t("signOut")}
+            </Button>
+          </div>
+        )}
       </div>
 
       {error && (
@@ -309,31 +361,43 @@ export function MeClient() {
       )}
 
       {loading ? (
-        <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-          <ProfileSkeleton />
-          <GuildSkeleton />
-        </div>
-      ) : profile ? (
-        <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-          <ProfileCard profile={profile} />
-          <GuildCard />
-        </div>
-      ) : null}
-
-      {profile && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
-            {t("preferences.title")}
-          </h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <PreferenceBlock
-              enabled={profile.allowCommunityEmails}
-              disabled={updatingPreference}
-              onToggle={handleCommunityEmailsToggle}
-            />
+        <>
+          <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+            <ProfileSkeleton />
+            <GuildSkeleton />
           </div>
-        </div>
-      )}
+          <PreferencesSkeleton />
+        </>
+      ) : profile ? (
+        <>
+          <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+            <ProfileCard
+              profile={profile}
+              onProfileUpdate={(updated: Profile) => setProfile(updated)}
+            />
+            <GuildCard />
+          </div>
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
+              {t("preferences.title")}
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <PreferenceBlock
+                enabled={profile.allowCommunityEmails}
+                disabled={updatingPreference}
+                onToggle={handleCommunityEmailsToggle}
+                translationKey="communityEmails"
+              />
+              <PreferenceBlock
+                enabled={profile.publicProfile}
+                disabled={updatingPreference}
+                onToggle={handlePublicProfileToggle}
+                translationKey="publicProfile"
+              />
+            </div>
+          </div>
+        </>
+      ) : null}
 
       <div className="space-y-4">
         <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">

@@ -5,7 +5,9 @@ create table if not exists app_user (
   email text not null unique,
   created_at timestamptz not null default now(),
   last_login_at timestamptz,
-  allow_community_emails boolean not null default false
+  allow_community_emails boolean not null default false,
+  public_profile boolean not null default false,
+  name text
 );
 
 create index if not exists app_user_email_idx on app_user (email);

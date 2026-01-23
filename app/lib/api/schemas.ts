@@ -25,3 +25,11 @@ export const videoBoostMutationSchema = z.object({
 export const errorResponseSchema = z.object({
   error: z.string(),
 });
+
+export const newsletterSubscribeRequestSchema = z.object({
+  email: z.string().email().min(1).max(255),
+});
+
+export const newsletterSubscribeResponseSchema = z.object({
+  subscribed: z.boolean(),
+});

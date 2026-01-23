@@ -93,6 +93,20 @@
       "title": "Do you want to give a talk?",
       "subtitle": "We're always looking for speakers to share their knowledge and experience.",
       "cta": "Submit a talk proposal"
+    },
+    "newsletter": {
+      "title": "Stay in the Loop",
+      "subtitle": "Get notified about upcoming events and new recordings.",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "your@email.com",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "successTitle": "You're subscribed!",
+      "successMessage": "Thanks for subscribing! We'll keep you updated.",
+      "error": "Something went wrong. Please try again later.",
+      "rateLimitError": "Too many requests. Please try again in a minute.",
+      "privacyNote": "By subscribing, you agree to receive occasional emails. Unsubscribe anytime.",
+      "subscribeAnother": "Subscribe another email"
     }
   },
   "events": {
@@ -718,7 +732,15 @@
     "subtitle": "We will send a one-time code to confirm your address.",
     "secureTitle": "No password needed",
     "secureBody": "We'll send a code to your email. Quick, simple, and secure.",
+    "steps": {
+      "step1": "Type email",
+      "step2": "We send code",
+      "step3": "Paste code here",
+      "step4": "No account? We'll create one",
+      "step5": "Welcome"
+    },
     "codeHint": "Enter the 6-digit code we sent to your inbox.",
+    "noRegistrationHint": "New here? Your first login creates your account.",
     "emailLabel": "Email",
     "emailPlaceholder": "lara@croft.com",
     "codeLabel": "Code",
@@ -727,7 +749,7 @@
     "verify": "Verify and sign in",
     "verifying": "Verifying",
     "cancel": "Cancel",
-    "boostHint": "Boosting is for members. Sign in to boost this video.",
+    "boostHint": "Boosting is for members only.",
     "termsPrefix": "By continuing you agree to the ",
     "termsLink": "terms and acknowledge the privacy policy",
     "termsSuffix": ".",
@@ -740,7 +762,21 @@
   "account": {
     "title": "Your account",
     "subtitle": "Keep this info handy for support.",
+    "details": "Details",
     "signOut": "Sign out",
+    "viewProfile": "View profile",
+    "name": {
+      "label": "Name",
+      "empty": "Not set",
+      "placeholder": "Enter your name or nickname",
+      "edit": "Edit name",
+      "save": "Save",
+      "cancel": "Cancel",
+      "characterLimit": "Character limit approaching",
+      "tooLong": "Name must be 50 characters or less.",
+      "profanityError": "Name contains inappropriate language. Please choose a different name.",
+      "updateError": "Failed to update name. Please try again."
+    },
     "loading": "Loading profile…",
     "error": "Unable to load profile",
     "email": "Email",
@@ -778,6 +814,23 @@
       "body": "Allow occasional emails about news in the Bonfire community.",
       "enabled": "Community emails enabled",
       "disabled": "Community emails disabled"
+    },
+    "publicProfile": {
+      "title": "Public profile",
+      "body": "Make your profile visible to other community members.",
+      "enabled": "Public profile enabled",
+      "disabled": "Public profile disabled"
+    },
+    "userProfile": {
+      "title": "User Profile",
+      "memberSince": "Member since",
+      "private": {
+        "title": "Private Profile",
+        "message": "This profile is private and not available for viewing."
+      },
+      "notFound": {
+        "title": "User Not Found"
+      }
     },
     "delete": {
       "title": "Delete your account",

@@ -27,15 +27,11 @@
 }
 
 html {
+  color-scheme: light dark;
+}
+
+html.smooth-scroll {
   scroll-behavior: smooth;
-}
-
-.light {
-  color-scheme: light;
-}
-
-.dark {
-  color-scheme: dark;
 }
 
 .glass {
@@ -100,7 +96,9 @@ html {
     0 1px 3px rgba(0, 0, 0, 0.02),
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.02);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
 
@@ -205,7 +203,10 @@ html {
   color: white;
   font-weight: 600;
   padding: 14px 32px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background-position 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
 
@@ -279,7 +280,9 @@ html {
   color: #374151;
   font-weight: 600;
   padding: 14px 32px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .glass-button-secondary {
@@ -476,7 +479,9 @@ html {
   font-size: 0.875rem;
   font-weight: 500;
   backdrop-filter: blur(12px);
-  transition: all 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .location-badge.prague {
@@ -580,7 +585,9 @@ html {
   -webkit-text-fill-color: transparent;
   -webkit-text-stroke: 2px rgba(23, 23, 23, 0.1);
   color: transparent;
-  transition: all 0.3s ease;
+  transition:
+    -webkit-text-stroke 0.3s ease,
+    text-shadow 0.3s ease;
 }
 
 .dark .text-outline-bold {

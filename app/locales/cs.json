@@ -93,6 +93,20 @@
       "title": "Chceš u nás přednášet?",
       "subtitle": "Pořád hledáme zajímavé speakery, kteří se chtějí podělit o své zkušenosti.",
       "cta": "Navrhnout přednášku"
+    },
+    "newsletter": {
+      "title": "Zůstaň v obraze",
+      "subtitle": "Dostávej upozornění na nadcházející akce a nová videa.",
+      "emailLabel": "E-mailová adresa",
+      "emailPlaceholder": "vas@email.cz",
+      "subscribe": "Přihlásit se",
+      "subscribing": "Přihlašuji...",
+      "successTitle": "Jste přihlášeni!",
+      "successMessage": "Děkujeme za přihlášení! Budeme vás informovat.",
+      "error": "Něco se pokazilo. Zkuste to prosím později.",
+      "rateLimitError": "Příliš mnoho požadavků. Zkuste to prosím za minutu.",
+      "privacyNote": "Přihlášením souhlasíte se zasíláním občasných e-mailů. Odhlásit se můžete kdykoli.",
+      "subscribeAnother": "Přihlásit další e-mail"
     }
   },
   "events": {
@@ -718,7 +732,15 @@
     "subtitle": "Pošleme vám jednorázový kód pro potvrzení adresy.",
     "secureTitle": "Bez hesla",
     "secureBody": "Pošleme vám kód na e-mail. Rychle, jednoduše a bezpečně.",
+    "steps": {
+      "step1": "Zadejte e-mail",
+      "step2": "Pošleme kód",
+      "step3": "Vložte kód",
+      "step4": "Nemáte účet? Vytvoříme ho",
+      "step5": "Vítejte"
+    },
     "codeHint": "Zadejte 6místný kód z e-mailu.",
+    "noRegistrationHint": "Jste tu poprvé? První přihlášení vytvoří účet.",
     "emailLabel": "E-mail",
     "emailPlaceholder": "lara@croft.com",
     "codeLabel": "Kód",
@@ -727,7 +749,7 @@
     "verify": "Ověřit a přihlásit",
     "verifying": "Ověřuji",
     "cancel": "Zrušit",
-    "boostHint": "Boostování je pro členy. Přihlaste se pro boost videa.",
+    "boostHint": "Boostování je pouze pro členy.",
     "termsPrefix": "Pokračováním souhlasíte s ",
     "termsLink": "podmínkami a zpracováním osobních údajů",
     "termsSuffix": ".",
@@ -740,7 +762,21 @@
   "account": {
     "title": "Váš účet",
     "subtitle": "Mějte tyto údaje po ruce pro podporu.",
+    "details": "Údaje",
     "signOut": "Odhlásit se",
+    "viewProfile": "Zobrazit profil",
+    "name": {
+      "label": "Jméno",
+      "empty": "Nenastaveno",
+      "placeholder": "Zadejte své jméno nebo přezdívku",
+      "edit": "Upravit jméno",
+      "save": "Uložit",
+      "cancel": "Zrušit",
+      "characterLimit": "Blíží se limit znaků",
+      "tooLong": "Jméno musí mít maximálně 50 znaků.",
+      "profanityError": "Jméno obsahuje nevhodný jazyk. Zvolte prosím jiné jméno.",
+      "updateError": "Nepodařilo se aktualizovat jméno. Zkuste to prosím znovu."
+    },
     "loading": "Načítání profilu…",
     "error": "Profil se nepodařilo načíst",
     "email": "E-mail",
@@ -778,6 +814,23 @@
       "body": "Souhlasím s občasnými e-maily o novinkách v komunitě Bonfire.",
       "enabled": "Novinky povoleny",
       "disabled": "Novinky vypnuty"
+    },
+    "publicProfile": {
+      "title": "Veřejný profil",
+      "body": "Zobrazit váš profil ostatním členům komunity.",
+      "enabled": "Veřejný profil povolen",
+      "disabled": "Veřejný profil vypnut"
+    },
+    "userProfile": {
+      "title": "Profil uživatele",
+      "memberSince": "Člen od",
+      "private": {
+        "title": "Soukromý profil",
+        "message": "Tento profil je soukromý a není k dispozici pro prohlížení."
+      },
+      "notFound": {
+        "title": "Uživatel nenalezen"
+      }
     },
     "delete": {
       "title": "Smazat účet",

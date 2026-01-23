@@ -72,8 +72,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang={locale}
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
-      data-scroll-behavior="smooth"
+      className={`${GeistSans.variable} ${GeistMono.variable} smooth-scroll`}
       suppressHydrationWarning
     >
       <head>
@@ -94,7 +93,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           }}
         />
       </head>
-      <body className="min-h-screen bg-white text-neutral-900 antialiased transition-colors duration-300 dark:bg-neutral-950 dark:text-neutral-100">
+      <body className="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <MotionManager />
           <ThemeProvider>

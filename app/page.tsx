@@ -7,6 +7,7 @@ import { Footer } from "./components/layout/Footer";
 import { Header } from "./components/layout/Header";
 import { Hero } from "./components/layout/Hero";
 import { LocationsSection } from "./components/locations/LocationsSection";
+import { NewsletterSection } from "./components/newsletter/NewsletterSection";
 import { RecordingsSection } from "./components/recordings/RecordingsSection";
 import { LocationsSectionSkeleton, RecordingsSectionSkeleton } from "./components/shared/Skeletons";
 import { TalkBanner } from "./components/shared/TalkBanner";
@@ -37,6 +38,10 @@ export default async function HomePage() {
         <Suspense fallback={<RecordingsSectionSkeleton />}>
           <RecordingsSection recordings={trendingRecordings} />
         </Suspense>
+
+        <div className="section-divider mx-auto max-w-4xl" />
+
+        <NewsletterSection />
 
         <div className="section-divider mx-auto max-w-4xl" />
 

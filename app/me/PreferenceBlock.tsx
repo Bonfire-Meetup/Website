@@ -5,11 +5,17 @@ import { useTranslations } from "next-intl";
 interface PreferenceBlockProps {
   enabled: boolean;
   disabled?: boolean;
-  onToggle: () => void;
+  onToggle: () => void | Promise<void>;
+  translationKey: "communityEmails" | "publicProfile";
 }
 
-export function PreferenceBlock({ enabled, disabled, onToggle }: PreferenceBlockProps) {
-  const t = useTranslations("account.communityEmails");
+export function PreferenceBlock({
+  enabled,
+  disabled,
+  onToggle,
+  translationKey,
+}: PreferenceBlockProps) {
+  const t = useTranslations(`account.${translationKey}`);
 
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">

@@ -18,6 +18,8 @@ interface AuthUserRow {
   created_at: Date;
   last_login_at: Date | null;
   allow_community_emails: boolean;
+  public_profile: boolean;
+  name: string | null;
 }
 
 export const insertAuthChallenge = async ({
@@ -116,7 +118,7 @@ export const upsertAuthUser = async (email: string): Promise<string> => {
 export const getAuthUserById = async (id: string): Promise<AuthUserRow | null> => {
   const sql = getDatabaseClient();
   const rows = (await sql`
-    SELECT id, email, created_at, last_login_at, allow_community_emails
+    SELECT id, email, created_at, last_login_at, allow_community_emails, public_profile, name
     FROM app_user
     WHERE id = ${id}
     LIMIT 1
@@ -136,6 +138,36 @@ export const updateAuthUserCommunityEmails = async ({
   await sql`
     UPDATE app_user
     SET allow_community_emails = ${allowCommunityEmails}
+    WHERE id = ${userId}
+  `;
+};
+
+export const updateAuthUserPublicProfile = async ({
+  userId,
+  publicProfile,
+}: {
+  userId: string;
+  publicProfile: boolean;
+}) => {
+  const sql = getDatabaseClient();
+  await sql`
+    UPDATE app_user
+    SET public_profile = ${publicProfile}
+    WHERE id = ${userId}
+  `;
+};
+
+export const updateAuthUserName = async ({
+  userId,
+  name,
+}: {
+  userId: string;
+  name: string | null;
+}) => {
+  const sql = getDatabaseClient();
+  await sql`
+    UPDATE app_user
+    SET name = ${name}
     WHERE id = ${userId}
   `;
 };
