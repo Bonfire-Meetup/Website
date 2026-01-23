@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 
 import { getDatabaseClient, getDatabaseErrorDetails } from "../data/db";
+import { logError } from "../utils/log";
 
 import { type Recording, getAllRecordings } from "./recordings";
 
@@ -33,7 +34,6 @@ const fetchTopBoostedVideos = async (
 
     return rows.map((row) => ({ count: row.count, videoId: row.video_id }));
   } catch (error) {
-    const { logError } = await import("../utils/log");
     const errorDetails = getDatabaseErrorDetails(error, "fetch_top_boosted_videos");
     logError("data.member_picks.fetch_failed", error, errorDetails);
 
