@@ -44,7 +44,7 @@ export default async function FaqPage() {
       <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
         <section className="relative flex min-h-[62vh] items-center justify-center overflow-hidden px-4 pt-32 pb-14 sm:min-h-[66vh] sm:pb-18">
           <div className="pointer-events-none absolute inset-0">
-            <div className="absolute -top-24 left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.18),transparent_62%)]" />
+            <div className="absolute -top-24 left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.18),transparent_62%)]" />
             <div className="absolute top-28 right-10 h-[460px] w-[460px] rounded-full bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.18),transparent_62%)]" />
             <div className="absolute bottom-10 left-10 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle_at_center,rgba(244,63,94,0.10),transparent_65%)]" />
           </div>
@@ -57,7 +57,7 @@ export default async function FaqPage() {
 
           <div className="relative z-10 mx-auto max-w-3xl text-center">
             <p className="mb-6 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em]">
-              <span className="h-px w-8 bg-gradient-to-r from-transparent to-emerald-400 sm:w-12" />
+              <span className="h-px w-8 bg-gradient-to-r from-transparent to-brand-400 sm:w-12" />
               {t("eyebrow")}
               <span className="h-px w-8 bg-gradient-to-l from-transparent to-orange-400 sm:w-12" />
             </p>
@@ -83,7 +83,7 @@ export default async function FaqPage() {
             ].map((section) => (
               <div key={section.key} className="space-y-6">
                 <h2 className="flex items-center gap-3 px-2 text-xl font-black tracking-tight text-neutral-900 dark:text-white">
-                  <span className="h-5 w-1 rounded-full bg-emerald-500" />
+                  <span className="h-5 w-1 rounded-full bg-brand-500" />
                   {t(`sections.${section.key}`)}
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-1">
@@ -93,9 +93,9 @@ export default async function FaqPage() {
                       <div
                         key={qKey}
                         id={anchorId}
-                        className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-emerald-500/20 dark:hover:bg-white/10"
+                        className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-brand-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-brand-500/20 dark:hover:bg-white/10"
                       >
-                        <h3 className="mb-3 flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-emerald-600 dark:text-neutral-100 dark:group-hover:text-emerald-400">
+                        <h3 className="mb-3 flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-brand-600 dark:text-neutral-100 dark:group-hover:text-brand-400">
                           {t(`questions.${qKey}.title`)}
                           <QuestionAnchor id={anchorId} />
                         </h3>
@@ -124,7 +124,7 @@ export default async function FaqPage() {
                                     href="https://discord.com/invite/8Tqm7vAd4h"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="font-semibold text-emerald-600 underline decoration-emerald-500/30 underline-offset-4 transition-colors hover:text-emerald-500 hover:decoration-emerald-500 dark:text-emerald-400 dark:decoration-emerald-400/30 dark:hover:text-emerald-300"
+                                    className="font-semibold text-brand-600 underline decoration-brand-500/30 underline-offset-4 transition-colors hover:text-brand-500 hover:decoration-brand-500 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300"
                                   >
                                     {chunks}
                                   </a>
@@ -134,7 +134,7 @@ export default async function FaqPage() {
                               return (
                                 <Link
                                   href={href}
-                                  className="font-semibold text-emerald-600 underline decoration-emerald-500/30 underline-offset-4 transition-colors hover:text-emerald-500 hover:decoration-emerald-500 dark:text-emerald-400 dark:decoration-emerald-400/30 dark:hover:text-emerald-300"
+                                  className="font-semibold text-brand-600 underline decoration-brand-500/30 underline-offset-4 transition-colors hover:text-brand-500 hover:decoration-brand-500 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300"
                                 >
                                   {chunks}
                                 </Link>
