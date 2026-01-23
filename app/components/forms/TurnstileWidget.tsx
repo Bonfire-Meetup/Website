@@ -4,6 +4,7 @@ import Script from "next/script";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { clientEnv } from "@/lib/config/env";
+import { logWarn } from "@/lib/utils/log-client";
 
 declare global {
   interface Window {
@@ -38,8 +39,8 @@ export function TurnstileWidget({
     if (widgetIdRef.current) {
       try {
         window.turnstile.remove(widgetIdRef.current);
-      } catch {
-        // Ignore
+      } catch (error) {
+        logWarn("turnstileWidget.remove_failed", { error: String(error) });
       }
       widgetIdRef.current = null;
     }
@@ -103,8 +104,8 @@ export function TurnstileWidget({
       if (widgetIdRef.current && window.turnstile) {
         try {
           window.turnstile.remove(widgetIdRef.current);
-        } catch {
-          // Ignore
+        } catch (error) {
+          logWarn("turnstileWidget.cleanup_failed", { error: String(error) });
         }
         widgetIdRef.current = null;
       }

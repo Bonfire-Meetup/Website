@@ -242,7 +242,7 @@ export function LoginClient() {
         if (formRef.current) {
           const syntheticEvent = {
             preventDefault: () => {
-              // No-op to satisfy form event interface
+              // No-op to satisfy React.FormEvent interface
             },
           } as unknown as React.FormEvent<HTMLFormElement>;
           handleVerify(syntheticEvent);

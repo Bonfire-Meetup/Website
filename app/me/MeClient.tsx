@@ -325,7 +325,6 @@ export function MeClient() {
       if (!response.ok) {
         setBoosts(prev);
       } else {
-        // Update boost allocation from response
         const data = (await response.json()) as { availableBoosts?: number };
         if (data.availableBoosts !== undefined && boostAllocation) {
           setBoostAllocation({

@@ -8,6 +8,7 @@ import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropd
 import { API_ROUTES } from "@/lib/api/routes";
 import { type ContactFormState, submitContactForm } from "@/lib/forms/form-actions";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
+import { logError } from "@/lib/utils/log-client";
 
 import { CheckIcon, CloseIcon, MailIcon } from "../shared/icons";
 import { Button } from "../ui/Button";
@@ -129,8 +130,8 @@ export function ContactForm() {
           return;
         }
       }
-    } catch {
-      // Ignore
+    } catch (error) {
+      logError("contactForm.draft_parse_failed", error);
     }
 
     localStorage.setItem(STORAGE_KEYS.DRAFT_CONTACT_FORM, JSON.stringify(draft));

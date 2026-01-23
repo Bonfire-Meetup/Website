@@ -8,6 +8,7 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { Link } from "@/i18n/navigation";
 import { API_ROUTES } from "@/lib/api/routes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { logError } from "@/lib/utils/log-client";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
 interface BoostedByProps {
@@ -48,8 +49,8 @@ export function BoostedBy({ shortId }: BoostedByProps) {
         if (isActive && data.boostedBy) {
           setBoostedBy(data.boostedBy);
         }
-      } catch {
-        // Silently fail
+      } catch (error) {
+        logError("boostedBy.load_failed", error, { shortId });
       } finally {
         if (isActive) {
           setLoading(false);

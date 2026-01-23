@@ -7,6 +7,7 @@ import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropd
 import { API_ROUTES } from "@/lib/api/routes";
 import { type TalkProposalFormState, submitTalkProposal } from "@/lib/forms/form-actions";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
+import { logError } from "@/lib/utils/log-client";
 
 import { CheckIcon, CloseIcon, MicIcon } from "../shared/icons";
 import { Button } from "../ui/Button";
@@ -146,8 +147,8 @@ export function TalkProposalForm() {
           return;
         }
       }
-    } catch {
-      // Ignore
+    } catch (error) {
+      logError("talkProposalForm.draft_parse_failed", error);
     }
 
     localStorage.setItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL, JSON.stringify(draft));

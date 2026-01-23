@@ -72,7 +72,6 @@ export const GET = async (request: Request) =>
         outcome: attempt.outcome,
       }));
 
-      // Calculate next allocation date (1st of next month)
       const nextMonth = new Date(
         boostAllocation.lastAllocationDate.getFullYear(),
         boostAllocation.lastAllocationDate.getMonth() + 1,

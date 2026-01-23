@@ -94,6 +94,5 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
 };
 
 export const getHotRecordings = unstable_cache(getHotRecordingsUncached, ["hot-picks"], {
-  // 30 minutes
   revalidate: 1800,
 });

@@ -192,7 +192,6 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
         setHasBoosted(prevBoosted);
         setBoostCount(prevCount);
 
-        // Handle no boosts available error
         if (res.status === 403) {
           try {
             const errorData = (await res.json()) as {
@@ -203,7 +202,6 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
               setAvailableBoosts(errorData.availableBoosts);
             }
           } catch {
-            // If parsing fails, reload stats
             const statsRes = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
               headers: createAuthHeaders(accessToken),
             });
