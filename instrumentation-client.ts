@@ -19,6 +19,7 @@ initBotId({
     { method: "PATCH", path: API_ROUTES.ME.PREFERENCES },
     { method: "POST", path: API_ROUTES.ME.DELETE_CHALLENGE },
     { method: "POST", path: API_ROUTES.ME.DELETE },
+    { method: "POST", path: API_ROUTES.NEWSLETTER.SUBSCRIBE },
     { method: "POST", path: PAGE_ROUTES.CONTACT },
     { method: "POST", path: PAGE_ROUTES.SPEAK },
   ],
