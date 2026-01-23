@@ -57,7 +57,7 @@ export default async function FaqPage() {
 
           <div className="relative z-10 mx-auto max-w-3xl text-center">
             <p className="mb-6 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em]">
-              <span className="h-px w-8 bg-gradient-to-r from-transparent to-brand-400 sm:w-12" />
+              <span className="to-brand-400 h-px w-8 bg-gradient-to-r from-transparent sm:w-12" />
               {t("eyebrow")}
               <span className="h-px w-8 bg-gradient-to-l from-transparent to-orange-400 sm:w-12" />
             </p>
@@ -83,7 +83,7 @@ export default async function FaqPage() {
             ].map((section) => (
               <div key={section.key} className="space-y-6">
                 <h2 className="flex items-center gap-3 px-2 text-xl font-black tracking-tight text-neutral-900 dark:text-white">
-                  <span className="h-5 w-1 rounded-full bg-brand-500" />
+                  <span className="bg-brand-500 h-5 w-1 rounded-full" />
                   {t(`sections.${section.key}`)}
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-1">
@@ -93,9 +93,9 @@ export default async function FaqPage() {
                       <div
                         key={qKey}
                         id={anchorId}
-                        className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-brand-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-brand-500/20 dark:hover:bg-white/10"
+                        className="group hover:border-brand-500/30 dark:hover:border-brand-500/20 scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:bg-white/10"
                       >
-                        <h3 className="mb-3 flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-brand-600 dark:text-neutral-100 dark:group-hover:text-brand-400">
+                        <h3 className="group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-3 flex items-center text-lg font-bold text-neutral-900 transition-colors dark:text-neutral-100">
                           {t(`questions.${qKey}.title`)}
                           <QuestionAnchor id={anchorId} />
                         </h3>
@@ -124,7 +124,7 @@ export default async function FaqPage() {
                                     href="https://discord.com/invite/8Tqm7vAd4h"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="font-semibold text-brand-600 underline decoration-brand-500/30 underline-offset-4 transition-colors hover:text-brand-500 hover:decoration-brand-500 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300"
+                                    className="text-brand-600 decoration-brand-500/30 hover:text-brand-500 hover:decoration-brand-500 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300 font-semibold underline underline-offset-4 transition-colors"
                                   >
                                     {chunks}
                                   </a>
@@ -134,7 +134,7 @@ export default async function FaqPage() {
                               return (
                                 <Link
                                   href={href}
-                                  className="font-semibold text-brand-600 underline decoration-brand-500/30 underline-offset-4 transition-colors hover:text-brand-500 hover:decoration-brand-500 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300"
+                                  className="text-brand-600 decoration-brand-500/30 hover:text-brand-500 hover:decoration-brand-500 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300 font-semibold underline underline-offset-4 transition-colors"
                                 >
                                   {chunks}
                                 </Link>
