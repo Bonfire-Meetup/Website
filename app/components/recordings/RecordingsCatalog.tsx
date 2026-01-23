@@ -2,7 +2,16 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
-import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  startTransition,
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { InfoIcon } from "@/components/shared/icons";
 import { Skeleton } from "@/components/shared/Skeletons";
@@ -120,6 +129,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const deferredSearchParams = useDeferredValue(searchParams);
   const [activeLocation, setActiveLocation] = useState<LocationFilter>(
     initialFilters?.location ?? "all",
   );
@@ -132,6 +142,10 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   const searchDebounceRef = useRef<number | null>(null);
   const isSearchDirtyRef = useRef(false);
   const lastCommittedSearchRef = useRef(initialFilters?.searchQuery ?? "");
+  const activeLocationRef = useRef(initialFilters?.location ?? "all");
+  const activeTagRef = useRef(initialFilters?.tag ?? "all");
+  const activeEpisodeRef = useRef(initialFilters?.episode ?? "all");
+  const pendingUpdateRef = useRef<string | null>(null);
   const [viewMode, setViewMode] = useState<"rows" | "grid">(initialFilters?.viewMode ?? "rows");
   const [canHover, setCanHover] = useState(false);
 
@@ -239,10 +253,22 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   );
 
   useEffect(() => {
-    const locationParam = searchParams.get("location") ?? "all";
-    const tagParam = searchParams.get("tag") ?? "all";
-    const episodeParam = searchParams.get("episode") ?? "all";
-    const queryParam = searchParams.get("q") ?? "";
+    if (isSearchDirtyRef.current) {
+      return;
+    }
+
+    const currentUrl = deferredSearchParams.toString();
+
+    if (pendingUpdateRef.current === currentUrl) {
+      pendingUpdateRef.current = null;
+      isSearchDirtyRef.current = false;
+      return;
+    }
+
+    const locationParam = deferredSearchParams.get("location") ?? "all";
+    const tagParam = deferredSearchParams.get("tag") ?? "all";
+    const episodeParam = deferredSearchParams.get("episode") ?? "all";
+    const queryParam = deferredSearchParams.get("q") ?? "";
     const isPragueLocation = locationParam === LOCATIONS.PRAGUE;
     const isZlinLocation = locationParam === LOCATIONS.ZLIN;
     const isValidLocation = isPragueLocation || isZlinLocation;
@@ -269,9 +295,20 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
       return;
     }
 
-    setActiveLocation(normalizedLocation);
-    setActiveTag(normalizedTag);
-    setActiveEpisode(normalizedEpisode);
+    if (normalizedLocation !== activeLocationRef.current) {
+      setActiveLocation(normalizedLocation);
+      activeLocationRef.current = normalizedLocation;
+    }
+
+    if (normalizedTag !== activeTagRef.current) {
+      setActiveTag(normalizedTag);
+      activeTagRef.current = normalizedTag;
+    }
+
+    if (normalizedEpisode !== activeEpisodeRef.current) {
+      setActiveEpisode(normalizedEpisode);
+      activeEpisodeRef.current = normalizedEpisode;
+    }
     const isSearchNotDirty = !isSearchDirtyRef.current;
     const isQueryUnchanged = normalizedQuery === lastCommittedSearchRef.current;
     const shouldUpdateSearch = isSearchNotDirty || isQueryUnchanged;
@@ -281,14 +318,22 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
       lastCommittedSearchRef.current = normalizedQuery;
       isSearchDirtyRef.current = false;
     }
-  }, [searchParams, tagOptions, episodeOptions, initialFilters]);
+  }, [deferredSearchParams, tagOptions, episodeOptions, initialFilters, searchQuery]);
 
   const updateFilters = useCallback(
-    (location: LocationFilter, tag: string, episode: string, search = "") => {
+    (
+      location: LocationFilter,
+      tag: string,
+      episode: string,
+      search = "",
+      options?: { updateMode?: "router" | "history" },
+    ) => {
       const trimmedSearch = search.trim();
       lastCommittedSearchRef.current = trimmedSearch;
-      isSearchDirtyRef.current = false;
-      const params = new URLSearchParams(searchParams.toString());
+      activeLocationRef.current = location;
+      activeTagRef.current = tag;
+      activeEpisodeRef.current = episode;
+      const params = new URLSearchParams();
 
       if (location === "all") {
         params.delete("location");
@@ -315,9 +360,23 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
       }
 
       const queryString = params.toString();
-      router.replace(queryString ? `${PAGE_ROUTES.LIBRARY}?${queryString}` : PAGE_ROUTES.LIBRARY);
+      const nextUrl = queryString ? `${PAGE_ROUTES.LIBRARY}?${queryString}` : PAGE_ROUTES.LIBRARY;
+
+      if (options?.updateMode === "history") {
+        if (typeof window !== "undefined") {
+          window.history.replaceState(null, "", nextUrl);
+        }
+        pendingUpdateRef.current = null;
+        isSearchDirtyRef.current = false;
+        return;
+      }
+
+      pendingUpdateRef.current = queryString;
+      startTransition(() => {
+        router.replace(nextUrl);
+      });
     },
-    [router, searchParams],
+    [router],
   );
 
   const filteredRecordings = useMemo(() => {
@@ -414,26 +473,28 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   }, [hasActiveFilters]);
 
   useEffect(() => {
-    const trimmed = searchQuery.trim();
-    const currentQueryParam = searchParams.get("q") ?? "";
+    if (isSearchDirtyRef.current) {
+      const trimmed = searchQuery.trim();
+      const currentQueryParam = searchParams.get("q") ?? "";
 
-    if (trimmed === currentQueryParam) {
-      return;
-    }
+      if (trimmed === currentQueryParam) {
+        return;
+      }
 
-    if (searchDebounceRef.current) {
-      clearTimeout(searchDebounceRef.current);
-    }
-
-    searchDebounceRef.current = window.setTimeout(() => {
-      updateFilters(activeLocation, activeTag, activeEpisode, trimmed);
-    }, 350);
-
-    return () => {
       if (searchDebounceRef.current) {
         clearTimeout(searchDebounceRef.current);
       }
-    };
+
+      searchDebounceRef.current = window.setTimeout(() => {
+        updateFilters(activeLocation, activeTag, activeEpisode, trimmed, { updateMode: "history" });
+      }, 350);
+
+      return () => {
+        if (searchDebounceRef.current) {
+          clearTimeout(searchDebounceRef.current);
+        }
+      };
+    }
   }, [searchQuery, activeLocation, activeTag, activeEpisode, searchParams, updateFilters]);
 
   const handleBrowseAll = () => {
@@ -533,6 +594,28 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
     return [...nextRows, ...locationRows, ...tagRows];
   }, [latestRecordings, locationRows, tagRows, tRows]);
 
+  const handleLocationChange = useCallback(
+    (location: LocationFilter) => updateFilters(location, activeTag, activeEpisode, searchQuery),
+    [updateFilters, activeTag, activeEpisode, searchQuery],
+  );
+
+  const handleTagChange = useCallback(
+    (tag: string) => updateFilters(activeLocation, tag, activeEpisode, searchQuery),
+    [updateFilters, activeLocation, activeEpisode, searchQuery],
+  );
+
+  const handleEpisodeChange = useCallback(
+    (episode: string) => updateFilters(activeLocation, activeTag, episode, searchQuery),
+    [updateFilters, activeLocation, activeTag, searchQuery],
+  );
+
+  const handleReset = useCallback(() => updateFilters("all", "all", "all", ""), [updateFilters]);
+
+  const handleViewRows = useCallback(() => {
+    setViewMode("rows");
+    updateFilters("all", "all", "all", "");
+  }, [updateFilters]);
+
   return (
     <section className="relative px-4 pb-24 sm:px-6 lg:px-8">
       <div className="relative mx-auto max-w-7xl">
@@ -548,19 +631,12 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
             tagDropdownOptions={tagDropdownOptions}
             episodeDropdownOptions={episodeDropdownOptions}
             episodeDropdownGroups={episodeDropdownGroups}
-            onLocationChange={(location) =>
-              updateFilters(location, activeTag, activeEpisode, searchQuery)
-            }
-            onTagChange={(tag) => updateFilters(activeLocation, tag, activeEpisode, searchQuery)}
-            onEpisodeChange={(episode) =>
-              updateFilters(activeLocation, activeTag, episode, searchQuery)
-            }
+            onLocationChange={handleLocationChange}
+            onTagChange={handleTagChange}
+            onEpisodeChange={handleEpisodeChange}
             onSearchChange={setSearchQuery}
-            onReset={() => updateFilters("all", "all", "all", "")}
-            onViewRows={() => {
-              setViewMode("rows");
-              updateFilters("all", "all", "all", "");
-            }}
+            onReset={handleReset}
+            onViewRows={handleViewRows}
             isSearchDirtyRef={isSearchDirtyRef}
           />
         )}

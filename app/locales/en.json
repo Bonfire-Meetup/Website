@@ -130,7 +130,8 @@
     "boosts": "Boosts",
     "boostItUp": "Boost it",
     "returnToPlayer": "Return to player",
-    "closePlayer": "Close player"
+    "closePlayer": "Close player",
+    "empty": "No recordings found."
   },
   "press": {
     "eyebrow": "Media",

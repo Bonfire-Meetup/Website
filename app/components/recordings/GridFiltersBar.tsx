@@ -2,6 +2,7 @@
 
 import type { CatalogRecording, LocationFilter } from "./RecordingsCatalogTypes";
 import { useTranslations } from "next-intl";
+import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { LOCATIONS } from "@/lib/config/constants";
 
@@ -17,7 +18,7 @@ const locationOptions: {
   { labelKey: "zlin", value: LOCATIONS.ZLIN },
 ];
 
-export function GridFiltersBar({
+export const GridFiltersBar = memo(function GridFiltersBar({
   recordings,
   activeLocation,
   activeTag,
@@ -54,6 +55,26 @@ export function GridFiltersBar({
   const t = useTranslations("libraryPage.filters");
   const tSearch = useTranslations("libraryPage.search");
   const tView = useTranslations("libraryPage.view");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [localValue, setLocalValue] = useState(searchQuery ?? "");
+  const wasFocusedRef = useRef(false);
+
+  useEffect(() => {
+    if (!isSearchDirtyRef.current) {
+      setLocalValue(searchQuery ?? "");
+    }
+  }, [searchQuery, isSearchDirtyRef]);
+
+  useLayoutEffect(() => {
+    if (wasFocusedRef.current && inputRef.current && document.activeElement !== inputRef.current) {
+      const { selectionStart } = inputRef.current;
+      const { selectionEnd } = inputRef.current;
+      inputRef.current.focus();
+      if (selectionStart !== null && selectionEnd !== null) {
+        inputRef.current.setSelectionRange(selectionStart, selectionEnd);
+      }
+    }
+  });
 
   return (
     <div className="glass relative z-10 mb-8 rounded-2xl px-4 py-3">
@@ -171,11 +192,20 @@ export function GridFiltersBar({
 
         <div className="relative flex-1">
           <input
+            ref={inputRef}
             type="search"
-            value={searchQuery}
+            value={localValue}
+            onFocus={() => {
+              wasFocusedRef.current = true;
+            }}
+            onBlur={() => {
+              wasFocusedRef.current = false;
+            }}
             onChange={(e) => {
+              const newValue = e.target.value;
+              setLocalValue(newValue);
               isSearchDirtyRef.current = true;
-              onSearchChange(e.target.value);
+              onSearchChange(newValue);
             }}
             placeholder={tSearch("placeholder")}
             aria-label={tSearch("label")}
@@ -215,4 +245,4 @@ export function GridFiltersBar({
       </div>
     </div>
   );
-}
+});

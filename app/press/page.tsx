@@ -161,7 +161,7 @@ export default async function PressPage() {
 
           <section className="glass-card no-hover-pop p-8 sm:p-12">
             <div className="flex flex-col gap-4">
-              <div className="max-w-3xl space-y-4">
+              <div className="space-y-4">
                 <h2 className="text-2xl font-bold text-neutral-900 dark:text-white">
                   {t("about.title")}
                 </h2>

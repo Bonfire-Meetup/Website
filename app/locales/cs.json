@@ -130,7 +130,8 @@
     "boosts": "Boosty",
     "boostItUp": "Přidat boost",
     "returnToPlayer": "Zpět k přehrávači",
-    "closePlayer": "Zavřít přehrávač"
+    "closePlayer": "Zavřít přehrávač",
+    "empty": "Žádné záznamy nenalezeny."
   },
   "press": {
     "eyebrow": "Média",
