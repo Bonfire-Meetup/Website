@@ -96,11 +96,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <MotionManager />
-          <ThemeProvider>
-            <GlobalPlayerProvider>
-              <div className="relative flex min-h-screen flex-col">{children}</div>
-            </GlobalPlayerProvider>
-          </ThemeProvider>
+          <div className="relative flex min-h-screen flex-col">
+            <ThemeProvider>
+              <GlobalPlayerProvider>{children}</GlobalPlayerProvider>
+            </ThemeProvider>
+          </div>
         </NextIntlClientProvider>
         <Analytics />
         <SpeedInsights />
