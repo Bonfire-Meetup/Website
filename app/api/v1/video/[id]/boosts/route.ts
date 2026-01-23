@@ -6,6 +6,7 @@ import {
   addVideoBoost,
   consumeBoost,
   getVideoBoostStats,
+  getVideoBoostedUsers,
   getUserBoostAllocation,
   refundBoost,
   removeVideoBoost,
@@ -42,21 +43,38 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         return NextResponse.json({ error: "Rate limited" }, { status: 429 });
       }
 
-      const stats = await getVideoBoostStats(videoId, userId);
+      const [stats, boostedUsers] = await Promise.all([
+        getVideoBoostStats(videoId, userId),
+        getVideoBoostedUsers(videoId),
+      ]);
+
+      const response: {
+        count: number;
+        hasBoosted: boolean;
+        availableBoosts?: number;
+        boostedBy?: {
+          publicUsers: {
+            userId: string;
+            name: string | null;
+            emailHash: string;
+          }[];
+          privateCount: number;
+        };
+      } = {
+        ...stats,
+        boostedBy: {
+          privateCount: boostedUsers.privateCount,
+          publicUsers: boostedUsers.publicUsers,
+        },
+      };
 
       // Add available boosts for authenticated users
       if (userId && authResult.status === "valid") {
         const allocation = await getUserBoostAllocation(userId);
-        const statsWithAllocation = {
-          ...stats,
-          availableBoosts: allocation.availableBoosts,
-        };
-        const validated = videoBoostStatsSchema.parse(statsWithAllocation);
-
-        return NextResponse.json(validated, { headers: { "Cache-Control": "no-store" } });
+        response.availableBoosts = allocation.availableBoosts;
       }
 
-      const validated = videoBoostStatsSchema.parse(stats);
+      const validated = videoBoostStatsSchema.parse(response);
 
       return NextResponse.json(validated, { headers: { "Cache-Control": "no-store" } });
     } catch (error) {

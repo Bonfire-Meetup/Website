@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 import { BOOST_CONFIG } from "@/lib/config/constants";
 import { getDatabaseClient } from "@/lib/data/db";
 import { logError } from "@/lib/utils/log";
@@ -219,6 +221,62 @@ export const refundBoost = async (userId: string): Promise<void> => {
     `;
   } catch (error) {
     logError("data.boosts.refund_failed", error, { userId });
+    throw error;
+  }
+};
+
+export interface BoostedUser {
+  userId: string;
+  name: string | null;
+  emailHash: string;
+}
+
+export const getVideoBoostedUsers = async (
+  videoId: string,
+): Promise<{
+  publicUsers: BoostedUser[];
+  privateCount: number;
+}> => {
+  try {
+    const sql = getDatabaseClient();
+    const rows = (await sql`
+      SELECT 
+        u.id as user_id,
+        u.name,
+        u.email,
+        u.public_profile
+      FROM video_boosts vb
+      JOIN app_user u ON vb.user_id = u.id
+      WHERE vb.video_id = ${videoId}
+      ORDER BY vb.created_at DESC
+    `) as {
+      user_id: string;
+      name: string | null;
+      email: string;
+      public_profile: boolean;
+    }[];
+
+    const hashEmail = (email: string): string =>
+      crypto.createHash("sha256").update(email.toLowerCase().trim()).digest("hex");
+
+    const publicUsers: BoostedUser[] = [];
+    let privateCount = 0;
+
+    for (const row of rows) {
+      if (row.public_profile) {
+        publicUsers.push({
+          emailHash: hashEmail(row.email),
+          name: row.name,
+          userId: row.user_id,
+        });
+      } else {
+        privateCount++;
+      }
+    }
+
+    return { privateCount, publicUsers };
+  } catch (error) {
+    logError("data.boosts.users_fetch_failed", error, { videoId });
     throw error;
   }
 };

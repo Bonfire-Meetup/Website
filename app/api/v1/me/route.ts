@@ -56,6 +56,7 @@ export const GET = async (request: Request) =>
           }
 
           return {
+            boostedAt: boost.created_at.toISOString(),
             date: recording.date,
             shortId: recording.shortId,
             slug: getWatchSlug(recording),

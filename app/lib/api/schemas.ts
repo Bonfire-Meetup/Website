@@ -15,6 +15,18 @@ export const videoLikeMutationSchema = z.object({
 
 export const videoBoostStatsSchema = z.object({
   availableBoosts: z.number().int().min(0).max(BOOST_CONFIG.MAX_BOOSTS).optional(),
+  boostedBy: z
+    .object({
+      privateCount: z.number().int().min(0),
+      publicUsers: z.array(
+        z.object({
+          emailHash: z.string(),
+          name: z.string().nullable(),
+          userId: z.string().uuid(),
+        }),
+      ),
+    })
+    .optional(),
   count: z.number().int().min(0),
   hasBoosted: z.boolean(),
 });

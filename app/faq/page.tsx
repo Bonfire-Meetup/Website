@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
+import { QuestionAnchor } from "@/components/faq/QuestionAnchor";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { BoltIcon, FireIcon } from "@/components/shared/icons";
+import { Link } from "@/i18n/navigation";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
@@ -70,53 +73,129 @@ export default async function FaqPage() {
         </section>
 
         <section className="relative mx-auto max-w-4xl px-4 pb-24">
-          <div className="grid gap-6">
-            <div className="rounded-3xl border border-neutral-200/70 bg-white/70 p-6 shadow-sm sm:p-8 dark:border-white/10 dark:bg-white/5">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <h2 className="text-xl font-black tracking-tight text-neutral-900 dark:text-white">
-                  {t("sparks.title")}
+          <div className="space-y-16">
+            {/* General & Community Sections */}
+            {[
+              { key: "general", questions: ["whatIsBonfire", "howOften", "entryFee"] },
+              { key: "participation", questions: ["howToSpeaker", "howToJoin"] },
+              { key: "community", questions: ["isRecorded", "discord", "photos"] },
+              { key: "technical", questions: ["howToSignIn", "howToRegister", "howToDelete"] },
+            ].map((section) => (
+              <div key={section.key} className="space-y-6">
+                <h2 className="flex items-center gap-3 px-2 text-xl font-black tracking-tight text-neutral-900 dark:text-white">
+                  <span className="h-5 w-1 rounded-full bg-emerald-500" />
+                  {t(`sections.${section.key}`)}
                 </h2>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
-                  <FireIcon className="h-3.5 w-3.5" aria-hidden="true" />
-                  {tRecordings("spark")}
-                </span>
-              </div>
-              <p className="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
-                {t("sparks.body")}
-              </p>
-              <div className="mt-4 rounded-2xl border border-neutral-200/60 bg-neutral-50/70 px-4 py-3 text-sm text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
-                <div className="font-semibold text-neutral-900 dark:text-white">
-                  {t("impact.title")}
-                </div>
-                <div className="mt-1">{t("sparks.impact")}</div>
-              </div>
-            </div>
+                <div className="grid gap-4 sm:grid-cols-1">
+                  {section.questions.map((qKey) => {
+                    const anchorId = qKey.replace(/[A-Z]/g, (l) => `-${l.toLowerCase()}`);
+                    return (
+                      <div
+                        key={qKey}
+                        id={anchorId}
+                        className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-emerald-500/20 dark:hover:bg-white/10"
+                      >
+                        <h3 className="mb-3 flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-emerald-600 dark:text-neutral-100 dark:group-hover:text-emerald-400">
+                          {t(`questions.${qKey}.title`)}
+                          <QuestionAnchor id={anchorId} />
+                        </h3>
+                        <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                          {t.rich(`questions.${qKey}.answer`, {
+                            link: (chunks) => {
+                              let href: string = PAGE_ROUTES.HOME;
+                              if (qKey === "howToSpeaker") {
+                                href = PAGE_ROUTES.SPEAK;
+                              }
+                              if (qKey === "howToJoin") {
+                                href = PAGE_ROUTES.CONTACT_WITH_TYPE("crew");
+                              }
+                              if (qKey === "howToDelete") {
+                                href = PAGE_ROUTES.ME;
+                              }
 
-            <div className="rounded-3xl border border-neutral-200/70 bg-white/70 p-6 shadow-sm sm:p-8 dark:border-white/10 dark:bg-white/5">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <h2 className="text-xl font-black tracking-tight text-neutral-900 dark:text-white">
-                  {t("boosts.title")}
-                </h2>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
-                  <BoltIcon className="h-3.5 w-3.5" aria-hidden="true" />
-                  {tRecordings("boost")}
-                </span>
-              </div>
-              <p className="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
-                {t("boosts.body")}
-              </p>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl border border-neutral-200/60 bg-neutral-50/70 px-4 py-3 text-sm text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
-                  <div className="font-semibold text-neutral-900 dark:text-white">
-                    {t("impact.title")}
-                  </div>
-                  <div className="mt-1">{t("boosts.impact")}</div>
+                              return (
+                                <Link
+                                  href={href}
+                                  className="font-semibold text-emerald-600 underline decoration-emerald-500/30 underline-offset-4 transition-colors hover:text-emerald-500 hover:decoration-emerald-500 dark:text-emerald-400 dark:decoration-emerald-400/30 dark:hover:text-emerald-300"
+                                >
+                                  {chunks}
+                                </Link>
+                              );
+                            },
+                          })}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="rounded-2xl border border-neutral-200/60 bg-neutral-50/70 px-4 py-3 text-sm text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
-                  <div className="font-semibold text-neutral-900 dark:text-white">
-                    {t("boosts.limitsTitle")}
+              </div>
+            ))}
+
+            {/* Platform Engagement Section */}
+            <div className="space-y-6">
+              <h2 className="flex items-center gap-3 px-2 text-xl font-black tracking-tight text-neutral-900 dark:text-white">
+                <span className="h-5 w-1 rounded-full bg-orange-500" />
+                {t("sections.engagement")}
+              </h2>
+              <div className="grid gap-6">
+                {/* Sparks Card */}
+                <div
+                  id="sparks"
+                  className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-rose-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-rose-500/20 dark:hover:bg-white/10"
+                >
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <h3 className="flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-rose-600 dark:text-neutral-100 dark:group-hover:text-rose-400">
+                      {t("sparks.title")}
+                      <QuestionAnchor id="sparks" />
+                    </h3>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
+                      <FireIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                      {tRecordings("spark")}
+                    </span>
                   </div>
-                  <div className="mt-1">{t("boosts.limits")}</div>
+                  <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                    {t("sparks.body")}
+                  </p>
+                  <div className="mt-6 rounded-2xl border border-neutral-200/60 bg-neutral-50/70 px-4 py-3 text-sm text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
+                    <div className="font-semibold text-neutral-900 dark:text-white">
+                      {t("impact.title")}
+                    </div>
+                    <div className="mt-1">{t("sparks.impact")}</div>
+                  </div>
+                </div>
+
+                {/* Boosts Card */}
+                <div
+                  id="boosts"
+                  className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-emerald-500/20 dark:hover:bg-white/10"
+                >
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <h3 className="flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-emerald-600 dark:text-neutral-100 dark:group-hover:text-emerald-400">
+                      {t("boosts.title")}
+                      <QuestionAnchor id="boosts" />
+                    </h3>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
+                      <BoltIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                      {tRecordings("boost")}
+                    </span>
+                  </div>
+                  <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                    {t("boosts.body")}
+                  </p>
+                  <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-2xl border border-neutral-200/60 bg-neutral-50/70 px-4 py-3 text-sm text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
+                      <div className="font-semibold text-neutral-900 dark:text-white">
+                        {t("impact.title")}
+                      </div>
+                      <div className="mt-1">{t("boosts.impact")}</div>
+                    </div>
+                    <div className="rounded-2xl border border-neutral-200/60 bg-neutral-50/70 px-4 py-3 text-sm text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
+                      <div className="font-semibold text-neutral-900 dark:text-white">
+                        {t("boosts.limitsTitle")}
+                      </div>
+                      <div className="mt-1">{t("boosts.limits")}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

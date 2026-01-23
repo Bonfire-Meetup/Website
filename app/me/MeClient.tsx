@@ -37,6 +37,7 @@ interface Profile {
 }
 
 interface BoostedRecording {
+  boostedAt: string;
   shortId: string;
   title: string;
   speaker: string[];

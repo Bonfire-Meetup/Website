@@ -145,6 +145,10 @@
     "boosts": "Boosty",
     "boostItUp": "Přidat boost",
     "boostNoBoostsAvailable": "Vyčerpali jste všechny boosty tento měsíc. Více příští měsíc!",
+    "boostedBy": "Boostnuto od",
+    "and": "a",
+    "onePrivateBooster": "1 soukromý",
+    "multiplePrivateBoosters": "{count} soukromých",
     "returnToPlayer": "Zpět k přehrávači",
     "closePlayer": "Zavřít přehrávač",
     "empty": "Žádné záznamy nenalezeny."
@@ -420,11 +424,17 @@
     "timelineTitle": "Timeline | {brandName}",
     "timelineDescription": "Projděte si epizody Bonfire se záznamy a fotoalby.",
     "faqTitle": "FAQ | {brandName}",
-    "faqDescription": "Zjistěte, jak fungují Sparks a Boosty a jak ovlivňují viditelnost přednášek na {brandName}.",
+    "faqDescription": "Najděte odpovědi na otázky k našim českým gamedev meetupům, zapojení do komunity a fungování Sparks a Boostů.",
     "contactTitle": "Kontakt | {brandName}",
     "contactDescription": "Napište nám. Otázky, zpětná vazba nebo partnerská spolupráce.",
     "talkProposalTitle": "Navrhnout přednášku | {brandName}",
     "talkProposalDescription": "Pošlete návrh přednášky pro {brandName}. Sdílejte své znalosti s českou gamedev komunitou.",
+    "communityMember": "Člen komunity",
+    "userProfileTitle": "{name} - Komunitní profil | {brandName}",
+    "userProfileDescription": "Podívejte se na gamedev profil člena {name} na {brandName}. Členem od {memberSince}.",
+    "userProfileNotFound": "Profil uživatele nenalezen | {brandName}",
+    "privateProfileTitle": "Soukromý profil | {brandName}",
+    "privateProfileDescription": "Tento komunitní profil je soukromý.",
     "recordingNotFound": "Záznam nenalezen",
     "siteName": "{brandName}",
     "author": "{brandName}",
@@ -445,7 +455,60 @@
   "faqPage": {
     "eyebrow": "FAQ",
     "title": "Často kladené dotazy",
-    "subtitle": "Rychlé odpovědi k tomu, jak web funguje - včetně engagementu, viditelnosti videí a členských funkcí.",
+    "subtitle": "Rychlé odpovědi k tomu, jak web funguje - včetně meetupu, komunity a členských funkcí.",
+    "sections": {
+      "general": "Obecné",
+      "participation": "Zapojení",
+      "community": "Obsah a komunita",
+      "technical": "Technické",
+      "engagement": "Platformové funkce"
+    },
+    "questions": {
+      "whatIsBonfire": {
+        "title": "Co je to Bonfire Events?",
+        "answer": "Bonfire je česká komunita herních vývojářů, která pořádá pravidelná setkání v Praze a ve Zlíně. Spojujeme profesionály, studenty a nezávislé tvůrce za účelem sdílení znalostí, networkingu a rozvoje lokální herní scény."
+      },
+      "howOften": {
+        "title": "Jak často pořádáte meetupy?",
+        "answer": "Meetupy pořádáme zpravidla jednou za čtvrtletí (každé 3 měsíce) v Praze i ve Zlíně. Sledujte naši sekci \"Nadcházející\" nebo se přihlaste k odběru newsletteru, aby vám neuniklo další pokračování."
+      },
+      "entryFee": {
+        "title": "Platí se vstupné?",
+        "answer": "Všechny naše meetupy jsou díky našim partnerům zdarma. Kapacita je však omezená, proto je vždy nutná registrace (obvykle přes Lu.ma)."
+      },
+      "howToSpeaker": {
+        "title": "Jak se můžu stát speakerem?",
+        "answer": "Stále hledáme nové hlasy! Ať už jde o technický hluboký ponor, post-mortem nebo krátký lightning talk, svůj nápad můžete poslat přes stránku <link>Navrhnout přednášku</link>."
+      },
+      "howToJoin": {
+        "title": "Jak se můžu přidat k týmu (Crew)?",
+        "answer": "Bonfire pohání nadšení dobrovolníci. Pokud chcete pomoct s organizací, focením, videem nebo čímkoli jiným, ozvěte se nám přes <link>kontaktní formulář</link> a jako typ dotazu zvolte \"Crew\"."
+      },
+      "isRecorded": {
+        "title": "Jsou všechny přednášky nahrávané?",
+        "answer": "Snažíme se nahrávat a sdílet co nejvíce přednášek v naší Knihovně. Některé bloky (jako workshopy nebo první epizody) však nahrávky mít nemusí kvůli technickým omezením nebo přání speakera."
+      },
+      "discord": {
+        "title": "Máte komunitní Discord?",
+        "answer": "Ano! Můžete se přidat na náš Discord server a pokecat s ostatními vývojáři, sdílet své projekty nebo dostávat čerstvé info o akcích. Odkaz najdete v patičce."
+      },
+      "photos": {
+        "title": "Můžu použít fotky z akcí?",
+        "answer": "Fotky sdílíme v rámci komunitní politiky. Budeme rádi, když je budete sdílet na sítích (označení nás potěší!), ale pro komerční užití nás prosím nejdřív kontaktujte. Detaily najdete v našich Zásadách pro média."
+      },
+      "howToSignIn": {
+        "title": "Jak se přihlásím?",
+        "answer": "Používáme přihlašování bez hesla. Stačí zadat e-mail a my vám pošleme 6místný ověřovací kód. Žádná hesla si pamatovat nemusíte!"
+      },
+      "howToRegister": {
+        "title": "Jak se můžu zaregistrovat?",
+        "answer": "Žádný samostatný registrační proces nemáme. Stačí se poprvé přihlásit pomocí e-mailu a my vám účet automaticky vytvoříme. Je to tak jednoduché!"
+      },
+      "howToDelete": {
+        "title": "Můžu svůj účet smazat?",
+        "answer": "Ano, nad svými údaji máte plnou kontrolu. Svůj účet i veškerou související aktivitu můžete kdykoli trvale smazat na své <link>profilové stránce (/me)</link>. Upozorňujeme, že tato akce je nevratná."
+      }
+    },
     "impact": {
       "title": "Jak to ovlivňuje viditelnost"
     },
@@ -882,13 +945,16 @@
     },
     "publicProfile": {
       "title": "Veřejný profil",
-      "body": "Zobrazit váš profil ostatním členům komunity.",
+      "body": "Veřejná viditelnost, seznam boostů a zmínky u videí.",
       "enabled": "Veřejný profil povolen",
       "disabled": "Veřejný profil vypnut"
     },
     "userProfile": {
       "title": "Profil uživatele",
       "memberSince": "Člen od",
+      "boosted": {
+        "title": "Boostnutá videa"
+      },
       "private": {
         "title": "Soukromý profil",
         "message": "Tento profil je soukromý a není k dispozici pro prohlížení."

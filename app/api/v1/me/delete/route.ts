@@ -90,6 +90,9 @@ export const POST = async (request: Request) =>
       await runTransaction((sql) => [
         sql`DELETE FROM auth_challenge WHERE email = ${email}`,
         sql`DELETE FROM auth_attempt WHERE user_id = ${auth.userId}`,
+        sql`DELETE FROM newsletter_subscription WHERE email = ${email}`,
+        sql`DELETE FROM contact_submissions WHERE email = ${email}`,
+        sql`DELETE FROM talk_proposals WHERE email = ${email}`,
         sql`DELETE FROM app_user WHERE id = ${auth.userId}`,
       ]);
     } catch (error) {

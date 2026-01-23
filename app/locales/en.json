@@ -145,6 +145,10 @@
     "boosts": "Boosts",
     "boostItUp": "Boost it",
     "boostNoBoostsAvailable": "You've used all your boosts this month. More coming next month!",
+    "boostedBy": "Boosted by",
+    "and": "and",
+    "onePrivateBooster": "1 private",
+    "multiplePrivateBoosters": "{count} private",
     "returnToPlayer": "Return to player",
     "closePlayer": "Close player",
     "empty": "No recordings found."
@@ -420,11 +424,17 @@
     "timelineTitle": "Timeline | {brandName}",
     "timelineDescription": "Explore Bonfire episodes with links to recordings and photo albums.",
     "faqTitle": "FAQ | {brandName}",
-    "faqDescription": "Learn how Sparks and Boosts work and how they affect talk visibility on {brandName}.",
+    "faqDescription": "Find answers about our Czech game dev meetups, community participation, and how platform features like Sparks and Boosts work.",
     "contactTitle": "Contact Us | {brandName}",
     "contactDescription": "Get in touch with the {brandName} team. Questions, feedback, or partnership inquiries welcome.",
     "talkProposalTitle": "Propose a Talk | {brandName}",
     "talkProposalDescription": "Submit your talk proposal for {brandName}. Share your knowledge with the Czech game dev community.",
+    "communityMember": "Community Member",
+    "userProfileTitle": "{name} - Community Profile | {brandName}",
+    "userProfileDescription": "Check out the gamedev community profile of {name} on {brandName}. Member since {memberSince}.",
+    "userProfileNotFound": "User Profile Not Found | {brandName}",
+    "privateProfileTitle": "Private Profile | {brandName}",
+    "privateProfileDescription": "This community profile is private.",
     "recordingNotFound": "Recording Not Found",
     "siteName": "{brandName}",
     "author": "{brandName}",
@@ -445,7 +455,60 @@
   "faqPage": {
     "eyebrow": "FAQ",
     "title": "Frequently asked questions",
-    "subtitle": "Quick answers about how the site works - including video engagement, visibility, and member features.",
+    "subtitle": "Quick answers about how the site works - including meetups, community, and platform features.",
+    "sections": {
+      "general": "General",
+      "participation": "Participation",
+      "community": "Content & Community",
+      "technical": "Technical",
+      "engagement": "Platform Engagement"
+    },
+    "questions": {
+      "whatIsBonfire": {
+        "title": "What is Bonfire Events?",
+        "answer": "Bonfire is a Czech game developer community that organizes regular meetups in Prague and Zlín. We bring together professionals, students, and indie creators to share knowledge, network, and grow the local game dev scene."
+      },
+      "howOften": {
+        "title": "How often do you host meetups?",
+        "answer": "We host meetups quarterly (every 3 months) in both Prague and Zlín. Check our \"Upcoming\" section or sign up for our newsletter to get notified about the next episode."
+      },
+      "entryFee": {
+        "title": "Is there an entry fee?",
+        "answer": "All of our meetups are free to attend, thanks to our generous partners. However, space is limited, so registration (usually via Lu.ma) is always required."
+      },
+      "howToSpeaker": {
+        "title": "How can I become a speaker?",
+        "answer": "We’re always looking for new voices! Whether it's a technical deep-dive, a post-mortem, or a short lightning talk, you can submit your idea via our <link>Propose a Talk</link> page."
+      },
+      "howToJoin": {
+        "title": "How can I join the crew?",
+        "answer": "Bonfire is powered by passionate volunteers. If you want to help with operations, photography, video, or anything else, reach out to us via the <link>contact form</link> and select \"Crew\" as the inquiry type."
+      },
+      "isRecorded": {
+        "title": "Are all sessions recorded?",
+        "answer": "We aim to record and share as many talks as possible in our Library. Some sessions (like workshops or early episodes) may not have recordings due to technical constraints or speaker preference."
+      },
+      "discord": {
+        "title": "Is there a community Discord?",
+        "answer": "Yes! You can join our Discord server to chat with other game developers, share your projects, and stay updated on events. The link is in the footer."
+      },
+      "photos": {
+        "title": "Can I use the event photos?",
+        "answer": "Our photos are shared under a community-friendly policy. You're welcome to share them on social media (we love tags!), but for commercial use, please contact us first. See our Media Policy for details."
+      },
+      "howToSignIn": {
+        "title": "How do I sign in?",
+        "answer": "We use passwordless authentication. Simply enter your email address and we'll send you a 6-digit verification code. No need to remember or manage any passwords!"
+      },
+      "howToRegister": {
+        "title": "How do I register?",
+        "answer": "There is no separate registration process. Simply sign in with your email for the first time, and we'll automatically create an account for you. It's that simple!"
+      },
+      "howToDelete": {
+        "title": "Can I delete my account?",
+        "answer": "Yes, you have full control over your data. You can manually delete your account and all associated activity at any time from your <link>Account (/me)</link> page. Please note that this action is permanent and cannot be undone."
+      }
+    },
     "impact": {
       "title": "How it impacts visibility"
     },
@@ -882,13 +945,16 @@
     },
     "publicProfile": {
       "title": "Public profile",
-      "body": "Make your profile visible to other community members.",
+      "body": "Public visibility, profile boost list, and boost mentions.",
       "enabled": "Public profile enabled",
       "disabled": "Public profile disabled"
     },
     "userProfile": {
       "title": "User Profile",
       "memberSince": "Member since",
+      "boosted": {
+        "title": "Boosted videos"
+      },
       "private": {
         "title": "Private Profile",
         "message": "This profile is private and not available for viewing."

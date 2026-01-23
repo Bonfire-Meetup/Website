@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDate } from "@/lib/utils/locale";
 
+import { BoostedBy } from "./BoostedBy";
 import { LikeBoostButtons } from "./LikeBoostButtons";
 import { RelatedVideosSection } from "./RelatedVideosSection";
 import { ShareMenu } from "./ShareMenu";
@@ -89,19 +90,24 @@ export function RecordingPlayer({
 
               <div ref={inlinePlayerRef} className="relative aspect-video w-full bg-black" />
 
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200/40 px-5 py-4 sm:px-6 dark:border-neutral-700/40">
-                <LikeBoostButtons shortId={recording.shortId} />
+              <div className="border-b border-neutral-200/40 dark:border-neutral-700/40">
+                <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-6">
+                  <LikeBoostButtons shortId={recording.shortId} />
 
-                <div className="flex items-center gap-3">
-                  <ShareMenu shareUrl={shareUrl} shareText={shareText} />
-                  <button
-                    type="button"
-                    onClick={() => setCinemaMode(!cinemaMode)}
-                    className="hidden cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
-                  >
-                    <CinemaIcon className="h-3.5 w-3.5" />
-                    {cinemaMode ? t("exitCinema") : t("cinema")}
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <ShareMenu shareUrl={shareUrl} shareText={shareText} />
+                    <button
+                      type="button"
+                      onClick={() => setCinemaMode(!cinemaMode)}
+                      className="hidden cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+                    >
+                      <CinemaIcon className="h-3.5 w-3.5" />
+                      {cinemaMode ? t("exitCinema") : t("cinema")}
+                    </button>
+                  </div>
+                </div>
+                <div className="px-5 pb-4 sm:px-6">
+                  <BoostedBy shortId={recording.shortId} />
                 </div>
               </div>
 

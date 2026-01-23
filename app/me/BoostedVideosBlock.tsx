@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 interface BoostedRecording {
+  boostedAt: string;
   shortId: string;
   title: string;
   speaker: string[];
@@ -54,31 +55,42 @@ export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedV
           </div>
         ) : (
           <div className="-mx-4 max-h-[280px] space-y-2 overflow-y-auto overscroll-contain px-4 sm:max-h-[320px]">
-            {items.map((boost) => (
-              <div
-                key={boost.shortId}
-                className="group flex items-center justify-between gap-3 rounded-xl bg-neutral-50 px-3 py-2.5 transition hover:bg-neutral-100 dark:bg-white/5 dark:hover:bg-white/10"
-              >
-                <div className="min-w-0">
-                  <Link
-                    href={PAGE_ROUTES.WATCH(boost.slug, boost.shortId)}
-                    className="hover:text-brand-600 dark:hover:text-brand-300 block truncate text-sm font-medium text-neutral-900 dark:text-white"
-                  >
-                    {boost.title}
-                  </Link>
-                  <div className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
-                    {boost.speaker.join(", ")}
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onRemove(boost.shortId)}
-                  className="shrink-0 cursor-pointer rounded-lg px-2 py-1 text-xs text-neutral-400 opacity-0 transition group-hover:opacity-100 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-500/10 dark:hover:text-rose-300"
+            {items.map((boost) => {
+              const boostedDate = new Date(boost.boostedAt);
+              const formattedDate = new Intl.DateTimeFormat("en-US", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              }).format(boostedDate);
+
+              return (
+                <div
+                  key={boost.shortId}
+                  className="group flex items-center justify-between gap-3 rounded-xl bg-neutral-50 px-3 py-2.5 transition hover:bg-neutral-100 dark:bg-white/5 dark:hover:bg-white/10"
                 >
-                  {t("remove")}
-                </button>
-              </div>
-            ))}
+                  <div className="min-w-0 flex-1">
+                    <Link
+                      href={PAGE_ROUTES.WATCH(boost.slug, boost.shortId)}
+                      className="hover:text-brand-600 dark:hover:text-brand-300 block truncate text-sm font-medium text-neutral-900 dark:text-white"
+                    >
+                      {boost.title}
+                    </Link>
+                    <div className="mt-0.5 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
+                      <span className="truncate">{boost.speaker.join(", ")}</span>
+                      <span className="shrink-0">•</span>
+                      <span className="shrink-0">{formattedDate}</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onRemove(boost.shortId)}
+                    className="shrink-0 cursor-pointer rounded-lg px-2 py-1 text-xs text-neutral-400 opacity-0 transition group-hover:opacity-100 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-500/10 dark:hover:text-rose-300"
+                  >
+                    {t("remove")}
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
