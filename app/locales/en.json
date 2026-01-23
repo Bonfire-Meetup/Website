@@ -861,7 +861,7 @@
       "step5": "Welcome"
     },
     "codeHint": "Enter the 6-digit code we sent to your inbox.",
-    "noRegistrationHint": "Simple flow: email → OTP code → you're signed in and registered.",
+    "noRegistrationHint": "No account? Signing in will create one automatically.",
     "emailLabel": "Email",
     "emailPlaceholder": "lara@croft.com",
     "codeLabel": "Code",

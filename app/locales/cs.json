@@ -857,11 +857,11 @@
       "step1": "Zadejte e-mail",
       "step2": "Pošleme kód",
       "step3": "Vložte kód",
-      "step4": "Nemáte účet? Vytvoříme ho",
+      "step4": "Nemáte účet? Přihlášením ho vytvoříme automaticky.",
       "step5": "Vítejte"
     },
     "codeHint": "Zadejte 6místný kód z e-mailu.",
-    "noRegistrationHint": "Jednoduchý flow: e-mail → OTP kód → jsi přihlášený a zaregistrovaný najednou.",
+    "noRegistrationHint": "Nemáte účet? Přihlášením ho vytvoříme automaticky.",
     "emailLabel": "E-mail",
     "emailPlaceholder": "lara@croft.com",
     "codeLabel": "Kód",

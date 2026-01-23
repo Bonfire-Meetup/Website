@@ -22,6 +22,8 @@ interface ButtonProps {
 const baseClasses =
   "inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-semibold transition";
 
+const disabledClasses = "disabled:cursor-not-allowed disabled:opacity-60 disabled:pointer-events-none";
+
 const variantClasses: Record<ButtonVariant, string> = {
   ghost:
     "text-neutral-600 hover:bg-brand-100/60 hover:text-brand-700 dark:text-neutral-400 dark:hover:bg-brand-500/10 dark:hover:text-brand-400",
@@ -56,7 +58,7 @@ export function Button({
   rel,
 }: ButtonProps) {
   const sizeClass = variant === "glass" || variant === "glass-secondary" ? "" : sizeClasses[size];
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClass} ${className}`;
+  const classes = `${baseClasses} ${disabledClasses} ${variantClasses[variant]} ${sizeClass} ${className}`;
 
   if (href) {
     const isExternal = external || href.startsWith("http") || href.startsWith("mailto:");

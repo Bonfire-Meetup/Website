@@ -427,7 +427,7 @@ export function MeClient() {
             {boostAllocation && (
               <div className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/70 to-teal-50/70 dark:border-emerald-500/30 dark:from-emerald-500/10 dark:to-teal-500/10">
                 <div className="border-b border-emerald-100 px-4 py-3 dark:border-emerald-500/20">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center justify-between gap-3">
                     <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-900 dark:text-emerald-200">
                       <BoltIcon
                         className="h-4 w-4 shrink-0 text-emerald-700/80 dark:text-emerald-300/80"
