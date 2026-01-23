@@ -38,8 +38,8 @@
     },
     "subtitle": "Přidej se k české gamedev komunitě na našich meetupech v {prague} a {zlin}. Přednášky, pivo a networking.",
     "cta": {
-      "events": "Mrkni na akce",
-      "recordings": "Pusť si záznamy"
+      "events": "Přijít na další meetup",
+      "recordings": "Záznamy přednášek"
     },
     "stats": {
       "locations": "Lokace",
@@ -54,7 +54,7 @@
   },
   "sections": {
     "events": {
-      "title": "Co se chystá",
+      "title": "Nadcházející akce",
       "subtitle": "Doraz na náš další meetup! Kdo dřív přijde, ten má místo.",
       "noEvents": "Zatím nic neplánujeme. Zkus to zčeknout později!",
       "filter": {
@@ -65,7 +65,7 @@
     "recordings": {
       "title": "Populární záznamy",
       "subtitle": "Nejoblíbenější přednášky z naší komunity.",
-      "viewAll": "Všechny záznamy",
+      "viewAll": "Záznamy přednášek",
       "empty": "Z téhle lokace tu zatím nic není.",
       "filter": {
         "all": "Vše",
@@ -326,23 +326,56 @@
         "name": "{prague}",
         "tagline": "Kde to všechno začalo.",
         "members": [
-          { "name": "Jan Hrušovský", "role": "moderátor" },
-          { "name": "Michael Petr", "role": "nahrávání" },
-          { "name": "Jakub Hubáček", "role": "fotografie" },
-          { "name": "Hedvika Jandová", "role": "produkce" },
-          { "name": "Ondřej Purchart", "role": "video, audio" },
-          { "name": "Pavel Pilař", "role": "produkce, bodyguard" },
-          { "name": "Matouš Márai", "role": "produkce" }
+          {
+            "name": "Jan Hrušovský",
+            "role": "moderátor"
+          },
+          {
+            "name": "Michael Petr",
+            "role": "nahrávání"
+          },
+          {
+            "name": "Jakub Hubáček",
+            "role": "fotografie"
+          },
+          {
+            "name": "Hedvika Jandová",
+            "role": "produkce"
+          },
+          {
+            "name": "Ondřej Purchart",
+            "role": "video, audio"
+          },
+          {
+            "name": "Pavel Pilař",
+            "role": "produkce, bodyguard"
+          },
+          {
+            "name": "Matouš Márai",
+            "role": "produkce"
+          }
         ]
       },
       {
         "name": "{zlin}",
         "tagline": "Moravské srdce a studentský puls.",
         "members": [
-          { "name": "Michael Petr", "role": "nahrávání" },
-          { "name": "Pavel Novák", "role": "produkce" },
-          { "name": "Jitka Honsová", "role": "produkce, prostor" },
-          { "name": "Michal Ščuglík", "role": "produkce" }
+          {
+            "name": "Michael Petr",
+            "role": "nahrávání"
+          },
+          {
+            "name": "Pavel Novák",
+            "role": "produkce"
+          },
+          {
+            "name": "Jitka Honsová",
+            "role": "produkce, prostor"
+          },
+          {
+            "name": "Michal Ščuglík",
+            "role": "produkce"
+          }
         ]
       }
     ],
@@ -729,7 +762,7 @@
     "eyebrow": "Vítejte",
     "brand": "{brandName}",
     "title": "Přihlaste se",
-    "subtitle": "Pošleme vám jednorázový kód pro potvrzení adresy.",
+    "subtitle": "Bez hesla. Kód přijde na mail během 10 sekund.",
     "secureTitle": "Bez hesla",
     "secureBody": "Pošleme vám kód na e-mail. Rychle, jednoduše a bezpečně.",
     "steps": {
@@ -740,7 +773,7 @@
       "step5": "Vítejte"
     },
     "codeHint": "Zadejte 6místný kód z e-mailu.",
-    "noRegistrationHint": "Jste tu poprvé? První přihlášení vytvoří účet.",
+    "noRegistrationHint": "Jednoduchý flow: e-mail → OTP kód → jsi přihlášený a zaregistrovaný najednou.",
     "emailLabel": "E-mail",
     "emailPlaceholder": "lara@croft.com",
     "codeLabel": "Kód",
