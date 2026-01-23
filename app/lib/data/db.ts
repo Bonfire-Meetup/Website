@@ -1,3 +1,5 @@
+import "server-only";
+
 import { type NeonQueryFunctionInTransaction, neon } from "@neondatabase/serverless";
 
 import { serverEnv } from "@/lib/config/env";
