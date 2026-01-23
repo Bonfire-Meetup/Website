@@ -1,6 +1,6 @@
 import { unstable_cache } from "next/cache";
 
-import { getDatabaseClient } from "@/lib/data/db";
+import { getDatabaseClient, getDatabaseErrorDetails } from "@/lib/data/db";
 import { logError, logWarn } from "@/lib/utils/log";
 
 type LikeCounts = Record<string, number>;
@@ -46,9 +46,8 @@ const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
       likes: Object.fromEntries(likeRows.map((row) => [row.video_id, row.count])),
     };
   } catch (error) {
-    logError("data.trending.engagement_fetch_failed", error, {
-      operation: "fetch_engagement_counts",
-    });
+    const errorDetails = getDatabaseErrorDetails(error, "fetch_engagement_counts");
+    logError("data.trending.engagement_fetch_failed", error, errorDetails);
 
     return { boosts: {}, likes: {} };
   }
@@ -58,7 +57,6 @@ export const fetchEngagementCounts = unstable_cache(
   fetchEngagementCountsUncached,
   ["engagement-counts"],
   {
-    // 15 minutes
     revalidate: 900,
   },
 );

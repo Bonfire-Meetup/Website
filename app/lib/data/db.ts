@@ -4,8 +4,10 @@ import { serverEnv } from "@/lib/config/env";
 import { logError, logWarn } from "@/lib/utils/log";
 
 const providers = {
-  neon: (url: string) => neon(url),
+  neon: (url: string) => neon<false, false>(url),
 };
+
+const clientCache = new Map<string, ReturnType<typeof neon<false, false>>>();
 
 type TransactionCallback = (
   sql: NeonQueryFunctionInTransaction<false, false>,
@@ -20,7 +22,7 @@ export function runTransaction(callback: TransactionCallback): Promise<unknown[]
     throw error;
   }
 
-  const sql = neon(url);
+  const sql = getCachedClient("neon", url);
 
   return sql.transaction(callback).catch((error) => {
     logError("db.transaction_failed", error);
@@ -30,7 +32,38 @@ export function runTransaction(callback: TransactionCallback): Promise<unknown[]
 
 export type DatabaseProvider = keyof typeof providers;
 
-export type DatabaseClient = ReturnType<(typeof providers)[DatabaseProvider]>;
+export type DatabaseClient = ReturnType<typeof neon<false, false>>;
+
+export function getDatabaseErrorDetails(
+  error: unknown,
+  operation: string,
+): Record<string, unknown> {
+  const errorDetails: Record<string, unknown> = { operation };
+
+  if (error && typeof error === "object") {
+    if ("code" in error) {
+      errorDetails.code = error.code;
+    }
+
+    const errorObj = error as { message?: unknown; name?: unknown };
+    if (errorObj.message !== undefined) {
+      const message = String(errorObj.message);
+      errorDetails.message = message;
+
+      const errorMessage = message.toLowerCase();
+      if (errorMessage.includes("timeout") || errorMessage.includes("connection")) {
+        errorDetails.errorType = "connection_error";
+      } else if (errorMessage.includes("pool") || errorMessage.includes("exhausted")) {
+        errorDetails.errorType = "pool_exhaustion";
+      }
+    }
+    if (errorObj.name !== undefined) {
+      errorDetails.name = String(errorObj.name);
+    }
+  }
+
+  return errorDetails;
+}
 
 const getDatabaseProvider = (): DatabaseProvider => {
   const provider = serverEnv.BNF_DB_PROVIDER;
@@ -59,6 +92,24 @@ const getDatabaseUrl = (required: boolean) => {
   return url ?? null;
 };
 
+function getCachedClient(provider: DatabaseProvider, url: string): DatabaseClient {
+  const cacheKey = `${provider}:${url}`;
+  const cached = clientCache.get(cacheKey);
+
+  if (cached) {
+    return cached;
+  }
+
+  const client = providers[provider](url);
+  clientCache.set(cacheKey, client);
+
+  if (process.env.NODE_ENV === "development") {
+    logWarn("db.client_created", { cacheSize: clientCache.size, provider });
+  }
+
+  return client;
+}
+
 export function getDatabaseClient(options?: {
   required?: true;
   provider?: DatabaseProvider;
@@ -81,7 +132,7 @@ export function getDatabaseClient(
   }
 
   try {
-    return providers[provider](url);
+    return getCachedClient(provider, url);
   } catch (error) {
     logError("db.client_failed", error, { provider });
     throw error;

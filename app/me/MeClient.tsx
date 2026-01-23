@@ -423,20 +423,20 @@ export function MeClient() {
         <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
           {t("activity.title")}
         </h2>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="space-y-4">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+          <div className="min-w-0 space-y-4">
             {boostAllocation && (
               <div className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/70 to-teal-50/70 dark:border-emerald-500/30 dark:from-emerald-500/10 dark:to-teal-500/10">
                 <div className="border-b border-emerald-100 px-4 py-3 dark:border-emerald-500/20">
-                  <div className="flex items-center justify-between gap-3">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-900 dark:text-emerald-200">
                       <BoltIcon
-                        className="h-4 w-4 text-emerald-700/80 dark:text-emerald-300/80"
+                        className="h-4 w-4 shrink-0 text-emerald-700/80 dark:text-emerald-300/80"
                         aria-hidden="true"
                       />
                       {t("boostAllocation.title")}
                     </h3>
-                    <div className="shrink-0 text-[11px] font-normal text-emerald-700/80 dark:text-emerald-300/80">
+                    <div className="text-right text-[11px] font-normal text-emerald-700/80 sm:shrink-0 dark:text-emerald-300/80">
                       {t("boostAllocation.nextAllocation", {
                         date: new Date(boostAllocation.nextAllocationDate).toLocaleDateString(
                           undefined,
@@ -472,7 +472,9 @@ export function MeClient() {
               onRemove={handleRemoveBoost}
             />
           </div>
-          <LoginAttemptsBlock items={attempts} loading={attemptsLoading} error={attemptsError} />
+          <div className="min-w-0">
+            <LoginAttemptsBlock items={attempts} loading={attemptsLoading} error={attemptsError} />
+          </div>
         </div>
       </div>
 
