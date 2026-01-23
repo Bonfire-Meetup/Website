@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { requireAuth } from "@/lib/api/auth";
 import { getAuthAttemptsByEmailHash, getAuthUserById } from "@/lib/data/auth";
-import { getUserBoosts } from "@/lib/data/boosts";
+import { getUserBoostAllocation, getUserBoosts } from "@/lib/data/boosts";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { getEmailFingerprint, logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
@@ -30,7 +30,7 @@ export const GET = async (request: Request) =>
       const fingerprint = getEmailFingerprint(user.email);
       const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-      const [boosts, attempts] = await Promise.all([
+      const [boosts, attempts, boostAllocation] = await Promise.all([
         getUserBoosts(auth.userId),
         fingerprint.emailHash
           ? getAuthAttemptsByEmailHash({
@@ -41,6 +41,7 @@ export const GET = async (request: Request) =>
               userId: auth.userId,
             })
           : Promise.resolve([]),
+        getUserBoostAllocation(auth.userId),
       ]);
 
       const recordings = getAllRecordings();
@@ -70,8 +71,19 @@ export const GET = async (request: Request) =>
         outcome: attempt.outcome,
       }));
 
+      // Calculate next allocation date (1st of next month)
+      const nextMonth = new Date(
+        boostAllocation.lastAllocationDate.getFullYear(),
+        boostAllocation.lastAllocationDate.getMonth() + 1,
+        1,
+      );
+
       return respond({
         attempts: { items: attemptItems },
+        boostAllocation: {
+          availableBoosts: boostAllocation.availableBoosts,
+          nextAllocationDate: nextMonth.toISOString(),
+        },
         boosts: { items: boostItems },
         profile: {
           allowCommunityEmails: user.allow_community_emails,

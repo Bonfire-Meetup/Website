@@ -143,6 +143,7 @@
     "boost": "Boost",
     "boosts": "Boosty",
     "boostItUp": "Přidat boost",
+    "boostNoBoostsAvailable": "Vyčerpali jste všechny boosty tento měsíc. Více příští měsíc!",
     "returnToPlayer": "Zpět k přehrávači",
     "closePlayer": "Zavřít přehrávač",
     "empty": "Žádné záznamy nenalezeny."
@@ -835,6 +836,13 @@
     },
     "activity": {
       "title": "Aktivita"
+    },
+    "boostAllocation": {
+      "title": "Přidělení boostů",
+      "available": "boostů k dispozici",
+      "availableOne": "boost k dispozici",
+      "nextAllocation": "Další přidělení: {date}",
+      "limitNote": "Maximálně 6 boostů celkem. Nad tento limit nebudou vydány žádné další boosty."
     },
     "boosted": {
       "title": "Boostnutá videa",

@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { LogOutIcon, UserIcon } from "@/components/shared/icons";
+import { BoltIcon, LogOutIcon, UserIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { API_ROUTES } from "@/lib/api/routes";
@@ -50,6 +50,11 @@ interface LoginAttempt {
   createdAt: string;
 }
 
+interface BoostAllocation {
+  availableBoosts: number;
+  nextAllocationDate: string;
+}
+
 export function MeClient() {
   const t = useTranslations("account");
   const tDelete = useTranslations("account.delete");
@@ -60,6 +65,7 @@ export function MeClient() {
   const [boosts, setBoosts] = useState<BoostedRecording[]>([]);
   const [boostsLoading, setBoostsLoading] = useState(true);
   const [boostsError, setBoostsError] = useState<string | null>(null);
+  const [boostAllocation, setBoostAllocation] = useState<BoostAllocation | null>(null);
   const [attempts, setAttempts] = useState<LoginAttempt[]>([]);
   const [attemptsLoading, setAttemptsLoading] = useState(true);
   const [attemptsError, setAttemptsError] = useState<string | null>(null);
@@ -102,11 +108,15 @@ export function MeClient() {
           profile: Profile;
           boosts: { items: BoostedRecording[] };
           attempts: { items: LoginAttempt[] };
+          boostAllocation?: BoostAllocation;
         };
 
         setProfile(data.profile);
         setBoosts(data.boosts.items ?? []);
         setAttempts(data.attempts.items ?? []);
+        if (data.boostAllocation) {
+          setBoostAllocation(data.boostAllocation);
+        }
         setLoading(false);
         setBoostsLoading(false);
         setAttemptsLoading(false);
@@ -313,6 +323,15 @@ export function MeClient() {
 
       if (!response.ok) {
         setBoosts(prev);
+      } else {
+        // Update boost allocation from response
+        const data = (await response.json()) as { availableBoosts?: number };
+        if (data.availableBoosts !== undefined && boostAllocation) {
+          setBoostAllocation({
+            ...boostAllocation,
+            availableBoosts: data.availableBoosts,
+          });
+        }
       }
     } catch {
       setBoosts(prev);
@@ -404,12 +423,54 @@ export function MeClient() {
           {t("activity.title")}
         </h2>
         <div className="grid gap-6 lg:grid-cols-2">
-          <BoostedVideosBlock
-            loading={boostsLoading}
-            error={boostsError}
-            items={boosts}
-            onRemove={handleRemoveBoost}
-          />
+          <div className="space-y-4">
+            {boostAllocation && (
+              <div className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/70 to-teal-50/70 dark:border-emerald-500/30 dark:from-emerald-500/10 dark:to-teal-500/10">
+                <div className="border-b border-emerald-100 px-4 py-3 dark:border-emerald-500/20">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-900 dark:text-emerald-200">
+                      <BoltIcon
+                        className="h-4 w-4 text-emerald-700/80 dark:text-emerald-300/80"
+                        aria-hidden="true"
+                      />
+                      {t("boostAllocation.title")}
+                    </h3>
+                    <div className="shrink-0 text-[11px] font-normal text-emerald-700/80 dark:text-emerald-300/80">
+                      {t("boostAllocation.nextAllocation", {
+                        date: new Date(boostAllocation.nextAllocationDate).toLocaleDateString(
+                          undefined,
+                          { day: "numeric", month: "long" },
+                        ),
+                      })}
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-black text-emerald-600 dark:text-emerald-300">
+                      {boostAllocation.availableBoosts}
+                    </span>
+                    <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                      {boostAllocation.availableBoosts === 1
+                        ? t("boostAllocation.availableOne")
+                        : t("boostAllocation.available", {
+                            count: boostAllocation.availableBoosts,
+                          })}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-xs text-emerald-600/70 dark:text-emerald-300/70">
+                    {t("boostAllocation.limitNote")}
+                  </p>
+                </div>
+              </div>
+            )}
+            <BoostedVideosBlock
+              loading={boostsLoading}
+              error={boostsError}
+              items={boosts}
+              onRemove={handleRemoveBoost}
+            />
+          </div>
           <LoginAttemptsBlock items={attempts} loading={attemptsLoading} error={attemptsError} />
         </div>
       </div>

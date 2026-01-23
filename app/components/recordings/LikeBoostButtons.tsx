@@ -28,6 +28,7 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
   const [isBoosting, setIsBoosting] = useState(false);
   const [boostPulse, setBoostPulse] = useState(false);
   const [boostLoadError, setBoostLoadError] = useState(false);
+  const [availableBoosts, setAvailableBoosts] = useState<number | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -94,11 +95,18 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
           return;
         }
 
-        const data = (await response.json()) as { count: number; hasBoosted: boolean };
+        const data = (await response.json()) as {
+          count: number;
+          hasBoosted: boolean;
+          availableBoosts?: number;
+        };
 
         if (isActive) {
           setBoostCount(data.count ?? 0);
           setHasBoosted(Boolean(data.hasBoosted));
+          if (data.availableBoosts !== undefined) {
+            setAvailableBoosts(data.availableBoosts);
+          }
         }
       } catch {
         if (isActive) {
@@ -184,11 +192,45 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
         setHasBoosted(prevBoosted);
         setBoostCount(prevCount);
 
+        // Handle no boosts available error
+        if (res.status === 403) {
+          try {
+            const errorData = (await res.json()) as {
+              error: string;
+              availableBoosts?: number;
+            };
+            if (errorData.availableBoosts !== undefined) {
+              setAvailableBoosts(errorData.availableBoosts);
+            }
+          } catch {
+            // If parsing fails, reload stats
+            const statsRes = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
+              headers: createAuthHeaders(accessToken),
+            });
+            if (statsRes.ok) {
+              const statsData = (await statsRes.json()) as {
+                count: number;
+                hasBoosted: boolean;
+                availableBoosts?: number;
+              };
+              if (statsData.availableBoosts !== undefined) {
+                setAvailableBoosts(statsData.availableBoosts);
+              }
+            }
+          }
+        }
+
         return;
       }
 
-      const { count } = (await res.json()) as { count: number };
+      const { count, availableBoosts: newAvailableBoosts } = (await res.json()) as {
+        count: number;
+        availableBoosts?: number;
+      };
       setBoostCount(count);
+      if (newAvailableBoosts !== undefined) {
+        setAvailableBoosts(newAvailableBoosts);
+      }
     } catch {
       setHasBoosted(prevBoosted);
       setBoostCount(prevCount);
@@ -245,16 +287,26 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
           type="button"
           onClick={handleBoost}
           aria-pressed={hasBoosted}
-          disabled={boostCount === null || isBoosting}
+          disabled={
+            boostCount === null ||
+            isBoosting ||
+            (availableBoosts !== null && availableBoosts === 0 && !hasBoosted)
+          }
           className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-r-full border border-l-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-shadow dark:border-white/10 ${
             hasBoosted
               ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-emerald-500/30"
               : "bg-white text-emerald-600 dark:bg-white/5 dark:text-emerald-400"
           } ${isBoosting || boostCount === null ? "opacity-80" : ""} ${
-            boostCount === null
+            boostCount === null ||
+            (availableBoosts !== null && availableBoosts === 0 && !hasBoosted)
               ? "cursor-not-allowed"
               : "cursor-pointer hover:shadow-emerald-500/20"
           }`}
+          title={
+            availableBoosts !== null && availableBoosts === 0 && !hasBoosted
+              ? t("boostNoBoostsAvailable")
+              : undefined
+          }
         >
           <BoltIcon
             className={`h-5 w-5 shrink-0 ${hasBoosted ? "stroke-white" : ""} ${

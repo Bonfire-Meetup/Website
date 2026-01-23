@@ -1,9 +1,13 @@
+import { BOOST_CONFIG } from "@/lib/config/constants";
 import { getDatabaseClient } from "@/lib/data/db";
 import { logError } from "@/lib/utils/log";
+
+export { BOOST_CONFIG };
 
 interface BoostStats {
   count: number;
   hasBoosted: boolean;
+  availableBoosts?: number;
 }
 interface BoostMutationResult {
   count: number;
@@ -95,6 +99,126 @@ export const getUserBoosts = async (userId: string) => {
     return rows;
   } catch (error) {
     logError("data.boosts.user_fetch_failed", error, { userId });
+    throw error;
+  }
+};
+
+interface BoostAllocation {
+  availableBoosts: number;
+  lastAllocationDate: Date;
+}
+
+export const getUserBoostAllocation = async (userId: string): Promise<BoostAllocation> => {
+  try {
+    const sql = getDatabaseClient();
+    const now = new Date();
+    const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const existing = (await sql`
+      SELECT available_boosts, last_allocation_date
+      FROM user_boost_allocation
+      WHERE user_id = ${userId}
+    `) as { available_boosts: number; last_allocation_date: Date }[];
+
+    if (existing.length === 0) {
+      await sql`
+        INSERT INTO user_boost_allocation (user_id, available_boosts, last_allocation_date)
+        VALUES (${userId}, ${BOOST_CONFIG.BOOSTS_PER_MONTH}, ${currentDate})
+      `;
+
+      return {
+        availableBoosts: BOOST_CONFIG.BOOSTS_PER_MONTH,
+        lastAllocationDate: currentDate,
+      };
+    }
+
+    const allocation = existing[0];
+    const lastAllocationDate = new Date(allocation.last_allocation_date);
+    const lastAllocationMonth = new Date(
+      lastAllocationDate.getFullYear(),
+      lastAllocationDate.getMonth(),
+      1,
+    );
+
+    if (allocation.available_boosts > BOOST_CONFIG.MAX_BOOSTS) {
+      await sql`
+        UPDATE user_boost_allocation
+        SET available_boosts = ${BOOST_CONFIG.MAX_BOOSTS},
+            updated_at = now()
+        WHERE user_id = ${userId}
+      `;
+
+      return {
+        availableBoosts: BOOST_CONFIG.MAX_BOOSTS,
+        lastAllocationDate: lastAllocationDate,
+      };
+    }
+
+    if (lastAllocationMonth < currentMonth) {
+      const newAvailableBoosts = Math.min(
+        allocation.available_boosts + BOOST_CONFIG.BOOSTS_PER_MONTH,
+        BOOST_CONFIG.MAX_BOOSTS,
+      );
+
+      await sql`
+        UPDATE user_boost_allocation
+        SET available_boosts = ${newAvailableBoosts},
+            last_allocation_date = ${currentDate},
+            updated_at = now()
+        WHERE user_id = ${userId}
+      `;
+
+      return {
+        availableBoosts: newAvailableBoosts,
+        lastAllocationDate: currentDate,
+      };
+    }
+
+    return {
+      availableBoosts: allocation.available_boosts,
+      lastAllocationDate: lastAllocationDate,
+    };
+  } catch (error) {
+    logError("data.boosts.allocation_fetch_failed", error, { userId });
+    throw error;
+  }
+};
+
+export const consumeBoost = async (userId: string): Promise<boolean> => {
+  try {
+    const sql = getDatabaseClient();
+
+    await getUserBoostAllocation(userId);
+
+    const result = (await sql`
+      UPDATE user_boost_allocation
+      SET available_boosts = available_boosts - 1,
+          updated_at = now()
+      WHERE user_id = ${userId}
+        AND available_boosts > 0
+      RETURNING available_boosts
+    `) as { available_boosts: number }[];
+
+    return result.length > 0;
+  } catch (error) {
+    logError("data.boosts.consume_failed", error, { userId });
+    throw error;
+  }
+};
+
+export const refundBoost = async (userId: string): Promise<void> => {
+  try {
+    const sql = getDatabaseClient();
+
+    await sql`
+      UPDATE user_boost_allocation
+      SET available_boosts = LEAST(available_boosts + 1, ${BOOST_CONFIG.MAX_BOOSTS}),
+          updated_at = now()
+      WHERE user_id = ${userId}
+    `;
+  } catch (error) {
+    logError("data.boosts.refund_failed", error, { userId });
     throw error;
   }
 };

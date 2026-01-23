@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { BOOST_CONFIG } from "@/lib/config/constants";
+
 export const videoLikeStatsSchema = z.object({
   count: z.number().int().min(0),
   hasLiked: z.boolean(),
@@ -12,6 +14,7 @@ export const videoLikeMutationSchema = z.object({
 });
 
 export const videoBoostStatsSchema = z.object({
+  availableBoosts: z.number().int().min(0).max(BOOST_CONFIG.MAX_BOOSTS).optional(),
   count: z.number().int().min(0),
   hasBoosted: z.boolean(),
 });

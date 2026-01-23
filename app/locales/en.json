@@ -143,6 +143,7 @@
     "boost": "Boost",
     "boosts": "Boosts",
     "boostItUp": "Boost it",
+    "boostNoBoostsAvailable": "You've used all your boosts this month. More coming next month!",
     "returnToPlayer": "Return to player",
     "closePlayer": "Close player",
     "empty": "No recordings found."
@@ -835,6 +836,13 @@
     },
     "activity": {
       "title": "Activity"
+    },
+    "boostAllocation": {
+      "title": "Boost Allocation",
+      "available": "boosts available",
+      "availableOne": "boost available",
+      "nextAllocation": "Next allocation: {date}",
+      "limitNote": "Maximum 6 boosts total. No extra boosts will be issued beyond this limit."
     },
     "boosted": {
       "title": "Boosted videos",

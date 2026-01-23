@@ -14,3 +14,8 @@ export const WEBSITE_URLS = {
   CONTACT_EMAIL_PRESS: "hello+press@bnf.events",
   CONTACT_EMAIL_PROPOSAL: "hello+proposal@bnf.events",
 } as const;
+
+export const BOOST_CONFIG = {
+  BOOSTS_PER_MONTH: 2,
+  MAX_BOOSTS: 6,
+} as const;

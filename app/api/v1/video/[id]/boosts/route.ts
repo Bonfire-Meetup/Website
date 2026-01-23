@@ -2,7 +2,14 @@ import { NextResponse } from "next/server";
 
 import { checkRateLimit, getAuthUserId, validateVideoApiRequest } from "@/lib/api/rate-limit";
 import { videoBoostMutationSchema, videoBoostStatsSchema } from "@/lib/api/schemas";
-import { addVideoBoost, getVideoBoostStats, removeVideoBoost } from "@/lib/data/boosts";
+import {
+  addVideoBoost,
+  consumeBoost,
+  getVideoBoostStats,
+  getUserBoostAllocation,
+  refundBoost,
+  removeVideoBoost,
+} from "@/lib/data/boosts";
 import { logError, logWarn } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
 
@@ -36,6 +43,19 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       }
 
       const stats = await getVideoBoostStats(videoId, userId);
+
+      // Add available boosts for authenticated users
+      if (userId && authResult.status === "valid") {
+        const allocation = await getUserBoostAllocation(userId);
+        const statsWithAllocation = {
+          ...stats,
+          availableBoosts: allocation.availableBoosts,
+        };
+        const validated = videoBoostStatsSchema.parse(statsWithAllocation);
+
+        return NextResponse.json(validated, { headers: { "Cache-Control": "no-store" } });
+      }
+
       const validated = videoBoostStatsSchema.parse(stats);
 
       return NextResponse.json(validated, { headers: { "Cache-Control": "no-store" } });
@@ -77,10 +97,32 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         return NextResponse.json({ error: "Rate limited" }, { status: 429 });
       }
 
-      const result = await addVideoBoost(videoId, userId);
-      const validated = videoBoostMutationSchema.parse(result);
+      // Check if user has available boosts
+      const hasBoost = await consumeBoost(userId);
 
-      return NextResponse.json(validated);
+      if (!hasBoost) {
+        logWarn("video.boosts.no_boosts_available", { userId, videoId });
+
+        // Return current allocation so UI can update
+        const allocation = await getUserBoostAllocation(userId);
+
+        return NextResponse.json(
+          { availableBoosts: allocation.availableBoosts, error: "no_boosts_available" },
+          { status: 403 },
+        );
+      }
+
+      const result = await addVideoBoost(videoId, userId);
+      const allocation = await getUserBoostAllocation(userId);
+
+      // Add availableBoosts to response
+      const response = {
+        ...result,
+        availableBoosts: allocation.availableBoosts,
+      };
+      const validated = videoBoostMutationSchema.parse(response);
+
+      return NextResponse.json({ ...validated, availableBoosts: allocation.availableBoosts });
     } catch (error) {
       logError("video.boosts.post_failed", error, { operation: "post", videoId });
 
@@ -116,9 +158,16 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       }
 
       const result = await removeVideoBoost(videoId, userId);
+
+      // Refund the boost if it was successfully removed
+      if (result.removed) {
+        await refundBoost(userId);
+      }
+
+      const allocation = await getUserBoostAllocation(userId);
       const validated = videoBoostMutationSchema.parse(result);
 
-      return NextResponse.json(validated);
+      return NextResponse.json({ ...validated, availableBoosts: allocation.availableBoosts });
     } catch (error) {
       logError("video.boosts.delete_failed", error, { operation: "delete", videoId });
 
