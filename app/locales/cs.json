@@ -474,7 +474,7 @@
       },
       "entryFee": {
         "title": "Platí se vstupné?",
-        "answer": "Všechny naše meetupy jsou díky našim partnerům zdarma. Kapacita je však omezená, proto je vždy nutná registrace (obvykle přes Lu.ma)."
+        "answer": "Všechny naše meetupy jsou díky našim partnerům zdarma. Kapacita je sice omezená, ale registrace (obvykle přes Lu.ma) není povinná – pouze ji doporučujeme, abychom mohli lépe naplánovat prostor a občerstvení."
       },
       "howToSpeaker": {
         "title": "Jak se můžu stát speakerem?",
@@ -486,15 +486,15 @@
       },
       "isRecorded": {
         "title": "Jsou všechny přednášky nahrávané?",
-        "answer": "Snažíme se nahrávat a sdílet co nejvíce přednášek v naší Knihovně. Některé bloky (jako workshopy nebo první epizody) však nahrávky mít nemusí kvůli technickým omezením nebo přání speakera."
+        "answer": "Snažíme se nahrávat a sdílet v naší Knihovně co nejvíce přednášek. Upozorňujeme však, že některé z našich prvních epizod nebyly nahrávány."
       },
       "discord": {
         "title": "Máte komunitní Discord?",
-        "answer": "Ano! Můžete se přidat na náš Discord server a pokecat s ostatními vývojáři, sdílet své projekty nebo dostávat čerstvé info o akcích. Odkaz najdete v patičce."
+        "answer": "Ano! Můžete se přidat na náš <link>Discord server</link> a pokecat s ostatními vývojáři, sdílet své projekty nebo dostávat čerstvé info o akcích."
       },
       "photos": {
         "title": "Můžu použít fotky z akcí?",
-        "answer": "Fotky sdílíme v rámci komunitní politiky. Budeme rádi, když je budete sdílet na sítích (označení nás potěší!), ale pro komerční užití nás prosím nejdřív kontaktujte. Detaily najdete v našich Zásadách pro média."
+        "answer": "Fotky sdílíme v rámci komunitní politiky. Budeme rádi, když je budete sdílet na sítích (označení nás potěší!), ale pro komerční užití nás prosím <link>nejdřív kontaktujte</link>."
       },
       "howToSignIn": {
         "title": "Jak se přihlásím?",
@@ -506,7 +506,7 @@
       },
       "howToDelete": {
         "title": "Můžu svůj účet smazat?",
-        "answer": "Ano, nad svými údaji máte plnou kontrolu. Svůj účet i veškerou související aktivitu můžete kdykoli trvale smazat na své <link>profilové stránce (/me)</link>. Upozorňujeme, že tato akce je nevratná."
+        "answer": "Ano, nad svými údaji máte plnou kontrolu. Svůj účet i veškerou související aktivitu můžete kdykoli trvale smazat na své <link>profilové stránce</link>. Upozorňujeme, že tato akce je <bold>nevratná</bold>."
       }
     },
     "impact": {

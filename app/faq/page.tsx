@@ -79,7 +79,7 @@ export default async function FaqPage() {
               { key: "general", questions: ["whatIsBonfire", "howOften", "entryFee"] },
               { key: "participation", questions: ["howToSpeaker", "howToJoin"] },
               { key: "community", questions: ["isRecorded", "discord", "photos"] },
-              { key: "technical", questions: ["howToSignIn", "howToRegister", "howToDelete"] },
+              { key: "technical", questions: ["howToRegister", "howToSignIn", "howToDelete"] },
             ].map((section) => (
               <div key={section.key} className="space-y-6">
                 <h2 className="flex items-center gap-3 px-2 text-xl font-black tracking-tight text-neutral-900 dark:text-white">
@@ -101,6 +101,9 @@ export default async function FaqPage() {
                         </h3>
                         <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                           {t.rich(`questions.${qKey}.answer`, {
+                            bold: (chunks) => (
+                              <strong className="text-neutral-900 dark:text-white">{chunks}</strong>
+                            ),
                             link: (chunks) => {
                               let href: string = PAGE_ROUTES.HOME;
                               if (qKey === "howToSpeaker") {
@@ -109,8 +112,23 @@ export default async function FaqPage() {
                               if (qKey === "howToJoin") {
                                 href = PAGE_ROUTES.CONTACT_WITH_TYPE("crew");
                               }
+                              if (qKey === "photos") {
+                                href = PAGE_ROUTES.CONTACT_WITH_TYPE("press");
+                              }
                               if (qKey === "howToDelete") {
                                 href = PAGE_ROUTES.ME;
+                              }
+                              if (qKey === "discord") {
+                                return (
+                                  <a
+                                    href="https://discord.com/invite/8Tqm7vAd4h"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="font-semibold text-emerald-600 underline decoration-emerald-500/30 underline-offset-4 transition-colors hover:text-emerald-500 hover:decoration-emerald-500 dark:text-emerald-400 dark:decoration-emerald-400/30 dark:hover:text-emerald-300"
+                                  >
+                                    {chunks}
+                                  </a>
+                                );
                               }
 
                               return (

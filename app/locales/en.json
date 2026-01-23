@@ -474,7 +474,7 @@
       },
       "entryFee": {
         "title": "Is there an entry fee?",
-        "answer": "All of our meetups are free to attend, thanks to our generous partners. However, space is limited, so registration (usually via Lu.ma) is always required."
+        "answer": "All of our meetups are free to attend, thanks to our generous partners. While space is limited, registration (usually via Lu.ma) is not strictly required, but highly suggested to help us plan the seating and refreshments properly."
       },
       "howToSpeaker": {
         "title": "How can I become a speaker?",
@@ -486,15 +486,15 @@
       },
       "isRecorded": {
         "title": "Are all sessions recorded?",
-        "answer": "We aim to record and share as many talks as possible in our Library. Some sessions (like workshops or early episodes) may not have recordings due to technical constraints or speaker preference."
+        "answer": "We aim to record and share as many talks as possible in our Library. However, please note that some of our early episodes were not recorded."
       },
       "discord": {
         "title": "Is there a community Discord?",
-        "answer": "Yes! You can join our Discord server to chat with other game developers, share your projects, and stay updated on events. The link is in the footer."
+        "answer": "Yes! You can join our <link>Discord server</link> to chat with other game developers, share your projects, and stay updated on events."
       },
       "photos": {
         "title": "Can I use the event photos?",
-        "answer": "Our photos are shared under a community-friendly policy. You're welcome to share them on social media (we love tags!), but for commercial use, please contact us first. See our Media Policy for details."
+        "answer": "Our photos are shared under a community-friendly policy. You're welcome to share them on social media (we love tags!), but for commercial use, please <link>contact us first</link>."
       },
       "howToSignIn": {
         "title": "How do I sign in?",
@@ -506,7 +506,7 @@
       },
       "howToDelete": {
         "title": "Can I delete my account?",
-        "answer": "Yes, you have full control over your data. You can manually delete your account and all associated activity at any time from your <link>Account (/me)</link> page. Please note that this action is permanent and cannot be undone."
+        "answer": "Yes, you have full control over your data. You can manually delete your account and all associated activity at any time from your <link>Account</link> page. Please note that this action is <bold>permanent and cannot be undone</bold>."
       }
     },
     "impact": {
