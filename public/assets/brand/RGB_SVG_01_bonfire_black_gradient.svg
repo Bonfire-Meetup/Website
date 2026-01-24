@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" id="svg58" width="1355" height="709" fill-rule="evenodd" clip-rule="evenodd" image-rendering="optimizeQuality" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" version="1.1" viewBox="0 0 1354.87 708.37"><defs id="defs426">
   <linearGradient id="brandGradient" x1="0" y1="0" x2="0.6" y2="1">
-    <stop offset="0%" stop-color="#8b5cf6"/>
-    <stop offset="10%" stop-color="#8b5cf6"/>
-    <stop offset="35%" stop-color="#d946ef"/>
-    <stop offset="70%" stop-color="#f43f5e"/>
-    <stop offset="100%" stop-color="#f43f5e"/>
+    <stop offset="0%" stop-color="#a21caf"/>
+    <stop offset="10%" stop-color="#a21caf"/>
+    <stop offset="35%" stop-color="#f97316"/>
+    <stop offset="70%" stop-color="#dc2626"/>
+    <stop offset="100%" stop-color="#dc2626"/>
   </linearGradient>
   <style id="style424" type="text/css">
     .fil0{fill:url(#brandGradient)}

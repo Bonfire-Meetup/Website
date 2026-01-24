@@ -35,6 +35,7 @@ export const videoBoostMutationSchema = z.object({
   added: z.boolean().optional(),
   count: z.number().int().min(0),
   removed: z.boolean().optional(),
+  availableBoosts: z.number().int().min(0).max(BOOST_CONFIG.MAX_BOOSTS).optional(),
 });
 
 export const errorResponseSchema = z.object({
