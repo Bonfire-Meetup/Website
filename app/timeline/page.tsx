@@ -96,7 +96,7 @@ export default async function TimelinePage() {
             <div className="section-divider mx-auto mb-16 max-w-4xl" />
 
             <div className="relative">
-              <div className="from-brand-500/40 via-brand-500/15 absolute top-0 left-4 h-full w-px bg-gradient-to-b to-transparent md:left-1/2 md:-translate-x-1/2" />
+              <div className="absolute top-0 left-4 h-full w-px bg-gradient-to-b from-orange-500/40 via-orange-500/15 to-transparent md:left-1/2 md:-translate-x-1/2" />
               <div className="space-y-12">
                 {entries.map((entry, index) => {
                   const isRight = index % 2 === 1;
@@ -106,8 +106,8 @@ export default async function TimelinePage() {
                       key={entry.id}
                       className="relative pl-10 md:grid md:grid-cols-[minmax(0,1fr)_64px_minmax(0,1fr)] md:items-stretch md:pl-0"
                     >
-                      <div className="bg-brand-500 absolute top-8 left-[14px] h-4 w-4 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.5)] md:hidden" />
-                      <div className="from-brand-500/70 absolute top-10 left-[22px] h-px w-6 bg-gradient-to-r to-transparent md:hidden" />
+                      <div className="absolute top-8 left-[14px] h-4 w-4 rounded-full bg-orange-500 shadow-[0_0_20px_var(--color-fire-mid-glow-strong)] md:hidden" />
+                      <div className="absolute top-10 left-[22px] h-px w-6 bg-gradient-to-r from-orange-500/70 to-transparent md:hidden" />
                       <div
                         className={
                           isRight
@@ -115,7 +115,7 @@ export default async function TimelinePage() {
                             : "md:col-start-1 md:col-end-3 md:row-start-1 md:justify-self-end"
                         }
                       >
-                        <div className="glass-card group border-brand-500/10 dark:border-brand-400/15 relative w-full max-w-[680px] overflow-hidden rounded-[28px] border bg-white/80 shadow-[0_25px_60px_-35px_rgba(59,130,246,0.6)] backdrop-blur lg:max-w-[760px] dark:bg-neutral-950/70">
+                        <div className="glass-card group relative w-full max-w-[680px] overflow-hidden rounded-[28px] border border-orange-500/10 bg-white/80 shadow-[0_25px_60px_-35px_var(--color-fire-mid-glow-6)] backdrop-blur lg:max-w-[760px] dark:border-orange-400/15 dark:bg-neutral-950/70">
                           <span
                             className={`pointer-events-none absolute -top-6 text-[90px] font-black tracking-tight text-neutral-900/5 sm:text-[130px] dark:text-white/5 ${
                               isRight ? "-right-4" : "-left-4"
@@ -199,7 +199,7 @@ export default async function TimelinePage() {
                         </div>
                       </div>
                       <div className="relative hidden items-start justify-center md:col-start-2 md:row-start-1 md:flex">
-                        <div className="bg-brand-500 mt-10 h-4 w-4 rounded-full shadow-[0_0_20px_rgba(59,130,246,0.5)]" />
+                        <div className="mt-10 h-4 w-4 rounded-full bg-orange-500 shadow-[0_0_20px_var(--color-fire-mid-glow-strong)]" />
                       </div>
                     </article>
                   );

@@ -8,9 +8,9 @@ export default function Loading() {
           <Skeleton className="absolute inset-0 z-0 !rounded-none" />
           <div className="absolute inset-0 z-10 flex items-center justify-center">
             <div className="flex items-end gap-2">
-              <span className="bg-brand-500 dark:bg-brand-400 h-2.5 w-2.5 animate-bounce rounded-full shadow-[0_0_12px_rgba(59,130,246,0.45)] motion-reduce:animate-none" />
-              <span className="bg-brand-500 dark:bg-brand-400 h-3 w-3 animate-bounce rounded-full shadow-[0_0_14px_rgba(59,130,246,0.5)] [animation-delay:150ms] motion-reduce:animate-none" />
-              <span className="bg-brand-500 dark:bg-brand-400 h-2.5 w-2.5 animate-bounce rounded-full shadow-[0_0_12px_rgba(59,130,246,0.45)] [animation-delay:300ms] motion-reduce:animate-none" />
+              <span className="h-2.5 w-2.5 animate-bounce rounded-full bg-orange-500 shadow-[0_0_12px_var(--color-fire-mid-glow-45)] motion-reduce:animate-none dark:bg-orange-400" />
+              <span className="h-3 w-3 animate-bounce rounded-full bg-orange-500 shadow-[0_0_14px_var(--color-fire-mid-glow-strong)] [animation-delay:150ms] motion-reduce:animate-none dark:bg-orange-400" />
+              <span className="h-2.5 w-2.5 animate-bounce rounded-full bg-orange-500 shadow-[0_0_12px_var(--color-fire-mid-glow-45)] [animation-delay:300ms] motion-reduce:animate-none dark:bg-orange-400" />
             </div>
           </div>
           <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-32 sm:px-6 sm:pb-40 lg:px-8 lg:pb-48">

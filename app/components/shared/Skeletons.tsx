@@ -70,7 +70,7 @@ export function RecordingsSectionSkeleton() {
 
 export function HeroSkeleton() {
   return (
-    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-[#fafafa] px-4 pt-16 pb-20 sm:min-h-[110vh] sm:pt-20 sm:pb-0 dark:bg-[#050505]">
+    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 pt-16 pb-20 sm:min-h-[110vh] sm:pt-20 sm:pb-0 dark:bg-neutral-950">
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <div className="relative z-10 flex flex-col items-center text-center">
           <Skeleton className="mb-4 h-4 w-40 sm:mb-8" />

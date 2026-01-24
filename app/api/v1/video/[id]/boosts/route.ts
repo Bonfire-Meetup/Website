@@ -129,7 +129,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       const result = await addVideoBoost(videoId, userId);
 
       revalidateTag("engagement-counts", "max");
-      revalidateTag("trending-recordings-6", "max");
       revalidateTag("member-picks", "max");
 
       const response = {
@@ -184,7 +183,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       }
 
       revalidateTag("engagement-counts", "max");
-      revalidateTag("trending-recordings-6", "max");
       revalidateTag("member-picks", "max");
 
       const validated = videoBoostMutationSchema.parse(result);

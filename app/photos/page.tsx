@@ -117,7 +117,7 @@ export default async function PhotosPage() {
               <div className="mx-auto max-w-7xl">
                 <div className="max-w-3xl space-y-6">
                   <div className="inline-flex items-center gap-2 rounded-full bg-black/10 px-4 py-1.5 text-sm font-medium text-neutral-900 backdrop-blur-sm dark:bg-white/10 dark:text-white">
-                    <span className="bg-brand-500 dark:bg-brand-400 h-1.5 w-1.5 rounded-full" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-orange-500 dark:bg-orange-400" />
                     {t("eyebrow")}
                   </div>
                   <h1 className="text-5xl font-black tracking-tight text-neutral-900 sm:text-7xl lg:text-8xl dark:text-white">

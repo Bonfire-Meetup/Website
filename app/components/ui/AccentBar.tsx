@@ -15,7 +15,7 @@ export function AccentBar({ size = "md", className = "" }: AccentBarProps) {
   return (
     <span
       aria-hidden="true"
-      className={`from-brand-500 w-1 rounded-full bg-gradient-to-b to-rose-500 ${sizeClasses[size]} ${className}`}
+      className={`w-1 rounded-full bg-gradient-to-b from-fuchsia-700 via-orange-500 to-red-600 ${sizeClasses[size]} ${className}`}
     />
   );
 }

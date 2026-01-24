@@ -87,7 +87,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
                 <div className="mt-2 flex flex-col gap-1">
                   {related.speaker.map((name: string) => (
                     <div key={name} className="flex items-center gap-2">
-                      <span className="bg-brand-500 dark:bg-brand-400 h-1 w-1 shrink-0 rounded-full shadow-[0_0_4px_rgba(59,130,246,0.3)]" />
+                      <span className="bg-brand-500 dark:bg-brand-400 h-1 w-1 shrink-0 rounded-full shadow-[0_0_4px_var(--color-brand-glow-light)]" />
                       <span className="truncate text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
                         {name}
                       </span>

@@ -57,7 +57,6 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
       const validated = videoLikeMutationSchema.parse(result);
 
       revalidateTag("engagement-counts", "max");
-      revalidateTag("trending-recordings-6", "max");
 
       return NextResponse.json(validated);
     } catch (error) {
@@ -89,7 +88,6 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
       const validated = videoLikeMutationSchema.parse(result);
 
       revalidateTag("engagement-counts", "max");
-      revalidateTag("trending-recordings-6", "max");
 
       return NextResponse.json(validated);
     } catch (error) {

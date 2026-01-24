@@ -67,7 +67,7 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/90 shadow-2xl shadow-black/5 backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-black/25">
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(34,197,94,0.02)_0%,transparent_50%,rgba(168,85,247,0.02)_100%)] dark:bg-[linear-gradient(135deg,rgba(34,197,94,0.03)_0%,transparent_50%,rgba(168,85,247,0.03)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,var(--color-emerald-glow)_0%,transparent_50%,var(--color-brand-glow-3)_100%)] dark:bg-[linear-gradient(135deg,var(--color-emerald-glow-dark)_0%,transparent_50%,var(--color-brand-glow-4)_100%)]" />
 
       <div className="relative border-b border-neutral-200/60 px-6 py-6 sm:px-8 sm:py-7 dark:border-white/10">
         <div className="flex items-center justify-between gap-4">

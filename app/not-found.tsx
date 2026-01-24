@@ -13,8 +13,8 @@ export default function NotFound() {
         <div className="text-center">
           <div className="mb-8 flex justify-center">
             <div className="relative">
-              <FireIcon className="text-brand-500 h-24 w-24 opacity-20" />
-              <span className="text-brand-500 absolute inset-0 flex items-center justify-center text-5xl font-black">
+              <FireIcon className="h-24 w-24 text-orange-500 opacity-20" />
+              <span className="absolute inset-0 flex items-center justify-center text-5xl font-black text-orange-500">
                 404
               </span>
             </div>

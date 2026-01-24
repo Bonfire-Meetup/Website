@@ -80,7 +80,7 @@ export function EventsSectionClient({
             size="xs"
             className={`rounded-full font-semibold ${
               activeEpisode === "all"
-                ? "bg-brand-500 shadow-brand-500/25 text-white shadow-lg"
+                ? "bg-red-600 text-white shadow-lg shadow-red-600/25"
                 : "bg-white/80 text-neutral-600 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20"
             }`}
           >

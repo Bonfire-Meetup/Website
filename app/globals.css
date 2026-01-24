@@ -6,20 +6,78 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-300: #c4b5fd;
-  --color-brand-400: #a78bfa;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
-  --color-brand-700: #6d28d9;
-  --color-brand-800: #5b21b6;
-  --color-brand-900: #4c1d95;
+  /* Brand colors - Fuchsia base (bonfire foundation) */
+  --color-brand-50: #fdf4ff;
+  --color-brand-100: #fae8ff;
+  --color-brand-200: #f5d0fe;
+  --color-brand-300: #f0abfc;
+  --color-brand-400: #e879f9;
+  --color-brand-500: #d946ef;
+  --color-brand-600: #c026d3;
+  --color-brand-700: #a21caf;
+  --color-brand-800: #86198f;
+  --color-brand-900: #701a75;
 
-  --color-fire-start: #7c3aed;
-  --color-fire-mid: #d946ef;
+  /* Fire gradient - Bonfire colors: Violet → Red-Orange → Rose (aligned with logo) */
+  --color-fire-start: #8b5cf6;
+  --color-fire-mid: #ff5555;
   --color-fire-end: #f43f5e;
+
+  /* Accent colors for depth and variety */
+  --color-accent-cyan: #06b6d4;
+  --color-accent-amber: #f59e0b;
+  --color-accent-emerald: #10b981;
+  --color-accent-rose: #f43f5e;
+
+  /* Text colors */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e5e7eb;
+  --color-text-muted: #374151;
+
+  /* Location colors */
+  --color-prague: #dc2626;
+  --color-prague-light: #f87171;
+  --color-prague-glow: rgba(244, 63, 94, 0.3);
+  --color-prague-glow-2: rgba(244, 63, 94, 0.1);
+  --color-zlin: #2563eb;
+  --color-zlin-light: #60a5fa;
+  --color-zlin-glow: rgba(59, 130, 246, 0.3);
+
+  /* Brand glow colors */
+  --color-brand-glow-1: rgba(124, 58, 237, 0.15);
+  --color-brand-glow-2: rgba(217, 70, 239, 0.1);
+  --color-brand-glow-3: rgba(139, 92, 246, 0.02);
+  --color-brand-glow-4: rgba(139, 92, 246, 0.03);
+  --color-brand-glow-5: rgba(139, 92, 246, 0.06);
+  --color-brand-glow-6: rgba(139, 92, 246, 0.1);
+  --color-brand-glow-7: rgba(217, 70, 239, 0.04);
+  --color-brand-glow-8: rgba(217, 70, 239, 0.06);
+  --color-brand-glow-9: rgba(139, 92, 246, 0.18);
+
+  /* Fire gradient RGBA colors */
+  --color-fire-start-glow: rgba(162, 28, 175, 0.08);
+  --color-fire-start-glow-dark: rgba(162, 28, 175, 0.04);
+  --color-fire-mid-glow: rgba(249, 115, 22, 0.1);
+  --color-fire-mid-glow-dark: rgba(249, 115, 22, 0.05);
+  --color-fire-mid-glow-strong: rgba(249, 115, 22, 0.5);
+  --color-fire-mid-glow-6: rgba(249, 115, 22, 0.6);
+  --color-fire-mid-glow-45: rgba(249, 115, 22, 0.45);
+  --color-fire-end-glow: rgba(220, 38, 38, 0.08);
+  --color-fire-end-glow-dark: rgba(220, 38, 38, 0.04);
+
+  /* Rose/Prague gradient colors */
+  --color-rose-glow: rgba(244, 63, 94, 0.1);
+  --color-rose-glow-alt: rgba(244, 63, 94, 0.18);
+
+  /* Emerald gradient colors */
+  --color-emerald-glow: rgba(34, 197, 94, 0.02);
+  --color-emerald-glow-dark: rgba(34, 197, 94, 0.03);
+
+  /* Shadow/depth colors */
+  --color-shadow-dark-light: rgba(18, 18, 18, 0.1);
+  --color-shadow-dark-strong: rgba(0, 0, 0, 0.35);
+  --color-brand-glow-light: rgba(59, 130, 246, 0.3);
+  --color-brand-glow-lighter: rgba(59, 130, 246, 0.4);
 }
 
 * {
@@ -170,7 +228,7 @@ html.smooth-scroll {
   box-shadow:
     0 20px 50px rgba(0, 0, 0, 0.6),
     0 8px 20px rgba(0, 0, 0, 0.4),
-    0 0 60px rgba(139, 92, 246, 0.1),
+    0 0 60px rgba(230, 57, 98, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
@@ -184,23 +242,18 @@ html.smooth-scroll {
 
 .glass-button {
   position: relative;
-  background: linear-gradient(
-    135deg,
-    var(--color-brand-400) 0%,
-    var(--color-brand-500) 55%,
-    #f43f5e 100%
-  );
+  background: linear-gradient(135deg, #a21caf 0%, #f97316 50%, #dc2626 100%);
   background-size: 200% 200%;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: none;
   border-radius: 16px;
   box-shadow:
-    0 4px 20px rgba(244, 63, 94, 0.35),
-    0 2px 8px rgba(139, 92, 246, 0.2),
+    0 4px 20px rgba(162, 28, 175, 0.3),
+    0 2px 8px rgba(249, 115, 22, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-  color: white;
+  color: var(--color-text-primary);
   font-weight: 600;
   padding: 14px 32px;
   transition:
@@ -252,8 +305,8 @@ html.smooth-scroll {
 .glass-button:hover {
   transform: translateY(-3px) scale(1.02);
   box-shadow:
-    0 8px 30px rgba(244, 63, 94, 0.5),
-    0 4px 15px rgba(139, 92, 246, 0.25),
+    0 8px 30px rgba(162, 28, 175, 0.4),
+    0 4px 15px rgba(249, 115, 22, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
   background-position: 100% 100%;
 }
@@ -277,7 +330,7 @@ html.smooth-scroll {
     0 4px 16px rgba(0, 0, 0, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.02);
-  color: #374151;
+  color: var(--color-text-muted);
   font-weight: 600;
   padding: 14px 32px;
   transition:
@@ -288,7 +341,7 @@ html.smooth-scroll {
 .dark .glass-button-secondary {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #e5e7eb;
+  color: var(--color-text-secondary);
   box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -304,20 +357,22 @@ html.smooth-scroll {
 .dark .glass-button-secondary:hover {
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(139, 92, 246, 0.1),
+    0 0 40px rgba(249, 115, 22, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: rgba(249, 115, 22, 0.15);
 }
 
 .gradient-bg {
   background: linear-gradient(
     135deg,
     #fafafa 0%,
-    #f5f3ff 20%,
-    #fafafa 40%,
-    #f3e8ff 60%,
-    #fafafa 80%,
-    #f5f3ff 100%
+    #f0fdfa 15%,
+    #faf5ff 30%,
+    #fafafa 45%,
+    #fffbeb 60%,
+    #fafafa 75%,
+    #f0fdfa 90%,
+    #fafafa 100%
   );
 }
 
@@ -325,11 +380,13 @@ html.smooth-scroll {
   background: linear-gradient(
     135deg,
     #fafafa 0%,
-    #f5f3ff 20%,
-    #fafafa 40%,
-    #f3e8ff 60%,
-    #fafafa 80%,
-    #f5f3ff 100%
+    #f0fdfa 15%,
+    #faf5ff 30%,
+    #fafafa 45%,
+    #fffbeb 60%,
+    #fafafa 75%,
+    #f0fdfa 90%,
+    #fafafa 100%
   );
 }
 
@@ -337,10 +394,12 @@ html.smooth-scroll {
   background: linear-gradient(
     135deg,
     #09090b 0%,
-    #0c0c0e 20%,
-    #0f0f12 40%,
-    #0a0a0c 60%,
-    #0d0d10 80%,
+    #09090b 15%,
+    #09090b 30%,
+    #09090b 45%,
+    #09090b 60%,
+    #09090b 75%,
+    #09090b 90%,
     #09090b 100%
   );
 }
@@ -349,10 +408,12 @@ html.smooth-scroll {
   background: linear-gradient(
     135deg,
     #09090b 0%,
-    #0c0c0e 20%,
-    #0f0f12 40%,
-    #0a0a0c 60%,
-    #0d0d10 80%,
+    #09090b 15%,
+    #09090b 30%,
+    #09090b 45%,
+    #09090b 60%,
+    #09090b 75%,
+    #09090b 90%,
     #09090b 100%
   );
 }
@@ -521,28 +582,28 @@ html.smooth-scroll {
 
 .location-badge.prague {
   background: linear-gradient(135deg, rgba(220, 38, 38, 0.12) 0%, rgba(239, 68, 68, 0.08) 100%);
-  color: #dc2626;
+  color: var(--color-prague);
   border: 1px solid rgba(220, 38, 38, 0.2);
   box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
 }
 
 .dark .location-badge.prague {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%);
-  color: #f87171;
+  color: var(--color-prague-light);
   border: 1px solid rgba(239, 68, 68, 0.25);
   box-shadow: 0 2px 12px rgba(239, 68, 68, 0.15);
 }
 
 .location-badge.zlin {
   background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%);
-  color: #2563eb;
+  color: var(--color-zlin);
   border: 1px solid rgba(37, 99, 235, 0.2);
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
 }
 
 .dark .location-badge.zlin {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.1) 100%);
-  color: #60a5fa;
+  color: var(--color-zlin-light);
   border: 1px solid rgba(59, 130, 246, 0.25);
   box-shadow: 0 2px 12px rgba(59, 130, 246, 0.15);
 }
@@ -989,4 +1050,13 @@ html:not([data-motion="active"]) * {
 
 .section-label-spaced {
   @apply mb-3 text-sm font-medium text-neutral-500 dark:text-neutral-400;
+}
+
+/* Typography utilities for new fonts */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-body {
+  font-family: var(--font-sans);
 }

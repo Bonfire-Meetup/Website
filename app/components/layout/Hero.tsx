@@ -12,7 +12,7 @@ import { HeroBackground } from "./HeroBackground";
 function Ember({ style, className = "" }: { style: CSSProperties; className?: string }) {
   return (
     <div
-      className={`animate-rise from-brand-500 absolute rounded-full bg-gradient-to-t to-rose-500 blur-sm md:blur-md ${className}`}
+      className={`animate-rise absolute rounded-full bg-gradient-to-t from-fuchsia-700 via-orange-500 to-red-600 blur-sm md:blur-md ${className}`}
       style={style}
     />
   );
@@ -54,12 +54,13 @@ export async function Hero({
   }));
 
   return (
-    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-[#fafafa] px-4 pt-20 pb-20 transition-colors duration-500 sm:min-h-[110vh] sm:pt-20 sm:pb-0 dark:bg-[#050505]">
+    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 pt-20 pb-20 transition-colors duration-500 sm:min-h-[110vh] sm:pt-20 sm:pb-0 dark:bg-neutral-950">
       <HeroBackground images={heroImages} />
 
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(139,92,246,0.1),transparent_60%)] dark:bg-[radial-gradient(circle_at_50%_40%,rgba(139,92,246,0.15),transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(244,63,94,0.08),transparent_50%)] dark:bg-[radial-gradient(circle_at_80%_20%,rgba(244,63,94,0.1),transparent_50%)]" />
-      <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-20 h-32 bg-gradient-to-t from-[#fafafa] to-transparent dark:from-[#050505]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,var(--color-fire-start-glow),transparent_60%)] dark:bg-[radial-gradient(circle_at_50%_40%,var(--color-fire-start-glow-dark),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,var(--color-fire-mid-glow),transparent_50%)] dark:bg-[radial-gradient(circle_at_80%_20%,var(--color-fire-mid-glow-dark),transparent_50%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,var(--color-fire-end-glow),transparent_50%)] dark:bg-[radial-gradient(circle_at_20%_80%,var(--color-fire-end-glow-dark),transparent_50%)]" />
+      <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-20 h-32 bg-gradient-to-t from-neutral-50 to-transparent dark:from-neutral-950" />
 
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         {embers.map((style, i) => (
@@ -75,10 +76,10 @@ export async function Hero({
 
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <div className="relative z-10 flex flex-col items-center text-center">
-          <p className="text-brand-600 dark:text-brand-300 mb-4 hidden items-center gap-2 text-xs font-bold tracking-[0.4em] uppercase sm:mb-8 sm:flex sm:gap-3 sm:text-sm sm:tracking-[0.5em]">
-            <span className="to-brand-400 h-px w-6 bg-gradient-to-r from-transparent sm:w-8" />
+          <p className="mb-4 hidden items-center gap-2 text-xs font-bold tracking-[0.4em] text-orange-600 uppercase sm:mb-8 sm:flex sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-orange-400">
+            <span className="h-px w-6 bg-gradient-to-r from-transparent to-orange-400 sm:w-8" />
             {t("eyebrow")}
-            <span className="to-brand-400 h-px w-6 bg-gradient-to-l from-transparent sm:w-8" />
+            <span className="h-px w-6 bg-gradient-to-l from-transparent to-orange-400 sm:w-8" />
           </p>
           <h1 className="mb-6 flex flex-col items-center sm:mb-10">
             <span className="text-outline mx-auto text-5xl font-black tracking-tighter uppercase opacity-70 sm:text-8xl md:text-9xl">
@@ -104,7 +105,7 @@ export async function Hero({
               className="group relative px-5 py-3 text-sm sm:px-10 sm:py-5 sm:text-lg"
             >
               <span className="relative z-10">{t("cta.events")}</span>
-              <div className="bg-brand-500 absolute inset-0 -z-10 opacity-40 blur-xl transition-opacity group-hover:opacity-60" />
+              <div className="absolute inset-0 -z-10 bg-fuchsia-700 opacity-40 blur-xl transition-opacity group-hover:opacity-60" />
             </Button>
             <Button
               href={PAGE_ROUTES.LIBRARY}

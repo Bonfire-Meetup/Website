@@ -109,7 +109,7 @@ export function LoginClient() {
   const inputBaseClass =
     "w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-900 placeholder-neutral-400 transition-all duration-200 focus:outline-none focus:ring-2 dark:bg-white/5 dark:text-white dark:placeholder-neutral-500";
   const inputNormalClass =
-    "border-neutral-200 focus:border-brand-500 focus:ring-brand-500/20 dark:border-white/10 dark:focus:border-brand-400";
+    "border-neutral-200 focus:border-orange-500 focus:ring-orange-500/20 dark:border-white/10 dark:focus:border-orange-400";
   const inputDisabledClass = "cursor-not-allowed opacity-60 bg-neutral-50 dark:bg-white/5";
 
   const handleRequest = async (event: React.FormEvent) => {
@@ -285,10 +285,10 @@ export function LoginClient() {
   }, [code, step, challengeToken, loading, handleVerify]);
 
   return (
-    <main className="relative flex min-h-screen flex-col bg-[#f6f7fb] text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+    <main className="relative flex min-h-screen flex-col bg-neutral-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="from-brand-200/40 dark:from-brand-500/20 absolute top-20 -left-24 h-64 w-64 rounded-full bg-gradient-to-br via-white to-transparent blur-3xl dark:via-rose-500/20" />
-        <div className="dark:from-brand-500/20 absolute top-40 -right-16 h-72 w-72 rounded-full bg-gradient-to-br from-rose-200/30 via-slate-100 to-transparent blur-3xl dark:via-amber-500/10" />
+        <div className="absolute top-20 -left-24 h-64 w-64 rounded-full bg-gradient-to-br from-fuchsia-200/40 via-white to-transparent blur-3xl dark:from-fuchsia-600/20 dark:via-rose-500/20" />
+        <div className="absolute top-40 -right-16 h-72 w-72 rounded-full bg-gradient-to-br from-rose-200/30 via-slate-100 to-transparent blur-3xl dark:from-orange-500/20 dark:via-amber-500/10" />
       </div>
 
       <div className="relative flex flex-1 items-center justify-center px-4 py-6 sm:px-6 sm:py-12">
@@ -299,8 +299,8 @@ export function LoginClient() {
             <span>{t("brand", { brandName: tCommon("brandName") })}</span>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_20px_60px_rgba(18,18,18,0.1)] backdrop-blur sm:rounded-3xl md:grid md:grid-cols-[1.35fr_1fr] dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
-            <div className="hidden flex-col gap-6 bg-gradient-to-br from-white to-[#f4f5f9] p-8 md:flex lg:p-10 dark:from-neutral-900 dark:to-neutral-950">
+          <div className="overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_20px_60px_var(--color-shadow-dark-light)] backdrop-blur sm:rounded-3xl md:grid md:grid-cols-[1.35fr_1fr] dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_var(--color-shadow-dark-strong)]">
+            <div className="hidden flex-col gap-6 bg-gradient-to-br from-white to-neutral-50 p-8 md:flex lg:p-10 dark:from-neutral-900 dark:to-neutral-950">
               <div>
                 <h1 className="text-2xl font-semibold tracking-tight lg:text-3xl">{t("title")}</h1>
                 <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
@@ -323,37 +323,37 @@ export function LoginClient() {
                   <span>{t("boostHint")}</span>
                 </div>
               )}
-              <div className="dark:border-brand-500/20 dark:bg-brand-500/10 space-y-3 rounded-2xl border border-neutral-200/70 bg-white/80 px-5 py-4 text-sm text-neutral-700 dark:text-neutral-200">
-                <div className="dark:text-brand-200/80 text-xs tracking-[0.2em] text-neutral-500 uppercase">
+              <div className="space-y-3 rounded-2xl border border-neutral-200/70 bg-white/80 px-5 py-4 text-sm text-neutral-700 dark:border-orange-500/20 dark:bg-orange-500/10 dark:text-neutral-200">
+                <div className="text-xs tracking-[0.2em] text-neutral-500 uppercase dark:text-orange-200/80">
                   {t("secureTitle")}
                 </div>
                 <ul className="space-y-2.5">
                   <li className="flex items-start gap-2.5">
-                    <span className="bg-brand-500/10 text-brand-600 dark:bg-brand-400/20 dark:text-brand-400 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-500/10 text-xs font-semibold text-orange-600 dark:bg-orange-400/20 dark:text-orange-400">
                       1
                     </span>
                     <span>{t("steps.step1")}</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="bg-brand-500/10 text-brand-600 dark:bg-brand-400/20 dark:text-brand-400 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-500/10 text-xs font-semibold text-orange-600 dark:bg-orange-400/20 dark:text-orange-400">
                       2
                     </span>
                     <span>{t("steps.step2")}</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="bg-brand-500/10 text-brand-600 dark:bg-brand-400/20 dark:text-brand-400 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-500/10 text-xs font-semibold text-orange-600 dark:bg-orange-400/20 dark:text-orange-400">
                       3
                     </span>
                     <span>{t("steps.step3")}</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="bg-brand-500/10 text-brand-600 dark:bg-brand-400/20 dark:text-brand-400 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-500/10 text-xs font-semibold text-orange-600 dark:bg-orange-400/20 dark:text-orange-400">
                       4
                     </span>
                     <span>{t("steps.step4")}</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="bg-brand-500/10 text-brand-600 dark:bg-brand-400/20 dark:text-brand-400 mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-500/10 text-xs font-semibold text-orange-600 dark:bg-orange-400/20 dark:text-orange-400">
                       5
                     </span>
                     <span>{t("steps.step5")}</span>
@@ -362,9 +362,9 @@ export function LoginClient() {
               </div>
             </div>
 
-            <div className="from-brand-50/30 relative flex flex-col overflow-hidden bg-gradient-to-br via-white to-rose-50/20 p-5 sm:p-6 md:p-8 lg:p-10 dark:from-neutral-900/50 dark:via-neutral-900 dark:to-neutral-950/50">
+            <div className="relative flex flex-col overflow-hidden bg-gradient-to-br from-fuchsia-50/30 via-white to-rose-50/20 p-5 sm:p-6 md:p-8 lg:p-10 dark:from-neutral-900/50 dark:via-neutral-900 dark:to-neutral-950/50">
               <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                <div className="from-brand-200/30 dark:from-brand-500/10 absolute top-1/4 -right-12 h-64 w-64 rounded-full bg-gradient-to-br to-transparent blur-3xl" />
+                <div className="absolute top-1/4 -right-12 h-64 w-64 rounded-full bg-gradient-to-br from-fuchsia-200/30 to-transparent blur-3xl dark:from-fuchsia-500/10" />
                 <div className="absolute -bottom-12 -left-12 h-72 w-72 rounded-full bg-gradient-to-tr from-rose-200/20 to-transparent blur-3xl dark:from-rose-500/5" />
               </div>
 

@@ -93,7 +93,7 @@ export function HeroBackground({ images }: { images: HeroImage[] }) {
           />
         );
       })}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#fafafa] via-[#fafafa]/80 to-transparent dark:from-[#050505] dark:via-[#050505]/80 dark:to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-neutral-50 via-neutral-50/80 to-transparent dark:from-neutral-950 dark:via-neutral-950/80 dark:to-transparent" />
     </div>
   );
 }

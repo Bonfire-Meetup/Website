@@ -32,7 +32,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   "glass-secondary": "glass-button-secondary",
   plain: "",
   primary:
-    "bg-gradient-to-r from-brand-600 to-rose-500 text-white shadow-lg shadow-rose-500/25 hover:from-brand-500 hover:to-rose-400 dark:from-brand-500 dark:to-rose-400 dark:shadow-rose-400/30 dark:hover:from-brand-400 dark:hover:to-rose-300",
+    "bg-gradient-to-r from-fuchsia-700 via-orange-500 to-red-600 text-white shadow-lg shadow-orange-500/25 hover:from-fuchsia-800 hover:via-orange-600 hover:to-red-700 dark:shadow-orange-500/30",
   secondary:
     "bg-white/80 text-neutral-600 shadow-sm ring-1 ring-black/5 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:ring-white/10 dark:hover:bg-white/20",
 };

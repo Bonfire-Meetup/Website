@@ -123,9 +123,9 @@ export default async function PressPage() {
 
   const colors = [
     { hex: "#8b5cf6", name: t("colors.brand") },
-    { hex: "#6d28d9", name: t("colors.brandDeep") },
-    { hex: "#d946ef", name: t("colors.fireMid") },
-    { hex: "#f43f5e", name: t("colors.fireEnd") },
+    { hex: "#ff5555", name: t("colors.brandDeep") },
+    { hex: "#f43f5e", name: t("colors.fireMid") },
+    { hex: "#f59e0b", name: t("colors.fireEnd") },
   ];
 
   const stats = [
@@ -269,7 +269,7 @@ export default async function PressPage() {
                 <a
                   href={`/assets/${pressKitFilename}`}
                   download
-                  className="from-brand-600 hover:from-brand-500 dark:from-brand-500 dark:hover:from-brand-400 inline-flex items-center justify-center rounded-xl bg-gradient-to-r to-rose-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/25 transition hover:to-rose-400 dark:to-rose-400 dark:shadow-rose-400/30 dark:hover:to-rose-300"
+                  className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-fuchsia-700 via-orange-500 to-red-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/25 transition hover:from-fuchsia-800 hover:via-orange-600 hover:to-red-700"
                 >
                   {t("logos.downloadAllCta", { fileName: pressKitFilename })}
                 </a>
