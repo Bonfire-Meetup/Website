@@ -285,7 +285,7 @@ export function ContactForm() {
       onSubmit={handleSubmit}
       className="glass-card no-hover-pop mx-auto max-w-2xl p-6 sm:p-10"
     >
-      <div className="mb-8 flex items-start justify-between gap-4">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-center gap-4">
           <div className="form-header-icon">
             <MailIcon className="h-6 w-6 text-white" />
@@ -301,7 +301,7 @@ export function ContactForm() {
             variant="plain"
             size="sm"
             onClick={clearDraft}
-            className="form-clear-button"
+            className="form-clear-button self-start sm:self-auto"
           >
             <CloseIcon className="h-3.5 w-3.5" />
             {t("clearDraft")}

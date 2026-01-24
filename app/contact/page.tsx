@@ -39,7 +39,7 @@ export default async function ContactPage() {
     <>
       <Header />
       <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
-        <section className="relative flex min-h-[50vh] items-center justify-center overflow-hidden px-4 pt-28 pb-8 sm:min-h-[50vh] sm:pb-12">
+        <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden px-4 pt-32 pb-14 sm:min-h-[65vh] sm:pb-16">
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -top-24 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-1),transparent_60%)]" />
             <div className="absolute top-1/3 left-0 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-2),transparent_60%)]" />

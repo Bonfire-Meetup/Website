@@ -16,8 +16,8 @@
   },
   "header": {
     "home": "Dom\u016f",
-    "upcoming": "Nadch\u00e1zej\u00edc\u00ed",
-    "library": "Knihovna",
+    "upcoming": "Akce",
+    "library": "Z\u00e1znamy",
     "crew": "Crew",
     "photos": "Fotky",
     "faq": "FAQ",
@@ -37,9 +37,9 @@
       "highlight": "Game Devs",
       "part2": "Potkávají"
     },
-    "subtitle": "Přidej se k české gamedev komunitě na našich meetupech v {prague} a {zlin}. Přednášky, pivo a networking.",
+    "subtitle": "Přednášky, pivo, networking. Potkej českou gamedev komunitu na meetupech v {prague} a {zlin}.",
     "cta": {
-      "events": "Přijít na další meetup",
+      "events": "Přijď na další meetup",
       "recordings": "Záznamy přednášek"
     },
     "stats": {
@@ -55,8 +55,8 @@
   },
   "sections": {
     "events": {
-      "title": "Nadcházející akce",
-      "subtitle": "Doraz na náš další meetup! Kdo dřív přijde, ten má místo.",
+      "title": "Akce",
+      "subtitle": "Přijď na náš další meetup! Kdo dřív přijde, ten má místo.",
       "noEvents": "Zatím nic neplánujeme. Zkus to zčeknout později!",
       "filter": {
         "label": "Epizoda",
@@ -456,6 +456,8 @@
   "faqPage": {
     "eyebrow": "FAQ",
     "title": "Často kladené dotazy",
+    "titlePart1": "Často kladené",
+    "titleHighlight": "dotazy",
     "subtitle": "Rychlé odpovědi k tomu, jak web funguje - včetně meetupu, komunity a členských funkcí.",
     "sections": {
       "general": "Obecné",

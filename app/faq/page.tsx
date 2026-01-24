@@ -42,7 +42,7 @@ export default async function FaqPage() {
     <>
       <Header />
       <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
-        <section className="relative flex min-h-[62vh] items-center justify-center px-4 pt-32 pb-14 sm:min-h-[66vh] sm:pb-18">
+        <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden px-4 pt-32 pb-14 sm:min-h-[65vh] sm:pb-16">
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -top-24 left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-9),transparent_62%)]" />
             <div className="absolute top-28 right-10 h-[460px] w-[460px] rounded-full bg-[radial-gradient(circle_at_center,var(--color-orange-glow),transparent_62%)]" />
@@ -63,7 +63,8 @@ export default async function FaqPage() {
             </p>
 
             <h1 className="mb-5 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
-              {t("title")}
+              <span className="block">{t("titlePart1")}</span>
+              <span className="text-gradient-static block">{t("titleHighlight")}</span>
             </h1>
 
             <p className="mx-auto max-w-2xl text-neutral-600 dark:text-neutral-400">

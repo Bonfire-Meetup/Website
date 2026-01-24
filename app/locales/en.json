@@ -456,6 +456,8 @@
   "faqPage": {
     "eyebrow": "FAQ",
     "title": "Frequently asked questions",
+    "titlePart1": "Frequently asked",
+    "titleHighlight": "questions",
     "subtitle": "Quick answers about how the site works - including meetups, community, and platform features.",
     "sections": {
       "general": "General",

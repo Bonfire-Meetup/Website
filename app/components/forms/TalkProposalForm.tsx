@@ -332,7 +332,7 @@ export function TalkProposalForm() {
       onSubmit={handleSubmit}
       className="glass-card no-hover-pop mx-auto max-w-2xl p-6 sm:p-10"
     >
-      <div className="mb-8 flex items-start justify-between gap-4">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-center gap-4">
           <div className="form-header-icon">
             <MicIcon className="h-6 w-6 text-white" />
@@ -348,7 +348,7 @@ export function TalkProposalForm() {
             variant="plain"
             size="sm"
             onClick={clearDraft}
-            className="form-clear-button"
+            className="form-clear-button self-start sm:self-auto"
           >
             <CloseIcon className="h-3.5 w-3.5" />
             {t("clearDraft")}
@@ -458,16 +458,14 @@ export function TalkProposalForm() {
                 ariaInvalid={Boolean(state.errors?.duration)}
                 nativeOnMobile
                 required
-                buttonClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${
-                  duration
+                buttonClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${duration
                     ? "text-neutral-900 dark:text-white"
                     : "text-neutral-400 dark:text-neutral-500"
-                }`}
-                nativeClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${
-                  duration
+                  }`}
+                nativeClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${duration
                     ? "text-neutral-900 dark:text-white"
                     : "text-neutral-400 dark:text-neutral-500"
-                }`}
+                  }`}
                 activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
               />
             ) : (
