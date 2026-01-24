@@ -11,11 +11,21 @@ import { createAuthHeaders } from "@/lib/utils/http";
 
 import { BoltIcon, FireIcon, FrownIcon } from "../shared/icons";
 
+interface BoostedByData {
+  publicUsers: {
+    userId: string;
+    name: string | null;
+    emailHash: string;
+  }[];
+  privateCount: number;
+}
+
 interface LikeBoostButtonsProps {
+  onBoostedByLoad?: (boostedBy: BoostedByData | null) => void;
   shortId: string;
 }
 
-export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
+export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsProps) {
   const t = useTranslations("recordings");
   const router = useRouter();
   const [likeCount, setLikeCount] = useState<number | null>(null);
@@ -96,6 +106,7 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
         }
 
         const data = (await response.json()) as {
+          boostedBy?: BoostedByData;
           count: number;
           hasBoosted: boolean;
           availableBoosts?: number;
@@ -106,6 +117,9 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
           setHasBoosted(Boolean(data.hasBoosted));
           if (data.availableBoosts !== undefined) {
             setAvailableBoosts(data.availableBoosts);
+          }
+          if (onBoostedByLoad) {
+            onBoostedByLoad(data.boostedBy ?? null);
           }
         }
       } catch {
@@ -120,7 +134,7 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
     return () => {
       isActive = false;
     };
-  }, [shortId, accessToken]);
+  }, [shortId, accessToken, onBoostedByLoad]);
 
   const handleLike = async () => {
     if (isLiking) {
@@ -221,13 +235,17 @@ export function LikeBoostButtons({ shortId }: LikeBoostButtonsProps) {
         return;
       }
 
-      const { count, availableBoosts: newAvailableBoosts } = (await res.json()) as {
+      const responseData = (await res.json()) as {
+        boostedBy?: BoostedByData;
         count: number;
         availableBoosts?: number;
       };
-      setBoostCount(count);
-      if (newAvailableBoosts !== undefined) {
-        setAvailableBoosts(newAvailableBoosts);
+      setBoostCount(responseData.count);
+      if (responseData.availableBoosts !== undefined) {
+        setAvailableBoosts(responseData.availableBoosts);
+      }
+      if (onBoostedByLoad && responseData.boostedBy) {
+        onBoostedByLoad(responseData.boostedBy);
       }
     } catch {
       setHasBoosted(prevBoosted);

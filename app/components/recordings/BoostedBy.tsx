@@ -11,10 +11,6 @@ import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { logError } from "@/lib/utils/log-client";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
-interface BoostedByProps {
-  shortId: string;
-}
-
 interface BoostedUser {
   userId: string;
   name: string | null;
@@ -26,12 +22,23 @@ interface BoostedByData {
   privateCount: number;
 }
 
-export function BoostedBy({ shortId }: BoostedByProps) {
+interface BoostedByProps {
+  boostedBy?: BoostedByData | null;
+  shortId: string;
+}
+
+export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps) {
   const t = useTranslations("recordings");
-  const [boostedBy, setBoostedBy] = useState<BoostedByData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [boostedBy, setBoostedBy] = useState<BoostedByData | null>(boostedByProp ?? null);
+  const [loading, setLoading] = useState(!boostedByProp);
 
   useEffect(() => {
+    if (boostedByProp !== undefined) {
+      setBoostedBy(boostedByProp);
+      setLoading(false);
+      return;
+    }
+
     let isActive = true;
 
     const loadBoostedBy = async () => {
@@ -63,7 +70,7 @@ export function BoostedBy({ shortId }: BoostedByProps) {
     return () => {
       isActive = false;
     };
-  }, [shortId]);
+  }, [boostedByProp, shortId]);
 
   if (loading || !boostedBy) {
     return null;

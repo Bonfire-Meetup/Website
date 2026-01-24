@@ -30,8 +30,16 @@ export function Pill({
   const classes = `inline-flex items-center rounded-full ${sizeClasses[size]} ${className}`;
 
   if (href) {
+    const hasQueryParams = href.includes("?");
     return (
-      <Link href={href} onClick={onClick} className={classes} aria-label={ariaLabel} title={title}>
+      <Link
+        href={href}
+        onClick={onClick}
+        className={classes}
+        aria-label={ariaLabel}
+        title={title}
+        prefetch={!hasQueryParams}
+      >
         {children}
       </Link>
     );

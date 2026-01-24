@@ -2,11 +2,11 @@
 
 import type { Recording } from "@/lib/recordings/recordings";
 import { useLocale, useTranslations } from "next-intl";
-import { Suspense, useEffect, useRef } from "react";
+import Link from "next/link";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import { useGlobalPlayer } from "@/components/shared/GlobalPlayerProvider";
 import { ArrowLeftIcon, CinemaIcon } from "@/components/shared/icons";
-import { Button } from "@/components/ui/Button";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDate } from "@/lib/utils/locale";
 
@@ -15,6 +15,15 @@ import { LikeBoostButtons } from "./LikeBoostButtons";
 import { RelatedVideosSection } from "./RelatedVideosSection";
 import { ShareMenu } from "./ShareMenu";
 import { VideoMetadata } from "./VideoMetadata";
+
+interface BoostedByData {
+  publicUsers: {
+    userId: string;
+    name: string | null;
+    emailHash: string;
+  }[];
+  privateCount: number;
+}
 
 export type RelatedRecording = Pick<
   Recording,
@@ -50,6 +59,7 @@ export function RecordingPlayer({
   }, [cinemaMode, setCinemaMode]);
 
   const formattedDate = formatDate(recording.date, locale);
+  const [boostedBy, setBoostedBy] = useState<BoostedByData | null>(null);
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareText = `${recording.title} - ${recording.speaker.join(", ")}`;
@@ -76,15 +86,14 @@ export function RecordingPlayer({
             <div className="glass-card no-hover-pop overflow-hidden">
               <div className="hidden items-center justify-between border-b border-neutral-200/30 px-4 py-3 lg:flex dark:border-neutral-700/30">
                 <div className="hidden lg:block">
-                  <Button
+                  <Link
                     href={PAGE_ROUTES.LIBRARY}
-                    variant="ghost"
-                    size="sm"
-                    className="group items-center gap-2"
+                    className="group inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-neutral-600 transition hover:bg-brand-100/60 hover:text-brand-700 dark:text-neutral-400 dark:hover:bg-brand-500/10 dark:hover:text-brand-400"
+                    prefetch={false}
                   >
                     <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
                     <span>{t("backToLibrary")}</span>
-                  </Button>
+                  </Link>
                 </div>
               </div>
 
@@ -92,7 +101,10 @@ export function RecordingPlayer({
 
               <div className="border-b border-neutral-200/40 dark:border-neutral-700/40">
                 <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-6">
-                  <LikeBoostButtons shortId={recording.shortId} />
+                  <LikeBoostButtons
+                    onBoostedByLoad={setBoostedBy}
+                    shortId={recording.shortId}
+                  />
 
                   <div className="flex items-center gap-3">
                     <ShareMenu shareUrl={shareUrl} shareText={shareText} />
@@ -107,7 +119,7 @@ export function RecordingPlayer({
                   </div>
                 </div>
                 <div className="px-5 pb-4 sm:px-6">
-                  <BoostedBy shortId={recording.shortId} />
+                  <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
                 </div>
               </div>
 
