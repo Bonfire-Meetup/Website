@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 
 import { BoltIcon } from "@/components/shared/icons";
-import { AccentBar } from "@/components/ui/AccentBar";
 import { Link } from "@/i18n/navigation";
 import { getUserBoosts } from "@/lib/data/boosts";
 import { getAllRecordings } from "@/lib/recordings/recordings";
@@ -50,13 +49,13 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
         };
       })
       .filter((item) => item !== null) as {
-      date: string;
-      shortId: string;
-      slug: string;
-      speaker: string[];
-      thumbnail: string;
-      title: string;
-    }[];
+        date: string;
+        shortId: string;
+        slug: string;
+        speaker: string[];
+        thumbnail: string;
+        title: string;
+      }[];
   } catch {
     boostItems = [];
   }
@@ -66,25 +65,30 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
   }
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-neutral-200/50 bg-white/80 shadow-xl shadow-black/5 backdrop-blur-sm dark:border-white/10 dark:bg-neutral-900/80 dark:shadow-black/20">
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/20 via-transparent to-purple-50/10 dark:from-emerald-950/10 dark:via-transparent dark:to-purple-950/5" />
+    <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/90 shadow-2xl shadow-black/5 backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-black/25">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(34,197,94,0.02)_0%,transparent_50%,rgba(168,85,247,0.02)_100%)] dark:bg-[linear-gradient(135deg,rgba(34,197,94,0.03)_0%,transparent_50%,rgba(168,85,247,0.03)_100%)]" />
 
-      <div className="relative border-b border-neutral-200/50 px-6 py-5 dark:border-white/10">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <AccentBar size="md" />
-            <h2 className="text-lg font-black tracking-tight text-neutral-900 dark:text-white">
+      {/* Header section */}
+      <div className="relative border-b border-neutral-200/60 px-6 py-6 sm:px-8 sm:py-7 dark:border-white/10">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/25">
+              <BoltIcon className="h-5 w-5 text-white" aria-hidden="true" />
+            </div>
+            <h2 className="text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
               {t("boosted.title")}
             </h2>
           </div>
-          <span className="flex items-center gap-1.5 rounded-full border border-emerald-200/60 bg-emerald-50/80 px-3 py-1.5 text-xs font-bold text-emerald-700 shadow-sm backdrop-blur-sm dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-200">
-            <BoltIcon className="h-4 w-4" aria-hidden="true" />
+          <div className="flex h-9 min-w-[2.75rem] items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 px-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20">
             {boostItems.length}
-          </span>
+          </div>
         </div>
       </div>
-      <div className="relative p-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+
+      {/* Videos grid */}
+      <div className="relative p-6 sm:p-8">
+        <div className="grid gap-5 sm:grid-cols-2 lg:gap-6">
           {boostItems.map((boost) => {
             const formattedDate = new Intl.DateTimeFormat("en-US", {
               day: "numeric",
@@ -97,46 +101,70 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
                 key={boost.shortId}
                 href={PAGE_ROUTES.WATCH(boost.slug, boost.shortId)}
                 prefetch={false}
-                className="group relative overflow-hidden rounded-xl border border-neutral-200/70 bg-white/50 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:bg-white hover:shadow-lg hover:shadow-emerald-500/10 dark:border-white/10 dark:bg-white/5 dark:hover:border-emerald-500/30 dark:hover:bg-white/10 dark:hover:shadow-emerald-500/20"
+                className="group relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-md dark:border-white/10 dark:bg-neutral-800/50"
               >
+                {/* Thumbnail */}
                 <div className="relative aspect-video overflow-hidden bg-neutral-100 dark:bg-neutral-900">
                   <Image
                     src={boost.thumbnail}
                     alt={boost.title}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0" />
-                  <div className="absolute right-3 bottom-3 flex items-center gap-1.5 rounded-full bg-emerald-500/90 px-2.5 py-1 text-xs font-semibold text-white shadow-lg backdrop-blur-sm">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/0" />
+
+                  {/* Boost badge */}
+                  <div className="absolute right-3 bottom-3 flex items-center gap-1.5 rounded-lg bg-emerald-500 px-2.5 py-1.5 text-xs font-bold text-white shadow-xl">
                     <BoltIcon className="h-3.5 w-3.5" aria-hidden="true" />
                     <span>Boosted</span>
                   </div>
                 </div>
-                <div className="p-4">
-                  <h3 className="mb-2 line-clamp-2 text-sm leading-snug font-semibold text-neutral-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400">
+
+                {/* Content */}
+                <div className="p-5">
+                  <h3 className="mb-3 line-clamp-2 text-base leading-snug font-bold text-neutral-900 dark:text-white">
                     {boost.title}
                   </h3>
-                  <div className="space-y-1.5">
-                    <div className="flex flex-wrap items-center gap-1.5">
+
+                  <div className="space-y-2">
+                    {/* Speakers */}
+                    <div className="flex flex-wrap items-center gap-2">
                       {boost.speaker.slice(0, 2).map((name, idx) => (
                         <span
                           key={`${boost.shortId}-speaker-${name}`}
-                          className="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-600 dark:text-neutral-400"
+                          className="inline-flex items-center gap-1.5"
                         >
                           {idx > 0 && (
                             <span className="text-neutral-300 dark:text-neutral-600">•</span>
                           )}
-                          {name}
+                          <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                            {name}
+                          </span>
                         </span>
                       ))}
                       {boost.speaker.length > 2 && (
-                        <span className="text-xs text-neutral-400 dark:text-neutral-500">
+                        <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
                           +{boost.speaker.length - 2}
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-neutral-400 dark:text-neutral-500">
+
+                    {/* Date */}
+                    <div className="flex items-center gap-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                      <svg
+                        className="h-3.5 w-3.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
                       {formattedDate}
                     </div>
                   </div>

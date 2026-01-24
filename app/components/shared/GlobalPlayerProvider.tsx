@@ -4,6 +4,19 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import type { RootState } from "@/lib/redux/store";
+import {
+  clearVideo as clearVideoAction,
+  setCinemaMode as setCinemaModeAction,
+  setHasPlaybackStarted,
+  setInlineContainer as setInlineContainerAction,
+  setIsAnimating,
+  setIsLoading,
+  setPlayerRect,
+  setVideo as setVideoAction,
+} from "@/lib/redux/slices/playerSlice";
+
 import { CloseIcon } from "./icons";
 
 export const ENABLE_GLOBAL_MINI_PLAYER = true;
@@ -58,13 +71,15 @@ const MINI_HEIGHT = (MINI_WIDTH * 9) / 16;
 
 export function GlobalPlayerProvider({ children }: { children: React.ReactNode }) {
   const t = useTranslations("recordings");
-  const [video, setVideo] = useState<VideoInfo | null>(null);
+  const dispatch = useAppDispatch();
+  const player = useAppSelector((state) => state.player) as RootState["player"];
+  const video = player.video as VideoInfo | null;
   const [inlineElement, setInlineElement] = useState<HTMLDivElement | null>(null);
-  const [cinemaMode, setCinemaMode] = useState(false);
-  const [playerRect, setPlayerRect] = useState<Rect | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasPlaybackStarted, setHasPlaybackStarted] = useState(false);
+  const {cinemaMode} = player;
+  const playerRect = player.playerRect as Rect | null;
+  const {isAnimating} = player;
+  const {isLoading} = player;
+  const {hasPlaybackStarted} = player;
   const lastInlineRectRef = useRef<Rect | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const canMiniPlayer = useMediaQuery("(min-width: 768px)");
@@ -73,9 +88,9 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
   const isInline = Boolean(inlineElement);
 
   useEffect(() => {
-    setIsLoading(true);
-    setHasPlaybackStarted(false);
-  }, [video?.youtubeId]);
+    dispatch(setIsLoading(true));
+    dispatch(setHasPlaybackStarted(false));
+  }, [video?.youtubeId, dispatch]);
 
   useEffect(() => {
     if (!inlineElement) {
@@ -90,7 +105,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
         lastInlineRectRef.current = newRect;
 
         if (!cinemaMode) {
-          setPlayerRect(newRect);
+          dispatch(setPlayerRect(newRect));
         }
       }
     };
@@ -106,19 +121,21 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
       window.removeEventListener("scroll", updateRect);
       window.removeEventListener("resize", updateRect);
     };
-  }, [inlineElement, cinemaMode]);
+  }, [inlineElement, cinemaMode, dispatch]);
 
   useEffect(() => {
     if (cinemaMode) {
       const vw = window.innerWidth;
       const width = Math.min(vw * 0.92, 1200);
       const height = (width * 9) / 16;
-      setPlayerRect({
-        height,
-        left: (vw - width) / 2,
-        top: (window.innerHeight - height) / 2,
-        width,
-      });
+      dispatch(
+        setPlayerRect({
+          height,
+          left: (vw - width) / 2,
+          top: (window.innerHeight - height) / 2,
+          width,
+        }),
+      );
 
       return;
     }
@@ -128,7 +145,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     }
 
     if (!canMiniPlayer || !video || !hasPlaybackStarted) {
-      setPlayerRect(null);
+      dispatch(setPlayerRect(null));
 
       return;
     }
@@ -141,19 +158,19 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     };
 
     if (lastInlineRectRef.current) {
-      setPlayerRect(lastInlineRectRef.current);
-      setIsAnimating(true);
+      dispatch(setPlayerRect(lastInlineRectRef.current));
+      dispatch(setIsAnimating(true));
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          setPlayerRect(miniRect);
-          setTimeout(() => setIsAnimating(false), 300);
+          dispatch(setPlayerRect(miniRect));
+          setTimeout(() => dispatch(setIsAnimating(false)), 300);
         });
       });
       lastInlineRectRef.current = null;
     } else {
-      setPlayerRect(miniRect);
+      dispatch(setPlayerRect(miniRect));
     }
-  }, [isInline, canMiniPlayer, video, cinemaMode, hasPlaybackStarted]);
+  }, [isInline, canMiniPlayer, video, cinemaMode, hasPlaybackStarted, dispatch]);
 
   useEffect(() => {
     if (isInline || isAnimating || cinemaMode || !canMiniPlayer || !hasPlaybackStarted) {
@@ -161,18 +178,20 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     }
 
     const update = () => {
-      setPlayerRect({
-        height: MINI_HEIGHT,
-        left: window.innerWidth - 24 - MINI_WIDTH,
-        top: window.innerHeight - 24 - MINI_HEIGHT,
-        width: MINI_WIDTH,
-      });
+      dispatch(
+        setPlayerRect({
+          height: MINI_HEIGHT,
+          left: window.innerWidth - 24 - MINI_WIDTH,
+          top: window.innerHeight - 24 - MINI_HEIGHT,
+          width: MINI_WIDTH,
+        }),
+      );
     };
 
     window.addEventListener("resize", update);
 
     return () => window.removeEventListener("resize", update);
-  }, [isInline, isAnimating, cinemaMode, canMiniPlayer, hasPlaybackStarted]);
+  }, [isInline, isAnimating, cinemaMode, canMiniPlayer, hasPlaybackStarted, dispatch]);
 
   useEffect(() => {
     if (!video) {
@@ -199,12 +218,12 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
       const parsed =
         typeof event.data === "string"
           ? (() => {
-              try {
-                return JSON.parse(event.data) as { event?: string; info?: unknown };
-              } catch {
-                return null;
-              }
-            })()
+            try {
+              return JSON.parse(event.data) as { event?: string; info?: unknown };
+            } catch {
+              return null;
+            }
+          })()
           : (event.data as { event?: string; info?: unknown });
 
       if (!parsed) {
@@ -227,7 +246,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
 
       if (eventName === "onStateChange" || eventName === "infoDelivery") {
         if (playerState === 1 || playerState === 2 || playerState === 3) {
-          setHasPlaybackStarted(true);
+          dispatch(setHasPlaybackStarted(true));
         }
       }
     };
@@ -235,7 +254,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     window.addEventListener("message", handleMessage);
 
     return () => window.removeEventListener("message", handleMessage);
-  }, [video]);
+  }, [video, dispatch]);
 
   const registerPlayerListener = () => {
     const target = iframeRef.current?.contentWindow;
@@ -258,24 +277,26 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
   const value = useMemo(
     () => ({
       cinemaMode,
-      clearVideo: () => setVideo(null),
-      setCinemaMode,
-      setInlineContainer: setInlineElement,
-      setVideo: (next: VideoInfo) =>
-        setVideo((current) => {
-          const hasCurrentVideo = Boolean(current);
-          const isSameYoutubeId = current?.youtubeId === next.youtubeId;
-          const isSameWatchUrl = current?.watchUrl === next.watchUrl;
-          const isSameVideo = hasCurrentVideo && isSameYoutubeId && isSameWatchUrl;
+      clearVideo: () => dispatch(clearVideoAction()),
+      setCinemaMode: (value: boolean) => dispatch(setCinemaModeAction(value)),
+      setInlineContainer: (element: HTMLDivElement | null) => {
+        setInlineElement(element);
+        dispatch(setInlineContainerAction(element?.id ?? null));
+      },
+      setVideo: (next: VideoInfo) => {
+        const hasCurrentVideo = Boolean(video);
+        const isSameYoutubeId = video?.youtubeId === next.youtubeId;
+        const isSameWatchUrl = video?.watchUrl === next.watchUrl;
+        const isSameVideo = hasCurrentVideo && isSameYoutubeId && isSameWatchUrl;
 
-          if (isSameVideo) {
-            return current;
-          }
+        if (isSameVideo) {
+          return;
+        }
 
-          return next;
-        }),
+        dispatch(setVideoAction(next));
+      },
     }),
-    [cinemaMode],
+    [cinemaMode, dispatch, video],
   );
 
   const isNotInline = !isInline;
@@ -297,11 +318,11 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
             <>
               <div
                 className="fixed inset-0 z-[70] bg-black/95"
-                onClick={() => setCinemaMode(false)}
+                onClick={() => dispatch(setCinemaModeAction(false))}
               />
               <button
                 type="button"
-                onClick={() => setCinemaMode(false)}
+                onClick={() => dispatch(setCinemaModeAction(false))}
                 className="fixed top-6 right-6 z-[90] inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white/80 backdrop-blur-sm transition hover:bg-white/20 hover:text-white"
                 aria-label={t("exitCinema")}
               >
@@ -323,7 +344,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
               </Link>
               <button
                 type="button"
-                onClick={() => setVideo(null)}
+                onClick={() => dispatch(clearVideoAction())}
                 className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/70 text-white/80 shadow-lg transition hover:bg-black/90 hover:text-white"
                 aria-label={t("closePlayer")}
               >
@@ -333,13 +354,12 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
           )}
 
           <div
-            className={`fixed overflow-hidden bg-black ${
-              cinemaMode
+            className={`fixed overflow-hidden bg-black ${cinemaMode
                 ? "z-[80] rounded-2xl"
                 : isInline
                   ? "z-40 rounded-xl"
                   : "z-50 rounded-2xl shadow-2xl ring-1 ring-black/20"
-            } ${isAnimating ? "transition-all duration-300" : ""}`}
+              } ${isAnimating ? "transition-all duration-300" : ""}`}
             style={{
               height: playerRect.height,
               left: playerRect.left,
@@ -361,7 +381,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
               allowFullScreen
               sandbox="allow-same-origin allow-scripts allow-presentation allow-popups allow-popups-to-escape-sandbox"
               onLoad={() => {
-                setIsLoading(false);
+                dispatch(setIsLoading(false));
                 registerPlayerListener();
               }}
               className={`absolute inset-0 h-full w-full ${cinemaMode ? "rounded-2xl" : ""}`}

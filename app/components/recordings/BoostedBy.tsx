@@ -18,15 +18,12 @@ interface BoostedByProps {
 export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps) {
   const t = useTranslations("recordings");
 
-  // Only fetch if parent did NOT provide boostedBy (undefined means "not provided yet").
-  // If parent explicitly passes null, we treat it as "known empty" and do not fetch.
   const shouldFetch = Boolean(shortId) && boostedByProp === undefined;
   const boostsQuery = useVideoBoosts(shortId, shouldFetch);
 
   const boostedBy: BoostedByData | null =
     boostedByProp === undefined ? (boostsQuery.data?.boostedBy ?? null) : boostedByProp;
 
-  // If parent didn't provide data, show nothing until the query is resolved (prevents flicker).
   const loading = boostedByProp === undefined && boostsQuery.isLoading;
 
   const { publicUsers, privateCount, totalCount } = useMemo(() => {

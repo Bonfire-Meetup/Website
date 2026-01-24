@@ -69,7 +69,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         },
       };
 
-      // Add available boosts for authenticated users
       if (userId && authResult.status === "valid") {
         const allocation = await getUserBoostAllocation(userId);
         response.availableBoosts = allocation.availableBoosts;
@@ -116,13 +115,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         return NextResponse.json({ error: "Rate limited" }, { status: 429 });
       }
 
-      // Check if user has available boosts
       const hasBoost = await consumeBoost(userId);
 
       if (!hasBoost) {
         logWarn("video.boosts.no_boosts_available", { userId, videoId });
 
-        // Return current allocation so UI can update
         const allocation = await getUserBoostAllocation(userId);
 
         return NextResponse.json(
@@ -134,12 +131,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       const result = await addVideoBoost(videoId, userId);
       const allocation = await getUserBoostAllocation(userId);
 
-      // Invalidate cache for engagement counts, trending, and member picks
       revalidateTag("engagement-counts", "max");
       revalidateTag("trending-recordings-6", "max");
       revalidateTag("member-picks", "max");
 
-      // Add availableBoosts to response
       const response = {
         ...result,
         availableBoosts: allocation.availableBoosts,
@@ -183,12 +178,10 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
       const result = await removeVideoBoost(videoId, userId);
 
-      // Refund the boost if it was successfully removed
       if (result.removed) {
         await refundBoost(userId);
       }
 
-      // Invalidate cache for engagement counts, trending, and member picks
       revalidateTag("engagement-counts", "max");
       revalidateTag("trending-recordings-6", "max");
       revalidateTag("member-picks", "max");

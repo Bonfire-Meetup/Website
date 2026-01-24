@@ -8,6 +8,8 @@ import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import { AuthInitializer } from "./components/providers/AuthInitializer";
+import { ReduxProvider } from "./components/providers/ReduxProvider";
 import { GlobalPlayerProvider } from "./components/shared/GlobalPlayerProvider";
 import { QueryProvider } from "./components/shared/QueryProvider";
 import { MotionManager } from "./components/theme/MotionManager";
@@ -96,14 +98,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <QueryProvider>
-            <MotionManager />
-            <div className="relative flex min-h-screen flex-col">
-              <ThemeProvider>
-                <GlobalPlayerProvider>{children}</GlobalPlayerProvider>
-              </ThemeProvider>
-            </div>
-          </QueryProvider>
+          <ReduxProvider>
+            <AuthInitializer />
+            <QueryProvider>
+              <MotionManager />
+              <div className="relative flex min-h-screen flex-col">
+                <ThemeProvider>
+                  <GlobalPlayerProvider>{children}</GlobalPlayerProvider>
+                </ThemeProvider>
+              </div>
+            </QueryProvider>
+          </ReduxProvider>
         </NextIntlClientProvider>
         <Analytics />
         <SpeedInsights />

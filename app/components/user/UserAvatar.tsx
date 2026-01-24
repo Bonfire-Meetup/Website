@@ -93,9 +93,16 @@ interface UserAvatarProps {
   size?: number;
   className?: string;
   name?: string | null;
+  animated?: boolean;
 }
 
-export function UserAvatar({ emailHash, size = 80, className = "", name }: UserAvatarProps) {
+export function UserAvatar({
+  emailHash,
+  size = 80,
+  className = "",
+  name,
+  animated = false,
+}: UserAvatarProps) {
   const styles = generateAvatarStyles(emailHash);
   const conicAngle = parseInt(emailHash.slice(24, 32), 16) % 360;
   const shimmerAngle = parseInt(emailHash.slice(0, 8), 16) % 360;
@@ -112,9 +119,9 @@ export function UserAvatar({ emailHash, size = 80, className = "", name }: UserA
       }}
     >
       <div
-        className="absolute inset-0 animate-spin opacity-25"
+        className={`absolute inset-0 opacity-25 ${animated ? "animate-spin" : ""}`}
         style={{
-          animationDuration: "10s",
+          animationDuration: animated ? "10s" : undefined,
           background: `conic-gradient(from ${conicAngle}deg, transparent 0deg, rgba(255, 255, 255, 0.5) 45deg, transparent 90deg, rgba(255, 255, 255, 0.3) 135deg, transparent 180deg)`,
         }}
       />

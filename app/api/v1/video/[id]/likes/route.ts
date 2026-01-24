@@ -56,7 +56,6 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
       const result = await addVideoLike(videoId, ipHash, uaHash);
       const validated = videoLikeMutationSchema.parse(result);
 
-      // Invalidate cache for engagement counts and trending
       revalidateTag("engagement-counts", "max");
       revalidateTag("trending-recordings-6", "max");
 
@@ -89,7 +88,6 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
       const result = await removeVideoLike(videoId, ipHash, uaHash);
       const validated = videoLikeMutationSchema.parse(result);
 
-      // Invalidate cache for engagement counts and trending
       revalidateTag("engagement-counts", "max");
       revalidateTag("trending-recordings-6", "max");
 

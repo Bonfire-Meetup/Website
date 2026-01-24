@@ -1,18 +1,11 @@
 "use client";
 
+import type { BoostedRecording } from "@/lib/api/user-profile";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 import { Link } from "@/i18n/navigation";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-
-interface BoostedRecording {
-  boostedAt: string;
-  shortId: string;
-  title: string;
-  speaker: string[];
-  date: string;
-  slug: string;
-}
 
 interface BoostedVideosBlockProps {
   loading: boolean;
@@ -23,6 +16,13 @@ interface BoostedVideosBlockProps {
 
 export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedVideosBlockProps) {
   const t = useTranslations("account.boosted");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const showSkeletons = !mounted || loading;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
@@ -30,7 +30,7 @@ export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedV
         <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">{t("title")}</h3>
       </div>
       <div className="p-4">
-        {loading ? (
+        {showSkeletons ? (
           <div className="max-h-[280px] space-y-2 overflow-y-auto overscroll-contain sm:max-h-[320px]">
             {Array.from({ length: 3 }).map((_, index) => (
               <div

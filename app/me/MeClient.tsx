@@ -16,9 +16,29 @@ import {
   useUpdatePreferenceMutation,
   useUserProfile,
 } from "@/lib/api/user-profile";
-import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { clearAccessToken } from "@/lib/auth/client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { compressUuid } from "@/lib/utils/uuid-compress";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { clearAuth } from "@/lib/redux/slices/authSlice";
+import type { RootState } from "@/lib/redux/store";
+import {
+  clearProfile,
+  removeBoost as removeBoostAction,
+  setAttempts,
+  setBoostAllocation,
+  setBoosts,
+  setProfile,
+  updatePreferences,
+  resetDelete,
+  setDeleteCode,
+  setDeleteChallengeToken,
+  setDeleteIntent,
+  setDeleteStep,
+  setStagedCommunityEmails,
+  setStagedPublicProfile,
+  type ProfileState,
+} from "@/lib/redux/slices/profileSlice";
 
 import { BoostedVideosBlock } from "./BoostedVideosBlock";
 import { DangerZoneBlock } from "./DangerZoneBlock";
@@ -32,16 +52,6 @@ import {
   PreferencesSkeleton,
   ProfileSkeleton,
 } from "./ProfileSkeletons";
-
-type DeleteStep = "idle" | "confirm" | "verify" | "done";
-
-function getValidTokenOrNull(): string | null {
-  const token = readAccessToken();
-  if (!token) {
-    return null;
-  }
-  return isAccessTokenValid(token) ? token : null;
-}
 
 function getApiErrorReason(err: unknown): string | null {
   if (!(err instanceof ApiError)) {
@@ -60,14 +70,17 @@ export function MeClient() {
   const tDelete = useTranslations("account.delete");
   const router = useRouter();
   const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const auth = useAppSelector((state) => state.auth) as RootState["auth"];
+  const profileState = useAppSelector((state) => state.profile) as ProfileState;
+  const [mounted, setMounted] = useState(false);
 
-  const [deleteStep, setDeleteStep] = useState<DeleteStep>("idle");
-  const [deleteCode, setDeleteCode] = useState("");
-  const [deleteChallengeToken, setDeleteChallengeToken] = useState<string | null>(null);
-  const [deleteIntent, setDeleteIntent] = useState(false);
-
-  const [stagedCommunityEmails, setStagedCommunityEmails] = useState<boolean | null>(null);
-  const [stagedPublicProfile, setStagedPublicProfile] = useState<boolean | null>(null);
+  const { deleteStep } = profileState;
+  const { deleteChallengeToken } = profileState;
+  const { deleteCode } = profileState;
+  const { deleteIntent } = profileState;
+  const { stagedCommunityEmails } = profileState;
+  const { stagedPublicProfile } = profileState;
 
   const redirectTimeoutRef = useRef<number | null>(null);
   useEffect(
@@ -80,6 +93,10 @@ export function MeClient() {
     [],
   );
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const profileQuery = useUserProfile();
   const updatePreferenceMutation = useUpdatePreferenceMutation();
   const removeBoostMutation = useRemoveBoostMutation();
@@ -87,33 +104,66 @@ export function MeClient() {
   const deleteAccountMutation = useDeleteAccountMutation();
 
   useEffect(() => {
-    const validToken = getValidTokenOrNull();
-    if (validToken) {
+    if (!profileQuery.data) {
       return;
     }
 
+    dispatch(setProfile(profileQuery.data.profile));
+    dispatch(setBoosts(profileQuery.data.boosts.items));
+    dispatch(setAttempts(profileQuery.data.attempts.items));
+    dispatch(setBoostAllocation(profileQuery.data.boostAllocation ?? null));
+  }, [profileQuery.data, dispatch]);
+
+  useEffect(() => {
+    if (!auth.hydrated) {
+      return;
+    }
+
+    if (auth.isAuthenticated && auth.token) {
+      return;
+    }
+
+    dispatch(clearAuth());
+    dispatch(clearProfile());
     clearAccessToken();
     queryClient.removeQueries({ queryKey: ["user-profile"] });
     queryClient.removeQueries({ queryKey: ["video-boosts"] });
     router.replace(PAGE_ROUTES.LOGIN);
-  }, [queryClient, router]);
+  }, [auth.isAuthenticated, auth.token, auth.hydrated, queryClient, router, dispatch]);
 
   useEffect(() => {
     const err = profileQuery.error;
     if (err instanceof ApiError && err.status === 401) {
+      dispatch(clearAuth());
+      dispatch(clearProfile());
       clearAccessToken();
       queryClient.removeQueries({ queryKey: ["user-profile"] });
       queryClient.removeQueries({ queryKey: ["video-boosts"] });
       router.replace(PAGE_ROUTES.LOGIN);
     }
-  }, [profileQuery.error, queryClient, router]);
+  }, [profileQuery.error, queryClient, router, dispatch]);
 
-  const profile = profileQuery.data?.profile ?? null;
-  const boosts = profileQuery.data?.boosts.items ?? [];
-  const attempts = profileQuery.data?.attempts.items ?? [];
-  const boostAllocation = profileQuery.data?.boostAllocation ?? null;
+  const isHydrated = mounted && auth.hydrated;
+
+  const profile = isHydrated
+    ? profileState.profile ?? profileQuery.data?.profile ?? null
+    : null;
+  const boosts = isHydrated
+    ? profileState.boosts.length
+      ? profileState.boosts
+      : (profileQuery.data?.boosts.items ?? [])
+    : [];
+  const attempts = isHydrated
+    ? profileState.attempts.length
+      ? profileState.attempts
+      : (profileQuery.data?.attempts.items ?? [])
+    : [];
+  const boostAllocation = isHydrated
+    ? profileState.boostAllocation ?? profileQuery.data?.boostAllocation ?? null
+    : null;
 
   const loading = profileQuery.isLoading;
+  const showSkeletons = !isHydrated || loading;
   const error = profileQuery.isError ? t("error") : null;
 
   const updatingCommunityEmails =
@@ -122,6 +172,8 @@ export function MeClient() {
   const deleteLoading = deleteChallengeMutation.isPending || deleteAccountMutation.isPending;
 
   const handleSignOut = () => {
+    dispatch(clearAuth());
+    dispatch(clearProfile());
     clearAccessToken();
     queryClient.removeQueries({ queryKey: ["user-profile"] });
     queryClient.removeQueries({ queryKey: ["video-boosts"] });
@@ -134,15 +186,16 @@ export function MeClient() {
     }
 
     const newValue = !profile.allowCommunityEmails;
-    setStagedCommunityEmails(newValue);
+    dispatch(setStagedCommunityEmails(newValue));
 
     try {
       await updatePreferenceMutation.mutateAsync({
         allowCommunityEmails: newValue,
       });
-      setStagedCommunityEmails(null);
+      dispatch(updatePreferences({ allowCommunityEmails: newValue }));
+      dispatch(setStagedCommunityEmails(null));
     } catch {
-      setStagedCommunityEmails(null);
+      dispatch(setStagedCommunityEmails(null));
     }
   };
 
@@ -152,15 +205,16 @@ export function MeClient() {
     }
 
     const newValue = !profile.publicProfile;
-    setStagedPublicProfile(newValue);
+    dispatch(setStagedPublicProfile(newValue));
 
     try {
       await updatePreferenceMutation.mutateAsync({
         publicProfile: newValue,
       });
-      setStagedPublicProfile(null);
+      dispatch(updatePreferences({ publicProfile: newValue }));
+      dispatch(setStagedPublicProfile(null));
     } catch {
-      setStagedPublicProfile(null);
+      dispatch(setStagedPublicProfile(null));
     }
   };
 
@@ -171,8 +225,8 @@ export function MeClient() {
 
     try {
       const data = await deleteChallengeMutation.mutateAsync();
-      setDeleteChallengeToken(data.challenge_token);
-      setDeleteStep("verify");
+      dispatch(setDeleteChallengeToken(data.challenge_token));
+      dispatch(setDeleteStep("verify"));
     } catch {
       // DeleteError will show
     }
@@ -189,7 +243,7 @@ export function MeClient() {
         code: deleteCode,
       });
 
-      setDeleteStep("done");
+      dispatch(setDeleteStep("done"));
 
       redirectTimeoutRef.current = window.setTimeout(() => {
         router.replace(PAGE_ROUTES.HOME);
@@ -198,27 +252,25 @@ export function MeClient() {
       const reason = getApiErrorReason(err);
 
       if (reason === "expired" || reason === "too_many_attempts") {
-        setDeleteStep("confirm");
-        setDeleteCode("");
-        setDeleteChallengeToken(null);
+        dispatch(setDeleteStep("confirm"));
+        dispatch(setDeleteCode(""));
+        dispatch(setDeleteChallengeToken(null));
       }
     }
   };
 
   const handleDeleteCancel = () => {
-    setDeleteStep("idle");
-    setDeleteCode("");
-    setDeleteChallengeToken(null);
-    setDeleteIntent(false);
+    dispatch(resetDelete());
   };
 
   const handleDeleteProceed = () => {
-    setDeleteStep("confirm");
+    dispatch(setDeleteStep("confirm"));
   };
 
   const handleRemoveBoost = async (shortId: string) => {
     try {
       await removeBoostMutation.mutateAsync(shortId);
+      dispatch(removeBoostAction(shortId));
     } catch {
       // Handled by mutation onError
     }
@@ -234,9 +286,9 @@ export function MeClient() {
         ? tDelete("completed")
         : null;
 
-  const boostsLoading = loading;
+  const boostsLoading = loading || !isHydrated;
   const boostsError = profileQuery.isError ? t("boosted.error") : null;
-  const attemptsLoading = loading;
+  const attemptsLoading = loading || !isHydrated;
   const attemptsError = profileQuery.isError ? t("attempts.error") : null;
 
   return (
@@ -246,7 +298,7 @@ export function MeClient() {
           {t("title")}
         </h1>
 
-        {loading ? (
+        {showSkeletons ? (
           <HeaderButtonsSkeleton />
         ) : (
           <div className="flex gap-2">
@@ -282,7 +334,7 @@ export function MeClient() {
         </div>
       )}
 
-      {loading ? (
+      {showSkeletons ? (
         <>
           <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
             <ProfileSkeleton />
@@ -356,8 +408,8 @@ export function MeClient() {
                       {boostAllocation.availableBoosts === 1
                         ? t("boostAllocation.availableOne")
                         : t("boostAllocation.available", {
-                            count: boostAllocation.availableBoosts,
-                          })}
+                          count: boostAllocation.availableBoosts,
+                        })}
                     </span>
                   </div>
                   <p className="mt-2 text-xs text-emerald-600/70 dark:text-emerald-300/70">
@@ -381,8 +433,6 @@ export function MeClient() {
         </div>
       </div>
 
-      {/* Support links unchanged... */}
-
       <DangerZoneBlock
         status={deleteStatus}
         error={deleteError}
@@ -390,10 +440,10 @@ export function MeClient() {
         intentChecked={deleteIntent}
         loading={deleteLoading}
         code={deleteCode}
-        onIntentChange={setDeleteIntent}
+        onIntentChange={(value) => dispatch(setDeleteIntent(value))}
         onProceed={handleDeleteProceed}
         onSendCode={handleDeleteRequest}
-        onCodeChange={setDeleteCode}
+        onCodeChange={(value) => dispatch(setDeleteCode(value))}
         onConfirm={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
       />

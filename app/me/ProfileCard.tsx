@@ -4,19 +4,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import { ApiError } from "@/lib/api/errors";
-import { useUpdatePreferenceMutation } from "@/lib/api/user-profile";
+import { useUpdatePreferenceMutation, type Profile } from "@/lib/api/user-profile";
 import { copyToClipboard } from "@/lib/utils/clipboard";
 import { formatDate } from "@/lib/utils/locale";
-
-interface Profile {
-  id: string;
-  email: string;
-  createdAt: string;
-  lastLoginAt: string | null;
-  allowCommunityEmails: boolean;
-  publicProfile: boolean;
-  name: string | null;
-}
 
 interface ProfileCardProps {
   profile: Profile;
@@ -118,7 +108,6 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
       </div>
 
       <div className="space-y-4 p-5">
-        {/* Name */}
         <div>
           <div className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
             {t("name.label")}
@@ -198,7 +187,6 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
           )}
         </div>
 
-        {/* Email */}
         <div>
           <div className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
             {t("email")}
@@ -208,7 +196,6 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
           </div>
         </div>
 
-        {/* Dates */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <div className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
@@ -228,7 +215,6 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
           </div>
         </div>
 
-        {/* User ID */}
         <div className="border-t border-neutral-100 pt-4 dark:border-white/5">
           <div className="text-[10px] tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
             {t("userId")}

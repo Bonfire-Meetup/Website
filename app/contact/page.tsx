@@ -61,7 +61,7 @@ export default async function ContactPage() {
 
             <h1 className="mb-6 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
               <span className="block">{t("titlePart1")}</span>
-              <span className="text-gradient block">{t("titleHighlight")}</span>
+              <span className="text-gradient-static block">{t("titleHighlight")}</span>
             </h1>
 
             <p className="mx-auto max-w-xl text-neutral-600 dark:text-neutral-400">

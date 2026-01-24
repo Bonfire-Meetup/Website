@@ -11,7 +11,9 @@ import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Link } from "@/i18n/navigation";
 import { API_ROUTES } from "@/lib/api/routes";
-import { isAccessTokenValid, readAccessToken, writeAccessToken } from "@/lib/auth/client";
+import { decodeAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { setToken } from "@/lib/redux/slices/authSlice";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { getAuthChallengeKey } from "@/lib/storage/keys";
 
@@ -35,6 +37,8 @@ export function LoginClient() {
   const tCommon = useTranslations("common");
   const router = useRouter();
   const searchParams = useSearchParams();
+  const dispatch = useAppDispatch();
+
   const [step, setStep] = useState<Step>("request");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -229,7 +233,8 @@ export function LoginClient() {
 
       if (data.access_token) {
         clearChallengeEmail(challengeToken);
-        writeAccessToken(data.access_token);
+        const decoded = decodeAccessToken(data.access_token);
+        dispatch(setToken({ token: data.access_token, decoded: decoded ?? undefined }));
         router.replace(PAGE_ROUTES.ME);
 
         return;
@@ -239,7 +244,7 @@ export function LoginClient() {
       setLoading(false);
       autoSubmitRef.current = false;
     },
-    [challengeToken, code, email, router, t],
+    [challengeToken, code, email, router, t, dispatch],
   );
 
   useEffect(() => {
@@ -256,7 +261,6 @@ export function LoginClient() {
         if (formRef.current) {
           const syntheticEvent = {
             preventDefault: () => {
-              // No-op to satisfy React.FormEvent interface
             },
           } as unknown as React.FormEvent<HTMLFormElement>;
           handleVerify(syntheticEvent);

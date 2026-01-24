@@ -219,6 +219,7 @@ export function useVideoBoostMutation(shortId: string) {
           queryKey: ["video-boosts", shortId, hasToken ? "auth" : "anon"],
         });
       }
+      queryClient.invalidateQueries({ queryKey: ["user-profile"] });
     },
     onSuccess: (data, adding) => {
       const queryKey = ["video-boosts", shortId, hasToken ? "auth" : "anon"] as const;
