@@ -5,13 +5,13 @@ export function GuildCard() {
   const perks = t.raw("perks") as string[];
 
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-violet-300/60 bg-gradient-to-br from-violet-50/60 via-white to-violet-100/70 shadow-xl shadow-violet-500/10 dark:border-violet-500/20 dark:from-neutral-900 dark:via-neutral-900/95 dark:to-violet-950/30 dark:shadow-violet-500/10">
+    <div className="group relative overflow-hidden rounded-3xl border border-red-300/60 bg-gradient-to-br from-red-50/60 via-white to-red-100/70 shadow-xl shadow-red-500/10 dark:border-red-500/20 dark:from-neutral-900 dark:via-neutral-900/95 dark:to-red-950/30 dark:shadow-red-500/10">
       <div className="relative h-full overflow-hidden px-6 py-6">
-        <div className="absolute -top-8 -right-8 h-40 w-40 rounded-full bg-gradient-to-br from-violet-400/30 via-purple-300/25 to-transparent blur-2xl transition-all duration-500 group-hover:scale-110 dark:from-violet-500/15 dark:via-purple-500/10" />
-        <div className="absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-gradient-to-tr from-indigo-300/30 via-violet-200/25 to-transparent blur-2xl transition-all duration-500 group-hover:scale-110 dark:from-indigo-500/10 dark:via-violet-500/10" />
-        <div className="absolute top-6 right-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-200 to-purple-200 shadow-md shadow-violet-500/20 dark:from-violet-500/20 dark:to-purple-500/20 dark:shadow-inner">
+        <div className="absolute -top-8 -right-8 h-40 w-40 rounded-full bg-gradient-to-br from-red-400/30 via-rose-300/25 to-transparent blur-2xl transition-all duration-500 group-hover:scale-110 dark:from-red-500/15 dark:via-rose-500/10" />
+        <div className="absolute -bottom-6 -left-6 h-32 w-32 rounded-full bg-gradient-to-tr from-red-300/30 via-rose-200/25 to-transparent blur-2xl transition-all duration-500 group-hover:scale-110 dark:from-red-500/10 dark:via-rose-500/10" />
+        <div className="absolute top-6 right-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-red-200 to-rose-200 shadow-md shadow-red-500/20 dark:from-red-500/20 dark:to-rose-500/20 dark:shadow-inner">
           <svg
-            className="h-6 w-6 text-violet-600 dark:text-violet-300"
+            className="h-6 w-6 text-red-600 dark:text-red-300"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -24,10 +24,10 @@ export function GuildCard() {
         </div>
         <div className="relative flex flex-col gap-3 pr-16">
           <div className="inline-flex items-center gap-2">
-            <span className="text-[10px] font-bold tracking-[0.3em] text-violet-600/90 uppercase dark:text-violet-300/90">
+            <span className="text-[10px] font-bold tracking-[0.3em] text-red-600/90 uppercase dark:text-red-300/90">
               {t("kicker")}
             </span>
-            <span className="rounded-full bg-violet-200 px-2 py-0.5 text-[9px] font-bold tracking-wider text-violet-800 uppercase dark:bg-violet-500/20 dark:text-violet-200">
+            <span className="rounded-full bg-red-200 px-2 py-0.5 text-[9px] font-bold tracking-wider text-red-800 uppercase dark:bg-red-500/20 dark:text-red-200">
               {t("soon")}
             </span>
           </div>
@@ -44,7 +44,7 @@ export function GuildCard() {
                 className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400"
               >
                 <svg
-                  className="h-4 w-4 shrink-0 text-violet-500 dark:text-violet-400"
+                  className="h-4 w-4 shrink-0 text-red-500 dark:text-red-400"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
