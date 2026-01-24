@@ -1,5 +1,6 @@
 "use client";
 
+import type { RootState } from "@/lib/redux/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -16,12 +17,9 @@ import {
   useUpdatePreferenceMutation,
   useUserProfile,
 } from "@/lib/api/user-profile";
-import { clearAccessToken } from "@/lib/auth/client";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { compressUuid } from "@/lib/utils/uuid-compress";
+import { clearAccessToken, revokeSession } from "@/lib/auth/client";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { clearAuth } from "@/lib/redux/slices/authSlice";
-import type { RootState } from "@/lib/redux/store";
 import {
   clearProfile,
   removeBoost as removeBoostAction,
@@ -39,6 +37,8 @@ import {
   setStagedPublicProfile,
   type ProfileState,
 } from "@/lib/redux/slices/profileSlice";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { compressUuid } from "@/lib/utils/uuid-compress";
 
 import { BoostedVideosBlock } from "./BoostedVideosBlock";
 import { DangerZoneBlock } from "./DangerZoneBlock";
@@ -74,6 +74,7 @@ export function MeClient() {
   const auth = useAppSelector((state) => state.auth) as RootState["auth"];
   const profileState = useAppSelector((state) => state.profile) as ProfileState;
   const [mounted, setMounted] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const { deleteStep } = profileState;
   const { deleteChallengeToken } = profileState;
@@ -123,17 +124,26 @@ export function MeClient() {
       return;
     }
 
+    // Don't redirect if we're in the process of logging out
+    if (loggingOut) {
+      return;
+    }
+
     dispatch(clearAuth());
     dispatch(clearProfile());
     clearAccessToken();
     queryClient.removeQueries({ queryKey: ["user-profile"] });
     queryClient.removeQueries({ queryKey: ["video-boosts"] });
     router.replace(PAGE_ROUTES.LOGIN);
-  }, [auth.isAuthenticated, auth.token, auth.hydrated, queryClient, router, dispatch]);
+  }, [auth.isAuthenticated, auth.token, auth.hydrated, queryClient, router, dispatch, loggingOut]);
 
   useEffect(() => {
     const err = profileQuery.error;
     if (err instanceof ApiError && err.status === 401) {
+      // Don't redirect if we're in the process of logging out
+      if (loggingOut) {
+        return;
+      }
       dispatch(clearAuth());
       dispatch(clearProfile());
       clearAccessToken();
@@ -141,13 +151,11 @@ export function MeClient() {
       queryClient.removeQueries({ queryKey: ["video-boosts"] });
       router.replace(PAGE_ROUTES.LOGIN);
     }
-  }, [profileQuery.error, queryClient, router, dispatch]);
+  }, [profileQuery.error, queryClient, router, dispatch, loggingOut]);
 
   const isHydrated = mounted && auth.hydrated;
 
-  const profile = isHydrated
-    ? profileState.profile ?? profileQuery.data?.profile ?? null
-    : null;
+  const profile = isHydrated ? (profileState.profile ?? profileQuery.data?.profile ?? null) : null;
   const boosts = isHydrated
     ? profileState.boosts.length
       ? profileState.boosts
@@ -159,7 +167,7 @@ export function MeClient() {
       : (profileQuery.data?.attempts.items ?? [])
     : [];
   const boostAllocation = isHydrated
-    ? profileState.boostAllocation ?? profileQuery.data?.boostAllocation ?? null
+    ? (profileState.boostAllocation ?? profileQuery.data?.boostAllocation ?? null)
     : null;
 
   const loading = profileQuery.isLoading;
@@ -171,13 +179,19 @@ export function MeClient() {
   const updatingPublicProfile = stagedPublicProfile !== null && updatePreferenceMutation.isPending;
   const deleteLoading = deleteChallengeMutation.isPending || deleteAccountMutation.isPending;
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    // Set flag to prevent useEffects from triggering during logout
+    setLoggingOut(true);
+
+    // Cleanup first
+    await revokeSession();
     dispatch(clearAuth());
     dispatch(clearProfile());
-    clearAccessToken();
     queryClient.removeQueries({ queryKey: ["user-profile"] });
     queryClient.removeQueries({ queryKey: ["video-boosts"] });
-    router.replace(PAGE_ROUTES.HOME);
+
+    // Navigate to login after cleanup
+    router.replace(PAGE_ROUTES.LOGIN);
   };
 
   const handleCommunityEmailsToggle = async () => {
@@ -408,8 +422,8 @@ export function MeClient() {
                       {boostAllocation.availableBoosts === 1
                         ? t("boostAllocation.availableOne")
                         : t("boostAllocation.available", {
-                          count: boostAllocation.availableBoosts,
-                        })}
+                            count: boostAllocation.availableBoosts,
+                          })}
                     </span>
                   </div>
                   <p className="mt-2 text-xs text-emerald-600/70 dark:text-emerald-300/70">

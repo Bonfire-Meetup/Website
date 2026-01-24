@@ -57,12 +57,16 @@ Required env vars:
 
 ## Auth (email OTP)
 
-Passwordless email login with numeric OTP codes and JWT Bearer tokens (no cookies).
+Passwordless email login with numeric OTP codes and JWT Bearer tokens. OAuth2 compliant.
 
 Endpoints:
 
 - `POST /api/v1/auth/challenges` -> `{ ok: true, challenge_token }`
-- `POST /api/v1/auth/tokens` -> `{ access_token, token_type, expires_in }`
+- `POST /api/v1/auth/token` with `grant_type=urn:bonfire:grant-type:email-otp` -> `{ access_token, token_type, expires_in }`
+- `POST /api/v1/auth/token` with `grant_type=refresh_token` -> `{ access_token, token_type, expires_in }`
+- `POST /api/v1/auth/revoke` -> logout/session revocation
+- `GET /.well-known/jwks.json` -> JWKS public keys
+- `GET /.well-known/openid-configuration` -> OIDC Discovery
 
 Security note: OTP verification includes a fixed failure delay and a dummy hash comparison on missing/expired challenges to reduce timing differences between valid and invalid attempts.
 

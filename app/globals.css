@@ -46,10 +46,12 @@ html.smooth-scroll {
 
 @media (min-width: 768px) {
   .glass {
-    background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.92) 0%,
-        rgba(255, 255, 255, 0.85) 50%,
-        rgba(255, 255, 255, 0.9) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(255, 255, 255, 0.9) 100%
+    );
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
   }
@@ -67,19 +69,23 @@ html.smooth-scroll {
 
 @media (min-width: 768px) {
   .dark .glass {
-    background: linear-gradient(135deg,
-        rgba(15, 15, 20, 0.92) 0%,
-        rgba(10, 10, 15, 0.88) 50%,
-        rgba(12, 12, 18, 0.9) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(15, 15, 20, 0.92) 0%,
+      rgba(10, 10, 15, 0.88) 50%,
+      rgba(12, 12, 18, 0.9) 100%
+    );
   }
 }
 
 .glass-card {
   position: relative;
-  background: linear-gradient(165deg,
-      rgba(255, 255, 255, 0.95) 0%,
-      rgba(255, 255, 255, 0.7) 50%,
-      rgba(255, 255, 255, 0.85) 100%);
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.85) 100%
+  );
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
   border-radius: 24px;
@@ -102,10 +108,12 @@ html.smooth-scroll {
   inset: 0;
   border-radius: 24px;
   padding: 1px;
-  background: linear-gradient(135deg,
-      rgba(255, 255, 255, 0.8) 0%,
-      rgba(255, 255, 255, 0.2) 50%,
-      rgba(255, 255, 255, 0.4) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.4) 100%
+  );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -136,10 +144,12 @@ html.smooth-scroll {
 }
 
 .dark .glass-card {
-  background: linear-gradient(165deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.03) 50%,
-      rgba(255, 255, 255, 0.06) 100%);
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.4),
     0 1px 3px rgba(0, 0, 0, 0.3),
@@ -148,10 +158,12 @@ html.smooth-scroll {
 }
 
 .dark .glass-card::before {
-  background: linear-gradient(135deg,
-      rgba(255, 255, 255, 0.15) 0%,
-      rgba(255, 255, 255, 0.03) 50%,
-      rgba(255, 255, 255, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
 }
 
 .dark .glass-card:hover {
@@ -172,10 +184,12 @@ html.smooth-scroll {
 
 .glass-button {
   position: relative;
-  background: linear-gradient(135deg,
-      var(--color-brand-400) 0%,
-      var(--color-brand-500) 55%,
-      #f43f5e 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-brand-400) 0%,
+    var(--color-brand-500) 55%,
+    #f43f5e 100%
+  );
   background-size: 200% 200%;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -202,10 +216,12 @@ html.smooth-scroll {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg,
-      rgba(255, 255, 255, 0.5) 0%,
-      rgba(255, 255, 255, 0.1) 50%,
-      rgba(255, 255, 255, 0.3) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -224,10 +240,12 @@ html.smooth-scroll {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
   transition: left 0.6s ease;
 }
 
@@ -292,47 +310,54 @@ html.smooth-scroll {
 }
 
 .gradient-bg {
-  background: linear-gradient(135deg,
-      #fafafa 0%,
-      #f5f3ff 20%,
-      #fafafa 40%,
-      #f3e8ff 60%,
-      #fafafa 80%,
-      #f5f3ff 100%);
+  background: linear-gradient(
+    135deg,
+    #fafafa 0%,
+    #f5f3ff 20%,
+    #fafafa 40%,
+    #f3e8ff 60%,
+    #fafafa 80%,
+    #f5f3ff 100%
+  );
 }
 
 .gradient-bg-static {
-  background: linear-gradient(135deg,
-      #fafafa 0%,
-      #f5f3ff 20%,
-      #fafafa 40%,
-      #f3e8ff 60%,
-      #fafafa 80%,
-      #f5f3ff 100%);
+  background: linear-gradient(
+    135deg,
+    #fafafa 0%,
+    #f5f3ff 20%,
+    #fafafa 40%,
+    #f3e8ff 60%,
+    #fafafa 80%,
+    #f5f3ff 100%
+  );
 }
 
 .dark .gradient-bg {
-  background: linear-gradient(135deg,
-      #09090b 0%,
-      #0c0c0e 20%,
-      #0f0f12 40%,
-      #0a0a0c 60%,
-      #0d0d10 80%,
-      #09090b 100%);
+  background: linear-gradient(
+    135deg,
+    #09090b 0%,
+    #0c0c0e 20%,
+    #0f0f12 40%,
+    #0a0a0c 60%,
+    #0d0d10 80%,
+    #09090b 100%
+  );
 }
 
 .dark .gradient-bg-static {
-  background: linear-gradient(135deg,
-      #09090b 0%,
-      #0c0c0e 20%,
-      #0f0f12 40%,
-      #0a0a0c 60%,
-      #0d0d10 80%,
-      #09090b 100%);
+  background: linear-gradient(
+    135deg,
+    #09090b 0%,
+    #0c0c0e 20%,
+    #0f0f12 40%,
+    #0a0a0c 60%,
+    #0d0d10 80%,
+    #09090b 100%
+  );
 }
 
 @keyframes gradientShift {
-
   0%,
   100% {
     background-position: 0% 0%;
@@ -359,12 +384,14 @@ html.smooth-scroll {
   content: "";
   position: absolute;
   inset: -3px;
-  background: linear-gradient(45deg,
-      var(--color-fire-start),
-      var(--color-fire-mid),
-      var(--color-fire-end),
-      var(--color-fire-mid),
-      var(--color-fire-start));
+  background: linear-gradient(
+    45deg,
+    var(--color-fire-start),
+    var(--color-fire-mid),
+    var(--color-fire-end),
+    var(--color-fire-mid),
+    var(--color-fire-start)
+  );
   background-size: 300% 300%;
   border-radius: inherit;
   z-index: -1;
@@ -379,7 +406,6 @@ html.smooth-scroll {
 }
 
 @keyframes fireGlow {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -392,11 +418,13 @@ html.smooth-scroll {
 
 .text-gradient {
   display: inline-block;
-  background: linear-gradient(135deg,
-      var(--color-fire-start) 0%,
-      var(--color-fire-mid) 40%,
-      var(--color-fire-end) 70%,
-      var(--color-fire-mid) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-fire-start) 0%,
+    var(--color-fire-mid) 40%,
+    var(--color-fire-end) 70%,
+    var(--color-fire-mid) 100%
+  );
   background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -407,11 +435,13 @@ html.smooth-scroll {
 
 .text-gradient-static {
   display: inline-block;
-  background: linear-gradient(135deg,
-      var(--color-fire-start) 0%,
-      var(--color-fire-mid) 40%,
-      var(--color-fire-end) 70%,
-      var(--color-fire-mid) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-fire-start) 0%,
+    var(--color-fire-mid) 40%,
+    var(--color-fire-end) 70%,
+    var(--color-fire-mid) 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -419,7 +449,6 @@ html.smooth-scroll {
 }
 
 @keyframes textGradient {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -520,12 +549,14 @@ html.smooth-scroll {
 
 .section-divider {
   height: 1px;
-  background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(139, 92, 246, 0.2) 20%,
-      rgba(139, 92, 246, 0.4) 50%,
-      rgba(139, 92, 246, 0.2) 80%,
-      transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(139, 92, 246, 0.2) 20%,
+    rgba(139, 92, 246, 0.4) 50%,
+    rgba(139, 92, 246, 0.2) 80%,
+    transparent 100%
+  );
   box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
 }
 
@@ -540,12 +571,14 @@ html.smooth-scroll {
   inset: 0;
   border-radius: inherit;
   padding: 1.5px;
-  background: linear-gradient(135deg,
-      rgba(139, 92, 246, 0.5) 0%,
-      rgba(217, 70, 239, 0.3) 25%,
-      rgba(244, 63, 94, 0.3) 50%,
-      rgba(217, 70, 239, 0.3) 75%,
-      rgba(139, 92, 246, 0.5) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.5) 0%,
+    rgba(217, 70, 239, 0.3) 25%,
+    rgba(244, 63, 94, 0.3) 50%,
+    rgba(217, 70, 239, 0.3) 75%,
+    rgba(139, 92, 246, 0.5) 100%
+  );
   background-size: 300% 300%;
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -865,7 +898,6 @@ html.smooth-scroll {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .gradient-bg,
   .dark .gradient-bg {
     animation: none;

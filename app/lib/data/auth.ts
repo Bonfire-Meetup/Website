@@ -274,3 +274,142 @@ export const deleteAuthUserById = async (id: string) => {
     WHERE id = ${id}
   `;
 };
+
+// ==========================================
+// Refresh Token Operations
+// ==========================================
+
+interface RefreshTokenRow {
+  id: string;
+  token_hash: string;
+  user_id: string;
+  token_family_id: string;
+  parent_id: string | null;
+  issued_at: Date;
+  expires_at: Date;
+  revoked_at: Date | null;
+  used_at: Date | null;
+  ip: string | null;
+  user_agent: string | null;
+}
+
+export const insertRefreshToken = async ({
+  tokenHash,
+  userId,
+  tokenFamilyId,
+  parentId,
+  expiresAt,
+  ip,
+  userAgent,
+}: {
+  tokenHash: string;
+  userId: string;
+  tokenFamilyId: string;
+  parentId?: string | null;
+  expiresAt: Date;
+  ip: string | null;
+  userAgent: string | null;
+}): Promise<string> => {
+  const sql = getDatabaseClient();
+  const rows = (await sql`
+    INSERT INTO auth_refresh_token (token_hash, user_id, token_family_id, parent_id, expires_at, ip, user_agent)
+    VALUES (${tokenHash}, ${userId}, ${tokenFamilyId}, ${parentId ?? null}, ${expiresAt}, ${ip}, ${userAgent})
+    RETURNING id
+  `) as { id: string }[];
+
+  return rows[0]?.id ?? "";
+};
+
+export const getRefreshTokenByHash = async (tokenHash: string): Promise<RefreshTokenRow | null> => {
+  const sql = getDatabaseClient();
+  const rows = (await sql`
+    SELECT id, token_hash, user_id, token_family_id, parent_id, issued_at, expires_at, revoked_at, used_at, ip, user_agent
+    FROM auth_refresh_token
+    WHERE token_hash = ${tokenHash}
+    LIMIT 1
+  `) as RefreshTokenRow[];
+
+  return rows[0] ?? null;
+};
+
+export const markRefreshTokenUsed = async (tokenHash: string) => {
+  const sql = getDatabaseClient();
+  await sql`
+    UPDATE auth_refresh_token
+    SET used_at = now()
+    WHERE token_hash = ${tokenHash}
+  `;
+};
+
+export const revokeRefreshToken = async (tokenHash: string) => {
+  const sql = getDatabaseClient();
+  await sql`
+    UPDATE auth_refresh_token
+    SET revoked_at = now()
+    WHERE token_hash = ${tokenHash} AND revoked_at IS NULL
+  `;
+};
+
+export const revokeRefreshTokenFamily = async (tokenFamilyId: string) => {
+  const sql = getDatabaseClient();
+  await sql`
+    UPDATE auth_refresh_token
+    SET revoked_at = now()
+    WHERE token_family_id = ${tokenFamilyId} AND revoked_at IS NULL
+  `;
+};
+
+export const revokeAllUserRefreshTokens = async (userId: string) => {
+  const sql = getDatabaseClient();
+  await sql`
+    UPDATE auth_refresh_token
+    SET revoked_at = now()
+    WHERE user_id = ${userId} AND revoked_at IS NULL
+  `;
+};
+
+export const isRefreshTokenValid = async (tokenHash: string): Promise<boolean> => {
+  const sql = getDatabaseClient();
+  const rows = (await sql`
+    SELECT exists(
+      SELECT 1
+      FROM auth_refresh_token
+      WHERE token_hash = ${tokenHash} AND revoked_at IS NULL AND expires_at > now()
+    ) as exists
+  `) as { exists: boolean }[];
+
+  return rows[0]?.exists ?? false;
+};
+
+export const getActiveRefreshTokenCountByUser = async (userId: string): Promise<number> => {
+  const sql = getDatabaseClient();
+  const rows = (await sql`
+    SELECT count(*)::int as count
+    FROM auth_refresh_token
+    WHERE user_id = ${userId} AND revoked_at IS NULL AND expires_at > now()
+  `) as { count: number }[];
+
+  return rows[0]?.count ?? 0;
+};
+
+/**
+ * Cleanup expired refresh tokens older than 7 days.
+ * Called probabilistically during token operations to avoid cron jobs.
+ */
+export const cleanupExpiredRefreshTokens = async () => {
+  const sql = getDatabaseClient();
+  await sql`
+    DELETE FROM auth_refresh_token
+    WHERE expires_at < now() - INTERVAL '7 days'
+  `;
+};
+
+/**
+ * Probabilistically trigger cleanup (~1% of calls).
+ * Safe to call frequently - no-op most of the time.
+ */
+export const maybeCleanupExpiredRefreshTokens = async () => {
+  if (Math.random() < 0.01) {
+    await cleanupExpiredRefreshTokens();
+  }
+};

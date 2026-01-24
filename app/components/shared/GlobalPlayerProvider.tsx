@@ -1,11 +1,11 @@
 "use client";
 
+import type { RootState } from "@/lib/redux/store";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import type { RootState } from "@/lib/redux/store";
 import {
   clearVideo as clearVideoAction,
   setCinemaMode as setCinemaModeAction,
@@ -75,11 +75,11 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
   const player = useAppSelector((state) => state.player) as RootState["player"];
   const video = player.video as VideoInfo | null;
   const [inlineElement, setInlineElement] = useState<HTMLDivElement | null>(null);
-  const {cinemaMode} = player;
+  const { cinemaMode } = player;
   const playerRect = player.playerRect as Rect | null;
-  const {isAnimating} = player;
-  const {isLoading} = player;
-  const {hasPlaybackStarted} = player;
+  const { isAnimating } = player;
+  const { isLoading } = player;
+  const { hasPlaybackStarted } = player;
   const lastInlineRectRef = useRef<Rect | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const canMiniPlayer = useMediaQuery("(min-width: 768px)");
@@ -218,12 +218,12 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
       const parsed =
         typeof event.data === "string"
           ? (() => {
-            try {
-              return JSON.parse(event.data) as { event?: string; info?: unknown };
-            } catch {
-              return null;
-            }
-          })()
+              try {
+                return JSON.parse(event.data) as { event?: string; info?: unknown };
+              } catch {
+                return null;
+              }
+            })()
           : (event.data as { event?: string; info?: unknown });
 
       if (!parsed) {
@@ -354,12 +354,13 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
           )}
 
           <div
-            className={`fixed overflow-hidden bg-black ${cinemaMode
+            className={`fixed overflow-hidden bg-black ${
+              cinemaMode
                 ? "z-[80] rounded-2xl"
                 : isInline
                   ? "z-40 rounded-xl"
                   : "z-50 rounded-2xl shadow-2xl ring-1 ring-black/20"
-              } ${isAnimating ? "transition-all duration-300" : ""}`}
+            } ${isAnimating ? "transition-all duration-300" : ""}`}
             style={{
               height: playerRect.height,
               left: playerRect.left,

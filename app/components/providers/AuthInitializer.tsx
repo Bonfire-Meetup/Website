@@ -3,7 +3,7 @@
 import { useAuthSync } from "@/lib/redux/hooks";
 
 export function AuthInitializer() {
-    useAuthSync();
+  useAuthSync();
 
-    return null;
+  return null;
 }

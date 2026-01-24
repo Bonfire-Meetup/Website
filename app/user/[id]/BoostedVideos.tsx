@@ -49,13 +49,13 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
         };
       })
       .filter((item) => item !== null) as {
-        date: string;
-        shortId: string;
-        slug: string;
-        speaker: string[];
-        thumbnail: string;
-        title: string;
-      }[];
+      date: string;
+      shortId: string;
+      slug: string;
+      speaker: string[];
+      thumbnail: string;
+      title: string;
+    }[];
   } catch {
     boostItems = [];
   }

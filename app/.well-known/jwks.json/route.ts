@@ -14,9 +14,16 @@ export async function GET() {
     const jwk = await exportJWK(publicKey);
     const key = { ...jwk, alg: "EdDSA", kid: getJwtKeyId(), use: "sig" };
 
-    return NextResponse.json({ keys: [key] });
+    return NextResponse.json(
+      { keys: [key] },
+      {
+        headers: {
+          "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+        },
+      },
+    );
   } catch (error) {
     logError("auth.jwks.failed", error);
-    throw error;
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

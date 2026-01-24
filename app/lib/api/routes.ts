@@ -1,9 +1,9 @@
 export const API_ROUTES = {
   AUTH: {
     CHALLENGES: "/api/v1/auth/challenges",
-    JWKS: "/api/v1/auth/jwks",
-    TOKENS: "/api/v1/auth/tokens",
+    TOKEN: "/api/v1/auth/token",
   },
+  JWKS: "/.well-known/jwks.json",
   CSRF: "/api/v1/csrf",
   ME: {
     AUTH_ATTEMPTS: "/api/v1/me/auth-attempts",

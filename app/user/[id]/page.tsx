@@ -94,7 +94,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
         <Header />
         <main className="gradient-bg min-h-screen px-4 pt-32 pb-20">
           <div className="mx-auto max-w-2xl">
-            <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/90 p-10 text-center shadow-2xl shadow-black/5 backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-black/25 sm:p-12">
+            <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/90 p-10 text-center shadow-2xl shadow-black/5 backdrop-blur-md sm:p-12 dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-black/25">
               {/* Subtle pattern */}
               <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_0%,rgba(139,92,246,0.02)_50%,transparent_100%)] dark:bg-[linear-gradient(to_right,transparent_0%,rgba(139,92,246,0.03)_50%,transparent_100%)]" />
 
@@ -162,12 +162,12 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
                     <div className="flex flex-col items-center text-center">
                       {/* Avatar with subtle ring */}
                       <div className="relative mb-8">
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-brand-400/20 via-rose-400/20 to-brand-400/20 blur-2xl" />
+                        <div className="from-brand-400/20 to-brand-400/20 absolute inset-0 rounded-full bg-gradient-to-br via-rose-400/20 blur-2xl" />
                         <UserAvatar
                           emailHash={emailHash}
                           size={140}
                           name={user.name}
-                          className="relative ring-4 ring-white/50 dark:ring-neutral-800/50 shadow-2xl"
+                          className="relative shadow-2xl ring-4 ring-white/50 dark:ring-neutral-800/50"
                         />
                       </div>
 

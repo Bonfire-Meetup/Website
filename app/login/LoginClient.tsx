@@ -15,7 +15,7 @@ import { decodeAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/au
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { setToken } from "@/lib/redux/slices/authSlice";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { getAuthChallengeKey } from "@/lib/storage/keys";
+import { clearAllAuthChallenges, getAuthChallengeKey } from "@/lib/storage/keys";
 
 type Step = "request" | "verify";
 
@@ -49,6 +49,7 @@ export function LoginClient() {
   const [placeholder, setPlaceholder] = useState(emailPlaceholders[0]);
   const [turnstileReady, setTurnstileReady] = useState(false);
   const autoSubmitRef = useRef(false);
+  const lastSubmittedCodeRef = useRef<string | null>(null);
 
   useEffect(() => {
     setPlaceholder(emailPlaceholders[Math.floor(Math.random() * emailPlaceholders.length)]);
@@ -187,8 +188,13 @@ export function LoginClient() {
         return;
       }
 
-      const response = await fetch(API_ROUTES.AUTH.TOKENS, {
-        body: JSON.stringify({ challenge_token: challengeToken, code: code.trim(), email }),
+      const response = await fetch(API_ROUTES.AUTH.TOKEN, {
+        body: JSON.stringify({
+          grant_type: "urn:bonfire:grant-type:email-otp",
+          challenge_token: challengeToken,
+          code: code.trim(),
+          email,
+        }),
         headers: { "Content-Type": "application/json" },
         method: "POST",
       });
@@ -232,7 +238,8 @@ export function LoginClient() {
       const data = (await response.json()) as { access_token?: string };
 
       if (data.access_token) {
-        clearChallengeEmail(challengeToken);
+        // Clear all auth challenges on successful login (not just current one)
+        clearAllAuthChallenges();
         const decoded = decodeAccessToken(data.access_token);
         dispatch(setToken({ token: data.access_token, decoded: decoded ?? undefined }));
         router.replace(PAGE_ROUTES.ME);
@@ -254,14 +261,15 @@ export function LoginClient() {
       /^\d{6}$/.test(code) &&
       challengeToken &&
       !loading &&
-      !autoSubmitRef.current
+      !autoSubmitRef.current &&
+      lastSubmittedCodeRef.current !== code
     ) {
       autoSubmitRef.current = true;
+      lastSubmittedCodeRef.current = code;
       const timer = setTimeout(() => {
         if (formRef.current) {
           const syntheticEvent = {
-            preventDefault: () => {
-            },
+            preventDefault: Function.prototype,
           } as unknown as React.FormEvent<HTMLFormElement>;
           handleVerify(syntheticEvent);
         }
@@ -272,6 +280,7 @@ export function LoginClient() {
       };
     } else if (code.length !== 6) {
       autoSubmitRef.current = false;
+      lastSubmittedCodeRef.current = null;
     }
   }, [code, step, challengeToken, loading, handleVerify]);
 

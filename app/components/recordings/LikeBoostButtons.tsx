@@ -71,7 +71,8 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
 
   const boostCount = engagement?.boosts.count ?? boostsQuery.data?.count ?? null;
   const hasBoosted = engagement?.boosts.hasBoosted ?? boostsQuery.data?.hasBoosted ?? false;
-  const availableBoosts = engagement?.boosts.availableBoosts ?? boostsQuery.data?.availableBoosts ?? null;
+  const availableBoosts =
+    engagement?.boosts.availableBoosts ?? boostsQuery.data?.availableBoosts ?? null;
   const boostLoadError = boostsQuery.isError;
   const isBoosting = boostMutation.isPending;
 
@@ -195,24 +196,28 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
     <div className="space-y-3">
       <div className="group relative inline-flex">
         <div
-          className={`relative z-0 transition-transform ${likeCount === null ? "" : "hover:-translate-y-0.5"
-            }`}
+          className={`relative z-0 transition-transform ${
+            likeCount === null ? "" : "hover:-translate-y-0.5"
+          }`}
         >
           <button
             type="button"
             onClick={handleLike}
             aria-pressed={hasLiked}
             disabled={isLiking || likeCount === null}
-            className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-l-full border border-r-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-all dark:border-white/10 ${hasLiked
-              ? "bg-gradient-to-r from-orange-500 to-rose-500 text-white shadow-lg shadow-orange-500/50"
-              : "bg-white text-rose-400 dark:bg-white/5 dark:text-rose-300"
-              } ${isLiking || likeCount === null ? "opacity-80" : ""} ${likeCount === null ? "cursor-not-allowed" : "cursor-pointer hover:shadow-rose-500/30"
-              } ${likePulse ? "like-glow" : ""}`}
+            className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-l-full border border-r-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-all dark:border-white/10 ${
+              hasLiked
+                ? "bg-gradient-to-r from-orange-500 to-rose-500 text-white shadow-lg shadow-orange-500/50"
+                : "bg-white text-rose-400 dark:bg-white/5 dark:text-rose-300"
+            } ${isLiking || likeCount === null ? "opacity-80" : ""} ${
+              likeCount === null ? "cursor-not-allowed" : "cursor-pointer hover:shadow-rose-500/30"
+            } ${likePulse ? "like-glow" : ""}`}
           >
             <span className="pointer-events-none absolute top-2 right-0 bottom-2 w-px bg-white/80 opacity-70 transition-opacity group-hover:opacity-0 dark:bg-white/25" />
             <FireIcon
-              className={`h-5 w-5 shrink-0 ${hasLiked ? "fill-white stroke-white" : ""} ${likePulse ? "like-pop" : ""
-                }`}
+              className={`h-5 w-5 shrink-0 ${hasLiked ? "fill-white stroke-white" : ""} ${
+                likePulse ? "like-pop" : ""
+              }`}
             />
             {likeCount === null ? (
               likeLoadError ? (
@@ -244,14 +249,16 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
               isBoosting ||
               (availableBoosts !== null && availableBoosts === 0 && !hasBoosted)
             }
-            className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-r-full border border-l-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-all dark:border-white/10 ${hasBoosted
-              ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/60"
-              : "bg-white text-emerald-600 dark:bg-white/5 dark:text-emerald-400"
-              } ${isBoosting || boostCount === null ? "opacity-80" : ""} ${boostCount === null ||
-                (availableBoosts !== null && availableBoosts === 0 && !hasBoosted)
+            className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-r-full border border-l-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-all dark:border-white/10 ${
+              hasBoosted
+                ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/60"
+                : "bg-white text-emerald-600 dark:bg-white/5 dark:text-emerald-400"
+            } ${isBoosting || boostCount === null ? "opacity-80" : ""} ${
+              boostCount === null ||
+              (availableBoosts !== null && availableBoosts === 0 && !hasBoosted)
                 ? "cursor-not-allowed"
                 : "cursor-pointer hover:shadow-emerald-500/40"
-              } ${boostPulse ? "boost-glow" : ""}`}
+            } ${boostPulse ? "boost-glow" : ""}`}
             title={
               availableBoosts !== null && availableBoosts === 0 && !hasBoosted
                 ? t("boostNoBoostsAvailable")
@@ -259,8 +266,9 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
             }
           >
             <BoltIcon
-              className={`h-5 w-5 shrink-0 ${hasBoosted ? "stroke-white" : ""} ${boostPulse ? "boost-pop" : ""
-                }`}
+              className={`h-5 w-5 shrink-0 ${hasBoosted ? "stroke-white" : ""} ${
+                boostPulse ? "boost-pop" : ""
+              }`}
             />
             {boostCount === null ? (
               boostLoadError ? (

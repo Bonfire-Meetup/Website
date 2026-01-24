@@ -12,7 +12,7 @@ initBotId({
     { method: "POST", path: API_ROUTES.VIDEO.BOOSTS_PATTERN },
     { method: "DELETE", path: API_ROUTES.VIDEO.BOOSTS_PATTERN },
     { method: "POST", path: API_ROUTES.AUTH.CHALLENGES },
-    { method: "POST", path: API_ROUTES.AUTH.TOKENS },
+    { method: "POST", path: API_ROUTES.AUTH.TOKEN },
     { method: "GET", path: API_ROUTES.ME.BASE },
     { method: "GET", path: API_ROUTES.ME.BOOSTS },
     { method: "GET", path: API_ROUTES.ME.AUTH_ATTEMPTS },
