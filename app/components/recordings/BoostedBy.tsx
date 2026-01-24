@@ -1,26 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 import { BoltIcon } from "@/components/shared/icons";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { Link } from "@/i18n/navigation";
-import { API_ROUTES } from "@/lib/api/routes";
+import { type BoostedByData, useVideoBoosts } from "@/lib/api/video-engagement";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { logError } from "@/lib/utils/log-client";
 import { compressUuid } from "@/lib/utils/uuid-compress";
-
-interface BoostedUser {
-  userId: string;
-  name: string | null;
-  emailHash: string;
-}
-
-interface BoostedByData {
-  publicUsers: BoostedUser[];
-  privateCount: number;
-}
 
 interface BoostedByProps {
   boostedBy?: BoostedByData | null;
@@ -29,61 +17,40 @@ interface BoostedByProps {
 
 export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps) {
   const t = useTranslations("recordings");
-  const [boostedBy, setBoostedBy] = useState<BoostedByData | null>(boostedByProp ?? null);
-  const [loading, setLoading] = useState(!boostedByProp);
 
-  useEffect(() => {
-    if (boostedByProp !== undefined) {
-      setBoostedBy(boostedByProp);
-      setLoading(false);
-      return;
-    }
+  // Only fetch if parent did NOT provide boostedBy (undefined means "not provided yet").
+  // If parent explicitly passes null, we treat it as "known empty" and do not fetch.
+  const shouldFetch = Boolean(shortId) && boostedByProp === undefined;
+  const boostsQuery = useVideoBoosts(shortId, shouldFetch);
 
-    let isActive = true;
+  const boostedBy: BoostedByData | null =
+    boostedByProp === undefined ? (boostsQuery.data?.boostedBy ?? null) : boostedByProp;
 
-    const loadBoostedBy = async () => {
-      try {
-        const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId));
+  // If parent didn't provide data, show nothing until the query is resolved (prevents flicker).
+  const loading = boostedByProp === undefined && boostsQuery.isLoading;
 
-        if (!response.ok) {
-          return;
-        }
+  const { publicUsers, privateCount, totalCount } = useMemo(() => {
+    const pu = boostedBy?.publicUsers ?? [];
+    const pc = boostedBy?.privateCount ?? 0;
+    return { privateCount: pc, publicUsers: pu, totalCount: pu.length + pc };
+  }, [boostedBy]);
 
-        const data = (await response.json()) as {
-          boostedBy?: BoostedByData;
-        };
-
-        if (isActive && data.boostedBy) {
-          setBoostedBy(data.boostedBy);
-        }
-      } catch (error) {
-        logError("boostedBy.load_failed", error, { shortId });
-      } finally {
-        if (isActive) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadBoostedBy();
-
-    return () => {
-      isActive = false;
-    };
-  }, [boostedByProp, shortId]);
-
-  if (loading || !boostedBy) {
+  if (loading || !boostedBy || totalCount === 0) {
     return null;
   }
 
-  const { publicUsers, privateCount } = boostedBy;
-  const totalCount = publicUsers.length + privateCount;
+  // Compute only the ids we actually need (avoid work + index coupling).
+  const publicUsersTop = publicUsers.slice(0, 5);
+  const usersWithCompressed = publicUsersTop
+    .map((user) => {
+      const compressedId = compressUuid(user.userId);
+      return compressedId ? { compressedId, user } : null;
+    })
+    .filter(
+      (x): x is { user: (typeof publicUsersTop)[number]; compressedId: string } => x !== null,
+    );
 
-  if (totalCount === 0) {
-    return null;
-  }
-
-  const compressedUserIds = publicUsers.map((user) => compressUuid(user.userId));
+  const remainingPublicCount = Math.max(0, publicUsers.length - publicUsersTop.length);
 
   return (
     <div className="flex items-center gap-2 rounded-lg border border-neutral-200/30 bg-neutral-50/30 px-3 py-2 dark:border-neutral-700/20 dark:bg-neutral-800/20">
@@ -96,44 +63,40 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
           {t("boostedBy")}
         </span>
       </div>
+
       <div className="flex flex-1 items-center gap-1.5">
         <div className="flex items-center gap-1.5">
-          {publicUsers.slice(0, 5).map((user, index) => {
-            const compressedId = compressedUserIds[index];
-            if (!compressedId) {
-              return null;
-            }
-
-            return (
-              <Link
-                key={user.userId}
-                href={PAGE_ROUTES.USER(compressedId)}
-                className="group relative transition-all hover:z-10 hover:scale-105"
-                title={user.name || undefined}
-              >
-                <div className="relative">
-                  <div className="absolute -inset-0.5 rounded-full bg-emerald-200/30 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-emerald-500/20" />
-                  <UserAvatar
-                    emailHash={user.emailHash}
-                    size={24}
-                    name={user.name}
-                    className="relative ring-1 ring-white/50 dark:ring-neutral-900/50"
-                  />
-                </div>
-              </Link>
-            );
-          })}
+          {usersWithCompressed.map(({ user, compressedId }) => (
+            <Link
+              key={user.userId}
+              href={PAGE_ROUTES.USER(compressedId)}
+              className="group relative transition-all hover:z-10 hover:scale-105"
+              title={user.name || undefined}
+            >
+              <div className="relative">
+                <div className="absolute -inset-0.5 rounded-full bg-emerald-200/30 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-emerald-500/20" />
+                <UserAvatar
+                  emailHash={user.emailHash}
+                  size={24}
+                  name={user.name}
+                  className="relative ring-1 ring-white/50 dark:ring-neutral-900/50"
+                />
+              </div>
+            </Link>
+          ))}
         </div>
-        {(publicUsers.length > 5 || privateCount > 0) && (
+
+        {(remainingPublicCount > 0 || privateCount > 0) && (
           <div className="flex items-center gap-1 text-[11px] text-neutral-400 dark:text-neutral-500">
-            {publicUsers.length > 5 && (
+            {remainingPublicCount > 0 && (
               <span className="text-neutral-400 dark:text-neutral-500">
-                +{publicUsers.length - 5}
+                +{remainingPublicCount}
               </span>
             )}
+
             {privateCount > 0 && (
               <>
-                {publicUsers.length > 0 && (
+                {(publicUsersTop.length > 0 || remainingPublicCount > 0) && (
                   <span className="text-neutral-300 dark:text-neutral-600">•</span>
                 )}
                 <span className="text-neutral-400 dark:text-neutral-500">

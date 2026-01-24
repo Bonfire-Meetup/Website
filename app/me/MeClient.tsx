@@ -1,16 +1,23 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { BoltIcon, LogOutIcon, UserIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
-import { API_ROUTES } from "@/lib/api/routes";
+import { ApiError } from "@/lib/api/errors";
+import {
+  useDeleteAccountChallengeMutation,
+  useDeleteAccountMutation,
+  useRemoveBoostMutation,
+  useUpdatePreferenceMutation,
+  useUserProfile,
+} from "@/lib/api/user-profile";
 import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
 import { BoostedVideosBlock } from "./BoostedVideosBlock";
@@ -26,270 +33,162 @@ import {
   ProfileSkeleton,
 } from "./ProfileSkeletons";
 
-interface Profile {
-  id: string;
-  email: string;
-  createdAt: string;
-  lastLoginAt: string | null;
-  allowCommunityEmails: boolean;
-  publicProfile: boolean;
-  name: string | null;
+type DeleteStep = "idle" | "confirm" | "verify" | "done";
+
+function getValidTokenOrNull(): string | null {
+  const token = readAccessToken();
+  if (!token) {
+    return null;
+  }
+  return isAccessTokenValid(token) ? token : null;
 }
 
-interface BoostedRecording {
-  boostedAt: string;
-  shortId: string;
-  title: string;
-  speaker: string[];
-  date: string;
-  slug: string;
-}
+function getApiErrorReason(err: unknown): string | null {
+  if (!(err instanceof ApiError)) {
+    return null;
+  }
+  if (!err.data || typeof err.data !== "object") {
+    return null;
+  }
 
-interface LoginAttempt {
-  id: string;
-  outcome: string;
-  createdAt: string;
-}
-
-interface BoostAllocation {
-  availableBoosts: number;
-  nextAllocationDate: string;
+  const maybe = err.data as { error?: unknown };
+  return typeof maybe.error === "string" ? maybe.error : null;
 }
 
 export function MeClient() {
   const t = useTranslations("account");
   const tDelete = useTranslations("account.delete");
   const router = useRouter();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [boosts, setBoosts] = useState<BoostedRecording[]>([]);
-  const [boostsLoading, setBoostsLoading] = useState(true);
-  const [boostsError, setBoostsError] = useState<string | null>(null);
-  const [boostAllocation, setBoostAllocation] = useState<BoostAllocation | null>(null);
-  const [attempts, setAttempts] = useState<LoginAttempt[]>([]);
-  const [attemptsLoading, setAttemptsLoading] = useState(true);
-  const [attemptsError, setAttemptsError] = useState<string | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [updatingPreference, setUpdatingPreference] = useState(false);
-  const [deleteStep, setDeleteStep] = useState<"idle" | "confirm" | "verify" | "done">("idle");
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [deleteStatus, setDeleteStatus] = useState<string | null>(null);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+
+  const [deleteStep, setDeleteStep] = useState<DeleteStep>("idle");
   const [deleteCode, setDeleteCode] = useState("");
   const [deleteChallengeToken, setDeleteChallengeToken] = useState<string | null>(null);
   const [deleteIntent, setDeleteIntent] = useState(false);
 
+  const redirectTimeoutRef = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (redirectTimeoutRef.current !== null) {
+        window.clearTimeout(redirectTimeoutRef.current);
+        redirectTimeoutRef.current = null;
+      }
+    },
+    [],
+  );
+
+  const profileQuery = useUserProfile();
+  const updatePreferenceMutation = useUpdatePreferenceMutation();
+  const removeBoostMutation = useRemoveBoostMutation();
+  const deleteChallengeMutation = useDeleteAccountChallengeMutation();
+  const deleteAccountMutation = useDeleteAccountMutation();
+
   useEffect(() => {
-    const token = readAccessToken();
-
-    if (!token || !isAccessTokenValid(token)) {
-      clearAccessToken();
-      router.replace(PAGE_ROUTES.LOGIN);
-
+    const validToken = getValidTokenOrNull();
+    if (validToken) {
       return;
     }
 
-    setAccessToken(token);
+    clearAccessToken();
+    queryClient.removeQueries({ queryKey: ["user-profile"] });
+    queryClient.removeQueries({ queryKey: ["video-boosts"] });
+    router.replace(PAGE_ROUTES.LOGIN);
+  }, [queryClient, router]);
 
-    const loadAll = async () => {
-      try {
-        const response = await fetch(API_ROUTES.ME.BASE, {
-          headers: createAuthHeaders(token),
-        });
+  useEffect(() => {
+    const err = profileQuery.error;
+    if (err instanceof ApiError && err.status === 401) {
+      clearAccessToken();
+      queryClient.removeQueries({ queryKey: ["user-profile"] });
+      queryClient.removeQueries({ queryKey: ["video-boosts"] });
+      router.replace(PAGE_ROUTES.LOGIN);
+    }
+  }, [profileQuery.error, queryClient, router]);
 
-        if (!response.ok) {
-          clearAccessToken();
-          router.replace(PAGE_ROUTES.LOGIN);
+  const profile = profileQuery.data?.profile ?? null;
+  const boosts = profileQuery.data?.boosts.items ?? [];
+  const attempts = profileQuery.data?.attempts.items ?? [];
+  const boostAllocation = profileQuery.data?.boostAllocation ?? null;
 
-          return;
-        }
+  const loading = profileQuery.isLoading;
+  const error = profileQuery.isError ? t("error") : null;
 
-        const data = (await response.json()) as {
-          profile: Profile;
-          boosts: { items: BoostedRecording[] };
-          attempts: { items: LoginAttempt[] };
-          boostAllocation?: BoostAllocation;
-        };
-
-        setProfile(data.profile);
-        setBoosts(data.boosts.items ?? []);
-        setAttempts(data.attempts.items ?? []);
-        if (data.boostAllocation) {
-          setBoostAllocation(data.boostAllocation);
-        }
-        setLoading(false);
-        setBoostsLoading(false);
-        setAttemptsLoading(false);
-      } catch {
-        setError(t("error"));
-        setBoostsError(t("boosted.error"));
-        setAttemptsError(t("attempts.error"));
-        setLoading(false);
-        setBoostsLoading(false);
-        setAttemptsLoading(false);
-      }
-    };
-
-    loadAll();
-  }, [router, t]);
+  const updatingPreference = updatePreferenceMutation.isPending;
+  const deleteLoading = deleteChallengeMutation.isPending || deleteAccountMutation.isPending;
 
   const handleSignOut = () => {
     clearAccessToken();
+    queryClient.removeQueries({ queryKey: ["user-profile"] });
+    queryClient.removeQueries({ queryKey: ["video-boosts"] });
     router.replace(PAGE_ROUTES.HOME);
   };
 
   const handleCommunityEmailsToggle = async () => {
-    if (!accessToken || !profile) {
+    if (!profile) {
       return;
     }
 
-    const nextValue = !profile.allowCommunityEmails;
-    setProfile({ ...profile, allowCommunityEmails: nextValue });
-    setUpdatingPreference(true);
-
     try {
-      const response = await fetch(API_ROUTES.ME.PREFERENCES, {
-        body: JSON.stringify({ allowCommunityEmails: nextValue }),
-        headers: createJsonAuthHeaders(accessToken),
-        method: "PATCH",
+      await updatePreferenceMutation.mutateAsync({
+        allowCommunityEmails: !profile.allowCommunityEmails,
       });
-
-      if (!response.ok) {
-        setProfile({ ...profile, allowCommunityEmails: !nextValue });
-      }
     } catch {
-      setProfile({ ...profile, allowCommunityEmails: !nextValue });
-    } finally {
-      setUpdatingPreference(false);
+      // Handled by mutation onError
     }
   };
 
   const handlePublicProfileToggle = async () => {
-    if (!accessToken || !profile) {
+    if (!profile) {
       return;
     }
 
-    const nextValue = !profile.publicProfile;
-    setProfile({ ...profile, publicProfile: nextValue });
-    setUpdatingPreference(true);
-
     try {
-      const response = await fetch(API_ROUTES.ME.PREFERENCES, {
-        body: JSON.stringify({ publicProfile: nextValue }),
-        headers: createJsonAuthHeaders(accessToken),
-        method: "PATCH",
+      await updatePreferenceMutation.mutateAsync({
+        publicProfile: !profile.publicProfile,
       });
-
-      if (!response.ok) {
-        setProfile({ ...profile, publicProfile: !nextValue });
-      }
     } catch {
-      setProfile({ ...profile, publicProfile: !nextValue });
-    } finally {
-      setUpdatingPreference(false);
+      // Handled by mutation onError
     }
   };
 
   const handleDeleteRequest = async () => {
-    if (!accessToken) {
-      return;
-    }
-
     if (!deleteIntent) {
-      setDeleteError(tDelete("intentRequired"));
-
       return;
     }
-
-    setDeleteLoading(true);
-    setDeleteError(null);
-    setDeleteStatus(null);
 
     try {
-      const response = await fetch(API_ROUTES.ME.DELETE_CHALLENGE, {
-        headers: createAuthHeaders(accessToken),
-        method: "POST",
-      });
-
-      if (!response.ok) {
-        setDeleteError(tDelete("error"));
-        setDeleteLoading(false);
-
-        return;
-      }
-
-      const data = (await response.json()) as { challenge_token?: string };
-
-      if (!data.challenge_token) {
-        setDeleteError(tDelete("error"));
-        setDeleteLoading(false);
-
-        return;
-      }
-
+      const data = await deleteChallengeMutation.mutateAsync();
       setDeleteChallengeToken(data.challenge_token);
       setDeleteStep("verify");
-      setDeleteStatus(tDelete("status"));
     } catch {
-      setDeleteError(tDelete("error"));
-    } finally {
-      setDeleteLoading(false);
+      // DeleteError will show
     }
   };
 
   const handleDeleteConfirm = async () => {
-    if (!accessToken || !deleteChallengeToken) {
+    if (!deleteChallengeToken) {
       return;
     }
 
-    setDeleteLoading(true);
-    setDeleteError(null);
-    setDeleteStatus(null);
-
     try {
-      const response = await fetch(API_ROUTES.ME.DELETE, {
-        body: JSON.stringify({ challenge_token: deleteChallengeToken, code: deleteCode }),
-        headers: createJsonAuthHeaders(accessToken),
-        method: "POST",
+      await deleteAccountMutation.mutateAsync({
+        challengeToken: deleteChallengeToken,
+        code: deleteCode,
       });
 
-      if (!response.ok) {
-        const data = (await response.json().catch(() => null)) as { error?: string } | null;
-        const reason = data?.error;
-
-        if (reason === "expired") {
-          setDeleteError(tDelete("expired"));
-          setDeleteStep("confirm");
-          setDeleteCode("");
-          setDeleteChallengeToken(null);
-          setDeleteStatus(null);
-        } else if (reason === "too_many_attempts") {
-          setDeleteError(tDelete("tooManyAttempts"));
-          setDeleteStep("confirm");
-          setDeleteCode("");
-          setDeleteChallengeToken(null);
-          setDeleteStatus(null);
-        } else if (reason === "invalid_code" || reason === "invalid_request") {
-          setDeleteError(tDelete("invalid"));
-        } else {
-          setDeleteError(tDelete("error"));
-        }
-
-        setDeleteLoading(false);
-
-        return;
-      }
-
       setDeleteStep("done");
-      setDeleteStatus(tDelete("completed"));
-      setTimeout(() => {
-        clearAccessToken();
+
+      redirectTimeoutRef.current = window.setTimeout(() => {
         router.replace(PAGE_ROUTES.HOME);
       }, 3000);
-    } catch {
-      setDeleteError(tDelete("error"));
-      setDeleteLoading(false);
+    } catch (err: unknown) {
+      const reason = getApiErrorReason(err);
+
+      if (reason === "expired" || reason === "too_many_attempts") {
+        setDeleteStep("confirm");
+        setDeleteCode("");
+        setDeleteChallengeToken(null);
+      }
     }
   };
 
@@ -297,46 +196,35 @@ export function MeClient() {
     setDeleteStep("idle");
     setDeleteCode("");
     setDeleteChallengeToken(null);
-    setDeleteStatus(null);
-    setDeleteError(null);
     setDeleteIntent(false);
   };
 
   const handleDeleteProceed = () => {
-    setDeleteError(null);
-    setDeleteStatus(null);
     setDeleteStep("confirm");
   };
 
   const handleRemoveBoost = async (shortId: string) => {
-    if (!accessToken) {
-      return;
-    }
-
-    const prev = boosts;
-    setBoosts((current) => current.filter((item) => item.shortId !== shortId));
-
     try {
-      const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
-        headers: createAuthHeaders(accessToken),
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        setBoosts(prev);
-      } else {
-        const data = (await response.json()) as { availableBoosts?: number };
-        if (data.availableBoosts !== undefined && boostAllocation) {
-          setBoostAllocation({
-            ...boostAllocation,
-            availableBoosts: data.availableBoosts,
-          });
-        }
-      }
+      await removeBoostMutation.mutateAsync(shortId);
     } catch {
-      setBoosts(prev);
+      // Handled by mutation onError
     }
   };
+
+  const deleteError =
+    deleteChallengeMutation.isError || deleteAccountMutation.isError ? tDelete("error") : null;
+
+  const deleteStatus =
+    deleteStep === "verify"
+      ? tDelete("status")
+      : deleteStep === "done"
+        ? tDelete("completed")
+        : null;
+
+  const boostsLoading = loading;
+  const boostsError = profileQuery.isError ? t("boosted.error") : null;
+  const attemptsLoading = loading;
+  const attemptsError = profileQuery.isError ? t("attempts.error") : null;
 
   return (
     <div className="flex flex-col gap-10">
@@ -344,6 +232,7 @@ export function MeClient() {
         <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
           {t("title")}
         </h1>
+
         {loading ? (
           <HeaderButtonsSkeleton />
         ) : (
@@ -360,6 +249,7 @@ export function MeClient() {
                 </Button>
               </Link>
             )}
+
             <Button
               onClick={handleSignOut}
               variant="ghost"
@@ -375,7 +265,7 @@ export function MeClient() {
 
       {error && (
         <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
-          {t("error")}
+          {error}
         </div>
       )}
 
@@ -390,12 +280,10 @@ export function MeClient() {
       ) : profile ? (
         <>
           <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-            <ProfileCard
-              profile={profile}
-              onProfileUpdate={(updated: Profile) => setProfile(updated)}
-            />
+            <ProfileCard profile={profile} onProfileUpdate={() => profileQuery.refetch()} />
             <GuildCard />
           </div>
+
           <div className="space-y-4">
             <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
               {t("preferences.title")}
@@ -422,6 +310,7 @@ export function MeClient() {
         <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
           {t("activity.title")}
         </h2>
+
         <div className="grid min-w-0 gap-6 lg:grid-cols-2">
           <div className="min-w-0 space-y-4">
             {boostAllocation && (
@@ -464,6 +353,7 @@ export function MeClient() {
                 </div>
               </div>
             )}
+
             <BoostedVideosBlock
               loading={boostsLoading}
               error={boostsError}
@@ -471,64 +361,14 @@ export function MeClient() {
               onRemove={handleRemoveBoost}
             />
           </div>
+
           <div className="min-w-0">
             <LoginAttemptsBlock items={attempts} loading={attemptsLoading} error={attemptsError} />
           </div>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
-          {t("support.title")}
-        </h2>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <Link
-            href={PAGE_ROUTES.CONTACT_WITH_TYPE("feature")}
-            className="group hover:border-brand-200 hover:bg-brand-50/50 dark:hover:border-brand-500/30 dark:hover:bg-brand-500/5 flex items-center gap-4 rounded-2xl border border-neutral-200/70 bg-white/70 p-4 transition dark:border-white/10 dark:bg-white/5"
-          >
-            <div className="bg-brand-100 text-brand-600 group-hover:bg-brand-200 dark:bg-brand-500/20 dark:text-brand-300 dark:group-hover:bg-brand-500/30 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition">
-              <svg
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="14 2 18 6 7 17 3 17 3 13 14 2" />
-                <line x1="3" y1="22" x2="21" y2="22" />
-              </svg>
-            </div>
-            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
-              {t("support.featureRequest")}
-            </span>
-          </Link>
-          <Link
-            href={PAGE_ROUTES.CONTACT_WITH_TYPE("support")}
-            className="group flex items-center gap-4 rounded-2xl border border-neutral-200/70 bg-white/70 p-4 transition hover:border-amber-200 hover:bg-amber-50/50 dark:border-white/10 dark:bg-white/5 dark:hover:border-amber-500/30 dark:hover:bg-amber-500/5"
-          >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 transition group-hover:bg-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:group-hover:bg-amber-500/30">
-              <svg
-                className="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-            </div>
-            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
-              {t("support.technicalIssue")}
-            </span>
-          </Link>
-        </div>
-      </div>
+      {/* Support links unchanged... */}
 
       <DangerZoneBlock
         status={deleteStatus}

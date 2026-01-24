@@ -1,0 +1,243 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { ApiError } from "@/lib/api/errors";
+import { API_ROUTES } from "@/lib/api/routes";
+import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
+import { logError } from "@/lib/utils/log-client";
+
+interface Profile {
+  id: string;
+  email: string;
+  createdAt: string;
+  lastLoginAt: string | null;
+  allowCommunityEmails: boolean;
+  publicProfile: boolean;
+  name: string | null;
+}
+
+interface BoostedRecording {
+  boostedAt: string;
+  shortId: string;
+  title: string;
+  speaker: string[];
+  date: string;
+  slug: string;
+}
+
+interface LoginAttempt {
+  id: string;
+  outcome: string;
+  createdAt: string;
+}
+
+interface BoostAllocation {
+  availableBoosts: number;
+  nextAllocationDate: string;
+}
+
+interface UserProfileData {
+  profile: Profile;
+  boosts: { items: BoostedRecording[] };
+  attempts: { items: LoginAttempt[] };
+  boostAllocation?: BoostAllocation;
+}
+
+const USER_PROFILE_QUERY_KEY = ["user-profile"] as const;
+const VIDEO_BOOSTS_QUERY_KEY = (shortId?: string) =>
+  shortId ? (["video-boosts", shortId] as const) : (["video-boosts"] as const);
+
+/**
+ * Read token at call-time so mutations/queries don't capture a stale value.
+ */
+function getValidAccessToken(): string | null {
+  const token = readAccessToken();
+  if (!token) {
+    return null;
+  }
+  return isAccessTokenValid(token) ? token : null;
+}
+
+async function fetchJsonOrNull<T>(response: Response): Promise<T | null> {
+  try {
+    return (await response.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchUserProfile(accessToken: string): Promise<UserProfileData> {
+  const response = await fetch(API_ROUTES.ME.BASE, {
+    headers: createAuthHeaders(accessToken),
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      clearAccessToken();
+    }
+    throw new ApiError("User profile fetch failed", response.status);
+  }
+
+  return (await response.json()) as UserProfileData;
+}
+
+export function useUserProfile() {
+  const token = getValidAccessToken();
+
+  return useQuery<UserProfileData, ApiError>({
+    enabled: Boolean(token),
+    queryFn: () => {
+      const accessToken = getValidAccessToken();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+      return fetchUserProfile(accessToken);
+    },
+    queryKey: USER_PROFILE_QUERY_KEY,
+    retry: (failureCount, error) =>
+      !(error instanceof ApiError && error.status === 401) && failureCount < 2,
+    staleTime: 30_000,
+  });
+}
+
+export function useUpdatePreferenceMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    void,
+    ApiError,
+    { allowCommunityEmails?: boolean; publicProfile?: boolean; name?: string | null }
+  >({
+    mutationFn: async ({ allowCommunityEmails, publicProfile, name }) => {
+      const accessToken = getValidAccessToken();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.ME.PREFERENCES, {
+        body: JSON.stringify({ allowCommunityEmails, name, publicProfile }),
+        headers: createJsonAuthHeaders(accessToken),
+        method: "PATCH",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          clearAccessToken();
+        }
+        const data = await fetchJsonOrNull<{ error?: string }>(response);
+        throw new ApiError("User preferences update failed", response.status, data?.error);
+      }
+    },
+    onError: (error, variables) => {
+      logError("user.preferences.update_failed", error, {
+        allowCommunityEmails: variables.allowCommunityEmails,
+        hasName: variables.name !== undefined,
+        publicProfile: variables.publicProfile,
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY });
+    },
+  });
+}
+
+export function useRemoveBoostMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ availableBoosts?: number }, ApiError, string>({
+    mutationFn: async (shortId) => {
+      const accessToken = getValidAccessToken();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+      if (!shortId) {
+        throw new ApiError("shortId required", 400);
+      }
+
+      const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
+        headers: createAuthHeaders(accessToken),
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          clearAccessToken();
+        }
+        throw new ApiError("Failed to remove boost", response.status);
+      }
+
+      return ((await response.json()) as { availableBoosts?: number }) ?? {};
+    },
+    onError: (error, shortId) => {
+      logError("user.boost.remove_failed", error, { shortId });
+    },
+    onSuccess: async (_data, shortId) => {
+      await queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY });
+      await queryClient.invalidateQueries({ queryKey: VIDEO_BOOSTS_QUERY_KEY(shortId) });
+    },
+  });
+}
+
+export function useDeleteAccountChallengeMutation() {
+  return useMutation<{ challenge_token: string }, ApiError, void>({
+    mutationFn: async () => {
+      const accessToken = getValidAccessToken();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.ME.DELETE_CHALLENGE, {
+        headers: createAuthHeaders(accessToken),
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          clearAccessToken();
+        }
+        throw new ApiError("Failed to request delete challenge", response.status);
+      }
+
+      return (await response.json()) as { challenge_token: string };
+    },
+    onError: (error) => {
+      logError("user.delete.challenge_failed", error);
+    },
+  });
+}
+
+export function useDeleteAccountMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, ApiError, { challengeToken: string; code: string }>({
+    mutationFn: async ({ challengeToken, code }) => {
+      const accessToken = getValidAccessToken();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.ME.DELETE, {
+        body: JSON.stringify({ challenge_token: challengeToken, code }),
+        headers: createJsonAuthHeaders(accessToken),
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          clearAccessToken();
+        }
+        const data = await fetchJsonOrNull<{ error?: string }>(response);
+        throw new ApiError("Failed to delete account", response.status, data?.error);
+      }
+    },
+    onError: (error) => {
+      logError("user.delete.account_failed", error);
+    },
+    onSuccess: () => {
+      clearAccessToken();
+      queryClient.clear();
+    },
+  });
+}
+
+export type { BoostAllocation, BoostedRecording, LoginAttempt, Profile, UserProfileData };

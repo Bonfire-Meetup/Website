@@ -2,256 +2,148 @@
 
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { API_ROUTES } from "@/lib/api/routes";
+import { ApiError } from "@/lib/api/errors";
+import {
+  type BoostedByData,
+  useVideoBoostMutation,
+  useVideoBoosts,
+  useVideoLikeMutation,
+  useVideoLikes,
+} from "@/lib/api/video-engagement";
 import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { createAuthHeaders } from "@/lib/utils/http";
 
 import { BoltIcon, FireIcon, FrownIcon } from "../shared/icons";
-
-interface BoostedByData {
-  publicUsers: {
-    userId: string;
-    name: string | null;
-    emailHash: string;
-  }[];
-  privateCount: number;
-}
 
 interface LikeBoostButtonsProps {
   onBoostedByLoad?: (boostedBy: BoostedByData | null) => void;
   shortId: string;
 }
 
+function getHasValidToken(): boolean {
+  const token = readAccessToken();
+  return token ? isAccessTokenValid(token) : false;
+}
+
 export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsProps) {
   const t = useTranslations("recordings");
   const router = useRouter();
-  const [likeCount, setLikeCount] = useState<number | null>(null);
-  const [hasLiked, setHasLiked] = useState(false);
-  const [isLiking, setIsLiking] = useState(false);
+
   const [likePulse, setLikePulse] = useState(false);
-  const [likeLoadError, setLikeLoadError] = useState(false);
-  const [boostCount, setBoostCount] = useState<number | null>(null);
-  const [hasBoosted, setHasBoosted] = useState(false);
-  const [isBoosting, setIsBoosting] = useState(false);
   const [boostPulse, setBoostPulse] = useState(false);
-  const [boostLoadError, setBoostLoadError] = useState(false);
-  const [availableBoosts, setAvailableBoosts] = useState<number | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    const token = readAccessToken();
+  const timeoutsRef = useRef<number[]>([]);
+  useEffect(
+    () => () => {
+      for (const id of timeoutsRef.current) {
+        window.clearTimeout(id);
+      }
+      timeoutsRef.current = [];
+    },
+    [],
+  );
 
-    if (token && isAccessTokenValid(token)) {
-      setAccessToken(token);
-    } else {
-      setAccessToken(null);
+  // Likes are public
+  const likesQuery = useVideoLikes(shortId);
+
+  // Boosts are auth-gated server-side; query can still run and return public-ish data if your API supports it.
+  // If your boosts endpoint requires auth always, make the hook use enabled based on auth state instead.
+  const boostsQuery = useVideoBoosts(shortId);
+
+  const likeMutation = useVideoLikeMutation(shortId);
+  const boostMutation = useVideoBoostMutation(shortId);
+
+  const likeCount = likesQuery.data?.count ?? null;
+  const hasLiked = likesQuery.data?.hasLiked ?? false;
+  const likeLoadError = likesQuery.isError;
+  const isLiking = likeMutation.isPending;
+
+  const boostCount = boostsQuery.data?.count ?? null;
+  const hasBoosted = boostsQuery.data?.hasBoosted ?? false;
+  const availableBoosts = boostsQuery.data?.availableBoosts ?? null;
+  const boostLoadError = boostsQuery.isError;
+  const isBoosting = boostMutation.isPending;
+
+  const boostedByOrNull = useMemo(() => {
+    if (!boostsQuery.data) {
+      return undefined;
     }
-  }, []);
+    return boostsQuery.data.boostedBy ?? null;
+  }, [boostsQuery.data]);
 
   useEffect(() => {
-    let isActive = true;
+    if (!onBoostedByLoad) {
+      return;
+    }
+    if (boostedByOrNull === undefined) {
+      return;
+    }
+    onBoostedByLoad(boostedByOrNull);
+  }, [boostedByOrNull, onBoostedByLoad]);
 
-    const loadLikes = async () => {
-      try {
-        setLikeLoadError(false);
-        const response = await fetch(API_ROUTES.VIDEO.LIKES(shortId));
-
-        if (!response.ok) {
-          if (isActive) {
-            setLikeLoadError(true);
-          }
-
-          return;
-        }
-
-        const data = (await response.json()) as { count: number; hasLiked: boolean };
-
-        if (isActive) {
-          setLikeCount(data.count ?? 0);
-          setHasLiked(Boolean(data.hasLiked));
-        }
-      } catch {
-        if (isActive) {
-          setLikeLoadError(true);
-        }
-      }
-    };
-
-    loadLikes();
-
-    return () => {
-      isActive = false;
-    };
-  }, [shortId]);
-
-  useEffect(() => {
-    let isActive = true;
-
-    const loadBoosts = async () => {
-      try {
-        setBoostLoadError(false);
-        const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
-          headers: createAuthHeaders(accessToken),
-        });
-
-        if (!response.ok) {
-          if (isActive) {
-            setBoostLoadError(true);
-          }
-
-          return;
-        }
-
-        const data = (await response.json()) as {
-          boostedBy?: BoostedByData;
-          count: number;
-          hasBoosted: boolean;
-          availableBoosts?: number;
-        };
-
-        if (isActive) {
-          setBoostCount(data.count ?? 0);
-          setHasBoosted(Boolean(data.hasBoosted));
-          if (data.availableBoosts !== undefined) {
-            setAvailableBoosts(data.availableBoosts);
-          }
-          if (onBoostedByLoad) {
-            onBoostedByLoad(data.boostedBy ?? null);
-          }
-        }
-      } catch {
-        if (isActive) {
-          setBoostLoadError(true);
-        }
-      }
-    };
-
-    loadBoosts();
-
-    return () => {
-      isActive = false;
-    };
-  }, [shortId, accessToken, onBoostedByLoad]);
+  const pulse = (kind: "like" | "boost") => {
+    if (kind === "like") {
+      setLikePulse(true);
+      timeoutsRef.current.push(window.setTimeout(() => setLikePulse(false), 550));
+    } else {
+      setBoostPulse(true);
+      timeoutsRef.current.push(window.setTimeout(() => setBoostPulse(false), 550));
+    }
+  };
 
   const handleLike = async () => {
-    if (isLiking) {
+    // Likes are public; no token checks
+    if (!shortId || isLiking || likeCount === null) {
       return;
     }
 
-    setIsLiking(true);
-    setLikePulse(true);
-    setTimeout(() => setLikePulse(false), 550);
-
-    const prevLiked = hasLiked;
-    const prevCount = likeCount;
+    pulse("like");
     const adding = !hasLiked;
 
-    setHasLiked(adding);
-    setLikeCount((c) => (c ?? 0) + (adding ? 1 : -1));
-
     try {
-      const res = await fetch(API_ROUTES.VIDEO.LIKES(shortId), {
-        method: adding ? "POST" : "DELETE",
-      });
-
-      if (!res.ok) {
-        setHasLiked(prevLiked);
-        setLikeCount(prevCount);
-
-        return;
-      }
-
-      const { count } = (await res.json()) as { count: number };
-      setLikeCount(count);
+      await likeMutation.mutateAsync(adding);
     } catch {
-      setHasLiked(prevLiked);
-      setLikeCount(prevCount);
-    } finally {
-      setIsLiking(false);
+      // Handled by mutation onError
     }
   };
 
   const handleBoost = async () => {
-    if (!accessToken) {
+    // Boosts are gated by login
+    if (!getHasValidToken()) {
       router.push(PAGE_ROUTES.LOGIN_WITH_REASON("video-boost"));
-
       return;
     }
 
-    if (isBoosting) {
+    if (!shortId || isBoosting || boostCount === null) {
       return;
     }
 
-    setIsBoosting(true);
-    setBoostPulse(true);
-    setTimeout(() => setBoostPulse(false), 550);
+    // Keep your UI rule: don't allow adding if no boosts left (but allow removing)
+    if (availableBoosts !== null && availableBoosts === 0 && !hasBoosted) {
+      return;
+    }
 
-    const prevBoosted = hasBoosted;
-    const prevCount = boostCount;
+    pulse("boost");
     const adding = !hasBoosted;
 
-    setHasBoosted(adding);
-    setBoostCount((c) => (c ?? 0) + (adding ? 1 : -1));
-
     try {
-      const res = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
-        headers: createAuthHeaders(accessToken),
-        method: adding ? "POST" : "DELETE",
-      });
-
-      if (!res.ok) {
-        setHasBoosted(prevBoosted);
-        setBoostCount(prevCount);
-
-        if (res.status === 403) {
-          try {
-            const errorData = (await res.json()) as {
-              error: string;
-              availableBoosts?: number;
-            };
-            if (errorData.availableBoosts !== undefined) {
-              setAvailableBoosts(errorData.availableBoosts);
-            }
-          } catch {
-            const statsRes = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
-              headers: createAuthHeaders(accessToken),
-            });
-            if (statsRes.ok) {
-              const statsData = (await statsRes.json()) as {
-                count: number;
-                hasBoosted: boolean;
-                availableBoosts?: number;
-              };
-              if (statsData.availableBoosts !== undefined) {
-                setAvailableBoosts(statsData.availableBoosts);
-              }
-            }
-          }
-        }
-
+      await boostMutation.mutateAsync(adding);
+    } catch (err: unknown) {
+      // If token expired between check and request
+      if (err instanceof ApiError && err.status === 401) {
+        router.push(PAGE_ROUTES.LOGIN_WITH_REASON("video-boost"));
         return;
       }
 
-      const responseData = (await res.json()) as {
-        boostedBy?: BoostedByData;
-        count: number;
-        availableBoosts?: number;
-      };
-      setBoostCount(responseData.count);
-      if (responseData.availableBoosts !== undefined) {
-        setAvailableBoosts(responseData.availableBoosts);
+      // If backend says "forbidden" (often "no boosts left" or similar),
+      // Refetch to sync availableBoosts + counts.
+      if (err instanceof ApiError && err.status === 403) {
+        // If your backend returns { availableBoosts } in ApiError.data, this is where it is.
+        // We don't need branching; just sync.
+        boostsQuery.refetch();
       }
-      if (onBoostedByLoad && responseData.boostedBy) {
-        onBoostedByLoad(responseData.boostedBy);
-      }
-    } catch {
-      setHasBoosted(prevBoosted);
-      setBoostCount(prevCount);
-    } finally {
-      setIsBoosting(false);
     }
   };
 
@@ -296,6 +188,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
           )}
         </button>
       </div>
+
       <div
         className={`relative z-0 transition-transform ${boostCount === null ? "" : "hover:-translate-y-0.5"}`}
       >
