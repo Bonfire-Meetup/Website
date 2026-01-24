@@ -145,6 +145,7 @@
     "boosts": "Boosty",
     "boostItUp": "Přidat boost",
     "boostNoBoostsAvailable": "Vyčerpali jste všechny boosty tento měsíc. Více příští měsíc!",
+    "rateLimitError": "Wow, klídek! Tvoje akce má cooldown. Zkus to za chvilku.",
     "boostedBy": "Boostnuto od",
     "and": "a",
     "onePrivateBooster": "1 soukromý",

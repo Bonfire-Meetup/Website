@@ -42,7 +42,7 @@ export default async function FaqPage() {
     <>
       <Header />
       <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
-        <section className="relative flex min-h-[62vh] items-center justify-center overflow-hidden px-4 pt-32 pb-14 sm:min-h-[66vh] sm:pb-18">
+        <section className="relative flex min-h-[62vh] items-center justify-center px-4 pt-32 pb-14 sm:min-h-[66vh] sm:pb-18">
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -top-24 left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.18),transparent_62%)]" />
             <div className="absolute top-28 right-10 h-[460px] w-[460px] rounded-full bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.18),transparent_62%)]" />

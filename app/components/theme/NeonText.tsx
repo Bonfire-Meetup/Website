@@ -4,13 +4,30 @@ import { type ReactNode, useEffect, useState } from "react";
 
 export function NeonText({ children, className }: { children: ReactNode; className?: string }) {
   const [isActive, setIsActive] = useState(false);
+  const [isPageVisible, setIsPageVisible] = useState(true);
 
   useEffect(() => {
+    const handleVisibility = () => {
+      setIsPageVisible(document.visibilityState === "visible");
+    };
+
+    handleVisibility();
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
+  useEffect(() => {
+    if (!isPageVisible) {
+      setIsActive(false);
+      return;
+    }
+
     let timeout: NodeJS.Timeout;
     let isMounted = true;
 
     const triggerGlitch = () => {
-      if (!isMounted) {
+      if (!isMounted || !isPageVisible) {
         return;
       }
 
@@ -18,7 +35,7 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
       const endTime = Date.now() + duration;
 
       const flicker = () => {
-        if (!isMounted) {
+        if (!isMounted || !isPageVisible) {
           return;
         }
 
@@ -32,7 +49,7 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
           if (stayOn) {
             timeout = setTimeout(
               () => {
-                if (isMounted) {
+                if (isMounted && isPageVisible) {
                   setIsActive(false);
                   scheduleNextGlitch();
                 }
@@ -49,17 +66,21 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
     };
 
     const scheduleNextGlitch = () => {
+      if (!isMounted || !isPageVisible) {
+        return;
+      }
       const delay = Math.random() * 9000 + 3000;
       timeout = setTimeout(triggerGlitch, delay);
     };
 
-    timeout = setTimeout(triggerGlitch, 2000);
+    // Trigger first glitch soon after load so users see it
+    timeout = setTimeout(triggerGlitch, 500);
 
     return () => {
       isMounted = false;
       clearTimeout(timeout);
     };
-  }, []);
+  }, [isPageVisible]);
 
   return <span className={`${className} ${isActive ? "neon-active" : ""}`}>{children}</span>;
 }

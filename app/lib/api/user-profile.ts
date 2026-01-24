@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/lib/api/errors";
+import { getValidAccessToken, shouldRetryMutation } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
-import { clearAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { clearAccessToken } from "@/lib/auth/client";
 import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
 import { logError } from "@/lib/utils/log-client";
 
@@ -46,17 +47,6 @@ interface UserProfileData {
 const USER_PROFILE_QUERY_KEY = ["user-profile"] as const;
 const VIDEO_BOOSTS_QUERY_KEY = (shortId?: string) =>
   shortId ? (["video-boosts", shortId] as const) : (["video-boosts"] as const);
-
-/**
- * Read token at call-time so mutations/queries don't capture a stale value.
- */
-function getValidAccessToken(): string | null {
-  const token = readAccessToken();
-  if (!token) {
-    return null;
-  }
-  return isAccessTokenValid(token) ? token : null;
-}
 
 async function fetchJsonOrNull<T>(response: Response): Promise<T | null> {
   try {
@@ -138,6 +128,7 @@ export function useUpdatePreferenceMutation() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY });
     },
+    retry: shouldRetryMutation,
   });
 }
 
@@ -172,9 +163,12 @@ export function useRemoveBoostMutation() {
       logError("user.boost.remove_failed", error, { shortId });
     },
     onSuccess: async (_data, shortId) => {
-      await queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY });
-      await queryClient.invalidateQueries({ queryKey: VIDEO_BOOSTS_QUERY_KEY(shortId) });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY }),
+        queryClient.invalidateQueries({ queryKey: VIDEO_BOOSTS_QUERY_KEY(shortId) }),
+      ]);
     },
+    retry: shouldRetryMutation,
   });
 }
 
@@ -203,6 +197,7 @@ export function useDeleteAccountChallengeMutation() {
     onError: (error) => {
       logError("user.delete.challenge_failed", error);
     },
+    retry: shouldRetryMutation,
   });
 }
 
@@ -237,6 +232,7 @@ export function useDeleteAccountMutation() {
       clearAccessToken();
       queryClient.clear();
     },
+    retry: shouldRetryMutation,
   });
 }
 

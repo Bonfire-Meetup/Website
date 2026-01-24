@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/lib/api/errors";
+import { shouldRetryMutation } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { createAuthHeaders } from "@/lib/utils/http";
@@ -65,15 +66,16 @@ export function useVideoLikes(shortId: string) {
 
 export function useVideoBoosts(shortId: string, enabled = true) {
   const canFetch = Boolean(shortId) && enabled;
-
-  const accessToken = readAccessToken();
-  const isValid = accessToken ? isAccessTokenValid(accessToken) : false;
-  const tokenForRequest = isValid ? accessToken : null;
+  const hasToken = Boolean(readAccessToken());
 
   return useQuery({
     enabled: canFetch,
-    queryFn: () => fetchVideoBoosts(shortId, tokenForRequest),
-    queryKey: ["video-boosts", shortId, tokenForRequest ? "auth" : "anon"],
+    queryFn: () => {
+      const token = readAccessToken();
+      const isValid = token ? isAccessTokenValid(token) : false;
+      return fetchVideoBoosts(shortId, isValid ? token : null);
+    },
+    queryKey: ["video-boosts", shortId, hasToken ? "auth" : "anon"],
     staleTime: 5000,
   });
 }
@@ -81,7 +83,7 @@ export function useVideoBoosts(shortId: string, enabled = true) {
 export function useVideoLikeMutation(shortId: string) {
   const queryClient = useQueryClient();
 
-  return useMutation<{ count: number }, ApiError, boolean>({
+  return useMutation<{ count: number }, ApiError, boolean, { previousData?: VideoLikesData }>({
     mutationFn: async (adding) => {
       if (!shortId) {
         throw new ApiError("Missing shortId", 400);
@@ -97,11 +99,29 @@ export function useVideoLikeMutation(shortId: string) {
 
       return (await response.json()) as { count: number };
     },
-    onError: (error, adding) => {
+    onError: (error, adding, context) => {
       logError("video.likes.mutation_failed", error, {
         operation: adding ? "add" : "remove",
         shortId,
       });
+
+      if (context?.previousData) {
+        queryClient.setQueryData<VideoLikesData>(["video-likes", shortId], context.previousData);
+      }
+    },
+    onMutate: async (adding) => {
+      await queryClient.cancelQueries({ queryKey: ["video-likes", shortId] });
+
+      const previousData = queryClient.getQueryData<VideoLikesData>(["video-likes", shortId]);
+
+      if (previousData) {
+        queryClient.setQueryData<VideoLikesData>(["video-likes", shortId], {
+          count: Math.max(0, previousData.count + (adding ? 1 : -1)),
+          hasLiked: adding,
+        });
+      }
+
+      return { previousData };
     },
     onSettled: () => {
       if (shortId) {
@@ -114,25 +134,28 @@ export function useVideoLikeMutation(shortId: string) {
         hasLiked: adding,
       });
     },
+    retry: shouldRetryMutation,
   });
 }
 
 export function useVideoBoostMutation(shortId: string) {
   const queryClient = useQueryClient();
-
-  const accessToken = readAccessToken();
-  const isValid = accessToken ? isAccessTokenValid(accessToken) : false;
-  const tokenForRequest = isValid ? accessToken : null;
+  const hasToken = Boolean(readAccessToken());
 
   return useMutation<
     { boostedBy?: BoostedByData; count: number; availableBoosts?: number },
     ApiError,
-    boolean
+    boolean,
+    { previousData?: VideoBoostsData }
   >({
     mutationFn: async (adding) => {
       if (!shortId) {
         throw new ApiError("Missing shortId", 400);
       }
+
+      const token = readAccessToken();
+      const isValid = token ? isAccessTokenValid(token) : false;
+      const tokenForRequest = isValid ? token : null;
 
       const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
         headers: createAuthHeaders(tokenForRequest),
@@ -153,29 +176,62 @@ export function useVideoBoostMutation(shortId: string) {
         availableBoosts?: number;
       };
     },
-    onError: (error, adding) => {
+    onError: (error, adding, context) => {
       logError("video.boosts.mutation_failed", error, {
         operation: adding ? "add" : "remove",
         shortId,
       });
+
+      if (context?.previousData) {
+        const queryKey = ["video-boosts", shortId, hasToken ? "auth" : "anon"] as const;
+        queryClient.setQueryData<VideoBoostsData>(queryKey, context.previousData);
+      }
+    },
+    onMutate: async (adding) => {
+      const queryKey = ["video-boosts", shortId, hasToken ? "auth" : "anon"] as const;
+
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousData = queryClient.getQueryData<VideoBoostsData>(queryKey);
+
+      if (previousData) {
+        queryClient.setQueryData<VideoBoostsData>(queryKey, (old) => {
+          if (!old) {
+            return previousData;
+          }
+          return {
+            ...old,
+            count: Math.max(0, old.count + (adding ? 1 : -1)),
+            hasBoosted: adding,
+            availableBoosts:
+              old.availableBoosts !== null && old.availableBoosts !== undefined
+                ? Math.max(0, old.availableBoosts - (adding ? 1 : 0))
+                : old.availableBoosts,
+          };
+        });
+      }
+
+      return { previousData };
     },
     onSettled: () => {
       if (shortId) {
         queryClient.invalidateQueries({
-          queryKey: ["video-boosts", shortId, tokenForRequest ? "auth" : "anon"],
+          queryKey: ["video-boosts", shortId, hasToken ? "auth" : "anon"],
         });
       }
     },
     onSuccess: (data, adding) => {
-      const queryKey = ["video-boosts", shortId, tokenForRequest ? "auth" : "anon"] as const;
+      const queryKey = ["video-boosts", shortId, hasToken ? "auth" : "anon"] as const;
 
       queryClient.setQueryData<VideoBoostsData>(queryKey, (old) => ({
-        availableBoosts: data.availableBoosts ?? old?.availableBoosts,
-        boostedBy: data.boostedBy ?? old?.boostedBy,
+        ...old,
         count: data.count,
         hasBoosted: adding,
+        availableBoosts: data.availableBoosts ?? old?.availableBoosts,
+        boostedBy: data.boostedBy ?? old?.boostedBy,
       }));
     },
+    retry: shouldRetryMutation,
   });
 }
 

@@ -66,6 +66,9 @@ export function MeClient() {
   const [deleteChallengeToken, setDeleteChallengeToken] = useState<string | null>(null);
   const [deleteIntent, setDeleteIntent] = useState(false);
 
+  const [stagedCommunityEmails, setStagedCommunityEmails] = useState<boolean | null>(null);
+  const [stagedPublicProfile, setStagedPublicProfile] = useState<boolean | null>(null);
+
   const redirectTimeoutRef = useRef<number | null>(null);
   useEffect(
     () => () => {
@@ -113,7 +116,9 @@ export function MeClient() {
   const loading = profileQuery.isLoading;
   const error = profileQuery.isError ? t("error") : null;
 
-  const updatingPreference = updatePreferenceMutation.isPending;
+  const updatingCommunityEmails =
+    stagedCommunityEmails !== null && updatePreferenceMutation.isPending;
+  const updatingPublicProfile = stagedPublicProfile !== null && updatePreferenceMutation.isPending;
   const deleteLoading = deleteChallengeMutation.isPending || deleteAccountMutation.isPending;
 
   const handleSignOut = () => {
@@ -128,12 +133,16 @@ export function MeClient() {
       return;
     }
 
+    const newValue = !profile.allowCommunityEmails;
+    setStagedCommunityEmails(newValue);
+
     try {
       await updatePreferenceMutation.mutateAsync({
-        allowCommunityEmails: !profile.allowCommunityEmails,
+        allowCommunityEmails: newValue,
       });
+      setStagedCommunityEmails(null);
     } catch {
-      // Handled by mutation onError
+      setStagedCommunityEmails(null);
     }
   };
 
@@ -142,12 +151,16 @@ export function MeClient() {
       return;
     }
 
+    const newValue = !profile.publicProfile;
+    setStagedPublicProfile(newValue);
+
     try {
       await updatePreferenceMutation.mutateAsync({
-        publicProfile: !profile.publicProfile,
+        publicProfile: newValue,
       });
+      setStagedPublicProfile(null);
     } catch {
-      // Handled by mutation onError
+      setStagedPublicProfile(null);
     }
   };
 
@@ -290,14 +303,14 @@ export function MeClient() {
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <PreferenceBlock
-                enabled={profile.allowCommunityEmails}
-                disabled={updatingPreference}
+                enabled={stagedCommunityEmails ?? profile.allowCommunityEmails}
+                disabled={updatingCommunityEmails}
                 onToggle={handleCommunityEmailsToggle}
                 translationKey="communityEmails"
               />
               <PreferenceBlock
-                enabled={profile.publicProfile}
-                disabled={updatingPreference}
+                enabled={stagedPublicProfile ?? profile.publicProfile}
+                disabled={updatingPublicProfile}
                 onToggle={handlePublicProfileToggle}
                 translationKey="publicProfile"
               />

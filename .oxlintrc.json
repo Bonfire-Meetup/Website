@@ -25,7 +25,10 @@
     "typescript/prefer-optional-chain": "warn",
     "typescript/no-unused-vars": [
       "error",
-      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
     ],
     "react/exhaustive-deps": "error",
     "react/rules-of-hooks": "error",
@@ -44,12 +47,23 @@
     "react/no-direct-mutation-state": "error",
     "react/no-unknown-property": "error",
     "react/self-closing-comp": "warn",
-    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-console": [
+      "warn",
+      {
+        "allow": ["warn", "error"]
+      }
+    ],
     "no-debugger": "error",
     "no-alert": "error",
     "no-var": "error",
     "prefer-const": "error",
-    "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
     "no-undef": "error",
     "no-duplicate-imports": "error",
     "no-unreachable": "error",
@@ -87,7 +101,7 @@
     "require-await": "warn",
     "use-isnan": "error",
     "init-declarations": "off",
-    "sort-keys": "warn",
+    "sort-keys": "off",
     "react/jsx-props-no-spreading": "off",
     "no-negated-condition": "off",
     "valid-typeof": "error",
@@ -142,7 +156,14 @@
     "no-unsafe-negation": "error",
     "no-unsafe-optional-chaining": "error",
     "no-unused-private-class-members": "warn",
-    "no-use-before-define": ["error", { "functions": false, "classes": false, "variables": true }],
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": false,
+        "classes": false,
+        "variables": true
+      }
+    ],
     "no-useless-assignment": "warn",
     "no-useless-catch": "warn",
     "no-useless-escape": "error",
@@ -155,7 +176,13 @@
     "no-lonely-if": "warn",
     "prefer-arrow-callback": "warn",
     "prefer-template": "warn",
-    "prefer-destructuring": ["warn", { "array": false, "object": true }],
+    "prefer-destructuring": [
+      "warn",
+      {
+        "array": false,
+        "object": true
+      }
+    ],
     "prefer-exponentiation-operator": "warn",
     "prefer-object-spread": "warn",
     "prefer-rest-params": "warn",

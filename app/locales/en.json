@@ -145,6 +145,7 @@
     "boosts": "Boosts",
     "boostItUp": "Boost it",
     "boostNoBoostsAvailable": "You've used all your boosts this month. More coming next month!",
+    "rateLimitError": "Whoa, easy there! Your action is on cooldown. Try again in a sec.",
     "boostedBy": "Boosted by",
     "and": "and",
     "onePrivateBooster": "1 private",
