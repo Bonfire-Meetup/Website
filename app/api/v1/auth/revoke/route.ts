@@ -35,7 +35,6 @@ export const POST = async (request: Request) =>
     const clientFingerprint = getClientFingerprint({ ip, userAgent });
     const requestId = getRequestId();
 
-    // Parse request body (optional)
     let revokeAll = false;
     let revokeFamily = false;
 
@@ -48,14 +47,12 @@ export const POST = async (request: Request) =>
         revokeFamily = parsed.data.revoke_family;
       }
     } catch {
-      // Empty body is fine - just revoke current token
+      // Ignore invalid or missing JSON; defaults handle the fallback
     }
 
-    // Get refresh token from cookie
     const cookieStore = await cookies();
     const refreshTokenFromCookie = cookieStore.get(REFRESH_TOKEN_COOKIE_NAME)?.value;
 
-    // If revoking all sessions, we need to verify the access token
     if (revokeAll) {
       const authHeader = headers.get("authorization");
 
@@ -79,7 +76,6 @@ export const POST = async (request: Request) =>
           return respond({ error: "unauthorized" }, { status: 401 });
         }
 
-        // Revoke all refresh tokens for this user
         await revokeAllUserRefreshTokens(userId);
 
         logInfo("auth.revoke.all_sessions", {
@@ -107,19 +103,16 @@ export const POST = async (request: Request) =>
       }
     }
 
-    // Validate token format and hash if present
     const tokenHash =
       refreshTokenFromCookie && isValidRefreshTokenFormat(refreshTokenFromCookie)
         ? hashRefreshToken(refreshTokenFromCookie)
         : null;
 
-    // Revoke current session or token family
     if (tokenHash) {
       const refreshToken = await getRefreshTokenByHash(tokenHash);
 
       if (refreshToken) {
         if (revokeFamily) {
-          // Revoke entire token family (all rotated tokens from this login)
           await revokeRefreshTokenFamily(refreshToken.token_family_id);
 
           logInfo("auth.revoke.family", {
@@ -138,7 +131,6 @@ export const POST = async (request: Request) =>
           );
         }
 
-        // Just revoke this specific refresh token
         await revokeRefreshToken(tokenHash);
 
         logInfo("auth.revoke.single", {
@@ -148,8 +140,6 @@ export const POST = async (request: Request) =>
       }
     }
 
-    // Always clear the cookie and return success
-    // (even if no token was found - user wanted to logout)
     return NextResponse.json(
       { success: true, revoked: "current" },
       {

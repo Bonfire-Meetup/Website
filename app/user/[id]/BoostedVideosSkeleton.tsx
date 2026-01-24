@@ -1,7 +1,6 @@
 export function BoostedVideosSkeleton() {
   return (
     <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/90 shadow-2xl shadow-black/5 backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-black/25">
-      {/* Header skeleton */}
       <div className="relative border-b border-neutral-200/60 px-6 py-6 sm:px-8 sm:py-7 dark:border-white/10">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
@@ -12,7 +11,6 @@ export function BoostedVideosSkeleton() {
         </div>
       </div>
 
-      {/* Videos grid skeleton */}
       <div className="relative p-6 sm:p-8">
         <div className="grid gap-5 sm:grid-cols-2 lg:gap-6">
           {Array.from({ length: 4 }).map((_, index) => (
@@ -20,10 +18,8 @@ export function BoostedVideosSkeleton() {
               key={`boosted-video-skeleton-${index}`}
               className="relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-white dark:border-white/10 dark:bg-neutral-800/50"
             >
-              {/* Thumbnail skeleton */}
               <div className="relative aspect-video w-full animate-pulse bg-neutral-100 dark:bg-neutral-900" />
 
-              {/* Content skeleton */}
               <div className="space-y-3 p-5">
                 <div className="space-y-2">
                   <div className="h-4 w-full animate-pulse rounded bg-neutral-200/70 dark:bg-white/10" />

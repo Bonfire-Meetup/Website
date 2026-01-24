@@ -187,7 +187,9 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
   }
 };
 
-export const consumeBoost = async (userId: string): Promise<boolean> => {
+export const consumeBoost = async (
+  userId: string,
+): Promise<{ success: boolean; availableBoosts: number | null }> => {
   try {
     const sql = getDatabaseClient();
 
@@ -202,23 +204,31 @@ export const consumeBoost = async (userId: string): Promise<boolean> => {
       RETURNING available_boosts
     `) as { available_boosts: number }[];
 
-    return result.length > 0;
+    if (result.length > 0) {
+      return { success: true, availableBoosts: result[0].available_boosts };
+    }
+
+    const allocation = await getUserBoostAllocation(userId);
+    return { success: false, availableBoosts: allocation.availableBoosts };
   } catch (error) {
     logError("data.boosts.consume_failed", error, { userId });
     throw error;
   }
 };
 
-export const refundBoost = async (userId: string): Promise<void> => {
+export const refundBoost = async (userId: string): Promise<number> => {
   try {
     const sql = getDatabaseClient();
 
-    await sql`
+    const result = (await sql`
       UPDATE user_boost_allocation
       SET available_boosts = LEAST(available_boosts + 1, ${BOOST_CONFIG.MAX_BOOSTS}),
           updated_at = now()
       WHERE user_id = ${userId}
-    `;
+      RETURNING available_boosts
+    `) as { available_boosts: number }[];
+
+    return result[0]?.available_boosts ?? 0;
   } catch (error) {
     logError("data.boosts.refund_failed", error, { userId });
     throw error;

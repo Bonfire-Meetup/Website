@@ -7,11 +7,6 @@ import {
   refreshAccessToken,
 } from "@/lib/auth/client";
 
-/**
- * Get a valid access token for API requests.
- * Returns null if no token is available (not logged in).
- * Does NOT automatically refresh - use getValidAccessTokenAsync for that.
- */
 export function getValidAccessToken(): string | null {
   const token = readAccessToken();
   if (!token) {
@@ -20,10 +15,6 @@ export function getValidAccessToken(): string | null {
   return isAccessTokenValid(token) ? token : null;
 }
 
-/**
- * Get a valid access token, refreshing if necessary.
- * This is the preferred method for API requests.
- */
 export function getValidAccessTokenAsync(): Promise<string | null> {
   return getValidToken();
 }

@@ -1,5 +1,7 @@
 import type { MemberPickRecording } from "./RecordingsCatalogTypes";
 
+import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
+
 import { BoltIcon } from "../shared/icons";
 
 import { Rail } from "./Rail";
@@ -29,20 +31,24 @@ export function MemberPicksRail({
             recording.boostCount > 0
               ? {
                   count: recording.boostCount,
-                  gradient: "bg-gradient-to-r from-emerald-500 to-teal-500",
+                  gradient: ENGAGEMENT_BRANDING.boost.classes.activeGradient,
                   icon: <BoltIcon className="h-3.5 w-3.5" />,
                 }
               : undefined
           }
         />
       )}
-      headerIcon={<BoltIcon className="h-5 w-5 text-emerald-500" />}
+      headerIcon={
+        <BoltIcon className={`h-5 w-5 text-${ENGAGEMENT_BRANDING.boost.colors.gradientFrom}`} />
+      }
       headerAccent={
-        <div className="flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-emerald-500 to-teal-500" />
+        <div
+          className={`flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-${ENGAGEMENT_BRANDING.boost.colors.gradientFrom} to-${ENGAGEMENT_BRANDING.boost.colors.gradientTo}`}
+        />
       }
       containerClassName="rounded-[28px] px-2 pt-2 pb-2"
-      gradientFrom="from-emerald-500/5"
-      gradientTo="to-teal-500/5"
+      gradientFrom={`from-${ENGAGEMENT_BRANDING.boost.colors.railLight}`}
+      gradientTo={`to-${ENGAGEMENT_BRANDING.boost.colors.railLightSecondary}`}
       scrollLeftLabel={scrollLeftLabel}
       scrollRightLabel={scrollRightLabel}
     />

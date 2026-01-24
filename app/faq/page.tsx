@@ -74,7 +74,6 @@ export default async function FaqPage() {
 
         <section className="relative mx-auto max-w-4xl px-4 pb-24">
           <div className="space-y-16">
-            {/* General & Community Sections */}
             {[
               { key: "general", questions: ["whatIsBonfire", "howOften", "entryFee"] },
               { key: "participation", questions: ["howToSpeaker", "howToJoin"] },
@@ -149,14 +148,12 @@ export default async function FaqPage() {
               </div>
             ))}
 
-            {/* Platform Engagement Section */}
             <div className="space-y-6">
               <h2 className="flex items-center gap-3 px-2 text-xl font-black tracking-tight text-neutral-900 dark:text-white">
                 <span className="h-5 w-1 rounded-full bg-orange-500" />
                 {t("sections.engagement")}
               </h2>
               <div className="grid gap-6">
-                {/* Sparks Card */}
                 <div
                   id="sparks"
                   className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-rose-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-rose-500/20 dark:hover:bg-white/10"
@@ -182,7 +179,6 @@ export default async function FaqPage() {
                   </div>
                 </div>
 
-                {/* Boosts Card */}
                 <div
                   id="boosts"
                   className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-emerald-500/20 dark:hover:bg-white/10"

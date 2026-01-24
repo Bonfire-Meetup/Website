@@ -13,6 +13,7 @@ import {
   useVideoLikes,
 } from "@/lib/api/video-engagement";
 import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { useVideoEngagementRedux } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -207,16 +208,18 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
             disabled={isLiking || likeCount === null}
             className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-l-full border border-r-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-all dark:border-white/10 ${
               hasLiked
-                ? "bg-gradient-to-r from-orange-500 to-rose-500 text-white shadow-lg shadow-orange-500/50"
-                : "bg-white text-rose-400 dark:bg-white/5 dark:text-rose-300"
+                ? `${ENGAGEMENT_BRANDING.like.classes.activeGradient} ${ENGAGEMENT_BRANDING.like.classes.activeText} ${ENGAGEMENT_BRANDING.like.classes.activeShadow}`
+                : `bg-white ${ENGAGEMENT_BRANDING.like.classes.inactiveText} dark:bg-white/5`
             } ${isLiking || likeCount === null ? "opacity-80" : ""} ${
-              likeCount === null ? "cursor-not-allowed" : "cursor-pointer hover:shadow-rose-500/30"
-            } ${likePulse ? "like-glow" : ""}`}
+              likeCount === null
+                ? "cursor-not-allowed"
+                : `cursor-pointer ${ENGAGEMENT_BRANDING.like.classes.hoverShadow}`
+            } ${likePulse ? ENGAGEMENT_BRANDING.like.animations.glow : ""}`}
           >
             <span className="pointer-events-none absolute top-2 right-0 bottom-2 w-px bg-white/80 opacity-70 transition-opacity group-hover:opacity-0 dark:bg-white/25" />
             <FireIcon
               className={`h-5 w-5 shrink-0 ${hasLiked ? "fill-white stroke-white" : ""} ${
-                likePulse ? "like-pop" : ""
+                likePulse ? ENGAGEMENT_BRANDING.like.animations.pop : ""
               }`}
             />
             {likeCount === null ? (
@@ -232,7 +235,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
             ) : likeCount > 0 ? (
               <span className="text-base tabular-nums">{likeCount}</span>
             ) : (
-              <span className="text-[11px]">{t("lightItUp")}</span>
+              <span className="text-[11px]">{t(ENGAGEMENT_BRANDING.like.i18nKeys.action)}</span>
             )}
           </button>
         </div>
@@ -251,23 +254,23 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
             }
             className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-r-full border border-l-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-all dark:border-white/10 ${
               hasBoosted
-                ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/60"
-                : "bg-white text-emerald-600 dark:bg-white/5 dark:text-emerald-400"
+                ? `${ENGAGEMENT_BRANDING.boost.classes.activeGradient} ${ENGAGEMENT_BRANDING.boost.classes.activeText} ${ENGAGEMENT_BRANDING.boost.classes.activeShadow}`
+                : `bg-white ${ENGAGEMENT_BRANDING.boost.classes.inactiveText} dark:bg-white/5`
             } ${isBoosting || boostCount === null ? "opacity-80" : ""} ${
               boostCount === null ||
               (availableBoosts !== null && availableBoosts === 0 && !hasBoosted)
                 ? "cursor-not-allowed"
-                : "cursor-pointer hover:shadow-emerald-500/40"
-            } ${boostPulse ? "boost-glow" : ""}`}
+                : `cursor-pointer ${ENGAGEMENT_BRANDING.boost.classes.hoverShadow}`
+            } ${boostPulse ? ENGAGEMENT_BRANDING.boost.animations.glow : ""}`}
             title={
               availableBoosts !== null && availableBoosts === 0 && !hasBoosted
-                ? t("boostNoBoostsAvailable")
+                ? t(ENGAGEMENT_BRANDING.boost.i18nKeys.noBoostsAvailable)
                 : undefined
             }
           >
             <BoltIcon
               className={`h-5 w-5 shrink-0 ${hasBoosted ? "stroke-white" : ""} ${
-                boostPulse ? "boost-pop" : ""
+                boostPulse ? ENGAGEMENT_BRANDING.boost.animations.pop : ""
               }`}
             />
             {boostCount === null ? (
@@ -283,14 +286,14 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
             ) : boostCount > 0 ? (
               <span className="text-base tabular-nums">{boostCount}</span>
             ) : (
-              <span className="text-[11px]">{t("boostItUp")}</span>
+              <span className="text-[11px]">{t(ENGAGEMENT_BRANDING.boost.i18nKeys.action)}</span>
             )}
           </button>
         </div>
       </div>
 
       {(likeRateLimitError || boostRateLimitError) && (
-        <div className="animate-in fade-in slide-in-from-top-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+        <div className={ENGAGEMENT_BRANDING.rateLimitError.classes.container}>
           {t("rateLimitError")}
         </div>
       )}

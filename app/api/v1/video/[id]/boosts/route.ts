@@ -115,21 +115,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         return NextResponse.json({ error: "Rate limited" }, { status: 429 });
       }
 
-      const hasBoost = await consumeBoost(userId);
+      const boostResult = await consumeBoost(userId);
 
-      if (!hasBoost) {
+      if (!boostResult.success) {
         logWarn("video.boosts.no_boosts_available", { userId, videoId });
 
-        const allocation = await getUserBoostAllocation(userId);
-
         return NextResponse.json(
-          { availableBoosts: allocation.availableBoosts, error: "no_boosts_available" },
+          { availableBoosts: boostResult.availableBoosts, error: "no_boosts_available" },
           { status: 403 },
         );
       }
 
       const result = await addVideoBoost(videoId, userId);
-      const allocation = await getUserBoostAllocation(userId);
 
       revalidateTag("engagement-counts", "max");
       revalidateTag("trending-recordings-6", "max");
@@ -137,11 +134,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
       const response = {
         ...result,
-        availableBoosts: allocation.availableBoosts,
+        availableBoosts: boostResult.availableBoosts,
       };
       const validated = videoBoostMutationSchema.parse(response);
 
-      return NextResponse.json({ ...validated, availableBoosts: allocation.availableBoosts });
+      return NextResponse.json(validated);
     } catch (error) {
       logError("video.boosts.post_failed", error, { operation: "post", videoId });
 
@@ -178,18 +175,21 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
       const result = await removeVideoBoost(videoId, userId);
 
+      let availableBoosts: number;
       if (result.removed) {
-        await refundBoost(userId);
+        availableBoosts = await refundBoost(userId);
+      } else {
+        const allocation = await getUserBoostAllocation(userId);
+        ({ availableBoosts } = allocation);
       }
 
       revalidateTag("engagement-counts", "max");
       revalidateTag("trending-recordings-6", "max");
       revalidateTag("member-picks", "max");
 
-      const allocation = await getUserBoostAllocation(userId);
       const validated = videoBoostMutationSchema.parse(result);
 
-      return NextResponse.json({ ...validated, availableBoosts: allocation.availableBoosts });
+      return NextResponse.json({ ...validated, availableBoosts });
     } catch (error) {
       logError("video.boosts.delete_failed", error, { operation: "delete", videoId });
 

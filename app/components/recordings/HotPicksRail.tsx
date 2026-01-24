@@ -1,5 +1,7 @@
 import type { HotRecording } from "./RecordingsCatalogTypes";
 
+import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
+
 import { FireIcon } from "../shared/icons";
 
 import { Rail } from "./Rail";
@@ -29,20 +31,24 @@ export function HotPicksRail({
             recording.likeCount > 0
               ? {
                   count: recording.likeCount,
-                  gradient: "bg-gradient-to-r from-rose-500 to-orange-500",
+                  gradient: ENGAGEMENT_BRANDING.like.classes.activeGradient,
                   icon: <FireIcon className="h-3.5 w-3.5" />,
                 }
               : undefined
           }
         />
       )}
-      headerIcon={<FireIcon className="h-5 w-5 text-rose-500" />}
+      headerIcon={
+        <FireIcon className={`h-5 w-5 text-${ENGAGEMENT_BRANDING.like.colors.gradientTo}`} />
+      }
       headerAccent={
-        <div className="flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-rose-500 to-orange-500" />
+        <div
+          className={`flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-${ENGAGEMENT_BRANDING.like.colors.gradientFrom} to-${ENGAGEMENT_BRANDING.like.colors.gradientTo}`}
+        />
       }
       containerClassName="rounded-[28px] px-2 pt-2 pb-2"
-      gradientFrom="from-rose-500/5"
-      gradientTo="to-orange-500/5"
+      gradientFrom={`from-${ENGAGEMENT_BRANDING.like.colors.railLight}`}
+      gradientTo={`to-${ENGAGEMENT_BRANDING.like.colors.railLightSecondary}`}
       scrollLeftLabel={scrollLeftLabel}
       scrollRightLabel={scrollRightLabel}
     />

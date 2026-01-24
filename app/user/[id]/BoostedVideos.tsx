@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import { BoltIcon } from "@/components/shared/icons";
 import { Link } from "@/i18n/navigation";
+import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { getUserBoosts } from "@/lib/data/boosts";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -66,27 +67,28 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/90 shadow-2xl shadow-black/5 backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-black/25">
-      {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(34,197,94,0.02)_0%,transparent_50%,rgba(168,85,247,0.02)_100%)] dark:bg-[linear-gradient(135deg,rgba(34,197,94,0.03)_0%,transparent_50%,rgba(168,85,247,0.03)_100%)]" />
 
-      {/* Header section */}
       <div className="relative border-b border-neutral-200/60 px-6 py-6 sm:px-8 sm:py-7 dark:border-white/10">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/25">
+            <div
+              className={`flex h-10 w-10 items-center justify-center rounded-xl ${ENGAGEMENT_BRANDING.boost.classes.activeGradient} shadow-lg shadow-${ENGAGEMENT_BRANDING.boost.colors.shadow}/25`}
+            >
               <BoltIcon className="h-5 w-5 text-white" aria-hidden="true" />
             </div>
             <h2 className="text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
               {t("boosted.title")}
             </h2>
           </div>
-          <div className="flex h-9 min-w-[2.75rem] items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 px-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-500/20">
+          <div
+            className={`flex h-9 min-w-[2.75rem] items-center justify-center rounded-full ${ENGAGEMENT_BRANDING.boost.classes.activeGradient} px-3.5 text-sm font-bold text-white shadow-lg shadow-${ENGAGEMENT_BRANDING.boost.colors.shadow}/20`}
+          >
             {boostItems.length}
           </div>
         </div>
       </div>
 
-      {/* Videos grid */}
       <div className="relative p-6 sm:p-8">
         <div className="grid gap-5 sm:grid-cols-2 lg:gap-6">
           {boostItems.map((boost) => {
@@ -103,7 +105,6 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
                 prefetch={false}
                 className="group relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-md dark:border-white/10 dark:bg-neutral-800/50"
               >
-                {/* Thumbnail */}
                 <div className="relative aspect-video overflow-hidden bg-neutral-100 dark:bg-neutral-900">
                   <Image
                     src={boost.thumbnail}
@@ -114,21 +115,18 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/0" />
 
-                  {/* Boost badge */}
                   <div className="absolute right-3 bottom-3 flex items-center gap-1.5 rounded-lg bg-emerald-500 px-2.5 py-1.5 text-xs font-bold text-white shadow-xl">
                     <BoltIcon className="h-3.5 w-3.5" aria-hidden="true" />
                     <span>Boosted</span>
                   </div>
                 </div>
 
-                {/* Content */}
                 <div className="p-5">
                   <h3 className="mb-3 line-clamp-2 text-base leading-snug font-bold text-neutral-900 dark:text-white">
                     {boost.title}
                   </h3>
 
                   <div className="space-y-2">
-                    {/* Speakers */}
                     <div className="flex flex-wrap items-center gap-2">
                       {boost.speaker.slice(0, 2).map((name, idx) => (
                         <span
@@ -150,7 +148,6 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
                       )}
                     </div>
 
-                    {/* Date */}
                     <div className="flex items-center gap-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-400">
                       <svg
                         className="h-3.5 w-3.5"
