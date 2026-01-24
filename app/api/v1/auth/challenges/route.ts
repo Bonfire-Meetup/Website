@@ -79,7 +79,11 @@ export const POST = async (request: Request) =>
     });
 
     if (!resultChallenge.ok) {
-      return respond({ ok: true });
+      // Return the reason for failure, but still return 200 to avoid revealing too much
+      return respond({
+        error: resultChallenge.reason === "rate_limited" ? "rate_limited" : undefined,
+        ok: false,
+      });
     }
 
     return respond({ challenge_token: resultChallenge.challenge_token, ok: true });

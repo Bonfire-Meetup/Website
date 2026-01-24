@@ -22,7 +22,8 @@ interface ButtonProps {
 const baseClasses =
   "inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-semibold transition";
 
-const disabledClasses = "disabled:cursor-not-allowed disabled:opacity-60 disabled:pointer-events-none";
+const disabledClasses =
+  "disabled:cursor-not-allowed disabled:opacity-60 disabled:pointer-events-none";
 
 const variantClasses: Record<ButtonVariant, string> = {
   ghost:

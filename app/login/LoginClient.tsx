@@ -43,6 +43,7 @@ export function LoginClient() {
   const [loading, setLoading] = useState(false);
   const [challengeToken, setChallengeToken] = useState<string | null>(null);
   const [placeholder, setPlaceholder] = useState(emailPlaceholders[0]);
+  const [turnstileReady, setTurnstileReady] = useState(false);
   const autoSubmitRef = useRef(false);
 
   useEffect(() => {
@@ -104,18 +105,20 @@ export function LoginClient() {
     "w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-900 placeholder-neutral-400 transition-all duration-200 focus:outline-none focus:ring-2 dark:bg-white/5 dark:text-white dark:placeholder-neutral-500";
   const inputNormalClass =
     "border-neutral-200 focus:border-brand-500 focus:ring-brand-500/20 dark:border-white/10 dark:focus:border-brand-400";
+  const inputDisabledClass = "cursor-not-allowed opacity-60 bg-neutral-50 dark:bg-white/5";
 
   const handleRequest = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError(null);
     setStatus(null);
+    setTurnstileReady(false);
 
     const formData = new FormData(formRef.current ?? undefined);
     const turnstileToken = formData.get("cf-turnstile-response");
 
-    if (!turnstileToken || typeof turnstileToken !== "string") {
-      setError("Please verify that you're human.");
+    if (!turnstileToken || typeof turnstileToken !== "string" || turnstileToken.trim() === "") {
+      setError("Please verify that you're human. The security check may still be loading.");
       setLoading(false);
 
       return;
@@ -135,11 +138,22 @@ export function LoginClient() {
       return;
     }
 
-    const data = (await response.json().catch(() => null)) as { challenge_token?: string } | null;
+    const data = (await response.json().catch(() => null)) as {
+      challenge_token?: string;
+      error?: string;
+      ok?: boolean;
+    } | null;
+
+    if (data?.error === "rate_limited") {
+      setError("Too many requests. Please try again later.");
+      setLoading(false);
+      return;
+    }
+
     const nextChallengeToken = data?.challenge_token;
 
     if (!nextChallengeToken) {
-      setError("Unable to start challenge");
+      setError("Unable to start challenge. Please try again.");
       setLoading(false);
 
       return;
@@ -408,7 +422,8 @@ export function LoginClient() {
                     required
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
-                    className={`${inputBaseClass} ${inputNormalClass}`}
+                    disabled={step === "verify"}
+                    className={`${inputBaseClass} ${step === "verify" ? inputDisabledClass : inputNormalClass}`}
                     placeholder={placeholder}
                   />
                 </div>
@@ -436,7 +451,7 @@ export function LoginClient() {
                   </div>
                 )}
 
-                {step === "request" && <TurnstileWidget />}
+                {step === "request" && <TurnstileWidget onToken={() => setTurnstileReady(true)} />}
 
                 {status && (
                   <div className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
@@ -479,7 +494,7 @@ export function LoginClient() {
                     type="submit"
                     variant="primary"
                     size="md"
-                    disabled={loading}
+                    disabled={loading || (step === "request" && !turnstileReady)}
                     className="w-full sm:flex-1"
                   >
                     <span className="flex items-center justify-center gap-2 whitespace-nowrap">

@@ -2,7 +2,15 @@
 
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useActionState, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useActionState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 
 import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
 import { API_ROUTES } from "@/lib/api/routes";
@@ -14,7 +22,7 @@ import { CheckIcon, CloseIcon, MailIcon } from "../shared/icons";
 import { Button } from "../ui/Button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 
-import { TurnstileWidget } from "./TurnstileWidget";
+import { TurnstileWidget, type TurnstileWidgetHandle } from "./TurnstileWidget";
 
 const initialState: ContactFormState = { success: false };
 
@@ -39,9 +47,12 @@ function getStoredDraft(): {
 export function ContactForm() {
   const t = useTranslations("contactPage.form");
   const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
+  const [isTransitionPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
+  const [turnstileExecuting, setTurnstileExecuting] = useState(false);
   const [csrfToken, setCsrfToken] = useState("");
   const [mounted, setMounted] = useState(false);
 
@@ -175,8 +186,49 @@ export function ContactForm() {
   useEffect(() => {
     if (state.message === "captchaFailed") {
       setTurnstileResetKey((prev) => prev + 1);
+      setTurnstileExecuting(false);
+    } else if (state.success || state.errors || state.message) {
+      // Reset loading state on any state change (success, errors, or messages like rateLimited)
+      setTurnstileExecuting(false);
     }
-  }, [state.message]);
+  }, [state.message, state.success, state.errors]);
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      if (!turnstileRef.current) {
+        return;
+      }
+
+      setTurnstileExecuting(true);
+
+      try {
+        const token = await turnstileRef.current.execute();
+
+        if (!token) {
+          setTurnstileResetKey((prev) => prev + 1);
+          setTurnstileExecuting(false);
+          return;
+        }
+
+        if (!formRef.current) {
+          setTurnstileExecuting(false);
+          return;
+        }
+
+        const formData = new FormData(formRef.current);
+        formData.set("cf-turnstile-response", token);
+
+        startTransition(() => {
+          formAction(formData);
+        });
+      } catch {
+        setTurnstileExecuting(false);
+      }
+    },
+    [formAction, startTransition],
+  );
 
   const clearDraft = () => {
     setName("");
@@ -230,7 +282,7 @@ export function ContactForm() {
   return (
     <form
       ref={formRef}
-      action={formAction}
+      onSubmit={handleSubmit}
       className="glass-card no-hover-pop mx-auto max-w-2xl p-6 sm:p-10"
     >
       <div className="mb-8 flex items-start justify-between gap-4">
@@ -373,12 +425,19 @@ export function ContactForm() {
         )}
 
         <TurnstileWidget
+          ref={turnstileRef}
+          mode="execute"
           className="flex justify-center"
           resetKey={state.message === "captchaFailed" ? turnstileResetKey : undefined}
         />
 
-        <Button type="submit" variant="glass" disabled={isPending || !csrfToken} className="w-full">
-          {isPending ? (
+        <Button
+          type="submit"
+          variant="glass"
+          disabled={isPending || isTransitionPending || turnstileExecuting || !csrfToken}
+          className="w-full"
+        >
+          {isPending || isTransitionPending || turnstileExecuting ? (
             <span className="flex items-center justify-center gap-2">
               <LoadingSpinner size="md" />
               {t("submitting")}

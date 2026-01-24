@@ -1,10 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { API_ROUTES } from "@/lib/api/routes";
 
+import { TurnstileWidget, type TurnstileWidgetHandle } from "../forms/TurnstileWidget";
 import { CheckIcon } from "../shared/icons";
 import { Button } from "../ui/Button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
@@ -13,6 +14,7 @@ type Status = "idle" | "loading" | "success" | "error";
 
 export function NewsletterSectionClient() {
   const t = useTranslations("sections.newsletter");
+  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
@@ -40,9 +42,23 @@ export function NewsletterSectionClient() {
       setStatus("loading");
       setError("");
 
+      if (!turnstileRef.current) {
+        setError(t("error"));
+        setStatus("error");
+        return;
+      }
+
+      const token = await turnstileRef.current.execute();
+
+      if (!token) {
+        setError(t("error"));
+        setStatus("error");
+        return;
+      }
+
       try {
         const response = await fetch(API_ROUTES.NEWSLETTER.SUBSCRIBE, {
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email, turnstileToken: token }),
           headers: {
             "Content-Type": "application/json",
           },
@@ -133,6 +149,7 @@ export function NewsletterSectionClient() {
           )}
         </Button>
       </form>
+      <TurnstileWidget ref={turnstileRef} mode="execute" className="mt-4 flex justify-center" />
       <p className="mt-4 text-xs text-neutral-500 dark:text-neutral-400">{t("privacyNote")}</p>
     </div>
   );
