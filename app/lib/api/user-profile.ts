@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/lib/api/errors";
-import { getValidAccessToken, shouldRetryMutation } from "@/lib/api/query-utils";
+import { getValidAccessToken, getValidAccessTokenAsync, shouldRetryMutation } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { clearAccessToken } from "@/lib/auth/client";
 import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
@@ -74,12 +74,9 @@ async function fetchUserProfile(accessToken: string): Promise<UserProfileData> {
 }
 
 export function useUserProfile() {
-  const token = getValidAccessToken();
-
   return useQuery<UserProfileData, ApiError>({
-    enabled: Boolean(token),
-    queryFn: () => {
-      const accessToken = getValidAccessToken();
+    queryFn: async () => {
+      const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
         throw new ApiError("Access token required", 401);
       }
