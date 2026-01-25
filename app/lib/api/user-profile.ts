@@ -1,7 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/lib/api/errors";
-import { getValidAccessToken, getValidAccessTokenAsync, shouldRetryMutation } from "@/lib/api/query-utils";
+import {
+  getValidAccessToken,
+  getValidAccessTokenAsync,
+  shouldRetryMutation,
+} from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { clearAccessToken } from "@/lib/auth/client";
 import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";

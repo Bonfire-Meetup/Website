@@ -21,6 +21,43 @@ let refreshPromise: Promise<string | null> | null = null;
 
 let isLoggingOut = false;
 
+let lastActivityTimestamp = Date.now();
+
+let consecutiveFailures = 0;
+
+const MAX_CONSECUTIVE_FAILURES = 3;
+
+type RefreshListener = (token: string | null) => void;
+const refreshListeners = new Set<RefreshListener>();
+
+export const onTokenRefreshed = (listener: RefreshListener): (() => void) => {
+  refreshListeners.add(listener);
+  return () => refreshListeners.delete(listener);
+};
+
+const notifyTokenRefreshed = (token: string | null) => {
+  refreshListeners.forEach((listener) => listener(token));
+};
+
+export const updateLastActivity = () => {
+  lastActivityTimestamp = Date.now();
+};
+
+export const getLastActivity = () => lastActivityTimestamp;
+
+export const hasDeviceWoken = (thresholdMs = 5000): boolean => {
+  const timeSinceLastActivity = Date.now() - lastActivityTimestamp;
+  const hasWoken = timeSinceLastActivity > thresholdMs;
+  if (hasWoken) {
+    updateLastActivity();
+  }
+  return hasWoken;
+};
+
+export const getConsecutiveFailures = () => consecutiveFailures;
+
+export const isCircuitOpen = () => consecutiveFailures >= MAX_CONSECUTIVE_FAILURES;
+
 export const setLoggingOut = (value: boolean) => {
   isLoggingOut = value;
 };
@@ -115,15 +152,16 @@ export const getAccessTokenExpiresIn = (token: string): number | null => {
   return Math.max(0, Math.floor((payload.exp * 1000 - Date.now()) / 1000));
 };
 
-/**
- * Refresh the access token using the httpOnly refresh token cookie.
- * Returns the new access token or null if refresh failed.
- * Handles concurrent refresh requests by reusing the same promise.
- */
 export const refreshAccessToken = (): Promise<string | null> => {
   if (refreshPromise) {
     return refreshPromise;
   }
+
+  if (isCircuitOpen()) {
+    return Promise.resolve(null);
+  }
+
+  updateLastActivity();
 
   refreshPromise = (async () => {
     try {
@@ -137,8 +175,9 @@ export const refreshAccessToken = (): Promise<string | null> => {
       });
 
       if (!response.ok) {
+        consecutiveFailures++;
         clearAccessToken();
-
+        notifyTokenRefreshed(null);
         return null;
       }
 
@@ -146,13 +185,18 @@ export const refreshAccessToken = (): Promise<string | null> => {
       const newToken = data.access_token;
 
       if (newToken) {
+        consecutiveFailures = 0;
         writeAccessToken(newToken);
-
+        notifyTokenRefreshed(newToken);
         return newToken;
       }
 
+      consecutiveFailures++;
+      notifyTokenRefreshed(null);
       return null;
     } catch {
+      consecutiveFailures++;
+      notifyTokenRefreshed(null);
       return null;
     } finally {
       refreshPromise = null;
@@ -183,7 +227,6 @@ export const revokeSession = async (options?: { revokeAll?: boolean; revokeFamil
     "Content-Type": "application/json",
   };
 
-  // If revoking all sessions, we need to include the access token
   if (options?.revokeAll) {
     const token = readAccessToken();
 
@@ -203,7 +246,7 @@ export const revokeSession = async (options?: { revokeAll?: boolean; revokeFamil
       }),
     });
   } catch {
-    // Ignore errors during revocation
+    // Error handling is done in the finally block
   } finally {
     clearAccessToken();
   }

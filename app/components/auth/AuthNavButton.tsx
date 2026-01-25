@@ -1,29 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 import { Link } from "@/i18n/navigation";
-import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { LogInIcon, UserIcon } from "../shared/icons";
 import { IconButton } from "../ui/IconButton";
 
 export function AuthNavButton() {
-  const [href, setHref] = useState<string>(PAGE_ROUTES.LOGIN);
-  const [isAuthed, setIsAuthed] = useState(false);
-
-  useEffect(() => {
-    const token = readAccessToken();
-
-    if (token && isAccessTokenValid(token)) {
-      setHref(PAGE_ROUTES.ME);
-      setIsAuthed(true);
-    } else {
-      setHref(PAGE_ROUTES.LOGIN);
-      setIsAuthed(false);
-    }
-  }, []);
+  const auth = useAppSelector((state) => state.auth);
+  const isAuthed = auth.isAuthenticated && auth.hydrated;
+  const href = isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN;
 
   return (
     <Link href={href} aria-label={isAuthed ? "Account" : "Login"} className="cursor-pointer">

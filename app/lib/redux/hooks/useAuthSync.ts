@@ -5,36 +5,45 @@ import { useCallback, useEffect, useRef } from "react";
 import {
   clearAccessToken,
   decodeAccessToken,
-  getAccessTokenExpiresIn,
+  getConsecutiveFailures,
   getIsLoggingOut,
+  hasDeviceWoken,
   isAccessTokenExpiringSoon,
   isAccessTokenValid,
+  isCircuitOpen,
+  onTokenRefreshed,
   readAccessToken,
   refreshAccessToken,
   setLoggingOut,
+  updateLastActivity,
   writeAccessToken,
 } from "@/lib/auth/client";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { clearAuth, setToken } from "@/lib/redux/slices/authSlice";
 
 const REFRESH_BUFFER_SECONDS = 120;
+const BASE_CHECK_INTERVAL_MS = 15000;
+const WAKE_DETECTION_THRESHOLD_MS = 30000;
+
+const getAdaptiveInterval = (): number => {
+  const failures = getConsecutiveFailures();
+  if (failures > 0) {
+    return Math.min(BASE_CHECK_INTERVAL_MS * 2 ** failures, 300000);
+  }
+  return BASE_CHECK_INTERVAL_MS;
+};
 
 export function useAuthSync() {
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
-  const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const isRefreshingRef = useRef(false);
   const isMountedRef = useRef(true);
+  const isPageVisibleRef = useRef(!document.hidden);
+  const lastIntervalUpdateRef = useRef(Date.now());
 
-  const clearRefreshTimer = useCallback(() => {
-    if (refreshTimerRef.current) {
-      clearTimeout(refreshTimerRef.current);
-      refreshTimerRef.current = null;
-    }
-  }, []);
-
-  const doRefresh = useCallback(async (): Promise<string | null> => {
-    if (isRefreshingRef.current || getIsLoggingOut()) {
+  const performRefresh = useCallback(async (): Promise<string | null> => {
+    if (isRefreshingRef.current || getIsLoggingOut() || isCircuitOpen()) {
       return null;
     }
 
@@ -47,46 +56,85 @@ export function useAuthSync() {
         return null;
       }
 
-      if (newToken) {
-        const decoded = decodeAccessToken(newToken);
-        dispatch(setToken({ token: newToken, decoded: decoded ?? undefined }));
-        return newToken;
-      }
-      dispatch(clearAuth());
-      return null;
+      return newToken;
     } finally {
       isRefreshingRef.current = false;
     }
-  }, [dispatch]);
+  }, []);
 
-  const scheduleRefresh = useCallback(
-    (token: string) => {
-      clearRefreshTimer();
+  const checkAndRefreshToken = useCallback(async () => {
+    if (getIsLoggingOut() || !isMountedRef.current) {
+      return;
+    }
 
-      if (getIsLoggingOut()) {
+    const deviceWoken = hasDeviceWoken(WAKE_DETECTION_THRESHOLD_MS);
+
+    const token = readAccessToken();
+
+    if (!token) {
+      if (deviceWoken) {
+        await performRefresh();
+      }
+      return;
+    }
+
+    if (!isAccessTokenValid(token)) {
+      await performRefresh();
+      return;
+    }
+
+    if (isAccessTokenExpiringSoon(token, REFRESH_BUFFER_SECONDS) || deviceWoken) {
+      await performRefresh();
+    }
+  }, [performRefresh]);
+
+  const restartIntervalWithNewTiming = useCallback(() => {
+    const now = Date.now();
+    if (now - lastIntervalUpdateRef.current < 5000) {
+      return;
+    }
+
+    lastIntervalUpdateRef.current = now;
+
+    if (checkIntervalRef.current) {
+      clearInterval(checkIntervalRef.current);
+    }
+
+    checkIntervalRef.current = setInterval(() => {
+      if (!isPageVisibleRef.current) {
         return;
       }
+      updateLastActivity();
+      checkAndRefreshToken();
+    }, getAdaptiveInterval());
+  }, [checkAndRefreshToken]);
 
-      const expiresIn = getAccessTokenExpiresIn(token);
-      if (expiresIn === null || expiresIn <= REFRESH_BUFFER_SECONDS) {
+  const startTokenCheckInterval = useCallback(() => {
+    if (checkIntervalRef.current) {
+      clearInterval(checkIntervalRef.current);
+    }
+
+    checkIntervalRef.current = setInterval(() => {
+      if (!isPageVisibleRef.current) {
         return;
       }
+      updateLastActivity();
+      checkAndRefreshToken();
+      restartIntervalWithNewTiming();
+    }, getAdaptiveInterval());
+  }, [checkAndRefreshToken, restartIntervalWithNewTiming]);
 
-      const refreshIn = (expiresIn - REFRESH_BUFFER_SECONDS) * 1000;
-
-      refreshTimerRef.current = setTimeout(async () => {
-        const newToken = await doRefresh();
-        if (newToken) {
-          scheduleRefresh(newToken);
-        }
-      }, refreshIn);
-    },
-    [clearRefreshTimer, doRefresh],
-  );
+  const stopTokenCheckInterval = useCallback(() => {
+    if (checkIntervalRef.current) {
+      clearInterval(checkIntervalRef.current);
+      checkIntervalRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     isMountedRef.current = true;
     setLoggingOut(false);
+    updateLastActivity();
 
     const initAuth = async () => {
       const token = readAccessToken();
@@ -96,32 +144,25 @@ export function useAuthSync() {
         dispatch(setToken({ token, decoded: decoded ?? undefined }));
 
         if (isAccessTokenExpiringSoon(token, REFRESH_BUFFER_SECONDS)) {
-          const newToken = await doRefresh();
-          if (newToken) {
-            scheduleRefresh(newToken);
-          }
-        } else {
-          scheduleRefresh(token);
+          await performRefresh();
         }
       } else {
         if (token) {
           clearAccessToken();
         }
-        const newToken = await doRefresh();
-        if (newToken) {
-          scheduleRefresh(newToken);
-        }
+        await performRefresh();
       }
+
+      startTokenCheckInterval();
     };
 
     initAuth();
 
     return () => {
       isMountedRef.current = false;
-      clearRefreshTimer();
+      stopTokenCheckInterval();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, performRefresh, startTokenCheckInterval, stopTokenCheckInterval]);
 
   useEffect(() => {
     if (!auth.hydrated) {
@@ -132,38 +173,53 @@ export function useAuthSync() {
       writeAccessToken(auth.token);
     } else if (!auth.isAuthenticated) {
       clearAccessToken();
-      clearRefreshTimer();
     }
-  }, [auth.token, auth.isAuthenticated, auth.hydrated, clearRefreshTimer]);
+  }, [auth.token, auth.isAuthenticated, auth.hydrated]);
 
   useEffect(() => {
-    const handleVisibilityChange = async () => {
-      if (document.visibilityState !== "visible" || getIsLoggingOut()) {
-        return;
-      }
+    const handleVisibilityChange = () => {
+      const isVisible = document.visibilityState === "visible";
+      isPageVisibleRef.current = isVisible;
 
-      const token = readAccessToken();
-      if (!token) {
-        return;
-      }
-
-      if (!isAccessTokenValid(token)) {
-        clearAccessToken();
-        const newToken = await doRefresh();
-        if (newToken) {
-          scheduleRefresh(newToken);
-        }
-      } else if (isAccessTokenExpiringSoon(token, REFRESH_BUFFER_SECONDS)) {
-        const newToken = await doRefresh();
-        if (newToken) {
-          scheduleRefresh(newToken);
-        }
+      if (isVisible) {
+        updateLastActivity();
+        startTokenCheckInterval();
+        checkAndRefreshToken();
+      } else {
+        stopTokenCheckInterval();
       }
     };
 
+    const handleFocus = () => {
+      updateLastActivity();
+      checkAndRefreshToken();
+    };
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [doRefresh, scheduleRefresh]);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [checkAndRefreshToken, startTokenCheckInterval, stopTokenCheckInterval]);
+
+  useEffect(() => {
+    const unsubscribe = onTokenRefreshed((newToken) => {
+      if (!isMountedRef.current) {
+        return;
+      }
+
+      if (newToken) {
+        const decoded = decodeAccessToken(newToken);
+        dispatch(setToken({ token: newToken, decoded: decoded ?? undefined }));
+      } else {
+        dispatch(clearAuth());
+      }
+    });
+
+    return unsubscribe;
+  }, [dispatch]);
 
   return auth;
 }
