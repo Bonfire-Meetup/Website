@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { TalkProposalForm } from "@/components/forms/TalkProposalForm";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -37,6 +38,7 @@ export default async function TalkProposalPage() {
 
   return (
     <>
+      <ScrollToTop />
       <Header />
       <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
         <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden px-4 pt-32 pb-14 sm:min-h-[65vh] sm:pb-16">

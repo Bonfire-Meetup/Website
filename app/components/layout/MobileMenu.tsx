@@ -149,8 +149,8 @@ export function MobileMenu({ links, menuLabel, closeLabel, locale }: MobileMenuP
                         prefetch={isOpen}
                         className={`block rounded-lg px-3 py-2.5 text-sm font-medium ${
                           isActiveLink(link.href)
-                            ? "bg-brand-500/10 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400"
-                            : "text-neutral-700 hover:bg-black/5 dark:text-neutral-300 dark:hover:bg-white/10"
+                            ? "bg-rose-500/10 text-rose-600 dark:bg-rose-400/10 dark:text-rose-400"
+                            : "text-neutral-700 hover:bg-rose-100/60 hover:text-rose-700 dark:text-neutral-300 dark:hover:bg-rose-500/10 dark:hover:text-rose-400"
                         }`}
                       >
                         {link.label}

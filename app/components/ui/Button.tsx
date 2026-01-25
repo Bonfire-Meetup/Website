@@ -27,7 +27,7 @@ const disabledClasses =
 
 const variantClasses: Record<ButtonVariant, string> = {
   ghost:
-    "text-neutral-600 hover:bg-brand-100/60 hover:text-brand-700 dark:text-neutral-400 dark:hover:bg-brand-500/10 dark:hover:text-brand-400",
+    "text-neutral-600 hover:bg-rose-100/60 hover:text-rose-700 dark:text-neutral-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-400",
   glass: "glass-button",
   "glass-secondary": "glass-button-secondary",
   plain: "",
