@@ -86,13 +86,13 @@ export const GET = async (request: Request) =>
         },
         boosts: { items: boostItems },
         profile: {
-          allowCommunityEmails: user.allow_community_emails,
+          allowCommunityEmails: user.preferences.allowCommunityEmails ?? false,
           createdAt: user.created_at.toISOString(),
           email: user.email,
           id: user.id,
           lastLoginAt: user.last_login_at ? user.last_login_at.toISOString() : null,
           name: user.name,
-          publicProfile: user.public_profile,
+          publicProfile: user.preferences.publicProfile ?? false,
         },
       });
     } catch (error) {

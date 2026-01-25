@@ -9,10 +9,13 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { getAuthUserById } from "@/lib/data/auth";
-import { decompressUuid } from "@/lib/utils/uuid-compress";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { decompressUuid, compressUuid } from "@/lib/utils/uuid-compress";
 
 import { BoostedVideos } from "./BoostedVideos";
 import { BoostedVideosSkeleton } from "./BoostedVideosSkeleton";
+import { ProfileShareButton } from "./ProfileShareButton";
+import { RoleBadges } from "./RoleBadges";
 
 const hashEmail = (email: string): string =>
   crypto.createHash("sha256").update(email.toLowerCase().trim()).digest("hex");
@@ -34,7 +37,7 @@ export async function generateMetadata({
   const user = await getAuthUserById(userId);
   const brandName = tCommon("brandName");
 
-  if (!user || !user.public_profile) {
+  if (!user || !(user.preferences.publicProfile ?? false)) {
     const title = t("privateProfileTitle", { brandName });
     const description = t("privateProfileDescription", { brandName });
     return {
@@ -88,7 +91,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
     notFound();
   }
 
-  if (!user.public_profile) {
+  if (!(user.preferences.publicProfile ?? false)) {
     return (
       <>
         <Header />
@@ -136,69 +139,73 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
     year: "numeric",
   }).format(new Date(user.created_at));
 
+  const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}${PAGE_ROUTES.USER(compressUuid(user.id))}`;
+  const shareText = user.name ? `${user.name}'s profile` : "Community member profile";
+
   return (
     <>
       <Header />
-      <main className="gradient-bg min-h-screen">
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--color-brand-glow-5),transparent_50%)] dark:bg-[radial-gradient(ellipse_at_top,var(--color-brand-glow-6),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,var(--color-brand-glow-7),transparent_40%)] dark:bg-[radial-gradient(ellipse_at_bottom_right,var(--color-brand-glow-8),transparent_40%)]" />
+      <main className="gradient-bg min-h-screen pb-20">
+        <div className="relative overflow-hidden px-4 pt-28 sm:px-6 sm:pt-32 lg:px-8">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--color-brand-glow-5),transparent_60%)] dark:bg-[radial-gradient(ellipse_at_top,var(--color-brand-glow-6),transparent_60%)]" />
 
-          <div className="relative px-4 pt-24 pb-16 sm:px-6 sm:pt-32 sm:pb-20 lg:px-8">
-            <div className="mx-auto max-w-5xl">
-              <div className="mb-8 sm:mb-12">
-                <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/90 shadow-2xl shadow-black/5 backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-black/25">
-                  <div className="from-brand-500 to-brand-500 absolute top-0 left-0 h-1.5 w-full bg-gradient-to-r via-rose-500" />
+          <div className="relative mx-auto max-w-4xl">
+            <div className="relative mb-8 overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-neutral-900/95">
+              <div className="from-brand-500/20 dark:from-brand-500/10 absolute top-0 left-0 h-32 w-full bg-gradient-to-br via-rose-500/20 to-orange-500/20 dark:via-rose-500/10 dark:to-orange-500/10" />
 
-                  <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_0%,var(--color-brand-glow-3)_50%,transparent_100%)] dark:bg-[linear-gradient(to_right,transparent_0%,var(--color-brand-glow-4)_50%,transparent_100%)]" />
+              <div className="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
+                <ProfileShareButton shareUrl={profileUrl} shareText={shareText} />
+              </div>
 
-                  <div className="relative px-6 py-10 sm:px-10 sm:py-14 lg:px-12 lg:py-16">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="relative mb-8">
-                        <div className="from-brand-400/20 to-brand-400/20 absolute inset-0 rounded-full bg-gradient-to-br via-rose-400/20 blur-2xl" />
-                        <UserAvatar
-                          emailHash={emailHash}
-                          size={140}
-                          name={user.name}
-                          className="relative shadow-2xl ring-4 ring-white/50 dark:ring-neutral-800/50"
-                        />
-                      </div>
+              <div className="relative px-6 pt-6 pb-8 sm:px-10 sm:pt-8 sm:pb-10">
+                <div className="flex flex-col items-center text-center">
+                  <div className="relative mb-6">
+                    <div className="from-brand-400/30 absolute inset-0 -m-2 rounded-full bg-gradient-to-br via-rose-400/30 to-orange-400/30 blur-xl" />
+                    <UserAvatar
+                      emailHash={emailHash}
+                      size={120}
+                      name={user.name}
+                      className="relative border-4 border-white shadow-2xl dark:border-neutral-900"
+                    />
+                  </div>
 
-                      <div className="mb-6 w-full space-y-4">
-                        {user.name && (
-                          <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
-                            {user.name}
-                          </h1>
-                        )}
+                  <div className="w-full space-y-4">
+                    {user.name && (
+                      <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
+                        {user.name}
+                      </h1>
+                    )}
 
-                        <div className="inline-flex items-center gap-2.5 rounded-full border border-neutral-200/70 bg-neutral-50/90 px-5 py-2.5 text-sm font-semibold text-neutral-700 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
-                          <svg
-                            className="text-brand-600 dark:text-brand-400 h-4.5 w-4.5 shrink-0"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2.5}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                          <span className="whitespace-nowrap">
-                            {t("memberSince")} {memberSince}
-                          </span>
-                        </div>
+                    <RoleBadges roles={user.roles} />
+
+                    <div className="flex flex-col items-center gap-3 pt-2 sm:flex-row sm:justify-center">
+                      <div className="inline-flex items-center gap-2 rounded-xl border border-neutral-200/70 bg-neutral-50/80 px-4 py-2 text-sm font-medium text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
+                        <svg
+                          className="text-brand-500 dark:text-brand-400 h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        <span>
+                          {t("memberSince")} {memberSince}
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <Suspense fallback={<BoostedVideosSkeleton />}>
-                <BoostedVideos userId={userId} />
-              </Suspense>
             </div>
+
+            <Suspense fallback={<BoostedVideosSkeleton />}>
+              <BoostedVideos userId={userId} />
+            </Suspense>
           </div>
         </div>
       </main>

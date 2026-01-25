@@ -1047,7 +1047,7 @@
     "title": "Event Check-in | {brandName}",
     "description": "Show this QR at the door to check in and collect rewards.",
     "pageTitle": "Check-in",
-    "pageSubtitle": "Present this QR code at the entrance",
+    "pageSubtitle": "Present this QR code to crew",
     "refresh": "Refresh",
     "refreshing": "Refreshing...",
     "expiresAt": "Valid until {time}",

@@ -17,6 +17,7 @@ import {
   signAccessToken,
 } from "@/lib/auth/jwt";
 import {
+  getAuthUserById,
   getRefreshTokenByHash,
   insertAuthAttempt,
   insertAuthToken,
@@ -130,8 +131,11 @@ const issueTokens = async (
   ip: string | null,
   userAgent: string | null,
 ) => {
+  const user = await getAuthUserById(userId);
+  const roles = user?.roles ?? [];
+
   const accessTokenJti = crypto.randomUUID();
-  const accessToken = await signAccessToken(userId, accessTokenJti);
+  const accessToken = await signAccessToken(userId, accessTokenJti, roles);
   const accessExpiresIn = getAccessTokenTtlSeconds();
   const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000);
 

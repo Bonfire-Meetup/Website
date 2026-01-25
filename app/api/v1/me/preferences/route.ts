@@ -3,11 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { requireAuth } from "@/lib/api/auth";
-import {
-  updateAuthUserCommunityEmails,
-  updateAuthUserPublicProfile,
-  updateAuthUserName,
-} from "@/lib/data/auth";
+import { updateAuthUserPreferences, updateAuthUserName } from "@/lib/data/auth";
 import { logError, logWarn } from "@/lib/utils/log";
 import { containsProfanity } from "@/lib/utils/profanity-filter";
 import { runWithRequestContext } from "@/lib/utils/request-context";
@@ -76,19 +72,20 @@ export const PATCH = async (request: Request) =>
 
       const updates: Promise<void>[] = [];
 
+      const preferencesUpdate: Record<string, boolean> = {};
+
       if (result.data.allowCommunityEmails !== undefined) {
-        updates.push(
-          updateAuthUserCommunityEmails({
-            allowCommunityEmails: result.data.allowCommunityEmails,
-            userId: auth.userId,
-          }),
-        );
+        preferencesUpdate.allowCommunityEmails = result.data.allowCommunityEmails;
       }
 
       if (result.data.publicProfile !== undefined) {
+        preferencesUpdate.publicProfile = result.data.publicProfile;
+      }
+
+      if (Object.keys(preferencesUpdate).length > 0) {
         updates.push(
-          updateAuthUserPublicProfile({
-            publicProfile: result.data.publicProfile,
+          updateAuthUserPreferences({
+            preferences: preferencesUpdate,
             userId: auth.userId,
           }),
         );

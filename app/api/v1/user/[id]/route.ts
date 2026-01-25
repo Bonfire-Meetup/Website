@@ -28,7 +28,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
       if (!user) {
         return respond({ error: "not_found" }, { status: 404 });
       }
-      if (!user.public_profile) {
+      if (!(user.preferences.publicProfile ?? false)) {
         return respond({ error: "private_profile" }, { status: 403 });
       }
 
@@ -57,6 +57,9 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
         })
         .filter((item) => item !== null);
 
+      const publicRoles = ["crew", "moderator", "verified", "speaker"];
+      const userRoles = user.roles.filter((role) => publicRoles.includes(role));
+
       return respond({
         boosts: {
           count: boostItems.length,
@@ -65,6 +68,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
         createdAt: user.created_at.toISOString(),
         emailHash: hashEmail(user.email),
         name: user.name,
+        roles: userRoles,
       });
     } catch (error) {
       logError("user.profile.fetch_failed", error);

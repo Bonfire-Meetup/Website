@@ -66,31 +66,29 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
   }
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/90 shadow-2xl shadow-black/5 backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-black/25">
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,var(--color-emerald-glow)_0%,transparent_50%,var(--color-brand-glow-3)_100%)] dark:bg-[linear-gradient(135deg,var(--color-emerald-glow-dark)_0%,transparent_50%,var(--color-brand-glow-4)_100%)]" />
+    <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-neutral-900/95">
+      <div className="via-brand-500 absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-emerald-500 to-rose-500" />
 
-      <div className="relative border-b border-neutral-200/60 px-6 py-6 sm:px-8 sm:py-7 dark:border-white/10">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
+      <div className="relative px-6 py-6 sm:px-8 sm:py-8">
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
             <div
-              className={`flex h-10 w-10 items-center justify-center rounded-xl ${ENGAGEMENT_BRANDING.boost.classes.activeGradient} shadow-lg shadow-${ENGAGEMENT_BRANDING.boost.colors.shadow}/25`}
+              className={`flex h-11 w-11 items-center justify-center rounded-xl ${ENGAGEMENT_BRANDING.boost.classes.activeGradient} shadow-lg`}
             >
               <BoltIcon className="h-5 w-5 text-white" aria-hidden="true" />
             </div>
-            <h2 className="text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
-              {t("boosted.title")}
-            </h2>
-          </div>
-          <div
-            className={`flex h-9 min-w-[2.75rem] items-center justify-center rounded-full ${ENGAGEMENT_BRANDING.boost.classes.activeGradient} px-3.5 text-sm font-bold text-white shadow-lg shadow-${ENGAGEMENT_BRANDING.boost.colors.shadow}/20`}
-          >
-            {boostItems.length}
+            <div>
+              <h2 className="text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
+                {t("boosted.title")}
+              </h2>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                {boostItems.length} {boostItems.length === 1 ? "video" : "videos"}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="relative p-6 sm:p-8">
-        <div className="grid gap-5 sm:grid-cols-2 lg:gap-6">
+        <div className="grid gap-4 sm:grid-cols-2 lg:gap-5">
           {boostItems.map((boost) => {
             const formattedDate = new Intl.DateTimeFormat("en-US", {
               day: "numeric",
@@ -103,26 +101,26 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
                 key={boost.shortId}
                 href={PAGE_ROUTES.WATCH(boost.slug, boost.shortId)}
                 prefetch={false}
-                className="group relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-white shadow-md dark:border-white/10 dark:bg-neutral-800/50"
+                className="group relative overflow-hidden rounded-2xl border border-neutral-200/70 bg-white transition-all hover:border-neutral-300 hover:shadow-xl dark:border-white/10 dark:bg-neutral-800/60 dark:hover:border-white/20"
               >
                 <div className="relative aspect-video overflow-hidden bg-neutral-100 dark:bg-neutral-900">
                   <Image
                     src={boost.thumbnail}
                     alt={boost.title}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/0" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-                  <div className="absolute right-3 bottom-3 flex items-center gap-1.5 rounded-lg bg-emerald-500 px-2.5 py-1.5 text-xs font-bold text-white shadow-xl">
+                  <div className="absolute right-3 bottom-3 flex items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-lg backdrop-blur-sm">
                     <BoltIcon className="h-3.5 w-3.5" aria-hidden="true" />
                     <span>Boosted</span>
                   </div>
                 </div>
 
-                <div className="p-5">
-                  <h3 className="mb-3 line-clamp-2 text-base leading-snug font-bold text-neutral-900 dark:text-white">
+                <div className="p-4">
+                  <h3 className="group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-2.5 line-clamp-2 text-base leading-snug font-bold text-neutral-900 transition-colors dark:text-white">
                     {boost.title}
                   </h3>
 

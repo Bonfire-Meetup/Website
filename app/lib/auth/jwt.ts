@@ -37,10 +37,10 @@ export const getRefreshTokenTtlSeconds = () => refreshTokenTtlSeconds;
 
 export const getRefreshTokenReuseWindowSeconds = () => refreshTokenReuseWindowSeconds;
 
-export const signAccessToken = async (userId: string, jti: string) => {
+export const signAccessToken = async (userId: string, jti: string, roles: string[] = []) => {
   const privateKey = await importPKCS8(getJwtPrivateKey(), "EdDSA");
 
-  return new SignJWT({ typ: "access" })
+  return new SignJWT({ typ: "access", rol: roles })
     .setProtectedHeader({ alg: "EdDSA", kid: getJwtKeyId(), typ: "JWT" })
     .setIssuer(getJwtIssuer())
     .setAudience(getJwtAudience())

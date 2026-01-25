@@ -12,15 +12,29 @@ type AuthChallengeStatusRow = AuthChallengeRow & {
   used_at: Date | null;
 };
 
+interface UserPreferences {
+  allowCommunityEmails?: boolean;
+  publicProfile?: boolean;
+}
+
 interface AuthUserRow {
   id: string;
   email: string;
   created_at: Date;
   last_login_at: Date | null;
-  allow_community_emails: boolean;
-  public_profile: boolean;
+  preferences: UserPreferences;
   name: string | null;
+  roles: string[];
 }
+
+const getUserPreferences = (preferencesJson: unknown): UserPreferences => {
+  const prefs = (preferencesJson || {}) as Record<string, unknown>;
+  return {
+    allowCommunityEmails:
+      typeof prefs.allowCommunityEmails === "boolean" ? prefs.allowCommunityEmails : false,
+    publicProfile: typeof prefs.publicProfile === "boolean" ? prefs.publicProfile : false,
+  };
+};
 
 export const insertAuthChallenge = async ({
   challengeTokenHash,
@@ -118,41 +132,33 @@ export const upsertAuthUser = async (email: string): Promise<string> => {
 export const getAuthUserById = async (id: string): Promise<AuthUserRow | null> => {
   const sql = getDatabaseClient();
   const rows = (await sql`
-    SELECT id, email, created_at, last_login_at, allow_community_emails, public_profile, name
+    SELECT id, email, created_at, last_login_at, preferences, name, roles
     FROM app_user
     WHERE id = ${id}
     LIMIT 1
-  `) as AuthUserRow[];
+  `) as (Omit<AuthUserRow, "preferences"> & { preferences: unknown })[];
 
-  return rows[0] ?? null;
+  if (!rows[0]) {
+    return null;
+  }
+
+  return {
+    ...rows[0],
+    preferences: getUserPreferences(rows[0].preferences),
+  };
 };
 
-export const updateAuthUserCommunityEmails = async ({
+export const updateAuthUserPreferences = async ({
   userId,
-  allowCommunityEmails,
+  preferences,
 }: {
   userId: string;
-  allowCommunityEmails: boolean;
+  preferences: Partial<UserPreferences>;
 }) => {
   const sql = getDatabaseClient();
   await sql`
     UPDATE app_user
-    SET allow_community_emails = ${allowCommunityEmails}
-    WHERE id = ${userId}
-  `;
-};
-
-export const updateAuthUserPublicProfile = async ({
-  userId,
-  publicProfile,
-}: {
-  userId: string;
-  publicProfile: boolean;
-}) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE app_user
-    SET public_profile = ${publicProfile}
+    SET preferences = preferences || ${JSON.stringify(preferences)}::jsonb
     WHERE id = ${userId}
   `;
 };
@@ -168,6 +174,40 @@ export const updateAuthUserName = async ({
   await sql`
     UPDATE app_user
     SET name = ${name}
+    WHERE id = ${userId}
+  `;
+};
+
+export const updateAuthUserRoles = async ({
+  userId,
+  roles,
+}: {
+  userId: string;
+  roles: string[];
+}) => {
+  const sql = getDatabaseClient();
+  await sql`
+    UPDATE app_user
+    SET roles = ${roles}
+    WHERE id = ${userId}
+  `;
+};
+
+export const addAuthUserRole = async ({ userId, role }: { userId: string; role: string }) => {
+  const sql = getDatabaseClient();
+  await sql`
+    UPDATE app_user
+    SET roles = array_append(roles, ${role})
+    WHERE id = ${userId}
+      AND NOT (${role} = ANY(roles))
+  `;
+};
+
+export const removeAuthUserRole = async ({ userId, role }: { userId: string; role: string }) => {
+  const sql = getDatabaseClient();
+  await sql`
+    UPDATE app_user
+    SET roles = array_remove(roles, ${role})
     WHERE id = ${userId}
   `;
 };

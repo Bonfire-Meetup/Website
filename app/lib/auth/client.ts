@@ -10,6 +10,7 @@ export interface AccessTokenPayload {
   iss?: string;
   jti?: string;
   typ?: string;
+  rol?: string[];
 }
 
 const accessTokenStorageKey = STORAGE_KEYS.ACCESS_TOKEN;

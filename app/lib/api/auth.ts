@@ -4,7 +4,7 @@ import { verifyAccessToken } from "@/lib/auth/jwt";
 import { logError, logWarn } from "@/lib/utils/log";
 
 type AuthResult =
-  | { success: true; userId: string; payload: { sub?: string } }
+  | { success: true; userId: string; roles: string[]; payload: { sub?: string; rol?: string[] } }
   | { success: false; response: NextResponse };
 
 export const requireAuth = async (request: Request, endpoint: string): Promise<AuthResult> => {
@@ -31,7 +31,12 @@ export const requireAuth = async (request: Request, endpoint: string): Promise<A
       return { response: unauthorized(), success: false };
     }
 
-    return { payload, success: true, userId };
+    return {
+      payload,
+      success: true,
+      userId,
+      roles: Array.isArray(payload.rol) ? payload.rol : [],
+    };
   } catch (error) {
     logError(`${endpoint}.auth_failed`, error);
     logWarn(`${endpoint}.unauthorized`, { reason: "token_verification_failed" });
@@ -44,7 +49,7 @@ export const getAuthUserId = async (request: Request) => {
   const authHeader = request.headers.get("authorization");
 
   if (!authHeader?.startsWith("Bearer ")) {
-    return { status: "none" as const, userId: null };
+    return { status: "none" as const, userId: null, roles: [] as string[] };
   }
 
   const token = authHeader.slice("Bearer ".length).trim();
@@ -52,8 +57,77 @@ export const getAuthUserId = async (request: Request) => {
   try {
     const payload = await verifyAccessToken(token);
 
-    return { status: "valid" as const, userId: payload.sub ?? null };
+    return {
+      status: "valid" as const,
+      userId: payload.sub ?? null,
+      roles: Array.isArray(payload.rol) ? payload.rol : [],
+    };
   } catch {
-    return { status: "invalid" as const, userId: null };
+    return { status: "invalid" as const, userId: null, roles: [] as string[] };
   }
+};
+
+export const hasRole = (roles: string[], role: string): boolean => roles.includes(role);
+
+export const hasAnyRole = (roles: string[], requiredRoles: string[]): boolean =>
+  requiredRoles.some((role) => roles.includes(role));
+
+export const hasAllRoles = (roles: string[], requiredRoles: string[]): boolean =>
+  requiredRoles.every((role) => roles.includes(role));
+
+export const requireRole = async (
+  request: Request,
+  endpoint: string,
+  role: string,
+): Promise<AuthResult> => {
+  const auth = await requireAuth(request, endpoint);
+  if (!auth.success) {
+    return auth;
+  }
+
+  if (!hasRole(auth.roles, role)) {
+    const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
+    logWarn(`${endpoint}.forbidden`, { reason: "missing_role", role });
+    return { response: respond({ error: "forbidden" }, { status: 403 }), success: false };
+  }
+
+  return auth;
+};
+
+export const requireAnyRole = async (
+  request: Request,
+  endpoint: string,
+  roles: string[],
+): Promise<AuthResult> => {
+  const auth = await requireAuth(request, endpoint);
+  if (!auth.success) {
+    return auth;
+  }
+
+  if (!hasAnyRole(auth.roles, roles)) {
+    const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
+    logWarn(`${endpoint}.forbidden`, { reason: "missing_required_roles", roles });
+    return { response: respond({ error: "forbidden" }, { status: 403 }), success: false };
+  }
+
+  return auth;
+};
+
+export const requireAllRoles = async (
+  request: Request,
+  endpoint: string,
+  roles: string[],
+): Promise<AuthResult> => {
+  const auth = await requireAuth(request, endpoint);
+  if (!auth.success) {
+    return auth;
+  }
+
+  if (!hasAllRoles(auth.roles, roles)) {
+    const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
+    logWarn(`${endpoint}.forbidden`, { reason: "missing_all_roles", roles });
+    return { response: respond({ error: "forbidden" }, { status: 403 }), success: false };
+  }
+
+  return auth;
 };

@@ -254,7 +254,7 @@ export const getVideoBoostedUsers = async (
         u.id as user_id,
         u.name,
         u.email,
-        u.public_profile
+        u.preferences
       FROM video_boosts vb
       JOIN app_user u ON vb.user_id = u.id
       WHERE vb.video_id = ${videoId}
@@ -263,7 +263,7 @@ export const getVideoBoostedUsers = async (
       user_id: string;
       name: string | null;
       email: string;
-      public_profile: boolean;
+      preferences: unknown;
     }[];
 
     const hashEmail = (email: string): string =>
@@ -273,7 +273,10 @@ export const getVideoBoostedUsers = async (
     let privateCount = 0;
 
     for (const row of rows) {
-      if (row.public_profile) {
+      const prefs = (row.preferences || {}) as Record<string, unknown>;
+      const isPublic = typeof prefs.publicProfile === "boolean" ? prefs.publicProfile : false;
+
+      if (isPublic) {
         publicUsers.push({
           emailHash: hashEmail(row.email),
           name: row.name,
