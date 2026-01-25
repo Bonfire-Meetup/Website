@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ClockIcon, QrCodeIcon, InfoIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { useCheckInToken } from "@/lib/api/user-profile";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 
 const REFRESH_INTERVAL_MS = 9 * 60 * 1000;
 
@@ -44,7 +45,7 @@ export function CheckInClient() {
     }
 
     let isCancelled = false;
-    const qrContent = tokenValue;
+    const qrContent = `${WEBSITE_URLS.BASE}/#?check-in=${encodeURIComponent(tokenValue)}`;
     QRCode.toDataURL(qrContent, {
       errorCorrectionLevel: "M",
       margin: 1,
