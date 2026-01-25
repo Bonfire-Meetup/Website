@@ -14,13 +14,10 @@ export interface AccessTokenPayload {
 
 const accessTokenStorageKey = STORAGE_KEYS.ACCESS_TOKEN;
 
-// Buffer time before expiry to trigger refresh (2 minutes)
 const TOKEN_REFRESH_BUFFER_SECONDS = 120;
 
-// Track if a refresh is in progress to prevent concurrent refreshes
 let refreshPromise: Promise<string | null> | null = null;
 
-// Track if user is logging out to prevent refresh attempts
 let isLoggingOut = false;
 
 export const setLoggingOut = (value: boolean) => {
@@ -86,6 +83,11 @@ export const isAccessTokenValid = (token: string) => {
   return payload.exp * 1000 > Date.now();
 };
 
+export const getHasValidToken = (): boolean => {
+  const token = readAccessToken();
+  return token ? isAccessTokenValid(token) : false;
+};
+
 export const isAccessTokenExpiringSoon = (
   token: string,
   bufferSeconds = TOKEN_REFRESH_BUFFER_SECONDS,
@@ -134,7 +136,6 @@ export const refreshAccessToken = (): Promise<string | null> => {
       });
 
       if (!response.ok) {
-        // Refresh failed - token is invalid or expired
         clearAccessToken();
 
         return null;
@@ -151,7 +152,6 @@ export const refreshAccessToken = (): Promise<string | null> => {
 
       return null;
     } catch {
-      // Network error or other failure
       return null;
     } finally {
       refreshPromise = null;
@@ -161,10 +161,6 @@ export const refreshAccessToken = (): Promise<string | null> => {
   return refreshPromise;
 };
 
-/**
- * Get a valid access token, refreshing if necessary.
- * Returns the token or null if not authenticated.
- */
 export const getValidAccessToken = (): Promise<string | null> => {
   const token = readAccessToken();
 
@@ -179,14 +175,7 @@ export const getValidAccessToken = (): Promise<string | null> => {
   return refreshAccessToken();
 };
 
-/**
- * Revoke the current session (logout).
- * Options:
- * - revokeAll: revoke all sessions for this user (requires valid access token)
- * - revokeFamily: revoke all tokens from this login session
- */
 export const revokeSession = async (options?: { revokeAll?: boolean; revokeFamily?: boolean }) => {
-  // Set logging out flag to prevent refresh attempts during logout
   setLoggingOut(true);
 
   const headers: Record<string, string> = {
@@ -213,7 +202,7 @@ export const revokeSession = async (options?: { revokeAll?: boolean; revokeFamil
       }),
     });
   } catch {
-    // Ignore errors - we're logging out anyway
+    // Ignore errors during revocation
   } finally {
     clearAccessToken();
   }

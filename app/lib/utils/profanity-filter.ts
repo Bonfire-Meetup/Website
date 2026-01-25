@@ -98,27 +98,22 @@ function containsBadWord(text: string, badWords: Set<string>, locale: "en" | "cs
     return false;
   }
 
-  // Split text into words using word boundaries (handles spaces, punctuation, etc.)
-  // This regex matches sequences of letters (including accented characters)
   const wordMatches = text.match(/[\p{L}]+/gu);
   if (!wordMatches || wordMatches.length === 0) {
     return false;
   }
 
   for (const rawWord of wordMatches) {
-    // Normalize each word individually
     const normalized = normalizeWord(rawWord);
     if (normalized && normalized.length >= 3) {
       const stem = getWordStem(normalized, locale);
       const wordVariants = [normalized, stem].filter((w) => w.length >= 3);
 
       for (const variant of wordVariants) {
-        // Direct match
         if (badWords.has(variant)) {
           return true;
         }
 
-        // Check for substring matches (handles variations like "kokoti" -> "kokot")
         for (const badWord of badWords) {
           if (variant.includes(badWord) || badWord.includes(variant)) {
             return true;
@@ -136,12 +131,9 @@ export function containsProfanity(text: string, locale: "en" | "cs" = "en"): boo
     return false;
   }
 
-  // Check both language lists to catch profanity regardless of user's locale setting
-  // This prevents users from bypassing filters by changing their language preference
   const primaryBadWords = locale === "cs" ? csBadWords : enBadWords;
   const secondaryBadWords = locale === "cs" ? enBadWords : csBadWords;
 
-  // Check primary locale first, then secondary as fallback
   if (containsBadWord(text, primaryBadWords, locale)) {
     return true;
   }

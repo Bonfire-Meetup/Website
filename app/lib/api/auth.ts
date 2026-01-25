@@ -39,3 +39,21 @@ export const requireAuth = async (request: Request, endpoint: string): Promise<A
     return { response: unauthorized(), success: false };
   }
 };
+
+export const getAuthUserId = async (request: Request) => {
+  const authHeader = request.headers.get("authorization");
+
+  if (!authHeader?.startsWith("Bearer ")) {
+    return { status: "none" as const, userId: null };
+  }
+
+  const token = authHeader.slice("Bearer ".length).trim();
+
+  try {
+    const payload = await verifyAccessToken(token);
+
+    return { status: "valid" as const, userId: payload.sub ?? null };
+  } catch {
+    return { status: "invalid" as const, userId: null };
+  }
+};

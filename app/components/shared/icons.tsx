@@ -57,6 +57,48 @@ export function LogInIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function BadgeCheckIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      strokeWidth={1.6}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.5 3.5c.8-.4 1.7-.4 2.5 0l1.1.55c.4.2.9.2 1.3 0l1.1-.55c.8-.4 1.7-.4 2.5 0l.55.28c.5.25.8.77.8 1.32v2.2c0 .46.23.9.62 1.16l.92.64c.68.47.68 1.5 0 1.98l-.92.64c-.39.27-.62.7-.62 1.16v2.2c0 .55-.31 1.07-.8 1.32l-.55.28c-.8.4-1.7.4-2.5 0l-1.1-.55c-.4-.2-.9-.2-1.3 0l-1.1.55c-.8.4-1.7.4-2.5 0l-.55-.28c-.5-.25-.8-.77-.8-1.32v-2.2c0-.46-.23-.9-.62-1.16l-.92-.64c-.68-.47-.68-1.5 0-1.98l.92-.64c.39-.27.62-.7.62-1.16v-2.2c0-.55.31-1.07.8-1.32z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="m9.75 12 1.75 1.75 2.75-3.5" />
+    </svg>
+  );
+}
+
+export function QrCodeIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      strokeWidth={1.6}
+      stroke="currentColor"
+      {...props}
+    >
+      <rect x="4" y="4" width="6" height="6" rx="1.2" />
+      <rect x="14" y="4" width="6" height="6" rx="1.2" />
+      <rect x="4" y="14" width="6" height="6" rx="1.2" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M14 14h2.5M16.5 14v2.5M16.5 16.5H19M19 16.5V19M14 19h2.5M16.5 19V21"
+      />
+    </svg>
+  );
+}
+
 export function LogOutIcon({ className, ...props }: IconProps) {
   return (
     <svg
@@ -700,6 +742,37 @@ export function YouTubeIcon({ className, ...props }: IconProps) {
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" {...props}>
       <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
+
+export function BookmarkIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+      />
+    </svg>
+  );
+}
+
+export function BookmarkFilledIcon({ className, ...props }: IconProps) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24" {...props}>
+      <path
+        fillRule="evenodd"
+        d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"
+        clipRule="evenodd"
+      />
     </svg>
   );
 }

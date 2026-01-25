@@ -73,7 +73,6 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
       timeout = setTimeout(triggerGlitch, delay);
     };
 
-    // Trigger first glitch soon after load so users see it
     timeout = setTimeout(triggerGlitch, 500);
 
     return () => {

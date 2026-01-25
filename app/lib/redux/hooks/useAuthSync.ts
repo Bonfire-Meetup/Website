@@ -17,7 +17,6 @@ import {
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { clearAuth, setToken } from "@/lib/redux/slices/authSlice";
 
-// Refresh token 2 minutes before expiry
 const REFRESH_BUFFER_SECONDS = 120;
 
 export function useAuthSync() {
@@ -27,7 +26,6 @@ export function useAuthSync() {
   const isRefreshingRef = useRef(false);
   const isMountedRef = useRef(true);
 
-  // Clear any existing refresh timer
   const clearRefreshTimer = useCallback(() => {
     if (refreshTimerRef.current) {
       clearTimeout(refreshTimerRef.current);
@@ -35,7 +33,6 @@ export function useAuthSync() {
     }
   }, []);
 
-  // Perform token refresh
   const doRefresh = useCallback(async (): Promise<string | null> => {
     if (isRefreshingRef.current || getIsLoggingOut()) {
       return null;
@@ -46,7 +43,6 @@ export function useAuthSync() {
     try {
       const newToken = await refreshAccessToken();
 
-      // Check flags again after async operation
       if (!isMountedRef.current || getIsLoggingOut()) {
         return null;
       }
@@ -63,7 +59,6 @@ export function useAuthSync() {
     }
   }, [dispatch]);
 
-  // Schedule a token refresh before expiry
   const scheduleRefresh = useCallback(
     (token: string) => {
       clearRefreshTimer();
@@ -74,7 +69,6 @@ export function useAuthSync() {
 
       const expiresIn = getAccessTokenExpiresIn(token);
       if (expiresIn === null || expiresIn <= REFRESH_BUFFER_SECONDS) {
-        // Token already expired or expiring very soon
         return;
       }
 
@@ -90,7 +84,6 @@ export function useAuthSync() {
     [clearRefreshTimer, doRefresh],
   );
 
-  // Initialize auth state on mount
   useEffect(() => {
     isMountedRef.current = true;
     setLoggingOut(false);
@@ -99,12 +92,10 @@ export function useAuthSync() {
       const token = readAccessToken();
 
       if (token && isAccessTokenValid(token)) {
-        // Valid token in localStorage
         const decoded = decodeAccessToken(token);
         dispatch(setToken({ token, decoded: decoded ?? undefined }));
 
         if (isAccessTokenExpiringSoon(token, REFRESH_BUFFER_SECONDS)) {
-          // Expiring soon - refresh now
           const newToken = await doRefresh();
           if (newToken) {
             scheduleRefresh(newToken);
@@ -113,7 +104,6 @@ export function useAuthSync() {
           scheduleRefresh(token);
         }
       } else {
-        // No valid token - try refresh (user might have httpOnly cookie)
         if (token) {
           clearAccessToken();
         }
@@ -133,7 +123,6 @@ export function useAuthSync() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Sync Redux state changes to localStorage
   useEffect(() => {
     if (!auth.hydrated) {
       return;
@@ -147,7 +136,6 @@ export function useAuthSync() {
     }
   }, [auth.token, auth.isAuthenticated, auth.hydrated, clearRefreshTimer]);
 
-  // Handle tab visibility - refresh stale tokens when user returns
   useEffect(() => {
     const handleVisibilityChange = async () => {
       if (document.visibilityState !== "visible" || getIsLoggingOut()) {
@@ -160,14 +148,12 @@ export function useAuthSync() {
       }
 
       if (!isAccessTokenValid(token)) {
-        // Token expired while tab was hidden
         clearAccessToken();
         const newToken = await doRefresh();
         if (newToken) {
           scheduleRefresh(newToken);
         }
       } else if (isAccessTokenExpiringSoon(token, REFRESH_BUFFER_SECONDS)) {
-        // Token expiring soon
         const newToken = await doRefresh();
         if (newToken) {
           scheduleRefresh(newToken);

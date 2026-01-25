@@ -11,6 +11,7 @@ export interface ProfileState {
   boosts: BoostedRecording[];
   attempts: LoginAttempt[];
   boostAllocation: BoostAllocation | null;
+  watchlist: string[];
   loading: boolean;
   error: string | null;
   deleteStep: "idle" | "confirm" | "verify" | "done";
@@ -26,6 +27,7 @@ const initialState: ProfileState = {
   boosts: [],
   attempts: [],
   boostAllocation: null,
+  watchlist: [],
   loading: false,
   error: null,
   deleteStep: "idle",
@@ -55,6 +57,17 @@ const profileSlice = createSlice({
     },
     setBoostAllocation: (state, action: PayloadAction<BoostAllocation | null>) => {
       state.boostAllocation = action.payload;
+    },
+    setWatchlist: (state, action: PayloadAction<string[]>) => {
+      state.watchlist = action.payload;
+    },
+    addToWatchlist: (state, action: PayloadAction<string>) => {
+      if (!state.watchlist.includes(action.payload)) {
+        state.watchlist.unshift(action.payload);
+      }
+    },
+    removeFromWatchlist: (state, action: PayloadAction<string>) => {
+      state.watchlist = state.watchlist.filter((id) => id !== action.payload);
     },
     updatePreferences: (
       state,
@@ -104,6 +117,7 @@ const profileSlice = createSlice({
       state.boosts = [];
       state.attempts = [];
       state.boostAllocation = null;
+      state.watchlist = [];
       state.deleteStep = "idle";
       state.deleteChallengeToken = null;
       state.deleteCode = "";
@@ -120,6 +134,9 @@ export const {
   removeBoost,
   setAttempts,
   setBoostAllocation,
+  setWatchlist,
+  addToWatchlist,
+  removeFromWatchlist,
   updatePreferences,
   setStagedCommunityEmails,
   setStagedPublicProfile,

@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { logError } from "@/lib/utils/log-client";
 
 export default function VideoApiError({
   error,
@@ -15,7 +16,7 @@ export default function VideoApiError({
   const t = useTranslations("error");
 
   useEffect(() => {
-    console.error("Video API error:", error);
+    logError("video_api_error", error, { digest: error.digest });
   }, [error]);
 
   return (

@@ -2,11 +2,11 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { getAuthUserId } from "@/lib/api/auth";
 import {
   hashRefreshToken,
   isValidRefreshTokenFormat,
   REFRESH_TOKEN_COOKIE_NAME,
-  verifyAccessToken,
 } from "@/lib/auth/jwt";
 import {
   getRefreshTokenByHash,
@@ -47,60 +47,41 @@ export const POST = async (request: Request) =>
         revokeFamily = parsed.data.revoke_family;
       }
     } catch {
-      // Ignore invalid or missing JSON; defaults handle the fallback
+      // Ignore errors during revocation
     }
 
     const cookieStore = await cookies();
     const refreshTokenFromCookie = cookieStore.get(REFRESH_TOKEN_COOKIE_NAME)?.value;
 
     if (revokeAll) {
-      const authHeader = headers.get("authorization");
+      const auth = await getAuthUserId(request);
 
-      if (!authHeader?.startsWith("Bearer ")) {
+      if (auth.status !== "valid" || !auth.userId) {
         logWarn("auth.revoke.unauthorized", {
           ...clientFingerprint,
-          reason: "missing_auth_header",
+          reason: auth.status === "none" ? "missing_auth_header" : "invalid_token",
           requestId,
         });
 
         return respond({ error: "unauthorized" }, { status: 401 });
       }
 
-      const accessToken = authHeader.slice("Bearer ".length).trim();
+      await revokeAllUserRefreshTokens(auth.userId);
 
-      try {
-        const payload = await verifyAccessToken(accessToken);
-        const userId = payload.sub;
+      logInfo("auth.revoke.all_sessions", {
+        ...clientFingerprint,
+        userId: auth.userId,
+        requestId,
+      });
 
-        if (!userId) {
-          return respond({ error: "unauthorized" }, { status: 401 });
-        }
-
-        await revokeAllUserRefreshTokens(userId);
-
-        logInfo("auth.revoke.all_sessions", {
-          ...clientFingerprint,
-          userId,
-          requestId,
-        });
-
-        return NextResponse.json(
-          { success: true, revoked: "all" },
-          {
-            headers: {
-              "Set-Cookie": clearCookie,
-            },
+      return NextResponse.json(
+        { success: true, revoked: "all" },
+        {
+          headers: {
+            "Set-Cookie": clearCookie,
           },
-        );
-      } catch {
-        logWarn("auth.revoke.unauthorized", {
-          ...clientFingerprint,
-          reason: "invalid_access_token",
-          requestId,
-        });
-
-        return respond({ error: "unauthorized" }, { status: 401 });
-      }
+        },
+      );
     }
 
     const tokenHash =

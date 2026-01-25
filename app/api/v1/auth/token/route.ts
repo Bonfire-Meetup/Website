@@ -36,7 +36,6 @@ import {
 } from "@/lib/utils/log";
 import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
 
-// Schema for email OTP grant
 const otpGrantSchema = z.object({
   grant_type: z.literal("urn:bonfire:grant-type:email-otp"),
   challenge_token: z.string().min(32),
@@ -44,15 +43,12 @@ const otpGrantSchema = z.object({
   email: z.string().email(),
 });
 
-// Schema for refresh token grant
 const refreshGrantSchema = z.object({
   grant_type: z.literal("refresh_token"),
 });
 
-// Combined schema - discriminated union
 const tokenRequestSchema = z.discriminatedUnion("grant_type", [otpGrantSchema, refreshGrantSchema]);
 
-// Rate limiting config
 const rateLimitWindowMs = 10 * 60_000;
 const maxEmailVerifications = 10;
 const maxIpVerifications = 20;
@@ -127,7 +123,6 @@ export const POST = async (request: Request) =>
     return handleEmailOtpGrant(result.data, ip, userAgent, clientFingerprint, requestId);
   });
 
-// Helper to create and set tokens
 const issueTokens = async (
   userId: string,
   tokenFamilyId: string,
@@ -135,7 +130,6 @@ const issueTokens = async (
   ip: string | null,
   userAgent: string | null,
 ) => {
-  // Generate access token
   const accessTokenJti = crypto.randomUUID();
   const accessToken = await signAccessToken(userId, accessTokenJti);
   const accessExpiresIn = getAccessTokenTtlSeconds();
@@ -149,7 +143,6 @@ const issueTokens = async (
     userId,
   });
 
-  // Generate refresh token
   const refreshToken = generateRefreshToken();
   const refreshTokenHash = hashRefreshToken(refreshToken);
   const refreshExpiresIn = getRefreshTokenTtlSeconds();
@@ -165,7 +158,6 @@ const issueTokens = async (
     userId,
   });
 
-  // Build cookie
   const cookieOptions = getRefreshTokenCookieOptions(refreshExpiresIn);
   const cookieValue = `${REFRESH_TOKEN_COOKIE_NAME}=${refreshToken}; HttpOnly; ${cookieOptions.secure ? "Secure; " : ""}SameSite=${cookieOptions.sameSite}; Path=${cookieOptions.path}; Max-Age=${cookieOptions.maxAge}`;
 
@@ -177,7 +169,6 @@ const issueTokens = async (
   };
 };
 
-// Handle grant_type=refresh_token
 const handleRefreshTokenGrant = async (
   request: Request,
   ip: string | null,
@@ -196,7 +187,6 @@ const handleRefreshTokenGrant = async (
     await delay();
     logWarn("auth.token.refresh.unauthorized", { reason, ...clientFingerprint, requestId });
 
-    // Clear the refresh token cookie on failure
     const clearCookie = `${REFRESH_TOKEN_COOKIE_NAME}=; HttpOnly; Secure; SameSite=strict; Path=/api/v1/auth; Max-Age=0`;
 
     return NextResponse.json(
@@ -210,13 +200,11 @@ const handleRefreshTokenGrant = async (
     );
   };
 
-  // Rate limit by IP
   if (ip && isRateLimited(`refresh:${ip}`, maxRefreshPerIp, refreshRateLimitWindowMs)) {
     logWarn("auth.token.refresh.rate_limited", { ...clientFingerprint, requestId });
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
-  // Get refresh token from cookie
   const cookieStore = await cookies();
   const refreshTokenFromCookie = cookieStore.get(REFRESH_TOKEN_COOKIE_NAME)?.value;
 
@@ -224,12 +212,10 @@ const handleRefreshTokenGrant = async (
     return unauthorizedResponse("missing_refresh_token");
   }
 
-  // Validate token format
   if (!isValidRefreshTokenFormat(refreshTokenFromCookie)) {
     return unauthorizedResponse("invalid_refresh_token_format");
   }
 
-  // Hash the token to look up in database
   const tokenHash = hashRefreshToken(refreshTokenFromCookie);
   const refreshToken = await getRefreshTokenByHash(tokenHash);
 
@@ -250,14 +236,12 @@ const handleRefreshTokenGrant = async (
     return unauthorizedResponse("expired_refresh_token");
   }
 
-  // Check for token reuse (theft detection)
   if (refreshToken.used_at) {
     const usedAtTime = refreshToken.used_at.getTime();
     const now = Date.now();
     const reuseWindowMs = getRefreshTokenReuseWindowSeconds() * 1000;
 
     if (now - usedAtTime > reuseWindowMs) {
-      // Token reuse detected - potential theft!
       logError("auth.token.refresh.token_reuse_detected", new Error("Token reuse detected"), {
         ...clientFingerprint,
         tokenFamilyId: refreshToken.token_family_id,
@@ -269,14 +253,11 @@ const handleRefreshTokenGrant = async (
       return unauthorizedResponse("token_reuse_detected");
     }
 
-    // Within grace period - likely concurrent request
     logInfo("auth.token.refresh.concurrent_request", { ...clientFingerprint, requestId });
   }
 
-  // Mark current refresh token as used
   await markRefreshTokenUsed(tokenHash);
 
-  // Issue new tokens
   const { accessToken, accessExpiresIn, accessTokenJti, cookieValue } = await issueTokens(
     refreshToken.user_id,
     refreshToken.token_family_id,
@@ -310,7 +291,6 @@ const handleRefreshTokenGrant = async (
   );
 };
 
-// Handle grant_type=urn:bonfire:grant-type:email-otp
 const handleEmailOtpGrant = async (
   data: z.infer<typeof otpGrantSchema>,
   ip: string | null,
@@ -407,7 +387,6 @@ const handleEmailOtpGrant = async (
     return respond({ error: "Authentication failed" }, { status: 500 });
   }
 
-  // Create new token family for this login
   const tokenFamilyId = crypto.randomUUID();
 
   const { accessToken, accessExpiresIn, accessTokenJti, cookieValue } = await issueTokens(

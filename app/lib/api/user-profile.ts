@@ -47,6 +47,8 @@ interface UserProfileData {
 const USER_PROFILE_QUERY_KEY = ["user-profile"] as const;
 const VIDEO_BOOSTS_QUERY_KEY = (shortId?: string) =>
   shortId ? (["video-boosts", shortId] as const) : (["video-boosts"] as const);
+const WATCHLIST_QUERY_KEY = ["watchlist"] as const;
+const VIDEO_WATCHLIST_QUERY_KEY = (shortId: string) => ["video-watchlist", shortId] as const;
 
 async function fetchJsonOrNull<T>(response: Response): Promise<T | null> {
   try {
@@ -233,6 +235,187 @@ export function useDeleteAccountMutation() {
       queryClient.clear();
     },
     retry: shouldRetryMutation,
+  });
+}
+
+export function useWatchlist() {
+  const token = getValidAccessToken();
+
+  return useQuery<{ items: { videoId: string; addedAt: string }[] }, ApiError>({
+    enabled: Boolean(token),
+    queryFn: async () => {
+      const accessToken = getValidAccessToken();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.USERS.ME.WATCHLIST, {
+        headers: createAuthHeaders(accessToken),
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          clearAccessToken();
+        }
+        throw new ApiError("Failed to fetch watchlist", response.status);
+      }
+
+      return (await response.json()) as { items: { videoId: string; addedAt: string }[] };
+    },
+    queryKey: WATCHLIST_QUERY_KEY,
+    retry: (failureCount, error) =>
+      !(error instanceof ApiError && error.status === 401) && failureCount < 2,
+    staleTime: 30_000,
+  });
+}
+
+export function useVideoWatchlistStatus(shortId: string) {
+  const token = getValidAccessToken();
+
+  return useQuery<{ inWatchlist: boolean }, ApiError>({
+    enabled: Boolean(token) && Boolean(shortId),
+    queryFn: async () => {
+      const accessToken = getValidAccessToken();
+      if (!accessToken) {
+        return { inWatchlist: false };
+      }
+
+      const response = await fetch(API_ROUTES.USERS.ME.WATCHLIST_VIDEO(shortId), {
+        headers: createAuthHeaders(accessToken),
+      });
+
+      if (!response.ok) {
+        return { inWatchlist: false };
+      }
+
+      return (await response.json()) as { inWatchlist: boolean };
+    },
+    queryKey: VIDEO_WATCHLIST_QUERY_KEY(shortId),
+    staleTime: 30_000,
+  });
+}
+
+export function useAddToWatchlistMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ added: boolean; inWatchlist: boolean }, ApiError, string>({
+    mutationFn: async (shortId) => {
+      const accessToken = getValidAccessToken();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.USERS.ME.WATCHLIST_VIDEO(shortId), {
+        headers: createAuthHeaders(accessToken),
+        method: "PUT",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          clearAccessToken();
+        }
+        throw new ApiError("Failed to add to watchlist", response.status);
+      }
+
+      return (await response.json()) as { added: boolean; inWatchlist: boolean };
+    },
+    onError: (error, shortId) => {
+      logError("user.watchlist.add_failed", error, { shortId });
+    },
+    onSuccess: (_data, shortId) => {
+      queryClient.setQueryData(VIDEO_WATCHLIST_QUERY_KEY(shortId), { inWatchlist: true });
+
+      queryClient.setQueryData(
+        WATCHLIST_QUERY_KEY,
+        (old: { items: { videoId: string; addedAt: string }[] } | undefined) => {
+          if (!old) {
+            return old;
+          }
+          if (old.items.some((item) => item.videoId === shortId)) {
+            return old;
+          }
+          return {
+            items: [{ videoId: shortId, addedAt: new Date().toISOString() }, ...old.items],
+          };
+        },
+      );
+    },
+    retry: shouldRetryMutation,
+  });
+}
+
+export function useRemoveFromWatchlistMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ removed: boolean; inWatchlist: boolean }, ApiError, string>({
+    mutationFn: async (shortId) => {
+      const accessToken = getValidAccessToken();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.USERS.ME.WATCHLIST_VIDEO(shortId), {
+        headers: createAuthHeaders(accessToken),
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          clearAccessToken();
+        }
+        throw new ApiError("Failed to remove from watchlist", response.status);
+      }
+
+      return (await response.json()) as { removed: boolean; inWatchlist: boolean };
+    },
+    onError: (error, shortId) => {
+      logError("user.watchlist.remove_failed", error, { shortId });
+    },
+    onSuccess: (_data, shortId) => {
+      queryClient.setQueryData(VIDEO_WATCHLIST_QUERY_KEY(shortId), { inWatchlist: false });
+
+      queryClient.setQueryData(
+        WATCHLIST_QUERY_KEY,
+        (old: { items: { videoId: string; addedAt: string }[] } | undefined) => {
+          if (!old) {
+            return old;
+          }
+          return {
+            items: old.items.filter((item) => item.videoId !== shortId),
+          };
+        },
+      );
+    },
+    retry: shouldRetryMutation,
+  });
+}
+export function useCheckInToken() {
+  const token = getValidAccessToken();
+
+  return useQuery<{ token: string; expiresAt: string }, ApiError>({
+    enabled: Boolean(token),
+    queryFn: async () => {
+      const accessToken = getValidAccessToken();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.USERS.ME.CHECK_IN, {
+        headers: createAuthHeaders(accessToken),
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          clearAccessToken();
+        }
+        const data = await fetchJsonOrNull<{ error?: string }>(response);
+        throw new ApiError("Failed to fetch check-in token", response.status, data?.error);
+      }
+
+      return (await response.json()) as { token: string; expiresAt: string };
+    },
+    queryKey: ["check-in-token"],
+    staleTime: 30_000,
   });
 }
 

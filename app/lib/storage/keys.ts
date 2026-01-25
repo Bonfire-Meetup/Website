@@ -9,10 +9,6 @@ export const STORAGE_KEYS = {
 export const getAuthChallengeKey = (token: string): string =>
   `${STORAGE_KEYS.AUTH_CHALLENGE_PREFIX}:${token}`;
 
-/**
- * Clear all auth challenge entries from localStorage.
- * Called on successful login to clean up any stale challenges.
- */
 export const clearAllAuthChallenges = (): void => {
   if (typeof window === "undefined") {
     return;

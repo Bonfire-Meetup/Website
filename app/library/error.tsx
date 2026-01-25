@@ -5,6 +5,7 @@ import { useEffect } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { logError } from "@/lib/utils/log-client";
 
 export default function LibraryError({
   error,
@@ -16,7 +17,7 @@ export default function LibraryError({
   const t = useTranslations("error");
 
   useEffect(() => {
-    console.error("Library page error:", error);
+    logError("library_page_error", error, { digest: error.digest });
   }, [error]);
 
   return (

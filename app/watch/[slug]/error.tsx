@@ -5,6 +5,7 @@ import { useEffect } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { logError } from "@/lib/utils/log-client";
 
 export default function WatchError({
   error,
@@ -16,7 +17,7 @@ export default function WatchError({
   const t = useTranslations("error");
 
   useEffect(() => {
-    console.error("Watch page error:", error);
+    logError("watch_page_error", error, { digest: error.digest });
   }, [error]);
 
   return (

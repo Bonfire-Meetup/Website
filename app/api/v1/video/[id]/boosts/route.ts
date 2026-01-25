@@ -1,7 +1,8 @@
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
-import { checkRateLimit, getAuthUserId, validateVideoApiRequest } from "@/lib/api/rate-limit";
+import { getAuthUserId } from "@/lib/api/auth";
+import { checkRateLimit, validateVideoApiRequest } from "@/lib/api/rate-limit";
 import { videoBoostMutationSchema, videoBoostStatsSchema } from "@/lib/api/schemas";
 import {
   addVideoBoost,

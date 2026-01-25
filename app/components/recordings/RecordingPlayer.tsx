@@ -16,6 +16,7 @@ import { LikeBoostButtons } from "./LikeBoostButtons";
 import { RelatedVideosSection } from "./RelatedVideosSection";
 import { ShareMenu } from "./ShareMenu";
 import { VideoMetadata } from "./VideoMetadata";
+import { WatchLaterButton } from "./WatchLaterButton";
 
 export type RelatedRecording = Pick<
   Recording,
@@ -41,17 +42,14 @@ export function RecordingPlayer({
   const [shareUrl, setShareUrl] = useState("");
   const shareText = `${recording.title} - ${recording.speaker.join(", ")}`;
 
-  // Scroll to top when the recording changes
   useEffect(() => {
     window.scrollTo({ behavior: "auto", left: 0, top: 0 });
   }, [recording.youtubeId]);
 
-  // Keep share URL in sync (client-only)
   useEffect(() => {
     setShareUrl(window.location.href);
   }, [recording.slug, recording.shortId]);
 
-  // ESC exits cinema mode
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -63,7 +61,6 @@ export function RecordingPlayer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [setCinemaMode]);
 
-  // Update global player video metadata
   useEffect(() => {
     setVideo({
       title: recording.title,
@@ -72,7 +69,6 @@ export function RecordingPlayer({
     });
   }, [recording.title, recording.slug, recording.shortId, recording.youtubeId, setVideo]);
 
-  // Attach/detach the inline container (runs on mount + when ref resolves)
   useEffect(() => {
     const el = inlinePlayerRef.current;
     setInlineContainer(el);
@@ -106,6 +102,7 @@ export function RecordingPlayer({
                   <LikeBoostButtons onBoostedByLoad={setBoostedBy} shortId={recording.shortId} />
 
                   <div className="flex items-center gap-3">
+                    <WatchLaterButton shortId={recording.shortId} variant="icon" size="sm" />
                     <ShareMenu shareUrl={shareUrl} shareText={shareText} />
                     <button
                       type="button"

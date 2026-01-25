@@ -45,8 +45,9 @@ export function GuildSkeleton() {
 
 export function HeaderButtonsSkeleton() {
   return (
-    <div className="flex gap-2">
-      <div className="h-9 w-28 animate-pulse rounded-lg border border-neutral-200/70 bg-white/60 dark:border-white/10 dark:bg-white/5" />
+    <div className="flex w-full flex-wrap gap-2 sm:w-auto">
+      <div className="h-9 w-32 animate-pulse rounded-lg border border-neutral-200/70 bg-white/60 dark:border-white/10 dark:bg-white/5" />
+      <div className="h-9 w-32 animate-pulse rounded-lg border border-neutral-200/70 bg-white/60 dark:border-white/10 dark:bg-white/5" />
       <div className="h-9 w-24 animate-pulse rounded-lg border border-neutral-200/70 bg-white/60 dark:border-white/10 dark:bg-white/5" />
     </div>
   );
@@ -71,6 +72,65 @@ export function PreferencesSkeleton() {
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+export function ActivitySkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="h-7 w-32 animate-pulse rounded bg-neutral-200/60 dark:bg-white/10" />
+      <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+        <div className="min-w-0 space-y-4">
+          <div className="animate-pulse overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/70 to-teal-50/70 dark:border-emerald-500/30 dark:from-emerald-500/10 dark:to-teal-500/10">
+            <div className="border-b border-emerald-100 px-4 py-3 dark:border-emerald-500/20">
+              <div className="flex items-center justify-between gap-3">
+                <div className="h-4 w-32 rounded bg-emerald-200/60 dark:bg-emerald-500/20" />
+                <div className="h-3 w-24 rounded bg-emerald-200/50 dark:bg-emerald-500/15" />
+              </div>
+            </div>
+            <div className="p-4">
+              <div className="h-9 w-16 rounded bg-emerald-200/60 dark:bg-emerald-500/20" />
+              <div className="mt-2 h-3 w-48 rounded bg-emerald-200/50 dark:bg-emerald-500/15" />
+            </div>
+          </div>
+
+          <div className="animate-pulse overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
+            <div className="border-b border-neutral-100 px-4 py-3 dark:border-white/5">
+              <div className="h-4 w-32 rounded bg-neutral-200/60 dark:bg-white/10" />
+            </div>
+            <div className="p-4">
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="h-3 w-3 shrink-0 rounded bg-neutral-200/60 dark:bg-white/10" />
+                    <div className="h-3 flex-1 rounded bg-neutral-200/50 dark:bg-white/10" />
+                    <div className="h-6 w-16 rounded bg-neutral-200/40 dark:bg-white/10" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="min-w-0">
+          <div className="animate-pulse overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
+            <div className="border-b border-neutral-100 px-4 py-3 dark:border-white/5">
+              <div className="h-4 w-32 rounded bg-neutral-200/60 dark:bg-white/10" />
+            </div>
+            <div className="p-4">
+              <div className="space-y-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex items-center justify-between gap-3">
+                    <div className="h-3 w-32 rounded bg-neutral-200/60 dark:bg-white/10" />
+                    <div className="h-3 w-20 rounded bg-neutral-200/50 dark:bg-white/10" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

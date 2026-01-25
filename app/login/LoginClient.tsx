@@ -238,7 +238,6 @@ export function LoginClient() {
       const data = (await response.json()) as { access_token?: string };
 
       if (data.access_token) {
-        // Clear all auth challenges on successful login (not just current one)
         clearAllAuthChallenges();
         const decoded = decodeAccessToken(data.access_token);
         dispatch(setToken({ token: data.access_token, decoded: decoded ?? undefined }));

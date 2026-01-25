@@ -12,7 +12,7 @@ import {
   useVideoLikeMutation,
   useVideoLikes,
 } from "@/lib/api/video-engagement";
-import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { getHasValidToken } from "@/lib/auth/client";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { useVideoEngagementRedux } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -22,11 +22,6 @@ import { BoltIcon, FireIcon, FrownIcon } from "../shared/icons";
 interface LikeBoostButtonsProps {
   onBoostedByLoad?: (boostedBy: BoostedByData | null) => void;
   shortId: string;
-}
-
-function getHasValidToken(): boolean {
-  const token = readAccessToken();
-  return token ? isAccessTokenValid(token) : false;
 }
 
 export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsProps) {
@@ -57,6 +52,20 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
     },
     [],
   );
+
+  const handleRateLimitError = (
+    setError: (value: boolean) => void,
+    timeoutRef: React.MutableRefObject<number | null>,
+  ) => {
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current);
+    }
+    setError(true);
+    timeoutRef.current = window.setTimeout(() => {
+      setError(false);
+      timeoutRef.current = null;
+    }, 5000);
+  };
 
   const likesQuery = useVideoLikes(shortId);
 
@@ -139,14 +148,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
       await likeMutation.mutateAsync(adding);
     } catch (err: unknown) {
       if (err instanceof ApiError && err.status === 429) {
-        if (likeErrorTimeoutRef.current) {
-          window.clearTimeout(likeErrorTimeoutRef.current);
-        }
-        setLikeRateLimitError(true);
-        likeErrorTimeoutRef.current = window.setTimeout(() => {
-          setLikeRateLimitError(false);
-          likeErrorTimeoutRef.current = null;
-        }, 5000);
+        handleRateLimitError(setLikeRateLimitError, likeErrorTimeoutRef);
       }
     }
   };
@@ -181,14 +183,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
       }
 
       if (err instanceof ApiError && err.status === 429) {
-        if (boostErrorTimeoutRef.current) {
-          window.clearTimeout(boostErrorTimeoutRef.current);
-        }
-        setBoostRateLimitError(true);
-        boostErrorTimeoutRef.current = window.setTimeout(() => {
-          setBoostRateLimitError(false);
-          boostErrorTimeoutRef.current = null;
-        }, 5000);
+        handleRateLimitError(setBoostRateLimitError, boostErrorTimeoutRef);
       }
     }
   };

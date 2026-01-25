@@ -275,10 +275,6 @@ export const deleteAuthUserById = async (id: string) => {
   `;
 };
 
-// ==========================================
-// Refresh Token Operations
-// ==========================================
-
 interface RefreshTokenRow {
   id: string;
   token_hash: string;
@@ -392,10 +388,6 @@ export const getActiveRefreshTokenCountByUser = async (userId: string): Promise<
   return rows[0]?.count ?? 0;
 };
 
-/**
- * Cleanup expired refresh tokens older than 7 days.
- * Called probabilistically during token operations to avoid cron jobs.
- */
 export const cleanupExpiredRefreshTokens = async () => {
   const sql = getDatabaseClient();
   await sql`
@@ -404,10 +396,6 @@ export const cleanupExpiredRefreshTokens = async () => {
   `;
 };
 
-/**
- * Probabilistically trigger cleanup (~1% of calls).
- * Safe to call frequently - no-op most of the time.
- */
 export const maybeCleanupExpiredRefreshTokens = async () => {
   if (Math.random() < 0.01) {
     await cleanupExpiredRefreshTokens();

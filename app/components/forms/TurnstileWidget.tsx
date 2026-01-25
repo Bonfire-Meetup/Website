@@ -243,7 +243,6 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function
     [execute, reset, token],
   );
 
-  // Reset state on mount to ensure clean state when navigating between pages
   useEffect(() => {
     setToken("");
     clearPendingExecute();
@@ -253,7 +252,6 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function
 
   useEffect(() => {
     if (!scriptLoaded && window.turnstile) {
-      // Small delay to ensure Turnstile is fully ready when script was already loaded
       const timeoutId = window.setTimeout(() => {
         if (window.turnstile) {
           setScriptLoaded(true);
@@ -293,7 +291,6 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function
       return;
     }
 
-    // Use requestAnimationFrame to ensure DOM is ready before rendering
     const rafId = window.requestAnimationFrame(() => {
       if (containerRef.current && window.turnstile) {
         renderWidget();

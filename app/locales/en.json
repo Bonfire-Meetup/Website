@@ -18,6 +18,7 @@
     "home": "Home",
     "upcoming": "Upcoming",
     "library": "Library",
+    "watchLater": "Watch Later",
     "crew": "Crew",
     "photos": "Photos",
     "faq": "FAQ",
@@ -141,6 +142,10 @@
     "spark": "Spark",
     "sparks": "Sparks",
     "lightItUp": "Light it up",
+    "watchLater": "Watch Later",
+    "addToWatchLater": "Add to Watch Later",
+    "removeFromWatchLater": "Remove from Watch Later",
+    "inWatchlist": "Saved",
     "boost": "Boost",
     "boosts": "Boosts",
     "boostItUp": "Boost it",
@@ -416,6 +421,10 @@
     "homeDescription": "{brandName} is a game development community hosting meetups in {prague} and {zlin}, {country}. Join us for talks and networking.",
     "libraryTitle": "Library | {brandName}",
     "libraryDescription": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
+    "watchLaterTitle": "Watch Later | {brandName}",
+    "watchLaterDescription": "Your saved talks to watch later.",
+    "checkInTitle": "Event Check-in | {brandName}",
+    "checkInDescription": "Show this QR at the door to check in and collect rewards.",
     "crewTitle": "Crew | {brandName}",
     "crewDescription": "Meet the crew behind Bonfire events in {prague} and {zlin}.",
     "pressTitle": "Press Kit | {brandName}",
@@ -889,6 +898,8 @@
     "details": "Details",
     "signOut": "Sign out",
     "viewProfile": "View profile",
+    "watchLater": "Watch Later",
+    "checkIn": "Check-in",
     "name": {
       "label": "Name",
       "empty": "Not set",
@@ -1020,6 +1031,41 @@
     "copySuccess": "Copied!",
     "copyError": "Failed to copy",
     "copyIdLabel": "Copy ID"
+  },
+  "watchLaterPage": {
+    "title": "Watch Later",
+    "subtitle": "Your saved talks for later viewing.",
+    "empty": "No videos in your Watch Later list yet.",
+    "emptyAction": "Browse the library to save talks you want to watch.",
+    "saved": "{count} saved videos",
+    "savedOne": "1 saved video",
+    "remove": "Remove",
+    "loading": "Loading your watchlist...",
+    "error": "Unable to load watchlist"
+  },
+  "checkIn": {
+    "title": "Event Check-in | {brandName}",
+    "description": "Show this QR at the door to check in and collect rewards.",
+    "pageTitle": "Check-in",
+    "pageSubtitle": "Present this QR code at the entrance",
+    "refresh": "Refresh",
+    "refreshing": "Refreshing...",
+    "expiresAt": "Valid until {time}",
+    "ticket": {
+      "header": "Bonfire Events",
+      "label": "Check-in Pass"
+    },
+    "tips": {
+      "title": "Quick Tips",
+      "brightness": "Keep your screen brightness high for easy scanning",
+      "automatic": "Your ticket updates automatically",
+      "manual": "If needed, tap Refresh to get a new code"
+    },
+    "error": {
+      "title": "Couldn't load your ticket",
+      "description": "Please try again or contact our team if the problem continues.",
+      "retry": "Try Again"
+    }
   },
   "error": {
     "title": "Something went wrong",

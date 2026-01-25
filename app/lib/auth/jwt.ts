@@ -25,14 +25,10 @@ const getJwtPublicKey = () => normalizePem(serverEnv.BNF_JWT_PUBLIC_KEY);
 
 const getJwtKeyId = () => serverEnv.BNF_JWT_KEY_ID ?? "bnf-auth";
 
-// Token TTL configuration
-// Access token: Short-lived for security (15 minutes)
 const accessTokenTtlSeconds = 15 * 60;
 
-// Refresh token: Long-lived for UX (30 days)
 const refreshTokenTtlSeconds = 30 * 24 * 60 * 60;
 
-// Grace period for concurrent refresh requests (seconds)
 const refreshTokenReuseWindowSeconds = 10;
 
 export const getAccessTokenTtlSeconds = () => accessTokenTtlSeconds;
@@ -103,21 +99,12 @@ export const generateRefreshToken = (): string => {
   return buffer.toString("base64url");
 };
 
-/**
- * Hash a refresh token for secure storage in the database.
- * Uses SHA-256 to create a one-way hash.
- */
 export const hashRefreshToken = (token: string): string =>
   crypto.createHash("sha256").update(token).digest("hex");
 
-/**
- * Validate refresh token format (base64url, correct length).
- */
 export const isValidRefreshTokenFormat = (token: string): boolean => {
-  // Base64url encoded 32 bytes = 43 characters
   if (token.length !== 43) {
     return false;
   }
-  // Check if it's valid base64url
   return /^[A-Za-z0-9_-]+$/.test(token);
 };

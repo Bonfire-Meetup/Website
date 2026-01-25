@@ -224,7 +224,6 @@ export function TalkProposalForm() {
       setTurnstileResetKey((prev) => prev + 1);
       setTurnstileExecuting(false);
     } else if (state.success || state.errors || state.message) {
-      // Reset loading state on any state change (success, errors, or messages like rateLimited)
       setTurnstileExecuting(false);
     }
   }, [state.message, state.success, state.errors]);
@@ -458,14 +457,16 @@ export function TalkProposalForm() {
                 ariaInvalid={Boolean(state.errors?.duration)}
                 nativeOnMobile
                 required
-                buttonClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${duration
+                buttonClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${
+                  duration
                     ? "text-neutral-900 dark:text-white"
                     : "text-neutral-400 dark:text-neutral-500"
-                  }`}
-                nativeClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${duration
+                }`}
+                nativeClassName={`${inputBaseClass} ${state.errors?.duration ? inputErrorClass : inputNormalClass} ${
+                  duration
                     ? "text-neutral-900 dark:text-white"
                     : "text-neutral-400 dark:text-neutral-500"
-                  }`}
+                }`}
                 activeOptionClassName="bg-brand-500/10 text-brand-600 dark:bg-brand-500/20 dark:text-brand-300"
               />
             ) : (

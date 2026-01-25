@@ -79,7 +79,6 @@ export const POST = async (request: Request) =>
     });
 
     if (!resultChallenge.ok) {
-      // Return the reason for failure, but still return 200 to avoid revealing too much
       return respond({
         error: resultChallenge.reason === "rate_limited" ? "rate_limited" : undefined,
         ok: false,

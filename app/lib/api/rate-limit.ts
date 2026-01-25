@@ -4,7 +4,6 @@ import { checkBotId } from "botid/server";
 import { headers } from "next/headers";
 import { UAParser } from "ua-parser-js";
 
-import { verifyAccessToken } from "@/lib/auth/jwt";
 import { serverEnv } from "@/lib/config/env";
 import { logWarn } from "@/lib/utils/log";
 import { getRequestId } from "@/lib/utils/request-context";
@@ -81,24 +80,6 @@ export const isOriginAllowed = async () => {
     return originHost === host;
   } catch {
     return false;
-  }
-};
-
-export const getAuthUserId = async (request: Request) => {
-  const authHeader = request.headers.get("authorization");
-
-  if (!authHeader?.startsWith("Bearer ")) {
-    return { status: "none" as const, userId: null };
-  }
-
-  const token = authHeader.slice("Bearer ".length).trim();
-
-  try {
-    const payload = await verifyAccessToken(token);
-
-    return { status: "valid" as const, userId: payload.sub ?? null };
-  } catch {
-    return { status: "invalid" as const, userId: null };
   }
 };
 

@@ -55,6 +55,22 @@ Required env vars:
 - `BNF_TURNSTILE_SECRET_KEY`
 - `NEXT_PUBLIC_BNF_TURNSTILE_SITE_KEY`
 
+## Check-in (Event QR codes)
+
+Short-lived, signed QR tokens for event check-in. Tokens are valid for 9 minutes and signed with HMAC-SHA256.
+
+Endpoint:
+
+- `GET /api/v1/users/me/check-in` -> `{ token, expiresAt }` (requires valid access token)
+
+Token format: `v1.{base64-payload}.{signature}` where payload contains `{ iat, exp, sub (user_id) }`
+
+Required env vars:
+
+- `BNF_CHECKIN_SECRET` (long random string for HMAC signing)
+
+Generate secret: `openssl rand -hex 32`
+
 ## Auth (email OTP)
 
 Passwordless email login with numeric OTP codes and JWT Bearer tokens. OAuth2 compliant.

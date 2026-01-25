@@ -6,7 +6,13 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { BoltIcon, LogOutIcon, UserIcon } from "@/components/shared/icons";
+import {
+  BoltIcon,
+  LogOutIcon,
+  UserIcon,
+  BookmarkIcon,
+  QrCodeIcon,
+} from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { ApiError } from "@/lib/api/errors";
@@ -16,6 +22,7 @@ import {
   useRemoveBoostMutation,
   useUpdatePreferenceMutation,
   useUserProfile,
+  useWatchlist,
 } from "@/lib/api/user-profile";
 import { clearAccessToken, revokeSession } from "@/lib/auth/client";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
@@ -27,6 +34,7 @@ import {
   setBoostAllocation,
   setBoosts,
   setProfile,
+  setWatchlist,
   updatePreferences,
   resetDelete,
   setDeleteCode,
@@ -51,6 +59,7 @@ import {
   HeaderButtonsSkeleton,
   PreferencesSkeleton,
   ProfileSkeleton,
+  ActivitySkeleton,
 } from "./ProfileSkeletons";
 
 function getApiErrorReason(err: unknown): string | null {
@@ -99,6 +108,7 @@ export function MeClient() {
   }, []);
 
   const profileQuery = useUserProfile();
+  const watchlistQuery = useWatchlist();
   const updatePreferenceMutation = useUpdatePreferenceMutation();
   const removeBoostMutation = useRemoveBoostMutation();
   const deleteChallengeMutation = useDeleteAccountChallengeMutation();
@@ -116,6 +126,15 @@ export function MeClient() {
   }, [profileQuery.data, dispatch]);
 
   useEffect(() => {
+    if (!watchlistQuery.data) {
+      return;
+    }
+
+    const videoIds = watchlistQuery.data.items.map((item) => item.videoId);
+    dispatch(setWatchlist(videoIds));
+  }, [watchlistQuery.data, dispatch]);
+
+  useEffect(() => {
     if (!auth.hydrated) {
       return;
     }
@@ -124,7 +143,6 @@ export function MeClient() {
       return;
     }
 
-    // Don't redirect if we're in the process of logging out
     if (loggingOut) {
       return;
     }
@@ -134,13 +152,14 @@ export function MeClient() {
     clearAccessToken();
     queryClient.removeQueries({ queryKey: ["user-profile"] });
     queryClient.removeQueries({ queryKey: ["video-boosts"] });
+    queryClient.removeQueries({ queryKey: ["watchlist"] });
+    queryClient.removeQueries({ queryKey: ["video-watchlist"] });
     router.replace(PAGE_ROUTES.LOGIN);
   }, [auth.isAuthenticated, auth.token, auth.hydrated, queryClient, router, dispatch, loggingOut]);
 
   useEffect(() => {
     const err = profileQuery.error;
     if (err instanceof ApiError && err.status === 401) {
-      // Don't redirect if we're in the process of logging out
       if (loggingOut) {
         return;
       }
@@ -149,6 +168,8 @@ export function MeClient() {
       clearAccessToken();
       queryClient.removeQueries({ queryKey: ["user-profile"] });
       queryClient.removeQueries({ queryKey: ["video-boosts"] });
+      queryClient.removeQueries({ queryKey: ["watchlist"] });
+      queryClient.removeQueries({ queryKey: ["video-watchlist"] });
       router.replace(PAGE_ROUTES.LOGIN);
     }
   }, [profileQuery.error, queryClient, router, dispatch, loggingOut]);
@@ -180,17 +201,16 @@ export function MeClient() {
   const deleteLoading = deleteChallengeMutation.isPending || deleteAccountMutation.isPending;
 
   const handleSignOut = async () => {
-    // Set flag to prevent useEffects from triggering during logout
     setLoggingOut(true);
 
-    // Cleanup first
     await revokeSession();
     dispatch(clearAuth());
     dispatch(clearProfile());
     queryClient.removeQueries({ queryKey: ["user-profile"] });
     queryClient.removeQueries({ queryKey: ["video-boosts"] });
+    queryClient.removeQueries({ queryKey: ["watchlist"] });
+    queryClient.removeQueries({ queryKey: ["video-watchlist"] });
 
-    // Navigate to login after cleanup
     router.replace(PAGE_ROUTES.LOGIN);
   };
 
@@ -242,7 +262,7 @@ export function MeClient() {
       dispatch(setDeleteChallengeToken(data.challenge_token));
       dispatch(setDeleteStep("verify"));
     } catch {
-      // DeleteError will show
+      // Ignore errors
     }
   };
 
@@ -286,7 +306,7 @@ export function MeClient() {
       await removeBoostMutation.mutateAsync(shortId);
       dispatch(removeBoostAction(shortId));
     } catch {
-      // Handled by mutation onError
+      // Ignore errors
     }
   };
 
@@ -315,25 +335,49 @@ export function MeClient() {
         {showSkeletons ? (
           <HeaderButtonsSkeleton />
         ) : (
-          <div className="flex gap-2">
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-row sm:items-center">
             {profile && (
-              <Link href={PAGE_ROUTES.USER(compressUuid(profile.id))}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="group border border-neutral-200/70 bg-white/60 text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
-                >
-                  <UserIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
-                  {t("viewProfile")}
-                </Button>
-              </Link>
+              <>
+                <Link href={PAGE_ROUTES.USER(compressUuid(profile.id))}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                  >
+                    <UserIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
+                    {t("viewProfile")}
+                  </Button>
+                </Link>
+
+                <Link href={PAGE_ROUTES.WATCH_LATER}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                  >
+                    <BookmarkIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
+                    {t("watchLater")}
+                  </Button>
+                </Link>
+
+                <Link href={PAGE_ROUTES.ME_CHECK_IN}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                  >
+                    <QrCodeIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
+                    {t("checkIn")}
+                  </Button>
+                </Link>
+              </>
             )}
 
             <Button
               onClick={handleSignOut}
               variant="ghost"
               size="sm"
-              className="group border border-neutral-200/70 bg-white/60 text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+              className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
             >
               <LogOutIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               {t("signOut")}
@@ -355,6 +399,7 @@ export function MeClient() {
             <GuildSkeleton />
           </div>
           <PreferencesSkeleton />
+          <ActivitySkeleton />
         </>
       ) : profile ? (
         <>

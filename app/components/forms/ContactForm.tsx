@@ -188,7 +188,6 @@ export function ContactForm() {
       setTurnstileResetKey((prev) => prev + 1);
       setTurnstileExecuting(false);
     } else if (state.success || state.errors || state.message) {
-      // Reset loading state on any state change (success, errors, or messages like rateLimited)
       setTurnstileExecuting(false);
     }
   }, [state.message, state.success, state.errors]);

@@ -36,7 +36,6 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
     return null;
   }
 
-  // Compute only the ids we actually need (avoid work + index coupling).
   const publicUsersTop = publicUsers.slice(0, 5);
   const usersWithCompressed = publicUsersTop
     .map((user) => {

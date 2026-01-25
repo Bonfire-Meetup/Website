@@ -14,6 +14,7 @@ export const PAGE_ROUTES = {
   LOGIN_WITH_CHALLENGE: (token: string) => `/login?challenge=${token}`,
   LOGIN_WITH_REASON: (reason: string) => `/login?reason-hint=${reason}`,
   ME: "/me",
+  ME_CHECK_IN: "/me/check-in",
   PHOTOS: "/photos",
   PHOTOS_ALBUM: (album: string) => `/photos/${album}`,
   PRESS: "/press",
@@ -21,4 +22,5 @@ export const PAGE_ROUTES = {
   TIMELINE: "/timeline",
   USER: (compressedId: string) => `/user/${compressedId}`,
   WATCH: (slug: string, shortId: string) => `/watch/${slug}-${shortId}`,
+  WATCH_LATER: "/me/watch-later",
 } as const;
