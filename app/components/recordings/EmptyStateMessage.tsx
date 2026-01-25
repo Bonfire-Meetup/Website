@@ -16,7 +16,8 @@ export function EmptyStateMessage({
   onReset: () => void;
 }) {
   const t = useTranslations("recordings");
-  const tNotRecorded = useTranslations("recordings.notRecorded");
+  const tLibrary = useTranslations("libraryPage");
+  const tNotRecorded = useTranslations("libraryPage.notRecorded");
   const notRecordedEpisode =
     activeEpisode !== "all" && UNRECORDED_EPISODES.has(activeEpisode)
       ? getEpisodeById(activeEpisode)
@@ -47,7 +48,7 @@ export function EmptyStateMessage({
 
   return (
     <EmptyState
-      message={t("empty")}
+      message={tLibrary("empty")}
       className="recording-card-enter max-w-lg p-12"
       messageClassName="text-lg text-neutral-600 dark:text-neutral-300"
     />
