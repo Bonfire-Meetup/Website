@@ -923,6 +923,7 @@
     "viewProfile": "Zobrazit profil",
     "watchLater": "Watch Later",
     "checkIn": "Check-in",
+    "reader": "Reader",
     "name": {
       "label": "Jméno",
       "empty": "Nenastaveno",
@@ -991,6 +992,9 @@
       "memberSince": "Člen od",
       "boosted": {
         "title": "Boostnutá videa"
+      },
+      "checkedIn": {
+        "title": "Navštívené akce"
       },
       "private": {
         "title": "Soukromý profil",
@@ -1078,6 +1082,46 @@
       "description": "Zkus to prosím znovu, nebo kontaktuj náš tým.",
       "retry": "Zkusit znovu"
     }
+  },
+  "reader": {
+    "title": "Event Reader | {brandName}",
+    "description": "Skenujte QR kódy pro check-in na akcích",
+    "pageTitle": "Event Reader",
+    "pageSubtitle": "Skenujte QR kódy pro ověření check-in tokenů",
+    "selectEvent": "Vyberte akci",
+    "selectEventPlaceholder": "Vyberte akci...",
+    "startReader": "Spustit čtečku",
+    "stopReader": "Zastavit čtečku",
+    "errors": {
+      "noEventSelected": "Nejprve vyberte akci",
+      "cameraAccessFailed": "Nepodařilo se získat přístup ke kameře. Zkontrolujte oprávnění.",
+      "cameraPermissionDenied": "Přístup ke kameře byl zamítnut. Povolte prosím přístup ke kameře v nastavení prohlížeče.",
+      "cameraNotFound": "Kamera nebyla nalezena. Připojte prosím kameru a zkuste to znovu.",
+      "cameraNotReadable": "Kamera je používaná jinou aplikací. Zavřete prosím ostatní aplikace používající kameru.",
+      "scannerContainerNotFound": "Kontejner skeneru nebyl nalezen. Obnovte prosím stránku.",
+      "accessDenied": "Přístup zamítnut. Tato stránka je dostupná pouze pro členy crew.",
+      "invalidQrCode": "Neplatný formát QR kódu",
+      "invalidToken": "Neplatný token",
+      "verificationFailed": "Ověření selhalo",
+      "contentInvalid": "Obsah QR kódu je neplatný nebo není platný check-in token",
+      "signatureInvalid": "Podpis tokenu je neplatný",
+      "tokenExpired": "Token vypršel",
+      "alreadyCheckedIn": "Uživatel je již zkontrolován pro tuto akci",
+      "checkInFailed": "Nepodařilo se zkontrolovat uživatele. Zkuste to prosím znovu."
+    },
+    "messages": {
+      "qrDetected": "QR kód detekován, ověřování..."
+    },
+    "checkIn": "Zkontrolovat uživatele",
+    "checkingIn": "Kontroluji...",
+    "result": {
+      "valid": "Platný",
+      "invalid": "Neplatný",
+      "userId": "ID uživatele",
+      "checkedIn": "Úspěšně zkontrolován",
+      "alreadyCheckedIn": "Již zkontrolován"
+    },
+    "loading": "Načítání..."
   },
   "error": {
     "title": "Něco se pokazilo",

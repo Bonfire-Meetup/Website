@@ -14,6 +14,7 @@ import { decompressUuid, compressUuid } from "@/lib/utils/uuid-compress";
 
 import { BoostedVideos } from "./BoostedVideos";
 import { BoostedVideosSkeleton } from "./BoostedVideosSkeleton";
+import { CheckedInEvents } from "./CheckedInEvents";
 import { ProfileShareButton } from "./ProfileShareButton";
 import { RoleBadges } from "./RoleBadges";
 
@@ -206,6 +207,12 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
             <Suspense fallback={<BoostedVideosSkeleton />}>
               <BoostedVideos userId={userId} />
             </Suspense>
+
+            <div className="mt-8">
+              <Suspense fallback={null}>
+                <CheckedInEvents userId={userId} />
+              </Suspense>
+            </div>
           </div>
         </div>
       </main>

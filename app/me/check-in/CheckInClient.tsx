@@ -10,12 +10,14 @@ import { useCheckInToken } from "@/lib/api/user-profile";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 
 const REFRESH_INTERVAL_MS = 9 * 60 * 1000;
+const DEVICE_WAKE_THRESHOLD_MS = 30 * 1000;
 
 export function CheckInClient() {
   const t = useTranslations("checkIn");
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const tokenQuery = useCheckInToken();
+  const [lastActivityTime, setLastActivityTime] = useState(Date.now());
 
   const tokenValue = tokenQuery.data?.token ?? null;
 
@@ -37,6 +39,38 @@ export function CheckInClient() {
       }
     };
   }, [tokenQuery.data?.expiresAt, tokenQuery]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        const now = Date.now();
+        const timeSinceLastActivity = now - lastActivityTime;
+
+        if (timeSinceLastActivity > DEVICE_WAKE_THRESHOLD_MS) {
+          tokenQuery.refetch();
+        }
+        setLastActivityTime(now);
+      }
+    };
+
+    const handleFocus = () => {
+      const now = Date.now();
+      const timeSinceLastActivity = now - lastActivityTime;
+
+      if (timeSinceLastActivity > DEVICE_WAKE_THRESHOLD_MS) {
+        tokenQuery.refetch();
+      }
+      setLastActivityTime(now);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [lastActivityTime, tokenQuery]);
 
   useEffect(() => {
     if (!tokenValue) {

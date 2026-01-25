@@ -15,6 +15,7 @@ export const PAGE_ROUTES = {
   LOGIN_WITH_REASON: (reason: string) => `/login?reason-hint=${reason}`,
   ME: "/me",
   ME_CHECK_IN: "/me/check-in",
+  EVENT_READER: "/event/reader",
   PHOTOS: "/photos",
   PHOTOS_ALBUM: (album: string) => `/photos/${album}`,
   PRESS: "/press",

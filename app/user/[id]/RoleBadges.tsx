@@ -1,9 +1,11 @@
+import { USER_ROLES } from "@/lib/config/roles";
+
 interface RoleBadgesProps {
   roles: string[];
 }
 
 const roleConfig = {
-  crew: {
+  [USER_ROLES.CREW]: {
     label: "Crew",
     gradient: "from-blue-500 via-indigo-500 to-purple-600",
     borderGradient: "from-blue-400 to-purple-500",
@@ -15,7 +17,7 @@ const roleConfig = {
       </svg>
     ),
   },
-  speaker: {
+  [USER_ROLES.SPEAKER]: {
     label: "Speaker",
     gradient: "from-orange-500 via-rose-500 to-pink-600",
     borderGradient: "from-orange-400 to-pink-500",
@@ -31,7 +33,7 @@ const roleConfig = {
       </svg>
     ),
   },
-};
+} as const;
 
 export function RoleBadges({ roles }: RoleBadgesProps) {
   const displayRoles = roles.filter((role) => role in roleConfig);

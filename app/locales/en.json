@@ -912,6 +912,7 @@
     "viewProfile": "View profile",
     "watchLater": "Watch Later",
     "checkIn": "Check-in",
+    "reader": "Reader",
     "name": {
       "label": "Name",
       "empty": "Not set",
@@ -980,6 +981,9 @@
       "memberSince": "Member since",
       "boosted": {
         "title": "Boosted videos"
+      },
+      "checkedIn": {
+        "title": "Events attended"
       },
       "private": {
         "title": "Private Profile",
@@ -1078,6 +1082,46 @@
       "description": "Please try again or contact our team if the problem continues.",
       "retry": "Try Again"
     }
+  },
+  "reader": {
+    "title": "Event Reader | {brandName}",
+    "description": "Scan QR codes for event check-in",
+    "pageTitle": "Event Reader",
+    "pageSubtitle": "Scan QR codes to verify check-in tokens",
+    "selectEvent": "Select Event",
+    "selectEventPlaceholder": "Choose an event...",
+    "startReader": "Start Reader",
+    "stopReader": "Stop Reader",
+    "errors": {
+      "noEventSelected": "Please select an event first",
+      "cameraAccessFailed": "Failed to access camera. Please check permissions.",
+      "cameraPermissionDenied": "Camera permission denied. Please allow camera access in your browser settings.",
+      "cameraNotFound": "No camera found. Please connect a camera and try again.",
+      "cameraNotReadable": "Camera is in use by another application. Please close other apps using the camera.",
+      "scannerContainerNotFound": "Scanner container not found. Please refresh the page.",
+      "accessDenied": "Access denied. This page is only available to crew members.",
+      "invalidQrCode": "Invalid QR code format",
+      "invalidToken": "Invalid token",
+      "verificationFailed": "Verification failed",
+      "contentInvalid": "QR code content is invalid or not a valid check-in token",
+      "signatureInvalid": "Token signature is invalid",
+      "tokenExpired": "Token has expired",
+      "alreadyCheckedIn": "User is already checked in for this event",
+      "checkInFailed": "Failed to check in user. Please try again."
+    },
+    "messages": {
+      "qrDetected": "QR code detected, verifying..."
+    },
+    "checkIn": "Check In User",
+    "checkingIn": "Checking in...",
+    "result": {
+      "valid": "Valid",
+      "invalid": "Invalid",
+      "userId": "User ID",
+      "checkedIn": "Checked in successfully",
+      "alreadyCheckedIn": "Already checked in"
+    },
+    "loading": "Loading..."
   },
   "error": {
     "title": "Something went wrong",

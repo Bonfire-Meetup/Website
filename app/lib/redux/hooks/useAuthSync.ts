@@ -40,7 +40,6 @@ export function useAuthSync() {
   const isRefreshingRef = useRef(false);
   const isMountedRef = useRef(true);
   const isPageVisibleRef = useRef(true);
-  const lastIntervalUpdateRef = useRef(Date.now());
 
   const performRefresh = useCallback(async (): Promise<string | null> => {
     if (isRefreshingRef.current || getIsLoggingOut() || isCircuitOpen()) {
@@ -88,14 +87,7 @@ export function useAuthSync() {
     }
   }, [performRefresh]);
 
-  const restartIntervalWithNewTiming = useCallback(() => {
-    const now = Date.now();
-    if (now - lastIntervalUpdateRef.current < 5000) {
-      return;
-    }
-
-    lastIntervalUpdateRef.current = now;
-
+  const startTokenCheckInterval = useCallback(() => {
     if (checkIntervalRef.current) {
       clearInterval(checkIntervalRef.current);
     }
@@ -108,21 +100,6 @@ export function useAuthSync() {
       checkAndRefreshToken();
     }, getAdaptiveInterval());
   }, [checkAndRefreshToken]);
-
-  const startTokenCheckInterval = useCallback(() => {
-    if (checkIntervalRef.current) {
-      clearInterval(checkIntervalRef.current);
-    }
-
-    checkIntervalRef.current = setInterval(() => {
-      if (!isPageVisibleRef.current) {
-        return;
-      }
-      updateLastActivity();
-      checkAndRefreshToken();
-      restartIntervalWithNewTiming();
-    }, getAdaptiveInterval());
-  }, [checkAndRefreshToken, restartIntervalWithNewTiming]);
 
   const stopTokenCheckInterval = useCallback(() => {
     if (checkIntervalRef.current) {

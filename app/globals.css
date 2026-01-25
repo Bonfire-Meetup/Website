@@ -556,6 +556,30 @@ html.smooth-scroll {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.35) 100%);
 }
 
+.qr-scanner-container video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.qr-scanner-container > div {
+  background: transparent !important;
+  border: none !important;
+}
+
+.qr-scanner-container #qr-reader__dashboard {
+  display: none !important;
+}
+
+.qr-scanner-container #qr-reader__camera_selection {
+  display: none !important;
+}
+
+.qr-scanner-container #qr-reader__scan_region {
+  border: none !important;
+  background: transparent !important;
+}
+
 .location-badge {
   display: inline-flex;
   align-items: center;

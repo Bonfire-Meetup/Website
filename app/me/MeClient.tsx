@@ -12,6 +12,7 @@ import {
   UserIcon,
   BookmarkIcon,
   QrCodeIcon,
+  CameraIcon,
 } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
@@ -25,6 +26,7 @@ import {
   useWatchlist,
 } from "@/lib/api/user-profile";
 import { clearAccessToken, revokeSession } from "@/lib/auth/client";
+import { USER_ROLES } from "@/lib/config/roles";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { clearAuth } from "@/lib/redux/slices/authSlice";
 import {
@@ -178,6 +180,8 @@ export function MeClient() {
   const isHydrated = mounted && auth.hydrated;
 
   const profile = isHydrated ? (profileState.profile ?? profileQuery.data?.profile ?? null) : null;
+  const userRoles = auth.user?.decodedToken?.rol ?? [];
+  const isCrew = userRoles.includes(USER_ROLES.CREW);
   const boosts = isHydrated
     ? profileState.boosts.length
       ? profileState.boosts
@@ -371,6 +375,19 @@ export function MeClient() {
                     {t("checkIn")}
                   </Button>
                 </Link>
+
+                {isCrew && (
+                  <Link href={PAGE_ROUTES.EVENT_READER}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                    >
+                      <CameraIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
+                      {t("reader")}
+                    </Button>
+                  </Link>
+                )}
               </>
             )}
 

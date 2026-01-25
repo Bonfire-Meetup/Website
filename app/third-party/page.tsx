@@ -41,6 +41,7 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
   utilities: [
     { name: "mustache", license: "MIT", url: "https://github.com/janl/mustache.js" },
     { name: "qrcode", license: "MIT", url: "https://github.com/soldair/node-qrcode" },
+    { name: "html5-qrcode", license: "Apache-2.0", url: "https://github.com/mebjas/html5-qrcode" },
     { name: "ua-parser-js", license: "MIT", url: "https://github.com/faisalman/ua-parser-js" },
     { name: "zod", license: "MIT", url: "https://zod.dev" },
   ],

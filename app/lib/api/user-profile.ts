@@ -1,11 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/lib/api/errors";
-import {
-  getValidAccessToken,
-  getValidAccessTokenAsync,
-  shouldRetryMutation,
-} from "@/lib/api/query-utils";
+import { getValidAccessTokenAsync, shouldRetryMutation } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { clearAccessToken } from "@/lib/auth/client";
 import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
@@ -102,7 +98,7 @@ export function useUpdatePreferenceMutation() {
     { allowCommunityEmails?: boolean; publicProfile?: boolean; name?: string | null }
   >({
     mutationFn: async ({ allowCommunityEmails, publicProfile, name }) => {
-      const accessToken = getValidAccessToken();
+      const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
         throw new ApiError("Access token required", 401);
       }
@@ -140,7 +136,7 @@ export function useRemoveBoostMutation() {
 
   return useMutation<{ availableBoosts?: number }, ApiError, string>({
     mutationFn: async (shortId) => {
-      const accessToken = getValidAccessToken();
+      const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
         throw new ApiError("Access token required", 401);
       }
@@ -178,7 +174,7 @@ export function useRemoveBoostMutation() {
 export function useDeleteAccountChallengeMutation() {
   return useMutation<{ challenge_token: string }, ApiError, void>({
     mutationFn: async () => {
-      const accessToken = getValidAccessToken();
+      const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
         throw new ApiError("Access token required", 401);
       }
@@ -209,7 +205,7 @@ export function useDeleteAccountMutation() {
 
   return useMutation<void, ApiError, { challengeToken: string; code: string }>({
     mutationFn: async ({ challengeToken, code }) => {
-      const accessToken = getValidAccessToken();
+      const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
         throw new ApiError("Access token required", 401);
       }
@@ -240,12 +236,9 @@ export function useDeleteAccountMutation() {
 }
 
 export function useWatchlist() {
-  const token = getValidAccessToken();
-
   return useQuery<{ items: { videoId: string; addedAt: string }[] }, ApiError>({
-    enabled: Boolean(token),
     queryFn: async () => {
-      const accessToken = getValidAccessToken();
+      const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
         throw new ApiError("Access token required", 401);
       }
@@ -271,12 +264,10 @@ export function useWatchlist() {
 }
 
 export function useVideoWatchlistStatus(shortId: string) {
-  const token = getValidAccessToken();
-
   return useQuery<{ inWatchlist: boolean }, ApiError>({
-    enabled: Boolean(token) && Boolean(shortId),
+    enabled: Boolean(shortId),
     queryFn: async () => {
-      const accessToken = getValidAccessToken();
+      const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
         return { inWatchlist: false };
       }
@@ -301,7 +292,7 @@ export function useAddToWatchlistMutation() {
 
   return useMutation<{ added: boolean; inWatchlist: boolean }, ApiError, string>({
     mutationFn: async (shortId) => {
-      const accessToken = getValidAccessToken();
+      const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
         throw new ApiError("Access token required", 401);
       }
@@ -350,7 +341,7 @@ export function useRemoveFromWatchlistMutation() {
 
   return useMutation<{ removed: boolean; inWatchlist: boolean }, ApiError, string>({
     mutationFn: async (shortId) => {
-      const accessToken = getValidAccessToken();
+      const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
         throw new ApiError("Access token required", 401);
       }
@@ -391,12 +382,9 @@ export function useRemoveFromWatchlistMutation() {
   });
 }
 export function useCheckInToken() {
-  const token = getValidAccessToken();
-
   return useQuery<{ token: string; expiresAt: string }, ApiError>({
-    enabled: Boolean(token),
     queryFn: async () => {
-      const accessToken = getValidAccessToken();
+      const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
         throw new ApiError("Access token required", 401);
       }
@@ -416,7 +404,11 @@ export function useCheckInToken() {
       return (await response.json()) as { token: string; expiresAt: string };
     },
     queryKey: ["check-in-token"],
-    staleTime: 30_000,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchInterval: 4 * 60 * 1000,
   });
 }
 
