@@ -290,7 +290,8 @@
       "zlin": "{zlin} sessions",
       "topic": "Topic: {tag}",
       "memberPicks": "Member Picks",
-      "hot": "Hot Right Now"
+      "hot": "Hot Right Now",
+      "hiddenGems": "Hidden Gems"
     },
     "view": {
       "all": "Browse all",

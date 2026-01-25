@@ -24,11 +24,13 @@ import { EmptyStateMessage } from "./EmptyStateMessage";
 import { FeaturedRecording } from "./FeaturedRecording";
 import { GridFiltersBar } from "./GridFiltersBar";
 import { GridView } from "./GridView";
+import { HiddenGemsRail } from "./HiddenGemsRail";
 import { HotPicksRail } from "./HotPicksRail";
 import { MemberPicksRail } from "./MemberPicksRail";
 import { RecordingRail } from "./RecordingRail";
 import {
   type CatalogRecording,
+  type HiddenGemRecording,
   type HotRecording,
   type LocationFilter,
   type MemberPickRecording,
@@ -97,6 +99,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   recordings,
   memberPicks,
   hotPicks,
+  hiddenGems,
   initialFilters,
   preFilteredRecordings,
   scrollLeftLabel,
@@ -107,6 +110,7 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   recordings: CatalogRecording[];
   memberPicks: MemberPickRecording[];
   hotPicks: HotRecording[];
+  hiddenGems: HiddenGemRecording[];
   initialFilters?: {
     location: LocationFilter;
     tag: string;
@@ -695,6 +699,14 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
                       scrollLeftLabel={scrollLeftLabel}
                       scrollRightLabel={scrollRightLabel}
                     />
+                    {hiddenGems.length > 0 && (
+                      <HiddenGemsRail
+                        title={tRows("hiddenGems")}
+                        recordings={hiddenGems}
+                        scrollLeftLabel={scrollLeftLabel}
+                        scrollRightLabel={scrollRightLabel}
+                      />
+                    )}
                     {rows.map((row) => (
                       <RecordingRail
                         key={`${row.key}-${filterKey}`}

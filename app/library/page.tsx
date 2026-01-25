@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { getHiddenGems } from "@/lib/recordings/hidden-gems";
 import { getHotRecordings } from "@/lib/recordings/hot-picks";
 import { getMemberPicks } from "@/lib/recordings/member-picks";
 import { getAllRecordings } from "@/lib/recordings/recordings";
@@ -25,10 +26,11 @@ export default async function LibraryPage({
   const tCommon = await getTranslations("common");
   const params = await searchParams;
 
-  const [allRecordings, memberPicksData, hotPicksData] = await Promise.all([
+  const [allRecordings, memberPicksData, hotPicksData, hiddenGemsData] = await Promise.all([
     Promise.resolve(getAllRecordings()),
     getMemberPicks(6),
     getHotRecordings(6),
+    getHiddenGems(6),
   ]);
 
   const locationParam = params.location;
@@ -136,6 +138,22 @@ export default async function LibraryPage({
     title: recording.title,
   }));
 
+  const hiddenGems = hiddenGemsData.map((recording) => ({
+    date: recording.date,
+    description: recording.description,
+    episode: recording.episode,
+    episodeId: recording.episodeId,
+    episodeNumber: recording.episodeNumber,
+    featureHeroThumbnail: recording.featureHeroThumbnail,
+    location: recording.location,
+    shortId: recording.shortId,
+    slug: recording.slug,
+    speaker: recording.speaker,
+    tags: recording.tags,
+    thumbnail: recording.thumbnail,
+    title: recording.title,
+  }));
+
   return (
     <>
       <Header />
@@ -144,6 +162,7 @@ export default async function LibraryPage({
           recordings={recordings}
           memberPicks={memberPicks}
           hotPicks={hotPicks}
+          hiddenGems={hiddenGems}
           scrollLeftLabel={tCommon("scrollLeft")}
           scrollRightLabel={tCommon("scrollRight")}
           previousFeaturedLabel={tCommon("previousFeatured")}

@@ -23,6 +23,24 @@ export type VideoEngagementState = Record<
 
 const initialState: VideoEngagementState = {};
 
+const createEmptyEngagement = () => ({
+  likes: { count: 0, hasLiked: false, loading: false, error: null },
+  boosts: {
+    count: 0,
+    hasBoosted: false,
+    availableBoosts: null,
+    boostedBy: null,
+    loading: false,
+    error: null,
+  },
+});
+
+const ensureEngagement = (state: VideoEngagementState, shortId: string) => {
+  if (!state[shortId]) {
+    state[shortId] = createEmptyEngagement();
+  }
+};
+
 const videoEngagementSlice = createSlice({
   name: "videoEngagement",
   initialState,
@@ -36,19 +54,7 @@ const videoEngagementSlice = createSlice({
       }>,
     ) => {
       const { shortId, count, hasLiked } = action.payload;
-      if (!state[shortId]) {
-        state[shortId] = {
-          likes: { count: 0, hasLiked: false, loading: false, error: null },
-          boosts: {
-            count: 0,
-            hasBoosted: false,
-            availableBoosts: null,
-            boostedBy: null,
-            loading: false,
-            error: null,
-          },
-        };
-      }
+      ensureEngagement(state, shortId);
       state[shortId].likes = { count, hasLiked, loading: false, error: null };
     },
     toggleLike: (state, action: PayloadAction<{ shortId: string; adding: boolean }>) => {
@@ -69,19 +75,7 @@ const videoEngagementSlice = createSlice({
       }>,
     ) => {
       const { shortId, count, hasBoosted, availableBoosts, boostedBy } = action.payload;
-      if (!state[shortId]) {
-        state[shortId] = {
-          likes: { count: 0, hasLiked: false, loading: false, error: null },
-          boosts: {
-            count: 0,
-            hasBoosted: false,
-            availableBoosts: null,
-            boostedBy: null,
-            loading: false,
-            error: null,
-          },
-        };
-      }
+      ensureEngagement(state, shortId);
       state[shortId].boosts = {
         count,
         hasBoosted,
@@ -100,19 +94,7 @@ const videoEngagementSlice = createSlice({
     },
     setVideoLikesLoading: (state, action: PayloadAction<{ shortId: string; loading: boolean }>) => {
       const { shortId, loading } = action.payload;
-      if (!state[shortId]) {
-        state[shortId] = {
-          likes: { count: 0, hasLiked: false, loading: false, error: null },
-          boosts: {
-            count: 0,
-            hasBoosted: false,
-            availableBoosts: null,
-            boostedBy: null,
-            loading: false,
-            error: null,
-          },
-        };
-      }
+      ensureEngagement(state, shortId);
       state[shortId].likes.loading = loading;
     },
     setVideoBoostsLoading: (
@@ -120,19 +102,7 @@ const videoEngagementSlice = createSlice({
       action: PayloadAction<{ shortId: string; loading: boolean }>,
     ) => {
       const { shortId, loading } = action.payload;
-      if (!state[shortId]) {
-        state[shortId] = {
-          likes: { count: 0, hasLiked: false, loading: false, error: null },
-          boosts: {
-            count: 0,
-            hasBoosted: false,
-            availableBoosts: null,
-            boostedBy: null,
-            loading: false,
-            error: null,
-          },
-        };
-      }
+      ensureEngagement(state, shortId);
       state[shortId].boosts.loading = loading;
     },
     setVideoLikesError: (

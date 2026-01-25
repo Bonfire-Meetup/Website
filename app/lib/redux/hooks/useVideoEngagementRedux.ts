@@ -1,22 +1,18 @@
 "use client";
 
 import type { BoostedByData } from "@/lib/api/video-engagement";
-import { useSelector } from "react-redux";
 
-import { useAppDispatch } from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   setVideoLikes,
   setVideoBoosts,
   toggleLike,
   toggleBoost,
-  type VideoEngagementState,
 } from "@/lib/redux/slices/videoEngagementSlice";
 
 export function useVideoEngagementRedux(shortId: string) {
   const dispatch = useAppDispatch();
-  const engagement = useSelector(
-    (state: { videoEngagement: VideoEngagementState }) => state.videoEngagement[shortId] || null,
-  );
+  const engagement = useAppSelector((state) => state.videoEngagement[shortId] || null);
 
   return {
     engagement,

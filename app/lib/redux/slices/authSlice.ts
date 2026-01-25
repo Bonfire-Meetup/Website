@@ -48,7 +48,7 @@ const authSlice = createSlice({
       state.hydrated = true;
     },
     setUser: (state, action: PayloadAction<Partial<AuthState["user"]>>) => {
-      state.user = { ...state.user, ...action.payload };
+      state.user = state.user ? { ...state.user, ...action.payload } : action.payload as AuthState["user"];
     },
     setAuthLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;

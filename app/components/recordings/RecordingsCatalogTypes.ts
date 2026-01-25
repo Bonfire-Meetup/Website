@@ -24,6 +24,8 @@ export type MemberPickRecording = CatalogRecording & { boostCount: number };
 
 export type HotRecording = CatalogRecording & { likeCount: number };
 
+export type HiddenGemRecording = CatalogRecording;
+
 export { normalizeText } from "@/lib/utils/text";
 
 export { formatDate } from "@/lib/utils/locale";

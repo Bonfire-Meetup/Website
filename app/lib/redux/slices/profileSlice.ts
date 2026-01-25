@@ -73,13 +73,13 @@ const profileSlice = createSlice({
       state,
       action: PayloadAction<{ allowCommunityEmails?: boolean; publicProfile?: boolean }>,
     ) => {
-      if (state.profile) {
-        if (action.payload.allowCommunityEmails !== undefined) {
-          state.profile.allowCommunityEmails = action.payload.allowCommunityEmails;
-        }
-        if (action.payload.publicProfile !== undefined) {
-          state.profile.publicProfile = action.payload.publicProfile;
-        }
+      if (!state.profile) return;
+      const { allowCommunityEmails, publicProfile } = action.payload;
+      if (allowCommunityEmails !== undefined) {
+        state.profile.allowCommunityEmails = allowCommunityEmails;
+      }
+      if (publicProfile !== undefined) {
+        state.profile.publicProfile = publicProfile;
       }
     },
     setStagedCommunityEmails: (state, action: PayloadAction<boolean | null>) => {
@@ -118,12 +118,12 @@ const profileSlice = createSlice({
       state.attempts = [];
       state.boostAllocation = null;
       state.watchlist = [];
+      state.stagedCommunityEmails = null;
+      state.stagedPublicProfile = null;
       state.deleteStep = "idle";
       state.deleteChallengeToken = null;
       state.deleteCode = "";
       state.deleteIntent = false;
-      state.stagedCommunityEmails = null;
-      state.stagedPublicProfile = null;
     },
   },
 });

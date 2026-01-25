@@ -290,7 +290,8 @@
       "zlin": "{zlin} sessions",
       "topic": "Téma: {tag}",
       "memberPicks": "Členské tipy",
-      "hot": "Právě v kurzu"
+      "hot": "Právě v kurzu",
+      "hiddenGems": "Skryté perly"
     },
     "view": {
       "all": "Procházet vše",
