@@ -74,12 +74,12 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-neutral-900/95">
-      <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-emerald-500 via-emerald-500 to-emerald-600" />
+      <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600" />
 
       <div className="relative px-6 py-6 sm:px-8 sm:py-8">
         <div className="mb-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
               <CheckIcon className="h-5 w-5 text-white" aria-hidden="true" />
             </div>
             <div>
@@ -95,13 +95,17 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
 
         <div className="space-y-3">
           {events.map((event) => {
-            const formattedDate = event.date
-              ? new Intl.DateTimeFormat("en-US", {
+            let formattedDate = "TBA";
+            if (event.date && event.date !== "TBA") {
+              const date = new Date(event.date);
+              if (!isNaN(date.getTime())) {
+                formattedDate = new Intl.DateTimeFormat("en-US", {
                   day: "numeric",
                   month: "short",
                   year: "numeric",
-                }).format(new Date(event.date))
-              : "TBA";
+                }).format(date);
+              }
+            }
 
             const formattedCheckedInAt = event.checkedInAt
               ? new Intl.DateTimeFormat("en-US", {
@@ -114,7 +118,7 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
             return (
               <div
                 key={event.id}
-                className="group relative overflow-hidden rounded-2xl border border-neutral-200/70 bg-white transition-all hover:border-emerald-300 hover:shadow-lg dark:border-white/10 dark:bg-neutral-800/60 dark:hover:border-emerald-500/20"
+                className="group relative overflow-hidden rounded-2xl border border-neutral-200/70 bg-gradient-to-br from-blue-50/50 to-indigo-50/30 transition-all hover:border-blue-300 hover:shadow-lg dark:border-white/10 dark:from-blue-950/20 dark:to-indigo-950/20 dark:hover:border-blue-500/30"
               >
                 <div className="p-4 sm:p-5">
                   <div className="mb-3 flex items-start justify-between gap-3">
@@ -132,16 +136,13 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
                         )}
                       </div>
                     </div>
-                    <div className="flex shrink-0 items-center justify-center rounded-full bg-emerald-100 p-2 dark:bg-emerald-500/20">
-                      <CheckIcon
-                        className="h-4 w-4 text-emerald-600 dark:text-emerald-400"
-                        aria-hidden="true"
-                      />
+                    <div className="flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 p-2 shadow-md">
+                      <CheckIcon className="h-4 w-4 text-white" aria-hidden="true" />
                     </div>
                   </div>
 
                   {formattedCheckedInAt && (
-                    <div className="flex items-center gap-1.5 text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                    <div className="flex items-center gap-1.5 rounded-md bg-blue-100/60 px-2.5 py-1.5 text-xs font-medium text-blue-800 dark:bg-blue-500/20 dark:text-blue-300">
                       <svg
                         className="h-3.5 w-3.5"
                         fill="none"
