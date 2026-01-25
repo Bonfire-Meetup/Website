@@ -535,6 +535,16 @@
       "impact": "Boosts have a higher weight than Sparks in the trending score, so a few boosts can noticeably lift a talk’s visibility.",
       "limitsTitle": "Limits",
       "limits": "Boosts are limited to 2 per month, with a maximum of 6 available at any time. Boosts you don’t use can stack up to that cap."
+    },
+    "guild": {
+      "title": "What is Bonfire Guild?",
+      "body": "Bonfire Guild is an exclusive program currently in development that offers insiders unique behind-the-scenes access, early event content, and the opportunity to help shape the direction of our community.",
+      "description": "We're building something special for our most engaged members - a place where you can access exclusive content, get early previews, and have a voice in steering the future of Bonfire. Guild membership brings you closer to the heart of what we do, from backstage moments to early recording drops and special perks.",
+      "features": "Guild members will enjoy early access to event recordings, exclusive behind-the-scenes content, member-only Discord channels, voting rights on future talk topics, and a special badge on their profile.",
+      "comingSoon": "We're actively working on Guild to make it something truly worth the wait. Keep an eye on your account page for updates - your chance to join is coming soon!",
+      "badge": "Guild",
+      "featuresTitle": "What You Get",
+      "stayTunedTitle": "Stay Tuned"
     }
   },
   "language": {

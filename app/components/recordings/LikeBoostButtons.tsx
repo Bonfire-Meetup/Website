@@ -201,7 +201,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
             onClick={handleLike}
             aria-pressed={hasLiked}
             disabled={isLiking || likeCount === null}
-            className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-l-full border border-r-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-all dark:border-white/10 ${
+            className={`relative inline-flex h-11 min-w-[6.5rem] items-center justify-center gap-2 rounded-l-full border border-r-0 border-neutral-200/60 px-3 py-2.5 text-sm leading-none font-semibold transition-all sm:min-w-[8.5rem] sm:gap-3 sm:px-5 dark:border-white/10 ${
               hasLiked
                 ? `${ENGAGEMENT_BRANDING.like.classes.activeGradient} ${ENGAGEMENT_BRANDING.like.classes.activeText} ${ENGAGEMENT_BRANDING.like.classes.activeShadow}`
                 : `bg-white ${ENGAGEMENT_BRANDING.like.classes.inactiveText} dark:bg-white/5`
@@ -247,7 +247,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
               isBoosting ||
               (availableBoosts !== null && availableBoosts === 0 && !hasBoosted)
             }
-            className={`relative inline-flex h-11 min-w-[8.5rem] items-center justify-center gap-3 rounded-r-full border border-l-0 border-neutral-200/60 px-5 py-2.5 text-sm leading-none font-semibold transition-all dark:border-white/10 ${
+            className={`relative inline-flex h-11 min-w-[6.5rem] items-center justify-center gap-2 rounded-r-full border border-l-0 border-neutral-200/60 px-3 py-2.5 text-sm leading-none font-semibold transition-all sm:min-w-[8.5rem] sm:gap-3 sm:px-5 dark:border-white/10 ${
               hasBoosted
                 ? `${ENGAGEMENT_BRANDING.boost.classes.activeGradient} ${ENGAGEMENT_BRANDING.boost.classes.activeText} ${ENGAGEMENT_BRANDING.boost.classes.activeShadow}`
                 : `bg-white ${ENGAGEMENT_BRANDING.boost.classes.inactiveText} dark:bg-white/5`

@@ -15,19 +15,19 @@
     "nextFeatured": "Další doporučené"
   },
   "header": {
-    "home": "Dom\u016f",
+    "home": "Domů",
     "upcoming": "Akce",
-    "library": "Z\u00e1znamy",
+    "library": "Záznamy",
     "watchLater": "Watch Later",
     "crew": "Crew",
     "photos": "Fotky",
     "faq": "FAQ",
-    "press": "Pro m\u00e9dia",
+    "press": "Pro média",
     "contact": "Kontakt",
-    "codeOfConduct": "Kodex chov\u00e1n\u00ed",
-    "back": "Zp\u011bt",
-    "menu": "Otev\u0159\u00edt menu",
-    "close": "Zav\u0159\u00edt menu",
+    "codeOfConduct": "Kodex chování",
+    "back": "Zpět",
+    "menu": "Otevřít menu",
+    "close": "Zavřít menu",
     "logoAlt": "Logo Bonfire Events"
   },
   "hero": {
@@ -546,6 +546,16 @@
       "impact": "Boosty mají ve výpočtu trending score vyšší váhu než Sparks, takže i pár boostů může viditelnost výrazně zvednout.",
       "limitsTitle": "Limity",
       "limits": "Boosty jsou omezené na 2 za měsíc, s maximem 6 dostupných v jednu chvíli. Nevyužité boosty se mohou nasčítat až do tohoto maxima."
+    },
+    "guild": {
+      "title": "Co je to Bonfire Guild?",
+      "body": "Bonfire Guild je exkluzivní program právě vyvíjený speciálně pro elitní členy, který nabízí jedinečný přístup za kulisy, včasný přístup k obsahu akcí a příležitost se podílet na směřování naší komunity.",
+      "description": "Připravujeme něco speciálního pro naše nejangažovanější členy – prostor, kde budete moci přistupovat k exkluzivnímu obsahu, dostat předběžný přístup k novinkám a mít hlas při rozhodování o budoucnosti Bonfire. Členství v Guild vás přivádí blíž srdci toho, co děláme – od okamžiků za oponou po předčasné vydávání záznamů a speciální výhody.",
+      "features": "Členové Guild budou mít brzkej přístup k nahrávkám akcí, exkluzivní obsah za kulisami, Discord kanály pouze pro členy, hlasovací právo na budoucí témata přednášek a speciální odznak na jejich profilu.",
+      "comingSoon": "Aktivně pracujeme na Guild, aby to byla skutečně věc hod na čekání. Sledujte svou profilovou stránku pro novinky – příležitost se připojit se chystá!",
+      "badge": "Guild",
+      "featuresTitle": "Co dostanete",
+      "stayTunedTitle": "Zůstaňte v obraze"
     }
   },
   "language": {

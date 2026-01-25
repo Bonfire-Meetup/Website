@@ -88,11 +88,20 @@ export const POST = async (request: Request) =>
 
     try {
       await runTransaction((sql) => [
+        // Delete auth-related data
+        sql`DELETE FROM auth_token WHERE user_id = ${auth.userId}`,
+        sql`DELETE FROM auth_refresh_token WHERE user_id = ${auth.userId}`,
         sql`DELETE FROM auth_challenge WHERE email = ${email}`,
         sql`DELETE FROM auth_attempt WHERE user_id = ${auth.userId}`,
+        // Delete user engagement data
+        sql`DELETE FROM user_watchlist WHERE user_id = ${auth.userId}`,
+        sql`DELETE FROM user_boost_allocation WHERE user_id = ${auth.userId}`,
+        sql`DELETE FROM video_boosts WHERE user_id = ${auth.userId}`,
+        // Delete user submissions and preferences
         sql`DELETE FROM newsletter_subscription WHERE email = ${email}`,
         sql`DELETE FROM contact_submissions WHERE email = ${email}`,
         sql`DELETE FROM talk_proposals WHERE email = ${email}`,
+        // Delete user account
         sql`DELETE FROM app_user WHERE id = ${auth.userId}`,
       ]);
     } catch (error) {
