@@ -4,8 +4,9 @@ import { getTranslations } from "next-intl/server";
 import { QuestionAnchor } from "@/components/faq/QuestionAnchor";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { BoltIcon, FireIcon } from "@/components/shared/icons";
+import { BoltIcon, FireIcon, GuildIcon } from "@/components/shared/icons";
 import { Link } from "@/i18n/navigation";
+import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -215,25 +216,17 @@ export default async function FaqPage() {
 
                 <div
                   id="guild"
-                  className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-red-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-red-500/20 dark:hover:bg-white/10"
+                  className={`group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 ${ENGAGEMENT_BRANDING.guild.classes.cardHover} sm:p-8 dark:border-white/5 dark:bg-white/5`}
                 >
                   <div className="mb-4 flex items-center justify-between gap-3">
-                    <h3 className="flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-red-600 dark:text-neutral-100 dark:group-hover:text-red-400">
+                    <h3
+                      className={`flex items-center text-lg font-bold text-neutral-900 transition-colors ${ENGAGEMENT_BRANDING.guild.classes.titleHover} dark:text-neutral-100`}
+                    >
                       {t("guild.title")}
                       <QuestionAnchor id="guild" />
                     </h3>
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-[11px] font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
-                      <svg
-                        className="h-3.5 w-3.5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                      </svg>
+                    <span className={ENGAGEMENT_BRANDING.guild.classes.badge}>
+                      <GuildIcon className="h-3.5 w-3.5" aria-hidden="true" />
                       {t("guild.badge", { defaultValue: "Guild" })}
                     </span>
                   </div>
@@ -249,8 +242,8 @@ export default async function FaqPage() {
                     </div>
                     <div className="mt-1">{t("guild.features")}</div>
                   </div>
-                  <div className="mt-4 rounded-2xl border border-red-200/60 bg-red-50/70 px-4 py-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200">
-                    <div className="font-semibold text-red-900 dark:text-red-100">
+                  <div className={ENGAGEMENT_BRANDING.guild.classes.infoBox}>
+                    <div className={ENGAGEMENT_BRANDING.guild.classes.infoBoxTitle}>
                       {t("guild.stayTunedTitle", { defaultValue: "Stay Tuned" })}
                     </div>
                     <div className="mt-1">{t("guild.comingSoon")}</div>

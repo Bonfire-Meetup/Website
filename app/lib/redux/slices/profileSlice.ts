@@ -73,7 +73,9 @@ const profileSlice = createSlice({
       state,
       action: PayloadAction<{ allowCommunityEmails?: boolean; publicProfile?: boolean }>,
     ) => {
-      if (!state.profile) {return;}
+      if (!state.profile) {
+        return;
+      }
       const { allowCommunityEmails, publicProfile } = action.payload;
       if (allowCommunityEmails !== undefined) {
         state.profile.allowCommunityEmails = allowCommunityEmails;

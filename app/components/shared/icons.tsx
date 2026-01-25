@@ -776,3 +776,33 @@ export function BookmarkFilledIcon({ className, ...props }: IconProps) {
     </svg>
   );
 }
+
+export function StarIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+    </svg>
+  );
+}
+
+export function GuildIcon({ className, ...props }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M12,8c-2.2,0-4,1.8-4,4s1.8,4,4,4s4-1.8,4-4S14.2,8,12,8z M12,14c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S13.1,14,12,14z" />
+      <circle cx="12" cy="12" r="1" />
+      <circle cx="12" cy="4" r="2.5" />
+      <circle cx="12" cy="20" r="2.5" />
+      <circle cx="4" cy="12" r="2.5" />
+      <circle cx="20" cy="12" r="2.5" />
+    </svg>
+  );
+}

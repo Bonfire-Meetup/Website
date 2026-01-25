@@ -60,7 +60,17 @@ const getHiddenGemsUncached = async (limit = 6): Promise<HiddenGemRecording[]> =
     return hashA - hashB;
   });
 
-  return shuffled.slice(0, limit).map(({ likeCount, boostCount, daysSince, recordingDate, ...recording }) => recording);
+  return shuffled
+    .slice(0, limit)
+    .map(
+      ({
+        likeCount: _likeCount,
+        boostCount: _boostCount,
+        daysSince: _daysSince,
+        recordingDate: _recordingDate,
+        ...recording
+      }) => recording,
+    );
 };
 
 export const getHiddenGems = unstable_cache(getHiddenGemsUncached, ["hidden-gems"], {

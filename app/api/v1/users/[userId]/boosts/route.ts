@@ -9,10 +9,7 @@ import { runWithRequestContext } from "@/lib/utils/request-context";
 const getWatchSlug = (recording: { slug: string; shortId: string }) =>
   `${recording.slug}-${recording.shortId}`;
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ userId: string }> },
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
   return runWithRequestContext(request, async () => {
     const { userId: userIdParam } = await params;
     const userIdResult = await resolveUserId(request, "account.boosts", userIdParam);

@@ -22,11 +22,11 @@ export const API_ROUTES = {
     LIKES_PATTERN: "/api/v1/video/*/likes",
   },
   USERS: {
-    BOOSTS: (userId: string = "me") => `/api/v1/users/${userId}/boosts`,
-    WATCHLIST: (userId: string = "me") => `/api/v1/users/${userId}/watchlist`,
-    WATCHLIST_VIDEO: (videoId: string, userId: string = "me") =>
+    BOOSTS: (userId = "me") => `/api/v1/users/${userId}/boosts`,
+    WATCHLIST: (userId = "me") => `/api/v1/users/${userId}/watchlist`,
+    WATCHLIST_VIDEO: (videoId: string, userId = "me") =>
       `/api/v1/users/${userId}/watchlist/${videoId}`,
-    CHECK_IN: (userId: string = "me") => `/api/v1/users/${userId}/check-in`,
+    CHECK_IN: (userId = "me") => `/api/v1/users/${userId}/check-in`,
     ME: {
       BOOSTS: "/api/v1/users/me/boosts",
       WATCHLIST: "/api/v1/users/me/watchlist",

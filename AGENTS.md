@@ -19,6 +19,7 @@ Quick reference guide for AI agents working on this codebase.
 ## Code Style
 
 ### Formatting
+
 - **Code comments**: In most cases do not add code comments, code must be self-documenting at first
 - **Print width**: 100 characters
 - **Indentation**: 2 spaces (no tabs)
@@ -29,6 +30,7 @@ Quick reference guide for AI agents working on this codebase.
 - **Line endings**: LF
 
 ### TypeScript
+
 - Strict mode enabled
 - No `any` types (error level)
 - No unsafe assignments/calls (error level)
@@ -36,6 +38,7 @@ Quick reference guide for AI agents working on this codebase.
 - Unused variables/args prefixed with `_` are ignored
 
 ### Imports
+
 - Auto-sorted with newlines between groups:
   1. Side-effect imports
   2. Built-in
@@ -46,6 +49,7 @@ Quick reference guide for AI agents working on this codebase.
 - Unused imports auto-removed
 
 ### Naming
+
 - Components: PascalCase (`UserProfile.tsx`)
 - Files: kebab-case for utilities, PascalCase for components
 - Client components: Often suffixed with `Client` (e.g., `MeClient.tsx`)
@@ -74,12 +78,14 @@ i18n/                  # i18n configuration
 ## Key Patterns
 
 ### Server vs Client Components
+
 - **Default**: Server components (async, can fetch data)
 - **Client components**: Mark with `"use client"` directive
 - Pattern: Server page → Client component for interactivity
 - Example: `app/me/page.tsx` (server) → `MeClient.tsx` (client)
 
 ### State Management
+
 - **Redux**: Global UI state (auth, profile, player, video engagement)
   - Slices in `app/lib/redux/slices/`
   - Typed hooks in `app/lib/redux/hooks.ts`
@@ -88,6 +94,7 @@ i18n/                  # i18n configuration
   - Provider in `app/components/shared/QueryProvider.tsx`
 
 ### API Routes
+
 - Location: `app/api/v1/*/route.ts`
 - Pattern: Export `GET`, `POST`, `DELETE`, etc. handlers
 - Auth: Use `requireAuth()` from `app/lib/api/auth.ts`
@@ -95,24 +102,28 @@ i18n/                  # i18n configuration
 - Error handling: Structured logging via `logError()`
 
 ### Forms
+
 - Server actions in `app/lib/forms/form-actions.ts`
 - CSRF protection: Get token from `/api/v1/csrf`
 - Turnstile verification for bot protection
 - Use `useFormState` or `useActionState` (React 19)
 
 ### Internationalization
+
 - Translations: `app/locales/{locale}.json`
 - Server: `getTranslations()` from `next-intl/server`
 - Client: `useTranslations()` hook
 - Locale detection: Automatic (no URL prefix)
 
 ### Styling
+
 - Tailwind CSS 4 with custom theme
 - Dark mode: `.dark` class on `<html>`
 - Custom colors: Brand (fuchsia), Fire gradient, Location colors
 - Utility: `clsx` + `tailwind-merge` for conditional classes
 
 ### Path Aliases
+
 - `@/*` → `app/*`
 - `@/i18n/*` → `i18n/*`
 
@@ -141,6 +152,7 @@ i18n/                  # i18n configuration
 ## Environment Variables
 
 Key vars (see `.env.example`):
+
 - `BNF_NEON_DATABASE_URL`
 - `BNF_JWT_PRIVATE_KEY` / `BNF_JWT_PUBLIC_KEY`
 - `BNF_OTP_SECRET`
@@ -151,22 +163,26 @@ Key vars (see `.env.example`):
 ## Common Tasks
 
 ### Adding a new page
+
 1. Create `app/[route]/page.tsx` (server component)
 2. Add translations to `app/locales/*.json`
 3. If interactive, create `*Client.tsx` component
 
 ### Adding an API route
+
 1. Create `app/api/v1/[endpoint]/route.ts`
 2. Export HTTP method handlers
 3. Add route to `app/lib/api/routes.ts`
 4. Add auth if needed: `requireAuth()`
 
 ### Adding a Redux slice
+
 1. Create slice in `app/lib/redux/slices/`
 2. Add to store in `app/lib/redux/store.ts`
 3. Export typed hooks in `app/lib/redux/hooks.ts`
 
 ### Adding translations
+
 1. Add keys to `app/locales/en.json` and `app/locales/cs.json`
 2. Use `getTranslations()` (server) or `useTranslations()` (client)
 
