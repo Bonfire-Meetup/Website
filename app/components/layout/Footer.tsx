@@ -97,6 +97,13 @@ export async function Footer() {
             >
               {t("legalLabel")}
             </Link>
+            <span className="text-neutral-300 dark:text-neutral-700">·</span>
+            <Link
+              href={PAGE_ROUTES.THIRD_PARTY}
+              className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
+            >
+              {t("attributionsLabel")}
+            </Link>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { requireAuth } from "@/lib/api/auth";
+import { resolveUserId } from "@/lib/api/auth";
 import { getUserBoosts } from "@/lib/data/boosts";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { logError, logWarn } from "@/lib/utils/log";
@@ -9,16 +9,22 @@ import { runWithRequestContext } from "@/lib/utils/request-context";
 const getWatchSlug = (recording: { slug: string; shortId: string }) =>
   `${recording.slug}-${recording.shortId}`;
 
-export async function GET(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ userId: string }> },
+) {
   return runWithRequestContext(request, async () => {
-    const auth = await requireAuth(request, "account.boosts");
+    const { userId: userIdParam } = await params;
+    const userIdResult = await resolveUserId(request, "account.boosts", userIdParam);
 
-    if (!auth.success) {
-      return auth.response;
+    if (!userIdResult.success) {
+      return userIdResult.response;
     }
 
+    const { userId } = userIdResult;
+
     try {
-      const boosts = await getUserBoosts(auth.userId);
+      const boosts = await getUserBoosts(userId);
       const recordings = getAllRecordings();
       const recordingMap = new Map(recordings.map((recording) => [recording.shortId, recording]));
       const items = boosts
@@ -27,7 +33,7 @@ export async function GET(request: Request) {
 
           if (!recording) {
             logWarn("account.boosts.recording_missing", {
-              userId: auth.userId,
+              userId,
               videoId: boost.video_id,
             });
 
@@ -46,7 +52,7 @@ export async function GET(request: Request) {
 
       return NextResponse.json({ items });
     } catch (error) {
-      logError("account.boosts.failed", error, { userId: auth.userId });
+      logError("account.boosts.failed", error, { userId });
 
       return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }

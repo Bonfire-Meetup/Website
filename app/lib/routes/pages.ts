@@ -19,6 +19,7 @@ export const PAGE_ROUTES = {
   PHOTOS_ALBUM: (album: string) => `/photos/${album}`,
   PRESS: "/press",
   SPEAK: "/speak",
+  THIRD_PARTY: "/third-party",
   TIMELINE: "/timeline",
   USER: (compressedId: string) => `/user/${compressedId}`,
   WATCH: (slug: string, shortId: string) => `/watch/${slug}-${shortId}`,

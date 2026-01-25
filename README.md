@@ -4,11 +4,14 @@ Welcome to the official Bonfire Events homepage. It burns bright, loads fast (mo
 
 ## Stack
 
-- Next.js (App Router)
-- React + TypeScript
-- Tailwind CSS
-- next-intl for i18n
-- Bun for scripts/dev
+- Next.js 16 (App Router)
+- React 19 + TypeScript
+- Tailwind CSS 4
+- Redux Toolkit + TanStack React Query
+- next-intl (i18n)
+- Neon Postgres
+- Bun
+- oxlint + oxfmt
 
 ## Local dev
 

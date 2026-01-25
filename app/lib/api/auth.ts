@@ -131,3 +131,35 @@ export const requireAllRoles = async (
 
   return auth;
 };
+
+type ResolveUserIdResult =
+  | { success: true; userId: string }
+  | { success: false; response: NextResponse };
+
+export const resolveUserId = async (
+  request: Request,
+  endpoint: string,
+  userIdParam: string,
+): Promise<ResolveUserIdResult> => {
+  const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
+
+  const auth = await requireAuth(request, endpoint);
+  if (!auth.success) {
+    return auth;
+  }
+
+  if (userIdParam === "me") {
+    return { success: true, userId: auth.userId };
+  }
+
+  if (userIdParam !== auth.userId) {
+    logWarn(`${endpoint}.forbidden`, {
+      reason: "user_id_mismatch",
+      requestedUserId: userIdParam,
+      authenticatedUserId: auth.userId,
+    });
+    return { response: respond({ error: "forbidden" }, { status: 403 }), success: false };
+  }
+
+  return { success: true, userId: auth.userId };
+};

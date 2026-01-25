@@ -413,7 +413,8 @@
     "timelineLabel": "Timeline",
     "faqLabel": "FAQ",
     "pressLabel": "Press",
-    "legalLabel": "Code of Conduct & Legal"
+    "legalLabel": "Code of Conduct & Legal",
+    "attributionsLabel": "Attributions"
   },
   "meta": {
     "siteTitle": "{brandName} - Game Dev Meetups",
@@ -1095,6 +1096,26 @@
     "api": {
       "title": "API Error",
       "message": "Failed to load video data. Please try again."
+    }
+  },
+  "attributions": {
+    "title": "Attributions",
+    "subtitle": "Open source technologies and libraries used in this project",
+    "intro": "This website is built using open source technologies. We are grateful to the developers and maintainers of these projects. Below is a list of the main technologies and their licenses.",
+    "footer": "This list includes the primary dependencies. For a complete list of all packages and their licenses, please refer to the package.json file in the project repository.",
+    "categories": {
+      "framework": "Framework & Core",
+      "state": "State Management",
+      "styling": "Styling",
+      "database": "Database",
+      "i18n": "Internationalization",
+      "auth": "Authentication",
+      "utilities": "Utilities",
+      "fonts": "Fonts",
+      "build": "Build Tools",
+      "analytics": "Analytics",
+      "security": "Security",
+      "linting": "Linting & Formatting"
     }
   }
 }
