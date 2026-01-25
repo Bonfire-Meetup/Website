@@ -98,10 +98,10 @@ export function RecordingPlayer({
               <div ref={inlinePlayerRef} className="relative aspect-video w-full bg-black" />
 
               <div className="border-b border-neutral-200/40 dark:border-neutral-700/40">
-                <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 sm:px-6">
+                <div className="flex flex-nowrap items-center justify-between gap-2 px-4 py-4 sm:gap-3 sm:px-6">
                   <LikeBoostButtons onBoostedByLoad={setBoostedBy} shortId={recording.shortId} />
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <WatchLaterButton shortId={recording.shortId} variant="icon" size="sm" />
                     <ShareMenu shareUrl={shareUrl} shareText={shareText} />
                     <button
