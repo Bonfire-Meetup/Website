@@ -443,7 +443,6 @@ export function ReaderClient() {
           ...scanResult,
           alreadyCheckedIn: true,
         });
-        setError(t("errors.alreadyCheckedIn"));
       } else {
         setError(result.error ?? t("errors.checkInFailed"));
       }
@@ -531,76 +530,98 @@ export function ReaderClient() {
 
         {scanResult && (
           <div
-            className={`overflow-hidden rounded-xl border px-4 py-3 shadow-lg sm:rounded-2xl sm:px-6 sm:py-4 ${
+            className={`overflow-hidden rounded-xl border shadow-lg sm:rounded-2xl ${
               scanResult.valid
                 ? "border-emerald-200 bg-emerald-50 dark:border-emerald-500/30 dark:bg-emerald-500/10"
                 : "border-red-200 bg-red-50 dark:border-red-500/30 dark:bg-red-500/10"
             }`}
           >
-            <div className="flex items-start gap-2.5 sm:gap-3">
-              {scanResult.valid && scanResult.emailHash ? (
-                <UserAvatar
-                  emailHash={scanResult.emailHash}
-                  size={56}
-                  name={scanResult.name}
-                  className="mt-0.5 shrink-0 border-2 border-emerald-200 shadow-sm sm:mt-0 dark:border-emerald-500/30"
-                />
-              ) : (
-                <div
-                  className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full sm:h-8 sm:w-8 ${
-                    scanResult.valid
-                      ? "bg-emerald-600 dark:bg-emerald-500"
-                      : "bg-red-600 dark:bg-red-500"
-                  }`}
-                >
-                  {scanResult.valid ? (
-                    <CheckIcon className="h-4 w-4 text-white sm:h-5 sm:w-5" />
-                  ) : (
-                    <CloseIcon className="h-4 w-4 text-white sm:h-5 sm:w-5" />
+            <div className="px-4 py-4 sm:px-6 sm:py-5">
+              <div className="flex items-start gap-3 sm:gap-4">
+                {scanResult.valid && scanResult.emailHash ? (
+                  <UserAvatar
+                    emailHash={scanResult.emailHash}
+                    size={64}
+                    name={scanResult.name}
+                    className="shrink-0 border-2 border-emerald-200 shadow-md sm:border-emerald-300 dark:border-emerald-500/40 dark:shadow-emerald-500/20"
+                  />
+                ) : (
+                  <div
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-md sm:h-14 sm:w-14 ${
+                      scanResult.valid
+                        ? "bg-emerald-600 dark:bg-emerald-500"
+                        : "bg-red-600 dark:bg-red-500"
+                    }`}
+                  >
+                    {scanResult.valid ? (
+                      <CheckIcon className="h-6 w-6 text-white sm:h-7 sm:w-7" />
+                    ) : (
+                      <CloseIcon className="h-6 w-6 text-white sm:h-7 sm:w-7" />
+                    )}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={`text-sm font-bold sm:text-base ${
+                          scanResult.valid
+                            ? "text-emerald-900 dark:text-emerald-100"
+                            : "text-red-900 dark:text-red-100"
+                        }`}
+                      >
+                        {scanResult.valid ? t("result.valid") : t("result.invalid")}
+                      </div>
+                      {scanResult.valid && (
+                        <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                      )}
+                    </div>
+                    <div
+                      className={`text-xs font-medium ${
+                        scanResult.valid
+                          ? "text-emerald-600/70 dark:text-emerald-300/70"
+                          : "text-red-600/70 dark:text-red-300/70"
+                      }`}
+                    >
+                      {new Date(scanResult.timestamp).toLocaleTimeString()}
+                    </div>
+                  </div>
+                  {scanResult.valid && scanResult.name && (
+                    <div className="mb-2 text-base font-semibold text-emerald-900 sm:text-lg dark:text-emerald-100">
+                      {scanResult.name}
+                    </div>
                   )}
-                </div>
-              )}
-              <div className="flex-1 space-y-0.5 sm:space-y-1">
-                <div
-                  className={`text-xs font-semibold sm:text-sm ${
-                    scanResult.valid
-                      ? "text-emerald-900 dark:text-emerald-200"
-                      : "text-red-900 dark:text-red-200"
-                  }`}
-                >
-                  {scanResult.valid ? t("result.valid") : t("result.invalid")}
-                </div>
-                {scanResult.valid && scanResult.name && (
-                  <div className="text-sm font-medium text-emerald-900 sm:text-base dark:text-emerald-200">
-                    {scanResult.name}
-                  </div>
-                )}
-                {scanResult.valid && scanResult.userId && (
-                  <div className="text-xs text-emerald-700 dark:text-emerald-300">
-                    {t("result.userId")}: {scanResult.userId}
-                  </div>
-                )}
-                {!scanResult.valid && scanResult.error && (
-                  <div className="text-xs text-red-700 dark:text-red-300">{scanResult.error}</div>
-                )}
-                {scanResult.valid && scanResult.checkedIn && (
-                  <div className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
-                    {t("result.checkedIn")}
-                  </div>
-                )}
-                {scanResult.valid && scanResult.alreadyCheckedIn && (
-                  <div className="text-xs font-medium text-amber-700 dark:text-amber-300">
-                    {t("result.alreadyCheckedIn")}
-                  </div>
-                )}
-                <div
-                  className={`text-xs ${
-                    scanResult.valid
-                      ? "text-emerald-600/70 dark:text-emerald-300/70"
-                      : "text-red-600/70 dark:text-red-300/70"
-                  }`}
-                >
-                  {new Date(scanResult.timestamp).toLocaleTimeString()}
+                  {scanResult.valid && scanResult.userId && (
+                    <div className="mb-3 space-y-1.5">
+                      <div className="text-xs font-medium tracking-wide text-emerald-800/70 uppercase dark:text-emerald-200/70">
+                        {t("result.userId")}
+                      </div>
+                      <div className="rounded-md border border-emerald-200/50 bg-emerald-100/50 px-2.5 py-1.5 font-mono text-sm text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-100">
+                        {scanResult.userId}
+                      </div>
+                    </div>
+                  )}
+                  {!scanResult.valid && scanResult.error && (
+                    <div className="mt-2 text-sm text-red-800 dark:text-red-200">
+                      {scanResult.error}
+                    </div>
+                  )}
+                  {scanResult.valid && scanResult.checkedIn && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-emerald-300/50 bg-emerald-200/60 px-3 py-1.5 dark:border-emerald-500/40 dark:bg-emerald-500/30">
+                      <CheckIcon className="h-4 w-4 text-emerald-700 dark:text-emerald-300" />
+                      <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-200">
+                        {t("result.checkedIn")}
+                      </span>
+                    </div>
+                  )}
+                  {scanResult.valid && scanResult.alreadyCheckedIn && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-yellow-300/50 bg-yellow-200/60 px-3 py-1.5 dark:border-yellow-500/40 dark:bg-yellow-500/30">
+                      <CheckIcon className="h-4 w-4 text-yellow-700 dark:text-yellow-300" />
+                      <span className="text-xs font-semibold text-yellow-800 dark:text-yellow-200">
+                        {t("result.alreadyCheckedIn")}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -608,11 +629,12 @@ export function ReaderClient() {
               scanResult.userId &&
               !scanResult.checkedIn &&
               !scanResult.alreadyCheckedIn && (
-                <div className="mt-3 sm:mt-4">
+                <div className="border-t border-emerald-200/50 px-4 pt-4 pb-4 sm:px-6 sm:pb-5 dark:border-emerald-500/20">
                   <Button
                     onClick={handleCheckIn}
                     disabled={isCheckingIn || !selectedEvent}
-                    className="w-full bg-emerald-600 py-2.5 text-sm font-medium text-white shadow-md hover:bg-emerald-700 disabled:opacity-50 sm:py-3 sm:text-base dark:bg-emerald-500 dark:hover:bg-emerald-600"
+                    variant="plain"
+                    className="w-full bg-emerald-600 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-emerald-700 disabled:opacity-50 sm:py-3.5 sm:text-base dark:bg-emerald-500 dark:hover:bg-emerald-600"
                   >
                     {isCheckingIn ? t("checkingIn") : t("checkIn")}
                   </Button>
