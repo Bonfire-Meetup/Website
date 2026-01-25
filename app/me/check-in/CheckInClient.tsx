@@ -121,13 +121,7 @@ export function CheckInClient() {
 
   if (tokenQuery.isError) {
     return (
-      <div className="mx-auto max-w-md space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">
-            {t("error.title")}
-          </h1>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">{t("error.description")}</p>
-        </div>
+      <div className="mx-auto max-w-md pt-4">
         <div className="overflow-hidden rounded-3xl border border-red-200/70 bg-gradient-to-b from-red-50 to-red-100/50 p-8 shadow-lg dark:border-red-500/30 dark:from-red-950/30 dark:to-red-900/20">
           <div className="mb-6 flex justify-center">
             <div className="rounded-full bg-red-100 p-4 dark:bg-red-900/50">
@@ -146,12 +140,7 @@ export function CheckInClient() {
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-6">
-      <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">{t("pageTitle")}</h1>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">{t("pageSubtitle")}</p>
-      </div>
-
+    <div className="mx-auto max-w-md pt-4">
       <div className="overflow-hidden rounded-3xl shadow-2xl">
         <div className="relative h-32 bg-gradient-to-br from-orange-500 via-pink-600 to-purple-600">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIwLjUiIG9wYWNpdHk9IjAuMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30" />
@@ -223,7 +212,7 @@ export function CheckInClient() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 shadow-sm dark:border-neutral-700/50 dark:bg-neutral-900/50">
+      <div className="mt-6 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 shadow-sm dark:border-neutral-700/50 dark:bg-neutral-900/50">
         <div className="border-b border-neutral-200/70 px-4 py-3 dark:border-neutral-700/50">
           <div className="flex items-center gap-2 text-sm font-semibold text-neutral-900 dark:text-white">
             <InfoIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />

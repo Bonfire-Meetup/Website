@@ -15,9 +15,9 @@
     "nextFeatured": "Další doporučené"
   },
   "header": {
-    "home": "Home",
+    "home": "Domů",
     "upcoming": "Akce",
-    "library": "Library",
+    "library": "Záznamy",
     "watchLater": "Watch Later",
     "crew": "Crew",
     "photos": "Fotky",
@@ -38,7 +38,7 @@
       "highlight": "Game Devs",
       "part2": "Potkávají"
     },
-    "subtitle": "Přednášky, pivo a networking. Potkej českou gamedev komunitu na meetupech v {prague} a {zlin}.",
+    "subtitle": "Přednášky, pivo a networking. Potkej českou gamedev komunitu na meetupech v Praze a Zlíně.",
     "cta": {
       "events": "Doraž na další meetup",
       "recordings": "Záznamy přednášek"
@@ -65,8 +65,8 @@
       }
     },
     "recordings": {
-      "title": "Trending Talks",
-      "subtitle": "Nejvíc sledované záznamy z komunity.",
+      "title": "Žhavé přednášky",
+      "subtitle": "Aktuálně oblíbené přednášky z komunity.",
       "viewAll": "Záznamy",
       "empty": "Z téhle lokace tu zatím nic není.",
       "filter": {
@@ -77,7 +77,7 @@
     },
     "locations": {
       "title": "Kde nás najdeš",
-      "subtitle": "Bonfire spojuje gamedev v {prague} i {zlin}.",
+      "subtitle": "Bonfire spojuje gamedev komunitu v Praze a Zlíně.",
       "country": "{country}",
       "eventsHosted": "Proběhlo {count} akcí",
       "sponsorsTitle": "Partneři",
@@ -112,6 +112,7 @@
     }
   },
   "events": {
+    "comingSoon": "Již brzy",
     "speakers": "Speakeři",
     "tba": "Dáme vědět brzy",
     "locationLabel": "Kde: {location}",
@@ -124,10 +125,10 @@
     "register": "Registrace přes:"
   },
   "recordings": {
-    "backToLibrary": "Zpět do Library",
+    "backToLibrary": "Zpět do knihovny",
     "cinema": "Kino mód",
     "exitCinema": "Vypnout kino",
-    "nextUp": "Další v pořadí",
+    "nextUp": "Následující",
     "locationLabel": "Místo: {location}",
     "speaker": "Speaker",
     "date": "Datum",
@@ -142,9 +143,9 @@
     "spark": "Spark",
     "sparks": "Sparks",
     "lightItUp": "Hoď Spark",
-    "watchLater": "Watch Later",
-    "addToWatchLater": "Přidat do Watch Later",
-    "removeFromWatchLater": "Odebrat z Watch Later",
+    "watchLater": "Sledovat později",
+    "addToWatchLater": "Přidat do sledování",
+    "removeFromWatchLater": "Odebrat z sledování",
     "inWatchlist": "Uloženo",
     "boost": "Boost",
     "boosts": "Boosty",
@@ -162,19 +163,19 @@
   "press": {
     "eyebrow": "Média",
     "title": "Press kit",
-    "subtitle": "Loga, barvy a pár pravidel použití — všechno na jednom místě.",
+    "subtitle": "Loga, barvy a pár pravidel použití - všechno na jednom místě.",
     "about": {
       "title": "O Bonfire",
-      "body": "{brandName} je česká game dev komunita, která pořádá meetupy v {prague} a {zlin}. Bonfire připravuje přednášky, panely a networkingové večery pro profíky, studenty i indie tvůrce. Bonfire stojí na dobrovolnících a partnerech, kteří věří ve sdílení know-how a přátelskou scénu.",
+      "body": "{brandName} je česká game dev komunita, která pořádá meetupy v Praze a Zlíně. Bonfire připravuje přednášky, panely a networkingové večery pro profíky, studenty i indie tvůrce. Bonfire stojí na dobrovolnících a partnerech, kteří věří ve sdílení know-how a přátelskou scénu.",
       "copy": "Kopírovat text",
       "copied": "Zkopírováno"
     },
     "stats": {
       "title": "Rychlá čísla",
       "subtitle": "Pro reference a články.",
-      "firstPragueLabel": "První akce v {prague}",
+      "firstPragueLabel": "První akce v Praze",
       "firstPragueDate": "ČTV, 9. 11. 2023",
-      "firstZlinLabel": "První akce v {zlin}",
+      "firstZlinLabel": "První akce v Zlíně",
       "firstZlinDate": "PON, 4. 12. 2023"
     },
     "logos": {
@@ -250,7 +251,7 @@
   "photos": {
     "eyebrow": "Fotoalba",
     "title": "Byli jsme u toho",
-    "subtitle": "Fotografická kronika Bonfire meetupů — přednášky, backstage i community moments.",
+    "subtitle": "Fotografická kronika Bonfire meetupů - přednášky, backstage a komunitní momenty.",
     "featuredTitle": "Výběr fotek",
     "featuredSubtitle": "Náhodná ochutnávka napříč alby.",
     "stats": {
@@ -283,7 +284,7 @@
   "libraryPage": {
     "eyebrow": "Pusť si to zpětně",
     "title": "Library přednášek",
-    "subtitle": "Kompletní archiv Bonfire — tech, art i produkce. Plus live podcasty a rozhovory.",
+    "subtitle": "Kompletní archiv Bonfire - tech, art i produkce. Plus live podcasty a rozhovory.",
     "rows": {
       "latest": "Nejnovější",
       "prague": "{prague} sessions",
@@ -325,7 +326,10 @@
   "teamPage": {
     "eyebrow": "Tým",
     "title": "Poznej krásně chaotickou crew",
-    "subtitle": "Děláme meetupy, krotíme kabely a držíme vibe v {prague} a {zlin}.",
+    "titlePart1": "Poznej",
+    "titleHighlight": "krásně chaotickou",
+    "titlePart2": "crew",
+    "subtitle": "Děláme meetupy, krotíme kabely a držíme vibe v Praze a Zlíně.",
     "introEyebrow": "Jak to funguje",
     "introLines": [
       "Žádné pláště. Jen checklisty, kafe a tvrdohlavá láska ke gamedevu.",
@@ -397,7 +401,7 @@
     "joinCalloutContact": "kontaktní formulář",
     "founderEyebrow": "Slovo zakladatele",
     "founderTitle": "Díky",
-    "founderNote": "Bonfire existuje díky **vám** — crew, speakerům i každému, kdo dorazí. Budovat komunitu, propojovat lidi a sdílet know-how — o tom to celé je. **Díky**, že jste toho součástí.",
+    "founderNote": "Bonfire existuje díky **vám** - crew, speakerům i každému, kdo dorazí. Budovat komunitu, propojovat lidi a sdílet know-how - o tom to celé je. **Díky**, že jste toho součástí.",
     "founderSignature": "Martin Pernica"
   },
   "footer": {
@@ -408,6 +412,7 @@
     "youtubeLabel": "YouTube",
     "facebookLabel": "Facebook",
     "discordLabel": "Discord",
+    "githubLabel": "GitHub",
     "copyright": "© {year} {brandName}. Ukuchtěno s láskou pro gamedev komunitu.",
     "crewLabel": "Crew",
     "timelineLabel": "Timeline",
@@ -480,7 +485,7 @@
     "title": "Často kladené dotazy",
     "titlePart1": "Často kladené",
     "titleHighlight": "dotazy",
-    "subtitle": "Rychlé odpovědi na to, jak web funguje — akce, komunita i Sparks/Boosty.",
+    "subtitle": "Rychlé odpovědi na to, jak web funguje - akce, komunita i Sparks/Boosty.",
     "sections": {
       "general": "Obecné",
       "participation": "Zapojení",
@@ -491,7 +496,7 @@
     "questions": {
       "whatIsBonfire": {
         "title": "Co je to Bonfire Events?",
-        "answer": "Bonfire je česká gamedev komunita, která dělá pravidelné meetupy v Praze a ve Zlíně. Propojujeme profíky, studenty i indie tvůrce — sdílíme know‑how, networkujeme a posouváme scénu dál."
+        "answer": "Bonfire je česká gamedev komunita, která dělá pravidelné meetupy v Praze a ve Zlíně. Propojujeme profíky, studenty i indie tvůrce - sdílíme know‑how, networkujeme a posouváme scénu dál."
       },
       "howOften": {
         "title": "Jak často pořádáte meetupy?",
@@ -499,11 +504,11 @@
       },
       "entryFee": {
         "title": "Platí se vstupné?",
-        "answer": "Vstup je díky partnerům zdarma. Kapacita je ale omezená — registrace (typicky přes Lu.ma) není povinná, ale hodně pomůže s plánováním místa a občerstvení."
+        "answer": "Vstup je díky partnerům zdarma. Kapacita je ale omezená - registrace (typicky přes Lu.ma) není povinná, ale hodně pomůže s plánováním místa a občerstvení."
       },
       "howToSpeaker": {
         "title": "Jak se můžu stát speakerem?",
-        "answer": "Pořád hledáme nové hlasy. Ať je to deep‑dive, post‑mortem nebo krátký lightning talk — hoď nám návrh přes stránku <link>Navrhnout přednášku</link>."
+        "answer": "Pořád hledáme nové hlasy. Ať je to deep‑dive, post‑mortem nebo krátký lightning talk - hoď nám návrh přes stránku <link>Navrhnout přednášku</link>."
       },
       "howToJoin": {
         "title": "Jak se můžu přidat k týmu (Crew)?",
@@ -515,7 +520,7 @@
       },
       "discord": {
         "title": "Máte komunitní Discord?",
-        "answer": "Jo! Přidej se na náš <link>Discord server</link> — pokecáš s ostatními, hodíš svůj projekt a budeš mít čerstvé info o akcích."
+        "answer": "Jo! Přidej se na náš <link>Discord server</link> - pokecáš s ostatními, hodíš svůj projekt a budeš mít čerstvé info o akcích."
       },
       "photos": {
         "title": "Můžu použít fotky z akcí?",
@@ -531,7 +536,7 @@
       },
       "howToDelete": {
         "title": "Můžu svůj účet smazat?",
-        "answer": "Jo. Účet i veškerou související aktivitu můžeš kdykoliv trvale smazat na své <link>profilové stránce</link>. Jen pozor: je to <bold>nevratné</bold>."
+        "answer": "Ano. Účet i veškerou související aktivitu můžeš kdykoliv trvale smazat na své <link>profilové stránce</link>. Jen pozor: je to <bold>nevratné</bold>."
       }
     },
     "impact": {
@@ -540,24 +545,24 @@
     "sparks": {
       "title": "Co jsou Sparks?",
       "body": "Sparks jsou lehké lajky. Ukládáme je přes hashovanou IP a user‑agent, takže na ně nepotřebuješ účet. Protože se dají snáz vytvořit, bereme je jako slabší signál.",
-      "impact": "Sparks zvedají trending score a můžou pomoct videu proklouznout do Trending Talks — hlavně když je čerstvé."
+      "impact": "Sparks zvedají trending score a můžou pomoct videu proklouznout do Trending Talks - hlavně když je nové."
     },
     "boosts": {
       "title": "Co jsou Boosty?",
-      "body": "Boosty jsou silnější hlas od přihlášených členů. Každý účet může Boostnout video jen jednou, takže se to hůř „game‑uje“ a je to lepší signál reálného zájmu.",
+      "body": "Boosty jsou silnější hlas od přihlášených členů. Každý účet může Boostnout video jen jednou a je to lepší signál reálného zájmu.",
       "impact": "Boosty mají v trending score vyšší váhu než Sparks, takže i pár Boostů umí viditelnost fakt zvednout.",
       "limitsTitle": "Limity",
-      "limits": "Boosty jsou 2× za měsíc, max. 6 naskládaných najednou. Nevyužité Boosty se můžou stacknout až do tohohle stropu."
+      "limits": "Boosty dostanete 2 za měsíc, ale max. 6 jich můžete mít najednou."
     },
     "guild": {
       "title": "Co je to Bonfire Guild?",
       "body": "Bonfire Guild je program ve vývoji pro nejvíc engaged členy. Bude to o backstage přístupu, early obsahu a tom, že budeš mít hlas v tom, kam se komunita posune.",
-      "description": "Chystáme něco speciálního pro naše nejaktivnější lidi — místo, kde budeš mít exkluzivní obsah, early preview a možnost ovlivnit směr Bonfire. Guild tě dostane blíž k tomu, co děláme: backstage momenty, early dropy záznamů a další perks.",
+      "description": "Chystáme něco speciálního pro naše nejaktivnější lidi - místo, kde budeš mít exkluzivní obsah, early preview a možnost ovlivnit směr Bonfire. Guild tě dostane blíž k tomu, co děláme: backstage momenty, early dropy záznamů a další perks.",
       "features": "Guild bude mít early access k nahrávkám, backstage obsah, member‑only Discord kanály, hlasování o budoucích tématech a speciální badge na profilu.",
-      "comingSoon": "Guild aktivně stavíme tak, aby to stálo za to. Sleduj svůj profil — až to otevřeme, uvidíš to tam jako první.",
+      "comingSoon": "Guild aktivně stavíme tak, aby to stálo za to. Sleduj svůj profil - až to otevřeme, uvidíš to tam jako první.",
       "badge": "Guild",
       "featuresTitle": "Co dostaneš",
-      "stayTunedTitle": "Zůstaň naladěný"
+      "stayTunedTitle": "Již brzy"
     }
   },
   "language": {
@@ -921,7 +926,7 @@
     "details": "Údaje",
     "signOut": "Odhlásit se",
     "viewProfile": "Zobrazit profil",
-    "watchLater": "Watch Later",
+    "watchLater": "Uložené přednášky",
     "checkIn": "Check-in",
     "reader": "Reader",
     "name": {
@@ -966,7 +971,7 @@
       "title": "Přidělení boostů",
       "available": "boostů k dispozici",
       "availableOne": "boost k dispozici",
-      "nextAllocation": "Další přidělení: {date}",
+      "nextAllocation": "Další drop: {date}",
       "limitNote": "Maximálně 6 boostů celkem. Nad tento limit nebudou vydány žádné další boosty."
     },
     "boosted": {
@@ -983,7 +988,7 @@
     },
     "publicProfile": {
       "title": "Veřejný profil",
-      "body": "Veřejná viditelnost, seznam boostů a zmínky u videí.",
+      "body": "Veřejná viditelnost, seznam boostů, zmínky u videí a další.",
       "enabled": "Veřejný profil povolen",
       "disabled": "Veřejný profil vypnut"
     },
@@ -994,7 +999,8 @@
         "title": "Boostnutá videa"
       },
       "checkedIn": {
-        "title": "Navštívené akce"
+        "title": "Navštívené akce",
+        "empty": "Zatím žádné navštívené akce."
       },
       "private": {
         "title": "Soukromý profil",
@@ -1058,6 +1064,17 @@
     "copySuccess": "Zkopírováno!",
     "copyError": "Kopírování se nezdařilo",
     "copyIdLabel": "Kopírovat ID"
+  },
+  "watchLaterPage": {
+    "title": "Uložené přednášky",
+    "subtitle": "Uložené přednášky na později.",
+    "empty": "Zatím tu nic není.",
+    "emptyAction": "Projdi záznamy a ulož si, co chceš vidět.",
+    "saved": "Uloženo {count} videí",
+    "savedOne": "Uloženo 1 video",
+    "remove": "Odebrat",
+    "loading": "Načítám uložené přednášky…",
+    "error": "Nepodařilo se načíst uložené přednášky"
   },
   "checkIn": {
     "title": "Check-in na akci | {brandName}",
@@ -1148,18 +1165,18 @@
     "intro": "Tento web je postaven pomocí open source technologií. Jsme vděční vývojářům a maintainerům těchto projektů. Níže je seznam hlavních technologií a jejich licencí.",
     "footer": "Tento seznam obsahuje hlavní závislosti. Pro úplný seznam všech balíčků a jejich licencí se prosím podívejte do souboru package.json v repozitáři projektu.",
     "categories": {
-      "framework": "Framework & Jádro",
-      "state": "Správa stavu",
-      "styling": "Stylování",
-      "database": "Databáze",
-      "i18n": "Internacionalizace",
-      "auth": "Autentizace",
-      "utilities": "Utility",
-      "fonts": "Fonty",
-      "build": "Build nástroje",
-      "analytics": "Analytika",
-      "security": "Bezpečnost",
-      "linting": "Linting & Formátování"
+      "framework": "Framework & Core",
+      "state": "State Management",
+      "styling": "Styling",
+      "database": "Database",
+      "i18n": "Internationalization",
+      "auth": "Authentication",
+      "utilities": "Utilities",
+      "fonts": "Fonts",
+      "build": "Build Tools",
+      "analytics": "Analytics",
+      "security": "Security",
+      "linting": "Linting & Formatting"
     }
   }
 }

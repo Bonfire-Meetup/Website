@@ -68,15 +68,7 @@ export function ReaderClient() {
 
   if (!auth.hydrated) {
     return (
-      <div className="mx-auto w-full max-w-2xl space-y-4 px-2 sm:space-y-6 sm:px-0">
-        <div className="space-y-1 text-center sm:space-y-2">
-          <h1 className="text-xl font-bold text-neutral-900 sm:text-2xl dark:text-white">
-            {t("pageTitle")}
-          </h1>
-          <p className="text-xs text-neutral-600 sm:text-sm dark:text-neutral-400">
-            {t("pageSubtitle")}
-          </p>
-        </div>
+      <div className="mx-auto w-full max-w-2xl px-2 pt-4 sm:px-0">
         <div className="flex items-center justify-center py-8 sm:py-12">
           <div className="text-xs text-neutral-600 sm:text-sm dark:text-neutral-400">
             {t("loading")}
@@ -88,15 +80,7 @@ export function ReaderClient() {
 
   if (!auth.isAuthenticated || !isCrew) {
     return (
-      <div className="mx-auto w-full max-w-2xl space-y-4 px-2 sm:space-y-6 sm:px-0">
-        <div className="space-y-1 text-center sm:space-y-2">
-          <h1 className="text-xl font-bold text-neutral-900 sm:text-2xl dark:text-white">
-            {t("pageTitle")}
-          </h1>
-          <p className="text-xs text-neutral-600 sm:text-sm dark:text-neutral-400">
-            {t("pageSubtitle")}
-          </p>
-        </div>
+      <div className="mx-auto w-full max-w-2xl px-2 pt-4 sm:px-0">
         <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-xs text-red-700 sm:px-4 sm:py-3 sm:text-sm dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
           {t("errors.accessDenied")}
         </div>
@@ -454,16 +438,7 @@ export function ReaderClient() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-4 px-2 sm:space-y-6 sm:px-0">
-      <div className="space-y-1 text-center sm:space-y-2">
-        <h1 className="text-xl font-bold text-neutral-900 sm:text-2xl dark:text-white">
-          {t("pageTitle")}
-        </h1>
-        <p className="text-xs text-neutral-600 sm:text-sm dark:text-neutral-400">
-          {t("pageSubtitle")}
-        </p>
-      </div>
-
+    <div className="mx-auto w-full max-w-2xl space-y-4 px-2 pt-4 sm:space-y-6 sm:px-0">
       <div className="space-y-3 sm:space-y-4">
         <div>
           <label

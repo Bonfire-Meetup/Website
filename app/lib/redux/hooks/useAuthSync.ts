@@ -28,7 +28,9 @@ const WAKE_DETECTION_THRESHOLD_MS = 30000;
 const getAdaptiveInterval = (): number => {
   const failures = getConsecutiveFailures();
   if (failures > 0) {
-    return Math.min(BASE_CHECK_INTERVAL_MS * 2 ** failures, 300000);
+    const baseInterval = Math.min(BASE_CHECK_INTERVAL_MS * 2 ** failures, 300000);
+    const jitter = Math.random() * 0.5 * baseInterval;
+    return baseInterval + jitter;
   }
   return BASE_CHECK_INTERVAL_MS;
 };

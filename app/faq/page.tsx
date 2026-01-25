@@ -242,7 +242,7 @@ export default async function FaqPage() {
                     </div>
                     <div className="mt-1">{t("guild.features")}</div>
                   </div>
-                  <div className={ENGAGEMENT_BRANDING.guild.classes.infoBox}>
+                  <div className={`mt-3 ${ENGAGEMENT_BRANDING.guild.classes.infoBox}`}>
                     <div className={ENGAGEMENT_BRANDING.guild.classes.infoBoxTitle}>
                       {t("guild.stayTunedTitle", { defaultValue: "Stay Tuned" })}
                     </div>

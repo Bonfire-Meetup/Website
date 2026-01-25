@@ -1,6 +1,12 @@
 import { getTranslations } from "next-intl/server";
 
-import { DiscordIcon, FacebookIcon, MailIcon, YouTubeIcon } from "@/components/shared/icons";
+import {
+  DiscordIcon,
+  FacebookIcon,
+  GitHubIcon,
+  MailIcon,
+  YouTubeIcon,
+} from "@/components/shared/icons";
 import { Link } from "@/i18n/navigation";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -44,7 +50,7 @@ export async function Footer() {
                 href="https://www.facebook.com/bonfire.meetup"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:scale-105 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-white/5 dark:hover:bg-white/10 dark:hover:text-white"
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:scale-105 hover:bg-blue-100 hover:text-blue-600 dark:bg-white/5 dark:hover:bg-blue-500/15 dark:hover:text-blue-400"
                 aria-label={t("facebookLabel")}
               >
                 <FacebookIcon className="h-4 w-4" />
@@ -57,6 +63,15 @@ export async function Footer() {
                 aria-label={t("discordLabel")}
               >
                 <DiscordIcon className="h-4 w-4" />
+              </a>
+              <a
+                href="https://github.com/Bonfire-Meetup"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100/80 text-neutral-500 transition-all duration-300 hover:scale-105 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-white/5 dark:hover:bg-white/10 dark:hover:text-white"
+                aria-label={t("githubLabel")}
+              >
+                <GitHubIcon className="h-4 w-4" />
               </a>
             </div>
           </div>

@@ -68,10 +68,6 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
     events = [];
   }
 
-  if (events.length === 0) {
-    return null;
-  }
-
   return (
     <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-neutral-900/95">
       <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600" />
@@ -93,77 +89,83 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
           </div>
         </div>
 
-        <div className="space-y-3">
-          {events.map((event) => {
-            let formattedDate = "TBA";
-            if (event.date && event.date !== "TBA") {
-              const date = new Date(event.date);
-              if (!isNaN(date.getTime())) {
-                formattedDate = new Intl.DateTimeFormat("en-US", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                }).format(date);
+        {events.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-neutral-200 bg-neutral-50/50 px-6 py-8 text-center dark:border-white/10 dark:bg-white/5">
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("checkedIn.empty")}</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {events.map((event) => {
+              let formattedDate = "TBA";
+              if (event.date && event.date !== "TBA") {
+                const date = new Date(event.date);
+                if (!isNaN(date.getTime())) {
+                  formattedDate = new Intl.DateTimeFormat("en-US", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  }).format(date);
+                }
               }
-            }
 
-            const formattedCheckedInAt = event.checkedInAt
-              ? new Intl.DateTimeFormat("en-US", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                }).format(event.checkedInAt)
-              : null;
+              const formattedCheckedInAt = event.checkedInAt
+                ? new Intl.DateTimeFormat("en-US", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  }).format(event.checkedInAt)
+                : null;
 
-            return (
-              <div
-                key={event.id}
-                className="group relative overflow-hidden rounded-2xl border border-neutral-200/70 bg-gradient-to-br from-blue-50/50 to-indigo-50/30 transition-all hover:border-blue-300 hover:shadow-lg dark:border-white/10 dark:from-blue-950/20 dark:to-indigo-950/20 dark:hover:border-blue-500/30"
-              >
-                <div className="p-4 sm:p-5">
-                  <div className="mb-3 flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <h3 className="mb-1.5 line-clamp-2 text-base leading-snug font-bold text-neutral-900 sm:text-lg dark:text-white">
-                        {event.title}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
-                        <span className="font-medium capitalize">{event.location}</span>
-                        {event.date && (
-                          <>
-                            <span className="text-neutral-300 dark:text-neutral-600">•</span>
-                            <span>{formattedDate}</span>
-                          </>
-                        )}
+              return (
+                <div
+                  key={event.id}
+                  className="group relative overflow-hidden rounded-2xl border border-neutral-200/70 bg-gradient-to-br from-blue-50/50 to-indigo-50/30 transition-all hover:border-blue-300 hover:shadow-lg dark:border-white/10 dark:from-blue-950/20 dark:to-indigo-950/20 dark:hover:border-blue-500/30"
+                >
+                  <div className="p-4 sm:p-5">
+                    <div className="mb-3 flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <h3 className="mb-1.5 line-clamp-2 text-base leading-snug font-bold text-neutral-900 sm:text-lg dark:text-white">
+                          {event.title}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                          <span className="font-medium capitalize">{event.location}</span>
+                          {event.date && (
+                            <>
+                              <span className="text-neutral-300 dark:text-neutral-600">•</span>
+                              <span>{formattedDate}</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 p-2 shadow-md">
+                        <CheckIcon className="h-4 w-4 text-white" aria-hidden="true" />
                       </div>
                     </div>
-                    <div className="flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 p-2 shadow-md">
-                      <CheckIcon className="h-4 w-4 text-white" aria-hidden="true" />
-                    </div>
-                  </div>
 
-                  {formattedCheckedInAt && (
-                    <div className="flex items-center gap-1.5 rounded-md bg-blue-100/60 px-2.5 py-1.5 text-xs font-medium text-blue-800 dark:bg-blue-500/20 dark:text-blue-300">
-                      <svg
-                        className="h-3.5 w-3.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <span>Checked in on {formattedCheckedInAt}</span>
-                    </div>
-                  )}
+                    {formattedCheckedInAt && (
+                      <div className="flex items-center gap-1.5 rounded-md bg-blue-100/60 px-2.5 py-1.5 text-xs font-medium text-blue-800 dark:bg-blue-500/20 dark:text-blue-300">
+                        <svg
+                          className="h-3.5 w-3.5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <span>Checked in on {formattedCheckedInAt}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -117,7 +117,7 @@ export function EventCard({
               size="sm"
               className="bg-amber-100 font-semibold tracking-[0.2em] text-amber-700 uppercase dark:bg-amber-500/20 dark:text-amber-300"
             >
-              Coming soon
+              {t("comingSoon")}
             </Pill>
           </div>
 

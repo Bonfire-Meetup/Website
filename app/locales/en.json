@@ -112,6 +112,7 @@
     }
   },
   "events": {
+    "comingSoon": "Coming soon",
     "speakers": "Speakers",
     "tba": "To be announced",
     "locationLabel": "Location: {location}",
@@ -325,6 +326,9 @@
   "teamPage": {
     "eyebrow": "Team",
     "title": "Meet the beautiful chaos crew",
+    "titlePart1": "Meet the",
+    "titleHighlight": "beautiful chaos",
+    "titlePart2": "crew",
     "subtitle": "We run meetups, wrangle cables, and keep the vibes sharp in {prague} and {zlin}.",
     "introEyebrow": "How it works",
     "introLines": [
@@ -408,6 +412,7 @@
     "youtubeLabel": "YouTube",
     "facebookLabel": "Facebook",
     "discordLabel": "Discord",
+    "githubLabel": "GitHub",
     "copyright": "© {year} {brandName}. Made with love for the gamedev community.",
     "crewLabel": "Crew",
     "timelineLabel": "Timeline",
@@ -983,7 +988,8 @@
         "title": "Boosted videos"
       },
       "checkedIn": {
-        "title": "Events attended"
+        "title": "Events attended",
+        "empty": "No events attended yet."
       },
       "private": {
         "title": "Private Profile",

@@ -262,9 +262,9 @@ export default async function TeamPage() {
             </p>
 
             <h1 className="mb-4 text-4xl font-black tracking-tight text-neutral-900 sm:text-6xl lg:text-7xl dark:text-white">
-              <span className="block">Meet the</span>
-              <span className="text-gradient block">beautiful chaos</span>
-              <span className="block">crew</span>
+              <span className="block">{t("titlePart1")}</span>
+              <span className="text-gradient block">{t("titleHighlight")}</span>
+              <span className="block">{t("titlePart2")}</span>
             </h1>
 
             <p className="mb-4 text-base text-neutral-600 sm:text-lg dark:text-neutral-400">
