@@ -75,7 +75,6 @@ export const verifyAccessToken = async (token: string) => {
   return payload;
 };
 
-// Refresh token cookie configuration
 export const REFRESH_TOKEN_COOKIE_NAME = "bnf_refresh_token";
 
 export const getRefreshTokenCookieOptions = (maxAge?: number) => ({
@@ -86,14 +85,8 @@ export const getRefreshTokenCookieOptions = (maxAge?: number) => ({
   maxAge: maxAge ?? refreshTokenTtlSeconds,
 });
 
-// Refresh token generation and hashing
-// We store only the hash in the database for security
 const REFRESH_TOKEN_BYTES = 32;
 
-/**
- * Generate a cryptographically secure random refresh token.
- * Returns a URL-safe base64 encoded string.
- */
 export const generateRefreshToken = (): string => {
   const buffer = crypto.randomBytes(REFRESH_TOKEN_BYTES);
   return buffer.toString("base64url");

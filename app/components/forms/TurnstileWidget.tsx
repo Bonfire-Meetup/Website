@@ -247,8 +247,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function
     setToken("");
     clearPendingExecute();
     setScriptError(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [clearPendingExecute]);
 
   useEffect(() => {
     if (!scriptLoaded && window.turnstile) {

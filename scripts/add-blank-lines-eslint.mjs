@@ -59,9 +59,7 @@ async function main() {
       if (stats.isDirectory()) {
         dirs.push(dir);
       }
-    } catch {
-      // Directory doesn't exist, skip
-    }
+    } catch {}
   }
 
   const searchDirs = dirs.length > 0 ? dirs : [startDir];

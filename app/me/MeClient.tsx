@@ -46,6 +46,7 @@ import {
   type ProfileState,
 } from "@/lib/redux/slices/profileSlice";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { logWarn } from "@/lib/utils/log-client";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
 import { BoostedVideosBlock } from "./BoostedVideosBlock";
@@ -261,8 +262,8 @@ export function MeClient() {
       const data = await deleteChallengeMutation.mutateAsync();
       dispatch(setDeleteChallengeToken(data.challenge_token));
       dispatch(setDeleteStep("verify"));
-    } catch {
-      // Ignore errors
+    } catch (error) {
+      logWarn("account.delete_challenge_failed", { error: String(error) });
     }
   };
 
@@ -305,8 +306,8 @@ export function MeClient() {
     try {
       await removeBoostMutation.mutateAsync(shortId);
       dispatch(removeBoostAction(shortId));
-    } catch {
-      // Ignore errors
+    } catch (error) {
+      logWarn("profile.remove_boost_failed", { error: String(error), shortId });
     }
   };
 

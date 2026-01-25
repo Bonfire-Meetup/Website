@@ -1,5 +1,7 @@
 "use client";
 
+import { logWarn } from "@/lib/utils/log-client";
+
 import { STORAGE_KEYS } from "../storage/keys";
 
 export interface AccessTokenPayload {
@@ -245,8 +247,8 @@ export const revokeSession = async (options?: { revokeAll?: boolean; revokeFamil
         revoke_family: options?.revokeFamily ?? false,
       }),
     });
-  } catch {
-    // Error handling is done in the finally block
+  } catch (error) {
+    logWarn("auth.revoke_session_failed", { error: String(error) });
   } finally {
     clearAccessToken();
   }

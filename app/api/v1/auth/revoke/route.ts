@@ -46,8 +46,12 @@ export const POST = async (request: Request) =>
         revokeAll = parsed.data.revoke_all;
         revokeFamily = parsed.data.revoke_family;
       }
-    } catch {
-      // Ignore errors during revocation
+    } catch (error) {
+      logWarn("auth.revoke.parse_body_failed", {
+        ...clientFingerprint,
+        error: String(error),
+        requestId,
+      });
     }
 
     const cookieStore = await cookies();
