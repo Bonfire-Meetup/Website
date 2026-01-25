@@ -39,7 +39,7 @@ export function useAuthSync() {
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const isRefreshingRef = useRef(false);
   const isMountedRef = useRef(true);
-  const isPageVisibleRef = useRef(!document.hidden);
+  const isPageVisibleRef = useRef(true);
   const lastIntervalUpdateRef = useRef(Date.now());
 
   const performRefresh = useCallback(async (): Promise<string | null> => {
