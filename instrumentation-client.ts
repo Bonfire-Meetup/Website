@@ -14,7 +14,7 @@ initBotId({
     { method: "POST", path: API_ROUTES.AUTH.CHALLENGES },
     { method: "POST", path: API_ROUTES.AUTH.TOKEN },
     { method: "GET", path: API_ROUTES.ME.BASE },
-    { method: "GET", path: API_ROUTES.ME.BOOSTS },
+    { method: "GET", path: API_ROUTES.USERS.ME.BOOSTS },
     { method: "GET", path: API_ROUTES.ME.AUTH_ATTEMPTS },
     { method: "PATCH", path: API_ROUTES.ME.PREFERENCES },
     { method: "POST", path: API_ROUTES.ME.DELETE_CHALLENGE },

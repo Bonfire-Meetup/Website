@@ -8,7 +8,6 @@ export const API_ROUTES = {
   ME: {
     AUTH_ATTEMPTS: "/api/v1/me/auth-attempts",
     BASE: "/api/v1/me",
-    BOOSTS: "/api/v1/me/boosts",
     DELETE: "/api/v1/me/delete",
     DELETE_CHALLENGE: "/api/v1/me/delete-challenge",
     PREFERENCES: "/api/v1/me/preferences",
@@ -24,6 +23,7 @@ export const API_ROUTES = {
   },
   USERS: {
     ME: {
+      BOOSTS: "/api/v1/users/me/boosts",
       WATCHLIST: "/api/v1/users/me/watchlist",
       WATCHLIST_VIDEO: (videoId: string) => `/api/v1/users/me/watchlist/${videoId}`,
       CHECK_IN: "/api/v1/users/me/check-in",
