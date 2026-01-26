@@ -331,7 +331,7 @@ export function Lightbox({
           className="absolute inset-0 h-full w-full scale-105 object-cover opacity-70 blur-lg sm:hidden"
         />
         <div className="absolute inset-0 bg-black/30 sm:hidden" />
-        <div className="relative z-20 inline-flex max-h-[100svh] max-w-[100vw] items-center justify-center sm:max-h-full sm:max-w-full">
+        <div className="relative z-20 flex items-center justify-center">
           <div
             className={`absolute inset-0 z-20 flex sm:hidden ${isPinching ? "pointer-events-none" : ""}`}
           >
@@ -359,7 +359,7 @@ export function Lightbox({
           <img
             src={current.src}
             alt={current.alt}
-            className={`block max-h-[100svh] max-w-[100vw] object-contain sm:max-h-full sm:max-w-full sm:transition-transform sm:duration-200 ${
+            className={`block max-h-[100svh] max-w-[100vw] object-contain sm:max-h-[calc(100vh-10rem)] sm:max-w-[calc(100vw-8rem)] sm:transition-transform sm:duration-200 ${
               isZoomed ? "sm:scale-150 sm:cursor-zoom-out" : "sm:cursor-zoom-in"
             }`}
             onClick={(e) => {

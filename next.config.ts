@@ -7,7 +7,7 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const CDN_HOSTNAME = "cdn-img.bnf.events";
 
 const nextConfig = {
-  allowedDevOrigins: ["localhost", "elixeum.local"],
+  allowedDevOrigins: ["localhost", "bonfire.dev"],
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },
