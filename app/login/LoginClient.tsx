@@ -260,7 +260,7 @@ export function LoginClient() {
         body: JSON.stringify({
           grant_type: "urn:bonfire:grant-type:email-otp",
           challenge_token: challengeToken,
-          code: code.trim(),
+          code: code.replace(/\D/g, ""),
           email,
         }),
         headers: { "Content-Type": "application/json" },
@@ -496,10 +496,13 @@ export function LoginClient() {
                       inputMode="numeric"
                       pattern="[0-9]*"
                       required
-                      value={code}
-                      onChange={(event) => setCode(event.target.value.trim())}
-                      className={`${inputBaseClass} ${inputNormalClass} text-center font-mono text-lg tracking-[0.5em]`}
-                      placeholder="123456"
+                      value={code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code}
+                      onChange={(event) => {
+                        const normalized = event.target.value.replace(/\D/g, "").slice(0, 6);
+                        setCode(normalized);
+                      }}
+                      className={`${inputBaseClass} ${inputNormalClass} text-center font-mono text-xl tracking-[0.5em] py-4`}
+                      placeholder="123 456"
                       autoFocus
                     />
                   </div>

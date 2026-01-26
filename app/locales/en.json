@@ -205,10 +205,10 @@
       "subtitle": "Primary brand and flame accents.",
       "copy": "Copy hex",
       "copied": "Copied",
-      "brand": "Bonfire Violet",
-      "brandDeep": "Deep Violet",
-      "fireMid": "Fire Magenta",
-      "fireEnd": "Fire Coral"
+      "bonfire": "Bonfire",
+      "bonfireViolet": "Soft violet",
+      "fireMagenta": "Fire Magenta",
+      "fireCoral": "Fire Coral"
     },
     "guidelines": {
       "title": "Usage Guidelines",

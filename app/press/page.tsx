@@ -122,10 +122,10 @@ export default async function PressPage() {
   ];
 
   const colors = [
-    { hex: "#8b5cf6", name: t("colors.brand") },
-    { hex: "#ff5555", name: t("colors.brandDeep") },
-    { hex: "#f43f5e", name: t("colors.fireMid") },
-    { hex: "#f59e0b", name: t("colors.fireEnd") },
+    { hex: "#ff5555", name: t("colors.bonfire") },
+    { hex: "#8b5cf6", name: t("colors.bonfireViolet") },
+    { hex: "#f43f5e", name: t("colors.fireMagenta") },
+    { hex: "#f59e0b", name: t("colors.fireCoral") },
   ];
 
   const stats = [

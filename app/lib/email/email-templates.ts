@@ -109,10 +109,12 @@ export const renderEmailCodeTemplate = async ({
   const html = await loadTemplate(htmlPath);
   const text = await loadTemplate(textPath);
   const ttl = ttlTextByLocale(resolvedLocale, minutes);
+  const formattedCode = code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;
   const baseView = { brandName: common.brandName, code, tagline: common.tagline, ttl };
   const view = {
     brandName: common.brandName,
     code,
+    formattedCode,
     codeLabel: mustache.render(translations.codeLabel ?? "", baseView),
     expires: mustache.render(translations.expires ?? "", baseView),
     footer: mustache.render(translations.footer ?? "", baseView),

@@ -205,10 +205,10 @@
       "subtitle": "Primární barva + ohnivé akcenty.",
       "copy": "Kopírovat hex",
       "copied": "Zkopírováno",
-      "brand": "Bonfire fialová",
-      "brandDeep": "Tmavá fialová",
-      "fireMid": "Ohnivá magenta",
-      "fireEnd": "Ohnivý korál"
+      "bonfire": "Bonfire",
+      "bonfireViolet": "Jemná fialová",
+      "fireMagenta": "Ohnivá magenta",
+      "fireCoral": "Ohnivý korál"
     },
     "guidelines": {
       "title": "Pravidla použití",
