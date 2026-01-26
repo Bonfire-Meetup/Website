@@ -30,7 +30,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
       {nextUp ? (
         <Link
           href={PAGE_ROUTES.WATCH(nextUp.slug, nextUp.shortId)}
-          prefetch={true}
+          prefetch
           className="group flex items-center gap-4 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/80 p-3 shadow-lg shadow-black/5 transition hover:-translate-y-0.5 hover:border-neutral-200 hover:shadow-xl dark:border-white/10 dark:bg-neutral-950 dark:shadow-black/20 dark:hover:border-white/20"
         >
           <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-xl bg-neutral-900">

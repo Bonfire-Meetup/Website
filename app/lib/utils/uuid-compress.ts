@@ -1,11 +1,12 @@
 const BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-const GROUP_SIZES = [4, 4, 4, 4, 6];
+const TOTAL_LEN = 22;
+const GROUP_A = 11;
 
 function encodeBase58(buffer: Buffer): string {
   let value = BigInt(`0x${buffer.toString("hex")}`);
 
   if (value === 0n) {
-    return "1".repeat(22);
+    return "1".repeat(TOTAL_LEN);
   }
 
   let output = "";
@@ -15,12 +16,15 @@ function encodeBase58(buffer: Buffer): string {
     value /= 58n;
   }
 
-  return output.padStart(22, "1");
+  return output.padStart(TOTAL_LEN, "1");
 }
 
 function decodeBase58(input: string): Buffer | null {
-  const normalized = input.replace(/-/g, "");
-  if (normalized.length !== 22) {
+  const normalized = input.replace(/[-_.]/g, "");
+  if (normalized.length !== TOTAL_LEN) {
+    return null;
+  }
+  if (!/^[1-9A-HJ-NP-Za-km-z]+$/.test(normalized)) {
     return null;
   }
 
@@ -34,26 +38,22 @@ function decodeBase58(input: string): Buffer | null {
   }
 
   const hex = value.toString(16).padStart(32, "0");
-  const buffer = Buffer.from(hex, "hex");
-  return buffer.length === 16 ? buffer : null;
+  return Buffer.from(hex, "hex");
 }
 
-function groupBase58(value: string): string {
-  const parts: string[] = [];
-  let cursor = 0;
-
-  for (const size of GROUP_SIZES) {
-    parts.push(value.slice(cursor, cursor + size));
-    cursor += size;
-  }
-
-  return parts.join("-");
+function groupBase58_11_11(value: string): string {
+  return `${value.slice(0, GROUP_A)}-${value.slice(GROUP_A)}`;
 }
 
 export function compressUuid(uuid: string): string {
-  const bytes = Buffer.from(uuid.replace(/-/g, ""), "hex");
+  const hex = uuid.replace(/-/g, "");
+  if (!/^[0-9a-fA-F]{32}$/.test(hex)) {
+    throw new Error("Invalid UUID");
+  }
+
+  const bytes = Buffer.from(hex, "hex");
   const base58 = encodeBase58(bytes);
-  return groupBase58(base58);
+  return groupBase58_11_11(base58);
 }
 
 export function decompressUuid(compressed: string): string | null {
