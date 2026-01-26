@@ -7,12 +7,13 @@ import { useEffect, useState } from "react";
 import { VideoCard } from "@/components/recordings/VideoCard";
 import { BookmarkIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
+import { ApiError } from "@/lib/api/errors";
 import { useWatchlist } from "@/lib/api/user-profile";
 import { getHasValidToken } from "@/lib/auth/client";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { setWatchlist } from "@/lib/redux/slices/profileSlice";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 
 export function WatchLaterClient() {
   const t = useTranslations("watchLaterPage");
@@ -38,6 +39,12 @@ export function WatchLaterClient() {
       dispatch(setWatchlist(videoIds));
     }
   }, [watchlistData, dispatch]);
+
+  useEffect(() => {
+    if (error instanceof ApiError && error.status === 401) {
+      router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
+    }
+  }, [error, router]);
 
   if (!hasToken) {
     return null;

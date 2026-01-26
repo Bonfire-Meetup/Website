@@ -15,7 +15,7 @@ import {
 import { getHasValidToken } from "@/lib/auth/client";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { useVideoEngagementRedux } from "@/lib/redux/hooks";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { BoltIcon, FireIcon, FrownIcon } from "../shared/icons";
 
@@ -155,7 +155,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
 
   const handleBoost = async () => {
     if (!getHasValidToken()) {
-      router.push(PAGE_ROUTES.LOGIN_WITH_REASON("video-boost"));
+      router.push(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.VIDEO_BOOST));
       return;
     }
 
@@ -174,7 +174,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
       await boostMutation.mutateAsync(adding);
     } catch (err: unknown) {
       if (err instanceof ApiError && err.status === 401) {
-        router.push(PAGE_ROUTES.LOGIN_WITH_REASON("video-boost"));
+        router.push(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.VIDEO_BOOST));
         return;
       }
 

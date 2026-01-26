@@ -47,7 +47,7 @@ import {
   setStagedPublicProfile,
   type ProfileState,
 } from "@/lib/redux/slices/profileSlice";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { logWarn } from "@/lib/utils/log-client";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
@@ -162,19 +162,18 @@ export function MeClient() {
 
   useEffect(() => {
     const err = profileQuery.error;
-    if (err instanceof ApiError && err.status === 401) {
-      if (loggingOut) {
-        return;
-      }
-      dispatch(clearAuth());
-      dispatch(clearProfile());
-      clearAccessToken();
-      queryClient.removeQueries({ queryKey: ["user-profile"] });
-      queryClient.removeQueries({ queryKey: ["video-boosts"] });
-      queryClient.removeQueries({ queryKey: ["watchlist"] });
-      queryClient.removeQueries({ queryKey: ["video-watchlist"] });
-      router.replace(PAGE_ROUTES.LOGIN);
+    if (!(err instanceof ApiError) || err.status !== 401 || loggingOut) {
+      return;
     }
+
+    dispatch(clearAuth());
+    dispatch(clearProfile());
+    clearAccessToken();
+    queryClient.removeQueries({ queryKey: ["user-profile"] });
+    queryClient.removeQueries({ queryKey: ["video-boosts"] });
+    queryClient.removeQueries({ queryKey: ["watchlist"] });
+    queryClient.removeQueries({ queryKey: ["video-watchlist"] });
+    router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
   }, [profileQuery.error, queryClient, router, dispatch, loggingOut]);
 
   const isHydrated = mounted && auth.hydrated;
@@ -365,7 +364,7 @@ export function MeClient() {
                   </Button>
                 </Link>
 
-                <Link href={PAGE_ROUTES.ME_CHECK_IN} prefetch={false}>
+                <Link href={PAGE_ROUTES.EVENT_CHECK_IN} prefetch={false}>
                   <Button
                     variant="ghost"
                     size="sm"

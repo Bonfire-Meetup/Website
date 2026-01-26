@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/lib/api/errors";
-import { getValidAccessTokenAsync, shouldRetryMutation } from "@/lib/api/query-utils";
+import {
+  authFetch,
+  getValidAccessTokenAsync,
+  shouldRetryMutation,
+  shouldRetryQuery,
+} from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { clearAccessToken } from "@/lib/auth/client";
 import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
@@ -58,33 +63,17 @@ async function fetchJsonOrNull<T>(response: Response): Promise<T | null> {
   }
 }
 
-async function fetchUserProfile(accessToken: string): Promise<UserProfileData> {
-  const response = await fetch(API_ROUTES.ME.BASE, {
-    headers: createAuthHeaders(accessToken),
-  });
-
-  if (!response.ok) {
-    if (response.status === 401) {
-      clearAccessToken();
-    }
-    throw new ApiError("User profile fetch failed", response.status);
-  }
-
-  return (await response.json()) as UserProfileData;
-}
-
 export function useUserProfile() {
   return useQuery<UserProfileData, ApiError>({
     queryFn: async () => {
-      const accessToken = await getValidAccessTokenAsync();
-      if (!accessToken) {
-        throw new ApiError("Access token required", 401);
+      const response = await authFetch(API_ROUTES.ME.BASE);
+      if (!response.ok) {
+        throw new ApiError("User profile fetch failed", response.status);
       }
-      return fetchUserProfile(accessToken);
+      return (await response.json()) as UserProfileData;
     },
     queryKey: USER_PROFILE_QUERY_KEY,
-    retry: (failureCount, error) =>
-      !(error instanceof ApiError && error.status === 401) && failureCount < 2,
+    retry: shouldRetryQuery,
     staleTime: 30_000,
   });
 }
@@ -238,27 +227,14 @@ export function useDeleteAccountMutation() {
 export function useWatchlist() {
   return useQuery<{ items: { videoId: string; addedAt: string }[] }, ApiError>({
     queryFn: async () => {
-      const accessToken = await getValidAccessTokenAsync();
-      if (!accessToken) {
-        throw new ApiError("Access token required", 401);
-      }
-
-      const response = await fetch(API_ROUTES.USERS.ME.WATCHLIST, {
-        headers: createAuthHeaders(accessToken),
-      });
-
+      const response = await authFetch(API_ROUTES.USERS.ME.WATCHLIST);
       if (!response.ok) {
-        if (response.status === 401) {
-          clearAccessToken();
-        }
         throw new ApiError("Failed to fetch watchlist", response.status);
       }
-
       return (await response.json()) as { items: { videoId: string; addedAt: string }[] };
     },
     queryKey: WATCHLIST_QUERY_KEY,
-    retry: (failureCount, error) =>
-      !(error instanceof ApiError && error.status === 401) && failureCount < 2,
+    retry: shouldRetryQuery,
     staleTime: 30_000,
   });
 }
@@ -384,26 +360,15 @@ export function useRemoveFromWatchlistMutation() {
 export function useCheckInToken() {
   return useQuery<{ token: string; expiresAt: string }, ApiError>({
     queryFn: async () => {
-      const accessToken = await getValidAccessTokenAsync();
-      if (!accessToken) {
-        throw new ApiError("Access token required", 401);
-      }
-
-      const response = await fetch(API_ROUTES.USERS.ME.CHECK_IN, {
-        headers: createAuthHeaders(accessToken),
-      });
-
+      const response = await authFetch(API_ROUTES.USERS.ME.CHECK_IN);
       if (!response.ok) {
-        if (response.status === 401) {
-          clearAccessToken();
-        }
         const data = await fetchJsonOrNull<{ error?: string }>(response);
         throw new ApiError("Failed to fetch check-in token", response.status, data?.error);
       }
-
       return (await response.json()) as { token: string; expiresAt: string };
     },
     queryKey: ["check-in-token"],
+    retry: shouldRetryQuery,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
     refetchOnMount: true,

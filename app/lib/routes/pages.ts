@@ -1,3 +1,10 @@
+export const LOGIN_REASON = {
+  VIDEO_BOOST: "video-boost",
+  SESSION_EXPIRED: "session-expired",
+} as const;
+
+export type LoginReason = (typeof LOGIN_REASON)[keyof typeof LOGIN_REASON];
+
 export const PAGE_ROUTES = {
   ANCHOR: {
     EVENTS: "/#events",
@@ -12,9 +19,9 @@ export const PAGE_ROUTES = {
   LIBRARY: "/library",
   LOGIN: "/login",
   LOGIN_WITH_CHALLENGE: (token: string) => `/login?challenge=${token}`,
-  LOGIN_WITH_REASON: (reason: string) => `/login?reason-hint=${reason}`,
+  LOGIN_WITH_REASON: (reason: LoginReason) => `/login?reason-hint=${reason}`,
   ME: "/me",
-  ME_CHECK_IN: "/me/check-in",
+  EVENT_CHECK_IN: "/event/check-in",
   EVENT_READER: "/event/reader",
   PHOTOS: "/photos",
   PHOTOS_ALBUM: (album: string) => `/photos/${album}`,

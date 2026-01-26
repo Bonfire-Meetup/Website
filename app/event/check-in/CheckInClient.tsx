@@ -1,23 +1,33 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import QRCode from "qrcode";
 import { useEffect, useMemo, useState } from "react";
 
 import { ClockIcon, QrCodeIcon, InfoIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
+import { ApiError } from "@/lib/api/errors";
 import { useCheckInToken } from "@/lib/api/user-profile";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 
 const REFRESH_INTERVAL_MS = 9 * 60 * 1000;
 const DEVICE_WAKE_THRESHOLD_MS = 30 * 1000;
 
 export function CheckInClient() {
   const t = useTranslations("checkIn");
+  const router = useRouter();
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const tokenQuery = useCheckInToken();
   const [lastActivityTime, setLastActivityTime] = useState(Date.now());
+
+  useEffect(() => {
+    if (tokenQuery.error instanceof ApiError && tokenQuery.error.status === 401) {
+      router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
+    }
+  }, [tokenQuery.error, router]);
 
   const tokenValue = tokenQuery.data?.token ?? null;
 

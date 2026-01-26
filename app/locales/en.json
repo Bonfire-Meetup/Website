@@ -900,6 +900,7 @@
     "verifying": "Verifying",
     "cancel": "Cancel",
     "boostHint": "Boosting is for members only.",
+    "sessionExpiredHint": "Your session expired. Please log in again.",
     "termsPrefix": "By continuing you agree to the ",
     "termsLink": "terms and acknowledge the privacy policy",
     "termsSuffix": ".",

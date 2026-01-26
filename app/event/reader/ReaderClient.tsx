@@ -9,12 +9,12 @@ import { QrCodeIcon, CheckIcon, CloseIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { upcomingEvents } from "@/data/upcoming-events";
-import { getValidAccessToken } from "@/lib/api/query-utils";
+import { ApiError } from "@/lib/api/errors";
+import { authFetch } from "@/lib/api/query-utils";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppSelector } from "@/lib/redux/hooks";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { extractTokenFromUrl, parseCheckInToken } from "@/lib/utils/check-in-token";
-import { createAuthHeaders } from "@/lib/utils/http";
 
 interface ScanResult {
   valid: boolean;
@@ -315,25 +315,9 @@ export function ReaderClient() {
     }
 
     try {
-      const accessToken = getValidAccessToken();
-      if (!accessToken) {
-        clearTimeout(timeoutId);
-        setIsVerifying(false);
-        setScanResult({
-          valid: false,
-          error: t("errors.verificationFailed"),
-          timestamp: Date.now(),
-        });
-        isProcessingRef.current = false;
-        return;
-      }
-
-      const response = await fetch("/api/v1/check-in/verify", {
+      const response = await authFetch("/api/v1/check-in/verify", {
         method: "POST",
-        headers: {
-          ...createAuthHeaders(accessToken),
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
       });
 
@@ -375,9 +359,13 @@ export function ReaderClient() {
         }
         isProcessingRef.current = false;
       }
-    } catch {
+    } catch (err) {
       clearTimeout(timeoutId);
       setIsVerifying(false);
+      if (err instanceof ApiError && err.status === 401) {
+        router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
+        return;
+      }
       setScanResult({
         valid: false,
         error: t("errors.verificationFailed"),
@@ -396,19 +384,9 @@ export function ReaderClient() {
     setError(null);
 
     try {
-      const accessToken = getValidAccessToken();
-      if (!accessToken) {
-        setError(t("errors.verificationFailed"));
-        setIsCheckingIn(false);
-        return;
-      }
-
-      const response = await fetch("/api/v1/check-in", {
+      const response = await authFetch("/api/v1/check-in", {
         method: "POST",
-        headers: {
-          ...createAuthHeaders(accessToken),
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: scanResult.userId,
           eventId: selectedEvent,
@@ -430,7 +408,11 @@ export function ReaderClient() {
       } else {
         setError(result.error ?? t("errors.checkInFailed"));
       }
-    } catch {
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
+        return;
+      }
       setError(t("errors.checkInFailed"));
     } finally {
       setIsCheckingIn(false);

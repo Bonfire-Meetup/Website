@@ -911,6 +911,7 @@
     "verifying": "Ověřuji",
     "cancel": "Zrušit",
     "boostHint": "Boostování je pouze pro členy.",
+    "sessionExpiredHint": "Platnost relace vypršela. Přihlaste se znovu.",
     "termsPrefix": "Pokračováním souhlasíte s ",
     "termsLink": "podmínkami a zpracováním osobních údajů",
     "termsSuffix": ".",

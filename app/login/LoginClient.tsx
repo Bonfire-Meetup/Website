@@ -14,10 +14,78 @@ import { API_ROUTES } from "@/lib/api/routes";
 import { decodeAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { setToken } from "@/lib/redux/slices/authSlice";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { LOGIN_REASON, type LoginReason, PAGE_ROUTES } from "@/lib/routes/pages";
 import { clearAllAuthChallenges, getAuthChallengeKey } from "@/lib/storage/keys";
 
 type Step = "request" | "verify";
+
+interface HintConfig {
+  borderClass: string;
+  bgClass: string;
+  textClass: string;
+  icon: React.ReactNode;
+  translationKey: string;
+}
+
+const HINT_CONFIGS: Record<LoginReason, HintConfig> = {
+  [LOGIN_REASON.VIDEO_BOOST]: {
+    borderClass: "border-emerald-200/70 dark:border-emerald-500/20",
+    bgClass: "bg-emerald-50 dark:bg-emerald-500/10",
+    textClass: "text-emerald-700 dark:text-emerald-200",
+    icon: <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />,
+    translationKey: "boostHint",
+  },
+  [LOGIN_REASON.SESSION_EXPIRED]: {
+    borderClass: "border-amber-200/70 dark:border-amber-500/20",
+    bgClass: "bg-amber-50 dark:bg-amber-500/10",
+    textClass: "text-amber-700 dark:text-amber-200",
+    icon: (
+      <>
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </>
+    ),
+    translationKey: "sessionExpiredHint",
+  },
+};
+
+function ReasonHintBanner({
+  hint,
+  className = "",
+  t,
+}: {
+  hint: LoginReason | null;
+  className?: string;
+  t: (key: string) => string;
+}) {
+  if (!hint) {
+    return null;
+  }
+
+  const config = HINT_CONFIGS[hint];
+  if (!config) {
+    return null;
+  }
+
+  return (
+    <div
+      className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm ${config.borderClass} ${config.bgClass} ${config.textClass} ${className}`}
+    >
+      <svg
+        className="h-4 w-4 shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {config.icon}
+      </svg>
+      <span>{t(config.translationKey)}</span>
+    </div>
+  );
+}
 
 const emailPlaceholders = [
   "lara@croft.com",
@@ -306,22 +374,7 @@ export function LoginClient() {
                   {t("subtitle")}
                 </p>
               </div>
-              {reasonHint === "video-boost" && (
-                <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200/70 bg-emerald-50 px-4 py-2 text-sm text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200">
-                  <svg
-                    className="h-4 w-4 shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
-                  </svg>
-                  <span>{t("boostHint")}</span>
-                </div>
-              )}
+              <ReasonHintBanner hint={reasonHint as LoginReason | null} t={t} />
               <div className="space-y-3 rounded-2xl border border-neutral-200/70 bg-white/80 px-5 py-4 text-sm text-neutral-700 dark:border-orange-500/20 dark:bg-orange-500/10 dark:text-neutral-200">
                 <div className="text-xs tracking-[0.2em] text-neutral-500 uppercase dark:text-orange-200/80">
                   {t("secureTitle")}
@@ -372,22 +425,11 @@ export function LoginClient() {
                 <AuthControls />
               </div>
 
-              {reasonHint === "video-boost" && (
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200/70 bg-emerald-50 px-4 py-2 text-sm text-emerald-700 md:hidden dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200">
-                  <svg
-                    className="h-4 w-4 shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
-                  </svg>
-                  <span>{t("boostHint")}</span>
-                </div>
-              )}
+              <ReasonHintBanner
+                hint={reasonHint as LoginReason | null}
+                className="mb-4 md:hidden"
+                t={t}
+              />
 
               {step === "request" && (
                 <div className="mb-4 inline-flex items-start gap-2.5 rounded-xl border border-blue-200/70 bg-blue-50/80 px-4 py-3 text-sm text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-200">
