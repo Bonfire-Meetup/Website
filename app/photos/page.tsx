@@ -191,6 +191,7 @@ export default async function PhotosPage() {
                   <Link
                     key={album.id}
                     href={PAGE_ROUTES.PHOTOS_ALBUM(toAlbumSlug(album))}
+                    prefetch={false}
                     className="glass-card group no-hover-pop overflow-hidden"
                   >
                     <div className="aspect-[16/10] overflow-hidden">

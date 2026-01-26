@@ -13,7 +13,12 @@ export function AuthNavButton() {
   const href = isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN;
 
   return (
-    <Link href={href} aria-label={isAuthed ? "Account" : "Login"} className="cursor-pointer">
+    <Link
+      href={href}
+      prefetch={false}
+      aria-label={isAuthed ? "Account" : "Login"}
+      className="cursor-pointer"
+    >
       <IconButton
         ariaLabel={isAuthed ? "Account" : "Login"}
         size="md"

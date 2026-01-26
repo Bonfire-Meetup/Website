@@ -31,6 +31,7 @@ export function Pill({
 
   if (href) {
     const hasQueryParams = href.includes("?");
+    const isLibraryLink = href.startsWith("/library");
     return (
       <Link
         href={href}
@@ -38,7 +39,7 @@ export function Pill({
         className={classes}
         aria-label={ariaLabel}
         title={title}
-        prefetch={!hasQueryParams}
+        prefetch={!hasQueryParams && !isLibraryLink}
       >
         {children}
       </Link>

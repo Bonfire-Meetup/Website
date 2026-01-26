@@ -66,6 +66,7 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
             <Link
               key={user.userId}
               href={PAGE_ROUTES.USER(compressedId)}
+              prefetch={false}
               className="group relative transition-all hover:z-10 hover:scale-105"
               title={user.name || undefined}
             >

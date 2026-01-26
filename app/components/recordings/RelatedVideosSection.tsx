@@ -30,7 +30,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
       {nextUp ? (
         <Link
           href={PAGE_ROUTES.WATCH(nextUp.slug, nextUp.shortId)}
-          prefetch
+          prefetch={true}
           className="group flex items-center gap-4 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/80 p-3 shadow-lg shadow-black/5 transition hover:-translate-y-0.5 hover:border-neutral-200 hover:shadow-xl dark:border-white/10 dark:bg-neutral-950 dark:shadow-black/20 dark:hover:border-white/20"
         >
           <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-xl bg-neutral-900">
@@ -63,7 +63,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
           <Link
             key={related.shortId}
             href={PAGE_ROUTES.WATCH(related.slug, related.shortId)}
-            prefetch={index === 0}
+            prefetch={false}
             className={`group recording-card-enter opacity-0 stagger-${
               (index % 8) + 1
             } relative flex flex-col overflow-hidden rounded-[24px] bg-white/90 text-neutral-900 shadow-xl ring-1 shadow-black/5 ring-black/5 transition-all hover:-translate-y-1 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10`}

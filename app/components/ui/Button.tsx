@@ -72,8 +72,15 @@ export function Button({
       );
     }
 
+    const isDynamicRoute =
+      href.includes("/watch/") ||
+      href.includes("/user/") ||
+      href.includes("/photos/") ||
+      href.includes("?") ||
+      href.startsWith("/me/");
+
     return (
-      <Link href={href} className={classes} aria-label={ariaLabel}>
+      <Link href={href} prefetch={!isDynamicRoute} className={classes} aria-label={ariaLabel}>
         {children}
       </Link>
     );
