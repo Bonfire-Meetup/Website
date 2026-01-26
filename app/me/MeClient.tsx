@@ -343,7 +343,7 @@ export function MeClient() {
           <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-row sm:items-center">
             {profile && (
               <>
-                <Link href={PAGE_ROUTES.USER(compressUuid(profile.id))}>
+                <Link href={PAGE_ROUTES.USER(compressUuid(profile.id))} prefetch={false}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -354,7 +354,7 @@ export function MeClient() {
                   </Button>
                 </Link>
 
-                <Link href={PAGE_ROUTES.WATCH_LATER}>
+                <Link href={PAGE_ROUTES.WATCH_LATER} prefetch={false}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -365,7 +365,7 @@ export function MeClient() {
                   </Button>
                 </Link>
 
-                <Link href={PAGE_ROUTES.ME_CHECK_IN}>
+                <Link href={PAGE_ROUTES.ME_CHECK_IN} prefetch={false}>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -377,7 +377,7 @@ export function MeClient() {
                 </Link>
 
                 {isCrew && (
-                  <Link href={PAGE_ROUTES.EVENT_READER}>
+                  <Link href={PAGE_ROUTES.EVENT_READER} prefetch={false}>
                     <Button
                       variant="ghost"
                       size="sm"
