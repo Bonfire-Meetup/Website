@@ -37,10 +37,20 @@ export const getRefreshTokenTtlSeconds = () => refreshTokenTtlSeconds;
 
 export const getRefreshTokenReuseWindowSeconds = () => refreshTokenReuseWindowSeconds;
 
-export const signAccessToken = async (userId: string, jti: string, roles: string[] = []) => {
+export const signAccessToken = async (
+  userId: string,
+  jti: string,
+  roles: string[] = [],
+  membershipTier: number | null = null,
+) => {
   const privateKey = await importPKCS8(getJwtPrivateKey(), "EdDSA");
 
-  return new SignJWT({ typ: "access", rol: roles })
+  const payload: { typ: string; rol: string[]; mbt?: number } = { typ: "access", rol: roles };
+  if (membershipTier !== null && membershipTier > 0) {
+    payload.mbt = membershipTier;
+  }
+
+  return new SignJWT(payload)
     .setProtectedHeader({ alg: "EdDSA", kid: getJwtKeyId(), typ: "JWT" })
     .setIssuer(getJwtIssuer())
     .setAudience(getJwtAudience())

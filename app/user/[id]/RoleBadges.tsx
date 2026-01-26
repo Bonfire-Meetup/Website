@@ -1,7 +1,14 @@
+import { GuildIcon } from "@/components/shared/icons";
+import {
+  hasMembership,
+  MEMBERSHIP_TIER_LABELS,
+  type MembershipTier,
+} from "@/lib/config/membership";
 import { USER_ROLES } from "@/lib/config/roles";
 
 interface RoleBadgesProps {
   roles: string[];
+  membershipTier?: number | null;
 }
 
 const roleConfig = {
@@ -9,7 +16,6 @@ const roleConfig = {
     label: "Crew",
     gradient: "from-blue-500 via-indigo-500 to-purple-600",
     borderGradient: "from-blue-400 to-purple-500",
-    glow: "blue-500/40",
     bgPattern: "bg-blue-500/10",
     icon: (
       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -21,7 +27,6 @@ const roleConfig = {
     label: "Speaker",
     gradient: "from-orange-500 via-rose-500 to-pink-600",
     borderGradient: "from-orange-400 to-pink-500",
-    glow: "orange-500/40",
     bgPattern: "bg-orange-500/10",
     icon: (
       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -35,10 +40,11 @@ const roleConfig = {
   },
 } as const;
 
-export function RoleBadges({ roles }: RoleBadgesProps) {
+export function RoleBadges({ roles, membershipTier }: RoleBadgesProps) {
   const displayRoles = roles.filter((role) => role in roleConfig);
+  const hasGuild = hasMembership(membershipTier);
 
-  if (displayRoles.length === 0) {
+  if (displayRoles.length === 0 && !hasGuild) {
     return null;
   }
 
@@ -67,6 +73,20 @@ export function RoleBadges({ roles }: RoleBadgesProps) {
           </div>
         );
       })}
+      {hasGuild && membershipTier && (
+        <div className="group relative">
+          <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-red-400 to-rose-500 opacity-75 blur transition duration-300 group-hover:opacity-100" />
+          <div className="relative flex items-center gap-2 rounded-full bg-gradient-to-r from-red-500 via-rose-500 to-red-600 px-4 py-2 shadow-xl">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-red-500/10 backdrop-blur-sm">
+              <GuildIcon className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-sm font-bold tracking-wide text-white uppercase">
+              {MEMBERSHIP_TIER_LABELS[membershipTier as MembershipTier] ?? `Tier ${membershipTier}`}
+            </span>
+            <div className="h-1 w-1 animate-pulse rounded-full bg-white/60" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

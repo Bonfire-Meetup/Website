@@ -25,6 +25,7 @@ interface AuthUserRow {
   preferences: UserPreferences;
   name: string | null;
   roles: string[];
+  membership_tier: number | null;
 }
 
 const getUserPreferences = (preferencesJson: unknown): UserPreferences => {
@@ -132,7 +133,7 @@ export const upsertAuthUser = async (email: string): Promise<string> => {
 export const getAuthUserById = async (id: string): Promise<AuthUserRow | null> => {
   const sql = getDatabaseClient();
   const rows = (await sql`
-    SELECT id, email, created_at, last_login_at, preferences, name, roles
+    SELECT id, email, created_at, last_login_at, preferences, name, roles, membership_tier
     FROM app_user
     WHERE id = ${id}
     LIMIT 1
@@ -208,6 +209,21 @@ export const removeAuthUserRole = async ({ userId, role }: { userId: string; rol
   await sql`
     UPDATE app_user
     SET roles = array_remove(roles, ${role})
+    WHERE id = ${userId}
+  `;
+};
+
+export const updateAuthUserMembershipTier = async ({
+  userId,
+  membershipTier,
+}: {
+  userId: string;
+  membershipTier: number | null;
+}) => {
+  const sql = getDatabaseClient();
+  await sql`
+    UPDATE app_user
+    SET membership_tier = ${membershipTier}
     WHERE id = ${userId}
   `;
 };

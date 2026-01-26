@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { UserAvatar } from "@/components/user/UserAvatar";
+import { hasMembership } from "@/lib/config/membership";
 import { getAuthUserById } from "@/lib/data/auth";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { decompressUuid, compressUuid } from "@/lib/utils/uuid-compress";
@@ -142,6 +143,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
 
   const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}${PAGE_ROUTES.USER(compressUuid(user.id))}`;
   const shareText = user.name ? `${user.name}'s profile` : "Community member profile";
+  const isMember = hasMembership(user.membership_tier);
 
   return (
     <>
@@ -151,8 +153,20 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--color-brand-glow-5),transparent_60%)] dark:bg-[radial-gradient(ellipse_at_top,var(--color-brand-glow-6),transparent_60%)]" />
 
           <div className="relative mx-auto max-w-4xl">
-            <div className="relative mb-8 overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-neutral-900/95">
-              <div className="from-brand-500/20 dark:from-brand-500/10 absolute top-0 left-0 h-32 w-full bg-gradient-to-br via-rose-500/20 to-orange-500/20 dark:via-rose-500/10 dark:to-orange-500/10" />
+            <div
+              className={`relative mb-8 overflow-hidden rounded-3xl border bg-white/95 shadow-2xl backdrop-blur-xl dark:bg-neutral-900/95 ${
+                isMember
+                  ? "border-red-300/50 shadow-red-500/20 dark:border-red-500/30"
+                  : "border-neutral-200/60 dark:border-white/10"
+              }`}
+            >
+              <div
+                className={`absolute top-0 left-0 h-32 w-full bg-gradient-to-br ${
+                  isMember
+                    ? "from-red-500/25 via-rose-500/20 to-red-400/15 dark:from-red-500/15 dark:via-rose-500/10 dark:to-red-400/10"
+                    : "from-brand-500/20 dark:from-brand-500/10 via-rose-500/20 to-orange-500/20 dark:via-rose-500/10 dark:to-orange-500/10"
+                }`}
+              />
 
               <div className="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
                 <ProfileShareButton shareUrl={profileUrl} shareText={shareText} />
@@ -161,7 +175,13 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
               <div className="relative px-6 pt-6 pb-8 sm:px-10 sm:pt-8 sm:pb-10">
                 <div className="flex flex-col items-center text-center">
                   <div className="relative mb-6">
-                    <div className="from-brand-400/30 absolute inset-0 -m-2 rounded-full bg-gradient-to-br via-rose-400/30 to-orange-400/30 blur-xl" />
+                    <div
+                      className={`absolute inset-0 -m-2 rounded-full bg-gradient-to-br blur-xl ${
+                        isMember
+                          ? "from-red-400/35 via-rose-400/30 to-red-300/25"
+                          : "from-brand-400/30 via-rose-400/30 to-orange-400/30"
+                      }`}
+                    />
                     <UserAvatar
                       emailHash={emailHash}
                       size={120}
@@ -177,7 +197,10 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
                       </h1>
                     )}
 
-                    <RoleBadges roles={user.roles} />
+                    <RoleBadges
+                      roles={user.roles}
+                      membershipTier={isMember ? user.membership_tier : null}
+                    />
 
                     <div className="flex flex-col items-center gap-3 pt-2 sm:flex-row sm:justify-center">
                       <div className="inline-flex items-center gap-2 rounded-xl border border-neutral-200/70 bg-neutral-50/80 px-4 py-2 text-sm font-medium text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">

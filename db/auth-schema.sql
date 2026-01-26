@@ -7,10 +7,12 @@ create table if not exists app_user (
   last_login_at timestamptz,
   preferences jsonb not null default '{}',
   name text,
-  roles text[] not null default '{}'
+  roles text[] not null default '{}',
+  membership_tier smallint
 );
 
 create index if not exists app_user_email_idx on app_user (email);
+create index if not exists app_user_membership_tier_idx on app_user (membership_tier) where membership_tier is not null;
 
 create table if not exists auth_challenge (
   id uuid primary key default gen_random_uuid(),

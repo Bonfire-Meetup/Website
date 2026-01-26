@@ -133,9 +133,10 @@ const issueTokens = async (
 ) => {
   const user = await getAuthUserById(userId);
   const roles = user?.roles ?? [];
+  const membershipTier = user?.membership_tier ?? null;
 
   const accessTokenJti = crypto.randomUUID();
-  const accessToken = await signAccessToken(userId, accessTokenJti, roles);
+  const accessToken = await signAccessToken(userId, accessTokenJti, roles, membershipTier);
   const accessExpiresIn = getAccessTokenTtlSeconds();
   const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000);
 
