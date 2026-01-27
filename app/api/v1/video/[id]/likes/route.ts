@@ -56,8 +56,8 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
       const result = await addVideoLike(videoId, ipHash, uaHash);
       const validated = videoLikeMutationSchema.parse(result);
 
-      revalidateTag("engagement-counts");
-      revalidateTag("hidden-gems");
+      revalidateTag("engagement-counts", "max");
+      revalidateTag("hidden-gems", "max");
 
       return NextResponse.json(validated);
     } catch (error) {
@@ -88,8 +88,8 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
       const result = await removeVideoLike(videoId, ipHash, uaHash);
       const validated = videoLikeMutationSchema.parse(result);
 
-      revalidateTag("engagement-counts");
-      revalidateTag("hidden-gems");
+      revalidateTag("engagement-counts", "max");
+      revalidateTag("hidden-gems", "max");
 
       return NextResponse.json(validated);
     } catch (error) {
