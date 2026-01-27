@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ApiError } from "@/lib/api/errors";
@@ -27,6 +27,8 @@ interface LikeBoostButtonsProps {
 export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsProps) {
   const t = useTranslations("recordings");
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { engagement, setLikes, setBoosts } = useVideoEngagementRedux(shortId);
 
   const [likePulse, setLikePulse] = useState(false);
@@ -154,8 +156,11 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
   };
 
   const handleBoost = async () => {
+    const query = searchParams.toString();
+    const returnPath = `${pathname}${query ? `?${query}` : ""}`;
+
     if (!getHasValidToken()) {
-      router.push(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.VIDEO_BOOST));
+      router.push(PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(LOGIN_REASON.VIDEO_BOOST, returnPath));
       return;
     }
 
@@ -174,7 +179,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
       await boostMutation.mutateAsync(adding);
     } catch (err: unknown) {
       if (err instanceof ApiError && err.status === 401) {
-        router.push(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.VIDEO_BOOST));
+        router.push(PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(LOGIN_REASON.VIDEO_BOOST, returnPath));
         return;
       }
 

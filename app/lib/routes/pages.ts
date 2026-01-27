@@ -20,6 +20,10 @@ export const PAGE_ROUTES = {
   LOGIN: "/login",
   LOGIN_WITH_CHALLENGE: (token: string) => `/login?challenge=${token}`,
   LOGIN_WITH_REASON: (reason: LoginReason) => `/login?reason-hint=${reason}`,
+  LOGIN_WITH_CHALLENGE_AND_RETURN: (token: string, returnPath?: string) =>
+    `/login?challenge=${token}${returnPath ? `&returnPath=${encodeURIComponent(returnPath)}` : ""}`,
+  LOGIN_WITH_REASON_AND_RETURN: (reason: LoginReason, returnPath?: string) =>
+    `/login?reason-hint=${reason}${returnPath ? `&returnPath=${encodeURIComponent(returnPath)}` : ""}`,
   ME: "/me",
   EVENT_CHECK_IN: "/event/check-in",
   EVENT_READER: "/event/reader",

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { AuthControls } from "@/components/auth/AuthControls";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
@@ -113,6 +113,19 @@ export function LoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
+  const returnPath = useMemo(() => {
+    const value = searchParams.get("returnPath");
+
+    if (!value || !value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) {
+      return null;
+    }
+
+    if (value.includes("://") || value.includes("\\\\")) {
+      return null;
+    }
+
+    return value;
+  }, [searchParams]);
 
   const [step, setStep] = useState<Step>("request");
   const [email, setEmail] = useState("");
@@ -164,9 +177,9 @@ export function LoginClient() {
     const token = readAccessToken();
 
     if (token && isAccessTokenValid(token)) {
-      router.replace(PAGE_ROUTES.ME);
+      router.replace(returnPath ?? PAGE_ROUTES.ME);
     }
-  }, [router]);
+  }, [returnPath, router]);
 
   useEffect(() => {
     const token = searchParams.get("challenge");
@@ -218,7 +231,7 @@ export function LoginClient() {
       clearAllAuthChallenges();
       const decoded = decodeAccessToken(result.accessToken);
       dispatch(setToken({ token: result.accessToken, decoded: decoded ?? undefined }));
-      router.replace(PAGE_ROUTES.ME);
+      router.replace(returnPath ?? PAGE_ROUTES.ME);
       return;
     }
 
@@ -282,7 +295,9 @@ export function LoginClient() {
     setChallengeToken(nextChallengeToken);
     setStep("verify");
     setStatus("Code sent. Check your inbox.");
-    router.replace(PAGE_ROUTES.LOGIN_WITH_CHALLENGE(nextChallengeToken));
+    router.replace(
+      PAGE_ROUTES.LOGIN_WITH_CHALLENGE_AND_RETURN(nextChallengeToken, returnPath ?? undefined),
+    );
     setLoading(false);
   };
 
@@ -355,7 +370,7 @@ export function LoginClient() {
         clearAllAuthChallenges();
         const decoded = decodeAccessToken(data.access_token);
         dispatch(setToken({ token: data.access_token, decoded: decoded ?? undefined }));
-        router.replace(PAGE_ROUTES.ME);
+        router.replace(returnPath ?? PAGE_ROUTES.ME);
 
         return;
       }
@@ -364,7 +379,7 @@ export function LoginClient() {
       setLoading(false);
       autoSubmitRef.current = false;
     },
-    [challengeToken, code, email, router, t, dispatch],
+    [challengeToken, code, email, router, t, dispatch, returnPath],
   );
 
   useEffect(() => {
