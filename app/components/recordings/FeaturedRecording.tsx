@@ -61,9 +61,6 @@ export function FeaturedRecording({
   const isAutoPlayPaused = isFeaturedPaused || !isPageVisible;
   const currentFeatured = candidates[featuredIndex] ?? candidates[0];
   const hasFeaturedHero = Boolean(currentFeatured?.featureHeroThumbnail);
-  const featuredThumbnail = hasFeaturedHero
-    ? currentFeatured?.featureHeroThumbnail
-    : currentFeatured?.thumbnail;
 
   useEffect(() => {
     if (candidates.length <= 1) {
@@ -94,7 +91,6 @@ export function FeaturedRecording({
 
   return (
     <article
-      key={`featured-${currentFeatured.shortId}-${filterKey}`}
       role="link"
       tabIndex={0}
       onClick={handleClick}
@@ -118,15 +114,26 @@ export function FeaturedRecording({
             : "relative aspect-[16/7] w-full"
         }
       >
-        <Image
-          src={featuredThumbnail ?? currentFeatured.thumbnail}
-          alt={currentFeatured.title}
-          fill
-          className="object-cover transition duration-700 group-hover:scale-105"
-          sizes="(max-width: 1024px) 100vw, 70vw"
-          priority
-          loading="eager"
-        />
+        {candidates.map((item, index) => {
+          const imageSrc = item.featureHeroThumbnail || item.thumbnail;
+          const isActive = index === featuredIndex;
+
+          return (
+            <Image
+              key={`featured-image-${item.shortId}`}
+              src={imageSrc}
+              alt={isActive ? item.title : ""}
+              aria-hidden={!isActive}
+              fill
+              className={`absolute inset-0 object-cover transition duration-700 group-hover:scale-105 ${
+                isActive ? "opacity-100" : "opacity-0"
+              }`}
+              sizes="(max-width: 1024px) 100vw, 70vw"
+              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+            />
+          );
+        })}
         {candidates.length > 1 && (
           <>
             <div className="pointer-events-none absolute inset-0 z-10">
