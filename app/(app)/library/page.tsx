@@ -28,8 +28,6 @@ export default async function LibraryPage({
   const tCommon = await getTranslations("common");
   const params = await searchParams;
 
-  const allRecordings = getAllRecordings();
-
   const locationParam = params.location;
   const isPragueLocation = locationParam === LOCATIONS.PRAGUE;
   const isZlinLocation = locationParam === LOCATIONS.ZLIN;
@@ -38,9 +36,33 @@ export default async function LibraryPage({
   const initialTag = params.tag ?? "all";
   const initialEpisode = params.episode ?? "all";
   const initialSearchQuery = params.q ?? "";
-
   const normalizedSearchQuery = normalizeText(initialSearchQuery.trim());
-  const serverFilteredRecordings = allRecordings.filter((recording) => {
+
+  const isLocationFiltered = initialLocation !== "all";
+  const isTagFiltered = initialTag !== "all";
+  const isEpisodeFiltered = initialEpisode !== "all";
+  const isSearchFiltered = initialSearchQuery.trim() !== "";
+  const hasActiveFilters =
+    isLocationFiltered || isTagFiltered || isEpisodeFiltered || isSearchFiltered;
+  const initialViewMode: "rows" | "grid" = hasActiveFilters ? "grid" : "rows";
+
+  const recordings = getAllRecordings().map((recording) => ({
+    date: recording.date,
+    description: recording.description,
+    episode: recording.episode,
+    episodeId: recording.episodeId,
+    episodeNumber: recording.episodeNumber,
+    featureHeroThumbnail: recording.featureHeroThumbnail,
+    location: recording.location,
+    shortId: recording.shortId,
+    slug: recording.slug,
+    speaker: recording.speaker,
+    tags: recording.tags,
+    thumbnail: recording.thumbnail,
+    title: recording.title,
+  }));
+
+  const preFilteredRecordings = recordings.filter((recording) => {
     const isLocationMatch = initialLocation === "all" || recording.location === initialLocation;
     const isTagMatch = initialTag === "all" || recording.tags.includes(initialTag);
     const isEpisodeMatch = initialEpisode === "all" || recording.episodeId === initialEpisode;
@@ -77,30 +99,6 @@ export default async function LibraryPage({
     return isLocationMatch && isTagMatch && isEpisodeMatch && isSearchMatch;
   });
 
-  const isLocationFiltered = initialLocation !== "all";
-  const isTagFiltered = initialTag !== "all";
-  const isEpisodeFiltered = initialEpisode !== "all";
-  const isSearchFiltered = initialSearchQuery.trim() !== "";
-  const hasActiveFilters =
-    isLocationFiltered || isTagFiltered || isEpisodeFiltered || isSearchFiltered;
-  const initialViewMode: "rows" | "grid" = hasActiveFilters ? "grid" : "rows";
-
-  const recordings = allRecordings.map((recording) => ({
-    date: recording.date,
-    description: recording.description,
-    episode: recording.episode,
-    episodeId: recording.episodeId,
-    episodeNumber: recording.episodeNumber,
-    featureHeroThumbnail: recording.featureHeroThumbnail,
-    location: recording.location,
-    shortId: recording.shortId,
-    slug: recording.slug,
-    speaker: recording.speaker,
-    tags: recording.tags,
-    thumbnail: recording.thumbnail,
-    title: recording.title,
-  }));
-
   const scrollLeftLabel = tCommon("scrollLeft");
   const scrollRightLabel = tCommon("scrollRight");
 
@@ -119,21 +117,7 @@ export default async function LibraryPage({
           tag: initialTag,
           viewMode: initialViewMode,
         }}
-        preFilteredRecordings={serverFilteredRecordings.map((recording) => ({
-          date: recording.date,
-          description: recording.description,
-          episode: recording.episode,
-          episodeId: recording.episodeId,
-          episodeNumber: recording.episodeNumber,
-          featureHeroThumbnail: recording.featureHeroThumbnail,
-          location: recording.location,
-          shortId: recording.shortId,
-          slug: recording.slug,
-          speaker: recording.speaker,
-          tags: recording.tags,
-          thumbnail: recording.thumbnail,
-          title: recording.title,
-        }))}
+        preFilteredRecordings={preFilteredRecordings}
         trendingSlots={{
           memberPicks: (
             <Suspense key="member-picks" fallback={<TrendingRailSkeleton />}>

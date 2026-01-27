@@ -30,7 +30,7 @@ function calculateHotScore(likeCount: number, recordingDate: Date, now: number):
 export async function getHotRecordings(limit = 6): Promise<HotRecording[]> {
   "use cache";
   cacheTag("hot-picks", "engagement-counts");
-  cacheLife({ revalidate: 1800 });
+  cacheLife({ revalidate: 21600 });
 
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),

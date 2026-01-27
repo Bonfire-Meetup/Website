@@ -3,7 +3,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-  memo,
   startTransition,
   useCallback,
   useDeferredValue,
@@ -95,7 +94,7 @@ function BrowseAllButton({ label, onClick }: { label: string; onClick: () => voi
   );
 }
 
-export const RecordingsCatalog = memo(function RecordingsCatalog({
+export function RecordingsCatalog({
   recordings,
   memberPicks,
   hotPicks,
@@ -761,4 +760,4 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
       </div>
     </section>
   );
-});
+}

@@ -9,7 +9,7 @@ export type HiddenGemRecording = Recording;
 export async function getHiddenGems(limit = 6): Promise<HiddenGemRecording[]> {
   "use cache";
   cacheTag("hidden-gems");
-  cacheLife({ revalidate: 3600 });
+  cacheLife({ revalidate: 86400 });
 
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),

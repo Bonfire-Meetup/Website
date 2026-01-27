@@ -1,6 +1,5 @@
 import type { Recording } from "@/lib/recordings/recordings";
 import { useLocale, useTranslations } from "next-intl";
-import { memo } from "react";
 
 import { LOCATIONS } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -15,7 +14,7 @@ type HomepageRecording = Pick<
   "shortId" | "slug" | "title" | "speaker" | "date" | "thumbnail" | "location"
 > & { likeCount?: number; boostCount?: number };
 
-export const RecordingsSectionClient = memo(function RecordingsSectionClient({
+export function RecordingsSectionClient({
   recordings,
 }: {
   recordings: HomepageRecording[];
@@ -68,4 +67,4 @@ export const RecordingsSectionClient = memo(function RecordingsSectionClient({
       </div>
     </>
   );
-});
+}

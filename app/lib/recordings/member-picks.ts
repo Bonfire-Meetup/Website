@@ -62,7 +62,7 @@ const fetchTopBoostedVideos = async (limit: number): Promise<BoostFetchResult> =
 export async function getMemberPicks(limit = 6): Promise<MemberPickRecording[]> {
   "use cache";
   cacheTag("member-picks");
-  cacheLife({ revalidate: 3600 });
+  cacheLife({ revalidate: 43200 });
 
   const [allRecordings, topBoosted] = await Promise.all([
     Promise.resolve(getAllRecordings()),

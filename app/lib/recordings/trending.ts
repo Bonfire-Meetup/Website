@@ -48,7 +48,7 @@ export type TrendingRecording = Recording & {
 export async function getTrendingRecordings(limit = 6): Promise<TrendingRecording[]> {
   "use cache";
   cacheTag(`trending-recordings-${limit}`, "engagement-counts");
-  cacheLife({ revalidate: 3600 });
+  cacheLife({ revalidate: 21600 });
 
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),
