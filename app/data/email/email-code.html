@@ -6,6 +6,17 @@
     <meta name="color-scheme" content="light" />
     <meta name="supported-color-schemes" content="light" />
     <title>{{subject}}</title>
+    <style>
+      @media (max-width: 480px) {
+        .code-box {
+          padding: 22px 20px !important;
+        }
+        .code-text {
+          font-size: 32px !important;
+          letter-spacing: 6px !important;
+        }
+      }
+    </style>
   </head>
 
   <body
@@ -130,8 +141,12 @@
                               "
                             >
                               <tr>
-                                <td style="padding: 28px 40px; background-color: #dc2626">
+                                <td
+                                  class="code-box"
+                                  style="padding: 28px 40px; background-color: #dc2626"
+                                >
                                   <span
+                                    class="code-text"
                                     style="
                                       display: inline-block;
                                       font-size: 42px;
@@ -143,6 +158,7 @@
                                         &quot;Inconsolata&quot;, &quot;Roboto Mono&quot;,
                                         &quot;Courier New&quot;, Courier, monospace;
                                       line-height: 1;
+                                      white-space: nowrap;
                                     "
                                     >{{formattedCode}}</span
                                   >
