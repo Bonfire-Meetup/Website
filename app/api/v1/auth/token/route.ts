@@ -36,6 +36,7 @@ import {
   logWarn,
 } from "@/lib/utils/log";
 import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
+import { getUserAgentSummary } from "@/lib/utils/user-agent";
 
 const otpGrantSchema = z.object({
   grant_type: z.literal("urn:bonfire:grant-type:email-otp"),
@@ -313,6 +314,7 @@ const handleEmailOtpGrant = async (
 
   const email = normalizeEmail(data.email);
   const emailFingerprint = getEmailFingerprint(email);
+  const userAgentSummary = getUserAgentSummary(userAgent);
 
   const recordAttempt = async (outcome: string, userId?: string | null) => {
     if (!emailFingerprint.emailHash) {
@@ -327,6 +329,7 @@ const handleEmailOtpGrant = async (
       outcome,
       requestId,
       userAgentHash: clientFingerprint.userAgentHash ?? undefined,
+      userAgentSummary,
       userId,
     });
   };

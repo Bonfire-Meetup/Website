@@ -52,9 +52,11 @@ create table if not exists auth_attempt (
   email_hash text not null,
   email_domain text,
   outcome text not null,
+  method text,
   created_at timestamptz not null default now(),
   ip_hash text,
   user_agent_hash text,
+  user_agent_summary text,
   request_id uuid
 );
 

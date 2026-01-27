@@ -34,6 +34,7 @@ import {
   logWarn,
 } from "@/lib/utils/log";
 import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
+import { getUserAgentSummary } from "@/lib/utils/user-agent";
 
 const RATE_LIMIT_STORE = "passkey.authenticate.verify";
 const MAX_REQUESTS_PER_MINUTE = 10;
@@ -117,6 +118,7 @@ export const POST = async (request: Request) =>
     const ip = getClientIp(headers);
     const userAgent = headers.get("user-agent");
     const clientFingerprint = getClientFingerprint({ ip, userAgent });
+    const userAgentSummary = getUserAgentSummary(userAgent);
 
     let payload: unknown;
 
@@ -211,6 +213,7 @@ export const POST = async (request: Request) =>
           method: "passkey",
           outcome: "success",
           requestId,
+          userAgentSummary,
           userAgentHash: clientFingerprint.userAgentHash ?? undefined,
           userId: passkey.user_id,
         });

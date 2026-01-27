@@ -36,6 +36,7 @@ interface LoginAttempt {
   outcome: string;
   method: string | null;
   createdAt: string;
+  userAgentSummary: string | null;
 }
 
 interface BoostAllocation {

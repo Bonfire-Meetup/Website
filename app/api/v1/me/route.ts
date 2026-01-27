@@ -71,6 +71,7 @@ export const GET = async (request: Request) =>
         id: attempt.id,
         method: attempt.method,
         outcome: attempt.outcome,
+        userAgentSummary: attempt.user_agent_summary,
       }));
 
       const nextMonth = new Date(

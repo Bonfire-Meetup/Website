@@ -269,6 +269,7 @@ export const insertAuthAttempt = async ({
   method,
   ipHash,
   userAgentHash,
+  userAgentSummary,
   requestId,
 }: {
   userId?: string | null;
@@ -278,12 +279,13 @@ export const insertAuthAttempt = async ({
   method?: string | null;
   ipHash?: string | null;
   userAgentHash?: string | null;
+  userAgentSummary?: string | null;
   requestId?: string | null;
 }) => {
   const sql = getDatabaseClient();
   await sql`
-    INSERT INTO auth_attempt (user_id, email_hash, email_domain, outcome, method, ip_hash, user_agent_hash, request_id)
-    VALUES (${userId ?? null}, ${emailHash}, ${emailDomain ?? null}, ${outcome}, ${method ?? null}, ${ipHash ?? null}, ${userAgentHash ?? null}, ${requestId ?? null})
+    INSERT INTO auth_attempt (user_id, email_hash, email_domain, outcome, method, ip_hash, user_agent_hash, user_agent_summary, request_id)
+    VALUES (${userId ?? null}, ${emailHash}, ${emailDomain ?? null}, ${outcome}, ${method ?? null}, ${ipHash ?? null}, ${userAgentHash ?? null}, ${userAgentSummary ?? null}, ${requestId ?? null})
   `;
 };
 
@@ -302,7 +304,7 @@ export const getAuthAttemptsByEmailHash = async ({
 }) => {
   const sql = getDatabaseClient();
   const rows = (await sql`
-    SELECT id, outcome, method, created_at
+    SELECT id, outcome, method, created_at, user_agent_summary
     FROM auth_attempt
     WHERE email_hash = ${emailHash}
       AND created_at >= ${since}
@@ -312,7 +314,13 @@ export const getAuthAttemptsByEmailHash = async ({
       )
     ORDER BY created_at DESC
     LIMIT ${limit}
-  `) as { id: string; outcome: string; method: string | null; created_at: Date }[];
+  `) as {
+    id: string;
+    outcome: string;
+    method: string | null;
+    created_at: Date;
+    user_agent_summary: string | null;
+  }[];
 
   return rows;
 };

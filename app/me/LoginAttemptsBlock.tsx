@@ -7,6 +7,7 @@ interface Attempt {
   outcome: string;
   method: string | null;
   createdAt: string;
+  userAgentSummary: string | null;
 }
 
 interface LoginAttemptsBlockProps {
@@ -38,7 +39,7 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
       </div>
       <div className="p-4">
         {loading ? (
-          <div className="max-h-[280px] space-y-2 overflow-y-auto overscroll-contain sm:max-h-[320px]">
+          <div className="max-h-[240px] space-y-2 overflow-y-auto overscroll-contain sm:max-h-[280px]">
             {Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={`attempt-skeleton-${index}`}
@@ -61,7 +62,7 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
             {t("empty")}
           </div>
         ) : (
-          <div className="-mx-4 max-h-[280px] space-y-2 overflow-y-auto overscroll-contain px-4 sm:max-h-[320px]">
+          <div className="-mx-4 max-h-[240px] space-y-2 overflow-y-auto overscroll-contain px-4 sm:max-h-[280px]">
             {items.map((attempt) => (
               <div
                 key={attempt.id}
@@ -77,7 +78,12 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
                     )}
                   </div>
                   <div className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
-                    {new Date(attempt.createdAt).toLocaleString(locale)}
+                    <div>{new Date(attempt.createdAt).toLocaleString(locale)}</div>
+                    {attempt.userAgentSummary && (
+                      <div className="mt-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
+                        {attempt.userAgentSummary}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <span

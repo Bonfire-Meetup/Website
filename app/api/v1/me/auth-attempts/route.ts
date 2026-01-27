@@ -32,7 +32,7 @@ export async function GET(request: Request) {
       const attempts = await getAuthAttemptsByEmailHash({
         accountCreatedAt: user.created_at,
         emailHash: fingerprint.emailHash,
-        limit: 50,
+        limit: 20,
         since,
         userId: auth.userId,
       });
@@ -41,6 +41,7 @@ export async function GET(request: Request) {
         id: attempt.id,
         method: attempt.method,
         outcome: attempt.outcome,
+        userAgentSummary: attempt.user_agent_summary,
       }));
 
       return NextResponse.json({ items });
