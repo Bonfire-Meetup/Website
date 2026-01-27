@@ -107,10 +107,12 @@ export function RecordingPlayer({
                     <button
                       type="button"
                       onClick={() => setCinemaMode(!cinemaMode)}
-                      className="hidden cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+                      className="hidden cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs leading-none font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex sm:leading-tight dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
                     >
                       <CinemaIcon className="h-3.5 w-3.5" />
-                      {cinemaMode ? t("exitCinema") : t("cinema")}
+                      <span className="sm:translate-y-[1px]">
+                        {cinemaMode ? t("exitCinema") : t("cinema")}
+                      </span>
                     </button>
                   </div>
                 </div>

@@ -68,10 +68,12 @@ export function ShareMenu({
         <button
           type="button"
           onClick={handleShare}
-          className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white ${buttonClassName}`}
+          className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs leading-none font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 sm:leading-tight dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white ${buttonClassName}`}
         >
           <ShareIcon className={iconClassName} />
-          {showLabel ? <span className="hidden sm:inline">{t("share")}</span> : null}
+          {showLabel ? (
+            <span className="hidden sm:inline sm:translate-y-[1px]">{t("share")}</span>
+          ) : null}
         </button>
         {showShareMenu && (
           <>

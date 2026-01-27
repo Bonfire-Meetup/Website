@@ -87,7 +87,7 @@ export function WatchLaterButton({
         type="button"
         onClick={handleClick}
         disabled={isLoading}
-        className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+        className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs leading-none font-medium transition-all sm:leading-tight ${
           inWatchlist
             ? "bg-violet-100 text-violet-700 hover:bg-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:hover:bg-violet-950/50"
             : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
@@ -99,7 +99,9 @@ export function WatchLaterButton({
         ) : (
           <BookmarkIcon className="h-3.5 w-3.5" />
         )}
-        <span className="hidden sm:inline">{inWatchlist ? t("inWatchlist") : t("watchLater")}</span>
+        <span className="hidden sm:inline sm:translate-y-[1px]">
+          {inWatchlist ? t("inWatchlist") : t("watchLater")}
+        </span>
       </button>
     );
   }
