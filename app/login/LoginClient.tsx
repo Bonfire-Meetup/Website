@@ -501,7 +501,7 @@ export function LoginClient() {
                         const normalized = event.target.value.replace(/\D/g, "").slice(0, 6);
                         setCode(normalized);
                       }}
-                      className={`${inputBaseClass} ${inputNormalClass} text-center font-mono text-xl tracking-[0.5em] py-4`}
+                      className={`${inputBaseClass} ${inputNormalClass} py-4 text-center font-mono text-xl tracking-[0.5em]`}
                       placeholder="123 456"
                       autoFocus
                     />
