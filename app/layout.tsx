@@ -5,17 +5,11 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata, Viewport } from "next";
-import { NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
-import { AuthInitializer } from "./components/providers/AuthInitializer";
-import { ReduxProvider } from "./components/providers/ReduxProvider";
-import { GlobalPlayerProvider } from "./components/shared/GlobalPlayerProvider";
-import { QueryProvider } from "./components/shared/QueryProvider";
-import { LocaleSync } from "./components/theme/LocaleSync";
-import { MotionManager } from "./components/theme/MotionManager";
-import { ThemeProvider } from "./components/theme/ThemeProvider";
-import { getRequestLocale } from "./lib/i18n/request-locale";
+import { AppProviders } from "./AppProviders";
+import { DEFAULT_LOCALE } from "./lib/i18n/locales";
 import { STORAGE_KEYS } from "./lib/storage/keys";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -70,13 +64,10 @@ export const viewport: Viewport = {
   width: "device-width",
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = await getRequestLocale();
-  const messages = (await import(`./locales/${locale}.json`)).default;
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang={locale}
+      lang={DEFAULT_LOCALE}
       className={`${GeistSans.variable} ${GeistMono.variable} smooth-scroll`}
       suppressHydrationWarning
     >
@@ -99,20 +90,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <LocaleSync />
-          <ReduxProvider>
-            <AuthInitializer />
-            <QueryProvider>
-              <MotionManager />
-              <div className="relative flex min-h-screen flex-col">
-                <ThemeProvider>
-                  <GlobalPlayerProvider>{children}</GlobalPlayerProvider>
-                </ThemeProvider>
-              </div>
-            </QueryProvider>
-          </ReduxProvider>
-        </NextIntlClientProvider>
+        <Suspense fallback={null}>
+          <AppProviders>{children}</AppProviders>
+        </Suspense>
         <Analytics />
         <SpeedInsights />
       </body>
