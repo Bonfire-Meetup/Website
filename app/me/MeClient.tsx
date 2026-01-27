@@ -215,7 +215,7 @@ export function MeClient() {
     queryClient.removeQueries({ queryKey: ["watchlist"] });
     queryClient.removeQueries({ queryKey: ["video-watchlist"] });
 
-    router.replace(PAGE_ROUTES.LOGIN);
+    router.replace(PAGE_ROUTES.HOME);
   };
 
   const handleCommunityEmailsToggle = async () => {
