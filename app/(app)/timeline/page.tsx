@@ -7,6 +7,7 @@ import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
 import photoAlbums from "@/data/photo-albums.json";
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
 import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { buildAlbumSlug, episodes, type EpisodeEntry } from "@/lib/recordings/episodes";
 import { getAllRecordings } from "@/lib/recordings/recordings";
@@ -56,8 +57,8 @@ function getEpisodeEntries(): EpisodeEntry[] {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("meta");
-  const tCommon = await getTranslations("common");
+  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
+  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
   const commonValues = {
     brandName: tCommon("brandName"),
     country: tCommon("country"),

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+
 import { WatchLaterClient } from "./WatchLaterClient";
 
 export default async function WatchLaterPage() {
@@ -14,8 +16,8 @@ export default async function WatchLaterPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("meta");
-  const tCommon = await getTranslations("common");
+  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
+  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
   const commonValues = {
     brandName: tCommon("brandName"),
   };

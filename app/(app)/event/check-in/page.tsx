@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+
 import { CheckInClient } from "./CheckInClient";
 
 export default async function CheckInPage() {
@@ -14,8 +16,8 @@ export default async function CheckInPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("checkIn");
-  const tCommon = await getTranslations("common");
+  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "checkIn" });
+  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
 
   return {
     title: t("title", { brandName: tCommon("brandName") }),

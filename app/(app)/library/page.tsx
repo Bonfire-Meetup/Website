@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import dynamic from "next/dynamic";
 
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
 import { getHiddenGems } from "@/lib/recordings/hidden-gems";
 import { getHotRecordingsSafe } from "@/lib/recordings/hot-picks";
 import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
@@ -191,8 +192,8 @@ export default async function LibraryPage({
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("meta");
-  const tCommon = await getTranslations("common");
+  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
+  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
   const commonValues = {
     brandName: tCommon("brandName"),
     country: tCommon("country"),

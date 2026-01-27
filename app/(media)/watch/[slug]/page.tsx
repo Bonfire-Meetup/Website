@@ -18,6 +18,12 @@ function parseShortId(slug: string) {
   return slug.slice(-6);
 }
 
+export function generateStaticParams() {
+  return getAllRecordings().map((recording) => ({
+    slug: `${recording.slug}-${recording.shortId}`,
+  }));
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const shortId = parseShortId(slug);

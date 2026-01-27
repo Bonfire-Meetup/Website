@@ -7,10 +7,17 @@ import { QueryProvider } from "./components/shared/QueryProvider";
 import { LocaleSync } from "./components/theme/LocaleSync";
 import { MotionManager } from "./components/theme/MotionManager";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
+import { type Locale } from "./lib/i18n/locales";
 import { getRequestLocale } from "./lib/i18n/request-locale";
 
-export async function AppProviders({ children }: { children: React.ReactNode }) {
-  const locale = await getRequestLocale();
+export async function AppProviders({
+  children,
+  locale: localeProp,
+}: {
+  children: React.ReactNode;
+  locale?: Locale;
+}) {
+  const locale = localeProp ?? (await getRequestLocale());
   const messages = (await import(`./locales/${locale}.json`)).default;
 
   return (

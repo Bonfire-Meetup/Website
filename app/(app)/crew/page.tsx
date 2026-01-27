@@ -13,6 +13,7 @@ import {
 } from "@/components/shared/icons";
 import { Link } from "@/i18n/navigation";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 interface TeamMember {
@@ -93,8 +94,8 @@ function renderWithBold(text: string) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("meta");
-  const tCommon = await getTranslations("common");
+  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
+  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
   const commonValues = {
     brandName: tCommon("brandName"),
     country: tCommon("country"),
