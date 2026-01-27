@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { checkRateLimit, getClientHashes, validateVideoApiRequest } from "@/lib/api/rate-limit";
@@ -56,8 +56,8 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
       const result = await addVideoLike(videoId, ipHash, uaHash);
       const validated = videoLikeMutationSchema.parse(result);
 
-      revalidateTag("engagement-counts", "max");
-      revalidateTag("hidden-gems", "max");
+      updateTag("engagement-counts");
+      updateTag("hidden-gems");
 
       return NextResponse.json(validated);
     } catch (error) {
@@ -88,8 +88,8 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
       const result = await removeVideoLike(videoId, ipHash, uaHash);
       const validated = videoLikeMutationSchema.parse(result);
 
-      revalidateTag("engagement-counts", "max");
-      revalidateTag("hidden-gems", "max");
+      updateTag("engagement-counts");
+      updateTag("hidden-gems");
 
       return NextResponse.json(validated);
     } catch (error) {

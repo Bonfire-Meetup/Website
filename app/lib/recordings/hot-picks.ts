@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 import { fetchEngagementCounts } from "../data/trending";
 
@@ -27,7 +27,11 @@ function calculateHotScore(likeCount: number, recordingDate: Date, now: number):
   return score;
 }
 
-const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
+export async function getHotRecordings(limit = 6): Promise<HotRecording[]> {
+  "use cache";
+  cacheTag("hot-picks", "engagement-counts");
+  cacheLife({ revalidate: 1800 });
+
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),
     fetchEngagementCounts(),
@@ -101,26 +105,20 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
   }
 
   return selected;
-};
+}
 
-export const getHotRecordings = unstable_cache(getHotRecordingsUncached, ["hot-picks"], {
-  revalidate: 1800,
-  tags: ["hot-picks", "engagement-counts"],
-});
-
-const createHotBackfill = (allRecordings: Recording[], limit: number): HotRecording[] => {
-  return allRecordings
+const createHotBackfill = (allRecordings: Recording[], limit: number): HotRecording[] =>
+  allRecordings
     .filter((r) => r.featureHeroThumbnail)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, limit)
     .map((r) => ({ ...r, hotScore: 0, likeCount: 0 }));
-};
 
-export const getHotRecordingsSafe = async (limit = 6): Promise<HotRecording[]> => {
+export async function getHotRecordingsSafe(limit = 6): Promise<HotRecording[]> {
   try {
     return await getHotRecordings(limit);
   } catch {
     const allRecordings = getAllRecordings();
     return createHotBackfill(allRecordings, limit);
   }
-};
+}

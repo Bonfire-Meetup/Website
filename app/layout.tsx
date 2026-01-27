@@ -6,14 +6,16 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 import { AuthInitializer } from "./components/providers/AuthInitializer";
 import { ReduxProvider } from "./components/providers/ReduxProvider";
 import { GlobalPlayerProvider } from "./components/shared/GlobalPlayerProvider";
 import { QueryProvider } from "./components/shared/QueryProvider";
+import { LocaleSync } from "./components/theme/LocaleSync";
 import { MotionManager } from "./components/theme/MotionManager";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
+import { getRequestLocale } from "./lib/i18n/request-locale";
 import { STORAGE_KEYS } from "./lib/storage/keys";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -69,7 +71,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = await getLocale();
+  const locale = await getRequestLocale();
   const messages = (await import(`./locales/${locale}.json`)).default;
 
   return (
@@ -98,6 +100,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <LocaleSync />
           <ReduxProvider>
             <AuthInitializer />
             <QueryProvider>

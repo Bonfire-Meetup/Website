@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 import { getDatabaseClient, getDatabaseErrorDetails } from "@/lib/data/db";
 import { logError, logWarn } from "@/lib/utils/log";
@@ -39,7 +39,11 @@ const isEngagementEmpty = (counts: EngagementCounts) =>
 const isWindowedEngagementEmpty = (counts: WindowedEngagementCounts) =>
   isEngagementEmpty(counts.recent) && isEngagementEmpty(counts.total);
 
-const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
+export async function fetchEngagementCounts(): Promise<EngagementCounts> {
+  "use cache";
+  cacheTag("engagement-counts");
+  cacheLife({ revalidate: 900 });
+
   const sql = getDatabaseClient({ required: false });
 
   if (!sql) {
@@ -92,20 +96,15 @@ const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
 
     throw error;
   }
-};
+}
 
-export const fetchEngagementCounts = unstable_cache(
-  fetchEngagementCountsUncached,
-  ["engagement-counts"],
-  {
-    revalidate: 900,
-    tags: ["engagement-counts"],
-  },
-);
+export async function fetchWindowedEngagementCounts(
+  days = DEFAULT_ENGAGEMENT_WINDOW_DAYS,
+): Promise<WindowedEngagementCounts> {
+  "use cache";
+  cacheTag("engagement-counts", `engagement-counts-${days}d`);
+  cacheLife({ revalidate: 900 });
 
-const fetchWindowedEngagementCountsUncached = async (
-  days: number,
-): Promise<WindowedEngagementCounts> => {
   const sql = getDatabaseClient({ required: false });
 
   if (!sql) {
@@ -175,29 +174,4 @@ const fetchWindowedEngagementCountsUncached = async (
 
     throw error;
   }
-};
-
-const windowedEngagementCache = new Map<
-  number,
-  () => Promise<WindowedEngagementCounts>
->();
-
-const getWindowedEngagementCacheFn = (days: number) => {
-  const existing = windowedEngagementCache.get(days);
-  if (existing) {
-    return existing;
-  }
-
-  const cacheKey = `engagement-counts-${days}d`;
-  const cachedFn = unstable_cache(() => fetchWindowedEngagementCountsUncached(days), [cacheKey], {
-    revalidate: 900,
-    tags: ["engagement-counts", cacheKey],
-  });
-
-  windowedEngagementCache.set(days, cachedFn);
-  return cachedFn;
-};
-
-export const fetchWindowedEngagementCounts = (days = DEFAULT_ENGAGEMENT_WINDOW_DAYS) => {
-  return getWindowedEngagementCacheFn(days)();
-};
+}

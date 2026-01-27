@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 import { getDatabaseClient, getDatabaseErrorDetails } from "../data/db";
 import { logError, logWarn } from "../utils/log";
@@ -59,7 +59,11 @@ const fetchTopBoostedVideos = async (limit: number): Promise<BoostFetchResult> =
   }
 };
 
-const getMemberPicksUncached = async (limit = 6): Promise<MemberPickRecording[]> => {
+export async function getMemberPicks(limit = 6): Promise<MemberPickRecording[]> {
+  "use cache";
+  cacheTag("member-picks");
+  cacheLife({ revalidate: 3600 });
+
   const [allRecordings, topBoosted] = await Promise.all([
     Promise.resolve(getAllRecordings()),
     fetchTopBoostedVideos(limit),
@@ -124,29 +128,23 @@ const getMemberPicksUncached = async (limit = 6): Promise<MemberPickRecording[]>
   }
 
   return picks;
-};
-
-export const getMemberPicks = unstable_cache(getMemberPicksUncached, ["member-picks"], {
-  revalidate: 3600,
-  tags: ["member-picks"],
-});
+}
 
 const createMemberPicksBackfill = (
   allRecordings: Recording[],
   limit: number,
-): MemberPickRecording[] => {
-  return allRecordings
+): MemberPickRecording[] =>
+  allRecordings
     .filter((r) => r.featureHeroThumbnail)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, limit)
     .map((r) => ({ ...r, boostCount: 0 }));
-};
 
-export const getMemberPicksSafe = async (limit = 6): Promise<MemberPickRecording[]> => {
+export async function getMemberPicksSafe(limit = 6): Promise<MemberPickRecording[]> {
   try {
     return await getMemberPicks(limit);
   } catch {
     const allRecordings = getAllRecordings();
     return createMemberPicksBackfill(allRecordings, limit);
   }
-};
+}

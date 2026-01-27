@@ -1,13 +1,16 @@
+import type { Locale } from "@/lib/i18n/locales";
 import { getTranslations } from "next-intl/server";
 
+import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { Button } from "../ui/Button";
 
 import { ArrowRightIcon } from "./icons";
 
-export async function TalkBanner() {
-  const t = await getTranslations("sections.talkBanner");
+export async function TalkBanner({ locale: localeProp }: { locale?: Locale } = {}) {
+  const locale = localeProp ?? (await getRequestLocale());
+  const t = await getTranslations({ locale, namespace: "sections.talkBanner" });
 
   return (
     <section className="relative px-4 py-20 sm:px-6 lg:px-8">

@@ -9,11 +9,14 @@ import {
 } from "@/components/shared/icons";
 import { Link } from "@/i18n/navigation";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { type Locale } from "@/lib/i18n/locales";
+import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-export async function Footer() {
-  const t = await getTranslations("footer");
-  const tCommon = await getTranslations("common");
+export async function Footer({ locale: localeProp }: { locale?: Locale } = {}) {
+  const locale = localeProp ?? (await getRequestLocale());
+  const t = await getTranslations({ locale, namespace: "footer" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
 
   return (
     <footer className="glass relative mt-auto overflow-hidden">

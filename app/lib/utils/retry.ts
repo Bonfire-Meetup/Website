@@ -7,7 +7,7 @@ export function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
         throw error;
       }
 
-      const baseDelay = 200 * Math.pow(2, attemptNumber - 1);
+      const baseDelay = 200 * 2 ** (attemptNumber - 1);
       const jitter = Math.floor(Math.random() * 100);
       const delayMs = baseDelay + jitter;
 

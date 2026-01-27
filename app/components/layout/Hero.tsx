@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import type { CSSProperties } from "react";
 
+import { type Locale } from "@/lib/i18n/locales";
+import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { NeonText } from "../theme/NeonText";
@@ -31,6 +33,7 @@ function shuffleImages<T>(items: T[]) {
 
 export async function Hero({
   images,
+  locale: localeProp,
 }: {
   images: {
     src: string;
@@ -38,9 +41,11 @@ export async function Hero({
     fallbackSrc?: string;
     fallbackType?: "image/jpeg" | "image/png";
   }[];
+  locale?: Locale;
 }) {
-  const t = await getTranslations("hero");
-  const tCommon = await getTranslations("common");
+  const locale = localeProp ?? (await getRequestLocale());
+  const t = await getTranslations({ locale, namespace: "hero" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
   const uniqueImages = Array.from(new Map(images.map((image) => [image.src, image])).values());
   const heroImages = shuffleImages(uniqueImages).slice(0, 3);
 

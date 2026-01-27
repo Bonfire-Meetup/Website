@@ -8,6 +8,7 @@ const CDN_HOSTNAME = "cdn-img.bnf.events";
 
 const nextConfig = {
   allowedDevOrigins: ["localhost", "bonfire.dev"],
+  cacheComponents: true,
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },

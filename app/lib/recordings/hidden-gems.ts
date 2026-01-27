@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 import { fetchEngagementCounts } from "../data/trending";
 
@@ -6,7 +6,11 @@ import { type Recording, getAllRecordings } from "./recordings";
 
 export type HiddenGemRecording = Recording;
 
-const getHiddenGemsUncached = async (limit = 6): Promise<HiddenGemRecording[]> => {
+export async function getHiddenGems(limit = 6): Promise<HiddenGemRecording[]> {
+  "use cache";
+  cacheTag("hidden-gems");
+  cacheLife({ revalidate: 3600 });
+
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),
     fetchEngagementCounts(),
@@ -71,9 +75,4 @@ const getHiddenGemsUncached = async (limit = 6): Promise<HiddenGemRecording[]> =
         ...recording
       }) => recording,
     );
-};
-
-export const getHiddenGems = unstable_cache(getHiddenGemsUncached, ["hidden-gems"], {
-  revalidate: 3600,
-  tags: ["hidden-gems"],
-});
+}

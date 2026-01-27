@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 import { DEFAULT_ENGAGEMENT_WINDOW_DAYS, fetchWindowedEngagementCounts } from "../data/trending";
 
@@ -45,7 +45,11 @@ export type TrendingRecording = Recording & {
   trendingScore: number;
 };
 
-const getTrendingRecordingsUncached = async (limit = 6): Promise<TrendingRecording[]> => {
+export async function getTrendingRecordings(limit = 6): Promise<TrendingRecording[]> {
+  "use cache";
+  cacheTag(`trending-recordings-${limit}`, "engagement-counts");
+  cacheLife({ revalidate: 3600 });
+
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),
     fetchWindowedEngagementCounts(DEFAULT_ENGAGEMENT_WINDOW_DAYS),
@@ -119,46 +123,20 @@ const getTrendingRecordingsUncached = async (limit = 6): Promise<TrendingRecordi
   }
 
   return selected;
-};
+}
 
-const trendingRecordingsCache = new Map<number, () => Promise<TrendingRecording[]>>();
-
-const getTrendingRecordingsCacheFn = (limit: number) => {
-  const existing = trendingRecordingsCache.get(limit);
-  if (existing) {
-    return existing;
-  }
-
-  const cachedFn = unstable_cache(
-    () => getTrendingRecordingsUncached(limit),
-    [`trending-recordings-${limit}`],
-    {
-      revalidate: 3600,
-      tags: [`trending-recordings-${limit}`, "engagement-counts"],
-    },
-  );
-
-  trendingRecordingsCache.set(limit, cachedFn);
-  return cachedFn;
-};
-
-export const getTrendingRecordings = (limit = 6): Promise<TrendingRecording[]> => {
-  return getTrendingRecordingsCacheFn(limit)();
-};
-
-const createTrendingBackfill = (allRecordings: Recording[], limit: number): TrendingRecording[] => {
-  return allRecordings
+const createTrendingBackfill = (allRecordings: Recording[], limit: number): TrendingRecording[] =>
+  allRecordings
     .filter((r) => r.featureHeroThumbnail)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, limit)
     .map((r) => ({ ...r, boostCount: 0, likeCount: 0, trendingScore: 0 }));
-};
 
-export const getTrendingRecordingsSafe = async (limit = 6): Promise<TrendingRecording[]> => {
+export async function getTrendingRecordingsSafe(limit = 6): Promise<TrendingRecording[]> {
   try {
     return await getTrendingRecordings(limit);
   } catch {
     const allRecordings = getAllRecordings();
     return createTrendingBackfill(allRecordings, limit);
   }
-};
+}
