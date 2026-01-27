@@ -7,11 +7,18 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AuthControls } from "@/components/auth/AuthControls";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
+import { FingerprintIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Link } from "@/i18n/navigation";
 import { API_ROUTES } from "@/lib/api/routes";
-import { decodeAccessToken, isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import {
+  decodeAccessToken,
+  isAccessTokenValid,
+  readAccessToken,
+  writeAccessToken,
+} from "@/lib/auth/client";
+import { authenticateWithPasskey, isWebAuthnSupported } from "@/lib/auth/webauthn-client";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { setToken } from "@/lib/redux/slices/authSlice";
 import { LOGIN_REASON, type LoginReason, PAGE_ROUTES } from "@/lib/routes/pages";
@@ -116,11 +123,14 @@ export function LoginClient() {
   const [challengeToken, setChallengeToken] = useState<string | null>(null);
   const [placeholder, setPlaceholder] = useState(emailPlaceholders[0]);
   const [turnstileReady, setTurnstileReady] = useState(false);
+  const [passkeySupported, setPasskeySupported] = useState(false);
+  const [passkeyLoading, setPasskeyLoading] = useState(false);
   const autoSubmitRef = useRef(false);
   const lastSubmittedCodeRef = useRef<string | null>(null);
 
   useEffect(() => {
     setPlaceholder(emailPlaceholders[Math.floor(Math.random() * emailPlaceholders.length)]);
+    setPasskeySupported(isWebAuthnSupported());
   }, []);
 
   const reasonHint = searchParams.get("reason-hint");
@@ -179,6 +189,42 @@ export function LoginClient() {
   const inputNormalClass =
     "border-neutral-200 focus:border-orange-500 focus:ring-orange-500/20 dark:border-white/10 dark:focus:border-orange-400";
   const inputDisabledClass = "cursor-not-allowed opacity-60 bg-neutral-50 dark:bg-white/5";
+
+  const handlePasskeyAuth = async () => {
+    setPasskeyLoading(true);
+    setError(null);
+    setStatus(null);
+
+    const result = await authenticateWithPasskey();
+
+    if (!result.ok) {
+      if (result.error === "cancelled") {
+        setPasskeyLoading(false);
+        return;
+      }
+
+      if (result.error === "passkey_not_found") {
+        setError(t("passkey.errorNotFound"));
+      } else {
+        setError(t("passkey.errorFailed"));
+      }
+
+      setPasskeyLoading(false);
+      return;
+    }
+
+    if (result.accessToken) {
+      writeAccessToken(result.accessToken);
+      clearAllAuthChallenges();
+      const decoded = decodeAccessToken(result.accessToken);
+      dispatch(setToken({ token: result.accessToken, decoded: decoded ?? undefined }));
+      router.replace(PAGE_ROUTES.ME);
+      return;
+    }
+
+    setError(t("passkey.errorFailed"));
+    setPasskeyLoading(false);
+  };
 
   const handleRequest = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -551,7 +597,7 @@ export function LoginClient() {
                     type="submit"
                     variant="primary"
                     size="md"
-                    disabled={loading || (step === "request" && !turnstileReady)}
+                    disabled={loading || passkeyLoading || (step === "request" && !turnstileReady)}
                     className="w-full sm:flex-1"
                   >
                     <span className="flex items-center justify-center gap-2 whitespace-nowrap">
@@ -569,13 +615,43 @@ export function LoginClient() {
                     type="button"
                     variant="ghost"
                     size="md"
-                    disabled={loading}
+                    disabled={loading || passkeyLoading}
                     className="w-full sm:flex-1"
                     onClick={() => router.back()}
                   >
                     {t("cancel")}
                   </Button>
                 </div>
+
+                {step === "request" && passkeySupported && (
+                  <div className="flex flex-col gap-3 border-t border-neutral-200/60 pt-4 dark:border-white/10">
+                    <div className="flex items-center gap-3 text-xs text-neutral-400">
+                      <div className="h-px flex-1 bg-neutral-200 dark:bg-white/10" />
+                      <span>{t("passkey.or")}</span>
+                      <div className="h-px flex-1 bg-neutral-200 dark:bg-white/10" />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="md"
+                      disabled={loading || passkeyLoading}
+                      className="w-full"
+                      onClick={handlePasskeyAuth}
+                    >
+                      <span className="flex items-center justify-center gap-2 whitespace-nowrap">
+                        {passkeyLoading ? (
+                          <LoadingSpinner size="sm" />
+                        ) : (
+                          <FingerprintIcon className="h-4 w-4" />
+                        )}
+                        {passkeyLoading ? t("passkey.authenticating") : t("passkey.button")}
+                      </span>
+                    </Button>
+                    <p className="text-[11px] text-neutral-400/80 dark:text-neutral-500/80">
+                      {t("passkey.note")}
+                    </p>
+                  </div>
+                )}
               </form>
             </div>
 

@@ -69,6 +69,7 @@ export const GET = async (request: Request) =>
       const attemptItems = attempts.map((attempt) => ({
         createdAt: attempt.created_at.toISOString(),
         id: attempt.id,
+        method: attempt.method,
         outcome: attempt.outcome,
       }));
 

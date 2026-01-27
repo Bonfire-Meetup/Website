@@ -34,6 +34,7 @@ interface BoostedRecording {
 interface LoginAttempt {
   id: string;
   outcome: string;
+  method: string | null;
   createdAt: string;
 }
 
@@ -377,4 +378,99 @@ export function useCheckInToken() {
   });
 }
 
-export type { BoostAllocation, BoostedRecording, LoginAttempt, Profile, UserProfileData };
+interface Passkey {
+  id: string;
+  name: string | null;
+  deviceType: string | null;
+  backedUp: boolean;
+  createdAt: string;
+  lastUsedAt: string | null;
+}
+
+const PASSKEYS_QUERY_KEY = ["passkeys"] as const;
+
+export function usePasskeys() {
+  return useQuery<{ items: Passkey[] }, ApiError>({
+    queryFn: async () => {
+      const response = await authFetch(API_ROUTES.ME.PASSKEYS);
+      if (!response.ok) {
+        throw new ApiError("Failed to fetch passkeys", response.status);
+      }
+      return (await response.json()) as { items: Passkey[] };
+    },
+    queryKey: PASSKEYS_QUERY_KEY,
+    retry: shouldRetryQuery,
+    staleTime: 30_000,
+  });
+}
+
+export function useDeletePasskeyMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, ApiError, string>({
+    mutationFn: async (passkeyId) => {
+      const accessToken = await getValidAccessTokenAsync();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.ME.PASSKEY(passkeyId), {
+        headers: createAuthHeaders(accessToken),
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          clearAccessToken();
+        }
+        throw new ApiError("Failed to delete passkey", response.status);
+      }
+    },
+    onError: (error, passkeyId) => {
+      logError("user.passkey.delete_failed", error, { passkeyId });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: PASSKEYS_QUERY_KEY });
+    },
+    retry: shouldRetryMutation,
+  });
+}
+
+export function useUpdatePasskeyMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, ApiError, { passkeyId: string; name: string | null }>({
+    mutationFn: async ({ passkeyId, name }) => {
+      const accessToken = await getValidAccessTokenAsync();
+      if (!accessToken) {
+        throw new ApiError("Access token required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.ME.PASSKEY(passkeyId), {
+        body: JSON.stringify({ name }),
+        headers: createJsonAuthHeaders(accessToken),
+        method: "PATCH",
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          clearAccessToken();
+        }
+        throw new ApiError("Failed to update passkey", response.status);
+      }
+    },
+    onError: (error, { passkeyId }) => {
+      logError("user.passkey.update_failed", error, { passkeyId });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: PASSKEYS_QUERY_KEY });
+    },
+    retry: shouldRetryMutation,
+  });
+}
+
+export function invalidatePasskeysQuery(queryClient: ReturnType<typeof useQueryClient>) {
+  return queryClient.invalidateQueries({ queryKey: PASSKEYS_QUERY_KEY });
+}
+
+export type { BoostAllocation, BoostedRecording, LoginAttempt, Passkey, Profile, UserProfileData };

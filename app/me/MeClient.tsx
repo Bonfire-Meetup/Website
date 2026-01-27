@@ -55,6 +55,7 @@ import { BoostedVideosBlock } from "./BoostedVideosBlock";
 import { DangerZoneBlock } from "./DangerZoneBlock";
 import { GuildCard } from "./GuildCard";
 import { LoginAttemptsBlock } from "./LoginAttemptsBlock";
+import { PasskeyBlock } from "./PasskeyBlock";
 import { PreferenceBlock } from "./PreferenceBlock";
 import { ProfileCard } from "./ProfileCard";
 import {
@@ -63,6 +64,7 @@ import {
   PreferencesSkeleton,
   ProfileSkeleton,
   ActivitySkeleton,
+  SecuritySkeleton,
 } from "./ProfileSkeletons";
 
 function getApiErrorReason(err: unknown): string | null {
@@ -417,6 +419,7 @@ export function MeClient() {
           </div>
           <PreferencesSkeleton />
           <ActivitySkeleton />
+          <SecuritySkeleton />
         </>
       ) : profile ? (
         <>
@@ -444,70 +447,86 @@ export function MeClient() {
               />
             </div>
           </div>
-        </>
-      ) : null}
 
-      <div className="space-y-4">
-        <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
-          {t("activity.title")}
-        </h2>
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
+              {t("activity.title")}
+            </h2>
 
-        <div className="grid min-w-0 gap-6 lg:grid-cols-2">
-          <div className="min-w-0 space-y-4">
-            {boostAllocation && (
-              <div className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/70 to-teal-50/70 dark:border-emerald-500/30 dark:from-emerald-500/10 dark:to-teal-500/10">
-                <div className="border-b border-emerald-100 px-4 py-3 dark:border-emerald-500/20">
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-900 dark:text-emerald-200">
-                      <BoltIcon
-                        className="h-4 w-4 shrink-0 text-emerald-700/80 dark:text-emerald-300/80"
-                        aria-hidden="true"
-                      />
-                      {t("boostAllocation.title")}
-                    </h3>
-                    <div className="text-right text-[11px] font-normal text-emerald-700/80 sm:shrink-0 dark:text-emerald-300/80">
-                      {t("boostAllocation.nextAllocation", {
-                        date: new Date(boostAllocation.nextAllocationDate).toLocaleDateString(
-                          undefined,
-                          { day: "numeric", month: "long" },
-                        ),
-                      })}
+            <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+              <div className="min-w-0 space-y-4">
+                {boostAllocation && (
+                  <div className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/70 to-teal-50/70 dark:border-emerald-500/30 dark:from-emerald-500/10 dark:to-teal-500/10">
+                    <div className="border-b border-emerald-100 px-4 py-3 dark:border-emerald-500/20">
+                      <div className="flex items-center justify-between gap-3">
+                        <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-900 dark:text-emerald-200">
+                          <BoltIcon
+                            className="h-4 w-4 shrink-0 text-emerald-700/80 dark:text-emerald-300/80"
+                            aria-hidden="true"
+                          />
+                          {t("boostAllocation.title")}
+                        </h3>
+                        <div className="text-right text-[11px] font-normal text-emerald-700/80 sm:shrink-0 dark:text-emerald-300/80">
+                          {t("boostAllocation.nextAllocation", {
+                            date: new Date(boostAllocation.nextAllocationDate).toLocaleDateString(
+                              undefined,
+                              { day: "numeric", month: "long" },
+                            ),
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-black text-emerald-600 dark:text-emerald-300">
+                          {boostAllocation.availableBoosts}
+                        </span>
+                        <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                          {boostAllocation.availableBoosts === 1
+                            ? t("boostAllocation.availableOne")
+                            : t("boostAllocation.available", {
+                                count: boostAllocation.availableBoosts,
+                              })}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-xs text-emerald-600/70 dark:text-emerald-300/70">
+                        {t("boostAllocation.limitNote")}
+                      </p>
                     </div>
                   </div>
-                </div>
-                <div className="p-4">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-black text-emerald-600 dark:text-emerald-300">
-                      {boostAllocation.availableBoosts}
-                    </span>
-                    <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-                      {boostAllocation.availableBoosts === 1
-                        ? t("boostAllocation.availableOne")
-                        : t("boostAllocation.available", {
-                            count: boostAllocation.availableBoosts,
-                          })}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-xs text-emerald-600/70 dark:text-emerald-300/70">
-                    {t("boostAllocation.limitNote")}
-                  </p>
-                </div>
+                )}
               </div>
-            )}
 
-            <BoostedVideosBlock
-              loading={boostsLoading}
-              error={boostsError}
-              items={boosts}
-              onRemove={handleRemoveBoost}
-            />
+              <div className="min-w-0">
+                <BoostedVideosBlock
+                  loading={boostsLoading}
+                  error={boostsError}
+                  items={boosts}
+                  onRemove={handleRemoveBoost}
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="min-w-0">
-            <LoginAttemptsBlock items={attempts} loading={attemptsLoading} error={attemptsError} />
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
+              {t("security.title")}
+            </h2>
+            <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+              <div className="min-w-0">
+                <LoginAttemptsBlock
+                  items={attempts}
+                  loading={attemptsLoading}
+                  error={attemptsError}
+                />
+              </div>
+              <div className="min-w-0">
+                <PasskeyBlock />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      ) : null}
 
       <DangerZoneBlock
         status={deleteStatus}

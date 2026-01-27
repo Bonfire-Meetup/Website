@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 interface Attempt {
   id: string;
   outcome: string;
+  method: string | null;
   createdAt: string;
 }
 
@@ -69,6 +70,11 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
                 <div className="min-w-0">
                   <div className="text-sm font-medium text-neutral-900 dark:text-white">
                     {t(`outcomes.${attempt.outcome}`) ?? attempt.outcome}
+                    {attempt.outcome === "success" && attempt.method && (
+                      <span className="ml-1 text-neutral-500 dark:text-neutral-400">
+                        ({t(`methods.${attempt.method}`) ?? attempt.method})
+                      </span>
+                    )}
                   </div>
                   <div className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
                     {new Date(attempt.createdAt).toLocaleString(locale)}

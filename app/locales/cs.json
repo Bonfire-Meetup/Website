@@ -491,6 +491,7 @@
       "participation": "Zapojení",
       "community": "Obsah a komunita",
       "technical": "Technické",
+      "passkeys": "Passkeys",
       "engagement": "Platformové funkce"
     },
     "questions": {
@@ -537,6 +538,10 @@
       "howToDelete": {
         "title": "Můžu svůj účet smazat?",
         "answer": "Ano. Účet i veškerou související aktivitu můžeš kdykoliv trvale smazat na své <link>profilové stránce</link>. Jen pozor: je to <bold>nevratné</bold>."
+      },
+      "passkeyFlow": {
+        "title": "Jak u nás fungují passkeys?",
+        "answer": "Nejdřív se přihlas e‑mailem a tím si vytvoříš účet. Potom si v <link>Účtu</link> v sekci Zabezpečení přidej passkey. Pak můžeš na přihlašovací stránce použít tlačítko passkey pro rychlejší přihlášení na podporovaných zařízeních."
       }
     },
     "impact": {
@@ -919,7 +924,17 @@
     "errorExpired": "Platnost kódu vypršela. Požádejte o nový.",
     "errorRateLimited": "Příliš mnoho pokusů. Zkuste to za chvíli.",
     "errorTooManyAttempts": "Příliš mnoho pokusů. Požádejte o nový kód.",
-    "errorInvalidRequest": "Neplatný požadavek. Zkuste to znovu."
+    "errorInvalidRequest": "Neplatný požadavek. Zkuste to znovu.",
+    "passkey": {
+      "title": "Přihlásit se passkey",
+      "button": "Použít passkey",
+      "authenticating": "Ověřuji",
+      "or": "nebo",
+      "note": "Passkeys fungují po prvním přihlášení e‑mailem a registraci v Účtu → Zabezpečení.",
+      "errorCancelled": "Ověření passkey bylo zrušeno.",
+      "errorNotFound": "Passkey pro toto zařízení nebyl nalezen.",
+      "errorFailed": "Ověření passkey selhalo. Zkuste to znovu."
+    }
   },
   "account": {
     "title": "Váš účet",
@@ -967,6 +982,25 @@
     },
     "activity": {
       "title": "Aktivita"
+    },
+    "security": {
+      "title": "Zabezpečení"
+    },
+    "passkeys": {
+      "title": "Passkeys",
+      "addButton": "Přidat passkey",
+      "empty": "Zatím žádné passkeys.",
+      "emptyHint": "Přidejte passkey pro rychlejší přihlášení bez e-mailových kódů.",
+      "defaultName": "Passkey",
+      "synced": "Synchronizováno",
+      "createdAt": "Přidáno {date}",
+      "lastUsed": "Naposledy použito {date}",
+      "deleteButton": "Odebrat passkey",
+      "cancelButton": "Zrušit",
+      "errorLoading": "Nepodařilo se načíst passkeys.",
+      "errorNotAvailable": "Passkeys nejsou na tomto zařízení k dispozici.",
+      "errorUnauthorized": "Pro přidání passkey se prosím přihlaste.",
+      "errorRegistration": "Nepodařilo se zaregistrovat passkey. Zkuste to znovu."
     },
     "boostAllocation": {
       "title": "Přidělení boostů",
@@ -1055,6 +1089,10 @@
         "used": "Kód již použit",
         "user_failed": "Vytvoření uživatele selhalo",
         "error": "Chyba přihlášení"
+      },
+      "methods": {
+        "email_otp": "E-mail",
+        "passkey": "Passkey"
       }
     },
     "support": {

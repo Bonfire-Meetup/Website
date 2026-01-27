@@ -15,6 +15,9 @@ const serverSchema = z.object({
   BNF_RESEND_AUTH_FROM: z.string().min(1).optional(),
   BNF_RESEND_FROM: z.string().min(1),
   BNF_TURNSTILE_SECRET_KEY: z.string().min(1),
+  BNF_WEBAUTHN_RP_ID: z.string().min(1).optional(),
+  BNF_WEBAUTHN_RP_NAME: z.string().min(1).optional(),
+  BNF_WEBAUTHN_ORIGIN: z.string().url().optional(),
   NODE_ENV: z.enum(["development", "test", "production"]).optional(),
 });
 
@@ -40,6 +43,9 @@ export const serverEnv = isServer
       BNF_RESEND_AUTH_FROM: process.env.BNF_RESEND_AUTH_FROM,
       BNF_RESEND_FROM: process.env.BNF_RESEND_FROM,
       BNF_TURNSTILE_SECRET_KEY: process.env.BNF_TURNSTILE_SECRET_KEY,
+      BNF_WEBAUTHN_RP_ID: process.env.BNF_WEBAUTHN_RP_ID,
+      BNF_WEBAUTHN_RP_NAME: process.env.BNF_WEBAUTHN_RP_NAME,
+      BNF_WEBAUTHN_ORIGIN: process.env.BNF_WEBAUTHN_ORIGIN,
       NODE_ENV: process.env.NODE_ENV,
     })
   : ({} as z.infer<typeof serverSchema>);

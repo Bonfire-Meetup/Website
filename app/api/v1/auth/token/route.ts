@@ -323,6 +323,7 @@ const handleEmailOtpGrant = async (
       emailDomain: emailFingerprint.emailDomain,
       emailHash: emailFingerprint.emailHash,
       ipHash: clientFingerprint.ipHash ?? undefined,
+      method: "email_otp",
       outcome,
       requestId,
       userAgentHash: clientFingerprint.userAgentHash ?? undefined,

@@ -266,6 +266,7 @@ export const insertAuthAttempt = async ({
   emailHash,
   emailDomain,
   outcome,
+  method,
   ipHash,
   userAgentHash,
   requestId,
@@ -274,14 +275,15 @@ export const insertAuthAttempt = async ({
   emailHash: string;
   emailDomain?: string | null;
   outcome: string;
+  method?: string | null;
   ipHash?: string | null;
   userAgentHash?: string | null;
   requestId?: string | null;
 }) => {
   const sql = getDatabaseClient();
   await sql`
-    INSERT INTO auth_attempt (user_id, email_hash, email_domain, outcome, ip_hash, user_agent_hash, request_id)
-    VALUES (${userId ?? null}, ${emailHash}, ${emailDomain ?? null}, ${outcome}, ${ipHash ?? null}, ${userAgentHash ?? null}, ${requestId ?? null})
+    INSERT INTO auth_attempt (user_id, email_hash, email_domain, outcome, method, ip_hash, user_agent_hash, request_id)
+    VALUES (${userId ?? null}, ${emailHash}, ${emailDomain ?? null}, ${outcome}, ${method ?? null}, ${ipHash ?? null}, ${userAgentHash ?? null}, ${requestId ?? null})
   `;
 };
 
@@ -300,7 +302,7 @@ export const getAuthAttemptsByEmailHash = async ({
 }) => {
   const sql = getDatabaseClient();
   const rows = (await sql`
-    SELECT id, outcome, created_at
+    SELECT id, outcome, method, created_at
     FROM auth_attempt
     WHERE email_hash = ${emailHash}
       AND created_at >= ${since}
@@ -310,7 +312,7 @@ export const getAuthAttemptsByEmailHash = async ({
       )
     ORDER BY created_at DESC
     LIMIT ${limit}
-  `) as { id: string; outcome: string; created_at: Date }[];
+  `) as { id: string; outcome: string; method: string | null; created_at: Date }[];
 
   return rows;
 };

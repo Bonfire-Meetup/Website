@@ -2,6 +2,12 @@ export const API_ROUTES = {
   AUTH: {
     CHALLENGES: "/api/v1/auth/challenges",
     TOKEN: "/api/v1/auth/token",
+    PASSKEY: {
+      REGISTER_OPTIONS: "/api/v1/auth/passkey/register/options",
+      REGISTER_VERIFY: "/api/v1/auth/passkey/register/verify",
+      AUTHENTICATE_OPTIONS: "/api/v1/auth/passkey/authenticate/options",
+      AUTHENTICATE_VERIFY: "/api/v1/auth/passkey/authenticate/verify",
+    },
   },
   JWKS: "/.well-known/jwks.json",
   CSRF: "/api/v1/csrf",
@@ -10,6 +16,8 @@ export const API_ROUTES = {
     BASE: "/api/v1/me",
     DELETE: "/api/v1/me/delete",
     DELETE_CHALLENGE: "/api/v1/me/delete-challenge",
+    PASSKEYS: "/api/v1/me/passkeys",
+    PASSKEY: (id: string) => `/api/v1/me/passkeys/${id}`,
     PREFERENCES: "/api/v1/me/preferences",
   },
   NEWSLETTER: {

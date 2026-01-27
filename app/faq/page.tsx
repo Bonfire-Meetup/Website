@@ -81,6 +81,7 @@ export default async function FaqPage() {
               { key: "participation", questions: ["howToSpeaker", "howToJoin"] },
               { key: "community", questions: ["isRecorded", "discord", "photos"] },
               { key: "technical", questions: ["howToRegister", "howToSignIn", "howToDelete"] },
+              { key: "passkeys", questions: ["passkeyFlow"] },
             ].map((section) => (
               <div key={section.key} className="space-y-6">
                 <h2 className="flex items-center gap-3 px-2 text-xl font-black tracking-tight text-neutral-900 dark:text-white">
@@ -117,6 +118,9 @@ export default async function FaqPage() {
                                 href = PAGE_ROUTES.CONTACT_WITH_TYPE("press");
                               }
                               if (qKey === "howToDelete") {
+                                href = PAGE_ROUTES.ME;
+                              }
+                              if (qKey === "passkeyFlow") {
                                 href = PAGE_ROUTES.ME;
                               }
                               if (qKey === "discord") {

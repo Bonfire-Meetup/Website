@@ -480,6 +480,7 @@
       "participation": "Participation",
       "community": "Content & Community",
       "technical": "Technical",
+      "passkeys": "Passkeys",
       "engagement": "Platform Engagement"
     },
     "questions": {
@@ -526,6 +527,10 @@
       "howToDelete": {
         "title": "Can I delete my account?",
         "answer": "Yes, you have full control over your data. You can manually delete your account and all associated activity at any time from your <link>Account</link> page. Please note that this action is <bold>permanent and cannot be undone</bold>."
+      },
+      "passkeyFlow": {
+        "title": "How do passkeys work here?",
+        "answer": "First, sign in with your email to create your account. Then add a passkey in your <link>Account</link> page under Security. After that, you can use the passkey button on the login screen for faster sign-ins on supported devices."
       }
     },
     "impact": {
@@ -908,7 +913,17 @@
     "errorExpired": "Code expired. Please request a new one.",
     "errorRateLimited": "Too many attempts. Try again shortly.",
     "errorTooManyAttempts": "Too many attempts. Request a new code.",
-    "errorInvalidRequest": "Invalid request. Please try again."
+    "errorInvalidRequest": "Invalid request. Please try again.",
+    "passkey": {
+      "title": "Sign in with passkey",
+      "button": "Use passkey",
+      "authenticating": "Authenticating",
+      "or": "or",
+      "note": "Passkeys work after your first email sign-in and registration in Account → Security.",
+      "errorCancelled": "Passkey authentication cancelled.",
+      "errorNotFound": "No passkey found for this device.",
+      "errorFailed": "Passkey authentication failed. Please try again."
+    }
   },
   "account": {
     "title": "Your account",
@@ -956,6 +971,25 @@
     },
     "activity": {
       "title": "Activity"
+    },
+    "security": {
+      "title": "Security"
+    },
+    "passkeys": {
+      "title": "Passkeys",
+      "addButton": "Add passkey",
+      "empty": "No passkeys registered yet.",
+      "emptyHint": "Add a passkey to sign in faster without email codes.",
+      "defaultName": "Passkey",
+      "synced": "Synced",
+      "createdAt": "Added {date}",
+      "lastUsed": "Last used {date}",
+      "deleteButton": "Remove passkey",
+      "cancelButton": "Cancel",
+      "errorLoading": "Unable to load passkeys.",
+      "errorNotAvailable": "Passkeys are not available on this device.",
+      "errorUnauthorized": "Please sign in to add a passkey.",
+      "errorRegistration": "Failed to register passkey. Please try again."
     },
     "boostAllocation": {
       "title": "Boost Allocation",
@@ -1044,6 +1078,10 @@
         "used": "Code already used",
         "user_failed": "User creation failed",
         "error": "Login error"
+      },
+      "methods": {
+        "email_otp": "Email",
+        "passkey": "Passkey"
       }
     },
     "support": {
