@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 
 import { fetchEngagementCounts } from "../data/trending";
+import { withRetry } from "../utils/retry";
 
 import { type Recording, getAllRecordings } from "./recordings";
 
@@ -8,6 +9,8 @@ export type HotRecording = Recording & {
   likeCount: number;
   hotScore: number;
 };
+
+let lastHotRecordings: HotRecording[] | null = null;
 
 function calculateHotScore(likeCount: number, recordingDate: Date, now: number): number {
   let score = likeCount * 10;
@@ -28,7 +31,7 @@ function calculateHotScore(likeCount: number, recordingDate: Date, now: number):
 const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),
-    fetchEngagementCounts(),
+    withRetry(() => fetchEngagementCounts(), 1),
   ]);
 
   const now = Date.now();
@@ -48,6 +51,10 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
 
       return b.likeCount - a.likeCount;
     });
+
+  if (withLikes.length === 0) {
+    return lastHotRecordings ? lastHotRecordings.slice(0, limit) : [];
+  }
 
   const selected: HotRecording[] = [];
   const usedLocations = new Map<string, number>();
@@ -88,6 +95,10 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
       .map((r) => ({ ...r, hotScore: 0, likeCount: 0 }));
 
     selected.push(...olderClassicsBackfill);
+  }
+
+  if (withLikes.length > 0) {
+    lastHotRecordings = selected;
   }
 
   return selected;
