@@ -1,18 +1,12 @@
-import { Suspense } from "react";
-
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 
-import { AppProviders } from "../AppProviders";
-
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={null}>
-      <AppProviders>
-        <Header />
-        {children}
-        <Footer />
-      </AppProviders>
-    </Suspense>
+    <>
+      <Header />
+      {children}
+      <Footer />
+    </>
   );
 }

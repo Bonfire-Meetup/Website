@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
 import { getRequestLocale } from "@/lib/i18n/request-locale";
 
 import { CodeOfConductSection } from "./components/CodeOfConductSection";
@@ -10,7 +9,8 @@ import { TableOfContents } from "./components/TableOfContents";
 import { TermsOfServiceSection } from "./components/TermsOfServiceSection";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "legal" });
+  const locale = await getRequestLocale();
+  const t = await getTranslations({ locale, namespace: "legal" });
 
   return {
     description: t("subtitle"),

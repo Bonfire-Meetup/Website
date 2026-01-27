@@ -8,7 +8,7 @@ import { ArrowLeftIcon, ExternalLinkIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import photoAlbums from "@/data/photo-albums.json";
 import { WEBSITE_URLS } from "@/lib/config/constants";
-import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -32,8 +32,9 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
-  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
+  const locale = await getRequestLocale();
+  const t = await getTranslations({ locale, namespace: "meta" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
   const commonValues = {
     brandName: tCommon("brandName"),
     country: tCommon("country"),
@@ -70,8 +71,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function AlbumPage({ params }: PageProps) {
-  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "photos" });
-  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
+  const locale = await getRequestLocale();
+  const t = await getTranslations({ locale, namespace: "photos" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
   const { album: albumId } = await params;
   const album = albums.find((item) => albumId === item.id || albumId.startsWith(`${item.id}-`));
 

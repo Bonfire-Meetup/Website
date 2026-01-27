@@ -14,11 +14,7 @@ type HomepageRecording = Pick<
   "shortId" | "slug" | "title" | "speaker" | "date" | "thumbnail" | "location"
 > & { likeCount?: number; boostCount?: number };
 
-export function RecordingsSectionClient({
-  recordings,
-}: {
-  recordings: HomepageRecording[];
-}) {
+export function RecordingsSectionClient({ recordings }: { recordings: HomepageRecording[] }) {
   const t = useTranslations("sections.recordings");
   const tRecordings = useTranslations("recordings");
   const tCommon = useTranslations("common");

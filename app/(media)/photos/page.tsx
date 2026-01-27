@@ -6,7 +6,7 @@ import { AlbumImage } from "@/components/shared/AlbumImage";
 import { AccentBar } from "@/components/ui/AccentBar";
 import photoAlbums from "@/data/photo-albums.json";
 import { Link } from "@/i18n/navigation";
-import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -56,8 +56,9 @@ function StatPill({ value, label }: { value: string | number; label: string }) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
-  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
+  const locale = await getRequestLocale();
+  const t = await getTranslations({ locale, namespace: "meta" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
   const commonValues = {
     brandName: tCommon("brandName"),
     country: tCommon("country"),
@@ -82,8 +83,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PhotosPage() {
-  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "photos" });
-  const locale = DEFAULT_LOCALE;
+  const locale = await getRequestLocale();
+  const t = await getTranslations({ locale, namespace: "photos" });
 
   const totalPhotos = albums.reduce((sum, album) => sum + album.count, 0);
   const heroCovers = albums.length > 4 ? albums.slice(-4) : albums;

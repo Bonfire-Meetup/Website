@@ -5,12 +5,13 @@ import { QuestionAnchor } from "@/components/faq/QuestionAnchor";
 import { BoltIcon, FireIcon, GuildIcon } from "@/components/shared/icons";
 import { Link } from "@/i18n/navigation";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
-import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
-  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
+  const locale = await getRequestLocale();
+  const t = await getTranslations({ locale, namespace: "meta" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
   const commonValues = {
     brandName: tCommon("brandName"),
     country: tCommon("country"),

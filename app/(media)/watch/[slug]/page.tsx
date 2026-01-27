@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 
-import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+import { getRequestLocale } from "@/lib/i18n/request-locale";
 import {
   type Recording,
   getAllRecordings,
@@ -25,10 +25,11 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const locale = await getRequestLocale();
   const { slug } = await params;
   const shortId = parseShortId(slug);
   const recording = getAllRecordings().find((item: Recording) => item.shortId === shortId);
-  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
+  const t = await getTranslations({ locale, namespace: "meta" });
 
   if (!recording) {
     return {

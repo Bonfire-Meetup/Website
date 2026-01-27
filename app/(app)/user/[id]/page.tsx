@@ -8,7 +8,7 @@ import { Suspense } from "react";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { hasMembership } from "@/lib/config/membership";
 import { getAuthUserById } from "@/lib/data/auth";
-import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { decompressUuid, compressUuid } from "@/lib/utils/uuid-compress";
 
@@ -26,9 +26,10 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
+  const locale = await getRequestLocale();
   const { id } = await params;
-  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
-  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
+  const t = await getTranslations({ locale, namespace: "meta" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
   const userId = decompressUuid(id);
 
   if (!userId) {
