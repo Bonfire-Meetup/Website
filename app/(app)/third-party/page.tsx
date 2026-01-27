@@ -23,20 +23,27 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
   framework: [
     { name: "Next.js", license: "MIT", url: "https://nextjs.org" },
     { name: "React", license: "MIT", url: "https://react.dev" },
+    { name: "React DOM", license: "MIT", url: "https://react.dev" },
     { name: "TypeScript", license: "Apache-2.0", url: "https://www.typescriptlang.org" },
   ],
   state: [
     { name: "Redux Toolkit", license: "MIT", url: "https://redux-toolkit.js.org" },
+    { name: "React Redux", license: "MIT", url: "https://react-redux.js.org" },
     { name: "TanStack React Query", license: "MIT", url: "https://tanstack.com/query" },
   ],
   styling: [
     { name: "Tailwind CSS", license: "MIT", url: "https://tailwindcss.com" },
+    { name: "@tailwindcss/postcss", license: "MIT", url: "https://tailwindcss.com" },
     { name: "tailwind-merge", license: "MIT", url: "https://github.com/dcastil/tailwind-merge" },
     { name: "clsx", license: "MIT", url: "https://github.com/lukeed/clsx" },
   ],
   database: [{ name: "Neon Postgres", license: "Apache-2.0", url: "https://neon.tech" }],
   i18n: [{ name: "next-intl", license: "MIT", url: "https://next-intl-docs.vercel.app" }],
-  auth: [{ name: "jose", license: "MIT", url: "https://github.com/panva/jose" }],
+  auth: [
+    { name: "jose", license: "MIT", url: "https://github.com/panva/jose" },
+    { name: "@simplewebauthn/browser", license: "MIT", url: "https://simplewebauthn.dev" },
+    { name: "@simplewebauthn/server", license: "MIT", url: "https://simplewebauthn.dev" },
+  ],
   utilities: [
     { name: "mustache", license: "MIT", url: "https://github.com/janl/mustache.js" },
     { name: "qrcode", license: "MIT", url: "https://github.com/soldair/node-qrcode" },
@@ -48,6 +55,7 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
   build: [
     { name: "Bun", license: "MIT", url: "https://bun.sh" },
     { name: "PostCSS", license: "MIT", url: "https://postcss.org" },
+    { name: "cssnano", license: "MIT", url: "https://cssnano.co" },
     { name: "Sharp", license: "Apache-2.0", url: "https://sharp.pixelplumbing.com" },
     {
       name: "babel-plugin-react-compiler",
@@ -70,6 +78,31 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
     { name: "ESLint", license: "MIT", url: "https://eslint.org" },
     { name: "@stylistic/eslint-plugin", license: "MIT", url: "https://eslint.style" },
     { name: "@typescript-eslint/parser", license: "MIT", url: "https://typescript-eslint.io" },
+    {
+      name: "@types/mustache",
+      license: "MIT",
+      url: "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    },
+    {
+      name: "@types/node",
+      license: "MIT",
+      url: "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    },
+    {
+      name: "@types/qrcode",
+      license: "MIT",
+      url: "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    },
+    {
+      name: "@types/react",
+      license: "MIT",
+      url: "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    },
+    {
+      name: "@types/react-dom",
+      license: "MIT",
+      url: "https://github.com/DefinitelyTyped/DefinitelyTyped",
+    },
   ],
 };
 

@@ -1,4 +1,4 @@
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { getAuthUserId } from "@/lib/api/auth";
@@ -129,9 +129,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
       const result = await addVideoBoost(videoId, userId);
 
-      updateTag("engagement-counts");
-      updateTag("member-picks");
-      updateTag("hidden-gems");
+      revalidateTag("engagement-counts");
+      revalidateTag("member-picks");
+      revalidateTag("hidden-gems");
 
       const response = {
         ...result,
@@ -184,9 +184,9 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         ({ availableBoosts } = allocation);
       }
 
-      updateTag("engagement-counts");
-      updateTag("member-picks");
-      updateTag("hidden-gems");
+      revalidateTag("engagement-counts");
+      revalidateTag("member-picks");
+      revalidateTag("hidden-gems");
 
       const validated = videoBoostMutationSchema.parse(result);
 
