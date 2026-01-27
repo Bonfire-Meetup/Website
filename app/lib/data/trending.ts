@@ -47,7 +47,11 @@ const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
       reason: "database_client_null",
     });
 
-    return lastEngagementCounts ?? { boosts: {}, likes: {} };
+    if (lastEngagementCounts) {
+      return lastEngagementCounts;
+    }
+
+    throw new Error("Database client unavailable and no cached engagement data");
   }
 
   try {
@@ -65,7 +69,7 @@ const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
             GROUP BY video_id
           `,
         ]),
-      1,
+      3,
     )) as [EngagementRow[], EngagementRow[]];
 
     const counts = {
@@ -82,7 +86,11 @@ const fetchEngagementCountsUncached = async (): Promise<EngagementCounts> => {
     const errorDetails = getDatabaseErrorDetails(error, "fetch_engagement_counts");
     logError("data.trending.engagement_fetch_failed", error, errorDetails);
 
-    return lastEngagementCounts ?? { boosts: {}, likes: {} };
+    if (lastEngagementCounts) {
+      return lastEngagementCounts;
+    }
+
+    throw error;
   }
 };
 
@@ -106,12 +114,12 @@ const fetchWindowedEngagementCountsUncached = async (
       days,
     });
 
-    return (
-      lastWindowedCounts.get(days) ?? {
-        recent: { boosts: {}, likes: {} },
-        total: { boosts: {}, likes: {} },
-      }
-    );
+    const cached = lastWindowedCounts.get(days);
+    if (cached) {
+      return cached;
+    }
+
+    throw new Error("Database client unavailable and no cached windowed engagement data");
   }
 
   try {
@@ -135,7 +143,7 @@ const fetchWindowedEngagementCountsUncached = async (
             GROUP BY video_id
           `,
         ]),
-      1,
+      3,
     )) as [WindowedEngagementRow[], WindowedEngagementRow[]];
 
     const recent = {
@@ -160,21 +168,36 @@ const fetchWindowedEngagementCountsUncached = async (
       days,
     });
 
-    return (
-      lastWindowedCounts.get(days) ?? {
-        recent: { boosts: {}, likes: {} },
-        total: { boosts: {}, likes: {} },
-      }
-    );
+    const cached = lastWindowedCounts.get(days);
+    if (cached) {
+      return cached;
+    }
+
+    throw error;
   }
 };
 
-export const fetchWindowedEngagementCounts = (days = DEFAULT_ENGAGEMENT_WINDOW_DAYS) => {
+const windowedEngagementCache = new Map<
+  number,
+  () => Promise<WindowedEngagementCounts>
+>();
+
+const getWindowedEngagementCacheFn = (days: number) => {
+  const existing = windowedEngagementCache.get(days);
+  if (existing) {
+    return existing;
+  }
+
   const cacheKey = `engagement-counts-${days}d`;
   const cachedFn = unstable_cache(() => fetchWindowedEngagementCountsUncached(days), [cacheKey], {
     revalidate: 900,
     tags: ["engagement-counts", cacheKey],
   });
 
-  return cachedFn();
+  windowedEngagementCache.set(days, cachedFn);
+  return cachedFn;
+};
+
+export const fetchWindowedEngagementCounts = (days = DEFAULT_ENGAGEMENT_WINDOW_DAYS) => {
+  return getWindowedEngagementCacheFn(days)();
 };

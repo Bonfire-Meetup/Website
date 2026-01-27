@@ -6,8 +6,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { getHiddenGems } from "@/lib/recordings/hidden-gems";
-import { getHotRecordings } from "@/lib/recordings/hot-picks";
-import { getMemberPicks } from "@/lib/recordings/member-picks";
+import { getHotRecordingsSafe } from "@/lib/recordings/hot-picks";
+import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 
 const RecordingsCatalog = dynamic(() =>
@@ -28,8 +28,8 @@ export default async function LibraryPage({
 
   const [allRecordings, memberPicksData, hotPicksData, hiddenGemsData] = await Promise.all([
     Promise.resolve(getAllRecordings()),
-    getMemberPicks(6),
-    getHotRecordings(6),
+    getMemberPicksSafe(6),
+    getHotRecordingsSafe(6),
     getHiddenGems(6),
   ]);
 

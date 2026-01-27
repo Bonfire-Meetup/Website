@@ -1,5 +1,5 @@
-export function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T> {
-  const attempt = async (remaining: number): Promise<T> => {
+export function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
+  const attempt = async (remaining: number, attemptNumber: number): Promise<T> => {
     try {
       return await fn();
     } catch (error) {
@@ -7,14 +7,17 @@ export function withRetry<T>(fn: () => Promise<T>, retries = 1): Promise<T> {
         throw error;
       }
 
-      const delayMs = 80 + Math.floor(Math.random() * 200);
+      const baseDelay = 200 * Math.pow(2, attemptNumber - 1);
+      const jitter = Math.floor(Math.random() * 100);
+      const delayMs = baseDelay + jitter;
+
       await new Promise<void>((resolve) => {
         setTimeout(resolve, delayMs);
       });
 
-      return attempt(remaining - 1);
+      return attempt(remaining - 1, attemptNumber + 1);
     }
   };
 
-  return attempt(retries);
+  return attempt(retries, 1);
 }

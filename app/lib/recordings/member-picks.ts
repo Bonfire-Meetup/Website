@@ -44,7 +44,7 @@ const fetchTopBoostedVideos = async (limit: number): Promise<BoostFetchResult> =
         ORDER BY count DESC
         LIMIT ${limit * 2}
       `,
-      1,
+      3,
     )) as BoostRow[];
 
     return {
@@ -66,7 +66,11 @@ const getMemberPicksUncached = async (limit = 6): Promise<MemberPickRecording[]>
   ]);
 
   if (topBoosted.status !== "ok") {
-    return lastMemberPicks ? lastMemberPicks.slice(0, limit) : [];
+    if (lastMemberPicks) {
+      return lastMemberPicks.slice(0, limit);
+    }
+
+    throw new Error(`Failed to fetch member picks: ${topBoosted.status}`);
   }
 
   const boostMap = new Map(topBoosted.rows.map((b) => [b.videoId, b.count]));
@@ -126,3 +130,23 @@ export const getMemberPicks = unstable_cache(getMemberPicksUncached, ["member-pi
   revalidate: 3600,
   tags: ["member-picks"],
 });
+
+const createMemberPicksBackfill = (
+  allRecordings: Recording[],
+  limit: number,
+): MemberPickRecording[] => {
+  return allRecordings
+    .filter((r) => r.featureHeroThumbnail)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, limit)
+    .map((r) => ({ ...r, boostCount: 0 }));
+};
+
+export const getMemberPicksSafe = async (limit = 6): Promise<MemberPickRecording[]> => {
+  try {
+    return await getMemberPicks(limit);
+  } catch {
+    const allRecordings = getAllRecordings();
+    return createMemberPicksBackfill(allRecordings, limit);
+  }
+};

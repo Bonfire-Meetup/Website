@@ -13,7 +13,7 @@ import { LocationsSectionSkeleton, RecordingsSectionSkeleton } from "./component
 import { TalkBanner } from "./components/shared/TalkBanner";
 import { upcomingEvents } from "./data/upcoming-events";
 import { getHeroImages } from "./lib/recordings/data";
-import { getTrendingRecordings } from "./lib/recordings/trending";
+import { getTrendingRecordingsSafe } from "./lib/recordings/trending";
 
 export const revalidate = 3600;
 
@@ -22,7 +22,7 @@ export default async function HomePage() {
   const photoAlt = t("hero.photoAlt");
 
   const heroImages = await getHeroImages(photoAlt);
-  const trendingRecordings = await getTrendingRecordings(6);
+  const trendingRecordings = await getTrendingRecordingsSafe(6);
 
   return (
     <>

@@ -1,7 +1,6 @@
 import { unstable_cache } from "next/cache";
 
 import { fetchEngagementCounts } from "../data/trending";
-import { withRetry } from "../utils/retry";
 
 import { type Recording, getAllRecordings } from "./recordings";
 
@@ -31,7 +30,7 @@ function calculateHotScore(likeCount: number, recordingDate: Date, now: number):
 const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),
-    withRetry(() => fetchEngagementCounts(), 1),
+    fetchEngagementCounts(),
   ]);
 
   const now = Date.now();
@@ -106,4 +105,22 @@ const getHotRecordingsUncached = async (limit = 6): Promise<HotRecording[]> => {
 
 export const getHotRecordings = unstable_cache(getHotRecordingsUncached, ["hot-picks"], {
   revalidate: 1800,
+  tags: ["hot-picks", "engagement-counts"],
 });
+
+const createHotBackfill = (allRecordings: Recording[], limit: number): HotRecording[] => {
+  return allRecordings
+    .filter((r) => r.featureHeroThumbnail)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, limit)
+    .map((r) => ({ ...r, hotScore: 0, likeCount: 0 }));
+};
+
+export const getHotRecordingsSafe = async (limit = 6): Promise<HotRecording[]> => {
+  try {
+    return await getHotRecordings(limit);
+  } catch {
+    const allRecordings = getAllRecordings();
+    return createHotBackfill(allRecordings, limit);
+  }
+};

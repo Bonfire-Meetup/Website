@@ -121,7 +121,14 @@ const getTrendingRecordingsUncached = async (limit = 6): Promise<TrendingRecordi
   return selected;
 };
 
-export const getTrendingRecordings = (limit = 6): Promise<TrendingRecording[]> => {
+const trendingRecordingsCache = new Map<number, () => Promise<TrendingRecording[]>>();
+
+const getTrendingRecordingsCacheFn = (limit: number) => {
+  const existing = trendingRecordingsCache.get(limit);
+  if (existing) {
+    return existing;
+  }
+
   const cachedFn = unstable_cache(
     () => getTrendingRecordingsUncached(limit),
     [`trending-recordings-${limit}`],
@@ -131,5 +138,27 @@ export const getTrendingRecordings = (limit = 6): Promise<TrendingRecording[]> =
     },
   );
 
-  return cachedFn();
+  trendingRecordingsCache.set(limit, cachedFn);
+  return cachedFn;
+};
+
+export const getTrendingRecordings = (limit = 6): Promise<TrendingRecording[]> => {
+  return getTrendingRecordingsCacheFn(limit)();
+};
+
+const createTrendingBackfill = (allRecordings: Recording[], limit: number): TrendingRecording[] => {
+  return allRecordings
+    .filter((r) => r.featureHeroThumbnail)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, limit)
+    .map((r) => ({ ...r, boostCount: 0, likeCount: 0, trendingScore: 0 }));
+};
+
+export const getTrendingRecordingsSafe = async (limit = 6): Promise<TrendingRecording[]> => {
+  try {
+    return await getTrendingRecordings(limit);
+  } catch {
+    const allRecordings = getAllRecordings();
+    return createTrendingBackfill(allRecordings, limit);
+  }
 };
