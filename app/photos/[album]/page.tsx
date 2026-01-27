@@ -9,10 +9,12 @@ import { AlbumImage } from "@/components/shared/AlbumImage";
 import { ArrowLeftIcon, ExternalLinkIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import photoAlbums from "@/data/photo-albums.json";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { AlbumGallery } from "./AlbumGallery";
+import { AlbumShareButton } from "./AlbumShareButton";
 
 const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
 
@@ -85,6 +87,8 @@ export default async function AlbumPage({ params }: PageProps) {
         url: photographer.url?.trim(),
       }))
       .filter((photographer) => photographer.name.length > 0) ?? [];
+  const shareUrl = `${WEBSITE_URLS.BASE}${PAGE_ROUTES.PHOTOS_ALBUM(toAlbumSlug(album))}`;
+  const shareText = `${title} - ${tCommon("brandName")}`;
 
   return (
     <>
@@ -113,55 +117,56 @@ export default async function AlbumPage({ params }: PageProps) {
               />
             </div>
             <div className="p-6 sm:p-8">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">{title}</h1>
-                  <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-neutral-600 dark:text-neutral-400">
-                    <span className="font-semibold text-neutral-800 dark:text-neutral-100">
-                      {t("albumPhotos", { count: album.count })}
-                    </span>
-                    {photographers.length > 0 ? (
-                      <>
-                        <span className="text-neutral-300 dark:text-neutral-600">•</span>
-                        <span className="text-neutral-500 dark:text-neutral-400">
-                          {t("photographersBy")}
-                        </span>
-                        <span className="flex flex-wrap items-center gap-2">
-                          {photographers.map((photographer, index) => (
-                            <span
-                              key={`${photographer.name}-${index}`}
-                              className="inline-flex items-center gap-2"
-                            >
-                              {photographer.url ? (
-                                <a
-                                  href={photographer.url}
-                                  className="font-semibold text-neutral-800 underline decoration-transparent underline-offset-4 transition hover:decoration-current dark:text-neutral-100"
-                                  rel="noopener noreferrer"
-                                  target="_blank"
-                                >
-                                  <span className="inline-flex items-center gap-1">
-                                    {photographer.name}
-                                    <ExternalLinkIcon
-                                      className="h-3.5 w-3.5 text-neutral-400"
-                                      aria-hidden="true"
-                                    />
-                                  </span>
-                                </a>
-                              ) : (
-                                <span className="font-semibold text-neutral-800 dark:text-neutral-100">
-                                  {photographer.name}
-                                </span>
-                              )}
-                              {index < photographers.length - 1 ? (
-                                <span className="text-neutral-300 dark:text-neutral-600">/</span>
-                              ) : null}
-                            </span>
-                          ))}
-                        </span>
-                      </>
-                    ) : null}
-                  </div>
+              <div className="flex items-start justify-between gap-3">
+                <h1 className="text-3xl font-bold text-neutral-900 dark:text-white">{title}</h1>
+                <div className="shrink-0">
+                  <AlbumShareButton shareUrl={shareUrl} shareText={shareText} />
                 </div>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-neutral-600 dark:text-neutral-400">
+                <span className="font-semibold text-neutral-800 dark:text-neutral-100">
+                  {t("albumPhotos", { count: album.count })}
+                </span>
+                {photographers.length > 0 ? (
+                  <>
+                    <span className="text-neutral-300 dark:text-neutral-600">•</span>
+                    <span className="text-neutral-500 dark:text-neutral-400">
+                      {t("photographersBy")}
+                    </span>
+                    <span className="flex flex-wrap items-center gap-2">
+                      {photographers.map((photographer, index) => (
+                        <span
+                          key={`${photographer.name}-${index}`}
+                          className="inline-flex items-center gap-2"
+                        >
+                          {photographer.url ? (
+                            <a
+                              href={photographer.url}
+                              className="font-semibold text-neutral-800 underline decoration-transparent underline-offset-4 transition hover:decoration-current dark:text-neutral-100"
+                              rel="noopener noreferrer"
+                              target="_blank"
+                            >
+                              <span className="inline-flex items-center gap-1">
+                                {photographer.name}
+                                <ExternalLinkIcon
+                                  className="h-3.5 w-3.5 text-neutral-400"
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            </a>
+                          ) : (
+                            <span className="font-semibold text-neutral-800 dark:text-neutral-100">
+                              {photographer.name}
+                            </span>
+                          )}
+                          {index < photographers.length - 1 ? (
+                            <span className="text-neutral-300 dark:text-neutral-600">/</span>
+                          ) : null}
+                        </span>
+                      ))}
+                    </span>
+                  </>
+                ) : null}
               </div>
             </div>
           </div>

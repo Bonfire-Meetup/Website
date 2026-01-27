@@ -10,9 +10,18 @@ import { CheckIcon, FacebookIcon, LinkIcon, LinkedInIcon, ShareIcon, XIcon } fro
 interface ShareMenuProps {
   shareUrl: string;
   shareText: string;
+  buttonClassName?: string;
+  iconClassName?: string;
+  showLabel?: boolean;
 }
 
-export function ShareMenu({ shareUrl, shareText }: ShareMenuProps) {
+export function ShareMenu({
+  shareUrl,
+  shareText,
+  buttonClassName = "",
+  iconClassName = "h-3.5 w-3.5",
+  showLabel = true,
+}: ShareMenuProps) {
   const t = useTranslations("recordings");
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -59,10 +68,10 @@ export function ShareMenu({ shareUrl, shareText }: ShareMenuProps) {
         <button
           type="button"
           onClick={handleShare}
-          className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+          className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white ${buttonClassName}`}
         >
-          <ShareIcon className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline">{t("share")}</span>
+          <ShareIcon className={iconClassName} />
+          {showLabel ? <span className="hidden sm:inline">{t("share")}</span> : null}
         </button>
         {showShareMenu && (
           <>

@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { ShareMenu } from "@/components/recordings/ShareMenu";
+
 interface LightboxProps {
   images: { src: string; alt: string }[];
   initialIndex: number;
@@ -25,6 +27,7 @@ export function Lightbox({
 }: LightboxProps) {
   const [index, setIndex] = useState(initialIndex);
   const [saveData, setSaveData] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
   const isDesktopViewport = useCallback(() => {
     if (typeof window === "undefined") {
       return true;
@@ -58,6 +61,7 @@ export function Lightbox({
   const current = images[index];
   const hasPrev = index > 0;
   const hasNext = index < images.length - 1;
+  const shareText = current?.alt ?? "";
 
   const goToPrev = useCallback(() => {
     if (hasPrev) {
@@ -101,6 +105,10 @@ export function Lightbox({
       img.src = images[i].src;
     });
   }, [index, images, saveData]);
+
+  useEffect(() => {
+    setShareUrl(window.location.href);
+  }, [index]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -214,25 +222,35 @@ export function Lightbox({
         <div className="flex h-9 items-center justify-center rounded-full bg-white/10 px-3 text-xs font-medium text-white/80 backdrop-blur-sm">
           {index + 1} / {images.length}
         </div>
-        <button
-          onClick={handleDownload}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
-          aria-label={downloadLabel}
-        >
-          <svg
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+        <div className="flex h-9 items-stretch overflow-hidden rounded-full bg-white/10 text-white/90 backdrop-blur-sm">
+          <ShareMenu
+            shareUrl={shareUrl}
+            shareText={shareText}
+            buttonClassName="h-full rounded-none px-3 text-white/90 hover:bg-white/20 hover:text-white"
+            iconClassName="h-4 w-4"
+            showLabel={false}
+          />
+          <div className="h-full w-px bg-white/20" />
+          <button
+            onClick={handleDownload}
+            className="flex h-full items-center justify-center px-3 transition-colors hover:bg-white/20"
+            aria-label={downloadLabel}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-        </button>
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <button
@@ -251,26 +269,36 @@ export function Lightbox({
         </svg>
       </button>
 
-      <div className="absolute top-6 left-6 z-30 hidden gap-2 sm:flex">
-        <button
-          onClick={handleDownload}
-          className="flex h-12 cursor-pointer items-center gap-2 rounded-full bg-white/10 px-5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
-        >
-          <svg
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+      <div className="absolute top-6 left-6 z-30 hidden sm:flex">
+        <div className="flex h-12 items-stretch overflow-hidden rounded-full bg-white/10 text-white/90 backdrop-blur-sm">
+          <ShareMenu
+            shareUrl={shareUrl}
+            shareText={shareText}
+            buttonClassName="h-full rounded-none px-4 text-white/90 hover:bg-white/20 hover:text-white"
+            iconClassName="h-5 w-5"
+            showLabel={false}
+          />
+          <div className="h-full w-px bg-white/20" />
+          <button
+            onClick={handleDownload}
+            className="flex h-full items-center justify-center px-4 transition-colors hover:bg-white/20"
+            aria-label={downloadLabel}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-          {downloadLabel}
-        </button>
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div className="absolute bottom-4 left-1/2 z-30 hidden -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-sm sm:block">
