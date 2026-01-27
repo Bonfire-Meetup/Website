@@ -203,16 +203,18 @@ export const POST = async (request: Request) =>
       const emailFingerprint = getEmailFingerprint(user.email);
       const requestId = getRequestId();
 
-      await insertAuthAttempt({
-        emailDomain: emailFingerprint.emailDomain,
-        emailHash: emailFingerprint.emailHash,
-        ipHash: clientFingerprint.ipHash ?? undefined,
-        method: "passkey",
-        outcome: "success",
-        requestId,
-        userAgentHash: clientFingerprint.userAgentHash ?? undefined,
-        userId: passkey.user_id,
-      });
+      if (emailFingerprint.emailHash) {
+        await insertAuthAttempt({
+          emailDomain: emailFingerprint.emailDomain,
+          emailHash: emailFingerprint.emailHash,
+          ipHash: clientFingerprint.ipHash ?? undefined,
+          method: "passkey",
+          outcome: "success",
+          requestId,
+          userAgentHash: clientFingerprint.userAgentHash ?? undefined,
+          userId: passkey.user_id,
+        });
+      }
 
       logInfo("passkey.authenticate.success", {
         ...clientFingerprint,
