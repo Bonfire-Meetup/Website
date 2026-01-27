@@ -583,7 +583,7 @@
     },
     "photos": {
       "title": "Media Policy",
-      "content": "We love capturing the energy of our community! By attending our events, you agree that your image may be used in our social media, website, or marketing materials. We respect your privacy. If you would prefer not to be photographed, please inform our staff at check-in. If you would like a specific photo of yourself removed from our platforms, contact us and we will accommodate your request."
+      "content": "We may take photos or recordings at our events for documentation and promotion. Where required by law, we will ask for your consent before using identifiable images. If you would prefer not to be photographed or recorded, please inform our staff at check-in or contact us in advance; we will make reasonable efforts to accommodate your request. If you would like a specific photo removed from our platforms, contact us and we will review the request promptly."
     },
     "contact": {
       "title": "Reporting & Support",
@@ -603,24 +603,24 @@
     "privacy": {
       "title": "Privacy Policy",
       "lastUpdated": "Last updated: {date}",
-      "intro": "This Privacy Policy explains how Bonfire Events collects, uses, and protects your personal information when you use our website and services.",
+      "intro": "This Privacy Policy explains how the Bonfire organizing team (operating under the Bonfire Events name) collects, uses, and protects your personal information when you use our website and services.",
       "controller": {
         "title": "Data Controller",
-        "content": "Bonfire Events is the data controller for your personal data. If you have questions about this privacy policy, contact us at hello@bnf.events."
+        "content": "The data controller is the Bonfire organizing team (community organizers) operating under the Bonfire Events name. We do not have a separate legal entity. If you have questions about this privacy policy, contact us at hello@bnf.events."
       },
       "dataCollection": {
         "title": "What Data We Collect",
         "personal": {
           "title": "Personal Data",
-          "content": "We collect the following personal data:\n\n<bullet><bold>Account Information</bold>: Email address (required for account creation)</bullet>\n<bullet><bold>Form Submissions</bold>: Name, email, and message content when you submit contact forms or talk proposals</bullet>\n<bullet><bold>Authentication Data</bold>: Login attempts, authentication challenges, and access tokens</bullet>\n<bullet><bold>Preferences</bold>: Email communication preferences</bullet>"
+          "content": "We collect the following personal data:\n\n<bullet><bold>Account Information</bold>: Email address (required for account creation)</bullet>\n<bullet><bold>Newsletter Subscriptions</bold>: Email address and communication preferences if you sign up</bullet>\n<bullet><bold>Form Submissions</bold>: Name, email, and message content when you submit contact forms or talk proposals</bullet>\n<bullet><bold>Authentication Data</bold>: Login attempts, OTP challenges, and related metadata (including IP address and user agent) used to secure accounts</bullet>\n<bullet><bold>Preferences</bold>: Email communication preferences</bullet>"
         },
         "technical": {
           "title": "Technical Data",
-          "content": "We automatically collect:\n\n<bullet><bold>IP Addresses</bold>: Hashed for security and rate limiting purposes</bullet>\n<bullet><bold>User Agent Strings</bold>: Hashed for security and analytics</bullet>\n<bullet><bold>Usage Data</bold>: Page views, interactions, and performance metrics</bullet>\n<bullet><bold>Cookies</bold>: Essential cookies for CSRF protection, locale preferences, and theme settings</bullet>"
+          "content": "We automatically collect:\n\n<bullet><bold>IP Addresses</bold>: Used for security and rate limiting; stored in hashed form for likes, newsletters, and forms, and stored in raw form for authentication challenges and tokens</bullet>\n<bullet><bold>User Agent</bold>: Used for security and analytics; for likes and newsletters we derive a browser/OS/device signature and store a salted hash, and for authentication challenges and tokens we store the user agent string</bullet>\n<bullet><bold>Usage Data</bold>: Page views, interactions, and performance metrics</bullet>\n<bullet><bold>Cookies</bold>: Essential cookies for CSRF protection, locale preferences, and theme settings</bullet>"
         },
         "interactions": {
           "title": "User Interactions",
-          "content": "We store:\n\n<bullet><bold>Video Likes</bold>: Based on hashed IP and user agent (no account required)</bullet>\n<bullet><bold>Video Boosts</bold>: Linked to your user account</bullet>\n<bullet><bold>Login History</bold>: Authentication attempts and outcomes for security purposes</bullet>"
+          "content": "We store:\n\n<bullet><bold>Video Likes</bold>: Based on salted hashes of your IP address and a user agent signature (browser/OS/device); no account required</bullet>\n<bullet><bold>Video Boosts</bold>: Linked to your user account</bullet>\n<bullet><bold>Authentication Attempts</bold>: Attempts and outcomes for security purposes (may include hashed identifiers)</bullet>"
         }
       },
       "howWeUse": {
@@ -635,7 +635,7 @@
         },
         "analytics": {
           "title": "Analytics & Performance",
-          "content": "We use anonymized usage data to understand how our website is used, improve performance, and enhance user experience."
+          "content": "We use aggregated or anonymized usage data where possible to understand how our website is used, improve performance, and enhance user experience."
         },
         "security": {
           "title": "Security",
@@ -644,7 +644,7 @@
       },
       "legalBasis": {
         "title": "Legal Basis for Processing",
-        "content": "We process your personal data based on:\n\n<bullet><bold>Consent</bold>: Email preferences, form submissions, and account creation</bullet>\n<bullet><bold>Legitimate Interest</bold>: Security, fraud prevention, and website analytics</bullet>\n<bullet><bold>Contract</bold>: Providing authentication and account services</bullet>"
+        "content": "We process your personal data based on:\n\n<bullet><bold>Consent</bold>: Optional communications (e.g., community updates) and cookies where required</bullet>\n<bullet><bold>Legitimate Interest</bold>: Security, fraud prevention, and basic analytics</bullet>\n<bullet><bold>Contract / Pre-contract</bold>: Providing authentication, account services, and responding to your requests</bullet>"
       },
       "dataSharing": {
         "title": "Data Sharing & Third-Party Services",
@@ -652,15 +652,15 @@
       },
       "dataStorage": {
         "title": "Data Storage & Retention",
-        "location": "Your data is stored in databases hosted by Neon. We use service providers that comply with GDPR requirements.",
+        "location": "Your data is stored in databases hosted by Neon. We use service providers that are required to comply with GDPR or provide appropriate safeguards.",
         "retention": {
           "title": "Retention Periods",
-          "content": "We retain your data for the following periods:\n\n<bullet><bold>Account Data</bold>: Until you delete your account or request deletion</bullet>\n<bullet><bold>Form Submissions</bold>: Until you request deletion or for up to 2 years</bullet>\n<bullet><bold>Login Attempts</bold>: 30 days for security audit purposes</bullet>\n<bullet><bold>Authentication Challenges</bold>: Until used or expired (typically 10 minutes)</bullet>\n<bullet><bold>Video Interactions</bold>: Until you delete your account (for boosts) or indefinitely (for likes, as they're anonymized)</bullet>"
+          "content": "We retain your data only as long as necessary for the purposes described above and to comply with legal obligations. Retention depends on the type of data and purpose. Examples include:\n\n<bullet><bold>Account Data</bold>: While your account is active or until you request deletion</bullet>\n<bullet><bold>Form Submissions</bold>: As long as needed to handle your request or proposal</bullet>\n<bullet><bold>Authentication Challenges</bold>: They expire after about 10 minutes and are rejected thereafter</bullet>\n<bullet><bold>Video Likes</bold>: Stored as hashed identifiers to prevent duplicate votes</bullet>\n\nWe may retain certain records longer if required by law or to establish, exercise, or defend legal claims."
         }
       },
       "yourRights": {
         "title": "Your Rights (GDPR)",
-        "content": "Under GDPR, you have the following rights:\n\n<bullet><bold>Right to Access</bold>: You can view your account data on the /me page</bullet>\n<bullet><bold>Right to Rectification</bold>: You can update your email preferences in your account settings</bullet>\n<bullet><bold>Right to Erasure</bold>: You can delete your account at any time from the /me page</bullet>\n<bullet><bold>Right to Data Portability</bold>: Contact us to request a copy of your data</bullet>\n<bullet><bold>Right to Object</bold>: You can opt out of community emails in your preferences</bullet>\n<bullet><bold>Right to Withdraw Consent</bold>: You can withdraw consent for email communications at any time</bullet>\n\nTo exercise these rights, contact us at hello@bnf.events or use the contact form."
+        "content": "Under GDPR, you have the following rights:\n\n<bullet><bold>Right to Access</bold>: You can view some account data on the /me page and request a full copy from us</bullet>\n<bullet><bold>Right to Rectification</bold>: You can update some details in your account settings or ask us to correct them</bullet>\n<bullet><bold>Right to Erasure</bold>: You can delete your account at any time from the /me page</bullet>\n<bullet><bold>Right to Restriction</bold>: You can ask us to limit processing in certain cases</bullet>\n<bullet><bold>Right to Data Portability</bold>: Contact us to request a copy of your data</bullet>\n<bullet><bold>Right to Object</bold>: You can object to processing based on legitimate interests; you can opt out of community emails at any time</bullet>\n<bullet><bold>Right to Withdraw Consent</bold>: You can withdraw consent for email communications at any time</bullet>\n<bullet><bold>Right to Lodge a Complaint</bold>: You can lodge a complaint with the Czech Data Protection Authority (UOOU)</bullet>\n\nTo exercise these rights, contact us at hello@bnf.events or use the contact form."
       },
       "cookies": {
         "title": "Cookies & Tracking",
@@ -668,11 +668,11 @@
       },
       "security": {
         "title": "Security",
-        "content": "We implement security measures to protect your data:\n\n<bullet>Passwordless authentication with time-limited OTP codes</bullet>\n<bullet>IP addresses and user agent strings are hashed before storage</bullet>\n<bullet>HTTPS encryption for all data transmission</bullet>\n<bullet>Rate limiting to prevent abuse</bullet>\n<bullet>Regular security audits and updates</bullet>"
+        "content": "We take reasonable technical and organizational measures to protect your data. These may include:\n\n<bullet>Passwordless authentication with time-limited OTP codes</bullet>\n<bullet>Minimization of IP addresses and user agent strings (e.g., hashing) where feasible</bullet>\n<bullet>HTTPS encryption for data transmission</bullet>\n<bullet>Rate limiting and abuse prevention</bullet>\n<bullet>Ongoing maintenance and security updates</bullet>"
       },
       "internationalTransfers": {
         "title": "International Data Transfers",
-        "content": "Your data may be processed by service providers located outside the European Economic Area (EEA). We ensure appropriate safeguards are in place, including GDPR-compliant data processing agreements with all service providers."
+        "content": "Your data may be processed by service providers located outside the European Economic Area (EEA). Where required, we use appropriate safeguards (such as standard contractual clauses) and assess transfers to provide an adequate level of protection."
       },
       "children": {
         "title": "Children's Privacy",
@@ -690,14 +690,14 @@
     "terms": {
       "title": "Terms of Service",
       "lastUpdated": "Last updated: {date}",
-      "intro": "By accessing and using the Bonfire Events website and services, you agree to be bound by these Terms of Service.",
+      "intro": "By accessing and using the Bonfire website and services operated by the Bonfire organizing team (the \"Bonfire team\"), you agree to be bound by these Terms of Service.",
       "acceptance": {
         "title": "Acceptance of Terms",
         "content": "By creating an account, submitting forms, or using our website, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, please do not use our services."
       },
       "service": {
         "title": "Description of Service",
-        "content": "Bonfire Events provides a platform for game development community meetups, including event information, video recordings, and community features. We reserve the right to modify, suspend, or discontinue any aspect of the service at any time."
+        "content": "The Bonfire team provides a platform for game development community meetups, including event information, video recordings, and community features. We reserve the right to modify, suspend, or discontinue any aspect of the service at any time."
       },
       "accounts": {
         "title": "Account Registration",
@@ -709,11 +709,11 @@
       },
       "intellectualProperty": {
         "title": "Intellectual Property",
-        "content": "The website content, including text, graphics, logos, and software, is owned by Bonfire Events or its licensors and is protected by copyright and trademark laws. You may not reproduce, distribute, or create derivative works without permission. For logo and brand usage, see our Press Kit page."
+        "content": "The website content, including text, graphics, logos, and software, is owned by the Bonfire team or its licensors and is protected by copyright and trademark laws. You may not reproduce, distribute, or create derivative works without permission. For logo or brand usage, contact us."
       },
       "userContent": {
         "title": "User-Generated Content",
-        "content": "By submitting content (forms, proposals, comments), you grant Bonfire Events a non-exclusive, royalty-free license to use, modify, and display your content for the purpose of operating and promoting our services."
+        "content": "By submitting content (forms, proposals, comments), you grant the Bonfire team a non-exclusive, royalty-free license to use, modify, and display your content for the purpose of operating and promoting our services. You represent that you have the necessary rights and permissions to submit this content."
       },
       "availability": {
         "title": "Service Availability",
@@ -721,11 +721,11 @@
       },
       "liability": {
         "title": "Limitation of Liability",
-        "content": "To the maximum extent permitted by law, Bonfire Events shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the service. Our total liability shall not exceed the amount you paid to us (if any) in the past 12 months."
+        "content": "To the maximum extent permitted by law, the Bonfire team shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the service. Our total liability shall not exceed the amount you paid to us (if any) in the past 12 months. Nothing in these terms limits liability for intent or gross negligence, for harm to life or health, or for any liability that cannot be excluded under applicable law."
       },
       "indemnification": {
         "title": "Indemnification",
-        "content": "You agree to indemnify and hold harmless Bonfire Events from any claims, damages, or expenses arising from your use of the service, violation of these terms, or infringement of any rights of another party."
+        "content": "You agree to indemnify and hold harmless the Bonfire team from any claims, damages, or expenses arising from your use of the service, violation of these terms, or infringement of any rights of another party."
       },
       "termination": {
         "title": "Termination",
@@ -733,11 +733,11 @@
       },
       "governingLaw": {
         "title": "Governing Law",
-        "content": "These Terms of Service are governed by the laws of the Czech Republic. Any disputes shall be subject to the exclusive jurisdiction of the courts of the Czech Republic."
+        "content": "These Terms of Service are governed by the laws of the Czech Republic. If you are a consumer, this does not affect any mandatory consumer protection rights or the right to bring claims in the courts of your place of residence."
       },
       "disputes": {
         "title": "Dispute Resolution",
-        "content": "If you have a dispute, please contact us first at hello@bnf.events. We will attempt to resolve disputes amicably. If a resolution cannot be reached, disputes will be resolved through the courts of the Czech Republic."
+        "content": "If you have a dispute, please contact us first at hello@bnf.events. We will attempt to resolve disputes amicably. If a resolution cannot be reached, disputes will be resolved by the courts of the Czech Republic unless mandatory consumer rules provide otherwise."
       },
       "changes": {
         "title": "Changes to Terms",
