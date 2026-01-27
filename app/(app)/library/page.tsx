@@ -1,19 +1,22 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
+import {
+  HiddenGemsRailServer,
+  HotPicksRailServer,
+  MemberPicksRailServer,
+} from "@/components/recordings/TrendingRailsServer";
+import { TrendingRailSkeleton } from "@/components/shared/Skeletons";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
-import { getHiddenGems } from "@/lib/recordings/hidden-gems";
-import { getHotRecordingsSafe } from "@/lib/recordings/hot-picks";
-import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
 import { getAllRecordings } from "@/lib/recordings/recordings";
+import { normalizeText } from "@/lib/utils/text";
 
 const RecordingsCatalog = dynamic(() =>
   import("@/components/recordings/RecordingsCatalog").then((mod) => mod.RecordingsCatalog),
 );
-
-import { normalizeText } from "@/lib/utils/text";
 
 type LocationFilter = "all" | LocationValue;
 
@@ -25,12 +28,7 @@ export default async function LibraryPage({
   const tCommon = await getTranslations("common");
   const params = await searchParams;
 
-  const [allRecordings, memberPicksData, hotPicksData, hiddenGemsData] = await Promise.all([
-    Promise.resolve(getAllRecordings()),
-    getMemberPicksSafe(6),
-    getHotRecordingsSafe(6),
-    getHiddenGems(6),
-  ]);
+  const allRecordings = getAllRecordings();
 
   const locationParam = params.location;
   const isPragueLocation = locationParam === LOCATIONS.PRAGUE;
@@ -103,65 +101,15 @@ export default async function LibraryPage({
     title: recording.title,
   }));
 
-  const memberPicks = memberPicksData.map((recording) => ({
-    boostCount: recording.boostCount,
-    date: recording.date,
-    description: recording.description,
-    episode: recording.episode,
-    episodeId: recording.episodeId,
-    episodeNumber: recording.episodeNumber,
-    featureHeroThumbnail: recording.featureHeroThumbnail,
-    location: recording.location,
-    shortId: recording.shortId,
-    slug: recording.slug,
-    speaker: recording.speaker,
-    tags: recording.tags,
-    thumbnail: recording.thumbnail,
-    title: recording.title,
-  }));
-
-  const hotPicks = hotPicksData.map((recording) => ({
-    date: recording.date,
-    description: recording.description,
-    episode: recording.episode,
-    episodeId: recording.episodeId,
-    episodeNumber: recording.episodeNumber,
-    featureHeroThumbnail: recording.featureHeroThumbnail,
-    likeCount: recording.likeCount,
-    location: recording.location,
-    shortId: recording.shortId,
-    slug: recording.slug,
-    speaker: recording.speaker,
-    tags: recording.tags,
-    thumbnail: recording.thumbnail,
-    title: recording.title,
-  }));
-
-  const hiddenGems = hiddenGemsData.map((recording) => ({
-    date: recording.date,
-    description: recording.description,
-    episode: recording.episode,
-    episodeId: recording.episodeId,
-    episodeNumber: recording.episodeNumber,
-    featureHeroThumbnail: recording.featureHeroThumbnail,
-    location: recording.location,
-    shortId: recording.shortId,
-    slug: recording.slug,
-    speaker: recording.speaker,
-    tags: recording.tags,
-    thumbnail: recording.thumbnail,
-    title: recording.title,
-  }));
+  const scrollLeftLabel = tCommon("scrollLeft");
+  const scrollRightLabel = tCommon("scrollRight");
 
   return (
     <main className="gradient-bg min-h-screen pt-24">
       <RecordingsCatalog
         recordings={recordings}
-        memberPicks={memberPicks}
-        hotPicks={hotPicks}
-        hiddenGems={hiddenGems}
-        scrollLeftLabel={tCommon("scrollLeft")}
-        scrollRightLabel={tCommon("scrollRight")}
+        scrollLeftLabel={scrollLeftLabel}
+        scrollRightLabel={scrollRightLabel}
         previousFeaturedLabel={tCommon("previousFeatured")}
         nextFeaturedLabel={tCommon("nextFeatured")}
         initialFilters={{
@@ -186,6 +134,32 @@ export default async function LibraryPage({
           thumbnail: recording.thumbnail,
           title: recording.title,
         }))}
+        trendingSlots={{
+          memberPicks: (
+            <Suspense key="member-picks" fallback={<TrendingRailSkeleton />}>
+              <MemberPicksRailServer
+                scrollLeftLabel={scrollLeftLabel}
+                scrollRightLabel={scrollRightLabel}
+              />
+            </Suspense>
+          ),
+          hotPicks: (
+            <Suspense key="hot-picks" fallback={<TrendingRailSkeleton />}>
+              <HotPicksRailServer
+                scrollLeftLabel={scrollLeftLabel}
+                scrollRightLabel={scrollRightLabel}
+              />
+            </Suspense>
+          ),
+          hiddenGems: (
+            <Suspense key="hidden-gems" fallback={<TrendingRailSkeleton />}>
+              <HiddenGemsRailServer
+                scrollLeftLabel={scrollLeftLabel}
+                scrollRightLabel={scrollRightLabel}
+              />
+            </Suspense>
+          ),
+        }}
       />
     </main>
   );

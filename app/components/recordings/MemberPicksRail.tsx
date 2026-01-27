@@ -1,3 +1,5 @@
+"use client";
+
 import type { MemberPickRecording } from "./RecordingsCatalogTypes";
 
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";

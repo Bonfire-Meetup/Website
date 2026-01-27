@@ -106,11 +106,12 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   scrollRightLabel,
   previousFeaturedLabel,
   nextFeaturedLabel,
+  trendingSlots,
 }: {
   recordings: CatalogRecording[];
-  memberPicks: MemberPickRecording[];
-  hotPicks: HotRecording[];
-  hiddenGems: HiddenGemRecording[];
+  memberPicks?: MemberPickRecording[];
+  hotPicks?: HotRecording[];
+  hiddenGems?: HiddenGemRecording[];
   initialFilters?: {
     location: LocationFilter;
     tag: string;
@@ -123,6 +124,11 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
   scrollRightLabel?: string;
   previousFeaturedLabel?: string;
   nextFeaturedLabel?: string;
+  trendingSlots?: {
+    memberPicks?: React.ReactNode;
+    hotPicks?: React.ReactNode;
+    hiddenGems?: React.ReactNode;
+  };
 }) {
   const t = useTranslations("recordings");
   const tCommon = useTranslations("common");
@@ -687,26 +693,33 @@ export const RecordingsCatalog = memo(function RecordingsCatalog({
                     <div className="flex justify-center">
                       <BrowseAllButton label={tView("all")} onClick={handleBrowseAll} />
                     </div>
-                    <MemberPicksRail
-                      title={tRows("memberPicks")}
-                      recordings={memberPicks}
-                      scrollLeftLabel={scrollLeftLabel}
-                      scrollRightLabel={scrollRightLabel}
-                    />
-                    <HotPicksRail
-                      title={tRows("hot")}
-                      recordings={hotPicks}
-                      scrollLeftLabel={scrollLeftLabel}
-                      scrollRightLabel={scrollRightLabel}
-                    />
-                    {hiddenGems.length > 0 && (
-                      <HiddenGemsRail
-                        title={tRows("hiddenGems")}
-                        recordings={hiddenGems}
-                        scrollLeftLabel={scrollLeftLabel}
-                        scrollRightLabel={scrollRightLabel}
-                      />
-                    )}
+                    {trendingSlots?.memberPicks ??
+                      (memberPicks && memberPicks.length > 0 && (
+                        <MemberPicksRail
+                          title={tRows("memberPicks")}
+                          recordings={memberPicks}
+                          scrollLeftLabel={scrollLeftLabel}
+                          scrollRightLabel={scrollRightLabel}
+                        />
+                      ))}
+                    {trendingSlots?.hotPicks ??
+                      (hotPicks && hotPicks.length > 0 && (
+                        <HotPicksRail
+                          title={tRows("hot")}
+                          recordings={hotPicks}
+                          scrollLeftLabel={scrollLeftLabel}
+                          scrollRightLabel={scrollRightLabel}
+                        />
+                      ))}
+                    {trendingSlots?.hiddenGems ??
+                      (hiddenGems && hiddenGems.length > 0 && (
+                        <HiddenGemsRail
+                          title={tRows("hiddenGems")}
+                          recordings={hiddenGems}
+                          scrollLeftLabel={scrollLeftLabel}
+                          scrollRightLabel={scrollRightLabel}
+                        />
+                      ))}
                     {rows.map((row) => (
                       <RecordingRail
                         key={`${row.key}-${filterKey}`}

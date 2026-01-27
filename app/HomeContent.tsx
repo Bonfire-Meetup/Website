@@ -1,14 +1,16 @@
-import type { TrendingRecording } from "./lib/recordings/trending";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
 import { EventsSection } from "./components/events/EventsSection";
 import { HeroWrapper } from "./components/layout/HeroWrapper";
 import { LocationsSection } from "./components/locations/LocationsSection";
 import { NewsletterSection } from "./components/newsletter/NewsletterSection";
 import { RecordingsSection } from "./components/recordings/RecordingsSection";
+import { RecordingsSectionSkeleton } from "./components/shared/Skeletons";
 import { TalkBanner } from "./components/shared/TalkBanner";
 import { upcomingEvents } from "./data/upcoming-events";
 import { type Locale } from "./lib/i18n/locales";
+import { getTrendingRecordingsSafe } from "./lib/recordings/trending";
 
 interface HomeContentProps {
   heroImages: {
@@ -17,11 +19,15 @@ interface HomeContentProps {
     fallbackSrc?: string;
     fallbackType?: "image/jpeg" | "image/png";
   }[];
-  trendingRecordings: TrendingRecording[];
   locale: Locale;
 }
 
-export async function HomeContent({ heroImages, trendingRecordings, locale }: HomeContentProps) {
+async function TrendingRecordingsSection({ locale }: { locale: Locale }) {
+  const trendingRecordings = await getTrendingRecordingsSafe(6);
+  return <RecordingsSection recordings={trendingRecordings} locale={locale} />;
+}
+
+export async function HomeContent({ heroImages, locale }: HomeContentProps) {
   const t = await getTranslations({ locale, namespace: "hero" });
   const photoAlt = t("photoAlt");
 
@@ -38,7 +44,9 @@ export async function HomeContent({ heroImages, trendingRecordings, locale }: Ho
 
       <div className="section-divider mx-auto max-w-4xl" />
 
-      <RecordingsSection recordings={trendingRecordings} locale={locale} />
+      <Suspense fallback={<RecordingsSectionSkeleton />}>
+        <TrendingRecordingsSection locale={locale} />
+      </Suspense>
 
       <div className="section-divider mx-auto max-w-4xl" />
 

@@ -1,3 +1,5 @@
+"use client";
+
 import type { HotRecording } from "./RecordingsCatalogTypes";
 
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";

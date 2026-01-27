@@ -1,3 +1,5 @@
+"use client";
+
 import type { HiddenGemRecording } from "./RecordingsCatalogTypes";
 
 import { Rail } from "./Rail";
