@@ -158,6 +158,7 @@
     "multiplePrivateBoosters": "{count} private",
     "returnToPlayer": "Return to player",
     "closePlayer": "Close player",
+    "youtubeNotice": "The video is provided by YouTube. Cookies may be set once playback starts.",
     "empty": "No recordings found."
   },
   "press": {

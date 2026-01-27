@@ -23,7 +23,7 @@ const nextConfig = {
             "img-src 'self' data: https://img.youtube.com https://i.ytimg.com https://cdn-img.bnf.events",
             "font-src 'self' data:",
             "connect-src 'self' https://challenges.cloudflare.com https://*.vercel-insights.com https://vitals.vercel-insights.com https://vercel-insights.com",
-            "frame-src 'self' https://www.youtube.com https://challenges.cloudflare.com",
+            "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com",
             "frame-ancestors 'self'",
             "base-uri 'self'",
             "form-action 'self'",
