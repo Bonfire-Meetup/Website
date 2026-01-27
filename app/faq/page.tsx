@@ -80,8 +80,10 @@ export default async function FaqPage() {
               { key: "general", questions: ["whatIsBonfire", "howOften", "entryFee"] },
               { key: "participation", questions: ["howToSpeaker", "howToJoin"] },
               { key: "community", questions: ["isRecorded", "discord", "photos"] },
-              { key: "technical", questions: ["howToRegister", "howToSignIn", "howToDelete"] },
-              { key: "passkeys", questions: ["passkeyFlow"] },
+              {
+                key: "technical",
+                questions: ["howToRegister", "howToSignIn", "passkeyFlow", "howToDelete"],
+              },
             ].map((section) => (
               <div key={section.key} className="space-y-6">
                 <h2 className="flex items-center gap-3 px-2 text-xl font-black tracking-tight text-neutral-900 dark:text-white">
