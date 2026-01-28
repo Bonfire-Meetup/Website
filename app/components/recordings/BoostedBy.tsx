@@ -8,7 +8,6 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { Link } from "@/i18n/navigation";
 import { type BoostedByData, useVideoBoosts } from "@/lib/api/video-engagement";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { compressUuid } from "@/lib/utils/uuid-compress";
 
 interface BoostedByProps {
   boostedBy?: BoostedByData | null;
@@ -37,14 +36,9 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
   }
 
   const publicUsersTop = publicUsers.slice(0, 5);
-  const usersWithCompressed = publicUsersTop
-    .map((user) => {
-      const compressedId = compressUuid(user.userId);
-      return compressedId ? { compressedId, user } : null;
-    })
-    .filter(
-      (x): x is { user: (typeof publicUsersTop)[number]; compressedId: string } => x !== null,
-    );
+  const usersWithLink = publicUsersTop
+    .filter((user) => user.userId)
+    .map((user) => ({ publicId: user.userId, user }));
 
   const remainingPublicCount = Math.max(0, publicUsers.length - publicUsersTop.length);
 
@@ -62,10 +56,10 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
 
       <div className="flex flex-1 items-center gap-1.5">
         <div className="flex items-center gap-1.5">
-          {usersWithCompressed.map(({ user, compressedId }) => (
+          {usersWithLink.map(({ user, publicId }) => (
             <Link
               key={user.userId}
-              href={PAGE_ROUTES.USER(compressedId)}
+              href={PAGE_ROUTES.USER(publicId)}
               prefetch={false}
               className="group relative transition-all hover:z-10 hover:scale-105"
               title={user.name || undefined}
@@ -73,7 +67,7 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
               <div className="relative">
                 <div className="absolute -inset-0.5 rounded-full bg-emerald-200/30 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-emerald-500/20" />
                 <UserAvatar
-                  emailHash={user.emailHash}
+                  avatarSeed={publicId}
                   size={24}
                   name={user.name}
                   className="relative ring-1 ring-white/50 dark:ring-neutral-900/50"

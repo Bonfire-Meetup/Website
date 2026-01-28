@@ -1,5 +1,3 @@
-import crypto from "crypto";
-
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -13,9 +11,6 @@ import { BoostedVideos } from "./BoostedVideos";
 import { BoostedVideosSkeleton } from "./BoostedVideosSkeleton";
 import { CheckedInEvents } from "./CheckedInEvents";
 import { PrivateProfileContent, UserProfileContent } from "./UserProfileContent";
-
-const hashEmail = (email: string): string =>
-  crypto.createHash("sha256").update(email.toLowerCase().trim()).digest("hex");
 
 export async function generateMetadata({
   params,
@@ -91,7 +86,6 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
     return <PrivateProfileContent />;
   }
 
-  const emailHash = hashEmail(user.email);
   const memberSince = new Intl.DateTimeFormat("en-US", {
     day: "numeric",
     month: "long",
@@ -102,9 +96,8 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   return (
     <UserProfileContent
       user={{
-        compressedId: compressUuid(user.id),
+        publicId: compressUuid(user.id),
         name: user.name,
-        emailHash,
         memberSince,
         roles: user.roles,
         membershipTier: user.membership_tier,

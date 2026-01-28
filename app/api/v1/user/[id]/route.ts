@@ -1,5 +1,3 @@
-import crypto from "crypto";
-
 import { NextResponse } from "next/server";
 
 import { upcomingEvents } from "@/data/upcoming-events";
@@ -12,9 +10,6 @@ import { getAllRecordings } from "@/lib/recordings/recordings";
 import { logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
 import { decompressUuid } from "@/lib/utils/uuid-compress";
-
-const hashEmail = (email: string): string =>
-  crypto.createHash("sha256").update(email.toLowerCase().trim()).digest("hex");
 
 export const GET = async (request: Request, { params }: { params: Promise<{ id: string }> }) =>
   runWithRequestContext(request, async () => {
@@ -110,8 +105,8 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
           count: events.length,
           items: events,
         },
+        publicId: id,
         createdAt: user.created_at.toISOString(),
-        emailHash: hashEmail(user.email),
         name: user.name,
         roles: userRoles,
       });

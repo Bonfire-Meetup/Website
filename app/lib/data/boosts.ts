@@ -1,8 +1,7 @@
-import crypto from "crypto";
-
 import { BOOST_CONFIG } from "@/lib/config/constants";
 import { getDatabaseClient } from "@/lib/data/db";
 import { logError } from "@/lib/utils/log";
+import { compressUuid } from "@/lib/utils/uuid-compress";
 
 export { BOOST_CONFIG };
 
@@ -238,7 +237,6 @@ export const refundBoost = async (userId: string): Promise<number> => {
 export interface BoostedUser {
   userId: string;
   name: string | null;
-  emailHash: string;
 }
 
 export const getVideoBoostedUsers = async (
@@ -253,7 +251,6 @@ export const getVideoBoostedUsers = async (
       SELECT 
         u.id as user_id,
         u.name,
-        u.email,
         u.preferences
       FROM video_boosts vb
       JOIN app_user u ON vb.user_id = u.id
@@ -262,12 +259,8 @@ export const getVideoBoostedUsers = async (
     `) as {
       user_id: string;
       name: string | null;
-      email: string;
       preferences: unknown;
     }[];
-
-    const hashEmail = (email: string): string =>
-      crypto.createHash("sha256").update(email.toLowerCase().trim()).digest("hex");
 
     const publicUsers: BoostedUser[] = [];
     let privateCount = 0;
@@ -278,9 +271,8 @@ export const getVideoBoostedUsers = async (
 
       if (isPublic) {
         publicUsers.push({
-          emailHash: hashEmail(row.email),
           name: row.name,
-          userId: row.user_id,
+          userId: compressUuid(row.user_id),
         });
       } else {
         privateCount++;

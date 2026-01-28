@@ -20,9 +20,10 @@ export const videoBoostStatsSchema = z.object({
       privateCount: z.number().int().min(0),
       publicUsers: z.array(
         z.object({
-          emailHash: z.string(),
           name: z.string().nullable(),
-          userId: z.string().uuid(),
+          userId: z
+            .string()
+            .regex(/^[1-9A-HJ-NP-Za-km-z]{11}-[1-9A-HJ-NP-Za-km-z]{11}$/, "Invalid user ID"),
         }),
       ),
     })

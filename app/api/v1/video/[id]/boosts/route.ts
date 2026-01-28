@@ -58,7 +58,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
           publicUsers: {
             userId: string;
             name: string | null;
-            emailHash: string;
           }[];
           privateCount: number;
         };

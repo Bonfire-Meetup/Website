@@ -7,6 +7,7 @@ import { USER_ROLES } from "@/lib/config/roles";
 import { getAuthUserById } from "@/lib/data/auth";
 import { logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
+import { compressUuid } from "@/lib/utils/uuid-compress";
 
 const TOKEN_VERSION = "v1";
 const SECRET = process.env.BNF_CHECKIN_SECRET;
@@ -26,9 +27,6 @@ const base64UrlDecode = (value: string) => {
   }
   return Buffer.from(base64, "base64").toString("utf-8");
 };
-
-const hashEmail = (email: string): string =>
-  crypto.createHash("sha256").update(email.toLowerCase().trim()).digest("hex");
 
 const verifyToken = (token: string): { valid: boolean; userId?: string; error?: string } => {
   if (!SECRET) {
@@ -101,10 +99,9 @@ export async function POST(request: NextRequest) {
       }
 
       return NextResponse.json({
-        valid: true,
-        userId: result.userId,
+        publicId: compressUuid(user.id),
         name: user.name,
-        emailHash: hashEmail(user.email),
+        valid: true,
       });
     } catch (error) {
       logError("check_in.verify_request_failed", error);

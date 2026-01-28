@@ -11,7 +11,6 @@ interface BoostedByData {
   publicUsers: {
     userId: string;
     name: string | null;
-    emailHash: string;
   }[];
   privateCount: number;
 }

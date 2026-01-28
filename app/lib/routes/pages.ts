@@ -33,7 +33,7 @@ export const PAGE_ROUTES = {
   SPEAK: "/speak",
   THIRD_PARTY: "/third-party",
   TIMELINE: "/timeline",
-  USER: (compressedId: string) => `/user/${compressedId}`,
+  USER: (publicId: string) => `/user/${publicId}`,
   WATCH: (slug: string, shortId: string) => `/watch/${slug}-${shortId}`,
   WATCH_LATER: "/me/watch-later",
 } as const;

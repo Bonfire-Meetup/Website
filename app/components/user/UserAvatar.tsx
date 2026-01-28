@@ -88,8 +88,20 @@ function getInitials(name: string): string {
   return (first + last).slice(0, 2);
 }
 
+function seedToHex32(seed: string): string {
+  let h1 = 2166136261;
+  let h2 = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h1 = Math.imul(h1 ^ seed.charCodeAt(i), 16777619);
+    h2 = Math.imul(h2 ^ seed.charCodeAt(seed.length - 1 - i), 16777619);
+  }
+  const a = (h1 >>> 0).toString(16).padStart(8, "0");
+  const b = (h2 >>> 0).toString(16).padStart(8, "0");
+  return (a + b + a + b).slice(0, 32);
+}
+
 interface UserAvatarProps {
-  emailHash: string;
+  avatarSeed?: string;
   size?: number;
   className?: string;
   name?: string | null;
@@ -97,15 +109,16 @@ interface UserAvatarProps {
 }
 
 export function UserAvatar({
-  emailHash,
+  avatarSeed,
   size = 80,
   className = "",
   name,
   animated = false,
 }: UserAvatarProps) {
-  const styles = generateAvatarStyles(emailHash);
-  const conicAngle = parseInt(emailHash.slice(24, 32), 16) % 360;
-  const shimmerAngle = parseInt(emailHash.slice(0, 8), 16) % 360;
+  const hash = avatarSeed ? seedToHex32(avatarSeed) : "00000000000000000000000000000000";
+  const styles = generateAvatarStyles(hash);
+  const conicAngle = parseInt(hash.slice(24, 32), 16) % 360;
+  const shimmerAngle = parseInt(hash.slice(0, 8), 16) % 360;
   const initials = name ? getInitials(name) : null;
   const fontSize = Math.max(12, Math.floor(size * 0.4));
 

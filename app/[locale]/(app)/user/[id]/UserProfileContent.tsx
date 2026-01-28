@@ -10,9 +10,8 @@ import { ProfileShareButton } from "./ProfileShareButton";
 import { RoleBadges } from "./RoleBadges";
 
 interface UserData {
-  compressedId: string;
+  publicId: string;
   name: string | null;
-  emailHash: string;
   memberSince: string;
   roles: string[];
   membershipTier: number | null;
@@ -32,7 +31,7 @@ export function UserProfileContent({
 }: UserProfileContentProps) {
   const t = useTranslations("account.userProfile");
 
-  const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}${PAGE_ROUTES.USER(user.compressedId)}`;
+  const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}${PAGE_ROUTES.USER(user.publicId)}`;
   const shareText = user.name ? `${user.name}'s profile` : "Community member profile";
 
   return (
@@ -71,7 +70,7 @@ export function UserProfileContent({
                     }`}
                   />
                   <UserAvatar
-                    emailHash={user.emailHash}
+                    avatarSeed={user.publicId}
                     size={120}
                     name={user.name}
                     className="relative border-4 border-white shadow-2xl dark:border-neutral-900"

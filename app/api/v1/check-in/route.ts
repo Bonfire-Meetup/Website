@@ -5,6 +5,7 @@ import { USER_ROLES } from "@/lib/config/roles";
 import { checkInUser } from "@/lib/data/check-in";
 import { logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
+import { decompressUuid } from "@/lib/utils/uuid-compress";
 
 export async function POST(request: NextRequest) {
   return runWithRequestContext(request, async () => {
@@ -26,7 +27,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Event ID required" }, { status: 400 });
       }
 
-      const result = await checkInUser(userId, eventId);
+      const rawUserId = decompressUuid(userId) ?? userId;
+      const result = await checkInUser(rawUserId, eventId);
 
       if (result.alreadyCheckedIn) {
         return NextResponse.json(

@@ -18,9 +18,8 @@ import { extractTokenFromUrl, parseCheckInToken } from "@/lib/utils/check-in-tok
 
 interface ScanResult {
   valid: boolean;
-  userId?: string;
+  publicId?: string;
   name?: string | null;
-  emailHash?: string;
   error?: string;
   timestamp: number;
   checkedIn?: boolean;
@@ -328,9 +327,8 @@ export function ReaderClient() {
         clearTimeout(timeoutId);
         setScanResult({
           valid: true,
-          userId: result.userId,
+          publicId: result.publicId,
           name: result.name,
-          emailHash: result.emailHash,
           timestamp: Date.now(),
           checkedIn: false,
         });
@@ -376,7 +374,7 @@ export function ReaderClient() {
   };
 
   const handleCheckIn = async () => {
-    if (!scanResult?.valid || !scanResult.userId || !selectedEvent || isCheckingIn) {
+    if (!scanResult?.valid || !scanResult.publicId || !selectedEvent || isCheckingIn) {
       return;
     }
 
@@ -388,7 +386,7 @@ export function ReaderClient() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: scanResult.userId,
+          userId: scanResult.publicId,
           eventId: selectedEvent,
         }),
       });
@@ -495,9 +493,9 @@ export function ReaderClient() {
           >
             <div className="px-4 py-4 sm:px-6 sm:py-5">
               <div className="flex items-start gap-3 sm:gap-4">
-                {scanResult.valid && scanResult.emailHash ? (
+                {scanResult.valid && scanResult.publicId ? (
                   <UserAvatar
-                    emailHash={scanResult.emailHash}
+                    avatarSeed={scanResult.publicId}
                     size={64}
                     name={scanResult.name}
                     className="shrink-0 border-2 border-emerald-200 shadow-md sm:border-emerald-300 dark:border-emerald-500/40 dark:shadow-emerald-500/20"
@@ -548,13 +546,13 @@ export function ReaderClient() {
                       {scanResult.name}
                     </div>
                   )}
-                  {scanResult.valid && scanResult.userId && (
+                  {scanResult.valid && scanResult.publicId && (
                     <div className="mb-3 space-y-1.5">
                       <div className="text-xs font-medium tracking-wide text-emerald-800/70 uppercase dark:text-emerald-200/70">
                         {t("result.userId")}
                       </div>
                       <div className="rounded-md border border-emerald-200/50 bg-emerald-100/50 px-2.5 py-1.5 font-mono text-sm text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-100">
-                        {scanResult.userId}
+                        {scanResult.publicId}
                       </div>
                     </div>
                   )}
@@ -583,7 +581,7 @@ export function ReaderClient() {
               </div>
             </div>
             {scanResult.valid &&
-              scanResult.userId &&
+              scanResult.publicId &&
               !scanResult.checkedIn &&
               !scanResult.alreadyCheckedIn && (
                 <div className="border-t border-emerald-200/50 px-4 pt-4 pb-4 sm:px-6 sm:pb-5 dark:border-emerald-500/20">
