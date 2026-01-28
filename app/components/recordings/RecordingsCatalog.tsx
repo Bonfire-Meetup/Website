@@ -88,20 +88,12 @@ export function RecordingsCatalog({
   memberPicks,
   hotPicks,
   hiddenGems,
-  scrollLeftLabel,
-  scrollRightLabel,
-  previousFeaturedLabel,
-  nextFeaturedLabel,
   trendingSlots,
 }: {
   initialPayload: LibraryPayload;
   memberPicks?: MemberPickRecording[];
   hotPicks?: HotRecording[];
   hiddenGems?: HiddenGemRecording[];
-  scrollLeftLabel?: string;
-  scrollRightLabel?: string;
-  previousFeaturedLabel?: string;
-  nextFeaturedLabel?: string;
   trendingSlots?: {
     memberPicks?: React.ReactNode;
     hotPicks?: React.ReactNode;
@@ -110,6 +102,7 @@ export function RecordingsCatalog({
 }) {
   const tCommon = useTranslations("common");
   const tLibrary = useTranslations("libraryPage");
+  const tRows = useTranslations("libraryPage.rows");
   const tView = useTranslations("libraryPage.view");
   const locale = useLocale();
   const router = useRouter();
@@ -221,8 +214,7 @@ export function RecordingsCatalog({
       const trimmedSearch = search.trim();
       const hasFilters =
         location !== "all" || tag !== "all" || episode !== "all" || trimmedSearch !== "";
-      const nextView =
-        viewOverride ?? (localViewMode === "grid" ? "grid" : hasFilters ? "grid" : "rows");
+      const nextView = viewOverride ?? (localViewMode === "grid" || hasFilters ? "grid" : "rows");
       const includeView = nextView === "grid";
       setLocalViewMode(nextView);
       lastCommittedSearchRef.current = trimmedSearch;
@@ -361,8 +353,8 @@ export function RecordingsCatalog({
                     filterKey={filterKey}
                     canHover={canHover}
                     onNavigate={(slug, shortId) => router.push(PAGE_ROUTES.WATCH(slug, shortId))}
-                    previousLabel={previousFeaturedLabel}
-                    nextLabel={nextFeaturedLabel}
+                    previousLabel={tCommon("previousFeatured")}
+                    nextLabel={tCommon("nextFeatured")}
                   />
                   <div className="section-divider mb-10" />
                 </>
@@ -383,39 +375,45 @@ export function RecordingsCatalog({
                     {trendingSlots?.memberPicks ??
                       (memberPicks && memberPicks.length > 0 && (
                         <MemberPicksRail
-                          title={payload.rowsLabels.memberPicks}
+                          title={tRows("memberPicks")}
                           recordings={memberPicks}
-                          scrollLeftLabel={scrollLeftLabel}
-                          scrollRightLabel={scrollRightLabel}
+                          scrollLeftLabel={tCommon("scrollLeft")}
+                          scrollRightLabel={tCommon("scrollRight")}
                         />
                       ))}
                     {trendingSlots?.hotPicks ??
                       (hotPicks && hotPicks.length > 0 && (
                         <HotPicksRail
-                          title={payload.rowsLabels.hot}
+                          title={tRows("hot")}
                           recordings={hotPicks}
-                          scrollLeftLabel={scrollLeftLabel}
-                          scrollRightLabel={scrollRightLabel}
+                          scrollLeftLabel={tCommon("scrollLeft")}
+                          scrollRightLabel={tCommon("scrollRight")}
                         />
                       ))}
                     {trendingSlots?.hiddenGems ??
                       (hiddenGems && hiddenGems.length > 0 && (
                         <HiddenGemsRail
-                          title={payload.rowsLabels.hiddenGems}
+                          title={tRows("hiddenGems")}
                           recordings={hiddenGems}
-                          scrollLeftLabel={scrollLeftLabel}
-                          scrollRightLabel={scrollRightLabel}
+                          scrollLeftLabel={tCommon("scrollLeft")}
+                          scrollRightLabel={tCommon("scrollRight")}
                         />
                       ))}
-                    {payload.rows.map((row) => (
-                      <RecordingRail
-                        key={`${row.key}-${filterKey}`}
-                        title={row.title}
-                        recordings={row.items}
-                        scrollLeftLabel={scrollLeftLabel}
-                        scrollRightLabel={scrollRightLabel}
-                      />
-                    ))}
+                    {payload.rows.map((row) => {
+                      const titleParams =
+                        row.titleKey === "prague" || row.titleKey === "zlin"
+                          ? { [row.titleKey]: tCommon(row.titleKey) }
+                          : row.titleParams;
+                      return (
+                        <RecordingRail
+                          key={`${row.key}-${filterKey}`}
+                          title={tRows(row.titleKey, titleParams)}
+                          recordings={row.items}
+                          scrollLeftLabel={tCommon("scrollLeft")}
+                          scrollRightLabel={tCommon("scrollRight")}
+                        />
+                      );
+                    })}
                     <div className="flex justify-center">
                       <BrowseAllButton label={tView("all")} onClick={handleBrowseAll} />
                     </div>

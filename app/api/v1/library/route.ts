@@ -37,7 +37,6 @@ export async function GET(request: Request) {
     const locale = await getRequestLocale();
     const tCommon = await getTranslations({ locale, namespace: "common" });
     const tFilters = await getTranslations({ locale, namespace: "libraryPage.filters" });
-    const tRows = await getTranslations({ locale, namespace: "libraryPage.rows" });
     const tRecordings = await getTranslations({ locale, namespace: "recordings" });
     const { searchParams } = new URL(request.url);
     const apiParams = new URLSearchParams(searchParams);
@@ -46,7 +45,6 @@ export async function GET(request: Request) {
       searchParams: apiParams,
       tCommon,
       tFilters,
-      tRows,
       tRecordings,
       includeRows: false,
     });

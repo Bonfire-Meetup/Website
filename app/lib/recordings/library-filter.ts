@@ -20,12 +20,12 @@ export interface LibraryPayload {
   episodeDropdownOptions: { label: string; value: string }[];
   episodeDropdownGroups: { label: string; options: { label: string; value: string }[] }[];
   locationAvailability: Record<LocationFilter, boolean>;
-  rows: { key: string; title: string; items: CatalogRecording[] }[];
-  rowsLabels: {
-    memberPicks: string;
-    hot: string;
-    hiddenGems: string;
-  };
+  rows: {
+    key: string;
+    titleKey: string;
+    titleParams?: Record<string, string>;
+    items: CatalogRecording[];
+  }[];
 }
 
 export interface LibraryApiPayload {
@@ -47,14 +47,12 @@ export function buildLibraryPayload({
   searchParams,
   tCommon,
   tFilters,
-  tRows,
   tRecordings,
   includeRows,
 }: {
   searchParams: URLSearchParams;
   tCommon: (key: string, values?: Record<string, string>) => string;
   tFilters: (key: string, values?: Record<string, string>) => string;
-  tRows: (key: string, values?: Record<string, string>) => string;
   tRecordings: (key: string) => string;
   includeRows?: boolean;
 }): LibraryPayload {
@@ -234,17 +232,17 @@ export function buildLibraryPayload({
   const isSearchFiltered = searchQuery.trim() !== "";
   const hasActiveFilters =
     isLocationFiltered || isTagFiltered || isEpisodeFiltered || isSearchFiltered;
-  const viewMode: "rows" | "grid" =
-    viewParam === "rows" || viewParam === "grid" ? viewParam : hasActiveFilters ? "grid" : "rows";
+  const validViewParam = viewParam === "rows" || viewParam === "grid" ? viewParam : null;
+  const viewMode: "rows" | "grid" = validViewParam ?? (hasActiveFilters ? "grid" : "rows");
   const shouldIncludeRows = includeRows ?? viewMode === "rows";
 
   const rows = shouldIncludeRows
     ? (() => {
-        const nextRows: { key: string; title: string; items: typeof filteredRecordings }[] = [];
+        const nextRows: LibraryPayload["rows"] = [];
         const latestRecordings = filteredRecordings.slice(0, 12);
 
         if (latestRecordings.length > 0) {
-          nextRows.push({ items: latestRecordings, key: "latest", title: tRows("latest") });
+          nextRows.push({ items: latestRecordings, key: "latest", titleKey: "latest" });
         }
 
         const pragueItems = filteredRecordings.filter((r) => r.location === LOCATIONS.PRAGUE);
@@ -255,7 +253,7 @@ export function buildLibraryPayload({
             nextRows.push({
               items: pragueItems,
               key: "location-prague",
-              title: tRows("prague", { prague: tCommon("prague") }),
+              titleKey: "prague",
             });
           }
 
@@ -263,20 +261,20 @@ export function buildLibraryPayload({
             nextRows.push({
               items: zlinItems,
               key: "location-zlin",
-              title: tRows("zlin", { zlin: tCommon("zlin") }),
+              titleKey: "zlin",
             });
           }
         } else if (activeLocation === LOCATIONS.PRAGUE && pragueItems.length > 0) {
           nextRows.push({
             items: pragueItems,
             key: "location-prague",
-            title: tRows("prague", { prague: tCommon("prague") }),
+            titleKey: "prague",
           });
         } else if (activeLocation === LOCATIONS.ZLIN && zlinItems.length > 0) {
           nextRows.push({
             items: zlinItems,
             key: "location-zlin",
-            title: tRows("zlin", { zlin: tCommon("zlin") }),
+            titleKey: "zlin",
           });
         }
 
@@ -299,7 +297,8 @@ export function buildLibraryPayload({
               nextRows.push({
                 items,
                 key: `tag-${tag}`,
-                title: tRows("topic", { tag }),
+                titleKey: "topic",
+                titleParams: { tag },
               });
             }
           });
@@ -321,10 +320,5 @@ export function buildLibraryPayload({
     episodeDropdownGroups,
     locationAvailability,
     rows,
-    rowsLabels: {
-      memberPicks: tRows("memberPicks"),
-      hot: tRows("hot"),
-      hiddenGems: tRows("hiddenGems"),
-    },
   };
 }

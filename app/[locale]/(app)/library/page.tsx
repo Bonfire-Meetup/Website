@@ -1,44 +1,37 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { LibraryRowsContent } from "@/components/recordings/LibraryRowsContent";
-import { getRequestLocale } from "@/lib/i18n/request-locale";
+import { RecordingsCatalog } from "@/components/recordings/RecordingsCatalog";
+import { getHiddenGems } from "@/lib/recordings/hidden-gems";
+import { getHotRecordingsSafe } from "@/lib/recordings/hot-picks";
 import { buildLibraryPayload } from "@/lib/recordings/library-filter";
+import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
 
 export default async function LibraryPage() {
-  const locale = await getRequestLocale();
   const tCommon = await getTranslations("common");
   const tFilters = await getTranslations("libraryPage.filters");
-  const tRows = await getTranslations("libraryPage.rows");
   const tRecordings = await getTranslations("recordings");
-  const tView = await getTranslations("libraryPage.view");
-  const tLibrary = await getTranslations("libraryPage");
 
-  const payload = buildLibraryPayload({
-    searchParams: new URLSearchParams(),
-    tCommon,
-    tFilters,
-    tRows,
-    tRecordings,
-    includeRows: true,
-  });
+  const [payload, memberPicks, hotPicks, hiddenGems] = await Promise.all([
+    buildLibraryPayload({
+      searchParams: new URLSearchParams(),
+      tCommon,
+      tFilters,
+      tRecordings,
+      includeRows: true,
+    }),
+    getMemberPicksSafe(6),
+    getHotRecordingsSafe(6),
+    getHiddenGems(6),
+  ]);
 
   return (
     <main className="gradient-bg min-h-screen pt-24">
-      <LibraryRowsContent
-        recordings={payload.recordings}
-        rows={payload.rows}
-        locale={locale}
-        labels={{
-          scrollLeft: tCommon("scrollLeft"),
-          scrollRight: tCommon("scrollRight"),
-          previousFeatured: tCommon("previousFeatured"),
-          nextFeatured: tCommon("nextFeatured"),
-          browseAll: tView("all"),
-          noteLabel: tLibrary("noteLabel"),
-          disclaimer: tLibrary("disclaimer", { prague: tCommon("prague") }),
-          epShort: tRecordings("epShort"),
-        }}
+      <RecordingsCatalog
+        initialPayload={{ ...payload, viewMode: "rows" }}
+        memberPicks={memberPicks}
+        hotPicks={hotPicks}
+        hiddenGems={hiddenGems}
       />
     </main>
   );

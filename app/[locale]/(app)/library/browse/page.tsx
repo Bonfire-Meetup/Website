@@ -16,7 +16,6 @@ export default async function LibraryBrowsePage({
 }) {
   const tCommon = await getTranslations("common");
   const tFilters = await getTranslations("libraryPage.filters");
-  const tRows = await getTranslations("libraryPage.rows");
   const tRecordings = await getTranslations("recordings");
   const params = await searchParams;
   const urlParams = new URLSearchParams();
@@ -38,7 +37,6 @@ export default async function LibraryBrowsePage({
     searchParams: urlParams,
     tCommon,
     tFilters,
-    tRows,
     tRecordings,
     includeRows: false,
   });

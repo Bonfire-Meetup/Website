@@ -53,8 +53,7 @@ export const sendEmail = async (input: SendEmailInput): Promise<ResendSuccessRes
   validateEmailPayload(input);
   const apiKey = getResendApiKey();
   const from = input.from ?? getDefaultFrom();
-  const recipient =
-    typeof input.to === "string" ? input.to : input.to.length > 0 ? input.to[0] : null;
+  const recipient = typeof input.to === "string" ? input.to : (input.to[0] ?? null);
   const emailFingerprint = recipient ? getEmailFingerprint(recipient) : null;
 
   const payload = {

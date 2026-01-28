@@ -34,7 +34,7 @@ export function DangerZoneBlock({
   onCancel,
 }: DangerZoneBlockProps) {
   const t = useTranslations("account.delete");
-  const stepIndex = step === "idle" ? 0 : step === "confirm" ? 1 : step === "verify" ? 2 : 3;
+  const stepIndex = { idle: 0, confirm: 1, verify: 2, done: 3 }[step];
 
   return (
     <div className="space-y-4">
