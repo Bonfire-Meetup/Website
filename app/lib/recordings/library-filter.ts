@@ -64,7 +64,6 @@ export function buildLibraryPayload({
   const activeTag = searchParams.get("tag") ?? "all";
   const activeEpisode = searchParams.get("episode") ?? "all";
   const searchQuery = searchParams.get("q") ?? "";
-  const viewParam = searchParams.get("view") ?? "";
   const normalizedSearchQuery = normalizeText(searchQuery.trim());
 
   const recordings = getAllRecordings().map((recording) => ({
@@ -232,8 +231,7 @@ export function buildLibraryPayload({
   const isSearchFiltered = searchQuery.trim() !== "";
   const hasActiveFilters =
     isLocationFiltered || isTagFiltered || isEpisodeFiltered || isSearchFiltered;
-  const validViewParam = viewParam === "rows" || viewParam === "grid" ? viewParam : null;
-  const viewMode: "rows" | "grid" = validViewParam ?? (hasActiveFilters ? "grid" : "rows");
+  const viewMode: "rows" | "grid" = includeRows === false || hasActiveFilters ? "grid" : "rows";
   const shouldIncludeRows = includeRows ?? viewMode === "rows";
 
   const rows = shouldIncludeRows

@@ -137,20 +137,11 @@ export function RecordingsCatalog({
   }, [payload.searchQuery]);
 
   useEffect(() => {
-    if (localViewMode === "grid") {
-      router.prefetch(PAGE_ROUTES.LIBRARY);
-    }
-  }, [localViewMode, router]);
+    router.prefetch(PAGE_ROUTES.LIBRARY_BROWSE);
+  }, [router]);
 
   const buildParams = useCallback(
-    (
-      location: LocationFilter,
-      tag: string,
-      episode: string,
-      search: string,
-      view?: "rows" | "grid",
-      includeView = true,
-    ) => {
+    (location: LocationFilter, tag: string, episode: string, search: string) => {
       const params = new URLSearchParams();
 
       if (location !== "all") {
@@ -167,10 +158,6 @@ export function RecordingsCatalog({
 
       if (search.trim()) {
         params.set("q", search.trim());
-      }
-
-      if (includeView && (view === "rows" || view === "grid")) {
-        params.set("view", view);
       }
 
       return params;
@@ -215,12 +202,22 @@ export function RecordingsCatalog({
       const hasFilters =
         location !== "all" || tag !== "all" || episode !== "all" || trimmedSearch !== "";
       const nextView = viewOverride ?? (localViewMode === "grid" || hasFilters ? "grid" : "rows");
-      const includeView = nextView === "grid";
-      setLocalViewMode(nextView);
       lastCommittedSearchRef.current = trimmedSearch;
 
-      const params = buildParams(location, tag, episode, trimmedSearch, nextView, includeView);
-      const apiParams = buildParams(location, tag, episode, trimmedSearch, nextView, false);
+      const params = buildParams(location, tag, episode, trimmedSearch);
+
+      if (nextView === "grid") {
+        const nextUrl = params.toString()
+          ? `${PAGE_ROUTES.LIBRARY_BROWSE}?${params.toString()}`
+          : PAGE_ROUTES.LIBRARY_BROWSE;
+        startTransition(() => {
+          router.push(nextUrl);
+        });
+        return;
+      }
+
+      setLocalViewMode("rows");
+      const apiParams = buildParams(location, tag, episode, trimmedSearch);
 
       if (typeof window !== "undefined") {
         const nextUrl = params.toString()
@@ -231,7 +228,7 @@ export function RecordingsCatalog({
 
       fetchPayload(apiParams);
     },
-    [buildParams, fetchPayload, localViewMode],
+    [buildParams, fetchPayload, localViewMode, router],
   );
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
