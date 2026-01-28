@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import { getClientHashes, isRateLimited } from "@/lib/api/rate-limit";
 import { getRequestLocale } from "@/lib/i18n/request-locale";
-import { buildLibraryPayload } from "@/lib/recordings/library-filter";
+import { buildLibraryPayload, type LibraryApiPayload } from "@/lib/recordings/library-filter";
 import { logWarn } from "@/lib/utils/log";
 import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
 
@@ -51,6 +51,20 @@ export async function GET(request: Request) {
       includeRows: false,
     });
 
-    return NextResponse.json(payload);
+    const response: LibraryApiPayload = {
+      recordings: payload.recordings,
+      filter: {
+        activeLocation: payload.activeLocation,
+        activeTag: payload.activeTag,
+        activeEpisode: payload.activeEpisode,
+        searchQuery: payload.searchQuery,
+        tagDropdownOptions: payload.tagDropdownOptions,
+        episodeDropdownOptions: payload.episodeDropdownOptions,
+        episodeDropdownGroups: payload.episodeDropdownGroups,
+        locationAvailability: payload.locationAvailability,
+      },
+    };
+
+    return NextResponse.json(response);
   });
 }

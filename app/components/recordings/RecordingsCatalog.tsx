@@ -1,6 +1,6 @@
 "use client";
 
-import type { LibraryPayload } from "@/lib/recordings/library-filter";
+import type { LibraryApiPayload, LibraryPayload } from "@/lib/recordings/library-filter";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
@@ -147,6 +147,7 @@ export function RecordingsCatalog({
       episode: string,
       search: string,
       view?: "rows" | "grid",
+      includeView = true,
     ) => {
       const params = new URLSearchParams();
 
@@ -166,7 +167,7 @@ export function RecordingsCatalog({
         params.set("q", search.trim());
       }
 
-      if (view === "rows" || view === "grid") {
+      if (includeView && (view === "rows" || view === "grid")) {
         params.set("view", view);
       }
 
@@ -182,8 +183,19 @@ export function RecordingsCatalog({
       if (!response.ok) {
         return;
       }
-      const data = (await response.json()) as LibraryPayload;
-      setPayload(data);
+      const data = (await response.json()) as LibraryApiPayload;
+      setPayload((prev) => ({
+        ...prev,
+        recordings: data.recordings,
+        activeLocation: data.filter.activeLocation,
+        activeTag: data.filter.activeTag,
+        activeEpisode: data.filter.activeEpisode,
+        searchQuery: data.filter.searchQuery,
+        tagDropdownOptions: data.filter.tagDropdownOptions,
+        episodeDropdownOptions: data.filter.episodeDropdownOptions,
+        episodeDropdownGroups: data.filter.episodeDropdownGroups,
+        locationAvailability: data.filter.locationAvailability,
+      }));
     } finally {
       setIsFiltering(false);
     }
@@ -205,6 +217,7 @@ export function RecordingsCatalog({
       lastCommittedSearchRef.current = trimmedSearch;
 
       const params = buildParams(location, tag, episode, trimmedSearch, nextView);
+      const apiParams = buildParams(location, tag, episode, trimmedSearch, nextView, false);
 
       if (typeof window !== "undefined") {
         const nextUrl = params.toString()
@@ -213,7 +226,7 @@ export function RecordingsCatalog({
         window.history.replaceState(null, "", nextUrl);
       }
 
-      fetchPayload(params);
+      fetchPayload(apiParams);
     },
     [buildParams, fetchPayload],
   );

@@ -28,6 +28,21 @@ export interface LibraryPayload {
   };
 }
 
+export type LibraryApiPayload = {
+  recordings: LibraryPayload["recordings"];
+  filter: Pick<
+    LibraryPayload,
+    | "activeLocation"
+    | "activeTag"
+    | "activeEpisode"
+    | "searchQuery"
+    | "tagDropdownOptions"
+    | "episodeDropdownOptions"
+    | "episodeDropdownGroups"
+    | "locationAvailability"
+  >;
+};
+
 export function buildLibraryPayload({
   searchParams,
   tCommon,
