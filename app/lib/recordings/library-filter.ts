@@ -9,17 +9,19 @@ import { normalizeText } from "@/lib/utils/text";
 
 export type LocationFilter = "all" | LocationValue;
 
-export interface LibraryPayload {
+export interface LibraryBasePayload {
   recordings: CatalogRecording[];
   activeLocation: LocationFilter;
   activeTag: string;
   activeEpisode: string;
   searchQuery: string;
-  viewMode: "rows" | "grid";
   tagDropdownOptions: { label: string; value: string }[];
   episodeDropdownOptions: { label: string; value: string }[];
   episodeDropdownGroups: { label: string; options: { label: string; value: string }[] }[];
   locationAvailability: Record<LocationFilter, boolean>;
+}
+
+export interface LibraryRowsPayload extends LibraryBasePayload {
   rows: {
     key: string;
     titleKey: string;
@@ -29,9 +31,9 @@ export interface LibraryPayload {
 }
 
 export interface LibraryApiPayload {
-  recordings: LibraryPayload["recordings"];
+  recordings: LibraryBasePayload["recordings"];
   filter: Pick<
-    LibraryPayload,
+    LibraryBasePayload,
     | "activeLocation"
     | "activeTag"
     | "activeEpisode"
@@ -43,7 +45,7 @@ export interface LibraryApiPayload {
   >;
 }
 
-export function buildLibraryPayload({
+function buildLibraryPayload({
   searchParams,
   tCommon,
   tFilters,
@@ -55,7 +57,7 @@ export function buildLibraryPayload({
   tFilters: (key: string, values?: Record<string, string>) => string;
   tRecordings: (key: string) => string;
   includeRows?: boolean;
-}): LibraryPayload {
+}): LibraryBasePayload & { rows: LibraryRowsPayload["rows"] } {
   const locationParam = searchParams.get("location") ?? "";
   const isPragueLocation = locationParam === LOCATIONS.PRAGUE;
   const isZlinLocation = locationParam === LOCATIONS.ZLIN;
@@ -231,12 +233,11 @@ export function buildLibraryPayload({
   const isSearchFiltered = searchQuery.trim() !== "";
   const hasActiveFilters =
     isLocationFiltered || isTagFiltered || isEpisodeFiltered || isSearchFiltered;
-  const viewMode: "rows" | "grid" = includeRows === false || hasActiveFilters ? "grid" : "rows";
-  const shouldIncludeRows = includeRows ?? viewMode === "rows";
+  const shouldIncludeRows = includeRows ?? !hasActiveFilters;
 
   const rows = shouldIncludeRows
     ? (() => {
-        const nextRows: LibraryPayload["rows"] = [];
+        const nextRows: LibraryRowsPayload["rows"] = [];
         const latestRecordings = filteredRecordings.slice(0, 12);
 
         if (latestRecordings.length > 0) {
@@ -306,17 +307,34 @@ export function buildLibraryPayload({
       })()
     : [];
 
-  return {
+  const basePayload: LibraryBasePayload = {
     recordings: filteredRecordings,
     activeLocation,
     activeTag,
     activeEpisode,
     searchQuery,
-    viewMode,
     tagDropdownOptions,
     episodeDropdownOptions,
     episodeDropdownGroups,
     locationAvailability,
+  };
+
+  return {
+    ...basePayload,
     rows,
   };
+}
+
+export function buildLibraryRowsPayload(
+  args: Omit<Parameters<typeof buildLibraryPayload>[0], "includeRows">,
+): LibraryRowsPayload {
+  return buildLibraryPayload({ ...args, includeRows: true });
+}
+
+export function buildLibraryBrowsePayload(
+  args: Omit<Parameters<typeof buildLibraryPayload>[0], "includeRows">,
+): LibraryBasePayload {
+  const payload = buildLibraryPayload({ ...args, includeRows: false });
+  const { rows: _rows, ...base } = payload;
+  return base;
 }

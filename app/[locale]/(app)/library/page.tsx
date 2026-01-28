@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { RecordingsCatalog } from "@/components/recordings/RecordingsCatalog";
 import { getHiddenGems } from "@/lib/recordings/hidden-gems";
 import { getHotRecordingsSafe } from "@/lib/recordings/hot-picks";
-import { buildLibraryPayload } from "@/lib/recordings/library-filter";
+import { buildLibraryRowsPayload } from "@/lib/recordings/library-filter";
 import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
 
 export default async function LibraryPage() {
@@ -13,12 +13,11 @@ export default async function LibraryPage() {
   const tRecordings = await getTranslations("recordings");
 
   const [payload, memberPicks, hotPicks, hiddenGems] = await Promise.all([
-    buildLibraryPayload({
+    buildLibraryRowsPayload({
       searchParams: new URLSearchParams(),
       tCommon,
       tFilters,
       tRecordings,
-      includeRows: true,
     }),
     getMemberPicksSafe(6),
     getHotRecordingsSafe(6),
@@ -28,7 +27,7 @@ export default async function LibraryPage() {
   return (
     <main className="gradient-bg min-h-screen pt-24">
       <RecordingsCatalog
-        initialPayload={{ ...payload, viewMode: "rows" }}
+        initialPayload={payload}
         memberPicks={memberPicks}
         hotPicks={hotPicks}
         hiddenGems={hiddenGems}

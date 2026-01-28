@@ -1,6 +1,6 @@
 "use client";
 
-import type { LibraryApiPayload, LibraryPayload } from "@/lib/recordings/library-filter";
+import type { LibraryApiPayload, LibraryRowsPayload } from "@/lib/recordings/library-filter";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
@@ -90,7 +90,7 @@ export function RecordingsCatalog({
   hiddenGems,
   trendingSlots,
 }: {
-  initialPayload: LibraryPayload;
+  initialPayload: LibraryRowsPayload;
   memberPicks?: MemberPickRecording[];
   hotPicks?: HotRecording[];
   hiddenGems?: HiddenGemRecording[];
@@ -106,7 +106,7 @@ export function RecordingsCatalog({
   const tView = useTranslations("libraryPage.view");
   const locale = useLocale();
   const router = useRouter();
-  const [payload, setPayload] = useState<LibraryPayload>(initialPayload);
+  const [payload, setPayload] = useState<LibraryRowsPayload>(initialPayload);
   const [localSearchQuery, setLocalSearchQuery] = useState(initialPayload.searchQuery);
   const deferredSearchQuery = useDeferredValue(payload.searchQuery);
   const [isFiltering, setIsFiltering] = useState(false);
@@ -114,7 +114,7 @@ export function RecordingsCatalog({
   const searchDebounceRef = useRef<number | null>(null);
   const lastCommittedSearchRef = useRef(initialPayload.searchQuery);
   const [canHover, setCanHover] = useState(false);
-  const [localViewMode, setLocalViewMode] = useState<"rows" | "grid">(initialPayload.viewMode);
+  const [localViewMode, setLocalViewMode] = useState<"rows" | "grid">("rows");
   const { activeLocation } = payload;
   const { activeTag } = payload;
   const { activeEpisode } = payload;
@@ -122,7 +122,7 @@ export function RecordingsCatalog({
 
   useEffect(() => {
     setPayload(initialPayload);
-    setLocalViewMode(initialPayload.viewMode);
+    setLocalViewMode("rows");
     setLocalSearchQuery(initialPayload.searchQuery);
     lastCommittedSearchRef.current = initialPayload.searchQuery;
   }, [initialPayload]);

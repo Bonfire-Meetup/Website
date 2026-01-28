@@ -1,6 +1,6 @@
 "use client";
 
-import type { LibraryApiPayload, LibraryPayload } from "@/lib/recordings/library-filter";
+import type { LibraryApiPayload, LibraryBasePayload } from "@/lib/recordings/library-filter";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
@@ -35,12 +35,12 @@ function GridSkeleton() {
   );
 }
 
-export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryPayload }) {
+export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBasePayload }) {
   const tCommon = useTranslations("common");
   const tLibrary = useTranslations("libraryPage");
   const locale = useLocale();
   const router = useRouter();
-  const [payload, setPayload] = useState<LibraryPayload>(initialPayload);
+  const [payload, setPayload] = useState<LibraryBasePayload>(initialPayload);
   const [localSearchQuery, setLocalSearchQuery] = useState(initialPayload.searchQuery);
   const deferredSearchQuery = useDeferredValue(payload.searchQuery);
   const [isFiltering, setIsFiltering] = useState(false);

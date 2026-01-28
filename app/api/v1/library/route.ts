@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import { getClientHashes, isRateLimited } from "@/lib/api/rate-limit";
 import { getRequestLocale } from "@/lib/i18n/request-locale";
-import { buildLibraryPayload, type LibraryApiPayload } from "@/lib/recordings/library-filter";
+import { buildLibraryBrowsePayload, type LibraryApiPayload } from "@/lib/recordings/library-filter";
 import { logWarn } from "@/lib/utils/log";
 import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
 
@@ -41,12 +41,11 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const apiParams = new URLSearchParams(searchParams);
     apiParams.delete("view");
-    const payload = buildLibraryPayload({
+    const payload = buildLibraryBrowsePayload({
       searchParams: apiParams,
       tCommon,
       tFilters,
       tRecordings,
-      includeRows: false,
     });
 
     const response: LibraryApiPayload = {

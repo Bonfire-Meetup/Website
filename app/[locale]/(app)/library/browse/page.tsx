@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { BrowseCatalog } from "@/components/recordings/BrowseCatalog";
-import { buildLibraryPayload } from "@/lib/recordings/library-filter";
+import { buildLibraryBrowsePayload } from "@/lib/recordings/library-filter";
 
 export default async function LibraryBrowsePage({
   searchParams,
@@ -33,22 +33,16 @@ export default async function LibraryBrowsePage({
     urlParams.set("q", params.q);
   }
 
-  const payload = buildLibraryPayload({
+  const payload = buildLibraryBrowsePayload({
     searchParams: urlParams,
     tCommon,
     tFilters,
     tRecordings,
-    includeRows: false,
   });
-
-  const gridPayload = {
-    ...payload,
-    viewMode: "grid" as const,
-  };
 
   return (
     <main className="gradient-bg min-h-screen pt-24">
-      <BrowseCatalog initialPayload={gridPayload} />
+      <BrowseCatalog initialPayload={payload} />
     </main>
   );
 }
