@@ -264,6 +264,7 @@
     "albumPhotos": "{count} photos",
     "photographersBy": "Photographs by",
     "viewAlbum": "View album",
+    "openPhoto": "Open photo: {title}",
     "download": "Download",
     "backToAlbums": "Back to albums",
     "backToTop": "Back to top"

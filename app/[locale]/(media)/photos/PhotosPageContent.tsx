@@ -2,11 +2,13 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import { useCallback, useState } from "react";
 
 import { AlbumImage } from "@/components/shared/AlbumImage";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
+import { Lightbox } from "./[album]/Lightbox";
 import { HeroSlideshow } from "./HeroSlideshow";
 
 interface PhotosPageContentProps {
@@ -42,8 +44,23 @@ export function PhotosPageContent({
   totalPhotos,
 }: PhotosPageContentProps) {
   const t = useTranslations("photos");
+  const tCommon = useTranslations("common");
   const locale = useLocale();
   const heroCovers = albums.length > 4 ? albums.slice(-4) : albums;
+  const lightboxImages = heroCovers.map((album) => ({
+    alt: album.title,
+    src: album.highlightSrc,
+  }));
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const openLightbox = useCallback((index: number) => {
+    setLightboxIndex(index);
+  }, []);
+  const closeLightbox = useCallback(() => {
+    setLightboxIndex(null);
+  }, []);
+  const handleIndexChange = useCallback((index: number) => {
+    setLightboxIndex(index);
+  }, []);
 
   return (
     <main id="top" className="gradient-bg min-h-screen pb-24">
@@ -74,10 +91,13 @@ export function PhotosPageContent({
         <div className="relative -mt-20 px-4 sm:-mt-28 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 lg:gap-6">
-              {heroCovers.map((album) => (
-                <div
+              {heroCovers.map((album, index) => (
+                <button
                   key={album.id}
-                  className="group aspect-[3/4] overflow-hidden rounded-2xl bg-neutral-100 shadow-2xl ring-1 ring-black/10 transition-transform hover:scale-[1.02] sm:rounded-3xl dark:bg-neutral-900 dark:ring-white/10"
+                  type="button"
+                  onClick={() => openLightbox(index)}
+                  aria-label={t("openPhoto", { title: album.title })}
+                  className="group aspect-[3/4] overflow-hidden rounded-2xl bg-neutral-100 shadow-2xl ring-1 ring-black/10 transition-transform hover:scale-[1.02] sm:cursor-zoom-in sm:rounded-3xl dark:bg-neutral-900 dark:ring-white/10"
                 >
                   <AlbumImage
                     src={album.highlightSrc}
@@ -88,7 +108,7 @@ export function PhotosPageContent({
                     fetchPriority="low"
                     sizes="(max-width: 640px) 50vw, 25vw"
                   />
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -144,6 +164,19 @@ export function PhotosPageContent({
           </div>
         </section>
       </div>
+
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={lightboxImages}
+          initialIndex={lightboxIndex}
+          onClose={closeLightbox}
+          onIndexChange={handleIndexChange}
+          downloadLabel={t("download")}
+          closeLabel={tCommon("close")}
+          previousLabel={tCommon("previous")}
+          nextLabel={tCommon("next")}
+        />
+      )}
     </main>
   );
 }

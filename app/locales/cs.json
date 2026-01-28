@@ -264,6 +264,7 @@
     "albumPhotos": "{count} fotek",
     "photographersBy": "Foto:",
     "viewAlbum": "Otevřít album",
+    "openPhoto": "Otevřít fotku: {title}",
     "download": "Stáhnout",
     "backToAlbums": "Zpět na alba",
     "backToTop": "Zpět nahoru"
