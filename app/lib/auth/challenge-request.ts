@@ -1,5 +1,5 @@
 import { generateChallengeToken, generateOtpCode, hashOtpCode } from "@/lib/auth/otp";
-import { insertAuthChallenge } from "@/lib/data/auth";
+import { insertAuthChallenge, maybeCleanupExpiredAuthChallenges } from "@/lib/data/auth";
 import {
   getClientFingerprint,
   getEmailFingerprint,
@@ -124,6 +124,7 @@ export const createEmailChallenge = async (config: ChallengeRequestConfig) => {
       maxAttempts,
       userAgent,
     });
+    maybeCleanupExpiredAuthChallenges();
   } catch (error) {
     logError(`${logPrefix}.persist_failed`, error, {
       ...emailFingerprint,

@@ -24,6 +24,7 @@ import {
   insertRefreshToken,
   markAuthChallengeUsed,
   markRefreshTokenUsed,
+  maybeCleanupExpiredAuthChallenges,
   maybeCleanupExpiredRefreshTokens,
   revokeRefreshTokenFamily,
   upsertAuthUser,
@@ -384,6 +385,7 @@ const handleEmailOtpGrant = async (
   }
 
   await markAuthChallengeUsed(verification.id);
+  maybeCleanupExpiredAuthChallenges();
 
   const userId = await upsertAuthUser(email);
 

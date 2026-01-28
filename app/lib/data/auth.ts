@@ -341,6 +341,20 @@ export const deleteAuthUserById = async (id: string) => {
   `;
 };
 
+export const cleanupExpiredAuthChallenges = async () => {
+  const sql = getDatabaseClient();
+  await sql`
+    DELETE FROM auth_challenge
+    WHERE expires_at < now() - INTERVAL '7 days'
+  `;
+};
+
+export const maybeCleanupExpiredAuthChallenges = async () => {
+  if (Math.random() < 0.05) {
+    await cleanupExpiredAuthChallenges();
+  }
+};
+
 interface RefreshTokenRow {
   id: string;
   token_hash: string;
