@@ -1,6 +1,6 @@
 "use client";
 
-import type { CatalogRecording, LocationFilter } from "./RecordingsCatalogTypes";
+import type { LocationFilter } from "./RecordingsCatalogTypes";
 import { useTranslations } from "next-intl";
 import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 
@@ -19,7 +19,6 @@ const locationOptions: {
 ];
 
 export const GridFiltersBar = memo(function GridFiltersBar({
-  recordings,
   activeLocation,
   activeTag,
   activeEpisode,
@@ -27,15 +26,14 @@ export const GridFiltersBar = memo(function GridFiltersBar({
   tagDropdownOptions,
   episodeDropdownOptions,
   episodeDropdownGroups,
+  locationAvailability,
   onLocationChange,
   onTagChange,
   onEpisodeChange,
   onSearchChange,
   onReset,
   onViewRows,
-  isSearchDirtyRef,
 }: {
-  recordings: CatalogRecording[];
   activeLocation: LocationFilter;
   activeTag: string;
   activeEpisode: string;
@@ -43,13 +41,13 @@ export const GridFiltersBar = memo(function GridFiltersBar({
   tagDropdownOptions: DropdownOption[];
   episodeDropdownOptions: DropdownOption[];
   episodeDropdownGroups: DropdownGroup[];
+  locationAvailability: Record<LocationFilter, boolean>;
   onLocationChange: (location: LocationFilter) => void;
   onTagChange: (tag: string) => void;
   onEpisodeChange: (episode: string) => void;
   onSearchChange: (query: string) => void;
   onReset: () => void;
   onViewRows: () => void;
-  isSearchDirtyRef: React.MutableRefObject<boolean>;
 }) {
   const tCommon = useTranslations("common");
   const t = useTranslations("libraryPage.filters");
@@ -60,10 +58,8 @@ export const GridFiltersBar = memo(function GridFiltersBar({
   const wasFocusedRef = useRef(false);
 
   useEffect(() => {
-    if (!isSearchDirtyRef.current) {
-      setLocalValue(searchQuery ?? "");
-    }
-  }, [searchQuery, isSearchDirtyRef]);
+    setLocalValue(searchQuery ?? "");
+  }, [searchQuery]);
 
   useLayoutEffect(() => {
     if (wasFocusedRef.current && inputRef.current && document.activeElement !== inputRef.current) {
@@ -82,14 +78,7 @@ export const GridFiltersBar = memo(function GridFiltersBar({
         <div className="flex items-center gap-2">
           {locationOptions.map((option) => {
             const isAllOption = option.value === "all";
-            const hasMatchingRecordings = recordings.some((r) => {
-              const isLocationMatch = r.location === option.value;
-              const isTagMatch = activeTag === "all" || r.tags.includes(activeTag);
-              const isEpisodeMatch = activeEpisode === "all" || r.episodeId === activeEpisode;
-
-              return isLocationMatch && isTagMatch && isEpisodeMatch;
-            });
-            const hasResults = isAllOption || hasMatchingRecordings;
+            const hasResults = isAllOption || locationAvailability[option.value];
 
             const shouldPreventClick = !hasResults && activeLocation !== option.value;
 
@@ -204,7 +193,6 @@ export const GridFiltersBar = memo(function GridFiltersBar({
             onChange={(e) => {
               const newValue = e.target.value;
               setLocalValue(newValue);
-              isSearchDirtyRef.current = true;
               onSearchChange(newValue);
             }}
             placeholder={tSearch("placeholder")}
