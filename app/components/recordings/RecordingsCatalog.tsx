@@ -3,7 +3,7 @@
 import type { LibraryApiPayload, LibraryPayload } from "@/lib/recordings/library-filter";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
+import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
 
 import { InfoIcon } from "@/components/shared/icons";
 import { Skeleton } from "@/components/shared/Skeletons";
@@ -128,6 +128,13 @@ export function RecordingsCatalog({
   const { recordings } = payload;
 
   useEffect(() => {
+    setPayload(initialPayload);
+    setLocalViewMode(initialPayload.viewMode);
+    setLocalSearchQuery(initialPayload.searchQuery);
+    lastCommittedSearchRef.current = initialPayload.searchQuery;
+  }, [initialPayload]);
+
+  useEffect(() => {
     setCanHover(window.matchMedia("(hover: hover)").matches);
   }, []);
 
@@ -137,8 +144,10 @@ export function RecordingsCatalog({
   }, [payload.searchQuery]);
 
   useEffect(() => {
-    setLocalViewMode(payload.viewMode);
-  }, [payload.viewMode]);
+    if (localViewMode === "grid") {
+      router.prefetch(PAGE_ROUTES.LIBRARY);
+    }
+  }, [localViewMode, router]);
 
   const buildParams = useCallback(
     (
@@ -212,11 +221,13 @@ export function RecordingsCatalog({
       const trimmedSearch = search.trim();
       const hasFilters =
         location !== "all" || tag !== "all" || episode !== "all" || trimmedSearch !== "";
-      const nextView = viewOverride ?? (hasFilters ? "grid" : "rows");
+      const nextView =
+        viewOverride ?? (localViewMode === "grid" ? "grid" : hasFilters ? "grid" : "rows");
+      const includeView = nextView === "grid";
       setLocalViewMode(nextView);
       lastCommittedSearchRef.current = trimmedSearch;
 
-      const params = buildParams(location, tag, episode, trimmedSearch, nextView);
+      const params = buildParams(location, tag, episode, trimmedSearch, nextView, includeView);
       const apiParams = buildParams(location, tag, episode, trimmedSearch, nextView, false);
 
       if (typeof window !== "undefined") {
@@ -228,7 +239,7 @@ export function RecordingsCatalog({
 
       fetchPayload(apiParams);
     },
-    [buildParams, fetchPayload],
+    [buildParams, fetchPayload, localViewMode],
   );
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
@@ -297,11 +308,10 @@ export function RecordingsCatalog({
   );
 
   const handleViewRows = useCallback(() => {
-    if (typeof window !== "undefined") {
-      window.location.assign(PAGE_ROUTES.LIBRARY);
-    } else {
+    startTransition(() => {
       router.push(PAGE_ROUTES.LIBRARY);
-    }
+      router.refresh();
+    });
   }, [router]);
 
   return (

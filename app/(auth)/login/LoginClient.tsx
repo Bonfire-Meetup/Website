@@ -692,6 +692,7 @@ export function LoginClient() {
                 <Link
                   className="underline decoration-neutral-400/60 underline-offset-2 hover:text-neutral-700 dark:hover:text-neutral-200"
                   href={PAGE_ROUTES.LEGAL}
+                  prefetch={false}
                 >
                   {t("termsLink")}
                 </Link>

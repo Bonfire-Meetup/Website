@@ -97,6 +97,7 @@ export async function Footer({ locale: localeProp }: { locale?: Locale } = {}) {
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <Link
               href={PAGE_ROUTES.FAQ}
+              prefetch={false}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("faqLabel")}
@@ -104,6 +105,7 @@ export async function Footer({ locale: localeProp }: { locale?: Locale } = {}) {
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <Link
               href={PAGE_ROUTES.PRESS}
+              prefetch={false}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("pressLabel")}
@@ -111,6 +113,7 @@ export async function Footer({ locale: localeProp }: { locale?: Locale } = {}) {
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <Link
               href={PAGE_ROUTES.LEGAL}
+              prefetch={false}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("legalLabel")}
@@ -118,6 +121,7 @@ export async function Footer({ locale: localeProp }: { locale?: Locale } = {}) {
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <Link
               href={PAGE_ROUTES.THIRD_PARTY}
+              prefetch={false}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("attributionsLabel")}

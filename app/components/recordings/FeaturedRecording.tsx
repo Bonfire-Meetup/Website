@@ -269,7 +269,7 @@ export function FeaturedRecording({
             {currentFeatured.tags.map((tag: string) => (
               <Pill
                 key={tag}
-                href={`${PAGE_ROUTES.LIBRARY}?tag=${encodeURIComponent(tag)}`}
+                href={`${PAGE_ROUTES.LIBRARY}?view=grid&tag=${encodeURIComponent(tag)}`}
                 onClick={(event) => event.stopPropagation()}
                 size="xs"
                 className={`font-semibold transition hover:text-neutral-900 dark:hover:text-white ${

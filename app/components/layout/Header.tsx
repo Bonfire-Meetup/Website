@@ -23,10 +23,10 @@ export async function Header({ locale: localeProp }: { locale?: Locale } = {}) {
     { href: PAGE_ROUTES.LIBRARY, label: t("library") },
     { href: PAGE_ROUTES.PHOTOS, label: t("photos") },
     { href: PAGE_ROUTES.CREW, label: t("crew") },
-    { href: PAGE_ROUTES.PRESS, label: t("press") },
-    { href: PAGE_ROUTES.FAQ, label: t("faq") },
+    { href: PAGE_ROUTES.PRESS, label: t("press"), prefetch: false },
+    { href: PAGE_ROUTES.FAQ, label: t("faq"), prefetch: false },
     { href: PAGE_ROUTES.CONTACT_WITH_TYPE("general"), label: t("contact") },
-    { href: PAGE_ROUTES.LEGAL, label: t("codeOfConduct") },
+    { href: PAGE_ROUTES.LEGAL, label: t("codeOfConduct"), prefetch: false },
   ];
 
   return (
@@ -69,7 +69,7 @@ export async function Header({ locale: localeProp }: { locale?: Locale } = {}) {
           <Button href={PAGE_ROUTES.CREW} variant="ghost" size="sm">
             {t("crew")}
           </Button>
-          <Button href={PAGE_ROUTES.FAQ} variant="ghost" size="sm">
+          <Button href={PAGE_ROUTES.FAQ} variant="ghost" size="sm" prefetch={false}>
             {t("faq")}
           </Button>
           <Button href={PAGE_ROUTES.CONTACT_WITH_TYPE("general")} variant="ghost" size="sm">

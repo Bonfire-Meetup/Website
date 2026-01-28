@@ -13,6 +13,7 @@ import { ThemeToggle } from "../theme/ThemeToggle";
 interface NavLink {
   href: string;
   label: string;
+  prefetch?: boolean;
 }
 
 interface MobileMenuProps {
@@ -146,7 +147,7 @@ export function MobileMenu({ links, menuLabel, closeLabel, locale }: MobileMenuP
                       <Link
                         href={link.href}
                         onClick={closeMenu}
-                        prefetch={isOpen}
+                        prefetch={link.prefetch ?? isOpen}
                         className={`block rounded-lg px-3 py-2.5 text-sm font-medium ${
                           isActiveLink(link.href)
                             ? "bg-rose-500/10 text-rose-600 dark:bg-rose-400/10 dark:text-rose-400"

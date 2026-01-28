@@ -15,6 +15,7 @@ interface ButtonProps {
   size?: ButtonSize;
   ariaLabel?: string;
   external?: boolean;
+  prefetch?: boolean;
   target?: "_blank" | "_self" | "_parent" | "_top";
   rel?: string;
 }
@@ -55,6 +56,7 @@ export function Button({
   size = "sm",
   ariaLabel,
   external = false,
+  prefetch,
   target,
   rel,
 }: ButtonProps) {
@@ -78,9 +80,10 @@ export function Button({
       href.includes("/photos/") ||
       href.includes("?") ||
       href.startsWith("/me/");
+    const shouldPrefetch = prefetch ?? !isDynamicRoute;
 
     return (
-      <Link href={href} prefetch={!isDynamicRoute} className={classes} aria-label={ariaLabel}>
+      <Link href={href} prefetch={shouldPrefetch} className={classes} aria-label={ariaLabel}>
         {children}
       </Link>
     );

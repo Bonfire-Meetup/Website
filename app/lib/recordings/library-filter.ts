@@ -28,7 +28,7 @@ export interface LibraryPayload {
   };
 }
 
-export type LibraryApiPayload = {
+export interface LibraryApiPayload {
   recordings: LibraryPayload["recordings"];
   filter: Pick<
     LibraryPayload,
@@ -41,7 +41,7 @@ export type LibraryApiPayload = {
     | "episodeDropdownGroups"
     | "locationAvailability"
   >;
-};
+}
 
 export function buildLibraryPayload({
   searchParams,
