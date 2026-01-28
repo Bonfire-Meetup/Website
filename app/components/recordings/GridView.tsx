@@ -60,7 +60,7 @@ export function GridView({
                   onClick={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    router.push(`${PAGE_ROUTES.LIBRARY}?view=grid&tag=${encodeURIComponent(tag)}`);
+                    router.push(`${PAGE_ROUTES.LIBRARY_BROWSE}?tag=${encodeURIComponent(tag)}`);
                   }}
                   size="xxs"
                   className="cursor-pointer bg-black/5 font-semibold tracking-[0.2em] text-neutral-600 uppercase transition hover:text-neutral-900 dark:bg-white/10 dark:text-white/70 dark:hover:text-white"

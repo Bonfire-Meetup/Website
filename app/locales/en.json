@@ -317,6 +317,7 @@
       "zlin": "{zlin}"
     },
     "empty": "No recordings match your filters yet.",
+    "rateLimitError": "Too many requests. Please wait a moment and try again.",
     "notRecorded": {
       "title": "This episode was not recorded",
       "body": "{episode} had no video recordings.\nCheck the photo album or browse other sessions.",

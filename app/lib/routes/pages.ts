@@ -17,6 +17,7 @@ export const PAGE_ROUTES = {
   HOME: "/",
   LEGAL: "/legal",
   LIBRARY: "/library",
+  LIBRARY_BROWSE: "/library/browse",
   LOGIN: "/login",
   LOGIN_WITH_CHALLENGE: (token: string) => `/login?challenge=${token}`,
   LOGIN_WITH_REASON: (reason: LoginReason) => `/login?reason-hint=${reason}`,

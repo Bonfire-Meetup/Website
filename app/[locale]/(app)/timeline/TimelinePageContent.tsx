@@ -36,7 +36,7 @@ function getEpisodeEntries(): EpisodeEntry[] {
           : undefined,
         recordingsCount: episodeRecordings.length,
         title: episode.title,
-        videosHref: `${PAGE_ROUTES.LIBRARY}?view=grid&episode=${episode.id}`,
+        videosHref: `${PAGE_ROUTES.LIBRARY_BROWSE}?episode=${episode.id}`,
       };
     })
     .sort((a, b) => {

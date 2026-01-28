@@ -1,45 +1,56 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { LibraryRowsContent } from "@/components/recordings/LibraryRowsContent";
-import { getRequestLocale } from "@/lib/i18n/request-locale";
+import { BrowseCatalog } from "@/components/recordings/BrowseCatalog";
 import { buildLibraryPayload } from "@/lib/recordings/library-filter";
 
-export default async function LibraryPage() {
-  const locale = await getRequestLocale();
+export default async function LibraryBrowsePage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    location?: string;
+    tag?: string;
+    episode?: string;
+    q?: string;
+  }>;
+}) {
   const tCommon = await getTranslations("common");
   const tFilters = await getTranslations("libraryPage.filters");
   const tRows = await getTranslations("libraryPage.rows");
   const tRecordings = await getTranslations("recordings");
-  const tView = await getTranslations("libraryPage.view");
-  const tLibrary = await getTranslations("libraryPage");
+  const params = await searchParams;
+  const urlParams = new URLSearchParams();
+
+  if (params.location) {
+    urlParams.set("location", params.location);
+  }
+  if (params.tag) {
+    urlParams.set("tag", params.tag);
+  }
+  if (params.episode) {
+    urlParams.set("episode", params.episode);
+  }
+  if (params.q) {
+    urlParams.set("q", params.q);
+  }
 
   const payload = buildLibraryPayload({
-    searchParams: new URLSearchParams(),
+    searchParams: urlParams,
     tCommon,
     tFilters,
     tRows,
     tRecordings,
-    includeRows: true,
+    includeRows: false,
   });
+
+  const gridPayload = {
+    ...payload,
+    viewMode: "grid" as const,
+  };
 
   return (
     <main className="gradient-bg min-h-screen pt-24">
-      <LibraryRowsContent
-        recordings={payload.recordings}
-        rows={payload.rows}
-        locale={locale}
-        labels={{
-          scrollLeft: tCommon("scrollLeft"),
-          scrollRight: tCommon("scrollRight"),
-          previousFeatured: tCommon("previousFeatured"),
-          nextFeatured: tCommon("nextFeatured"),
-          browseAll: tView("all"),
-          noteLabel: tLibrary("noteLabel"),
-          disclaimer: tLibrary("disclaimer", { prague: tCommon("prague") }),
-          epShort: tRecordings("epShort"),
-        }}
-      />
+      <BrowseCatalog initialPayload={gridPayload} />
     </main>
   );
 }

@@ -317,6 +317,7 @@
       "zlin": "{zlin}"
     },
     "empty": "Nic nesedí. Zkus ubrat filtry 🙂",
+    "rateLimitError": "Příliš mnoho požadavků. Chvilku počkej a zkus to znovu.",
     "notRecorded": {
       "title": "Tahle epizoda se nenahrávala",
       "body": "{episode} nemá žádný videozáznam.\nMrkni na fotky nebo si pusť jiné session.",

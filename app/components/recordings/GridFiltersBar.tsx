@@ -179,7 +179,7 @@ export const GridFiltersBar = memo(function GridFiltersBar({
           />
         </div>
 
-        <div className="relative flex-1">
+        <div className="flex-1">
           <input
             ref={inputRef}
             type="search"
