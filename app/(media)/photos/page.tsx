@@ -41,6 +41,21 @@ function pickDailyRandomImage(album: PhotoAlbum, seed: string) {
   return candidates[index];
 }
 
+function pickRandomImages<T>(images: T[], limit: number) {
+  if (images.length <= limit) {
+    return images;
+  }
+
+  const pool = [...images];
+
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+
+  return pool.slice(0, limit);
+}
+
 const statPillClass =
   "inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-400 dark:ring-white/10";
 
@@ -102,12 +117,13 @@ export default async function PhotosPage() {
         src: `${baseUrl}/${img.src}`,
       })),
   );
+  const slideshowImages = pickRandomImages(landscapeImages, 10);
 
   return (
     <main id="top" className="gradient-bg min-h-screen pb-24">
       <section className="relative">
         <div className="relative h-[70vh] min-h-[500px] w-full overflow-hidden sm:h-[80vh] sm:min-h-[600px]">
-          <HeroSlideshow images={landscapeImages} interval={10000} />
+          <HeroSlideshow images={slideshowImages} interval={10000} />
           <div className="absolute inset-0 bg-gradient-to-t from-neutral-100 via-neutral-100/40 to-transparent dark:from-neutral-950 dark:via-neutral-950/40" />
           <div className="absolute inset-0 bg-gradient-to-r from-neutral-100/80 via-transparent to-transparent dark:from-neutral-950/80" />
 

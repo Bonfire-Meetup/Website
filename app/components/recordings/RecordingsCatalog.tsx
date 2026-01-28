@@ -1,8 +1,9 @@
 "use client";
 
+import type { LibraryPayload } from "@/lib/recordings/library-filter";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
 
 import { InfoIcon } from "@/components/shared/icons";
 import { Skeleton } from "@/components/shared/Skeletons";
@@ -18,7 +19,6 @@ import { HotPicksRail } from "./HotPicksRail";
 import { MemberPicksRail } from "./MemberPicksRail";
 import { RecordingRail } from "./RecordingRail";
 import {
-  type CatalogRecording,
   type HiddenGemRecording,
   type HotRecording,
   type LocationFilter,
@@ -84,46 +84,20 @@ function BrowseAllButton({ label, onClick }: { label: string; onClick: () => voi
 }
 
 export function RecordingsCatalog({
-  recordings,
+  initialPayload,
   memberPicks,
   hotPicks,
   hiddenGems,
-  activeLocation,
-  activeTag,
-  activeEpisode,
-  searchQuery,
-  viewMode,
-  tagDropdownOptions,
-  episodeDropdownOptions,
-  episodeDropdownGroups,
-  locationAvailability,
-  rows,
-  rowsLabels,
   scrollLeftLabel,
   scrollRightLabel,
   previousFeaturedLabel,
   nextFeaturedLabel,
   trendingSlots,
 }: {
-  recordings: CatalogRecording[];
+  initialPayload: LibraryPayload;
   memberPicks?: MemberPickRecording[];
   hotPicks?: HotRecording[];
   hiddenGems?: HiddenGemRecording[];
-  activeLocation: LocationFilter;
-  activeTag: string;
-  activeEpisode: string;
-  searchQuery: string;
-  viewMode: "rows" | "grid";
-  tagDropdownOptions: { label: string; value: string }[];
-  episodeDropdownOptions: { label: string; value: string }[];
-  episodeDropdownGroups: { label: string; options: { label: string; value: string }[] }[];
-  locationAvailability: Record<LocationFilter, boolean>;
-  rows: { key: string; title: string; items: CatalogRecording[] }[];
-  rowsLabels: {
-    memberPicks: string;
-    hot: string;
-    hiddenGems: string;
-  };
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
   previousFeaturedLabel?: string;
@@ -139,27 +113,81 @@ export function RecordingsCatalog({
   const tView = useTranslations("libraryPage.view");
   const locale = useLocale();
   const router = useRouter();
-  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
-  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const [payload, setPayload] = useState<LibraryPayload>(initialPayload);
+  const [localSearchQuery, setLocalSearchQuery] = useState(initialPayload.searchQuery);
+  const deferredSearchQuery = useDeferredValue(payload.searchQuery);
   const [isFiltering, setIsFiltering] = useState(false);
   const isFirstFilter = useRef(true);
   const searchDebounceRef = useRef<number | null>(null);
-  const lastCommittedSearchRef = useRef(searchQuery);
+  const lastCommittedSearchRef = useRef(initialPayload.searchQuery);
   const [canHover, setCanHover] = useState(false);
-  const [localViewMode, setLocalViewMode] = useState<"rows" | "grid">(viewMode);
+  const [localViewMode, setLocalViewMode] = useState<"rows" | "grid">(initialPayload.viewMode);
+  const { activeLocation } = payload;
+  const { activeTag } = payload;
+  const { activeEpisode } = payload;
+  const { recordings } = payload;
 
   useEffect(() => {
     setCanHover(window.matchMedia("(hover: hover)").matches);
   }, []);
 
   useEffect(() => {
-    setLocalSearchQuery(searchQuery);
-    lastCommittedSearchRef.current = searchQuery;
-  }, [searchQuery]);
+    setLocalSearchQuery(payload.searchQuery);
+    lastCommittedSearchRef.current = payload.searchQuery;
+  }, [payload.searchQuery]);
 
   useEffect(() => {
-    setLocalViewMode(viewMode);
-  }, [viewMode]);
+    setLocalViewMode(payload.viewMode);
+  }, [payload.viewMode]);
+
+  const buildParams = useCallback(
+    (
+      location: LocationFilter,
+      tag: string,
+      episode: string,
+      search: string,
+      view?: "rows" | "grid",
+    ) => {
+      const params = new URLSearchParams();
+
+      if (location !== "all") {
+        params.set("location", location);
+      }
+
+      if (tag !== "all") {
+        params.set("tag", tag);
+      }
+
+      if (episode !== "all") {
+        params.set("episode", episode);
+      }
+
+      if (search.trim()) {
+        params.set("q", search.trim());
+      }
+
+      if (view === "rows" || view === "grid") {
+        params.set("view", view);
+      }
+
+      return params;
+    },
+    [],
+  );
+
+  const fetchPayload = useCallback(async (params: URLSearchParams) => {
+    setIsFiltering(true);
+    try {
+      const response = await fetch(`/api/v1/library?${params.toString()}`);
+      if (!response.ok) {
+        return;
+      }
+      const data = (await response.json()) as LibraryPayload;
+      setPayload(data);
+    } finally {
+      setIsFiltering(false);
+    }
+  }, []);
 
   const updateFilters = useCallback(
     (
@@ -175,48 +203,19 @@ export function RecordingsCatalog({
       const nextView = viewOverride ?? (hasFilters ? "grid" : "rows");
       setLocalViewMode(nextView);
       lastCommittedSearchRef.current = trimmedSearch;
-      const params = new URLSearchParams();
 
-      if (location === "all") {
-        params.delete("location");
-      } else {
-        params.set("location", location);
+      const params = buildParams(location, tag, episode, trimmedSearch, nextView);
+
+      if (typeof window !== "undefined") {
+        const nextUrl = params.toString()
+          ? `${PAGE_ROUTES.LIBRARY}?${params.toString()}`
+          : PAGE_ROUTES.LIBRARY;
+        window.history.replaceState(null, "", nextUrl);
       }
 
-      if (tag === "all") {
-        params.delete("tag");
-      } else {
-        params.set("tag", tag);
-      }
-
-      if (episode === "all") {
-        params.delete("episode");
-      } else {
-        params.set("episode", episode);
-      }
-
-      if (!trimmedSearch) {
-        params.delete("q");
-      } else {
-        params.set("q", trimmedSearch);
-      }
-
-      if (viewOverride === "rows" && !hasFilters) {
-        params.delete("view");
-      } else if (viewOverride) {
-        params.set("view", viewOverride);
-      } else {
-        params.delete("view");
-      }
-
-      const queryString = params.toString();
-      const nextUrl = queryString ? `${PAGE_ROUTES.LIBRARY}?${queryString}` : PAGE_ROUTES.LIBRARY;
-
-      startTransition(() => {
-        router.replace(nextUrl);
-      });
+      fetchPayload(params);
     },
-    [router],
+    [buildParams, fetchPayload],
   );
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
@@ -224,12 +223,11 @@ export function RecordingsCatalog({
   useEffect(() => {
     if (isFirstFilter.current) {
       isFirstFilter.current = false;
-
       return;
     }
 
-    setIsFiltering(true);
     const timer = setTimeout(() => setIsFiltering(false), 200);
+    setIsFiltering(true);
 
     return () => clearTimeout(timer);
   }, [filterKey]);
@@ -286,8 +284,12 @@ export function RecordingsCatalog({
   );
 
   const handleViewRows = useCallback(() => {
-    updateFilters("all", "all", "all", "", "rows");
-  }, [updateFilters]);
+    if (typeof window !== "undefined") {
+      window.location.assign(PAGE_ROUTES.LIBRARY);
+    } else {
+      router.push(PAGE_ROUTES.LIBRARY);
+    }
+  }, [router]);
 
   return (
     <section className="relative px-4 pb-24 sm:px-6 lg:px-8">
@@ -300,10 +302,10 @@ export function RecordingsCatalog({
             activeTag={activeTag}
             activeEpisode={activeEpisode}
             searchQuery={localSearchQuery}
-            tagDropdownOptions={tagDropdownOptions}
-            episodeDropdownOptions={episodeDropdownOptions}
-            episodeDropdownGroups={episodeDropdownGroups}
-            locationAvailability={locationAvailability}
+            tagDropdownOptions={payload.tagDropdownOptions}
+            episodeDropdownOptions={payload.episodeDropdownOptions}
+            episodeDropdownGroups={payload.episodeDropdownGroups}
+            locationAvailability={payload.locationAvailability}
             onLocationChange={handleLocationChange}
             onTagChange={handleTagChange}
             onEpisodeChange={handleEpisodeChange}
@@ -358,7 +360,7 @@ export function RecordingsCatalog({
                     {trendingSlots?.memberPicks ??
                       (memberPicks && memberPicks.length > 0 && (
                         <MemberPicksRail
-                          title={rowsLabels.memberPicks}
+                          title={payload.rowsLabels.memberPicks}
                           recordings={memberPicks}
                           scrollLeftLabel={scrollLeftLabel}
                           scrollRightLabel={scrollRightLabel}
@@ -367,7 +369,7 @@ export function RecordingsCatalog({
                     {trendingSlots?.hotPicks ??
                       (hotPicks && hotPicks.length > 0 && (
                         <HotPicksRail
-                          title={rowsLabels.hot}
+                          title={payload.rowsLabels.hot}
                           recordings={hotPicks}
                           scrollLeftLabel={scrollLeftLabel}
                           scrollRightLabel={scrollRightLabel}
@@ -376,13 +378,13 @@ export function RecordingsCatalog({
                     {trendingSlots?.hiddenGems ??
                       (hiddenGems && hiddenGems.length > 0 && (
                         <HiddenGemsRail
-                          title={rowsLabels.hiddenGems}
+                          title={payload.rowsLabels.hiddenGems}
                           recordings={hiddenGems}
                           scrollLeftLabel={scrollLeftLabel}
                           scrollRightLabel={scrollRightLabel}
                         />
                       ))}
-                    {rows.map((row) => (
+                    {payload.rows.map((row) => (
                       <RecordingRail
                         key={`${row.key}-${filterKey}`}
                         title={row.title}
