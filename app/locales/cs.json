@@ -338,7 +338,7 @@
       "Když se něco povede, bylo to v plánu. Když se něco nepovede, bylo to taky v plánu.",
       "Na nudné eventy máme alergii. My přinášíme jiskru."
     ],
-    "stats": "11 lidí · 2 města",
+    "stats": "{people} lidí · {cities} města",
     "crewEyebrow": "Lokální crew",
     "cities": [
       {
@@ -420,7 +420,7 @@
     "timelineLabel": "Timeline",
     "faqLabel": "FAQ",
     "pressLabel": "Press",
-    "legalLabel": "Právní info & Kodex chování",
+    "legalLabel": "Kodex & právo",
     "attributionsLabel": "Attribuce"
   },
   "meta": {

@@ -199,6 +199,10 @@ export function CrewPageContent() {
     name: city.name.replace("{prague}", tCommon("prague")).replace("{zlin}", tCommon("zlin")),
     tagline: city.tagline.replace("{prague}", tCommon("prague")).replace("{zlin}", tCommon("zlin")),
   }));
+  const uniquePeopleCount = new Set(
+    citiesRaw.flatMap((city) => city.members.map((member) => member.name)),
+  ).size;
+  const cityCount = citiesRaw.length;
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
@@ -228,11 +232,16 @@ export function CrewPageContent() {
             {t("subtitle", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
           </p>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            {t("stats", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
+            {t("stats", {
+              prague: tCommon("prague"),
+              zlin: tCommon("zlin"),
+              people: uniquePeopleCount,
+              cities: cityCount,
+            })}
           </p>
         </div>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <div className="flex flex-col items-center gap-2 text-neutral-500">
+          <div className="hidden flex-col items-center gap-2 text-neutral-500 sm:flex">
             <span className="text-xs tracking-widest uppercase">scroll</span>
             <div className="from-brand-500 h-8 w-px bg-gradient-to-b to-transparent" />
           </div>

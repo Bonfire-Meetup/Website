@@ -338,7 +338,7 @@
       "If something goes right, it was planned. If something goes wrong, it was still planned.",
       "We are allergic to boring events. We bring the spark."
     ],
-    "stats": "11 people · 2 cities",
+    "stats": "{people} people · {cities} cities",
     "crewEyebrow": "Local crew",
     "cities": [
       {
@@ -420,7 +420,7 @@
     "timelineLabel": "Timeline",
     "faqLabel": "FAQ",
     "pressLabel": "Press",
-    "legalLabel": "Code of Conduct & Legal",
+    "legalLabel": "CoC & Legal",
     "attributionsLabel": "Attributions"
   },
   "meta": {
