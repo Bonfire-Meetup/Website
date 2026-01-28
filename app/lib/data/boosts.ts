@@ -235,7 +235,7 @@ export const refundBoost = async (userId: string): Promise<number> => {
 };
 
 export interface BoostedUser {
-  userId: string;
+  publicId: string;
   name: string | null;
 }
 
@@ -272,7 +272,7 @@ export const getVideoBoostedUsers = async (
       if (isPublic) {
         publicUsers.push({
           name: row.name,
-          userId: compressUuid(row.user_id),
+          publicId: compressUuid(row.user_id),
         });
       } else {
         privateCount++;

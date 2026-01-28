@@ -9,7 +9,7 @@ import { logError } from "@/lib/utils/log-client";
 
 interface BoostedByData {
   publicUsers: {
-    userId: string;
+    publicId: string;
     name: string | null;
   }[];
   privateCount: number;

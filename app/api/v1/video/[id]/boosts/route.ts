@@ -56,7 +56,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         availableBoosts?: number;
         boostedBy?: {
           publicUsers: {
-            userId: string;
+            publicId: string;
             name: string | null;
           }[];
           privateCount: number;

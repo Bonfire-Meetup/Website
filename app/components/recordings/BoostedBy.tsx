@@ -37,8 +37,8 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
 
   const publicUsersTop = publicUsers.slice(0, 5);
   const usersWithLink = publicUsersTop
-    .filter((user) => user.userId)
-    .map((user) => ({ publicId: user.userId, user }));
+    .filter((user) => user.publicId)
+    .map((user) => ({ publicId: user.publicId, user }));
 
   const remainingPublicCount = Math.max(0, publicUsers.length - publicUsersTop.length);
 
@@ -58,7 +58,7 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
         <div className="flex items-center gap-1.5">
           {usersWithLink.map(({ user, publicId }) => (
             <Link
-              key={user.userId}
+              key={publicId}
               href={PAGE_ROUTES.USER(publicId)}
               prefetch={false}
               className="group relative transition-all hover:z-10 hover:scale-105"

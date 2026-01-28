@@ -21,7 +21,7 @@ export const videoBoostStatsSchema = z.object({
       publicUsers: z.array(
         z.object({
           name: z.string().nullable(),
-          userId: z
+          publicId: z
             .string()
             .regex(/^[1-9A-HJ-NP-Za-km-z]{11}-[1-9A-HJ-NP-Za-km-z]{11}$/, "Invalid user ID"),
         }),
