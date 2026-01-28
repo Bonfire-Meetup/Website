@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 import { getDatabaseClient, getDatabaseErrorDetails } from "@/lib/data/db";
 import { logError, logWarn } from "@/lib/utils/log";
 import { withRetry } from "@/lib/utils/retry";
@@ -42,7 +43,7 @@ const isWindowedEngagementEmpty = (counts: WindowedEngagementCounts) =>
 export async function fetchEngagementCounts(): Promise<EngagementCounts> {
   "use cache";
   cacheTag("engagement-counts");
-  cacheLife({ revalidate: 900 });
+  cacheLife({ revalidate: CACHE_LIFETIMES.ENGAGEMENT_COUNTS });
 
   const sql = getDatabaseClient({ required: false });
 
@@ -103,7 +104,7 @@ export async function fetchWindowedEngagementCounts(
 ): Promise<WindowedEngagementCounts> {
   "use cache";
   cacheTag("engagement-counts", `engagement-counts-${days}d`);
-  cacheLife({ revalidate: 900 });
+  cacheLife({ revalidate: CACHE_LIFETIMES.ENGAGEMENT_COUNTS });
 
   const sql = getDatabaseClient({ required: false });
 

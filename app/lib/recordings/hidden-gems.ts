@@ -1,5 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
+
 import { fetchEngagementCounts } from "../data/trending";
 
 import { type Recording, getAllRecordings } from "./recordings";
@@ -9,7 +11,7 @@ export type HiddenGemRecording = Recording;
 export async function getHiddenGems(limit = 6): Promise<HiddenGemRecording[]> {
   "use cache";
   cacheTag("hidden-gems");
-  cacheLife({ revalidate: 86400 });
+  cacheLife({ revalidate: CACHE_LIFETIMES.HIDDEN_GEMS });
 
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),

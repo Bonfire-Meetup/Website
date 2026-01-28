@@ -1,4 +1,6 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
@@ -12,10 +14,9 @@ interface LocationCardProps {
   eventCount: number;
   sponsorsTitle: string;
   sponsors: { name: string; logo: string; url: string; logoClassName?: string }[];
-  nextEvent?: string;
 }
 
-export async function LocationCard({
+export function LocationCard({
   name,
   city,
   description,
@@ -23,8 +24,8 @@ export async function LocationCard({
   sponsorsTitle,
   sponsors,
 }: LocationCardProps) {
-  const t = await getTranslations("sections.locations");
-  const tCommon = await getTranslations("common");
+  const t = useTranslations("sections.locations");
+  const tCommon = useTranslations("common");
   const logoDark =
     city === LOCATIONS.PRAGUE
       ? "/assets/brand/RGB_PNG_04_bonfire-prague_black_gradient.png"

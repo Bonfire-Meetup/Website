@@ -9,7 +9,7 @@ import {
   MemberPicksRailServer,
 } from "@/components/recordings/TrendingRailsServer";
 import { TrendingRailSkeleton } from "@/components/shared/Skeletons";
-import { getRequestLocale } from "@/lib/i18n/request-locale";
+import { getInitialLocale } from "@/lib/i18n/initial";
 import { buildLibraryPayload } from "@/lib/recordings/library-filter";
 
 export default async function LibraryPage({
@@ -23,10 +23,11 @@ export default async function LibraryPage({
     view?: string;
   }>;
 }) {
-  const tCommon = await getTranslations("common");
-  const tFilters = await getTranslations("libraryPage.filters");
-  const tRows = await getTranslations("libraryPage.rows");
-  const tRecordings = await getTranslations("recordings");
+  const locale = await getInitialLocale();
+  const tCommon = await getTranslations({ locale, namespace: "common" });
+  const tFilters = await getTranslations({ locale, namespace: "libraryPage.filters" });
+  const tRows = await getTranslations({ locale, namespace: "libraryPage.rows" });
+  const tRecordings = await getTranslations({ locale, namespace: "recordings" });
   const params = await searchParams;
   const urlParams = new URLSearchParams();
   if (params.location) {
@@ -95,7 +96,7 @@ export default async function LibraryPage({
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getRequestLocale();
+  const locale = await getInitialLocale();
   const t = await getTranslations({ locale, namespace: "meta" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
   const commonValues = {

@@ -1,4 +1,8 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import type { Recording } from "./lib/recordings/recordings";
+import type { TrendingRecording } from "./lib/recordings/trending";
+import { useTranslations } from "next-intl";
 import { Suspense } from "react";
 
 import { EventsSection } from "./components/events/EventsSection";
@@ -9,8 +13,6 @@ import { RecordingsSection } from "./components/recordings/RecordingsSection";
 import { RecordingsSectionSkeleton } from "./components/shared/Skeletons";
 import { TalkBanner } from "./components/shared/TalkBanner";
 import { upcomingEvents } from "./data/upcoming-events";
-import { type Locale } from "./lib/i18n/locales";
-import { getTrendingRecordingsSafe } from "./lib/recordings/trending";
 
 interface HomeContentProps {
   heroImages: {
@@ -19,16 +21,11 @@ interface HomeContentProps {
     fallbackSrc?: string;
     fallbackType?: "image/jpeg" | "image/png";
   }[];
-  locale: Locale;
+  trendingRecordings: (Recording | TrendingRecording)[];
 }
 
-async function TrendingRecordingsSection({ locale }: { locale: Locale }) {
-  const trendingRecordings = await getTrendingRecordingsSafe(6);
-  return <RecordingsSection recordings={trendingRecordings} locale={locale} />;
-}
-
-export async function HomeContent({ heroImages, locale }: HomeContentProps) {
-  const t = await getTranslations({ locale, namespace: "hero" });
+export function HomeContent({ heroImages, trendingRecordings }: HomeContentProps) {
+  const t = useTranslations("hero");
   const photoAlt = t("photoAlt");
 
   const imagesWithAlt = heroImages.map((img) => ({
@@ -38,27 +35,27 @@ export async function HomeContent({ heroImages, locale }: HomeContentProps) {
 
   return (
     <main id="top" className="relative">
-      <HeroWrapper images={imagesWithAlt} locale={locale} />
+      <HeroWrapper images={imagesWithAlt} />
 
       <EventsSection events={upcomingEvents} />
 
       <div className="section-divider mx-auto max-w-4xl" />
 
       <Suspense fallback={<RecordingsSectionSkeleton />}>
-        <TrendingRecordingsSection locale={locale} />
+        <RecordingsSection recordings={trendingRecordings} />
       </Suspense>
 
       <div className="section-divider mx-auto max-w-4xl" />
 
-      <NewsletterSection locale={locale} />
+      <NewsletterSection />
 
       <div className="section-divider mx-auto max-w-4xl" />
 
-      <LocationsSection locale={locale} />
+      <LocationsSection />
 
       <div className="section-divider mx-auto max-w-4xl" />
 
-      <TalkBanner locale={locale} />
+      <TalkBanner />
     </main>
   );
 }

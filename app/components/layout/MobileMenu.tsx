@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { type Locale } from "@/lib/i18n/locales";
-
 import { LanguageToggle } from "../theme/LanguageToggle";
 import { ThemeToggle } from "../theme/ThemeToggle";
 
@@ -20,10 +18,9 @@ interface MobileMenuProps {
   links: NavLink[];
   menuLabel: string;
   closeLabel: string;
-  locale: Locale;
 }
 
-export function MobileMenu({ links, menuLabel, closeLabel, locale }: MobileMenuProps) {
+export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isRendered, setIsRendered] = useState(false);
@@ -160,7 +157,7 @@ export function MobileMenu({ links, menuLabel, closeLabel, locale }: MobileMenuP
                   ))}
                 </ul>
                 <div className="mt-4 flex items-center gap-2 border-t border-neutral-200 pt-4 dark:border-neutral-800">
-                  <LanguageToggle locale={locale} />
+                  <LanguageToggle />
                   <ThemeToggle />
                 </div>
               </nav>

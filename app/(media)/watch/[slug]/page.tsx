@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 
-import { getRequestLocale } from "@/lib/i18n/request-locale";
+import { getInitialLocale } from "@/lib/i18n/initial";
 import {
   type Recording,
   getAllRecordings,
@@ -25,10 +25,10 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  const locale = await getRequestLocale();
   const { slug } = await params;
   const shortId = parseShortId(slug);
   const recording = getAllRecordings().find((item: Recording) => item.shortId === shortId);
+  const locale = await getInitialLocale();
   const t = await getTranslations({ locale, namespace: "meta" });
 
   if (!recording) {
@@ -58,13 +58,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function WatchPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const shortId = parseShortId(slug);
-  const recording = getAllRecordings().find((item: Recording) => item.shortId === shortId);
+  const allRecordings = getAllRecordings();
+  const recording = allRecordings.find((item: Recording) => item.shortId === shortId);
 
   if (!recording) {
     notFound();
   }
 
-  const allRecordings = getAllRecordings();
   const relatedRecordings = getRelatedRecordings(recording, allRecordings);
 
   return <RecordingPlayer recording={recording} relatedRecordings={relatedRecordings} />;

@@ -1,9 +1,9 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
-import { type Locale } from "@/lib/i18n/locales";
-import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { AuthNavButton } from "../auth/AuthNavButton";
@@ -13,9 +13,8 @@ import { Button } from "../ui/Button";
 
 import { MobileMenu } from "./MobileMenu";
 
-export async function Header({ locale: localeProp }: { locale?: Locale } = {}) {
-  const locale = localeProp ?? (await getRequestLocale());
-  const t = await getTranslations({ locale, namespace: "header" });
+export function Header() {
+  const t = useTranslations("header");
 
   const mobileLinks = [
     { href: PAGE_ROUTES.HOME, label: t("home") },
@@ -79,19 +78,14 @@ export async function Header({ locale: localeProp }: { locale?: Locale } = {}) {
 
         <div className="flex items-center gap-2 md:justify-self-end">
           <div className="hidden md:flex md:items-center md:gap-2">
-            <LanguageToggle locale={locale} />
+            <LanguageToggle />
             <ThemeToggle />
           </div>
           <AuthNavButton />
           <Button href={PAGE_ROUTES.LIBRARY} variant="primary">
             {t("library")}
           </Button>
-          <MobileMenu
-            links={mobileLinks}
-            menuLabel={t("menu")}
-            closeLabel={t("close")}
-            locale={locale}
-          />
+          <MobileMenu links={mobileLinks} menuLabel={t("menu")} closeLabel={t("close")} />
         </div>
       </div>
     </header>

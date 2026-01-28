@@ -297,7 +297,7 @@
     },
     "view": {
       "all": "Projít všechno",
-      "rows": "Zpět na výběr"
+      "rows": "Zpět"
     },
     "search": {
       "label": "Hledat",
@@ -309,7 +309,7 @@
       "tag": "Téma",
       "episode": "Epizoda",
       "reset": "Vyčistit",
-      "allLocations": "Všechny lokace",
+      "allLocations": "Všechny",
       "allTags": "Všechna témata",
       "allEpisodes": "Všechny epizody",
       "prague": "{prague}",

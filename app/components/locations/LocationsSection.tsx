@@ -1,17 +1,16 @@
-import type { Locale } from "@/lib/i18n/locales";
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useTranslations } from "next-intl";
 
 import { LOCATIONS } from "@/lib/config/constants";
-import { getRequestLocale } from "@/lib/i18n/request-locale";
 
 import { SectionHeader } from "../ui/SectionHeader";
 
 import { LocationCard } from "./LocationCard";
 
-export async function LocationsSection({ locale: localeProp }: { locale?: Locale } = {}) {
-  const locale = localeProp ?? (await getRequestLocale());
-  const t = await getTranslations({ locale, namespace: "sections.locations" });
-  const tCommon = await getTranslations({ locale, namespace: "common" });
+export function LocationsSection() {
+  const t = useTranslations("sections.locations");
+  const tCommon = useTranslations("common");
 
   return (
     <section className="relative px-4 py-28 sm:px-6 lg:px-8">

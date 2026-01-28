@@ -1,5 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
+
 import { getDatabaseClient, getDatabaseErrorDetails } from "../data/db";
 import { logError, logWarn } from "../utils/log";
 import { withRetry } from "../utils/retry";
@@ -62,7 +64,7 @@ const fetchTopBoostedVideos = async (limit: number): Promise<BoostFetchResult> =
 export async function getMemberPicks(limit = 6): Promise<MemberPickRecording[]> {
   "use cache";
   cacheTag("member-picks");
-  cacheLife({ revalidate: 43200 });
+  cacheLife({ revalidate: CACHE_LIFETIMES.MEMBER_PICKS });
 
   const [allRecordings, topBoosted] = await Promise.all([
     Promise.resolve(getAllRecordings()),

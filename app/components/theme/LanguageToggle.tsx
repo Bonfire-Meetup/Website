@@ -1,37 +1,23 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { useTransition } from "react";
 
-import { LOCALES, type Locale } from "@/lib/i18n/locales";
+import { LOCALES } from "@/lib/i18n/locales";
 
+import { useI18n } from "../providers/I18nClientSync";
 import { IconButton } from "../ui/IconButton";
 
-interface LanguageToggleProps {
-  locale: Locale;
-  onLocaleChange?: (locale: Locale) => void;
-}
-
-export function LanguageToggle({ locale, onLocaleChange }: LanguageToggleProps) {
+export function LanguageToggle() {
   const t = useTranslations("language");
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const { locale, setLocale } = useI18n();
 
   const toggleLocale = () => {
-    const newLocale: Locale = locale === LOCALES.EN ? LOCALES.CS : LOCALES.EN;
-
-    startTransition(() => {
-      document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
-      router.refresh();
-      onLocaleChange?.(newLocale);
-    });
+    setLocale(locale === LOCALES.EN ? LOCALES.CS : LOCALES.EN);
   };
 
   return (
     <IconButton
       onClick={toggleLocale}
-      disabled={isPending}
       ariaLabel={
         locale === LOCALES.EN
           ? t("switchTo", { language: t("czech") })
@@ -40,7 +26,7 @@ export function LanguageToggle({ locale, onLocaleChange }: LanguageToggleProps) 
       size="pill"
       shape="rounded"
       variant="glass"
-      className="text-sm font-medium hover:scale-105 active:scale-95 disabled:opacity-50"
+      className="text-sm font-medium hover:scale-105 active:scale-95"
     >
       <span className="uppercase">{locale === LOCALES.EN ? t("csLabel") : t("enLabel")}</span>
     </IconButton>

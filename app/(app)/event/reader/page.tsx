@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { getRequestLocale } from "@/lib/i18n/request-locale";
+import { getInitialLocale } from "@/lib/i18n/initial";
 
 import { ReaderClient } from "./ReaderClient";
 
-export default async function ReaderPage() {
+export default function ReaderPage() {
   return (
     <main className="gradient-bg-static min-h-screen px-2 pt-24 pb-16 sm:px-4 sm:pt-32 sm:pb-20">
       <div className="mx-auto max-w-4xl">
@@ -16,7 +16,7 @@ export default async function ReaderPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getRequestLocale();
+  const locale = await getInitialLocale();
   const t = await getTranslations({ locale, namespace: "reader" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
 

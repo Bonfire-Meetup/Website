@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 
+import { getInitialLocale } from "@/lib/i18n/initial";
 import { getHiddenGems } from "@/lib/recordings/hidden-gems";
 import { getHotRecordingsSafe } from "@/lib/recordings/hot-picks";
 import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
@@ -17,9 +18,10 @@ export async function MemberPicksRailServer({
   scrollLeftLabel,
   scrollRightLabel,
 }: TrendingRailProps) {
+  const locale = await getInitialLocale();
   const [memberPicks, tRows] = await Promise.all([
     getMemberPicksSafe(6),
-    getTranslations("libraryPage.rows"),
+    getTranslations({ locale, namespace: "libraryPage.rows" }),
   ]);
 
   const recordings = memberPicks.map((recording) => ({
@@ -50,9 +52,10 @@ export async function MemberPicksRailServer({
 }
 
 export async function HotPicksRailServer({ scrollLeftLabel, scrollRightLabel }: TrendingRailProps) {
+  const locale = await getInitialLocale();
   const [hotPicks, tRows] = await Promise.all([
     getHotRecordingsSafe(6),
-    getTranslations("libraryPage.rows"),
+    getTranslations({ locale, namespace: "libraryPage.rows" }),
   ]);
 
   const recordings = hotPicks.map((recording) => ({
@@ -86,9 +89,10 @@ export async function HiddenGemsRailServer({
   scrollLeftLabel,
   scrollRightLabel,
 }: TrendingRailProps) {
+  const locale = await getInitialLocale();
   const [hiddenGems, tRows] = await Promise.all([
     getHiddenGems(6),
-    getTranslations("libraryPage.rows"),
+    getTranslations({ locale, namespace: "libraryPage.rows" }),
   ]);
 
   if (hiddenGems.length === 0) {

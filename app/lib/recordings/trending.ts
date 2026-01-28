@@ -1,5 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
+
 import { DEFAULT_ENGAGEMENT_WINDOW_DAYS, fetchWindowedEngagementCounts } from "../data/trending";
 
 import { type Recording, getAllRecordings } from "./recordings";
@@ -48,7 +50,7 @@ export type TrendingRecording = Recording & {
 export async function getTrendingRecordings(limit = 6): Promise<TrendingRecording[]> {
   "use cache";
   cacheTag(`trending-recordings-${limit}`, "engagement-counts");
-  cacheLife({ revalidate: 21600 });
+  cacheLife({ revalidate: CACHE_LIFETIMES.TRENDING_RECORDINGS });
 
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),

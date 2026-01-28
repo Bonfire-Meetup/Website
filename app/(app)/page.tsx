@@ -2,18 +2,21 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { HomeContent } from "@/HomeContent";
-import { getRequestLocale } from "@/lib/i18n/request-locale";
+import { getInitialLocale } from "@/lib/i18n/initial";
 import { getHeroImages } from "@/lib/recordings/data";
+import { getTrendingRecordingsSafe } from "@/lib/recordings/trending";
 
 export default async function HomePage() {
-  const locale = await getRequestLocale();
-  const heroImages = await getHeroImages("");
+  const [heroImages, trendingRecordings] = await Promise.all([
+    getHeroImages(""),
+    getTrendingRecordingsSafe(6),
+  ]);
 
-  return <HomeContent heroImages={heroImages} locale={locale} />;
+  return <HomeContent heroImages={heroImages} trendingRecordings={trendingRecordings} />;
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getRequestLocale();
+  const locale = await getInitialLocale();
   const t = await getTranslations({ locale, namespace: "meta" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
   const commonValues = {

@@ -13,6 +13,21 @@ Welcome to the official Bonfire Events homepage. It burns bright, loads fast (mo
 - Bun
 - oxlint + oxfmt
 
+## SSR & i18n
+
+- Server output is English only. This keeps most pages static and hosting cheaper.
+- Localization happens on the client during hydration, so users pay the CPU cost and may see a brief language flash.
+- Search indexing is English only, which is acceptable for now.
+- The code is structured to switch to server-side i18n later (dynamic rendering on Vercel), but we accept this trade-off today for cost and simplicity.
+- Q: Why not use `/lang/` URL prefixes? A: We could, but we prefer clean, unified URLs regardless of language or theme.
+
+### Switching to SSR i18n (quick path)
+
+- Update `app/lib/i18n/initial.ts` to read locale from cookies/headers instead of `DEFAULT_LOCALE`.
+- Ensure server-only `getTranslations` calls use `getInitialLocale()` (already done).
+- Keep `NextIntlClientProvider` in `app/AppProviders.tsx`; the server will pass the right messages.
+- Remove or simplify client-only locale swapping in `app/components/providers/I18nClientSync.tsx` once SSR locale is authoritative.
+
 ## Local dev
 
 ```bash

@@ -1,39 +1,39 @@
 import { NextIntlClientProvider } from "next-intl";
 
 import { AuthInitializer } from "./components/providers/AuthInitializer";
+import { I18nClientSync } from "./components/providers/I18nClientSync";
 import { ReduxProvider } from "./components/providers/ReduxProvider";
 import { GlobalPlayerProvider } from "./components/shared/GlobalPlayerProvider";
 import { QueryProvider } from "./components/shared/QueryProvider";
 import { LocaleSync } from "./components/theme/LocaleSync";
 import { MotionManager } from "./components/theme/MotionManager";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
+import { type Messages } from "./lib/i18n/initial";
 import { type Locale } from "./lib/i18n/locales";
-import { getRequestLocale } from "./lib/i18n/request-locale";
 
-export async function AppProviders({
-  children,
-  locale: localeProp,
-}: {
+interface AppProvidersProps {
   children: React.ReactNode;
-  locale?: Locale;
-}) {
-  const locale = localeProp ?? (await getRequestLocale());
-  const messages = (await import(`./locales/${locale}.json`)).default;
+  initialLocale: Locale;
+  initialMessages: Messages;
+}
 
+export function AppProviders({ children, initialLocale, initialMessages }: AppProvidersProps) {
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      <LocaleSync />
-      <ReduxProvider>
-        <AuthInitializer />
-        <QueryProvider>
-          <MotionManager />
-          <div className="relative flex min-h-screen flex-col">
-            <ThemeProvider>
-              <GlobalPlayerProvider>{children}</GlobalPlayerProvider>
-            </ThemeProvider>
-          </div>
-        </QueryProvider>
-      </ReduxProvider>
+    <NextIntlClientProvider locale={initialLocale} messages={initialMessages}>
+      <I18nClientSync initialLocale={initialLocale} initialMessages={initialMessages}>
+        <LocaleSync />
+        <ReduxProvider>
+          <AuthInitializer />
+          <QueryProvider>
+            <MotionManager />
+            <div className="relative flex min-h-screen flex-col">
+              <ThemeProvider>
+                <GlobalPlayerProvider>{children}</GlobalPlayerProvider>
+              </ThemeProvider>
+            </div>
+          </QueryProvider>
+        </ReduxProvider>
+      </I18nClientSync>
     </NextIntlClientProvider>
   );
 }

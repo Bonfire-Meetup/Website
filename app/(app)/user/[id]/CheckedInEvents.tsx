@@ -4,6 +4,7 @@ import { CheckIcon } from "@/components/shared/icons";
 import { upcomingEvents } from "@/data/upcoming-events";
 import { getAuthUserById } from "@/lib/data/auth";
 import { getUserCheckIns } from "@/lib/data/check-in";
+import { getInitialLocale } from "@/lib/i18n/initial";
 import { getEpisodeById } from "@/lib/recordings/episodes";
 
 interface CheckedInEventsProps {
@@ -20,7 +21,8 @@ interface CheckInEvent {
 }
 
 export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
-  const t = await getTranslations("account.userProfile");
+  const locale = await getInitialLocale();
+  const t = await getTranslations({ locale, namespace: "account.userProfile" });
 
   let events: CheckInEvent[] = [];
 

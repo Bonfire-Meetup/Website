@@ -1,8 +1,8 @@
-import { getTranslations } from "next-intl/server";
-import type { CSSProperties } from "react";
+"use client";
 
-import { type Locale } from "@/lib/i18n/locales";
-import { getRequestLocale } from "@/lib/i18n/request-locale";
+import { useTranslations } from "next-intl";
+import { type CSSProperties, useEffect, useState } from "react";
+
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { NeonText } from "../theme/NeonText";
@@ -11,45 +11,36 @@ import { ScrollChevron } from "../ui/ScrollChevron";
 
 import { HeroBackground } from "./HeroBackground";
 
-function Ember({ style, className = "" }: { style: CSSProperties; className?: string }) {
+function Ember({
+  style,
+  className = "",
+  visible,
+}: {
+  style: CSSProperties;
+  className?: string;
+  visible: boolean;
+}) {
   return (
     <div
-      className={`animate-rise absolute rounded-full bg-gradient-to-t from-fuchsia-700 via-orange-500 to-red-600 blur-sm md:blur-md ${className}`}
-      style={style}
+      className={`animate-rise absolute rounded-full bg-gradient-to-t from-fuchsia-700 via-orange-500 to-red-600 blur-sm transition-opacity duration-1000 md:blur-md ${className} ${visible ? "opacity-100" : "opacity-0"}`}
+      style={{ ...style, opacity: visible ? (style.opacity as number) : 0 }}
     />
   );
 }
 
-function shuffleImages<T>(items: T[]) {
-  const array = [...items];
-
-  for (let i = array.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-
-  return array;
+interface HeroImage {
+  src: string;
+  alt: string;
+  fallbackSrc?: string;
+  fallbackType?: "image/jpeg" | "image/png";
 }
 
-export async function Hero({
-  images,
-  locale: localeProp,
-}: {
-  images: {
-    src: string;
-    alt: string;
-    fallbackSrc?: string;
-    fallbackType?: "image/jpeg" | "image/png";
-  }[];
-  locale?: Locale;
-}) {
-  const locale = localeProp ?? (await getRequestLocale());
-  const t = await getTranslations({ locale, namespace: "hero" });
-  const tCommon = await getTranslations({ locale, namespace: "common" });
-  const uniqueImages = Array.from(new Map(images.map((image) => [image.src, image])).values());
-  const heroImages = shuffleImages(uniqueImages).slice(0, 3);
+interface HeroProps {
+  images: HeroImage[];
+}
 
-  const embers = Array.from({ length: 15 }).map(() => ({
+function generateEmbers() {
+  return Array.from({ length: 15 }).map(() => ({
     animationDelay: `${Math.random() * -20}s`,
     animationDuration: `${Math.random() * 10 + 10}s`,
     height: `${Math.random() * 6 + 2}px`,
@@ -57,6 +48,21 @@ export async function Hero({
     opacity: Math.random() * 0.5 + 0.2,
     width: `${Math.random() * 6 + 2}px`,
   }));
+}
+
+export function Hero({ images }: HeroProps) {
+  const t = useTranslations("hero");
+  const tCommon = useTranslations("common");
+
+  const heroImages = images.slice(0, 3);
+  const [embers, setEmbers] = useState<CSSProperties[]>([]);
+  const [embersVisible, setEmbersVisible] = useState(false);
+
+  useEffect(() => {
+    setEmbers(generateEmbers());
+    const timer = setTimeout(() => setEmbersVisible(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 pt-20 pb-20 transition-colors duration-500 sm:min-h-[110vh] sm:pt-20 sm:pb-0 dark:bg-neutral-950">
@@ -69,7 +75,12 @@ export async function Hero({
 
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         {embers.map((style, i) => (
-          <Ember key={`ember-${i}`} style={style} className={i >= 6 ? "hidden md:block" : ""} />
+          <Ember
+            key={`ember-${i}`}
+            style={style}
+            className={i >= 6 ? "hidden md:block" : ""}
+            visible={embersVisible}
+          />
         ))}
       </div>
 

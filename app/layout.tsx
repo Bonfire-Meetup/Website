@@ -9,12 +9,13 @@ import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
 import { AppProviders } from "./AppProviders";
-import { DEFAULT_LOCALE } from "./lib/i18n/locales";
+import { getInitialLocale, getInitialMessages } from "./lib/i18n/initial";
 import { STORAGE_KEYS } from "./lib/storage/keys";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
-  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
+  const locale = await getInitialLocale();
+  const t = await getTranslations({ locale, namespace: "meta" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
   const commonValues = {
     brandName: tCommon("brandName"),
     country: tCommon("country"),
@@ -64,10 +65,13 @@ export const viewport: Viewport = {
   width: "device-width",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const initialLocale = await getInitialLocale();
+  const initialMessages = await getInitialMessages(initialLocale);
+
   return (
     <html
-      lang={DEFAULT_LOCALE}
+      lang={initialLocale}
       className={`${GeistSans.variable} ${GeistMono.variable} smooth-scroll`}
       suppressHydrationWarning
     >
@@ -91,7 +95,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
         <Suspense fallback={null}>
-          <AppProviders>{children}</AppProviders>
+          <AppProviders initialLocale={initialLocale} initialMessages={initialMessages}>
+            {children}
+          </AppProviders>
         </Suspense>
         <Analytics />
         <SpeedInsights />

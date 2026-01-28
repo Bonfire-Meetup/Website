@@ -5,6 +5,7 @@ import { BoltIcon } from "@/components/shared/icons";
 import { Link } from "@/i18n/navigation";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { getUserBoosts } from "@/lib/data/boosts";
+import { getInitialLocale } from "@/lib/i18n/initial";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -13,7 +14,8 @@ interface BoostedVideosProps {
 }
 
 export async function BoostedVideos({ userId }: BoostedVideosProps) {
-  const t = await getTranslations("account.userProfile");
+  const locale = await getInitialLocale();
+  const t = await getTranslations({ locale, namespace: "account.userProfile" });
 
   let boostItems: {
     date: string;

@@ -1,5 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
+
 import { fetchEngagementCounts } from "../data/trending";
 
 import { type Recording, getAllRecordings } from "./recordings";
@@ -30,7 +32,7 @@ function calculateHotScore(likeCount: number, recordingDate: Date, now: number):
 export async function getHotRecordings(limit = 6): Promise<HotRecording[]> {
   "use cache";
   cacheTag("hot-picks", "engagement-counts");
-  cacheLife({ revalidate: 21600 });
+  cacheLife({ revalidate: CACHE_LIFETIMES.HOT_PICKS });
 
   const [allRecordings, engagement] = await Promise.all([
     Promise.resolve(getAllRecordings()),

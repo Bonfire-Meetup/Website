@@ -1,4 +1,7 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 import {
   DiscordIcon,
@@ -7,16 +10,12 @@ import {
   MailIcon,
   YouTubeIcon,
 } from "@/components/shared/icons";
-import { Link } from "@/i18n/navigation";
 import { WEBSITE_URLS } from "@/lib/config/constants";
-import { type Locale } from "@/lib/i18n/locales";
-import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-export async function Footer({ locale: localeProp }: { locale?: Locale } = {}) {
-  const locale = localeProp ?? (await getRequestLocale());
-  const t = await getTranslations({ locale, namespace: "footer" });
-  const tCommon = await getTranslations({ locale, namespace: "common" });
+export function Footer() {
+  const t = useTranslations("footer");
+  const tCommon = useTranslations("common");
 
   return (
     <footer className="glass relative mt-auto overflow-hidden">
