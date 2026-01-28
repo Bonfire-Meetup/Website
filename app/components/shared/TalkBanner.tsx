@@ -31,6 +31,7 @@ export function TalkBanner() {
             <div className="flex shrink-0">
               <Button
                 href={PAGE_ROUTES.SPEAK}
+                prefetch={false}
                 variant="glass"
                 className="group flex items-center gap-3 px-8 py-4"
               >

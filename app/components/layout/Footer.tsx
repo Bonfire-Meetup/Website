@@ -89,6 +89,7 @@ export function Footer() {
           <div className="flex items-center gap-4">
             <Link
               href={PAGE_ROUTES.TIMELINE}
+              prefetch={false}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
             >
               {t("timelineLabel")}
