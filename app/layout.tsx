@@ -4,57 +4,10 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
-import type { Metadata, Viewport } from "next";
-import { getTranslations } from "next-intl/server";
-import { Suspense } from "react";
+import type { Viewport } from "next";
 
-import { AppProviders } from "./AppProviders";
-import { getInitialLocale, getInitialMessages } from "./lib/i18n/initial";
+import { DEFAULT_LOCALE } from "./lib/i18n/locales";
 import { STORAGE_KEYS } from "./lib/storage/keys";
-
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getInitialLocale();
-  const t = await getTranslations({ locale, namespace: "meta" });
-  const tCommon = await getTranslations({ locale, namespace: "common" });
-  const commonValues = {
-    brandName: tCommon("brandName"),
-    country: tCommon("country"),
-    prague: tCommon("prague"),
-    zlin: tCommon("zlin"),
-  };
-  const keywords = t.raw("keywords") as string[];
-  const processedKeywords = keywords.map((k) =>
-    k === "{prague}"
-      ? commonValues.prague
-      : k === "{zlin}"
-        ? commonValues.zlin
-        : k === "{country}"
-          ? commonValues.country
-          : k,
-  );
-
-  return {
-    authors: [{ name: t("author", commonValues) }],
-    description: t("siteDescription", commonValues),
-    keywords: processedKeywords,
-    openGraph: {
-      description: t("siteDescription", commonValues),
-      siteName: t("siteName", commonValues),
-      title: t("siteTitle", commonValues),
-      type: "website",
-    },
-    robots: {
-      follow: true,
-      index: true,
-    },
-    title: t("siteTitle", commonValues),
-    twitter: {
-      card: "summary_large_image",
-      description: t("siteDescription", commonValues),
-      title: t("siteTitle", commonValues),
-    },
-  };
-}
 
 export const viewport: Viewport = {
   initialScale: 1,
@@ -65,13 +18,10 @@ export const viewport: Viewport = {
   width: "device-width",
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const initialLocale = await getInitialLocale();
-  const initialMessages = await getInitialMessages(initialLocale);
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang={initialLocale}
+      lang={DEFAULT_LOCALE}
       className={`${GeistSans.variable} ${GeistMono.variable} smooth-scroll`}
       suppressHydrationWarning
     >
@@ -92,13 +42,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             `,
           }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var match = document.cookie.match(/NEXT_LOCALE=([^;]+)/);
+                  if (match && match[1]) {
+                    document.documentElement.lang = match[1];
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
-        <Suspense fallback={null}>
-          <AppProviders initialLocale={initialLocale} initialMessages={initialMessages}>
-            {children}
-          </AppProviders>
-        </Suspense>
+        {children}
         <Analytics />
         <SpeedInsights />
       </body>
