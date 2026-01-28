@@ -76,7 +76,21 @@ export function getRelatedRecordings(
   const countSharedSpeakers = (speakers: string[]) =>
     speakers.map((name) => name.toLowerCase()).filter((name) => recordingSpeakers.has(name)).length;
 
-  const getScore = (r: Recording) => {
+  const getRecencyScore = (dateMs: number) => {
+    const daysDiff = Math.floor(Math.abs(recordingDate - dateMs) / (1000 * 60 * 60 * 24));
+
+    if (daysDiff <= 365) {
+      return 2;
+    }
+
+    if (daysDiff <= 730) {
+      return 1;
+    }
+
+    return 0;
+  };
+
+  const getScore = (r: Recording, dateMs: number) => {
     let score = 0;
     const sharedTags = Math.min(countSharedTags(r.tags), 3);
     const sharedSpeakers = Math.min(countSharedSpeakers(r.speaker), 2);
@@ -92,17 +106,7 @@ export function getRelatedRecordings(
 
     score += sharedTags * 3;
     score += sharedSpeakers * 4;
-
-    const daysSince = Math.max(
-      0,
-      Math.floor((recordingDate - new Date(r.date).getTime()) / (1000 * 60 * 60 * 24)),
-    );
-
-    if (daysSince <= 90) {
-      score += 2;
-    } else if (daysSince <= 180) {
-      score += 1;
-    }
+    score += getRecencyScore(dateMs);
 
     return score;
   };
@@ -110,6 +114,7 @@ export function getRelatedRecordings(
   const candidates = allRecordings
     .filter((r) => r.youtubeId !== recording.youtubeId)
     .map((r) => {
+      const dateMs = new Date(r.date).getTime();
       const sharedTags = countSharedTags(r.tags);
       const sharedSpeakers = countSharedSpeakers(r.speaker);
       const hasRecordingEpisode = Boolean(recording.episode);
@@ -119,11 +124,11 @@ export function getRelatedRecordings(
       const sameLocation = r.location === recording.location;
 
       return {
-        date: new Date(r.date).getTime(),
+        date: dateMs,
         recording: r,
         sameEpisode,
         sameLocation,
-        score: getScore(r),
+        score: getScore(r, dateMs),
         sharedSpeakers,
         sharedTags,
         speakersLower: r.speaker.map((name) => name.toLowerCase()),
@@ -171,10 +176,8 @@ export function getRelatedRecordings(
     },
   ];
 
-  const initialPoolIndex =
-    poolDefinitions.findIndex((pool) => pool.hasMatches) >= 0
-      ? poolDefinitions.findIndex((pool) => pool.hasMatches)
-      : poolDefinitions.length - 1;
+  const firstMatchIndex = poolDefinitions.findIndex((pool) => pool.hasMatches);
+  const initialPoolIndex = firstMatchIndex >= 0 ? firstMatchIndex : poolDefinitions.length - 1;
 
   const orderedPools = poolDefinitions.slice(initialPoolIndex);
 
@@ -190,38 +193,9 @@ export function getRelatedRecordings(
     candidate.recording.tags.forEach((tag) => usedTags.add(tag));
   };
 
-  const pickNextUp = (pool: (typeof candidates)[number][]) =>
-    pool.reduce<(typeof pool)[number] | null>((best, candidate) => {
-      if (!best) {
-        return candidate;
-      }
-
-      if (candidate.sharedTags !== best.sharedTags) {
-        return candidate.sharedTags > best.sharedTags ? candidate : best;
-      }
-
-      if (candidate.sharedSpeakers !== best.sharedSpeakers) {
-        return candidate.sharedSpeakers > best.sharedSpeakers ? candidate : best;
-      }
-
-      if (candidate.sameEpisode !== best.sameEpisode) {
-        return candidate.sameEpisode ? candidate : best;
-      }
-
-      if (candidate.score !== best.score) {
-        return candidate.score > best.score ? candidate : best;
-      }
-
-      if (candidate.date !== best.date) {
-        return candidate.date > best.date ? candidate : best;
-      }
-
-      return candidate.recording.title.localeCompare(best.recording.title) < 0 ? candidate : best;
-    }, null);
-
   const findBestCandidate = (
     pool: (typeof candidates)[number][],
-    options: { allowSameEpisode: boolean; tagPenaltyEnabled: boolean },
+    options: { allowSameEpisode: boolean; applyDiversityPenalty: boolean },
   ) => {
     let best: (typeof pool)[number] | null = null;
     let bestScore = -Infinity;
@@ -244,9 +218,12 @@ export function getRelatedRecordings(
           const sharedWithSelectedSpeakers = candidate.speakersLower.filter((name) =>
             usedSpeakers.has(name),
           ).length;
-          const tagPenalty = options.tagPenaltyEnabled && candidate.sharedTags === 0 ? 4 : 0;
-          const diversityPenalty = sharedWithSelectedTags * 2 + sharedWithSelectedSpeakers * 4;
-          const rankedScore = candidate.score - diversityPenalty - tagPenalty;
+          const episodePenalty =
+            candidate.recording.episode && usedEpisodes.has(candidate.recording.episode) ? 3 : 0;
+          const diversityPenalty =
+            Number(sharedWithSelectedTags) + sharedWithSelectedSpeakers * 4 + episodePenalty;
+          const rankedScore =
+            candidate.score - (options.applyDiversityPenalty ? diversityPenalty : 0);
 
           const isBetterScore = rankedScore > bestScore;
           const isSameScore = rankedScore === bestScore;
@@ -277,9 +254,10 @@ export function getRelatedRecordings(
 
   const fillFromPool = (
     pool: (typeof candidates)[number][],
-    options: { allowSameEpisode: boolean; tagPenaltyEnabled: boolean },
+    options: { allowSameEpisode: boolean; applyDiversityPenalty: boolean },
+    targetCount: number,
   ) => {
-    while (selected.length < maxCount) {
+    while (selected.length < targetCount) {
       const best = findBestCandidate(pool, options);
 
       if (!best) {
@@ -290,29 +268,100 @@ export function getRelatedRecordings(
     }
   };
 
+  const pickExploreCandidate = () => {
+    let best: (typeof candidates)[number] | null = null;
+    let bestScore = -Infinity;
+
+    for (const candidate of candidates) {
+      if (!usedIds.has(candidate.recording.shortId)) {
+        const sharedWithSelectedTags = candidate.recording.tags.filter((tag) =>
+          usedTags.has(tag),
+        ).length;
+        const sharedWithSelectedSpeakers = candidate.speakersLower.filter((name) =>
+          usedSpeakers.has(name),
+        ).length;
+        const episodePenalty =
+          candidate.recording.episode && usedEpisodes.has(candidate.recording.episode) ? 4 : 0;
+        const locationPenalty = candidate.sameLocation ? 1 : 0;
+        const overlapPenalty =
+          sharedWithSelectedTags * 2 +
+          sharedWithSelectedSpeakers * 3 +
+          episodePenalty +
+          locationPenalty;
+        const rankedScore = candidate.score - overlapPenalty;
+
+        if (rankedScore > bestScore) {
+          best = candidate;
+          bestScore = rankedScore;
+        } else if (rankedScore === bestScore && best) {
+          if (candidate.date > best.date) {
+            best = candidate;
+          } else if (
+            candidate.date === best.date &&
+            candidate.recording.title.localeCompare(best.recording.title) < 0
+          ) {
+            best = candidate;
+          }
+        }
+      }
+    }
+
+    return best;
+  };
+
   const initialPool = candidates.filter(orderedPools[0].isMatch);
-  const nextUpCandidate = pickNextUp(initialPool);
+  const exploreSlotEnabled = maxCount > 1;
+  const targetCount = exploreSlotEnabled ? maxCount - 1 : maxCount;
+  const nextUpCandidate = findBestCandidate(initialPool, {
+    allowSameEpisode: true,
+    applyDiversityPenalty: false,
+  });
 
   if (nextUpCandidate) {
     addCandidate(nextUpCandidate);
   }
 
-  fillFromPool(initialPool, {
-    allowSameEpisode: false,
-    tagPenaltyEnabled: orderedPools[0].key === "tags",
-  });
+  fillFromPool(
+    initialPool,
+    {
+      allowSameEpisode: false,
+      applyDiversityPenalty: true,
+    },
+    targetCount,
+  );
 
   for (const poolDefinition of orderedPools.slice(1)) {
-    if (selected.length >= maxCount) {
+    if (selected.length >= targetCount) {
       break;
     }
 
     const pool = candidates.filter(poolDefinition.isMatch);
-    fillFromPool(pool, { allowSameEpisode: false, tagPenaltyEnabled: false });
+    fillFromPool(
+      pool,
+      {
+        allowSameEpisode: false,
+        applyDiversityPenalty: true,
+      },
+      targetCount,
+    );
   }
 
-  if (selected.length < maxCount) {
-    fillFromPool(candidates, { allowSameEpisode: true, tagPenaltyEnabled: false });
+  if (selected.length < targetCount) {
+    fillFromPool(
+      candidates,
+      {
+        allowSameEpisode: true,
+        applyDiversityPenalty: true,
+      },
+      targetCount,
+    );
+  }
+
+  if (exploreSlotEnabled && selected.length < maxCount) {
+    const exploreCandidate = pickExploreCandidate();
+    if (exploreCandidate) {
+      addCandidate(exploreCandidate);
+    }
   }
 
   return selected;
