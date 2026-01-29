@@ -1021,12 +1021,26 @@
     "userProfile": {
       "title": "User Profile",
       "memberSince": "Member since",
+      "anonymousMember": "Community Member",
+      "memberBadge": "Member",
+      "shareText": "{name}'s profile",
+      "shareTextAnonymous": "Community member profile",
+      "roles": {
+        "crew": "Crew",
+        "speaker": "Speaker",
+        "tierFallback": "Tier {tier}"
+      },
       "boosted": {
-        "title": "Boosted videos"
+        "title": "Boosted videos",
+        "count": "{count} {count, plural, one {video} other {videos}} supported",
+        "badge": "Boosted"
       },
       "checkedIn": {
         "title": "Events attended",
-        "empty": "No events attended yet."
+        "count": "{count} {count, plural, one {event} other {events}} attended",
+        "empty": "No events attended yet.",
+        "verified": "Verified {date}",
+        "tba": "TBA"
       },
       "private": {
         "title": "Private Profile",

@@ -1032,12 +1032,26 @@
     "userProfile": {
       "title": "Profil uživatele",
       "memberSince": "Člen od",
+      "anonymousMember": "Člen komunity",
+      "memberBadge": "Člen",
+      "shareText": "Profil uživatele {name}",
+      "shareTextAnonymous": "Profil člena komunity",
+      "roles": {
+        "crew": "Crew",
+        "speaker": "Speaker",
+        "tierFallback": "Úroveň {tier}"
+      },
       "boosted": {
-        "title": "Boostnutá videa"
+        "title": "Boostnutá videa",
+        "count": "{count} {count, plural, one {video} few {videa} other {videí}} podpořeno",
+        "badge": "Boostnuto"
       },
       "checkedIn": {
         "title": "Navštívené akce",
-        "empty": "Zatím žádné navštívené akce."
+        "count": "{count} {count, plural, one {akce} few {akce} other {akcí}} navštíveno",
+        "empty": "Zatím žádné navštívené akce.",
+        "verified": "Ověřeno {date}",
+        "tba": "Bude upřesněno"
       },
       "private": {
         "title": "Soukromý profil",

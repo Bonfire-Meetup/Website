@@ -1,3 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 import { GuildIcon } from "@/components/shared/icons";
 import {
   hasMembership,
@@ -13,10 +17,10 @@ interface RoleBadgesProps {
 
 const roleConfig = {
   [USER_ROLES.CREW]: {
-    label: "Crew",
-    gradient: "from-blue-500 via-indigo-500 to-purple-600",
-    borderGradient: "from-blue-400 to-purple-500",
-    bgPattern: "bg-blue-500/10",
+    labelKey: "crew" as const,
+    gradient: "from-blue-400 via-indigo-400 to-violet-400",
+    glow: "rgba(99, 102, 241, 0.4)",
+    iconColor: "text-indigo-400",
     icon: (
       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
         <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
@@ -24,10 +28,10 @@ const roleConfig = {
     ),
   },
   [USER_ROLES.SPEAKER]: {
-    label: "Speaker",
-    gradient: "from-orange-500 via-rose-500 to-pink-600",
-    borderGradient: "from-orange-400 to-pink-500",
-    bgPattern: "bg-orange-500/10",
+    labelKey: "speaker" as const,
+    gradient: "from-orange-400 via-rose-400 to-pink-400",
+    glow: "rgba(251, 113, 133, 0.4)",
+    iconColor: "text-rose-400",
     icon: (
       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
         <path
@@ -41,6 +45,7 @@ const roleConfig = {
 } as const;
 
 export function RoleBadges({ roles, membershipTier }: RoleBadgesProps) {
+  const t = useTranslations("account.userProfile.roles");
   const displayRoles = roles.filter((role) => role in roleConfig);
   const hasGuild = hasMembership(membershipTier);
 
@@ -49,41 +54,41 @@ export function RoleBadges({ roles, membershipTier }: RoleBadgesProps) {
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-3">
+    <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
       {displayRoles.map((role) => {
         const config = roleConfig[role as keyof typeof roleConfig];
         return (
           <div key={role} className="group relative">
             <div
-              className={`absolute -inset-0.5 rounded-full bg-gradient-to-r ${config.borderGradient} opacity-75 blur transition duration-300 group-hover:opacity-100`}
+              className="absolute -inset-1 rounded-full opacity-60 blur-md transition-opacity duration-300 group-hover:opacity-100"
+              style={{ background: `linear-gradient(135deg, ${config.glow}, transparent)` }}
             />
-            <div
-              className={`relative flex items-center gap-2 rounded-full bg-gradient-to-r ${config.gradient} px-4 py-2 shadow-xl`}
-            >
-              <div
-                className={`flex h-7 w-7 items-center justify-center rounded-full ${config.bgPattern} backdrop-blur-sm`}
+            <div className="relative flex items-center gap-2 rounded-full border border-white/10 bg-neutral-900/80 px-4 py-2 backdrop-blur-sm">
+              <span className={config.iconColor}>{config.icon}</span>
+              <span
+                className={`bg-gradient-to-r ${config.gradient} bg-clip-text text-sm font-bold tracking-wide text-transparent uppercase`}
               >
-                {config.icon}
-              </div>
-              <span className="text-sm font-bold tracking-wide text-white uppercase">
-                {config.label}
+                {t(config.labelKey)}
               </span>
-              <div className="h-1 w-1 animate-pulse rounded-full bg-white/60" />
             </div>
           </div>
         );
       })}
       {hasGuild && membershipTier && (
         <div className="group relative">
-          <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-red-400 to-rose-500 opacity-75 blur transition duration-300 group-hover:opacity-100" />
-          <div className="relative flex items-center gap-2 rounded-full bg-gradient-to-r from-red-500 via-rose-500 to-red-600 px-4 py-2 shadow-xl">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-red-500/10 backdrop-blur-sm">
-              <GuildIcon className="h-4 w-4 text-white" />
-            </div>
-            <span className="text-sm font-bold tracking-wide text-white uppercase">
-              {MEMBERSHIP_TIER_LABELS[membershipTier as MembershipTier] ?? `Tier ${membershipTier}`}
+          <div
+            className="absolute -inset-1 rounded-full opacity-60 blur-md transition-opacity duration-300 group-hover:opacity-100"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(251, 146, 60, 0.5), rgba(244, 63, 94, 0.3))",
+            }}
+          />
+          <div className="relative flex items-center gap-2 rounded-full border border-amber-500/20 bg-neutral-900/80 px-4 py-2 backdrop-blur-sm">
+            <GuildIcon className="h-4 w-4 text-amber-400" />
+            <span className="bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 bg-clip-text text-sm font-bold tracking-wide text-transparent uppercase">
+              {MEMBERSHIP_TIER_LABELS[membershipTier as MembershipTier] ??
+                t("tierFallback", { tier: membershipTier })}
             </span>
-            <div className="h-1 w-1 animate-pulse rounded-full bg-white/60" />
           </div>
         </div>
       )}

@@ -1,10 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { copyToClipboard } from "@/lib/utils/clipboard";
 
 import { ProfileShareButton } from "./ProfileShareButton";
 import { RoleBadges } from "./RoleBadges";
@@ -30,69 +31,82 @@ export function UserProfileContent({
   checkedInEventsSlot,
 }: UserProfileContentProps) {
   const t = useTranslations("account.userProfile");
+  const [copied, setCopied] = useState(false);
 
   const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}${PAGE_ROUTES.USER(user.publicId)}`;
-  const shareText = user.name ? `${user.name}'s profile` : "Community member profile";
+  const shareText = user.name ? t("shareText", { name: user.name }) : t("shareTextAnonymous");
+
+  const handleCopyId = async () => {
+    await copyToClipboard(user.publicId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   return (
-    <main className="gradient-bg min-h-screen pb-20">
-      <div className="relative overflow-hidden px-4 pt-28 sm:px-6 sm:pt-32 lg:px-8">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--color-brand-glow-5),transparent_60%)] dark:bg-[radial-gradient(ellipse_at_top,var(--color-brand-glow-6),transparent_60%)]" />
+    <main className="relative min-h-screen overflow-hidden bg-neutral-950">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(217,70,239,0.15),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_70%_20%,rgba(249,115,22,0.1),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_30%_at_30%_80%,rgba(139,92,246,0.08),transparent)]" />
+        <div
+          className="absolute inset-0 opacity-[0.015]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          }}
+        />
+      </div>
 
-        <div className="relative mx-auto max-w-4xl">
-          <div
-            className={`relative mb-8 overflow-hidden rounded-3xl border bg-white/95 shadow-2xl backdrop-blur-xl dark:bg-neutral-900/95 ${
-              user.isMember
-                ? "border-red-300/50 shadow-red-500/20 dark:border-red-500/30"
-                : "border-neutral-200/60 dark:border-white/10"
-            }`}
-          >
-            <div
-              className={`absolute top-0 left-0 h-32 w-full bg-gradient-to-br ${
-                user.isMember
-                  ? "from-red-500/25 via-rose-500/20 to-red-400/15 dark:from-red-500/15 dark:via-rose-500/10 dark:to-red-400/10"
-                  : "from-brand-500/20 dark:from-brand-500/10 via-rose-500/20 to-orange-500/20 dark:via-rose-500/10 dark:to-orange-500/10"
-              }`}
-            />
-
-            <div className="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
-              <ProfileShareButton shareUrl={profileUrl} shareText={shareText} />
-            </div>
-
-            <div className="relative px-6 pt-6 pb-8 sm:px-10 sm:pt-8 sm:pb-10">
-              <div className="flex flex-col items-center text-center">
-                <div className="relative mb-6">
-                  <div
-                    className={`absolute inset-0 -m-2 rounded-full bg-gradient-to-br blur-xl ${
-                      user.isMember
-                        ? "from-red-400/35 via-rose-400/30 to-red-300/25"
-                        : "from-brand-400/30 via-rose-400/30 to-orange-400/30"
-                    }`}
-                  />
+      <div className="relative px-4 pt-24 pb-20 sm:px-6 sm:pt-32 lg:px-8 lg:pt-40">
+        <div className="mx-auto max-w-5xl">
+          <div className="relative mb-12 sm:mb-16">
+            <div className="flex flex-col items-center lg:flex-row lg:items-start lg:gap-12">
+              <div className="relative mb-8 lg:mb-0">
+                <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-fuchsia-500/20 via-orange-500/15 to-violet-500/20 blur-2xl" />
+                <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-fuchsia-500/30 via-orange-500/25 to-violet-500/30 blur-xl" />
+                <div className="relative">
+                  <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-fuchsia-400 via-orange-400 to-violet-400 opacity-80" />
                   <UserAvatar
                     avatarSeed={user.publicId}
-                    size={120}
+                    size={180}
                     name={user.name}
-                    className="relative border-4 border-white shadow-2xl dark:border-neutral-900"
+                    className="relative ring-4 ring-neutral-950"
                   />
                 </div>
+                {user.isMember && (
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
+                    <div className="relative">
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 blur-md" />
+                      <div className="relative flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 px-4 py-1.5 text-xs font-black tracking-widest text-neutral-950 uppercase shadow-2xl">
+                        <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                        </svg>
+                        <span>{t("memberBadge")}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
 
-                <div className="w-full space-y-4">
-                  {user.name && (
-                    <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
-                      {user.name}
-                    </h1>
-                  )}
-
-                  <RoleBadges
-                    roles={user.roles}
-                    membershipTier={user.isMember ? user.membershipTier : null}
-                  />
-
-                  <div className="flex flex-col items-center gap-3 pt-2 sm:flex-row sm:justify-center">
-                    <div className="inline-flex items-center gap-2 rounded-xl border border-neutral-200/70 bg-neutral-50/80 px-4 py-2 text-sm font-medium text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
+              <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:pt-4 lg:text-left">
+                <div className="mb-4 flex items-baseline gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCopyId}
+                    className="inline-flex cursor-pointer items-center gap-1.5 font-mono text-xs font-medium tracking-wide text-neutral-500 transition-colors hover:text-neutral-300"
+                  >
+                    {copied ? (
                       <svg
-                        className="text-brand-500 dark:text-brand-400 h-4 w-4"
+                        className="h-3 w-3 shrink-0 -translate-y-px text-emerald-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="h-3 w-3 shrink-0 -translate-y-px"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -101,22 +115,56 @@ export function UserProfileContent({
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
                         />
                       </svg>
-                      <span>
-                        {t("memberSince")} {user.memberSince}
-                      </span>
-                    </div>
-                  </div>
+                    )}
+                    <span className={copied ? "text-emerald-400" : ""}>{user.publicId}</span>
+                  </button>
+                  <ProfileShareButton shareUrl={profileUrl} shareText={shareText} />
+                </div>
+
+                {user.name ? (
+                  <h1 className="mb-6 text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
+                    {user.name}
+                  </h1>
+                ) : (
+                  <h1 className="mb-6 text-4xl font-black tracking-tight text-neutral-400 sm:text-5xl lg:text-6xl">
+                    {t("anonymousMember")}
+                  </h1>
+                )}
+
+                <RoleBadges
+                  roles={user.roles}
+                  membershipTier={user.isMember ? user.membershipTier : null}
+                />
+
+                <div className="mt-8 flex items-center gap-2 text-neutral-400">
+                  <svg
+                    className="h-4 w-4 text-neutral-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+                    />
+                  </svg>
+                  <span className="text-sm font-medium">
+                    {t("memberSince")} <span className="text-white">{user.memberSince}</span>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {boostedVideosSlot}
-
-          <div className="mt-8">{checkedInEventsSlot}</div>
+          <div className="space-y-8">
+            {boostedVideosSlot}
+            {checkedInEventsSlot}
+          </div>
         </div>
       </div>
     </main>
@@ -127,35 +175,42 @@ export function PrivateProfileContent() {
   const t = useTranslations("account.userProfile");
 
   return (
-    <main className="gradient-bg min-h-screen px-4 pt-32 pb-20">
-      <div className="mx-auto max-w-2xl">
-        <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/90 p-10 text-center shadow-2xl shadow-black/5 backdrop-blur-md sm:p-12 dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-black/25">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_0%,var(--color-brand-glow-3)_50%,transparent_100%)] dark:bg-[linear-gradient(to_right,transparent_0%,var(--color-brand-glow-4)_50%,transparent_100%)]" />
+    <main className="relative min-h-screen overflow-hidden bg-neutral-950">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(100,100,100,0.08),transparent)]" />
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          }}
+        />
+      </div>
 
-          <div className="relative">
-            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-neutral-100 to-neutral-200 shadow-lg dark:from-neutral-800 dark:to-neutral-700">
+      <div className="relative flex min-h-screen items-center justify-center px-4 py-20">
+        <div className="w-full max-w-md text-center">
+          <div className="relative mx-auto mb-8 h-24 w-24">
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 opacity-50 blur-xl" />
+            <div className="relative flex h-full w-full items-center justify-center rounded-2xl border border-neutral-800 bg-neutral-900/90">
               <svg
-                className="h-10 w-10 text-neutral-500 dark:text-neutral-400"
+                className="h-12 w-12 text-neutral-600"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                strokeWidth={2}
+                strokeWidth={1.5}
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
                 />
               </svg>
             </div>
-
-            <h1 className="mb-3 text-2xl font-black text-neutral-900 sm:text-3xl dark:text-white">
-              {t("private.title")}
-            </h1>
-            <p className="text-base text-neutral-600 dark:text-neutral-400">
-              {t("private.message")}
-            </p>
           </div>
+
+          <h1 className="mb-3 text-2xl font-black tracking-tight text-white sm:text-3xl">
+            {t("private.title")}
+          </h1>
+          <p className="text-base text-neutral-500">{t("private.message")}</p>
         </div>
       </div>
     </main>
