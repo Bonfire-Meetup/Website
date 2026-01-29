@@ -1,5 +1,7 @@
 "use client";
 
+import type { ReactElement } from "react";
+
 const palettes = [
   { colors: ["#8B5CF6", "#EC4899", "#F43F5E"], accent: "#FCD34D" },
   { colors: ["#3B82F6", "#8B5CF6", "#EC4899"], accent: "#34D399" },
@@ -49,7 +51,7 @@ function generateAvatar(seed: string) {
   const radialGradient = `radial-gradient(circle at ${radialOffsetX}% ${radialOffsetY}%, ${c2}88 0%, transparent 50%)`;
   const accentGradient = `radial-gradient(circle at ${100 - radialOffsetX}% ${100 - radialOffsetY}%, ${accent}44 0%, transparent 40%)`;
 
-  const patternElements: JSX.Element[] = [];
+  const patternElements: ReactElement[] = [];
 
   switch (patternType) {
     case "circles": {
