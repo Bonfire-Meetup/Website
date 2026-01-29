@@ -32,11 +32,8 @@ jobs:
       - name: Install deps
         run: bun install --frozen-lockfile
 
-      - name: TypeScript typecheck
-        run: bun run typecheck
-
-      - name: Lint
-        run: bun run lint
+      - name: Quality check
+        run: bun run check
 
       - name: Vercel pull (production env)
         env:
