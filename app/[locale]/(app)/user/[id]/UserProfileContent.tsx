@@ -1,11 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { copyToClipboard } from "@/lib/utils/clipboard";
+import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
 
 import { ProfileShareButton } from "./ProfileShareButton";
 import { RoleBadges } from "./RoleBadges";
@@ -32,6 +33,15 @@ export function UserProfileContent({
 }: UserProfileContentProps) {
   const t = useTranslations("account.userProfile");
   const [copied, setCopied] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+    const handler = () => setPrefersReducedMotion(mq.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}${PAGE_ROUTES.USER(user.publicId)}`;
   const shareText = user.name ? t("shareText", { name: user.name }) : t("shareTextAnonymous");
@@ -66,9 +76,10 @@ export function UserProfileContent({
                 <div className="relative">
                   <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-fuchsia-400 via-orange-400 to-violet-400 opacity-60 dark:opacity-80" />
                   <UserAvatar
-                    avatarSeed={user.publicId}
+                    avatarSeed={makeAvatarSeedFromPublicId(user.publicId)}
                     size={180}
                     name={user.name}
+                    animated={!prefersReducedMotion}
                     className="relative ring-4 ring-neutral-50 dark:ring-neutral-950"
                   />
                 </div>

@@ -8,6 +8,7 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { Link } from "@/i18n/navigation";
 import { type BoostedByData, useVideoBoosts } from "@/lib/api/video-engagement";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
 
 interface BoostedByProps {
   boostedBy?: BoostedByData | null;
@@ -91,9 +92,11 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
               <div className="relative">
                 <div className="absolute -inset-0.5 rounded-full bg-emerald-200/30 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-emerald-500/20" />
                 <UserAvatar
-                  avatarSeed={publicId}
+                  avatarSeed={makeAvatarSeedFromPublicId(publicId)}
                   size={24}
                   name={user.name}
+                  isTiny
+                  animated={false}
                   className="relative ring-1 ring-white/50 dark:ring-neutral-900/50"
                 />
               </div>

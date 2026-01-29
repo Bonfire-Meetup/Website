@@ -15,6 +15,7 @@ import { USER_ROLES } from "@/lib/config/roles";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { extractTokenFromUrl, parseCheckInToken } from "@/lib/utils/check-in-token";
+import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
 
 interface ScanResult {
   valid: boolean;
@@ -495,7 +496,7 @@ export function ReaderClient() {
               <div className="flex items-start gap-3 sm:gap-4">
                 {scanResult.valid && scanResult.publicId ? (
                   <UserAvatar
-                    avatarSeed={scanResult.publicId}
+                    avatarSeed={makeAvatarSeedFromPublicId(scanResult.publicId)}
                     size={64}
                     name={scanResult.name}
                     className="shrink-0 border-2 border-emerald-200 shadow-md sm:border-emerald-300 dark:border-emerald-500/40 dark:shadow-emerald-500/20"
