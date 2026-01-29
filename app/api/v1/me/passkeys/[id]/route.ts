@@ -47,7 +47,7 @@ export const PATCH = async (request: Request, { params }: RouteParams) =>
     try {
       const passkey = await getPasskeyById(id);
 
-      if (!passkey || passkey.user_id !== userId) {
+      if (!passkey || passkey.userId !== userId) {
         return NextResponse.json({ error: "not_found" }, { status: 404 });
       }
 
@@ -76,7 +76,7 @@ export const DELETE = async (request: Request, { params }: RouteParams) =>
     try {
       const passkey = await getPasskeyById(id);
 
-      if (!passkey || passkey.user_id !== userId) {
+      if (!passkey || passkey.userId !== userId) {
         return NextResponse.json({ error: "not_found" }, { status: 404 });
       }
 

@@ -47,7 +47,7 @@ export const createRegistrationOptions = async ({
     userID: new TextEncoder().encode(userId),
     attestationType: "none",
     excludeCredentials: existingPasskeys.map((passkey) => ({
-      id: passkey.credential_id,
+      id: passkey.credentialId,
       transports: passkey.transports as AuthenticatorTransportFuture[] | undefined,
     })),
     authenticatorSelection: {
@@ -91,7 +91,7 @@ export const createAuthenticationOptions = async ({
     rpID: rpId,
     userVerification: "required",
     allowCredentials: allowedPasskeys?.map((passkey) => ({
-      id: passkey.credential_id,
+      id: passkey.credentialId,
       transports: passkey.transports as AuthenticatorTransportFuture[] | undefined,
     })),
   });
@@ -116,8 +116,8 @@ export const verifyAuthentication = async ({
     expectedOrigin: origin,
     expectedRPID: rpId,
     credential: {
-      id: passkey.credential_id,
-      publicKey: Buffer.from(passkey.public_key, "base64url"),
+      id: passkey.credentialId,
+      publicKey: Buffer.from(passkey.publicKey, "base64url"),
       counter: passkey.counter,
       transports: passkey.transports as AuthenticatorTransportFuture[] | undefined,
     },

@@ -1,40 +1,23 @@
 import "server-only";
 
-import { type NeonQueryFunctionInTransaction, neon } from "@neondatabase/serverless";
+import { neon } from "@neondatabase/serverless";
+import { type ExtractTablesWithRelations } from "drizzle-orm";
+import { type NeonHttpQueryResultHKT, drizzle } from "drizzle-orm/neon-http";
+import { type PgTransaction } from "drizzle-orm/pg-core";
 
 import { serverEnv } from "@/lib/config/env";
 import { logError, logWarn } from "@/lib/utils/log";
 
-const providers = {
-  neon: (url: string) => neon<false, false>(url),
-};
+import * as schema from "./schema";
 
-const clientCache = new Map<string, ReturnType<typeof neon<false, false>>>();
+export type DrizzleClient = ReturnType<typeof drizzle<typeof schema>>;
+export type DrizzleTransaction = PgTransaction<
+  NeonHttpQueryResultHKT,
+  typeof schema,
+  ExtractTablesWithRelations<typeof schema>
+>;
 
-type TransactionCallback = (
-  sql: NeonQueryFunctionInTransaction<false, false>,
-) => ReturnType<NeonQueryFunctionInTransaction<false, false>>[];
-
-export function runTransaction(callback: TransactionCallback): Promise<unknown[][]> {
-  const url = serverEnv.BNF_NEON_DATABASE_URL;
-
-  if (!url) {
-    const error = new Error("BNF_NEON_DATABASE_URL is not set");
-    logError("db.transaction_failed", error);
-    throw error;
-  }
-
-  const sql = getCachedClient("neon", url);
-
-  return sql.transaction(callback).catch((error) => {
-    logError("db.transaction_failed", error);
-    throw error;
-  });
-}
-
-export type DatabaseProvider = keyof typeof providers;
-
-export type DatabaseClient = ReturnType<typeof neon<false, false>>;
+const clientCache = new Map<string, DrizzleClient>();
 
 export function getDatabaseErrorDetails(
   error: unknown,
@@ -67,76 +50,49 @@ export function getDatabaseErrorDetails(
   return errorDetails;
 }
 
-const getDatabaseProvider = (): DatabaseProvider => {
-  const provider = serverEnv.BNF_DB_PROVIDER;
-
-  if (!provider) {
-    return "neon";
-  }
-
-  if (provider in providers) {
-    return provider as DatabaseProvider;
-  }
-
-  const error = new Error(`Unsupported database provider: ${provider}`);
-  logError("db.client_failed", error, { provider });
-  throw error;
-};
-
-const getDatabaseUrl = (required: boolean) => {
-  const url = serverEnv.BNF_NEON_DATABASE_URL;
-
-  if (!url && required) {
-    logWarn("db.missing_url", { provider: getDatabaseProvider() });
-    throw new Error("BNF_NEON_DATABASE_URL is not set");
-  }
-
-  return url ?? null;
-};
-
-function getCachedClient(provider: DatabaseProvider, url: string): DatabaseClient {
-  const cacheKey = `${provider}:${url}`;
-  const cached = clientCache.get(cacheKey);
+function getCachedClient(url: string): DrizzleClient {
+  const cached = clientCache.get(url);
 
   if (cached) {
     return cached;
   }
 
-  const client = providers[provider](url);
-  clientCache.set(cacheKey, client);
+  const neonClient = neon(url);
+  const client = drizzle(neonClient, { schema });
+  clientCache.set(url, client);
 
   if (process.env.NODE_ENV === "development") {
-    logWarn("db.client_created", { cacheSize: clientCache.size, provider });
+    logWarn("db.client_created", { cacheSize: clientCache.size });
   }
 
   return client;
 }
 
-export function getDatabaseClient(options?: {
-  required?: true;
-  provider?: DatabaseProvider;
-}): DatabaseClient;
-
-export function getDatabaseClient(options: {
-  required: false;
-  provider?: DatabaseProvider;
-}): DatabaseClient | null;
-
-export function getDatabaseClient(
-  options: { required?: boolean; provider?: DatabaseProvider } = {},
-): DatabaseClient | null {
+export function db(options?: { required?: true }): DrizzleClient;
+export function db(options: { required: false }): DrizzleClient | null;
+export function db(options: { required?: boolean } = {}): DrizzleClient | null {
   const required = options.required ?? true;
-  const provider = options.provider ?? getDatabaseProvider();
-  const url = getDatabaseUrl(required);
+  const url = serverEnv.BNF_NEON_DATABASE_URL;
 
   if (!url) {
+    if (required) {
+      logWarn("db.missing_url", {});
+      throw new Error("BNF_NEON_DATABASE_URL is not set");
+    }
     return null;
   }
 
   try {
-    return getCachedClient(provider, url);
+    return getCachedClient(url);
   } catch (error) {
-    logError("db.client_failed", error, { provider });
+    logError("db.client_failed", error);
     throw error;
   }
+}
+
+export async function runTransaction<T>(
+  callback: (tx: DrizzleTransaction) => Promise<T>,
+): Promise<T> {
+  const client = db();
+  return client.transaction(callback);
 }

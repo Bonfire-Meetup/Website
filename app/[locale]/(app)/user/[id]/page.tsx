@@ -44,7 +44,7 @@ export async function generateMetadata({
   const memberSince = new Intl.DateTimeFormat("en-US", {
     month: "long",
     year: "numeric",
-  }).format(new Date(user.created_at));
+  }).format(new Date(user.createdAt));
 
   const name = user.name || t("communityMember");
   const values = { brandName, memberSince, name };
@@ -90,8 +90,8 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
     day: "numeric",
     month: "long",
     year: "numeric",
-  }).format(new Date(user.created_at));
-  const isMember = hasMembership(user.membership_tier);
+  }).format(new Date(user.createdAt));
+  const isMember = hasMembership(user.membershipTier);
 
   return (
     <UserProfileContent
@@ -100,7 +100,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
         name: user.name,
         memberSince,
         roles: user.roles,
-        membershipTier: user.membership_tier,
+        membershipTier: user.membershipTier,
         isMember,
       }}
       boostedVideosSlot={

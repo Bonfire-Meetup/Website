@@ -34,7 +34,7 @@ export const GET = async (request: Request) =>
         getUserBoosts(auth.userId),
         fingerprint.emailHash
           ? getAuthAttemptsByEmailHash({
-              accountCreatedAt: user.created_at,
+              accountCreatedAt: user.createdAt,
               emailHash: fingerprint.emailHash,
               limit: 50,
               since,
@@ -49,14 +49,14 @@ export const GET = async (request: Request) =>
 
       const boostItems = boosts
         .map((boost) => {
-          const recording = recordingMap.get(boost.video_id);
+          const recording = recordingMap.get(boost.videoId);
 
           if (!recording) {
             return null;
           }
 
           return {
-            boostedAt: boost.created_at.toISOString(),
+            boostedAt: boost.createdAt.toISOString(),
             date: recording.date,
             shortId: recording.shortId,
             slug: getWatchSlug(recording),
@@ -67,11 +67,11 @@ export const GET = async (request: Request) =>
         .filter((item) => item !== null);
 
       const attemptItems = attempts.map((attempt) => ({
-        createdAt: attempt.created_at.toISOString(),
+        createdAt: attempt.createdAt.toISOString(),
         id: attempt.id,
         method: attempt.method,
         outcome: attempt.outcome,
-        userAgentSummary: attempt.user_agent_summary,
+        userAgentSummary: attempt.userAgentSummary,
       }));
 
       const nextMonth = new Date(
@@ -89,10 +89,10 @@ export const GET = async (request: Request) =>
         boosts: { items: boostItems },
         profile: {
           allowCommunityEmails: user.preferences.allowCommunityEmails ?? false,
-          createdAt: user.created_at.toISOString(),
+          createdAt: user.createdAt.toISOString(),
           email: user.email,
           id: user.id,
-          lastLoginAt: user.last_login_at ? user.last_login_at.toISOString() : null,
+          lastLoginAt: user.lastLoginAt ? user.lastLoginAt.toISOString() : null,
           name: user.name,
           publicProfile: user.preferences.publicProfile ?? false,
         },

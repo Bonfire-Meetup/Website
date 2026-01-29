@@ -98,11 +98,11 @@ export const POST = async (request: Request) =>
 
       if (refreshToken) {
         if (revokeFamily) {
-          await revokeRefreshTokenFamily(refreshToken.token_family_id);
+          await revokeRefreshTokenFamily(refreshToken.tokenFamilyId);
 
           logInfo("auth.revoke.family", {
             ...clientFingerprint,
-            tokenFamilyId: refreshToken.token_family_id,
+            tokenFamilyId: refreshToken.tokenFamilyId,
             requestId,
           });
 

@@ -1,4 +1,5 @@
-import { getDatabaseClient } from "@/lib/data/db";
+import { db } from "@/lib/data/db";
+import { contactSubmissions, talkProposals } from "@/lib/data/schema";
 import { logError } from "@/lib/utils/log";
 
 interface ContactSubmission {
@@ -30,18 +31,14 @@ export const insertContactSubmission = async ({
   ipHash,
 }: ContactSubmission) => {
   try {
-    const sql = getDatabaseClient();
-    await sql`
-      INSERT INTO contact_submissions (name, email, inquiry_type, subject, message, ip_hash)
-      VALUES (
-        ${name},
-        ${email},
-        ${inquiryType},
-        ${subject},
-        ${message},
-        ${ipHash}
-      )
-    `;
+    await db().insert(contactSubmissions).values({
+      name,
+      email,
+      inquiryType,
+      subject,
+      message,
+      ipHash,
+    });
   } catch (error) {
     logError("data.contact_insert_failed", error, { ipHash });
     throw error;
@@ -59,20 +56,16 @@ export const insertTalkProposal = async ({
   ipHash,
 }: TalkProposalSubmission) => {
   try {
-    const sql = getDatabaseClient();
-    await sql`
-      INSERT INTO talk_proposals (speaker_name, email, talk_title, abstract, duration, experience, preferred_location, ip_hash)
-      VALUES (
-        ${speakerName},
-        ${email},
-        ${talkTitle},
-        ${abstract},
-        ${duration},
-        ${experience},
-        ${preferredLocation},
-        ${ipHash}
-      )
-    `;
+    await db().insert(talkProposals).values({
+      speakerName,
+      email,
+      talkTitle,
+      abstract,
+      duration,
+      experience,
+      preferredLocation,
+      ipHash,
+    });
   } catch (error) {
     logError("data.talk_proposal_insert_failed", error, { ipHash });
     throw error;

@@ -26,12 +26,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
       const recordingMap = new Map(recordings.map((recording) => [recording.shortId, recording]));
       const items = boosts
         .map((boost) => {
-          const recording = recordingMap.get(boost.video_id);
+          const recording = recordingMap.get(boost.videoId);
 
           if (!recording) {
             logWarn("account.boosts.recording_missing", {
               userId,
-              videoId: boost.video_id,
+              videoId: boost.videoId,
             });
 
             return null;

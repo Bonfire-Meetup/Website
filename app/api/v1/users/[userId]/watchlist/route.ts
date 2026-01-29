@@ -1,11 +1,11 @@
-import { neon } from "@neondatabase/serverless";
+import { eq, sql } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { resolveUserId } from "@/lib/api/auth";
+import { db } from "@/lib/data/db";
+import { userWatchlist } from "@/lib/data/schema";
 import { logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
-
-const sql = neon(process.env.BNF_NEON_DATABASE_URL ?? "");
 
 export async function GET(
   request: NextRequest,
@@ -22,17 +22,19 @@ export async function GET(
     const { userId } = userIdResult;
 
     try {
-      const rows = await sql`
-        select video_id, created_at
-        from user_watchlist
-        where user_id = ${userId}
-        order by created_at desc
-      `;
+      const rows = await db()
+        .select({
+          videoId: userWatchlist.videoId,
+          createdAt: userWatchlist.createdAt,
+        })
+        .from(userWatchlist)
+        .where(eq(userWatchlist.userId, userId))
+        .orderBy(sql`${userWatchlist.createdAt} DESC`);
 
       return NextResponse.json({
         items: rows.map((row) => ({
-          videoId: row.video_id,
-          addedAt: row.created_at,
+          videoId: row.videoId,
+          addedAt: row.createdAt,
         })),
       });
     } catch (err) {

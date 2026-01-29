@@ -71,7 +71,7 @@ const issueTokens = async (
 ) => {
   const user = await getAuthUserById(userId);
   const roles = user?.roles ?? [];
-  const membershipTier = user?.membership_tier ?? null;
+  const membershipTier = user?.membershipTier ?? null;
 
   const accessTokenJti = crypto.randomUUID();
   const accessToken = await signAccessToken(userId, accessTokenJti, roles, membershipTier);
@@ -167,7 +167,7 @@ export const POST = async (request: Request) =>
         return NextResponse.json({ error: "verification_failed" }, { status: 400 });
       }
 
-      const user = await getAuthUserById(passkey.user_id);
+      const user = await getAuthUserById(passkey.userId);
 
       if (!user) {
         logWarn("passkey.authenticate.user_not_found", {
@@ -186,17 +186,17 @@ export const POST = async (request: Request) =>
       if (!verification.verified) {
         logWarn("passkey.authenticate.verification_failed", {
           ...clientFingerprint,
-          userId: passkey.user_id,
+          userId: passkey.userId,
         });
         return NextResponse.json({ error: "verification_failed" }, { status: 400 });
       }
 
       await markPasskeyChallengeUsed(storedChallenge.id);
-      await updatePasskeyCounter(passkey.credential_id, verification.authenticationInfo.newCounter);
+      await updatePasskeyCounter(passkey.credentialId, verification.authenticationInfo.newCounter);
 
       const tokenFamilyId = crypto.randomUUID();
       const { accessToken, accessExpiresIn, accessTokenJti, cookieValue } = await issueTokens(
-        passkey.user_id,
+        passkey.userId,
         tokenFamilyId,
         ip,
         userAgent,
@@ -215,13 +215,13 @@ export const POST = async (request: Request) =>
           requestId,
           userAgentSummary,
           userAgentHash: clientFingerprint.userAgentHash ?? undefined,
-          userId: passkey.user_id,
+          userId: passkey.userId,
         });
       }
 
       logInfo("passkey.authenticate.success", {
         ...clientFingerprint,
-        userId: passkey.user_id,
+        userId: passkey.userId,
         passkeyId: passkey.id,
         accessTokenJti,
         tokenFamilyId,

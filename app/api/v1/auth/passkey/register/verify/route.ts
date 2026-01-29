@@ -84,7 +84,7 @@ export const POST = async (request: Request) =>
         return NextResponse.json({ error: "challenge_expired" }, { status: 400 });
       }
 
-      if (storedChallenge.user_id !== userId) {
+      if (storedChallenge.userId !== userId) {
         logWarn("passkey.register.challenge_user_mismatch", { userId });
         return NextResponse.json({ error: "invalid_challenge" }, { status: 400 });
       }

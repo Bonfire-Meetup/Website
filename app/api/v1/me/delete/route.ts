@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -5,6 +6,19 @@ import { requireAuth } from "@/lib/api/auth";
 import { timingGuardHash, verifyOtpChallenge } from "@/lib/auth/challenge";
 import { getAuthUserById, markAuthChallengeUsed } from "@/lib/data/auth";
 import { runTransaction } from "@/lib/data/db";
+import {
+  appUser,
+  authAttempt,
+  authChallenge,
+  authRefreshToken,
+  authToken,
+  contactSubmissions,
+  newsletterSubscription,
+  talkProposals,
+  userBoostAllocation,
+  userWatchlist,
+  videoBoosts,
+} from "@/lib/data/schema";
 import {
   getClientFingerprint,
   getEmailFingerprint,
@@ -87,19 +101,19 @@ export const POST = async (request: Request) =>
     await markAuthChallengeUsed(verification.id);
 
     try {
-      await runTransaction((sql) => [
-        sql`DELETE FROM auth_token WHERE user_id = ${auth.userId}`,
-        sql`DELETE FROM auth_refresh_token WHERE user_id = ${auth.userId}`,
-        sql`DELETE FROM auth_challenge WHERE email = ${email}`,
-        sql`DELETE FROM auth_attempt WHERE user_id = ${auth.userId}`,
-        sql`DELETE FROM user_watchlist WHERE user_id = ${auth.userId}`,
-        sql`DELETE FROM user_boost_allocation WHERE user_id = ${auth.userId}`,
-        sql`DELETE FROM video_boosts WHERE user_id = ${auth.userId}`,
-        sql`DELETE FROM newsletter_subscription WHERE email = ${email}`,
-        sql`DELETE FROM contact_submissions WHERE email = ${email}`,
-        sql`DELETE FROM talk_proposals WHERE email = ${email}`,
-        sql`DELETE FROM app_user WHERE id = ${auth.userId}`,
-      ]);
+      await runTransaction(async (tx) => {
+        await tx.delete(authToken).where(eq(authToken.userId, auth.userId));
+        await tx.delete(authRefreshToken).where(eq(authRefreshToken.userId, auth.userId));
+        await tx.delete(authChallenge).where(eq(authChallenge.email, email));
+        await tx.delete(authAttempt).where(eq(authAttempt.userId, auth.userId));
+        await tx.delete(userWatchlist).where(eq(userWatchlist.userId, auth.userId));
+        await tx.delete(userBoostAllocation).where(eq(userBoostAllocation.userId, auth.userId));
+        await tx.delete(videoBoosts).where(eq(videoBoosts.userId, auth.userId));
+        await tx.delete(newsletterSubscription).where(eq(newsletterSubscription.email, email));
+        await tx.delete(contactSubmissions).where(eq(contactSubmissions.email, email));
+        await tx.delete(talkProposals).where(eq(talkProposals.email, email));
+        await tx.delete(appUser).where(eq(appUser.id, auth.userId));
+      });
     } catch (error) {
       logError("account.delete.failed", error, {
         ...emailFingerprint,

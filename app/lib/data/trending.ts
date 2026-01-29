@@ -1,7 +1,9 @@
+import { count, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
-import { getDatabaseClient, getDatabaseErrorDetails } from "@/lib/data/db";
+import { db, getDatabaseErrorDetails } from "@/lib/data/db";
+import { videoBoosts, videoLikes } from "@/lib/data/schema";
 import { logError, logWarn } from "@/lib/utils/log";
 import { withRetry } from "@/lib/utils/retry";
 
@@ -14,14 +16,14 @@ export interface EngagementCounts {
 }
 
 interface EngagementRow {
-  video_id: string;
+  videoId: string;
   count: number;
 }
 
 interface WindowedEngagementRow {
-  video_id: string;
-  recent_count: number;
-  total_count: number;
+  videoId: string;
+  recentCount: number;
+  totalCount: number;
 }
 
 export interface WindowedEngagementCounts {
@@ -45,9 +47,9 @@ export async function fetchEngagementCounts(): Promise<EngagementCounts> {
   cacheTag("engagement-counts");
   cacheLife({ revalidate: CACHE_LIFETIMES.ENGAGEMENT_COUNTS });
 
-  const sql = getDatabaseClient({ required: false });
+  const client = db({ required: false });
 
-  if (!sql) {
+  if (!client) {
     logWarn("data.trending.db_client_unavailable", {
       reason: "database_client_null",
     });
@@ -63,23 +65,27 @@ export async function fetchEngagementCounts(): Promise<EngagementCounts> {
     const [likeRows, boostRows] = (await withRetry(
       () =>
         Promise.all([
-          sql`
-            SELECT video_id, COUNT(*)::int as count
-            FROM video_likes
-            GROUP BY video_id
-          `,
-          sql`
-            SELECT video_id, COUNT(*)::int as count
-            FROM video_boosts
-            GROUP BY video_id
-          `,
+          client
+            .select({
+              videoId: videoLikes.videoId,
+              count: count(),
+            })
+            .from(videoLikes)
+            .groupBy(videoLikes.videoId),
+          client
+            .select({
+              videoId: videoBoosts.videoId,
+              count: count(),
+            })
+            .from(videoBoosts)
+            .groupBy(videoBoosts.videoId),
         ]),
       3,
     )) as [EngagementRow[], EngagementRow[]];
 
     const counts = {
-      boosts: Object.fromEntries(boostRows.map((row) => [row.video_id, row.count])),
-      likes: Object.fromEntries(likeRows.map((row) => [row.video_id, row.count])),
+      boosts: Object.fromEntries(boostRows.map((row) => [row.videoId, row.count])),
+      likes: Object.fromEntries(likeRows.map((row) => [row.videoId, row.count])),
     };
 
     if (!isEngagementEmpty(counts) || !lastEngagementCounts) {
@@ -106,9 +112,9 @@ export async function fetchWindowedEngagementCounts(
   cacheTag("engagement-counts", `engagement-counts-${days}d`);
   cacheLife({ revalidate: CACHE_LIFETIMES.ENGAGEMENT_COUNTS });
 
-  const sql = getDatabaseClient({ required: false });
+  const client = db({ required: false });
 
-  if (!sql) {
+  if (!client) {
     logWarn("data.trending.windowed.db_client_unavailable", {
       reason: "database_client_null",
       days,
@@ -126,33 +132,39 @@ export async function fetchWindowedEngagementCounts(
     const [likeRows, boostRows] = (await withRetry(
       () =>
         Promise.all([
-          sql`
-            SELECT
-              video_id,
-              COUNT(*) FILTER (WHERE created_at >= now() - (${days} * interval '1 day'))::int as recent_count,
-              COUNT(*)::int as total_count
-            FROM video_likes
-            GROUP BY video_id
-          `,
-          sql`
-            SELECT
-              video_id,
-              COUNT(*) FILTER (WHERE created_at >= now() - (${days} * interval '1 day'))::int as recent_count,
-              COUNT(*)::int as total_count
-            FROM video_boosts
-            GROUP BY video_id
-          `,
+          client
+            .select({
+              videoId: videoLikes.videoId,
+              recentCount:
+                sql<number>`COUNT(*) FILTER (WHERE ${videoLikes.createdAt} >= now() - (${days} * interval '1 day'))::int`.as(
+                  "recent_count",
+                ),
+              totalCount: sql<number>`COUNT(*)::int`.as("total_count"),
+            })
+            .from(videoLikes)
+            .groupBy(videoLikes.videoId),
+          client
+            .select({
+              videoId: videoBoosts.videoId,
+              recentCount:
+                sql<number>`COUNT(*) FILTER (WHERE ${videoBoosts.createdAt} >= now() - (${days} * interval '1 day'))::int`.as(
+                  "recent_count",
+                ),
+              totalCount: sql<number>`COUNT(*)::int`.as("total_count"),
+            })
+            .from(videoBoosts)
+            .groupBy(videoBoosts.videoId),
         ]),
       3,
     )) as [WindowedEngagementRow[], WindowedEngagementRow[]];
 
     const recent = {
-      boosts: Object.fromEntries(boostRows.map((row) => [row.video_id, row.recent_count])),
-      likes: Object.fromEntries(likeRows.map((row) => [row.video_id, row.recent_count])),
+      boosts: Object.fromEntries(boostRows.map((row) => [row.videoId, row.recentCount])),
+      likes: Object.fromEntries(likeRows.map((row) => [row.videoId, row.recentCount])),
     };
     const total = {
-      boosts: Object.fromEntries(boostRows.map((row) => [row.video_id, row.total_count])),
-      likes: Object.fromEntries(likeRows.map((row) => [row.video_id, row.total_count])),
+      boosts: Object.fromEntries(boostRows.map((row) => [row.videoId, row.totalCount])),
+      likes: Object.fromEntries(likeRows.map((row) => [row.videoId, row.totalCount])),
     };
     const counts = { recent, total };
 

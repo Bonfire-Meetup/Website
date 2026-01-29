@@ -34,7 +34,7 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
 
     boostItems = boosts
       .map((boost) => {
-        const recording = recordingMap.get(boost.video_id);
+        const recording = recordingMap.get(boost.videoId);
 
         if (!recording) {
           return null;

@@ -1,10 +1,11 @@
+import { count, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
-
-import { getDatabaseClient, getDatabaseErrorDetails } from "../data/db";
-import { logError, logWarn } from "../utils/log";
-import { withRetry } from "../utils/retry";
+import { db, getDatabaseErrorDetails } from "@/lib/data/db";
+import { videoBoosts } from "@/lib/data/schema";
+import { logError, logWarn } from "@/lib/utils/log";
+import { withRetry } from "@/lib/utils/retry";
 
 import { type Recording, getAllRecordings } from "./recordings";
 
@@ -13,7 +14,7 @@ export type MemberPickRecording = Recording & {
 };
 
 interface BoostRow {
-  video_id: string;
+  videoId: string;
   count: number;
 }
 
@@ -27,9 +28,9 @@ interface BoostFetchResult {
 let lastMemberPicks: MemberPickRecording[] | null = null;
 
 const fetchTopBoostedVideos = async (limit: number): Promise<BoostFetchResult> => {
-  const sql = getDatabaseClient({ required: false });
+  const client = db({ required: false });
 
-  if (!sql) {
+  if (!client) {
     logWarn("data.member_picks.db_client_unavailable", {
       reason: "database_client_null",
     });
@@ -39,18 +40,21 @@ const fetchTopBoostedVideos = async (limit: number): Promise<BoostFetchResult> =
 
   try {
     const rows = (await withRetry(
-      () => sql`
-        SELECT video_id, COUNT(*)::int as count
-        FROM video_boosts
-        GROUP BY video_id
-        ORDER BY count DESC
-        LIMIT ${limit * 2}
-      `,
+      () =>
+        client
+          .select({
+            videoId: videoBoosts.videoId,
+            count: count(),
+          })
+          .from(videoBoosts)
+          .groupBy(videoBoosts.videoId)
+          .orderBy(sql`count(*) DESC`)
+          .limit(limit * 2),
       3,
     )) as BoostRow[];
 
     return {
-      rows: rows.map((row) => ({ count: row.count, videoId: row.video_id })),
+      rows: rows.map((row) => ({ count: row.count, videoId: row.videoId })),
       status: "ok",
     };
   } catch (error) {

@@ -30,18 +30,18 @@ export async function GET(request: Request) {
 
       const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
       const attempts = await getAuthAttemptsByEmailHash({
-        accountCreatedAt: user.created_at,
+        accountCreatedAt: user.createdAt,
         emailHash: fingerprint.emailHash,
         limit: 20,
         since,
         userId: auth.userId,
       });
       const items = attempts.map((attempt) => ({
-        createdAt: attempt.created_at.toISOString(),
+        createdAt: attempt.createdAt.toISOString(),
         id: attempt.id,
         method: attempt.method,
         outcome: attempt.outcome,
-        userAgentSummary: attempt.user_agent_summary,
+        userAgentSummary: attempt.userAgentSummary,
       }));
 
       return NextResponse.json({ items });

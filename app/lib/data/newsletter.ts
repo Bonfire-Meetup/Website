@@ -1,26 +1,28 @@
-import { getDatabaseClient } from "@/lib/data/db";
+import { eq } from "drizzle-orm";
+
+import { db } from "@/lib/data/db";
+import { newsletterSubscription } from "@/lib/data/schema";
 import { logError } from "@/lib/utils/log";
 
 export async function subscribeToNewsletter(email: string, ipHash: string, uaHash: string) {
-  const db = getDatabaseClient();
-
   try {
     const normalizedEmail = email.toLowerCase().trim();
 
-    const existing = await db`
-      select id from newsletter_subscription
-      where email = ${normalizedEmail}
-      limit 1
-    `;
+    const existing = await db()
+      .select({ id: newsletterSubscription.id })
+      .from(newsletterSubscription)
+      .where(eq(newsletterSubscription.email, normalizedEmail))
+      .limit(1);
 
     if (existing.length > 0) {
       return { alreadyExists: true, subscribed: true };
     }
 
-    await db`
-      insert into newsletter_subscription (email, ip_hash, user_agent_hash)
-      values (${normalizedEmail}, ${ipHash}, ${uaHash})
-    `;
+    await db().insert(newsletterSubscription).values({
+      email: normalizedEmail,
+      ipHash,
+      userAgentHash: uaHash,
+    });
 
     return { alreadyExists: false, subscribed: true };
   } catch (error: unknown) {

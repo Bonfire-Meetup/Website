@@ -1,29 +1,31 @@
 import type { AuthenticatorTransportFuture } from "@simplewebauthn/server";
+import { and, count, eq, gt, isNull, lt, sql } from "drizzle-orm";
 
-import { getDatabaseClient } from "@/lib/data/db";
+import { db } from "@/lib/data/db";
+import { authPasskey, authPasskeyChallenge } from "@/lib/data/schema";
 
 export interface PasskeyRow {
   id: string;
-  user_id: string;
-  credential_id: string;
-  public_key: string;
+  userId: string;
+  credentialId: string;
+  publicKey: string;
   counter: number;
-  device_type: string | null;
-  backed_up: boolean;
+  deviceType: string | null;
+  backedUp: boolean;
   transports: string[] | null;
   name: string | null;
-  created_at: Date;
-  last_used_at: Date | null;
+  createdAt: Date;
+  lastUsedAt: Date | null;
 }
 
 export interface PasskeyChallengeRow {
   id: string;
-  user_id: string | null;
+  userId: string | null;
   challenge: string;
   type: string;
-  expires_at: Date;
-  used_at: Date | null;
-  created_at: Date;
+  expiresAt: Date;
+  usedAt: Date | null;
+  createdAt: Date;
 }
 
 export const insertPasskey = async ({
@@ -45,24 +47,41 @@ export const insertPasskey = async ({
   transports?: AuthenticatorTransportFuture[] | null;
   name?: string | null;
 }): Promise<string | null> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    INSERT INTO auth_passkey (user_id, credential_id, public_key, counter, device_type, backed_up, transports, name)
-    VALUES (${userId}, ${credentialId}, ${publicKey}, ${counter}, ${deviceType ?? null}, ${backedUp ?? false}, ${transports ?? null}, ${name ?? null})
-    RETURNING id
-  `) as { id: string }[];
+  const rows = await db()
+    .insert(authPasskey)
+    .values({
+      userId,
+      credentialId,
+      publicKey,
+      counter,
+      deviceType: deviceType ?? null,
+      backedUp: backedUp ?? false,
+      transports: transports ?? null,
+      name: name ?? null,
+    })
+    .returning({ id: authPasskey.id });
 
   return rows[0]?.id ?? null;
 };
 
 export const getPasskeysByUserId = async (userId: string): Promise<PasskeyRow[]> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT id, user_id, credential_id, public_key, counter, device_type, backed_up, transports, name, created_at, last_used_at
-    FROM auth_passkey
-    WHERE user_id = ${userId}
-    ORDER BY created_at DESC
-  `) as PasskeyRow[];
+  const rows = await db()
+    .select({
+      id: authPasskey.id,
+      userId: authPasskey.userId,
+      credentialId: authPasskey.credentialId,
+      publicKey: authPasskey.publicKey,
+      counter: authPasskey.counter,
+      deviceType: authPasskey.deviceType,
+      backedUp: authPasskey.backedUp,
+      transports: authPasskey.transports,
+      name: authPasskey.name,
+      createdAt: authPasskey.createdAt,
+      lastUsedAt: authPasskey.lastUsedAt,
+    })
+    .from(authPasskey)
+    .where(eq(authPasskey.userId, userId))
+    .orderBy(sql`${authPasskey.createdAt} DESC`);
 
   return rows;
 };
@@ -70,65 +89,77 @@ export const getPasskeysByUserId = async (userId: string): Promise<PasskeyRow[]>
 export const getPasskeyByCredentialId = async (
   credentialId: string,
 ): Promise<PasskeyRow | null> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT id, user_id, credential_id, public_key, counter, device_type, backed_up, transports, name, created_at, last_used_at
-    FROM auth_passkey
-    WHERE credential_id = ${credentialId}
-    LIMIT 1
-  `) as PasskeyRow[];
+  const rows = await db()
+    .select({
+      id: authPasskey.id,
+      userId: authPasskey.userId,
+      credentialId: authPasskey.credentialId,
+      publicKey: authPasskey.publicKey,
+      counter: authPasskey.counter,
+      deviceType: authPasskey.deviceType,
+      backedUp: authPasskey.backedUp,
+      transports: authPasskey.transports,
+      name: authPasskey.name,
+      createdAt: authPasskey.createdAt,
+      lastUsedAt: authPasskey.lastUsedAt,
+    })
+    .from(authPasskey)
+    .where(eq(authPasskey.credentialId, credentialId))
+    .limit(1);
 
   return rows[0] ?? null;
 };
 
 export const getPasskeyById = async (id: string): Promise<PasskeyRow | null> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT id, user_id, credential_id, public_key, counter, device_type, backed_up, transports, name, created_at, last_used_at
-    FROM auth_passkey
-    WHERE id = ${id}
-    LIMIT 1
-  `) as PasskeyRow[];
+  const rows = await db()
+    .select({
+      id: authPasskey.id,
+      userId: authPasskey.userId,
+      credentialId: authPasskey.credentialId,
+      publicKey: authPasskey.publicKey,
+      counter: authPasskey.counter,
+      deviceType: authPasskey.deviceType,
+      backedUp: authPasskey.backedUp,
+      transports: authPasskey.transports,
+      name: authPasskey.name,
+      createdAt: authPasskey.createdAt,
+      lastUsedAt: authPasskey.lastUsedAt,
+    })
+    .from(authPasskey)
+    .where(eq(authPasskey.id, id))
+    .limit(1);
 
   return rows[0] ?? null;
 };
 
 export const updatePasskeyCounter = async (credentialId: string, counter: number) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE auth_passkey
-    SET counter = ${counter}, last_used_at = now()
-    WHERE credential_id = ${credentialId}
-  `;
+  await db()
+    .update(authPasskey)
+    .set({ counter, lastUsedAt: new Date() })
+    .where(eq(authPasskey.credentialId, credentialId));
 };
 
 export const updatePasskeyName = async (id: string, userId: string, name: string | null) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE auth_passkey
-    SET name = ${name}
-    WHERE id = ${id} AND user_id = ${userId}
-  `;
+  await db()
+    .update(authPasskey)
+    .set({ name })
+    .where(and(eq(authPasskey.id, id), eq(authPasskey.userId, userId)));
 };
 
 export const deletePasskey = async (id: string, userId: string): Promise<boolean> => {
-  const sql = getDatabaseClient();
-  const result = (await sql`
-    DELETE FROM auth_passkey
-    WHERE id = ${id} AND user_id = ${userId}
-    RETURNING id
-  `) as { id: string }[];
+  const result = await db()
+    .delete(authPasskey)
+    .where(and(eq(authPasskey.id, id), eq(authPasskey.userId, userId)))
+    .returning({ id: authPasskey.id });
 
   return result.length > 0;
 };
 
 export const getPasskeyCountByUserId = async (userId: string): Promise<number> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT count(*)::int as count
-    FROM auth_passkey
-    WHERE user_id = ${userId}
-  `) as { count: number }[];
+  const rows = await db()
+    .select({ count: count() })
+    .from(authPasskey)
+    .where(eq(authPasskey.userId, userId));
 
   return rows[0]?.count ?? 0;
 };
@@ -144,12 +175,15 @@ export const insertPasskeyChallenge = async ({
   type: "registration" | "authentication";
   expiresAt: Date;
 }): Promise<string | null> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    INSERT INTO auth_passkey_challenge (user_id, challenge, type, expires_at)
-    VALUES (${userId ?? null}, ${challenge}, ${type}, ${expiresAt})
-    RETURNING id
-  `) as { id: string }[];
+  const rows = await db()
+    .insert(authPasskeyChallenge)
+    .values({
+      userId: userId ?? null,
+      challenge,
+      type,
+      expiresAt,
+    })
+    .returning({ id: authPasskeyChallenge.id });
 
   return rows[0]?.id ?? null;
 };
@@ -158,35 +192,40 @@ export const getPasskeyChallenge = async (
   challenge: string,
   type: "registration" | "authentication",
 ): Promise<PasskeyChallengeRow | null> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT id, user_id, challenge, type, expires_at, used_at, created_at
-    FROM auth_passkey_challenge
-    WHERE challenge = ${challenge}
-      AND type = ${type}
-      AND used_at IS NULL
-      AND expires_at > now()
-    LIMIT 1
-  `) as PasskeyChallengeRow[];
+  const rows = await db()
+    .select({
+      id: authPasskeyChallenge.id,
+      userId: authPasskeyChallenge.userId,
+      challenge: authPasskeyChallenge.challenge,
+      type: authPasskeyChallenge.type,
+      expiresAt: authPasskeyChallenge.expiresAt,
+      usedAt: authPasskeyChallenge.usedAt,
+      createdAt: authPasskeyChallenge.createdAt,
+    })
+    .from(authPasskeyChallenge)
+    .where(
+      and(
+        eq(authPasskeyChallenge.challenge, challenge),
+        eq(authPasskeyChallenge.type, type),
+        isNull(authPasskeyChallenge.usedAt),
+        gt(authPasskeyChallenge.expiresAt, new Date()),
+      ),
+    )
+    .limit(1);
 
   return rows[0] ?? null;
 };
 
 export const markPasskeyChallengeUsed = async (id: string) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE auth_passkey_challenge
-    SET used_at = now()
-    WHERE id = ${id}
-  `;
+  await db()
+    .update(authPasskeyChallenge)
+    .set({ usedAt: new Date() })
+    .where(eq(authPasskeyChallenge.id, id));
 };
 
 export const cleanupExpiredPasskeyChallenges = async () => {
-  const sql = getDatabaseClient();
-  await sql`
-    DELETE FROM auth_passkey_challenge
-    WHERE expires_at < now() - INTERVAL '1 hour'
-  `;
+  const cutoff = new Date(Date.now() - 60 * 60 * 1000);
+  await db().delete(authPasskeyChallenge).where(lt(authPasskeyChallenge.expiresAt, cutoff));
 };
 
 export const maybeCleanupExpiredPasskeyChallenges = async () => {

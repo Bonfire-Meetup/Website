@@ -1,5 +1,8 @@
+import { and, count, eq, sql } from "drizzle-orm";
+
 import { BOOST_CONFIG } from "@/lib/config/constants";
-import { getDatabaseClient } from "@/lib/data/db";
+import { db } from "@/lib/data/db";
+import { appUser, userBoostAllocation, videoBoosts } from "@/lib/data/schema";
 import { logError } from "@/lib/utils/log";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
@@ -21,22 +24,24 @@ export const getVideoBoostStats = async (
   userId?: string | null,
 ): Promise<BoostStats> => {
   try {
-    const sql = getDatabaseClient();
-    const [{ count }] =
-      (await sql`select count(*)::int as count from video_boosts where video_id = ${videoId}`) as {
-        count: number;
-      }[];
+    const countRows = await db()
+      .select({ count: count() })
+      .from(videoBoosts)
+      .where(eq(videoBoosts.videoId, videoId));
+
+    const boostCount = countRows[0]?.count ?? 0;
 
     if (!userId) {
-      return { count, hasBoosted: false };
+      return { count: boostCount, hasBoosted: false };
     }
 
-    const [{ exists }] =
-      (await sql`select exists(select 1 from video_boosts where video_id = ${videoId} and user_id = ${userId}) as exists`) as {
-        exists: boolean;
-      }[];
+    const existsRows = await db()
+      .select({ exists: sql<boolean>`true` })
+      .from(videoBoosts)
+      .where(and(eq(videoBoosts.videoId, videoId), eq(videoBoosts.userId, userId)))
+      .limit(1);
 
-    return { count, hasBoosted: exists };
+    return { count: boostCount, hasBoosted: existsRows.length > 0 };
   } catch (error) {
     logError("data.boosts.stats_failed", error, { userId: userId ?? null, videoId });
     throw error;
@@ -48,17 +53,18 @@ export const addVideoBoost = async (
   userId: string,
 ): Promise<BoostMutationResult> => {
   try {
-    const sql = getDatabaseClient();
-    const inserted =
-      (await sql`insert into video_boosts (video_id, user_id) values (${videoId}, ${userId}) on conflict do nothing returning video_id`) as {
-        video_id: string;
-      }[];
-    const [{ count }] =
-      (await sql`select count(*)::int as count from video_boosts where video_id = ${videoId}`) as {
-        count: number;
-      }[];
+    const inserted = await db()
+      .insert(videoBoosts)
+      .values({ videoId, userId })
+      .onConflictDoNothing()
+      .returning({ videoId: videoBoosts.videoId });
 
-    return { added: inserted.length > 0, count };
+    const countRows = await db()
+      .select({ count: count() })
+      .from(videoBoosts)
+      .where(eq(videoBoosts.videoId, videoId));
+
+    return { added: inserted.length > 0, count: countRows[0]?.count ?? 0 };
   } catch (error) {
     logError("data.boosts.add_failed", error, { userId, videoId });
     throw error;
@@ -70,17 +76,17 @@ export const removeVideoBoost = async (
   userId: string,
 ): Promise<BoostMutationResult> => {
   try {
-    const sql = getDatabaseClient();
-    const removed =
-      (await sql`delete from video_boosts where video_id = ${videoId} and user_id = ${userId} returning video_id`) as {
-        video_id: string;
-      }[];
-    const [{ count }] =
-      (await sql`select count(*)::int as count from video_boosts where video_id = ${videoId}`) as {
-        count: number;
-      }[];
+    const removed = await db()
+      .delete(videoBoosts)
+      .where(and(eq(videoBoosts.videoId, videoId), eq(videoBoosts.userId, userId)))
+      .returning({ videoId: videoBoosts.videoId });
 
-    return { count, removed: removed.length > 0 };
+    const countRows = await db()
+      .select({ count: count() })
+      .from(videoBoosts)
+      .where(eq(videoBoosts.videoId, videoId));
+
+    return { count: countRows[0]?.count ?? 0, removed: removed.length > 0 };
   } catch (error) {
     logError("data.boosts.remove_failed", error, { userId, videoId });
     throw error;
@@ -89,13 +95,14 @@ export const removeVideoBoost = async (
 
 export const getUserBoosts = async (userId: string) => {
   try {
-    const sql = getDatabaseClient();
-    const rows = (await sql`
-      SELECT video_id, created_at
-      FROM video_boosts
-      WHERE user_id = ${userId}
-      ORDER BY created_at DESC
-    `) as { video_id: string; created_at: Date }[];
+    const rows = await db()
+      .select({
+        videoId: videoBoosts.videoId,
+        createdAt: videoBoosts.createdAt,
+      })
+      .from(videoBoosts)
+      .where(eq(videoBoosts.userId, userId))
+      .orderBy(sql`${videoBoosts.createdAt} DESC`);
 
     return rows;
   } catch (error) {
@@ -109,24 +116,29 @@ interface BoostAllocation {
   lastAllocationDate: Date;
 }
 
+const formatDateString = (date: Date): string => date.toISOString().split("T")[0];
+
 export const getUserBoostAllocation = async (userId: string): Promise<BoostAllocation> => {
   try {
-    const sql = getDatabaseClient();
     const now = new Date();
     const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const currentDateStr = formatDateString(currentDate);
 
-    const existing = (await sql`
-      SELECT available_boosts, last_allocation_date
-      FROM user_boost_allocation
-      WHERE user_id = ${userId}
-    `) as { available_boosts: number; last_allocation_date: Date }[];
+    const existing = await db()
+      .select({
+        availableBoosts: userBoostAllocation.availableBoosts,
+        lastAllocationDate: userBoostAllocation.lastAllocationDate,
+      })
+      .from(userBoostAllocation)
+      .where(eq(userBoostAllocation.userId, userId));
 
     if (existing.length === 0) {
-      await sql`
-        INSERT INTO user_boost_allocation (user_id, available_boosts, last_allocation_date)
-        VALUES (${userId}, ${BOOST_CONFIG.BOOSTS_PER_MONTH}, ${currentDate})
-      `;
+      await db().insert(userBoostAllocation).values({
+        userId,
+        availableBoosts: BOOST_CONFIG.BOOSTS_PER_MONTH,
+        lastAllocationDate: currentDateStr,
+      });
 
       return {
         availableBoosts: BOOST_CONFIG.BOOSTS_PER_MONTH,
@@ -135,20 +147,21 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
     }
 
     const allocation = existing[0];
-    const lastAllocationDate = new Date(allocation.last_allocation_date);
+    const lastAllocationDate = new Date(allocation.lastAllocationDate);
     const lastAllocationMonth = new Date(
       lastAllocationDate.getFullYear(),
       lastAllocationDate.getMonth(),
       1,
     );
 
-    if (allocation.available_boosts > BOOST_CONFIG.MAX_BOOSTS) {
-      await sql`
-        UPDATE user_boost_allocation
-        SET available_boosts = ${BOOST_CONFIG.MAX_BOOSTS},
-            updated_at = now()
-        WHERE user_id = ${userId}
-      `;
+    if (allocation.availableBoosts > BOOST_CONFIG.MAX_BOOSTS) {
+      await db()
+        .update(userBoostAllocation)
+        .set({
+          availableBoosts: BOOST_CONFIG.MAX_BOOSTS,
+          updatedAt: new Date(),
+        })
+        .where(eq(userBoostAllocation.userId, userId));
 
       return {
         availableBoosts: BOOST_CONFIG.MAX_BOOSTS,
@@ -158,17 +171,18 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
 
     if (lastAllocationMonth < currentMonth) {
       const newAvailableBoosts = Math.min(
-        allocation.available_boosts + BOOST_CONFIG.BOOSTS_PER_MONTH,
+        allocation.availableBoosts + BOOST_CONFIG.BOOSTS_PER_MONTH,
         BOOST_CONFIG.MAX_BOOSTS,
       );
 
-      await sql`
-        UPDATE user_boost_allocation
-        SET available_boosts = ${newAvailableBoosts},
-            last_allocation_date = ${currentDate},
-            updated_at = now()
-        WHERE user_id = ${userId}
-      `;
+      await db()
+        .update(userBoostAllocation)
+        .set({
+          availableBoosts: newAvailableBoosts,
+          lastAllocationDate: currentDateStr,
+          updatedAt: new Date(),
+        })
+        .where(eq(userBoostAllocation.userId, userId));
 
       return {
         availableBoosts: newAvailableBoosts,
@@ -177,7 +191,7 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
     }
 
     return {
-      availableBoosts: allocation.available_boosts,
+      availableBoosts: allocation.availableBoosts,
       lastAllocationDate: lastAllocationDate,
     };
   } catch (error) {
@@ -190,21 +204,24 @@ export const consumeBoost = async (
   userId: string,
 ): Promise<{ success: boolean; availableBoosts: number | null }> => {
   try {
-    const sql = getDatabaseClient();
-
     await getUserBoostAllocation(userId);
 
-    const result = (await sql`
-      UPDATE user_boost_allocation
-      SET available_boosts = available_boosts - 1,
-          updated_at = now()
-      WHERE user_id = ${userId}
-        AND available_boosts > 0
-      RETURNING available_boosts
-    `) as { available_boosts: number }[];
+    const result = await db()
+      .update(userBoostAllocation)
+      .set({
+        availableBoosts: sql`${userBoostAllocation.availableBoosts} - 1`,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(userBoostAllocation.userId, userId),
+          sql`${userBoostAllocation.availableBoosts} > 0`,
+        ),
+      )
+      .returning({ availableBoosts: userBoostAllocation.availableBoosts });
 
     if (result.length > 0) {
-      return { success: true, availableBoosts: result[0].available_boosts };
+      return { success: true, availableBoosts: result[0].availableBoosts };
     }
 
     const allocation = await getUserBoostAllocation(userId);
@@ -217,17 +234,16 @@ export const consumeBoost = async (
 
 export const refundBoost = async (userId: string): Promise<number> => {
   try {
-    const sql = getDatabaseClient();
+    const result = await db()
+      .update(userBoostAllocation)
+      .set({
+        availableBoosts: sql`LEAST(${userBoostAllocation.availableBoosts} + 1, ${BOOST_CONFIG.MAX_BOOSTS})`,
+        updatedAt: new Date(),
+      })
+      .where(eq(userBoostAllocation.userId, userId))
+      .returning({ availableBoosts: userBoostAllocation.availableBoosts });
 
-    const result = (await sql`
-      UPDATE user_boost_allocation
-      SET available_boosts = LEAST(available_boosts + 1, ${BOOST_CONFIG.MAX_BOOSTS}),
-          updated_at = now()
-      WHERE user_id = ${userId}
-      RETURNING available_boosts
-    `) as { available_boosts: number }[];
-
-    return result[0]?.available_boosts ?? 0;
+    return result[0]?.availableBoosts ?? 0;
   } catch (error) {
     logError("data.boosts.refund_failed", error, { userId });
     throw error;
@@ -246,21 +262,16 @@ export const getVideoBoostedUsers = async (
   privateCount: number;
 }> => {
   try {
-    const sql = getDatabaseClient();
-    const rows = (await sql`
-      SELECT 
-        u.id as user_id,
-        u.name,
-        u.preferences
-      FROM video_boosts vb
-      JOIN app_user u ON vb.user_id = u.id
-      WHERE vb.video_id = ${videoId}
-      ORDER BY vb.created_at DESC
-    `) as {
-      user_id: string;
-      name: string | null;
-      preferences: unknown;
-    }[];
+    const rows = await db()
+      .select({
+        userId: appUser.id,
+        name: appUser.name,
+        preferences: appUser.preferences,
+      })
+      .from(videoBoosts)
+      .innerJoin(appUser, eq(videoBoosts.userId, appUser.id))
+      .where(eq(videoBoosts.videoId, videoId))
+      .orderBy(sql`${videoBoosts.createdAt} DESC`);
 
     const publicUsers: BoostedUser[] = [];
     let privateCount = 0;
@@ -272,7 +283,7 @@ export const getVideoBoostedUsers = async (
       if (isPublic) {
         publicUsers.push({
           name: row.name,
-          publicId: compressUuid(row.user_id),
+          publicId: compressUuid(row.userId),
         });
       } else {
         privateCount++;

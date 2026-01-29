@@ -40,7 +40,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
 
       const boostItems = boosts
         .map((boost) => {
-          const recording = recordingMap.get(boost.video_id);
+          const recording = recordingMap.get(boost.videoId);
 
           if (!recording) {
             return null;
@@ -106,7 +106,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
           items: events,
         },
         publicId: id,
-        createdAt: user.created_at.toISOString(),
+        createdAt: user.createdAt.toISOString(),
         name: user.name,
         roles: userRoles,
       });

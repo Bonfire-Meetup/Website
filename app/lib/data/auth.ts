@@ -1,15 +1,24 @@
-import { getDatabaseClient } from "@/lib/data/db";
+import { and, count, eq, gt, isNull, lt, or, sql } from "drizzle-orm";
+
+import { db } from "@/lib/data/db";
+import {
+  appUser,
+  authAttempt,
+  authChallenge,
+  authRefreshToken,
+  authToken,
+} from "@/lib/data/schema";
 
 interface AuthChallengeRow {
   id: string;
-  code_hash: string;
+  codeHash: string;
   attempts: number;
-  max_attempts: number;
-  expires_at: Date;
+  maxAttempts: number;
+  expiresAt: Date;
 }
 
 type AuthChallengeStatusRow = AuthChallengeRow & {
-  used_at: Date | null;
+  usedAt: Date | null;
 };
 
 interface UserPreferences {
@@ -20,12 +29,12 @@ interface UserPreferences {
 interface AuthUserRow {
   id: string;
   email: string;
-  created_at: Date;
-  last_login_at: Date | null;
+  createdAt: Date;
+  lastLoginAt: Date | null;
   preferences: UserPreferences;
   name: string | null;
   roles: string[];
-  membership_tier: number | null;
+  membershipTier: number | null;
 }
 
 const getUserPreferences = (preferencesJson: unknown): UserPreferences => {
@@ -54,12 +63,18 @@ export const insertAuthChallenge = async ({
   ip: string | null;
   userAgent: string | null;
 }) => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    INSERT INTO auth_challenge (challenge_token_hash, email, code_hash, expires_at, max_attempts, ip, user_agent)
-    VALUES (${challengeTokenHash}, ${email}, ${codeHash}, ${expiresAt}, ${maxAttempts}, ${ip}, ${userAgent})
-    RETURNING id
-  `) as { id: string }[];
+  const rows = await db()
+    .insert(authChallenge)
+    .values({
+      challengeTokenHash,
+      email,
+      codeHash,
+      expiresAt,
+      maxAttempts,
+      ip,
+      userAgent,
+    })
+    .returning({ id: authChallenge.id });
 
   return rows[0]?.id ?? null;
 };
@@ -68,16 +83,24 @@ export const getActiveChallengeByToken = async (
   challengeTokenHash: string,
   email: string,
 ): Promise<AuthChallengeRow | null> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT id, code_hash, attempts, max_attempts, expires_at
-    FROM auth_challenge
-    WHERE challenge_token_hash = ${challengeTokenHash}
-      AND email = ${email}
-      AND used_at IS NULL
-      AND expires_at > now()
-    LIMIT 1
-  `) as AuthChallengeRow[];
+  const rows = await db()
+    .select({
+      id: authChallenge.id,
+      codeHash: authChallenge.codeHash,
+      attempts: authChallenge.attempts,
+      maxAttempts: authChallenge.maxAttempts,
+      expiresAt: authChallenge.expiresAt,
+    })
+    .from(authChallenge)
+    .where(
+      and(
+        eq(authChallenge.challengeTokenHash, challengeTokenHash),
+        eq(authChallenge.email, email),
+        isNull(authChallenge.usedAt),
+        gt(authChallenge.expiresAt, new Date()),
+      ),
+    )
+    .limit(1);
 
   return rows[0] ?? null;
 };
@@ -86,58 +109,67 @@ export const getChallengeByToken = async (
   challengeTokenHash: string,
   email: string,
 ): Promise<AuthChallengeStatusRow | null> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT id, code_hash, attempts, max_attempts, expires_at, used_at
-    FROM auth_challenge
-    WHERE challenge_token_hash = ${challengeTokenHash}
-      AND email = ${email}
-    ORDER BY created_at DESC
-    LIMIT 1
-  `) as AuthChallengeStatusRow[];
+  const rows = await db()
+    .select({
+      id: authChallenge.id,
+      codeHash: authChallenge.codeHash,
+      attempts: authChallenge.attempts,
+      maxAttempts: authChallenge.maxAttempts,
+      expiresAt: authChallenge.expiresAt,
+      usedAt: authChallenge.usedAt,
+    })
+    .from(authChallenge)
+    .where(
+      and(eq(authChallenge.challengeTokenHash, challengeTokenHash), eq(authChallenge.email, email)),
+    )
+    .orderBy(sql`${authChallenge.createdAt} DESC`)
+    .limit(1);
 
   return rows[0] ?? null;
 };
 
 export const incrementAuthChallengeAttempts = async (id: string) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE auth_challenge
-    SET attempts = attempts + 1
-    WHERE id = ${id}
-  `;
+  await db()
+    .update(authChallenge)
+    .set({ attempts: sql`${authChallenge.attempts} + 1` })
+    .where(eq(authChallenge.id, id));
 };
 
 export const markAuthChallengeUsed = async (id: string) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE auth_challenge
-    SET used_at = now()
-    WHERE id = ${id}
-  `;
+  await db()
+    .update(authChallenge)
+    .set({ usedAt: new Date() })
+    .where(eq(authChallenge.id, id));
 };
 
 export const upsertAuthUser = async (email: string): Promise<string> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    INSERT INTO app_user (email, last_login_at)
-    VALUES (${email}, now())
-    ON CONFLICT (email)
-    DO UPDATE SET last_login_at = now()
-    RETURNING id
-  `) as { id: string }[];
+  const rows = await db()
+    .insert(appUser)
+    .values({ email, lastLoginAt: new Date() })
+    .onConflictDoUpdate({
+      target: appUser.email,
+      set: { lastLoginAt: new Date() },
+    })
+    .returning({ id: appUser.id });
 
   return rows[0]?.id ?? "";
 };
 
 export const getAuthUserById = async (id: string): Promise<AuthUserRow | null> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT id, email, created_at, last_login_at, preferences, name, roles, membership_tier
-    FROM app_user
-    WHERE id = ${id}
-    LIMIT 1
-  `) as (Omit<AuthUserRow, "preferences"> & { preferences: unknown })[];
+  const rows = await db()
+    .select({
+      id: appUser.id,
+      email: appUser.email,
+      createdAt: appUser.createdAt,
+      lastLoginAt: appUser.lastLoginAt,
+      preferences: appUser.preferences,
+      name: appUser.name,
+      roles: appUser.roles,
+      membershipTier: appUser.membershipTier,
+    })
+    .from(appUser)
+    .where(eq(appUser.id, id))
+    .limit(1);
 
   if (!rows[0]) {
     return null;
@@ -156,12 +188,12 @@ export const updateAuthUserPreferences = async ({
   userId: string;
   preferences: Partial<UserPreferences>;
 }) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE app_user
-    SET preferences = preferences || ${JSON.stringify(preferences)}::jsonb
-    WHERE id = ${userId}
-  `;
+  await db()
+    .update(appUser)
+    .set({
+      preferences: sql`${appUser.preferences} || ${JSON.stringify(preferences)}::jsonb`,
+    })
+    .where(eq(appUser.id, userId));
 };
 
 export const updateAuthUserName = async ({
@@ -171,12 +203,7 @@ export const updateAuthUserName = async ({
   userId: string;
   name: string | null;
 }) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE app_user
-    SET name = ${name}
-    WHERE id = ${userId}
-  `;
+  await db().update(appUser).set({ name }).where(eq(appUser.id, userId));
 };
 
 export const updateAuthUserRoles = async ({
@@ -186,31 +213,21 @@ export const updateAuthUserRoles = async ({
   userId: string;
   roles: string[];
 }) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE app_user
-    SET roles = ${roles}
-    WHERE id = ${userId}
-  `;
+  await db().update(appUser).set({ roles }).where(eq(appUser.id, userId));
 };
 
 export const addAuthUserRole = async ({ userId, role }: { userId: string; role: string }) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE app_user
-    SET roles = array_append(roles, ${role})
-    WHERE id = ${userId}
-      AND NOT (${role} = ANY(roles))
-  `;
+  await db()
+    .update(appUser)
+    .set({ roles: sql`array_append(${appUser.roles}, ${role})` })
+    .where(and(eq(appUser.id, userId), sql`NOT (${role} = ANY(${appUser.roles}))`));
 };
 
 export const removeAuthUserRole = async ({ userId, role }: { userId: string; role: string }) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE app_user
-    SET roles = array_remove(roles, ${role})
-    WHERE id = ${userId}
-  `;
+  await db()
+    .update(appUser)
+    .set({ roles: sql`array_remove(${appUser.roles}, ${role})` })
+    .where(eq(appUser.id, userId));
 };
 
 export const updateAuthUserMembershipTier = async ({
@@ -220,12 +237,7 @@ export const updateAuthUserMembershipTier = async ({
   userId: string;
   membershipTier: number | null;
 }) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE app_user
-    SET membership_tier = ${membershipTier}
-    WHERE id = ${userId}
-  `;
+  await db().update(appUser).set({ membershipTier }).where(eq(appUser.id, userId));
 };
 
 export const insertAuthToken = async ({
@@ -241,24 +253,25 @@ export const insertAuthToken = async ({
   ip: string | null;
   userAgent: string | null;
 }) => {
-  const sql = getDatabaseClient();
-  await sql`
-    INSERT INTO auth_token (jti, user_id, expires_at, ip, user_agent)
-    VALUES (${jti}, ${userId}, ${expiresAt}, ${ip}, ${userAgent})
-  `;
+  await db().insert(authToken).values({
+    jti,
+    userId,
+    expiresAt,
+    ip,
+    userAgent,
+  });
 };
 
 export const isAuthTokenActive = async (jti: string) => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT exists(
-      SELECT 1
-      FROM auth_token
-      WHERE jti = ${jti} AND revoked_at IS NULL AND expires_at > now()
-    ) as exists
-  `) as { exists: boolean }[];
+  const rows = await db()
+    .select({ exists: sql<boolean>`true` })
+    .from(authToken)
+    .where(
+      and(eq(authToken.jti, jti), isNull(authToken.revokedAt), gt(authToken.expiresAt, new Date())),
+    )
+    .limit(1);
 
-  return rows[0]?.exists ?? false;
+  return rows.length > 0;
 };
 
 export const insertAuthAttempt = async ({
@@ -282,11 +295,17 @@ export const insertAuthAttempt = async ({
   userAgentSummary?: string | null;
   requestId?: string | null;
 }) => {
-  const sql = getDatabaseClient();
-  await sql`
-    INSERT INTO auth_attempt (user_id, email_hash, email_domain, outcome, method, ip_hash, user_agent_hash, user_agent_summary, request_id)
-    VALUES (${userId ?? null}, ${emailHash}, ${emailDomain ?? null}, ${outcome}, ${method ?? null}, ${ipHash ?? null}, ${userAgentHash ?? null}, ${userAgentSummary ?? null}, ${requestId ?? null})
-  `;
+  await db().insert(authAttempt).values({
+    userId: userId ?? null,
+    emailHash,
+    emailDomain: emailDomain ?? null,
+    outcome,
+    method: method ?? null,
+    ipHash: ipHash ?? null,
+    userAgentHash: userAgentHash ?? null,
+    userAgentSummary: userAgentSummary ?? null,
+    requestId: requestId ?? null,
+  });
 };
 
 export const getAuthAttemptsByEmailHash = async ({
@@ -302,51 +321,42 @@ export const getAuthAttemptsByEmailHash = async ({
   userId: string;
   accountCreatedAt: Date;
 }) => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT id, outcome, method, created_at, user_agent_summary
-    FROM auth_attempt
-    WHERE email_hash = ${emailHash}
-      AND created_at >= ${since}
-      AND (
-        user_id = ${userId}
-        OR (user_id IS NULL AND created_at >= ${accountCreatedAt})
-      )
-    ORDER BY created_at DESC
-    LIMIT ${limit}
-  `) as {
-    id: string;
-    outcome: string;
-    method: string | null;
-    created_at: Date;
-    user_agent_summary: string | null;
-  }[];
+  const rows = await db()
+    .select({
+      id: authAttempt.id,
+      outcome: authAttempt.outcome,
+      method: authAttempt.method,
+      createdAt: authAttempt.createdAt,
+      userAgentSummary: authAttempt.userAgentSummary,
+    })
+    .from(authAttempt)
+    .where(
+      and(
+        eq(authAttempt.emailHash, emailHash),
+        gt(authAttempt.createdAt, since),
+        or(
+          eq(authAttempt.userId, userId),
+          and(isNull(authAttempt.userId), gt(authAttempt.createdAt, accountCreatedAt)),
+        ),
+      ),
+    )
+    .orderBy(sql`${authAttempt.createdAt} DESC`)
+    .limit(limit);
 
   return rows;
 };
 
 export const deleteAuthChallengesByEmail = async (email: string) => {
-  const sql = getDatabaseClient();
-  await sql`
-    DELETE FROM auth_challenge
-    WHERE email = ${email}
-  `;
+  await db().delete(authChallenge).where(eq(authChallenge.email, email));
 };
 
 export const deleteAuthUserById = async (id: string) => {
-  const sql = getDatabaseClient();
-  await sql`
-    DELETE FROM app_user
-    WHERE id = ${id}
-  `;
+  await db().delete(appUser).where(eq(appUser.id, id));
 };
 
 export const cleanupExpiredAuthChallenges = async () => {
-  const sql = getDatabaseClient();
-  await sql`
-    DELETE FROM auth_challenge
-    WHERE expires_at < now() - INTERVAL '7 days'
-  `;
+  const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  await db().delete(authChallenge).where(lt(authChallenge.expiresAt, cutoff));
 };
 
 export const maybeCleanupExpiredAuthChallenges = async () => {
@@ -357,16 +367,16 @@ export const maybeCleanupExpiredAuthChallenges = async () => {
 
 interface RefreshTokenRow {
   id: string;
-  token_hash: string;
-  user_id: string;
-  token_family_id: string;
-  parent_id: string | null;
-  issued_at: Date;
-  expires_at: Date;
-  revoked_at: Date | null;
-  used_at: Date | null;
+  tokenHash: string;
+  userId: string;
+  tokenFamilyId: string;
+  parentId: string | null;
+  issuedAt: Date;
+  expiresAt: Date;
+  revokedAt: Date | null;
+  usedAt: Date | null;
   ip: string | null;
-  user_agent: string | null;
+  userAgent: string | null;
 }
 
 export const insertRefreshToken = async ({
@@ -386,94 +396,108 @@ export const insertRefreshToken = async ({
   ip: string | null;
   userAgent: string | null;
 }): Promise<string> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    INSERT INTO auth_refresh_token (token_hash, user_id, token_family_id, parent_id, expires_at, ip, user_agent)
-    VALUES (${tokenHash}, ${userId}, ${tokenFamilyId}, ${parentId ?? null}, ${expiresAt}, ${ip}, ${userAgent})
-    RETURNING id
-  `) as { id: string }[];
+  const rows = await db()
+    .insert(authRefreshToken)
+    .values({
+      tokenHash,
+      userId,
+      tokenFamilyId,
+      parentId: parentId ?? null,
+      expiresAt,
+      ip,
+      userAgent,
+    })
+    .returning({ id: authRefreshToken.id });
 
   return rows[0]?.id ?? "";
 };
 
 export const getRefreshTokenByHash = async (tokenHash: string): Promise<RefreshTokenRow | null> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT id, token_hash, user_id, token_family_id, parent_id, issued_at, expires_at, revoked_at, used_at, ip, user_agent
-    FROM auth_refresh_token
-    WHERE token_hash = ${tokenHash}
-    LIMIT 1
-  `) as RefreshTokenRow[];
+  const rows = await db()
+    .select({
+      id: authRefreshToken.id,
+      tokenHash: authRefreshToken.tokenHash,
+      userId: authRefreshToken.userId,
+      tokenFamilyId: authRefreshToken.tokenFamilyId,
+      parentId: authRefreshToken.parentId,
+      issuedAt: authRefreshToken.issuedAt,
+      expiresAt: authRefreshToken.expiresAt,
+      revokedAt: authRefreshToken.revokedAt,
+      usedAt: authRefreshToken.usedAt,
+      ip: authRefreshToken.ip,
+      userAgent: authRefreshToken.userAgent,
+    })
+    .from(authRefreshToken)
+    .where(eq(authRefreshToken.tokenHash, tokenHash))
+    .limit(1);
 
   return rows[0] ?? null;
 };
 
 export const markRefreshTokenUsed = async (tokenHash: string) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE auth_refresh_token
-    SET used_at = now()
-    WHERE token_hash = ${tokenHash}
-  `;
+  await db()
+    .update(authRefreshToken)
+    .set({ usedAt: new Date() })
+    .where(eq(authRefreshToken.tokenHash, tokenHash));
 };
 
 export const revokeRefreshToken = async (tokenHash: string) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE auth_refresh_token
-    SET revoked_at = now()
-    WHERE token_hash = ${tokenHash} AND revoked_at IS NULL
-  `;
+  await db()
+    .update(authRefreshToken)
+    .set({ revokedAt: new Date() })
+    .where(and(eq(authRefreshToken.tokenHash, tokenHash), isNull(authRefreshToken.revokedAt)));
 };
 
 export const revokeRefreshTokenFamily = async (tokenFamilyId: string) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE auth_refresh_token
-    SET revoked_at = now()
-    WHERE token_family_id = ${tokenFamilyId} AND revoked_at IS NULL
-  `;
+  await db()
+    .update(authRefreshToken)
+    .set({ revokedAt: new Date() })
+    .where(
+      and(eq(authRefreshToken.tokenFamilyId, tokenFamilyId), isNull(authRefreshToken.revokedAt)),
+    );
 };
 
 export const revokeAllUserRefreshTokens = async (userId: string) => {
-  const sql = getDatabaseClient();
-  await sql`
-    UPDATE auth_refresh_token
-    SET revoked_at = now()
-    WHERE user_id = ${userId} AND revoked_at IS NULL
-  `;
+  await db()
+    .update(authRefreshToken)
+    .set({ revokedAt: new Date() })
+    .where(and(eq(authRefreshToken.userId, userId), isNull(authRefreshToken.revokedAt)));
 };
 
 export const isRefreshTokenValid = async (tokenHash: string): Promise<boolean> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT exists(
-      SELECT 1
-      FROM auth_refresh_token
-      WHERE token_hash = ${tokenHash} AND revoked_at IS NULL AND expires_at > now()
-    ) as exists
-  `) as { exists: boolean }[];
+  const rows = await db()
+    .select({ exists: sql<boolean>`true` })
+    .from(authRefreshToken)
+    .where(
+      and(
+        eq(authRefreshToken.tokenHash, tokenHash),
+        isNull(authRefreshToken.revokedAt),
+        gt(authRefreshToken.expiresAt, new Date()),
+      ),
+    )
+    .limit(1);
 
-  return rows[0]?.exists ?? false;
+  return rows.length > 0;
 };
 
 export const getActiveRefreshTokenCountByUser = async (userId: string): Promise<number> => {
-  const sql = getDatabaseClient();
-  const rows = (await sql`
-    SELECT count(*)::int as count
-    FROM auth_refresh_token
-    WHERE user_id = ${userId} AND revoked_at IS NULL AND expires_at > now()
-  `) as { count: number }[];
+  const rows = await db()
+    .select({ count: count() })
+    .from(authRefreshToken)
+    .where(
+      and(
+        eq(authRefreshToken.userId, userId),
+        isNull(authRefreshToken.revokedAt),
+        gt(authRefreshToken.expiresAt, new Date()),
+      ),
+    );
 
   return rows[0]?.count ?? 0;
 };
 
 export const cleanupExpiredRefreshTokens = async () => {
-  const sql = getDatabaseClient();
-  await sql`
-    DELETE FROM auth_refresh_token
-    WHERE expires_at < now() - INTERVAL '7 days'
-  `;
+  const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  await db().delete(authRefreshToken).where(lt(authRefreshToken.expiresAt, cutoff));
 };
 
 export const maybeCleanupExpiredRefreshTokens = async () => {

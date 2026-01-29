@@ -135,7 +135,7 @@ const issueTokens = async (
 ) => {
   const user = await getAuthUserById(userId);
   const roles = user?.roles ?? [];
-  const membershipTier = user?.membership_tier ?? null;
+  const membershipTier = user?.membershipTier ?? null;
 
   const accessTokenJti = crypto.randomUUID();
   const accessToken = await signAccessToken(userId, accessTokenJti, roles, membershipTier);
@@ -230,33 +230,33 @@ const handleRefreshTokenGrant = async (
     return unauthorizedResponse("invalid_refresh_token");
   }
 
-  if (refreshToken.revoked_at) {
+  if (refreshToken.revokedAt) {
     logWarn("auth.token.refresh.revoked_token_used", {
       ...clientFingerprint,
-      tokenFamilyId: refreshToken.token_family_id,
+      tokenFamilyId: refreshToken.tokenFamilyId,
       requestId,
     });
     return unauthorizedResponse("revoked_refresh_token");
   }
 
-  if (refreshToken.expires_at <= new Date()) {
+  if (refreshToken.expiresAt <= new Date()) {
     return unauthorizedResponse("expired_refresh_token");
   }
 
-  if (refreshToken.used_at) {
-    const usedAtTime = refreshToken.used_at.getTime();
+  if (refreshToken.usedAt) {
+    const usedAtTime = refreshToken.usedAt.getTime();
     const now = Date.now();
     const reuseWindowMs = getRefreshTokenReuseWindowSeconds() * 1000;
 
     if (now - usedAtTime > reuseWindowMs) {
       logError("auth.token.refresh.token_reuse_detected", new Error("Token reuse detected"), {
         ...clientFingerprint,
-        tokenFamilyId: refreshToken.token_family_id,
-        usedAt: refreshToken.used_at.toISOString(),
+        tokenFamilyId: refreshToken.tokenFamilyId,
+        usedAt: refreshToken.usedAt.toISOString(),
         requestId,
       });
 
-      await revokeRefreshTokenFamily(refreshToken.token_family_id);
+      await revokeRefreshTokenFamily(refreshToken.tokenFamilyId);
       return unauthorizedResponse("token_reuse_detected");
     }
 
@@ -266,8 +266,8 @@ const handleRefreshTokenGrant = async (
   await markRefreshTokenUsed(tokenHash);
 
   const { accessToken, accessExpiresIn, accessTokenJti, cookieValue } = await issueTokens(
-    refreshToken.user_id,
-    refreshToken.token_family_id,
+    refreshToken.userId,
+    refreshToken.tokenFamilyId,
     refreshToken.id,
     ip,
     userAgent,
@@ -278,7 +278,7 @@ const handleRefreshTokenGrant = async (
   logInfo("auth.token.refresh.success", {
     ...clientFingerprint,
     accessTokenJti,
-    tokenFamilyId: refreshToken.token_family_id,
+    tokenFamilyId: refreshToken.tokenFamilyId,
     requestId,
   });
 

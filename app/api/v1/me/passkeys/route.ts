@@ -22,10 +22,10 @@ export const GET = async (request: Request) =>
         items: passkeys.map((passkey) => ({
           id: passkey.id,
           name: passkey.name,
-          deviceType: passkey.device_type,
-          backedUp: passkey.backed_up,
-          createdAt: passkey.created_at.toISOString(),
-          lastUsedAt: passkey.last_used_at?.toISOString() ?? null,
+          deviceType: passkey.deviceType,
+          backedUp: passkey.backedUp,
+          createdAt: passkey.createdAt.toISOString(),
+          lastUsedAt: passkey.lastUsedAt?.toISOString() ?? null,
         })),
       });
     } catch (error) {
