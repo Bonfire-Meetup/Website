@@ -27,7 +27,6 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-          cache: true
 
       - name: Install deps
         run: bun install --frozen-lockfile
@@ -61,8 +60,9 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$VERCEL_TOKEN"
-          test -n "$NEXT_PUBLIC_BNF_VERSION"
-          bunx vercel@latest build --prod --token="$VERCEL_TOKEN"
+          test -f .vercel/.env.production.local
+          bunx dotenv -e .vercel/.env.production.local -- \
+            bunx vercel@latest build --prod --token="$VERCEL_TOKEN"
 
       - name: Run Drizzle migrations (prod)
         env:
