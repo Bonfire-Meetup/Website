@@ -90,9 +90,7 @@ export function db(options: { required?: boolean } = {}): DrizzleClient | null {
   }
 }
 
-export async function runTransaction<T>(
-  callback: (tx: DrizzleTransaction) => Promise<T>,
-): Promise<T> {
+export function runTransaction<T>(callback: (tx: DrizzleTransaction) => Promise<T>): Promise<T> {
   const client = db();
   return client.transaction(callback);
 }

@@ -230,6 +230,7 @@
     "build/**",
     "*.min.js",
     "coverage/**",
-    "scripts/**"
+    "scripts/**",
+    "db/drizzle/migrations/**"
   ]
 }

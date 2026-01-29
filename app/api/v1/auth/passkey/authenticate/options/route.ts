@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getClientHashes, isRateLimited } from "@/lib/api/rate-limit";
 import { createAuthenticationOptions, getChallengeTtlMs } from "@/lib/auth/webauthn";
-import { insertPasskeyChallenge, maybeCleanupExpiredPasskeyChallenges } from "@/lib/data/passkey";
+import { insertPasskeyChallenge } from "@/lib/data/passkey";
 import { logError, logInfo, logWarn } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
 
@@ -33,8 +33,6 @@ export const POST = async (request: Request) =>
         type: "authentication",
         expiresAt,
       });
-
-      maybeCleanupExpiredPasskeyChallenges();
 
       logInfo("passkey.authenticate.options_created");
 

@@ -24,8 +24,6 @@ import {
   insertRefreshToken,
   markAuthChallengeUsed,
   markRefreshTokenUsed,
-  maybeCleanupExpiredAuthChallenges,
-  maybeCleanupExpiredRefreshTokens,
   revokeRefreshTokenFamily,
   upsertAuthUser,
 } from "@/lib/data/auth";
@@ -273,8 +271,6 @@ const handleRefreshTokenGrant = async (
     userAgent,
   );
 
-  maybeCleanupExpiredRefreshTokens();
-
   logInfo("auth.token.refresh.success", {
     ...clientFingerprint,
     accessTokenJti,
@@ -385,8 +381,6 @@ const handleEmailOtpGrant = async (
   }
 
   await markAuthChallengeUsed(verification.id);
-  maybeCleanupExpiredAuthChallenges();
-
   const userId = await upsertAuthUser(email);
 
   if (!userId) {

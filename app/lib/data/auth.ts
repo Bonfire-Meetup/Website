@@ -136,10 +136,7 @@ export const incrementAuthChallengeAttempts = async (id: string) => {
 };
 
 export const markAuthChallengeUsed = async (id: string) => {
-  await db()
-    .update(authChallenge)
-    .set({ usedAt: new Date() })
-    .where(eq(authChallenge.id, id));
+  await db().update(authChallenge).set({ usedAt: new Date() }).where(eq(authChallenge.id, id));
 };
 
 export const upsertAuthUser = async (email: string): Promise<string> => {
@@ -295,17 +292,19 @@ export const insertAuthAttempt = async ({
   userAgentSummary?: string | null;
   requestId?: string | null;
 }) => {
-  await db().insert(authAttempt).values({
-    userId: userId ?? null,
-    emailHash,
-    emailDomain: emailDomain ?? null,
-    outcome,
-    method: method ?? null,
-    ipHash: ipHash ?? null,
-    userAgentHash: userAgentHash ?? null,
-    userAgentSummary: userAgentSummary ?? null,
-    requestId: requestId ?? null,
-  });
+  await db()
+    .insert(authAttempt)
+    .values({
+      userId: userId ?? null,
+      emailHash,
+      emailDomain: emailDomain ?? null,
+      outcome,
+      method: method ?? null,
+      ipHash: ipHash ?? null,
+      userAgentHash: userAgentHash ?? null,
+      userAgentSummary: userAgentSummary ?? null,
+      requestId: requestId ?? null,
+    });
 };
 
 export const getAuthAttemptsByEmailHash = async ({

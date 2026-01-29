@@ -209,7 +209,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
             className={`relative inline-flex h-11 min-w-[6.5rem] items-center justify-center gap-2 rounded-l-full border border-r-0 border-neutral-200/60 px-3 py-2.5 text-sm leading-none font-semibold transition-all sm:min-w-[8.5rem] sm:gap-3 sm:px-5 dark:border-white/10 ${
               hasLiked
                 ? `${ENGAGEMENT_BRANDING.like.classes.activeGradient} ${ENGAGEMENT_BRANDING.like.classes.activeText} ${ENGAGEMENT_BRANDING.like.classes.activeShadow}`
-                : `bg-white ring-1 ring-inset ring-rose-400/15 ${ENGAGEMENT_BRANDING.like.classes.inactiveText} dark:bg-white/5 dark:ring-rose-400/12`
+                : `bg-white ring-1 ring-rose-400/15 ring-inset ${ENGAGEMENT_BRANDING.like.classes.inactiveText} dark:bg-white/5 dark:ring-rose-400/12`
             } ${isLiking || likeCount === null ? "opacity-80" : ""} ${
               likeCount === null
                 ? "cursor-not-allowed"
@@ -257,7 +257,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
             className={`relative inline-flex h-11 min-w-[6.5rem] items-center justify-center gap-2 rounded-r-full border border-l-0 border-neutral-200/60 px-3 py-2.5 text-sm leading-none font-semibold transition-all sm:min-w-[8.5rem] sm:gap-3 sm:px-5 dark:border-white/10 ${
               hasBoosted
                 ? `${ENGAGEMENT_BRANDING.boost.classes.activeGradient} ${ENGAGEMENT_BRANDING.boost.classes.activeText} ${ENGAGEMENT_BRANDING.boost.classes.activeShadow}`
-                : `bg-white ring-1 ring-inset ring-emerald-500/15 ${ENGAGEMENT_BRANDING.boost.classes.inactiveText} dark:bg-white/5 dark:ring-emerald-400/12`
+                : `bg-white ring-1 ring-emerald-500/15 ring-inset ${ENGAGEMENT_BRANDING.boost.classes.inactiveText} dark:bg-white/5 dark:ring-emerald-400/12`
             } ${isBoosting || boostCount === null ? "opacity-80" : ""} ${
               boostCount === null ||
               (availableBoosts !== null && availableBoosts === 0 && !hasBoosted)

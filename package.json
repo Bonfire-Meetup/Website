@@ -7,12 +7,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "typecheck": "tsc --noEmit",
     "lint": "oxlint .",
     "fix": "oxlint --fix .",
     "format": "oxfmt --check .",
     "format:write": "oxfmt --write .",
     "check": "oxlint --fix . && oxfmt --write .",
-    "add-blank-lines": "node scripts/add-blank-lines-eslint.mjs",
     "clean": "bun pm cache rm && rm -rf node_modules bun.lock && bun install",
     "prepublish": "oxlint --fix . && oxfmt --write . && tsc --noEmit"
   },

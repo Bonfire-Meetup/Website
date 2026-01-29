@@ -40,6 +40,7 @@
     "*.min.js",
     "coverage/**",
     "*.lock",
-    "bun.lock"
+    "bun.lock",
+    "db/drizzle/migrations/**"
   ]
 }

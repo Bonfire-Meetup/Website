@@ -4,12 +4,7 @@ import { z } from "zod";
 import { requireAuth } from "@/lib/api/auth";
 import { getClientHashes, isRateLimited } from "@/lib/api/rate-limit";
 import { encodePublicKey, formatDeviceType, verifyRegistration } from "@/lib/auth/webauthn";
-import {
-  getPasskeyChallenge,
-  insertPasskey,
-  markPasskeyChallengeUsed,
-  maybeCleanupExpiredPasskeyChallenges,
-} from "@/lib/data/passkey";
+import { getPasskeyChallenge, insertPasskey, markPasskeyChallengeUsed } from "@/lib/data/passkey";
 import { logError, logInfo, logWarn } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
 
@@ -114,8 +109,6 @@ export const POST = async (request: Request) =>
         transports: credential.transports,
         name: name ?? null,
       });
-
-      maybeCleanupExpiredPasskeyChallenges();
 
       logInfo("passkey.register.success", { userId, passkeyId });
 
