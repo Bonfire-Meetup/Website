@@ -31,7 +31,31 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
     return { privateCount: pc, publicUsers: pu, totalCount: pu.length + pc };
   }, [boostedBy]);
 
-  if (loading || !boostedBy || totalCount === 0) {
+  if (loading) {
+    return (
+      <div
+        className="flex h-10 items-center gap-2 rounded-lg border border-neutral-200/30 bg-neutral-50/30 px-3 py-2 dark:border-neutral-700/20 dark:bg-neutral-800/20"
+        aria-hidden="true"
+      >
+        <div className="flex shrink-0 items-center gap-1.5">
+          <div className="h-3 w-3 animate-pulse rounded bg-neutral-200 dark:bg-white/10" />
+          <div className="h-3 w-20 animate-pulse rounded bg-neutral-200 dark:bg-white/10" />
+        </div>
+        <div className="flex flex-1 items-center gap-1.5">
+          <div className="flex gap-1.5">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-6 w-6 animate-pulse rounded-full bg-neutral-200 dark:bg-white/10"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!boostedBy || totalCount === 0) {
     return null;
   }
 
