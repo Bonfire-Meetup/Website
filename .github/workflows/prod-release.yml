@@ -47,11 +47,12 @@ jobs:
           test -n "$VERCEL_PROJECT_ID"
           bunx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
 
-      - name: Compute build version (NEXT_PUBLIC_BNF_VERSION)
+      - name: Compute build version
         run: |
           set -euo pipefail
-          echo "NEXT_PUBLIC_BNF_VERSION=${GITHUB_SHA::12}" >> "$GITHUB_ENV"
-          echo "NEXT_PUBLIC_BNF_VERSION=$NEXT_PUBLIC_BNF_VERSION"
+          v="${GITHUB_SHA::12}"
+          echo "NEXT_PUBLIC_BNF_VERSION=$v" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_BNF_VERSION=$v"
 
       - name: Vercel build (prod) → .vercel/output
         env:
