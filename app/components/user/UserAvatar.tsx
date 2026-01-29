@@ -138,6 +138,32 @@ function cacheSet(key: string, value: AvatarSpec) {
   }
 }
 
+interface RGB {
+  r: number;
+  g: number;
+  b: number;
+}
+
+function hexToRgb(hex: string): RGB {
+  const h = hex.charCodeAt(0) === 35 ? hex.slice(1) : hex;
+  const n = parseInt(h, 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+
+function mix(a: RGB, b: RGB, t: number): RGB {
+  const tt = t <= 0 ? 0 : t >= 1 ? 1 : t;
+  return {
+    r: (a.r + (b.r - a.r) * tt) | 0,
+    g: (a.g + (b.g - a.g) * tt) | 0,
+    b: (a.b + (b.b - a.b) * tt) | 0,
+  };
+}
+
+function rgba(c: RGB, a: number): string {
+  const aa = a <= 0 ? 0 : a >= 1 ? 1 : a;
+  return `rgba(${c.r},${c.g},${c.b},${round2(aa)})`;
+}
+
 interface Core {
   rnd: () => number;
   pattern: PatternType;
@@ -146,23 +172,48 @@ interface Core {
   shimmerAngle: number;
 }
 
-function computeCore(seed: string): Core {
+function computeCore(seed: string, isTiny: boolean): Core {
   const id = readIdFromAvatarSeed(seed) ?? hashToU64(seed);
   const rnd = rngFromId(id);
+
   const pal = pick(rnd, palettes);
   const [c1, c2, c3] = pal.colors;
   const { accent } = pal;
 
   const pattern = pick(rnd, patterns);
-  const angle = randInt(rnd, 0, 359);
-  const ox = randInt(rnd, 25, 75);
-  const oy = randInt(rnd, 25, 75);
   const shimmerAngle = randInt(rnd, 0, 359);
 
-  const base = `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
-  const hotspot = `radial-gradient(circle at ${ox}% ${oy}%, ${c2}AA 0%, transparent 55%)`;
-  const glow = `radial-gradient(circle at ${100 - ox}% ${100 - oy}%, ${accent}66 0%, transparent 45%)`;
-  const background = `${glow}, ${hotspot}, ${base}`;
+  const a1 = randInt(rnd, 0, 359);
+  const a2 = (a1 + randInt(rnd, 60, 160)) % 360;
+
+  const s2 = randInt(rnd, 42, 62);
+  const s1 = clamp(s2 - randInt(rnd, 18, 28), 10, 40);
+  const s3 = clamp(s2 + randInt(rnd, 18, 30), 65, 92);
+
+  const ox = randInt(rnd, 18, 82);
+  const oy = randInt(rnd, 18, 82);
+
+  const r1 = hexToRgb(c1);
+  const r2 = hexToRgb(c2);
+  const r3 = hexToRgb(c3);
+  const ra = hexToRgb(accent);
+
+  const deep = mix(mix(r1, r3, 0.5), { r: 0, g: 0, b: 0 }, 0.18);
+  const hi = mix(ra, r2, 0.55);
+  const tintA = mix(r1, ra, 0.22);
+  const tintB = mix(r3, ra, 0.28);
+
+  const base = `linear-gradient(${a1}deg, ${rgba(deep, 1)} 0%, ${c1} ${s1}%, ${c2} ${s2}%, ${c3} ${s3}%, ${rgba(r3, 0.98)} 100%)`;
+
+  const highlight = `radial-gradient(circle at ${ox}% ${oy}%, ${rgba(hi, 0.52)} 0%, ${rgba(hi, 0.18)} 22%, ${rgba(hi, 0)} 60%)`;
+
+  const conic = `conic-gradient(from ${a2}deg at 50% 50%, ${rgba(tintA, 0.12)} 0deg, ${rgba(tintB, 0.0)} 120deg, ${rgba(tintB, 0.1)} 240deg, ${rgba(tintA, 0.12)} 360deg)`;
+
+  const vignette = `radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.22) 100%)`;
+
+  const background = isTiny
+    ? `${vignette}, ${base}`
+    : `${vignette}, ${conic}, ${highlight}, ${base}`;
 
   return { rnd, pattern, accent, background, shimmerAngle };
 }
@@ -196,7 +247,7 @@ function generateAvatar(seed: string, isTiny: boolean, forcePatternType?: Patter
     return cached;
   }
 
-  const core = computeCore(seed);
+  const core = computeCore(seed, isTiny);
 
   if (isTiny) {
     const spec: AvatarSpec = {
@@ -565,8 +616,6 @@ interface UserAvatarProps {
   name?: string | null;
   animated?: boolean;
   isTiny?: boolean;
-
-  /** Debug: force a specific pattern regardless of RNG */
   forceShape?: PatternType;
 }
 
@@ -602,7 +651,6 @@ export function UserAvatar({
       data-avatar-tiny={isTiny ? "1" : "0"}
       data-avatar-force-shape={forceShape ?? ""}
     >
-      {/* Big mode: SVG patterns + overlays */}
       {!isTiny && (
         <>
           <style>{AVATAR_CSS}</style>
@@ -638,7 +686,6 @@ export function UserAvatar({
         </>
       )}
 
-      {/* Tiny mode: no SVG, but still initials + deterministic colors */}
       {showInitials && (
         <span
           className="relative z-10 font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.45)] select-none"

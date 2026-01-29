@@ -166,7 +166,16 @@ export const refreshAccessToken = (): Promise<string | null> => {
 
   updateLastActivity();
 
-  refreshPromise = (async () => {
+  const performRefresh = async () => {
+    const existingToken = readAccessToken();
+    if (
+      existingToken &&
+      isAccessTokenValid(existingToken) &&
+      !isAccessTokenExpiringSoon(existingToken)
+    ) {
+      return existingToken;
+    }
+
     try {
       const response = await fetch("/api/v1/auth/token", {
         method: "POST",
@@ -201,6 +210,15 @@ export const refreshAccessToken = (): Promise<string | null> => {
       consecutiveFailures++;
       notifyTokenRefreshed(null);
       return null;
+    }
+  };
+
+  refreshPromise = (async () => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.locks) {
+        return await navigator.locks.request("bnf_auth_refresh", performRefresh);
+      }
+      return await performRefresh();
     } finally {
       refreshPromise = null;
     }
