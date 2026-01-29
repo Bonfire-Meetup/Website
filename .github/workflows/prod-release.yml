@@ -36,7 +36,9 @@ jobs:
 
       - name: Compute build version
         run: |
+          set -euo pipefail
           v="${GITHUB_SHA::12}"
+          test -n "$v"
           echo "NEXT_PUBLIC_BNF_VERSION=$v" >> "$GITHUB_ENV"
 
       - name: Vercel pull project settings (prod)
@@ -47,48 +49,44 @@ jobs:
         run: |
           set -euo pipefail
           bunx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
+          test -f .vercel/.env.production.local
 
-      - name: Vercel build (prod) → .vercel/output
+      - name: Inject build version into Vercel env file (override fallback)
+        run: |
+          set -euo pipefail
+          test -f .vercel/.env.production.local
+
+          if [ -n "${NEXT_PUBLIC_BNF_VERSION:-}" ]; then
+            {
+              echo ""
+              echo "# Build-stamp override from GH Actions"
+              echo "NEXT_PUBLIC_BNF_VERSION=${NEXT_PUBLIC_BNF_VERSION}"
+              echo "BNF_VERSION=${NEXT_PUBLIC_BNF_VERSION}"
+            } >> .vercel/.env.production.local
+          else
+            echo "NEXT_PUBLIC_BNF_VERSION is empty; keeping Vercel fallback values."
+          fi
+
+      - name: Vercel build → .vercel/output
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-          NEXT_PUBLIC_BNF_VERSION: ${{ env.NEXT_PUBLIC_BNF_VERSION }}
-          BNF_VERSION: ${{ env.NEXT_PUBLIC_BNF_VERSION }}
-
-          BNF_NEON_DATABASE_URL: ${{ secrets.BNF_NEON_DATABASE_URL }}
-          BNF_HEARTS_SALT: ${{ secrets.BNF_HEARTS_SALT }}
-          BNF_CHECKIN_SECRET: ${{ secrets.BNF_CHECKIN_SECRET }}
-          BNF_TURNSTILE_SECRET_KEY: ${{ secrets.BNF_TURNSTILE_SECRET_KEY }}
-          NEXT_PUBLIC_BNF_TURNSTILE_SITE_KEY: ${{ secrets.NEXT_PUBLIC_BNF_TURNSTILE_SITE_KEY }}
-          BNF_RESEND_API_KEY: ${{ secrets.BNF_RESEND_API_KEY }}
-          BNF_RESEND_FROM: ${{ secrets.BNF_RESEND_FROM }}
-          BNF_RESEND_AUTH_FROM: ${{ secrets.BNF_RESEND_AUTH_FROM }}
-          BNF_OTP_SECRET: ${{ secrets.BNF_OTP_SECRET }}
-          BNF_JWT_PRIVATE_KEY: ${{ secrets.BNF_JWT_PRIVATE_KEY }}
-          BNF_JWT_PUBLIC_KEY: ${{ secrets.BNF_JWT_PUBLIC_KEY }}
-          BNF_JWT_ISSUER: ${{ secrets.BNF_JWT_ISSUER }}
-          BNF_JWT_AUDIENCE: ${{ secrets.BNF_JWT_AUDIENCE }}
-          BNF_JWT_KEY_ID: ${{ secrets.BNF_JWT_KEY_ID }}
-          BNF_LOG_SALT: ${{ secrets.BNF_LOG_SALT }}
-          BNF_WEBAUTHN_RP_ID: ${{ secrets.BNF_WEBAUTHN_RP_ID }}
-          BNF_WEBAUTHN_RP_NAME: ${{ secrets.BNF_WEBAUTHN_RP_NAME }}
-          BNF_WEBAUTHN_ORIGIN: ${{ secrets.BNF_WEBAUTHN_ORIGIN }}
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-          BNF_ROLLBAR_SERVER_TOKEN: ${{ secrets.BNF_ROLLBAR_SERVER_TOKEN }}
-          NEXT_PUBLIC_BNF_ROLLBAR_CLIENT_TOKEN: ${{ secrets.NEXT_PUBLIC_BNF_ROLLBAR_CLIENT_TOKEN }}
         run: |
           set -euo pipefail
-          bunx vercel@latest build --prod --token="$VERCEL_TOKEN"
+          test -f .vercel/.env.production.local
 
-      - name: Run Drizzle migrations (prod)
-        env:
-          BNF_NEON_DATABASE_URL: ${{ secrets.BNF_NEON_DATABASE_URL_PROD }}
+          bunx dotenv-cli -e .vercel/.env.production.local -- \
+            bunx vercel@latest build --prod --token="$VERCEL_TOKEN"
+
+      - name: Run Drizzle migrations
         run: |
           set -euo pipefail
-          test -n "$BNF_NEON_DATABASE_URL"
-          bunx drizzle-kit migrate 2>&1 | tee drizzle-migrate.log
+          test -f .vercel/.env.production.local
+
+          bunx dotenv-cli -e .vercel/.env.production.local -- \
+            bash -lc 'test -n "${BNF_NEON_MIGRATION_DATABASE_URL:-}" && bunx drizzle-kit migrate' \
+            2>&1 | tee drizzle-migrate.log
 
       - name: Vercel deploy prebuilt (prod)
         env:
@@ -96,6 +94,7 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
+          set -euo pipefail
           bunx vercel@latest deploy --prebuilt --archive=tgz --prod --token="$VERCEL_TOKEN"
 
       - name: Smoke check (health + exact version)

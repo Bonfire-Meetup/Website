@@ -1,12 +1,11 @@
-import dotenv from "dotenv";
 import { defineConfig } from "drizzle-kit";
 
-dotenv.config({ path: ".env" });
-dotenv.config({ path: ".env.local", override: true });
+const url = process.env.BNF_NEON_MIGRATION_DATABASE_URL ?? process.env.BNF_NEON_DATABASE_URL;
 
-const url = process.env.BNF_NEON_DATABASE_URL;
 if (!url) {
-  throw new Error("BNF_NEON_DATABASE_URL is not set");
+  throw new Error(
+    "Database URL missing: set BNF_NEON_MIGRATION_DATABASE_URL (preferred) or BNF_NEON_DATABASE_URL",
+  );
 }
 
 export default defineConfig({
