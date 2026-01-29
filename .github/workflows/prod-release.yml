@@ -9,15 +9,25 @@ concurrency:
   group: prod-release
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
-  migrate_and_deploy:
+  build_migrate_deploy:
+    name: Build → Migrate → Deploy (Vercel prebuilt) → Verify
     runs-on: blacksmith-2vcpu-ubuntu-2404
+    timeout-minutes: 25
+    environment: production
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+          cache: true
 
       - name: Install deps
         run: bun install --frozen-lockfile
@@ -25,16 +35,72 @@ jobs:
       - name: TypeScript typecheck
         run: bun run typecheck
 
-      - name: Run Drizzle migrations
+      - name: Lint
+        run: bun run lint
+
+      - name: Vercel pull (production env)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          set -euo pipefail
+          test -n "$VERCEL_TOKEN"
+          test -n "$VERCEL_ORG_ID"
+          test -n "$VERCEL_PROJECT_ID"
+          bunx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Compute build version (NEXT_PUBLIC_BNF_VERSION)
+        run: |
+          set -euo pipefail
+          echo "NEXT_PUBLIC_BNF_VERSION=${GITHUB_SHA::12}" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_BNF_VERSION=$NEXT_PUBLIC_BNF_VERSION"
+
+      - name: Vercel build (prod) → .vercel/output
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          NEXT_PUBLIC_BNF_VERSION: ${{ env.NEXT_PUBLIC_BNF_VERSION }}
+        run: |
+          set -euo pipefail
+          test -n "$VERCEL_TOKEN"
+          test -n "$NEXT_PUBLIC_BNF_VERSION"
+          bunx vercel@latest build --prod --token="$VERCEL_TOKEN"
+
+      - name: Run Drizzle migrations (prod)
         env:
           BNF_NEON_DATABASE_URL: ${{ secrets.BNF_NEON_DATABASE_URL_PROD }}
         run: |
+          set -euo pipefail
           test -n "$BNF_NEON_DATABASE_URL"
-          bunx drizzle-kit migrate
+          bunx drizzle-kit migrate 2>&1 | tee drizzle-migrate.log
 
-      - name: Trigger Vercel Production deploy hook
+      - name: Vercel deploy prebuilt (prod)
         env:
-          VERCEL_DEPLOY_HOOK_PROD: ${{ secrets.VERCEL_DEPLOY_HOOK_PROD }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          test -n "$VERCEL_DEPLOY_HOOK_PROD"
-          curl -X POST "$VERCEL_DEPLOY_HOOK_PROD"
+          set -euo pipefail
+          test -n "$VERCEL_TOKEN"
+          bunx vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+
+      - name: Smoke check (health + exact version)
+        env:
+          PROD_URL: ${{ vars.PROD_URL }}
+          EXPECTED_VERSION: ${{ env.NEXT_PUBLIC_BNF_VERSION }}
+        run: |
+          set -euo pipefail
+          test -n "$PROD_URL"
+          test -n "$EXPECTED_VERSION"
+
+          body="$(curl --fail --silent --show-error --retry 10 --retry-delay 3 "$PROD_URL/api/health")"
+          echo "$body"
+          echo "$body" | grep -F "\"version\":\"$EXPECTED_VERSION\""
+
+      - name: Upload logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: prod-release-debug
+          path: |
+            drizzle-migrate.log
+            .vercel/output
+          if-no-files-found: ignore
