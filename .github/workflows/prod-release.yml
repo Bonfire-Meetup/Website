@@ -96,7 +96,7 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          bunx vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+          bunx vercel@latest deploy --prebuilt --archive=tgz --prod --token="$VERCEL_TOKEN"
 
       - name: Smoke check (health + exact version)
         env:
