@@ -6,6 +6,7 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Viewport } from "next";
 
+import { RollbarProvider } from "./components/shared/RollbarProvider";
 import { DEFAULT_LOCALE } from "./lib/i18n/locales";
 import { STORAGE_KEYS } from "./lib/storage/keys";
 
@@ -58,9 +59,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
-        {children}
-        <Analytics />
-        <SpeedInsights />
+        <RollbarProvider>
+          {children}
+          <Analytics />
+          <SpeedInsights />
+        </RollbarProvider>
       </body>
     </html>
   );

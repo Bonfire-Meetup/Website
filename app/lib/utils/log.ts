@@ -1,6 +1,7 @@
 import crypto from "crypto";
 
 import { serverEnv } from "@/lib/config/env";
+import { reportError as rollbarReportError } from "@/lib/rollbar/server";
 import { getRequestId } from "@/lib/utils/request-context";
 
 type LogLevel = "info" | "warn" | "error";
@@ -50,7 +51,6 @@ const log = (level: LogLevel, event: string, data?: Record<string, unknown>) => 
 
   if (level === "error") {
     console.error(line);
-
     return;
   }
 
@@ -71,8 +71,12 @@ export const logInfo = (event: string, data?: Record<string, unknown>) => log("i
 
 export const logWarn = (event: string, data?: Record<string, unknown>) => log("warn", event, data);
 
-export const logError = (event: string, error: unknown, data?: Record<string, unknown>) =>
+export const logError = (event: string, error: unknown, data?: Record<string, unknown>) => {
   log("error", event, { ...data, error: normalizeError(error) });
+  const requestId = getRequestId();
+  const extra = requestId && (!data || !("requestId" in data)) ? { ...data, requestId } : data;
+  rollbarReportError(error, { event, ...extra });
+};
 
 export const getEmailFingerprint = (email: string) => {
   const normalized = email.trim().toLowerCase();

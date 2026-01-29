@@ -1,5 +1,7 @@
 "use client";
 
+import { reportError as rollbarReportError } from "@/lib/rollbar/client";
+
 type LogLevel = "info" | "warn" | "error";
 
 interface LogPayload {
@@ -61,5 +63,7 @@ export const logInfo = (event: string, data?: Record<string, unknown>): void =>
 export const logWarn = (event: string, data?: Record<string, unknown>): void =>
   log("warn", event, data);
 
-export const logError = (event: string, error: unknown, data?: Record<string, unknown>): void =>
+export const logError = (event: string, error: unknown, data?: Record<string, unknown>): void => {
   log("error", event, { ...data, error: normalizeError(error) });
+  rollbarReportError(error, { event, ...data });
+};
