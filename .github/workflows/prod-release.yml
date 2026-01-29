@@ -13,18 +13,15 @@ permissions:
   contents: read
 
 jobs:
-  build_migrate_deploy:
-    name: Build → Migrate → Deploy (Vercel prebuilt) → Verify
+  prod:
     runs-on: blacksmith-2vcpu-ubuntu-2404
     timeout-minutes: 25
     environment: production
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
@@ -34,85 +31,16 @@ jobs:
       - name: Quality check
         run: bun run check
 
-      - name: Compute build version
-        run: |
-          set -euo pipefail
-          v="${GITHUB_SHA::12}"
-          test -n "$v"
-          echo "NEXT_PUBLIC_BNF_VERSION=$v" >> "$GITHUB_ENV"
-
-      - name: Vercel pull project settings (prod)
+      - name: Production release
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: |
-          set -euo pipefail
-          bunx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
-          test -f .vercel/.env.production.local
-
-      - name: Inject build version into Vercel env file (override fallback)
-        run: |
-          set -euo pipefail
-          test -f .vercel/.env.production.local
-
-          if [ -n "${NEXT_PUBLIC_BNF_VERSION:-}" ]; then
-            {
-              echo ""
-              echo "# Build-stamp override from GH Actions"
-              echo "NEXT_PUBLIC_BNF_VERSION=${NEXT_PUBLIC_BNF_VERSION}"
-              echo "BNF_VERSION=${NEXT_PUBLIC_BNF_VERSION}"
-            } >> .vercel/.env.production.local
-          else
-            echo "NEXT_PUBLIC_BNF_VERSION is empty; keeping Vercel fallback values."
-          fi
-
-      - name: Vercel build → .vercel/output
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: |
-          set -euo pipefail
-          test -f .vercel/.env.production.local
-
-          bunx dotenv-cli -e .vercel/.env.production.local -- \
-            bunx vercel@latest build --prod --token="$VERCEL_TOKEN"
-
-      - name: Run Drizzle migrations
-        run: |
-          set -euo pipefail
-          test -f .vercel/.env.production.local
-
-          bunx dotenv-cli -e .vercel/.env.production.local -- \
-            bash -lc 'test -n "${BNF_NEON_MIGRATION_DATABASE_URL:-}" && bunx drizzle-kit migrate' \
-            2>&1 | tee drizzle-migrate.log
-
-      - name: Vercel deploy prebuilt (prod)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: |
-          set -euo pipefail
-          bunx vercel@latest deploy --prebuilt --archive=tgz --prod --token="$VERCEL_TOKEN"
-
-      - name: Smoke check (health + exact version)
-        env:
-          PROD_URL: ${{ vars.PROD_URL }}
-          EXPECTED_VERSION: ${{ env.NEXT_PUBLIC_BNF_VERSION }}
-        run: |
-          set -euo pipefail
-          test -n "$PROD_URL"
-          test -n "$EXPECTED_VERSION"
-
-          body="$(curl --fail --silent --show-error --retry 10 --retry-delay 3 "$PROD_URL/api/health")"
-          echo "$body"
-          echo "$body" | grep -F "\"version\":\"$EXPECTED_VERSION\""
+        run: scripts/ci/prod-release.sh
 
       - name: Upload logs (on failure)
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: prod-release-debug
           path: |
