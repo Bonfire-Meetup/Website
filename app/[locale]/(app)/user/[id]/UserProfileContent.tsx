@@ -43,13 +43,13 @@ export function UserProfileContent({
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-950">
+    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(217,70,239,0.15),transparent)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_70%_20%,rgba(249,115,22,0.1),transparent)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_30%_at_30%_80%,rgba(139,92,246,0.08),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(217,70,239,0.08),transparent)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(217,70,239,0.15),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_70%_20%,rgba(249,115,22,0.05),transparent)] dark:bg-[radial-gradient(ellipse_60%_40%_at_70%_20%,rgba(249,115,22,0.1),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_30%_at_30%_80%,rgba(139,92,246,0.04),transparent)] dark:bg-[radial-gradient(ellipse_50%_30%_at_30%_80%,rgba(139,92,246,0.08),transparent)]" />
         <div
-          className="absolute inset-0 opacity-[0.015]"
+          className="absolute inset-0 opacity-[0.02] dark:opacity-[0.015]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
           }}
@@ -61,15 +61,15 @@ export function UserProfileContent({
           <div className="relative mb-12 sm:mb-16">
             <div className="flex flex-col items-center lg:flex-row lg:items-start lg:gap-12">
               <div className="relative mb-8 lg:mb-0">
-                <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-fuchsia-500/20 via-orange-500/15 to-violet-500/20 blur-2xl" />
-                <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-fuchsia-500/30 via-orange-500/25 to-violet-500/30 blur-xl" />
+                <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-fuchsia-500/10 via-orange-500/8 to-violet-500/10 blur-2xl dark:from-fuchsia-500/20 dark:via-orange-500/15 dark:to-violet-500/20" />
+                <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-fuchsia-500/15 via-orange-500/12 to-violet-500/15 blur-xl dark:from-fuchsia-500/30 dark:via-orange-500/25 dark:to-violet-500/30" />
                 <div className="relative">
-                  <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-fuchsia-400 via-orange-400 to-violet-400 opacity-80" />
+                  <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-fuchsia-400 via-orange-400 to-violet-400 opacity-60 dark:opacity-80" />
                   <UserAvatar
                     avatarSeed={user.publicId}
                     size={180}
                     name={user.name}
-                    className="relative ring-4 ring-neutral-950"
+                    className="relative ring-4 ring-neutral-50 dark:ring-neutral-950"
                   />
                 </div>
                 {user.isMember && (
@@ -92,11 +92,11 @@ export function UserProfileContent({
                   <button
                     type="button"
                     onClick={handleCopyId}
-                    className="inline-flex cursor-pointer items-center gap-1.5 font-mono text-xs font-medium tracking-wide text-neutral-500 transition-colors hover:text-neutral-300"
+                    className="inline-flex cursor-pointer items-center gap-1.5 font-mono text-xs font-medium tracking-wide text-neutral-500 transition-colors hover:text-neutral-700 dark:hover:text-neutral-300"
                   >
                     {copied ? (
                       <svg
-                        className="h-3 w-3 shrink-0 -translate-y-px text-emerald-400"
+                        className="h-3 w-3 shrink-0 -translate-y-px text-emerald-500 dark:text-emerald-400"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -119,13 +119,15 @@ export function UserProfileContent({
                         />
                       </svg>
                     )}
-                    <span className={copied ? "text-emerald-400" : ""}>{user.publicId}</span>
+                    <span className={copied ? "text-emerald-500 dark:text-emerald-400" : ""}>
+                      {user.publicId}
+                    </span>
                   </button>
                   <ProfileShareButton shareUrl={profileUrl} shareText={shareText} />
                 </div>
 
                 {user.name ? (
-                  <h1 className="mb-6 text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
+                  <h1 className="mb-6 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
                     {user.name}
                   </h1>
                 ) : (
@@ -139,9 +141,9 @@ export function UserProfileContent({
                   membershipTier={user.isMember ? user.membershipTier : null}
                 />
 
-                <div className="mt-8 flex items-center gap-2 text-neutral-400">
+                <div className="mt-8 flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
                   <svg
-                    className="h-4 w-4 text-neutral-500"
+                    className="h-4 w-4 text-neutral-400 dark:text-neutral-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -154,7 +156,8 @@ export function UserProfileContent({
                     />
                   </svg>
                   <span className="text-sm font-medium">
-                    {t("memberSince")} <span className="text-white">{user.memberSince}</span>
+                    {t("memberSince")}{" "}
+                    <span className="text-neutral-900 dark:text-white">{user.memberSince}</span>
                   </span>
                 </div>
               </div>
@@ -175,9 +178,9 @@ export function PrivateProfileContent() {
   const t = useTranslations("account.userProfile");
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-950">
+    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(100,100,100,0.08),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(100,100,100,0.04),transparent)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(100,100,100,0.08),transparent)]" />
         <div
           className="absolute inset-0 opacity-[0.02]"
           style={{
@@ -189,10 +192,10 @@ export function PrivateProfileContent() {
       <div className="relative flex min-h-screen items-center justify-center px-4 py-20">
         <div className="w-full max-w-md text-center">
           <div className="relative mx-auto mb-8 h-24 w-24">
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 opacity-50 blur-xl" />
-            <div className="relative flex h-full w-full items-center justify-center rounded-2xl border border-neutral-800 bg-neutral-900/90">
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-neutral-300 to-neutral-400 opacity-30 blur-xl dark:from-neutral-700 dark:to-neutral-800 dark:opacity-50" />
+            <div className="relative flex h-full w-full items-center justify-center rounded-2xl border border-neutral-200 bg-neutral-100/90 dark:border-neutral-800 dark:bg-neutral-900/90">
               <svg
-                className="h-12 w-12 text-neutral-600"
+                className="h-12 w-12 text-neutral-400 dark:text-neutral-600"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -207,7 +210,7 @@ export function PrivateProfileContent() {
             </div>
           </div>
 
-          <h1 className="mb-3 text-2xl font-black tracking-tight text-white sm:text-3xl">
+          <h1 className="mb-3 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
             {t("private.title")}
           </h1>
           <p className="text-base text-neutral-500">{t("private.message")}</p>

@@ -68,7 +68,7 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
     <section className="relative">
       <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-emerald-500/5 to-transparent" />
 
-      <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-neutral-900/50 backdrop-blur-sm">
+      <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-white/5 dark:bg-neutral-900/50">
         <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
@@ -80,7 +80,7 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
               </div>
             </div>
             <div>
-              <h2 className="text-xl font-black tracking-tight text-white sm:text-2xl">
+              <h2 className="text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
                 {t("boosted.title")}
               </h2>
               <p className="text-sm text-neutral-500">
@@ -104,7 +104,7 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
                   key={boost.shortId}
                   href={PAGE_ROUTES.WATCH(boost.slug, boost.shortId)}
                   prefetch={false}
-                  className="group relative overflow-hidden rounded-xl border border-white/5 bg-neutral-800/50 transition-all duration-300 hover:border-emerald-500/30 hover:bg-neutral-800/80"
+                  className="group relative overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 transition-all duration-300 hover:border-emerald-500/30 hover:bg-neutral-100 dark:border-white/5 dark:bg-neutral-800/50 dark:hover:bg-neutral-800/80"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="relative aspect-video overflow-hidden">
@@ -124,7 +124,7 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
                   </div>
 
                   <div className="p-4">
-                    <h3 className="mb-2 line-clamp-2 text-sm leading-snug font-bold text-white transition-colors group-hover:text-emerald-300">
+                    <h3 className="mb-2 line-clamp-2 text-sm leading-snug font-bold text-neutral-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-300">
                       {boost.title}
                     </h3>
 
@@ -132,20 +132,22 @@ export async function BoostedVideos({ userId }: BoostedVideosProps) {
                       {boost.speaker.slice(0, 2).map((name, idx) => (
                         <span
                           key={`${boost.shortId}-speaker-${name}`}
-                          className="text-xs text-neutral-400"
+                          className="text-xs text-neutral-500 dark:text-neutral-400"
                         >
-                          {idx > 0 && <span className="mr-2 text-neutral-600">•</span>}
+                          {idx > 0 && (
+                            <span className="mr-2 text-neutral-400 dark:text-neutral-600">•</span>
+                          )}
                           {name}
                         </span>
                       ))}
                       {boost.speaker.length > 2 && (
-                        <span className="text-xs text-neutral-500">
+                        <span className="text-xs text-neutral-400 dark:text-neutral-500">
                           +{boost.speaker.length - 2}
                         </span>
                       )}
                     </div>
 
-                    <div className="mt-2 flex items-center gap-1.5 text-xs text-neutral-500">
+                    <div className="mt-2 flex items-center gap-1.5 text-xs text-neutral-400 dark:text-neutral-500">
                       <svg
                         className="h-3 w-3"
                         fill="none"

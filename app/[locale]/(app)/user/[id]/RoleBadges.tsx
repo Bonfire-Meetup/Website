@@ -18,9 +18,10 @@ interface RoleBadgesProps {
 const roleConfig = {
   [USER_ROLES.CREW]: {
     labelKey: "crew" as const,
-    gradient: "from-blue-400 via-indigo-400 to-violet-400",
+    gradient:
+      "from-blue-500 via-indigo-500 to-violet-500 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400",
     glow: "rgba(99, 102, 241, 0.4)",
-    iconColor: "text-indigo-400",
+    iconColor: "text-indigo-500 dark:text-indigo-400",
     icon: (
       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
         <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
@@ -29,9 +30,10 @@ const roleConfig = {
   },
   [USER_ROLES.SPEAKER]: {
     labelKey: "speaker" as const,
-    gradient: "from-orange-400 via-rose-400 to-pink-400",
+    gradient:
+      "from-orange-500 via-rose-500 to-pink-500 dark:from-orange-400 dark:via-rose-400 dark:to-pink-400",
     glow: "rgba(251, 113, 133, 0.4)",
-    iconColor: "text-rose-400",
+    iconColor: "text-rose-500 dark:text-rose-400",
     icon: (
       <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
         <path
@@ -63,7 +65,7 @@ export function RoleBadges({ roles, membershipTier }: RoleBadgesProps) {
               className="absolute -inset-1 rounded-full opacity-60 blur-md transition-opacity duration-300 group-hover:opacity-100"
               style={{ background: `linear-gradient(135deg, ${config.glow}, transparent)` }}
             />
-            <div className="relative flex items-center gap-2 rounded-full border border-white/10 bg-neutral-900/80 px-4 py-2 backdrop-blur-sm">
+            <div className="relative flex items-center gap-2 rounded-full border border-neutral-200 bg-white/80 px-4 py-2 backdrop-blur-sm dark:border-white/10 dark:bg-neutral-900/80">
               <span className={config.iconColor}>{config.icon}</span>
               <span
                 className={`bg-gradient-to-r ${config.gradient} bg-clip-text text-sm font-bold tracking-wide text-transparent uppercase`}
@@ -83,9 +85,9 @@ export function RoleBadges({ roles, membershipTier }: RoleBadgesProps) {
                 "linear-gradient(135deg, rgba(251, 146, 60, 0.5), rgba(244, 63, 94, 0.3))",
             }}
           />
-          <div className="relative flex items-center gap-2 rounded-full border border-amber-500/20 bg-neutral-900/80 px-4 py-2 backdrop-blur-sm">
-            <GuildIcon className="h-4 w-4 text-amber-400" />
-            <span className="bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 bg-clip-text text-sm font-bold tracking-wide text-transparent uppercase">
+          <div className="relative flex items-center gap-2 rounded-full border border-amber-500/20 bg-white/80 px-4 py-2 backdrop-blur-sm dark:bg-neutral-900/80">
+            <GuildIcon className="h-4 w-4 text-amber-500 dark:text-amber-400" />
+            <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-sm font-bold tracking-wide text-transparent uppercase dark:from-amber-300 dark:via-orange-300 dark:to-rose-300">
               {MEMBERSHIP_TIER_LABELS[membershipTier as MembershipTier] ??
                 t("tierFallback", { tier: membershipTier })}
             </span>

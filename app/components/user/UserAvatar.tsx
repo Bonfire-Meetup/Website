@@ -127,16 +127,33 @@ function generateAvatar(seed: string) {
     }
     case "wireframe": {
       const vertices: { x: number; y: number }[] = [];
-      const vertexCount = 7 + (nums[5] % 5);
-      for (let i = 0; i < vertexCount; i++) {
+      const vertexCount = 12 + (nums[5] % 6);
+      const gridCells = 3;
+      const cellSize = 100 / gridCells;
+      for (let gx = 0; gx < gridCells; gx++) {
+        for (let gy = 0; gy < gridCells; gy++) {
+          const idx = gx * gridCells + gy;
+          if (nums[(idx + 6) % 32] % 3 !== 0) {
+            const baseX = gx * cellSize;
+            const baseY = gy * cellSize;
+            vertices.push({
+              x: round(baseX + 8 + (nums[(idx + 8) % 32] % (cellSize - 16))),
+              y: round(baseY + 8 + (nums[(idx + 14) % 32] % (cellSize - 16))),
+            });
+          }
+        }
+      }
+      for (let i = vertices.length; i < vertexCount; i++) {
+        const angle = ((nums[i % 32] % 360) * Math.PI) / 180;
+        const radius = 15 + (nums[(i + 5) % 32] % 35);
         vertices.push({
-          x: 10 + (nums[6 + i] % 80),
-          y: 10 + (nums[12 + i] % 80),
+          x: round(50 + Math.cos(angle) * radius),
+          y: round(50 + Math.sin(angle) * radius),
         });
       }
       const edges: [number, number][] = [];
       for (let i = 0; i < vertices.length; i++) {
-        const connections = 1 + (nums[18 + i] % 3);
+        const connections = 2 + (nums[(18 + i) % 32] % 2);
         const distances = vertices
           .map((v, j) => ({
             j,
@@ -152,7 +169,7 @@ function generateAvatar(seed: string) {
         }
       }
       edges.forEach(([i, j], idx) => {
-        const opacity = round(0.2 + (nums[(idx + 20) % 32] % 25) / 100);
+        const opacity = round(0.15 + (nums[(idx + 20) % 32] % 20) / 100);
         patternElements.push(
           <line
             key={`edge-${i}-${j}`}
@@ -160,23 +177,23 @@ function generateAvatar(seed: string) {
             y1={`${vertices[i].y}%`}
             x2={`${vertices[j].x}%`}
             y2={`${vertices[j].y}%`}
-            stroke={idx % 3 === 0 ? accent : "#ffffff"}
-            strokeWidth={idx % 4 === 0 ? 1.5 : 1}
+            stroke={idx % 4 === 0 ? accent : "#ffffff"}
+            strokeWidth={idx % 5 === 0 ? 1.5 : 0.75}
             opacity={opacity}
             strokeLinecap="round"
           />,
         );
       });
       vertices.forEach((v, i) => {
-        const isHighlight = nums[24 + i] % 4 === 0;
+        const isHighlight = nums[(24 + i) % 32] % 5 === 0;
         patternElements.push(
           <circle
             key={`vertex-glow-${i}`}
             cx={`${v.x}%`}
             cy={`${v.y}%`}
-            r={isHighlight ? "4%" : "2.5%"}
+            r={isHighlight ? "3.5%" : "2%"}
             fill={isHighlight ? accent : "#ffffff"}
-            opacity={0.3}
+            opacity={0.25}
           />,
         );
         patternElements.push(
@@ -184,9 +201,9 @@ function generateAvatar(seed: string) {
             key={`vertex-${i}`}
             cx={`${v.x}%`}
             cy={`${v.y}%`}
-            r={isHighlight ? "2%" : "1.5%"}
+            r={isHighlight ? "1.5%" : "1%"}
             fill={isHighlight ? accent : "#ffffff"}
-            opacity={isHighlight ? 0.9 : 0.7}
+            opacity={isHighlight ? 0.9 : 0.6}
           />,
         );
       });

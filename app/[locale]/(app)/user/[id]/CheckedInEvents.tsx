@@ -76,7 +76,7 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
     <section className="relative">
       <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-blue-500/5 to-transparent" />
 
-      <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-neutral-900/50 backdrop-blur-sm">
+      <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-white/5 dark:bg-neutral-900/50">
         <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
@@ -88,7 +88,7 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
               </div>
             </div>
             <div>
-              <h2 className="text-xl font-black tracking-tight text-white sm:text-2xl">
+              <h2 className="text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
                 {t("checkedIn.title")}
               </h2>
               <p className="text-sm text-neutral-500">
@@ -124,18 +124,18 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
               return (
                 <div
                   key={event.id}
-                  className="group relative overflow-hidden rounded-xl border border-white/5 bg-neutral-800/30 p-4 transition-all duration-300 hover:border-blue-500/20 hover:bg-neutral-800/50"
+                  className="group relative overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 p-4 transition-all duration-300 hover:border-blue-500/20 hover:bg-neutral-100 dark:border-white/5 dark:bg-neutral-800/30 dark:hover:bg-neutral-800/50"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 space-y-2">
-                      <h3 className="text-sm leading-snug font-bold text-white sm:text-base">
+                      <h3 className="text-sm leading-snug font-bold text-neutral-900 sm:text-base dark:text-white">
                         {event.title}
                       </h3>
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-400">
+                      <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
                         <span className="flex items-center gap-1.5">
                           <svg
-                            className="h-3 w-3 text-neutral-500"
+                            className="h-3 w-3 text-neutral-400 dark:text-neutral-500"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -157,7 +157,7 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
                         {event.date && (
                           <span className="flex items-center gap-1.5">
                             <svg
-                              className="h-3 w-3 text-neutral-500"
+                              className="h-3 w-3 text-neutral-400 dark:text-neutral-500"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -174,7 +174,7 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
                         )}
                       </div>
                       {formattedCheckedInAt && (
-                        <div className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-400">
+                        <div className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400">
                           <svg
                             className="h-3 w-3"
                             fill="none"
@@ -193,7 +193,10 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
                       )}
                     </div>
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-400/20 to-indigo-500/20 ring-1 ring-blue-500/20">
-                      <CheckIcon className="h-5 w-5 text-blue-400" aria-hidden="true" />
+                      <CheckIcon
+                        className="h-5 w-5 text-blue-500 dark:text-blue-400"
+                        aria-hidden="true"
+                      />
                     </div>
                   </div>
                 </div>
