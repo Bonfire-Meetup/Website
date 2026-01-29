@@ -22,3 +22,11 @@ require_env() {
 info() {
   echo "▶ $*"
 }
+
+group() {
+  echo "::group::$1"
+}
+
+endgroup() {
+  echo "::endgroup::"
+}
