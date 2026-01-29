@@ -61,7 +61,7 @@ jobs:
           set -euo pipefail
           test -n "$VERCEL_TOKEN"
           test -f .vercel/.env.production.local
-          bunx dotenv -e .vercel/.env.production.local -- \
+          bunx dotenv-cli -e .vercel/.env.production.local -- \
             bunx vercel@latest build --prod --token="$VERCEL_TOKEN"
 
       - name: Run Drizzle migrations (prod)
