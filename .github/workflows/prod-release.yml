@@ -39,6 +39,15 @@ jobs:
           v="${GITHUB_SHA::12}"
           echo "NEXT_PUBLIC_BNF_VERSION=$v" >> "$GITHUB_ENV"
 
+      - name: Vercel pull project settings (prod)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          set -euo pipefail
+          bunx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
+
       - name: Vercel build (prod) → .vercel/output
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
