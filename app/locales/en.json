@@ -109,6 +109,28 @@
       "rateLimitError": "Too many requests. Please try again in a minute.",
       "privacyNote": "By subscribing, you agree to receive occasional emails. Unsubscribe anytime.",
       "subscribeAnother": "Subscribe another email"
+    },
+    "newsletterUnsubscribe": {
+      "title": "Unsubscribe",
+      "subtitle": "Manage your newsletter subscription preferences",
+      "confirmMessage": "Are you sure you want to unsubscribe from the Bonfire newsletter? You'll no longer receive updates about upcoming events and new recordings.",
+      "unsubscribe": "Unsubscribe",
+      "unsubscribing": "Unsubscribing...",
+      "cancel": "Keep me subscribed",
+      "backToHome": "Back to home",
+      "success": {
+        "title": "Successfully unsubscribed",
+        "message": "{email} has been removed from our newsletter mailing list. You can always resubscribe later!"
+      },
+      "error": {
+        "title": "Unable to unsubscribe"
+      },
+      "errors": {
+        "invalidToken": "Invalid unsubscribe link",
+        "notSubscribed": "You are not subscribed to our newsletter",
+        "generic": "Something went wrong. Please try again later.",
+        "missingToken": "Invalid or missing unsubscribe token"
+      }
     }
   },
   "events": {

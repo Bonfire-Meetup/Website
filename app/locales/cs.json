@@ -109,6 +109,28 @@
       "rateLimitError": "Chvilku brzdi 🙂 Zkus to za minutku.",
       "privacyNote": "Občas ti pošleme update. Odhlásit se můžeš kdykoliv.",
       "subscribeAnother": "Přihlásit další e-mail"
+    },
+    "newsletterUnsubscribe": {
+      "title": "Odhlášení",
+      "subtitle": "Správa předvoleb odběru newsletteru",
+      "confirmMessage": "Jsi si jistý, že se chceš odhlásit od newsletteru Bonfire? Přijdeš o informace o nadcházejících akcích a nových záznamech.",
+      "unsubscribe": "Odhlásit se",
+      "unsubscribing": "Odhlašuji...",
+      "cancel": "Nechci se odhlásit",
+      "backToHome": "Zpět na úvod",
+      "success": {
+        "title": "Úspěšně odhlášeno",
+        "message": "{email} byl odebrán z našeho mailing listu. Kdykoliv se můžeš znovu přihlásit!"
+      },
+      "error": {
+        "title": "Odhlášení se nezdařilo"
+      },
+      "errors": {
+        "invalidToken": "Neplatný odkaz pro odhlášení",
+        "notSubscribed": "Nejsi přihlášen k odběru našeho newsletteru",
+        "generic": "Něco se pokazilo. Zkus to prosím později.",
+        "missingToken": "Neplatný nebo chybějící token pro odhlášení"
+      }
     }
   },
   "events": {
