@@ -27,8 +27,10 @@ let isLoggingOut = false;
 let lastActivityTimestamp = Date.now();
 
 let consecutiveFailures = 0;
+let lastFailureTimestamp = 0;
 
 const MAX_CONSECUTIVE_FAILURES = 3;
+const CIRCUIT_RESET_MS = 60000;
 
 type RefreshListener = (token: string | null) => void;
 const refreshListeners = new Set<RefreshListener>();
@@ -59,7 +61,16 @@ export const hasDeviceWoken = (thresholdMs = 5000): boolean => {
 
 export const getConsecutiveFailures = () => consecutiveFailures;
 
-export const isCircuitOpen = () => consecutiveFailures >= MAX_CONSECUTIVE_FAILURES;
+export const isCircuitOpen = () => {
+  if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
+    if (Date.now() - lastFailureTimestamp > CIRCUIT_RESET_MS) {
+      consecutiveFailures = 0;
+      return false;
+    }
+    return true;
+  }
+  return false;
+};
 
 export const setLoggingOut = (value: boolean) => {
   isLoggingOut = value;
@@ -188,8 +199,13 @@ export const refreshAccessToken = (): Promise<string | null> => {
 
       if (!response.ok) {
         consecutiveFailures++;
-        clearAccessToken();
-        notifyTokenRefreshed(null);
+        lastFailureTimestamp = Date.now();
+
+        if (response.status === 401) {
+          clearAccessToken();
+          notifyTokenRefreshed(null);
+        }
+
         return null;
       }
 
@@ -204,11 +220,11 @@ export const refreshAccessToken = (): Promise<string | null> => {
       }
 
       consecutiveFailures++;
-      notifyTokenRefreshed(null);
+      lastFailureTimestamp = Date.now();
       return null;
     } catch {
       consecutiveFailures++;
-      notifyTokenRefreshed(null);
+      lastFailureTimestamp = Date.now();
       return null;
     }
   };

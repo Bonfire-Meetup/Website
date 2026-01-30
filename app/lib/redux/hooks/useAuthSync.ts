@@ -73,10 +73,12 @@ export function useAuthSync() {
     const token = readAccessToken();
 
     if (!token) {
+      await performRefresh();
       return;
     }
 
     if (!isAccessTokenValid(token)) {
+      clearAccessToken();
       await performRefresh();
       return;
     }
@@ -122,8 +124,10 @@ export function useAuthSync() {
         if (isAccessTokenExpiringSoon(token, REFRESH_BUFFER_SECONDS)) {
           await performRefresh();
         }
-      } else if (token) {
-        clearAccessToken();
+      } else {
+        if (token) {
+          clearAccessToken();
+        }
         await performRefresh();
       }
 
