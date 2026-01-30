@@ -131,6 +131,13 @@
         "generic": "Něco se pokazilo. Zkus to prosím později.",
         "missingToken": "Neplatný nebo chybějící token pro odhlášení"
       }
+    },
+    "newsletterArchive": {
+      "eyebrow": "Newsletter",
+      "testBannerTitle": "Testovací e-mail",
+      "testBannerMessage": "Tento newsletter byl odeslán jako test",
+      "updateLabel": "Update {number}",
+      "sentOn": "Odesláno {sentDate, date, long}"
     }
   },
   "events": {

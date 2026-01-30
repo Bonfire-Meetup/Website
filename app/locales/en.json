@@ -131,6 +131,13 @@
         "generic": "Something went wrong. Please try again later.",
         "missingToken": "Invalid or missing unsubscribe token"
       }
+    },
+    "newsletterArchive": {
+      "eyebrow": "Newsletter",
+      "testBannerTitle": "Test Email",
+      "testBannerMessage": "This newsletter was sent as a test",
+      "updateLabel": "Update {number}",
+      "sentOn": "Sent {sentDate, date, long}"
     }
   },
   "events": {
