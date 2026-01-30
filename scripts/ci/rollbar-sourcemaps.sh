@@ -11,7 +11,6 @@ case "${PROD_URL:-}" in
   http://*|https://*) ;;
   "")
     info "PROD_URL unset; skipping source map upload"
-    endgroup
     exit 0
     ;;
   *)
@@ -21,7 +20,6 @@ esac
 
 if [ -z "${BNF_ROLLBAR_POST_SERVER_TOKEN:-}" ] || [ -z "${PROD_URL:-}" ]; then
   info "BNF_ROLLBAR_POST_SERVER_TOKEN or PROD_URL unset; skipping source map upload"
-  endgroup
   exit 0
 fi
 
@@ -47,7 +45,6 @@ MAP_COUNT=$(find "$MAPS_COPY_DIR" \( -name "*.js.map" -o -name "*.css.map" \) 2>
 if [ "$MAP_COUNT" -eq 0 ]; then
   info "No source maps found; skipping upload and cleanup"
   rm -rf "$MAPS_COPY_DIR"
-  endgroup
   exit 0
 fi
 
@@ -57,12 +54,10 @@ find "$STATIC_ROOT" \( -name "*.js.map" -o -name "*.css.map" \) -delete
 find "$STATIC_ROOT" -name "*.js" -type f -exec sed -i -E '/^\/\/# sourceMappingURL=|^\/\*# sourceMappingURL=/d' {} \;
 find "$STATIC_ROOT" -name "*.css" -type f -exec sed -i -E '/^\/\*# sourceMappingURL=/d' {} \;
 
-HOST="${PROD_URL#*://}"
-HOST="${HOST%%/*}"
-BASE="//${HOST}"
+BASE="${PROD_URL%/}"
+info "Uploading to Rollbar (base=$BASE, version=$BNF_VERSION)"
 
 COUNT=0
-info "Uploading to Rollbar"
 
 while IFS= read -r -d "" map_path; do
   rel_path="${map_path#$MAPS_COPY_DIR/}"
