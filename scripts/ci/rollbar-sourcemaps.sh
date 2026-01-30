@@ -7,7 +7,17 @@ source "$SCRIPT_DIR/common.sh"
 
 MAPS_COPY_DIR=".rollbar-sourcemaps"
 
-group "Rollbar source maps"
+case "${PROD_URL:-}" in
+  http://*|https://*) ;;
+  "")
+    info "PROD_URL unset; skipping source map upload"
+    endgroup
+    exit 0
+    ;;
+  *)
+    die "PROD_URL must start with http:// or https:// (got: $PROD_URL)"
+    ;;
+esac
 
 if [ -z "${BNF_ROLLBAR_POST_SERVER_TOKEN:-}" ] || [ -z "${PROD_URL:-}" ]; then
   info "BNF_ROLLBAR_POST_SERVER_TOKEN or PROD_URL unset; skipping source map upload"
@@ -79,5 +89,3 @@ rm -rf "$MAPS_COPY_DIR"
 if [ "$COUNT" -gt 0 ]; then
   info "Uploaded $COUNT source map(s) to Rollbar (version=$BNF_VERSION)"
 fi
-
-endgroup

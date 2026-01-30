@@ -231,6 +231,7 @@
     "*.min.js",
     "coverage/**",
     "scripts/**",
-    "db/drizzle/migrations/**"
+    "db/drizzle/migrations/**",
+    "next-env.d.ts"
   ]
 }

@@ -15,6 +15,7 @@ require_env GITHUB_SHA
 require_env VERCEL_TOKEN
 require_env VERCEL_ORG_ID
 require_env VERCEL_PROJECT_ID
+require_env PROD_URL
 endgroup
 
 group "Build version"
@@ -29,6 +30,12 @@ group "Vercel pull"
 info "Pulling Vercel project settings"
 bunx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
 require_file ".vercel/.env.production.local"
+
+group "Vercel env sanity"
+grep -q '^NEXT_PUBLIC_' .vercel/.env.production.local || info "No NEXT_PUBLIC_* in pulled env (suspicious)"
+grep -q '^BNF_NEON_MIGRATION_DATABASE_URL=' .vercel/.env.production.local || info "No migration DB URL in pulled env (migrations may fail)"
+grep -q '^BNF_ROLLBAR_POST_SERVER_TOKEN=' .vercel/.env.production.local || info "No Rollbar token in pulled env (sourcemap upload may fail)"
+endgroup
 
 info "Injecting build version into env"
 {
@@ -45,7 +52,10 @@ bunx dotenv-cli -e .vercel/.env.production.local -- \
   bunx vercel@latest build --prod --token="$VERCEL_TOKEN"
 endgroup
 
-bash "$SCRIPT_DIR/rollbar-sourcemaps.sh"
+group "Rollbar sourcemaps"
+bunx dotenv-cli -e .vercel/.env.production.local -- \
+  bash "$SCRIPT_DIR/rollbar-sourcemaps.sh"
+endgroup
 
 group "Migrations"
 info "Checking migrations"

@@ -41,6 +41,7 @@
     "coverage/**",
     "*.lock",
     "bun.lock",
-    "db/drizzle/migrations/**"
+    "db/drizzle/migrations/**",
+    "next-env.d.ts"
   ]
 }
