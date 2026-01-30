@@ -4,7 +4,9 @@ import type { NewsletterSection, NewsletterWizardData, WizardStep } from "./type
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
+import { ArrowLeftIcon, ArrowRightIcon } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { logWarn } from "@/lib/utils/log-client";
 
 import { AudienceStep } from "./AudienceStep";
@@ -190,7 +192,7 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
   if (!mounted) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-300 border-t-violet-600" />
+        <LoadingSpinner size="lg" className="text-fuchsia-600 dark:text-fuchsia-400" />
       </div>
     );
   }
@@ -199,7 +201,7 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
     <div className="space-y-8">
       <WizardProgress currentStep={currentStep} steps={STEPS} />
 
-      <div className="rounded-2xl border border-neutral-200/80 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-neutral-900/50">
+      <div className="glass-card no-hover-pop overflow-hidden rounded-[24px] p-6 sm:p-8">
         {currentStep === "editor" && (
           <EditorStep
             data={data}
@@ -221,13 +223,19 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
         )}
       </div>
 
-      <div className="flex items-center justify-between">
+      <nav
+        className="flex items-center justify-between gap-3 rounded-xl border border-neutral-200/80 bg-white/60 px-3 py-2.5 sm:px-4 dark:border-white/10 dark:bg-white/5"
+        aria-label={t("stepNavigation")}
+      >
         <Button
-          variant="ghost"
+          variant={currentStepIndex === 0 ? "ghost" : "glass-secondary"}
+          size="sm"
           onClick={handleBack}
           disabled={currentStepIndex === 0}
-          className="text-neutral-600 disabled:opacity-40 dark:text-neutral-400"
+          className="min-w-[5.5rem] gap-1.5 !px-4 !py-2 text-sm text-neutral-600 disabled:opacity-40 sm:min-w-[6rem] dark:text-neutral-400"
+          aria-label={t("back")}
         >
+          <ArrowLeftIcon className="h-3.5 w-3.5 shrink-0" />
           {t("back")}
         </Button>
 
@@ -235,12 +243,16 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
           <Button
             onClick={handleNext}
             disabled={!canProceed}
-            className="bg-gradient-to-r from-violet-600 to-rose-500 text-white hover:from-violet-700 hover:to-rose-600 disabled:opacity-50"
+            variant="primary"
+            size="sm"
+            className="min-w-[5.5rem] gap-1.5 sm:min-w-[6rem]"
+            aria-label={t("next")}
           >
             {t("next")}
+            <ArrowRightIcon className="h-3.5 w-3.5 shrink-0" />
           </Button>
         )}
-      </div>
+      </nav>
     </div>
   );
 }

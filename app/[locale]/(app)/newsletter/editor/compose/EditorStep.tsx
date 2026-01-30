@@ -71,7 +71,7 @@ export function EditorStep({
         </h2>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("primaryNewsHint")}</p>
 
-        <div className="space-y-4 rounded-xl border border-neutral-200/80 bg-neutral-50/50 p-4 dark:border-white/10 dark:bg-neutral-800/50">
+        <div className="space-y-4 rounded-xl border border-neutral-200/80 bg-white/60 p-4 dark:border-white/10 dark:bg-white/5">
           <div className="space-y-2">
             <label htmlFor="primary-title" className="form-label">
               {t("newsTitle")} *
@@ -176,7 +176,7 @@ export function EditorStep({
         {data.secondaryNews.map((section, index) => (
           <div
             key={section.id}
-            className="space-y-4 rounded-xl border border-neutral-200/80 bg-neutral-50/50 p-4 dark:border-white/10 dark:bg-neutral-800/50"
+            className="space-y-4 rounded-xl border border-neutral-200/80 bg-white/60 p-4 dark:border-white/10 dark:bg-white/5"
           >
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-neutral-900 dark:text-white">

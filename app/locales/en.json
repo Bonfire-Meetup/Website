@@ -1234,12 +1234,14 @@
     }
   },
   "newsletterEditor": {
+    "eyebrow": "Editor",
     "title": "Newsletter Editor",
     "step_editor": "Content",
     "step_audience": "Audience",
     "step_confirmation": "Confirm",
     "back": "Back",
     "next": "Next",
+    "stepNavigation": "Wizard navigation",
     "subjectLabel": "Newsletter Details",
     "subject": "Subject",
     "subjectPlaceholder": "Enter newsletter subject...",
@@ -1280,6 +1282,7 @@
     "addEmail": "Add",
     "confirmationTitle": "Review & Send",
     "confirmationHint": "Review your newsletter before sending",
+    "sendConfirmLabel": "I have reviewed the newsletter and audience and confirm I want to send to the selected recipients",
     "previewSubject": "Subject",
     "previewPreviewText": "Preview Text",
     "previewContent": "Content",

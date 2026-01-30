@@ -20,6 +20,7 @@ export function ConfirmationStep({ data, onSendComplete }: ConfirmationStepProps
   const t = useTranslations("newsletterEditor");
   const [isSending, setIsSending] = useState(false);
   const [isTestSending, setIsTestSending] = useState(false);
+  const [sendConfirmed, setSendConfirmed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -109,85 +110,100 @@ export function ConfirmationStep({ data, onSendComplete }: ConfirmationStepProps
         </div>
       )}
 
-      <div className="space-y-4 rounded-xl border border-neutral-200/80 bg-neutral-50/50 p-4 dark:border-white/10 dark:bg-neutral-800/50">
-        <h3 className="font-semibold text-neutral-900 dark:text-white">{t("previewSubject")}</h3>
-        <p className="text-neutral-700 dark:text-neutral-300">{data.subject}</p>
+      <div className="mx-auto max-w-[600px] overflow-hidden rounded-2xl border border-neutral-200/90 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:border-white/10 dark:bg-neutral-900 dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]">
+        <div className="border-b border-neutral-200/80 px-5 py-4 dark:border-white/10">
+          <p className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
+            {t("previewSubject")}
+          </p>
+          <p className="mt-1 font-semibold text-neutral-900 dark:text-white">{data.subject}</p>
+          {data.previewText && (
+            <p className="mt-1.5 line-clamp-2 text-sm text-neutral-500 dark:text-neutral-400">
+              {data.previewText}
+            </p>
+          )}
+        </div>
 
-        {data.previewText && (
-          <>
-            <h3 className="font-semibold text-neutral-900 dark:text-white">
-              {t("previewPreviewText")}
-            </h3>
-            <p className="text-neutral-700 dark:text-neutral-300">{data.previewText}</p>
-          </>
-        )}
-
-        <h3 className="font-semibold text-neutral-900 dark:text-white">{t("previewContent")}</h3>
-        <div className="space-y-4">
+        <div className="divide-y divide-neutral-100 dark:divide-white/5">
           {allSections.map((section, index) => (
-            <div
-              key={section.id}
-              className="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800"
-            >
-              <div className="flex items-center gap-2">
-                <span className="rounded bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-800 dark:bg-violet-500/20 dark:text-violet-200">
-                  {index === 0 ? t("primaryLabel") : t("secondaryLabel", { number: index })}
-                </span>
-              </div>
-              <h4 className="mt-2 font-semibold text-neutral-900 dark:text-white">
-                {section.title}
-              </h4>
-              <p className="mt-1 text-sm whitespace-pre-wrap text-neutral-600 dark:text-neutral-400">
-                {section.text.length > 200 ? `${section.text.slice(0, 200)}...` : section.text}
-              </p>
+            <div key={section.id} className="bg-white dark:bg-neutral-900">
+              <div className="h-1 w-full shrink-0 bg-gradient-to-r from-fuchsia-700 via-orange-500 to-red-600" />
+
               {section.imageUrl && (
-                <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-500">
-                  {t("hasImage")}
-                </p>
+                <div className="relative h-40 w-full bg-neutral-100 dark:bg-neutral-800">
+                  <img
+                    src={section.imageUrl}
+                    alt=""
+                    className="h-full w-full object-cover object-center"
+                  />
+                </div>
               )}
-              {section.ctaLabel && section.ctaHref && (
-                <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-500">
-                  {t("hasCta", { label: section.ctaLabel })}
+
+              <div className="px-5 py-4">
+                {!section.imageUrl && index > 0 && (
+                  <p className="mb-2 text-[10px] font-bold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
+                    {t("secondaryLabel", { number: index })}
+                  </p>
+                )}
+                <h3 className="font-semibold text-neutral-900 dark:text-white">{section.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed whitespace-pre-wrap text-neutral-600 dark:text-neutral-400">
+                  {section.text.length > 280 ? `${section.text.slice(0, 280)}…` : section.text}
                 </p>
-              )}
+                {section.ctaLabel && section.ctaHref && (
+                  <p className="mt-3">
+                    <span className="inline-flex rounded-lg bg-gradient-to-r from-fuchsia-700 via-orange-500 to-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm">
+                      {section.ctaLabel}
+                    </span>
+                  </p>
+                )}
+              </div>
             </div>
           ))}
         </div>
 
-        <h3 className="font-semibold text-neutral-900 dark:text-white">{t("previewAudience")}</h3>
-        <p className="text-neutral-700 dark:text-neutral-300">{getAudienceLabel()}</p>
-        {data.audience.manualEmails.length > 0 && (
-          <div className="mt-2">
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              {t("manualEmailsList")}:
-            </p>
-            <div className="mt-1 flex flex-wrap gap-1">
-              {data.audience.manualEmails.map((email) => (
-                <span
-                  key={email}
-                  className="rounded bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300"
-                >
-                  {email}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="border-t border-neutral-200/80 px-5 py-3 dark:border-white/10">
+          <p className="text-[11px] text-neutral-400 dark:text-neutral-500">
+            {t("previewAudience")}: {getAudienceLabel()}
+            {data.audience.manualEmails.length > 0 && (
+              <span className="mt-1 block truncate text-neutral-500 dark:text-neutral-400">
+                {data.audience.manualEmails.join(", ")}
+              </span>
+            )}
+          </p>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-4 sm:flex-row">
+      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-neutral-200/80 bg-white/60 px-4 py-3 sm:px-5 dark:border-white/10 dark:bg-white/5">
+        <input
+          type="checkbox"
+          checked={sendConfirmed}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSendConfirmed(e.target.checked)}
+          className="mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-300 text-fuchsia-600 accent-fuchsia-600 focus:ring-fuchsia-500 dark:border-neutral-600 dark:accent-fuchsia-500"
+          aria-describedby="send-confirm-description"
+        />
+        <span
+          id="send-confirm-description"
+          className="text-sm text-neutral-700 dark:text-neutral-300"
+        >
+          {t("sendConfirmLabel")}
+        </span>
+      </label>
+
+      <div className="flex flex-col gap-3 sm:flex-row">
         <Button
           onClick={() => handleSend(true)}
           disabled={isTestSending || isSending}
-          variant="secondary"
+          variant="glass-secondary"
+          size="sm"
           className="flex-1"
         >
           {isTestSending ? t("testSending") : t("testSend")}
         </Button>
         <Button
           onClick={() => handleSend(false)}
-          disabled={isTestSending || isSending}
-          className="flex-1 bg-gradient-to-r from-violet-600 to-rose-500 text-white hover:from-violet-700 hover:to-rose-600 disabled:opacity-50"
+          disabled={!sendConfirmed || isTestSending || isSending}
+          variant="primary"
+          size="sm"
+          className="flex-1"
         >
           {isSending ? t("sending") : t("send")}
         </Button>

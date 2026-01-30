@@ -1245,12 +1245,14 @@
     }
   },
   "newsletterEditor": {
+    "eyebrow": "Editor",
     "title": "Editor newsletteru",
     "step_editor": "Obsah",
     "step_audience": "Publikum",
     "step_confirmation": "Potvrdit",
     "back": "Zpět",
     "next": "Další",
+    "stepNavigation": "Navigace průvodce",
     "subjectLabel": "Detaily newsletteru",
     "subject": "Předmět",
     "subjectPlaceholder": "Zadejte předmět newsletteru...",
@@ -1291,6 +1293,7 @@
     "addEmail": "Přidat",
     "confirmationTitle": "Kontrola a odeslání",
     "confirmationHint": "Zkontrolujte newsletter před odesláním",
+    "sendConfirmLabel": "Zkontroloval(a) jsem newsletter a publikum a potvrzuji odeslání vybraným příjemcům",
     "previewSubject": "Předmět",
     "previewPreviewText": "Náhledový text",
     "previewContent": "Obsah",
