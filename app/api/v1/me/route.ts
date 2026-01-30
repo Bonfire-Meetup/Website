@@ -28,13 +28,13 @@ export const GET = async (request: Request) =>
       }
 
       const fingerprint = getEmailFingerprint(user.email);
-      const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
       const [boosts, attempts, boostAllocation] = await Promise.all([
         getUserBoosts(auth.userId),
         fingerprint.emailHash
           ? getAuthAttemptsByEmailHash({
-              accountCreatedAt: new Date(user.createdAt),
+              accountCreatedAt: user.createdAt,
               emailHash: fingerprint.emailHash,
               limit: 50,
               since,
@@ -74,9 +74,10 @@ export const GET = async (request: Request) =>
         userAgentSummary: attempt.userAgentSummary,
       }));
 
+      const lastAllocationDateObj = new Date(boostAllocation.lastAllocationDate);
       const nextMonth = new Date(
-        boostAllocation.lastAllocationDate.getFullYear(),
-        boostAllocation.lastAllocationDate.getMonth() + 1,
+        lastAllocationDateObj.getFullYear(),
+        lastAllocationDateObj.getMonth() + 1,
         1,
       );
 

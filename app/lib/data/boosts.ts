@@ -113,10 +113,10 @@ export const getUserBoosts = async (userId: string) => {
 
 interface BoostAllocation {
   availableBoosts: number;
-  lastAllocationDate: Date;
+  lastAllocationDate: string;
 }
 
-const formatDateString = (date: Date): string => date.toISOString().split("T")[0];
+const formatDateString = (date: Date): string => date.toISOString();
 
 export const getUserBoostAllocation = async (userId: string): Promise<BoostAllocation> => {
   try {
@@ -142,7 +142,7 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
 
       return {
         availableBoosts: BOOST_CONFIG.BOOSTS_PER_MONTH,
-        lastAllocationDate: currentDate,
+        lastAllocationDate: currentDateStr,
       };
     }
 
@@ -159,13 +159,13 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
         .update(userBoostAllocation)
         .set({
           availableBoosts: BOOST_CONFIG.MAX_BOOSTS,
-          updatedAt: new Date(),
+          updatedAt: new Date().toISOString(),
         })
         .where(eq(userBoostAllocation.userId, userId));
 
       return {
         availableBoosts: BOOST_CONFIG.MAX_BOOSTS,
-        lastAllocationDate: lastAllocationDate,
+        lastAllocationDate: allocation.lastAllocationDate,
       };
     }
 
@@ -180,19 +180,19 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
         .set({
           availableBoosts: newAvailableBoosts,
           lastAllocationDate: currentDateStr,
-          updatedAt: new Date(),
+          updatedAt: new Date().toISOString(),
         })
         .where(eq(userBoostAllocation.userId, userId));
 
       return {
         availableBoosts: newAvailableBoosts,
-        lastAllocationDate: currentDate,
+        lastAllocationDate: currentDateStr,
       };
     }
 
     return {
       availableBoosts: allocation.availableBoosts,
-      lastAllocationDate: lastAllocationDate,
+      lastAllocationDate: allocation.lastAllocationDate,
     };
   } catch (error) {
     logError("data.boosts.allocation_fetch_failed", error, { userId });
@@ -210,7 +210,7 @@ export const consumeBoost = async (
       .update(userBoostAllocation)
       .set({
         availableBoosts: sql`${userBoostAllocation.availableBoosts} - 1`,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       })
       .where(
         and(
@@ -238,7 +238,7 @@ export const refundBoost = async (userId: string): Promise<number> => {
       .update(userBoostAllocation)
       .set({
         availableBoosts: sql`LEAST(${userBoostAllocation.availableBoosts} + 1, ${BOOST_CONFIG.MAX_BOOSTS})`,
-        updatedAt: new Date(),
+        updatedAt: new Date().toISOString(),
       })
       .where(eq(userBoostAllocation.userId, userId))
       .returning({ availableBoosts: userBoostAllocation.availableBoosts });

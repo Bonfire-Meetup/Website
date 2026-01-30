@@ -138,7 +138,7 @@ const issueTokens = async (
   const accessTokenJti = crypto.randomUUID();
   const accessToken = await signAccessToken(userId, accessTokenJti, roles, membershipTier);
   const accessExpiresIn = getAccessTokenTtlSeconds();
-  const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000);
+  const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000).toISOString();
 
   await insertAuthToken({
     expiresAt: accessExpiresAt,
@@ -151,7 +151,7 @@ const issueTokens = async (
   const refreshToken = generateRefreshToken();
   const refreshTokenHash = hashRefreshToken(refreshToken);
   const refreshExpiresIn = getRefreshTokenTtlSeconds();
-  const refreshExpiresAt = new Date(Date.now() + refreshExpiresIn * 1000);
+  const refreshExpiresAt = new Date(Date.now() + refreshExpiresIn * 1000).toISOString();
 
   await insertRefreshToken({
     expiresAt: refreshExpiresAt,
@@ -237,12 +237,12 @@ const handleRefreshTokenGrant = async (
     return unauthorizedResponse("revoked_refresh_token");
   }
 
-  if (refreshToken.expiresAt <= new Date()) {
+  if (new Date(refreshToken.expiresAt) <= new Date()) {
     return unauthorizedResponse("expired_refresh_token");
   }
 
   if (refreshToken.usedAt) {
-    const usedAtTime = refreshToken.usedAt.getTime();
+    const usedAtTime = new Date(refreshToken.usedAt).getTime();
     const now = Date.now();
     const reuseWindowMs = getRefreshTokenReuseWindowSeconds() * 1000;
 
@@ -250,7 +250,7 @@ const handleRefreshTokenGrant = async (
       logError("auth.token.refresh.token_reuse_detected", new Error("Token reuse detected"), {
         ...clientFingerprint,
         tokenFamilyId: refreshToken.tokenFamilyId,
-        usedAt: refreshToken.usedAt.toISOString(),
+        usedAt: refreshToken.usedAt,
         requestId,
       });
 

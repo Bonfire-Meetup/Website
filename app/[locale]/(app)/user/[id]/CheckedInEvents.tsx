@@ -16,7 +16,7 @@ interface CheckInEvent {
   location: string;
   date: string | null;
   type: "upcoming" | "episode";
-  checkedInAt?: Date;
+  checkedInAt?: string;
 }
 
 export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
@@ -118,7 +118,7 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
                     day: "numeric",
                     month: "short",
                     year: "numeric",
-                  }).format(event.checkedInAt)
+                  }).format(new Date(event.checkedInAt))
                 : null;
 
               return (

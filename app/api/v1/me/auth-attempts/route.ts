@@ -28,7 +28,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ items: [] });
       }
 
-      const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
       const attempts = await getAuthAttemptsByEmailHash({
         accountCreatedAt: user.createdAt,
         emailHash: fingerprint.emailHash,
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
         userId: auth.userId,
       });
       const items = attempts.map((attempt) => ({
-        createdAt: attempt.createdAt.toISOString(),
+        createdAt: attempt.createdAt,
         id: attempt.id,
         method: attempt.method,
         outcome: attempt.outcome,

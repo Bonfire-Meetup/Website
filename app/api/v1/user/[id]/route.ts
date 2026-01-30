@@ -73,7 +73,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
             location: upcomingEvent.location,
             date: upcomingEvent.date,
             type: "upcoming" as const,
-            checkedInAt: checkIns.find((ci) => ci.eventId === eventId)?.createdAt.toISOString(),
+            checkedInAt: checkIns.find((ci) => ci.eventId === eventId)?.createdAt,
           });
         } else {
           const episode = getEpisodeById(eventId);
@@ -84,7 +84,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
               location: episode.city === "prague" ? "Prague" : "Zlin",
               date: episode.date,
               type: "episode" as const,
-              checkedInAt: checkIns.find((ci) => ci.eventId === eventId)?.createdAt.toISOString(),
+              checkedInAt: checkIns.find((ci) => ci.eventId === eventId)?.createdAt,
             });
           }
         }
@@ -106,7 +106,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
           items: events,
         },
         publicId: id,
-        createdAt: user.createdAt.toISOString(),
+        createdAt: user.createdAt,
         name: user.name,
         roles: userRoles,
       });

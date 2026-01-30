@@ -99,7 +99,7 @@ export const createEmailChallenge = async (config: ChallengeRequestConfig) => {
   const codeHash = hashOtpCode(normalizedEmail, code);
   const challengeToken = generateChallengeToken();
   const challengeTokenHash = hashOtpCode(normalizedEmail, challengeToken);
-  const expiresAt = new Date(Date.now() + ttlMs);
+  const expiresAt = new Date(Date.now() + ttlMs).toISOString();
 
   try {
     await sendEmail(normalizedEmail, code);

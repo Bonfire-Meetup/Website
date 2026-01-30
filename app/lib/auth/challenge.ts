@@ -42,7 +42,7 @@ export const verifyOtpChallenge = async ({
     return { ok: false, reason: "used" };
   }
 
-  if (challenge.expiresAt <= new Date()) {
+  if (new Date(challenge.expiresAt) <= new Date()) {
     if (timingGuard) {
       timingSafeMatch(hashOtpCode(email, code), timingGuard);
     }

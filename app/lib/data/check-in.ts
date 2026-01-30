@@ -49,7 +49,7 @@ export const isUserCheckedIn = async (userId: string, eventId: string): Promise<
 
 export const getUserCheckIns = async (
   userId: string,
-): Promise<{ eventId: string; createdAt: Date }[]> => {
+): Promise<{ eventId: string; createdAt: string }[]> => {
   try {
     const rows = await db()
       .select({

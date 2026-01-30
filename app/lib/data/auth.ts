@@ -14,11 +14,11 @@ interface AuthChallengeRow {
   codeHash: string;
   attempts: number;
   maxAttempts: number;
-  expiresAt: Date;
+  expiresAt: string;
 }
 
 type AuthChallengeStatusRow = AuthChallengeRow & {
-  usedAt: Date | null;
+  usedAt: string | null;
 };
 
 interface UserPreferences {
@@ -29,8 +29,8 @@ interface UserPreferences {
 interface AuthUserRow {
   id: string;
   email: string;
-  createdAt: Date;
-  lastLoginAt: Date | null;
+  createdAt: string;
+  lastLoginAt: string | null;
   preferences: UserPreferences;
   name: string | null;
   roles: string[];
@@ -58,7 +58,7 @@ export const insertAuthChallenge = async ({
   challengeTokenHash: string;
   email: string;
   codeHash: string;
-  expiresAt: Date;
+  expiresAt: string;
   maxAttempts: number;
   ip: string | null;
   userAgent: string | null;
@@ -97,7 +97,7 @@ export const getActiveChallengeByToken = async (
         eq(authChallenge.challengeTokenHash, challengeTokenHash),
         eq(authChallenge.email, email),
         isNull(authChallenge.usedAt),
-        gt(authChallenge.expiresAt, new Date()),
+        gt(authChallenge.expiresAt, new Date().toISOString()),
       ),
     )
     .limit(1);
@@ -136,16 +136,20 @@ export const incrementAuthChallengeAttempts = async (id: string) => {
 };
 
 export const markAuthChallengeUsed = async (id: string) => {
-  await db().update(authChallenge).set({ usedAt: new Date() }).where(eq(authChallenge.id, id));
+  await db()
+    .update(authChallenge)
+    .set({ usedAt: new Date().toISOString() })
+    .where(eq(authChallenge.id, id));
 };
 
 export const upsertAuthUser = async (email: string): Promise<string> => {
+  const now = new Date().toISOString();
   const rows = await db()
     .insert(appUser)
-    .values({ email, lastLoginAt: new Date() })
+    .values({ email, lastLoginAt: now })
     .onConflictDoUpdate({
       target: appUser.email,
-      set: { lastLoginAt: new Date() },
+      set: { lastLoginAt: now },
     })
     .returning({ id: appUser.id });
 
@@ -246,7 +250,7 @@ export const insertAuthToken = async ({
 }: {
   jti: string;
   userId: string;
-  expiresAt: Date;
+  expiresAt: string;
   ip: string | null;
   userAgent: string | null;
 }) => {
@@ -264,7 +268,11 @@ export const isAuthTokenActive = async (jti: string) => {
     .select({ exists: sql<boolean>`true` })
     .from(authToken)
     .where(
-      and(eq(authToken.jti, jti), isNull(authToken.revokedAt), gt(authToken.expiresAt, new Date())),
+      and(
+        eq(authToken.jti, jti),
+        isNull(authToken.revokedAt),
+        gt(authToken.expiresAt, new Date().toISOString()),
+      ),
     )
     .limit(1);
 
@@ -315,10 +323,10 @@ export const getAuthAttemptsByEmailHash = async ({
   accountCreatedAt,
 }: {
   emailHash: string;
-  since: Date;
+  since: string;
   limit: number;
   userId: string;
-  accountCreatedAt: Date;
+  accountCreatedAt: string;
 }) => {
   const rows = await db()
     .select({
@@ -354,7 +362,7 @@ export const deleteAuthUserById = async (id: string) => {
 };
 
 export const cleanupExpiredAuthChallenges = async () => {
-  const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   await db().delete(authChallenge).where(lt(authChallenge.expiresAt, cutoff));
 };
 
@@ -370,10 +378,10 @@ interface RefreshTokenRow {
   userId: string;
   tokenFamilyId: string;
   parentId: string | null;
-  issuedAt: Date;
-  expiresAt: Date;
-  revokedAt: Date | null;
-  usedAt: Date | null;
+  issuedAt: string;
+  expiresAt: string;
+  revokedAt: string | null;
+  usedAt: string | null;
   ip: string | null;
   userAgent: string | null;
 }
@@ -391,7 +399,7 @@ export const insertRefreshToken = async ({
   userId: string;
   tokenFamilyId: string;
   parentId?: string | null;
-  expiresAt: Date;
+  expiresAt: string;
   ip: string | null;
   userAgent: string | null;
 }): Promise<string> => {
@@ -436,21 +444,21 @@ export const getRefreshTokenByHash = async (tokenHash: string): Promise<RefreshT
 export const markRefreshTokenUsed = async (tokenHash: string) => {
   await db()
     .update(authRefreshToken)
-    .set({ usedAt: new Date() })
+    .set({ usedAt: new Date().toISOString() })
     .where(eq(authRefreshToken.tokenHash, tokenHash));
 };
 
 export const revokeRefreshToken = async (tokenHash: string) => {
   await db()
     .update(authRefreshToken)
-    .set({ revokedAt: new Date() })
+    .set({ revokedAt: new Date().toISOString() })
     .where(and(eq(authRefreshToken.tokenHash, tokenHash), isNull(authRefreshToken.revokedAt)));
 };
 
 export const revokeRefreshTokenFamily = async (tokenFamilyId: string) => {
   await db()
     .update(authRefreshToken)
-    .set({ revokedAt: new Date() })
+    .set({ revokedAt: new Date().toISOString() })
     .where(
       and(eq(authRefreshToken.tokenFamilyId, tokenFamilyId), isNull(authRefreshToken.revokedAt)),
     );
@@ -459,7 +467,7 @@ export const revokeRefreshTokenFamily = async (tokenFamilyId: string) => {
 export const revokeAllUserRefreshTokens = async (userId: string) => {
   await db()
     .update(authRefreshToken)
-    .set({ revokedAt: new Date() })
+    .set({ revokedAt: new Date().toISOString() })
     .where(and(eq(authRefreshToken.userId, userId), isNull(authRefreshToken.revokedAt)));
 };
 
@@ -471,7 +479,7 @@ export const isRefreshTokenValid = async (tokenHash: string): Promise<boolean> =
       and(
         eq(authRefreshToken.tokenHash, tokenHash),
         isNull(authRefreshToken.revokedAt),
-        gt(authRefreshToken.expiresAt, new Date()),
+        gt(authRefreshToken.expiresAt, new Date().toISOString()),
       ),
     )
     .limit(1);
@@ -487,7 +495,7 @@ export const getActiveRefreshTokenCountByUser = async (userId: string): Promise<
       and(
         eq(authRefreshToken.userId, userId),
         isNull(authRefreshToken.revokedAt),
-        gt(authRefreshToken.expiresAt, new Date()),
+        gt(authRefreshToken.expiresAt, new Date().toISOString()),
       ),
     );
 
@@ -495,7 +503,7 @@ export const getActiveRefreshTokenCountByUser = async (userId: string): Promise<
 };
 
 export const cleanupExpiredRefreshTokens = async () => {
-  const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   await db().delete(authRefreshToken).where(lt(authRefreshToken.expiresAt, cutoff));
 };
 

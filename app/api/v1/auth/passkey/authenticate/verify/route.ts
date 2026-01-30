@@ -76,7 +76,7 @@ const issueTokens = async (
   const accessTokenJti = crypto.randomUUID();
   const accessToken = await signAccessToken(userId, accessTokenJti, roles, membershipTier);
   const accessExpiresIn = getAccessTokenTtlSeconds();
-  const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000);
+  const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000).toISOString();
 
   await insertAuthToken({
     expiresAt: accessExpiresAt,
@@ -89,7 +89,7 @@ const issueTokens = async (
   const refreshToken = generateRefreshToken();
   const refreshTokenHash = hashRefreshToken(refreshToken);
   const refreshExpiresIn = getRefreshTokenTtlSeconds();
-  const refreshExpiresAt = new Date(Date.now() + refreshExpiresIn * 1000);
+  const refreshExpiresAt = new Date(Date.now() + refreshExpiresIn * 1000).toISOString();
 
   await insertRefreshToken({
     expiresAt: refreshExpiresAt,

@@ -14,8 +14,8 @@ export interface PasskeyRow {
   backedUp: boolean;
   transports: string[] | null;
   name: string | null;
-  createdAt: Date;
-  lastUsedAt: Date | null;
+  createdAt: string;
+  lastUsedAt: string | null;
 }
 
 export interface PasskeyChallengeRow {
@@ -23,9 +23,9 @@ export interface PasskeyChallengeRow {
   userId: string | null;
   challenge: string;
   type: string;
-  expiresAt: Date;
-  usedAt: Date | null;
-  createdAt: Date;
+  expiresAt: string;
+  usedAt: string | null;
+  createdAt: string;
 }
 
 export const insertPasskey = async ({
@@ -135,7 +135,7 @@ export const getPasskeyById = async (id: string): Promise<PasskeyRow | null> => 
 export const updatePasskeyCounter = async (credentialId: string, counter: number) => {
   await db()
     .update(authPasskey)
-    .set({ counter, lastUsedAt: new Date() })
+    .set({ counter, lastUsedAt: new Date().toISOString() })
     .where(eq(authPasskey.credentialId, credentialId));
 };
 
@@ -181,7 +181,7 @@ export const insertPasskeyChallenge = async ({
       userId: userId ?? null,
       challenge,
       type,
-      expiresAt,
+      expiresAt: expiresAt.toISOString(),
     })
     .returning({ id: authPasskeyChallenge.id });
 
@@ -208,7 +208,7 @@ export const getPasskeyChallenge = async (
         eq(authPasskeyChallenge.challenge, challenge),
         eq(authPasskeyChallenge.type, type),
         isNull(authPasskeyChallenge.usedAt),
-        gt(authPasskeyChallenge.expiresAt, new Date()),
+        gt(authPasskeyChallenge.expiresAt, new Date().toISOString()),
       ),
     )
     .limit(1);
@@ -219,12 +219,12 @@ export const getPasskeyChallenge = async (
 export const markPasskeyChallengeUsed = async (id: string) => {
   await db()
     .update(authPasskeyChallenge)
-    .set({ usedAt: new Date() })
+    .set({ usedAt: new Date().toISOString() })
     .where(eq(authPasskeyChallenge.id, id));
 };
 
 export const cleanupExpiredPasskeyChallenges = async () => {
-  const cutoff = new Date(Date.now() - 60 * 60 * 1000);
+  const cutoff = new Date(Date.now() - 60 * 60 * 1000).toISOString();
   await db().delete(authPasskeyChallenge).where(lt(authPasskeyChallenge.expiresAt, cutoff));
 };
 

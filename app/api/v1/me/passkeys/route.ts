@@ -24,8 +24,8 @@ export const GET = async (request: Request) =>
           name: passkey.name,
           deviceType: passkey.deviceType,
           backedUp: passkey.backedUp,
-          createdAt: passkey.createdAt.toISOString(),
-          lastUsedAt: passkey.lastUsedAt?.toISOString() ?? null,
+          createdAt: passkey.createdAt,
+          lastUsedAt: passkey.lastUsedAt,
         })),
       });
     } catch (error) {
