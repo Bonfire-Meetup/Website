@@ -5,7 +5,7 @@ import { db } from "@/lib/data/db";
 
 export async function GET() {
   const timestamp = new Date().toISOString();
-  const version = process.env.BNF_VERSION || "unknown";
+  const version = process.env.NEXT_PUBLIC_BNF_VERSION || "unknown";
 
   try {
     await db().select({ one: sql`1` });
