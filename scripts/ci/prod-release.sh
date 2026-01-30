@@ -79,8 +79,9 @@ bunx vercel@latest deploy \
   --token="$VERCEL_TOKEN"
 endgroup
 
-group "Post-deploy verification"
-bash "$SCRIPT_DIR/verify.sh"
-endgroup
+# NOTE: Due to Bot protection this often fails
+# group "Post-deploy verification"
+# bash "$SCRIPT_DIR/verify.sh"
+# endgroup
 
 info "✅ Production release completed"
