@@ -37,4 +37,5 @@ export const PAGE_ROUTES = {
   USER: (publicId: string) => `/user/${publicId}`,
   WATCH: (slug: string, shortId: string) => `/watch/${slug}-${shortId}`,
   WATCH_LATER: "/me/watch-later",
+  NEWSLETTER_EDITOR: "/newsletter/editor/compose",
 } as const;

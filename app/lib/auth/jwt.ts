@@ -111,3 +111,42 @@ export const isValidRefreshTokenFormat = (token: string): boolean => {
   }
   return /^[A-Za-z0-9_-]+$/.test(token);
 };
+
+const unsubscribeTokenTtlSeconds = 30 * 24 * 60 * 60;
+
+export const signUnsubscribeToken = async (email: string) => {
+  const privateKey = await importPKCS8(getJwtPrivateKey(), "EdDSA");
+
+  return new SignJWT({ typ: "unsubscribe", email: email.toLowerCase() })
+    .setProtectedHeader({ alg: "EdDSA", kid: getJwtKeyId(), typ: "JWT" })
+    .setIssuer(getJwtIssuer())
+    .setAudience(getJwtAudience())
+    .setSubject("newsletter-unsubscribe")
+    .setIssuedAt()
+    .setExpirationTime(`${unsubscribeTokenTtlSeconds}s`)
+    .setJti(crypto.randomUUID())
+    .sign(privateKey);
+};
+
+export const verifyUnsubscribeToken = async (token: string) => {
+  const publicKey = await importSPKI(getJwtPublicKey(), "EdDSA");
+  const { payload } = await jwtVerify(token, publicKey, {
+    audience: getJwtAudience(),
+    issuer: getJwtIssuer(),
+  });
+
+  if (payload.sub !== "newsletter-unsubscribe") {
+    throw new Error("Invalid token subject");
+  }
+
+  if (payload.typ !== "unsubscribe") {
+    throw new Error("Invalid token type");
+  }
+
+  const { email } = payload;
+  if (typeof email !== "string" || !email.includes("@")) {
+    throw new Error("Invalid email in token");
+  }
+
+  return email.toLowerCase();
+};

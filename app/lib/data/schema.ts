@@ -1,126 +1,388 @@
 import { sql } from "drizzle-orm";
 import {
-  bigint,
-  boolean,
-  date,
-  foreignKey,
-  index,
-  inet,
-  integer,
-  jsonb,
   pgTable,
-  smallint,
+  index,
+  foreignKey,
+  uuid,
   text,
   timestamp,
+  integer,
+  date,
+  bigint,
+  boolean,
+  jsonb,
+  smallint,
   uniqueIndex,
-  uuid,
+  inet,
+  serial,
 } from "drizzle-orm/pg-core";
+
+export const authAttempt = pgTable(
+  "auth_attempt",
+  {
+    id: uuid().defaultRandom().notNull(),
+    userId: uuid("user_id"),
+    emailHash: text("email_hash").notNull(),
+    emailDomain: text("email_domain"),
+    outcome: text().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    ipHash: text("ip_hash"),
+    userAgentHash: text("user_agent_hash"),
+    requestId: uuid("request_id"),
+    method: text(),
+    userAgentSummary: text("user_agent_summary"),
+  },
+  (table) => [
+    index("auth_attempt_email_created_idx").using(
+      "btree",
+      table.emailHash.asc().nullsLast().op("text_ops"),
+      table.createdAt.desc().nullsFirst().op("text_ops"),
+    ),
+    index("auth_attempt_user_idx").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "auth_attempt_user_id_fkey",
+    }).onDelete("set null"),
+  ],
+);
+
+export const newsletterSubscription = pgTable(
+  "newsletter_subscription",
+  {
+    id: uuid().defaultRandom().notNull(),
+    email: text().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    ipHash: text("ip_hash"),
+    userAgentHash: text("user_agent_hash"),
+  },
+  (table) => [
+    index("newsletter_subscription_created_idx").using(
+      "btree",
+      table.createdAt.desc().nullsFirst().op("timestamptz_ops"),
+    ),
+    index("newsletter_subscription_email_idx").using(
+      "btree",
+      table.email.asc().nullsLast().op("text_ops"),
+    ),
+  ],
+);
+
+export const userBoostAllocation = pgTable(
+  "user_boost_allocation",
+  {
+    userId: uuid("user_id").notNull(),
+    availableBoosts: integer("available_boosts").default(3).notNull(),
+    lastAllocationDate: date("last_allocation_date")
+      .default(sql`CURRENT_DATE`)
+      .notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("user_boost_allocation_last_allocation_idx").using(
+      "btree",
+      table.lastAllocationDate.asc().nullsLast().op("date_ops"),
+    ),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "user_boost_allocation_user_id_fkey",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const userWatchlist = pgTable(
+  "user_watchlist",
+  {
+    id: uuid().defaultRandom().notNull(),
+    userId: uuid("user_id").notNull(),
+    videoId: text("video_id").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("user_watchlist_created_at_idx").using(
+      "btree",
+      table.createdAt.desc().nullsFirst().op("timestamptz_ops"),
+    ),
+    index("user_watchlist_user_id_idx").using(
+      "btree",
+      table.userId.asc().nullsLast().op("uuid_ops"),
+    ),
+    index("user_watchlist_video_id_idx").using(
+      "btree",
+      table.videoId.asc().nullsLast().op("text_ops"),
+    ),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "user_watchlist_user_id_fkey",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const checkIn = pgTable(
+  "check_in",
+  {
+    id: uuid().defaultRandom().notNull(),
+    userId: uuid("user_id").notNull(),
+    eventId: text("event_id").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("check_in_created_at_idx").using(
+      "btree",
+      table.createdAt.desc().nullsFirst().op("timestamptz_ops"),
+    ),
+    index("check_in_event_id_idx").using("btree", table.eventId.asc().nullsLast().op("text_ops")),
+    index("check_in_user_id_idx").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "check_in_user_id_fkey",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const authPasskey = pgTable(
+  "auth_passkey",
+  {
+    id: uuid().defaultRandom().notNull(),
+    userId: uuid("user_id").notNull(),
+    credentialId: text("credential_id").notNull(),
+    publicKey: text("public_key").notNull(),
+    // You can use { mode: "bigint" } if numbers are exceeding js number limitations
+    counter: bigint({ mode: "number" }).default(0).notNull(),
+    deviceType: text("device_type"),
+    backedUp: boolean("backed_up").default(false).notNull(),
+    transports: text().array(),
+    name: text(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    lastUsedAt: timestamp("last_used_at", { withTimezone: true, mode: "string" }),
+  },
+  (table) => [
+    index("idx_auth_passkey_credential_id").using(
+      "btree",
+      table.credentialId.asc().nullsLast().op("text_ops"),
+    ),
+    index("idx_auth_passkey_user_id").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "auth_passkey_user_id_fkey",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const contactSubmissions = pgTable(
+  "contact_submissions",
+  {
+    id: uuid().defaultRandom().notNull(),
+    name: text().notNull(),
+    email: text().notNull(),
+    inquiryType: text("inquiry_type"),
+    subject: text().notNull(),
+    message: text().notNull(),
+    ipHash: text("ip_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("contact_submissions_created_at_idx").using(
+      "btree",
+      table.createdAt.desc().nullsFirst().op("timestamptz_ops"),
+    ),
+    index("contact_submissions_ip_hash_idx").using(
+      "btree",
+      table.ipHash.asc().nullsLast().op("text_ops"),
+    ),
+  ],
+);
+
+export const talkProposals = pgTable(
+  "talk_proposals",
+  {
+    id: uuid().defaultRandom().notNull(),
+    speakerName: text("speaker_name").notNull(),
+    email: text().notNull(),
+    talkTitle: text("talk_title").notNull(),
+    abstract: text().notNull(),
+    duration: text().notNull(),
+    experience: text(),
+    preferredLocation: text("preferred_location"),
+    ipHash: text("ip_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("talk_proposals_created_at_idx").using(
+      "btree",
+      table.createdAt.desc().nullsFirst().op("timestamptz_ops"),
+    ),
+    index("talk_proposals_ip_hash_idx").using(
+      "btree",
+      table.ipHash.asc().nullsLast().op("text_ops"),
+    ),
+  ],
+);
 
 export const appUser = pgTable(
   "app_user",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
-    email: text("email").notNull().unique(),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
-    preferences: jsonb("preferences").notNull().default({}),
-    name: text("name"),
-    roles: text("roles").array().notNull().default([]),
+    id: uuid().defaultRandom().notNull(),
+    email: text().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    lastLoginAt: timestamp("last_login_at", { withTimezone: true, mode: "string" }),
+    name: text(),
+    preferences: jsonb().default({}).notNull(),
+    roles: text().array().default([""]).notNull(),
     membershipTier: smallint("membership_tier"),
   },
   (table) => [
-    index("app_user_email_idx").on(table.email),
+    index("app_user_email_idx").using("btree", table.email.asc().nullsLast().op("text_ops")),
     index("app_user_membership_tier_idx")
-      .on(table.membershipTier)
+      .using("btree", table.membershipTier.asc().nullsLast().op("int2_ops"))
       .where(sql`(membership_tier IS NOT NULL)`),
+  ],
+);
+
+export const videoLikes = pgTable(
+  "video_likes",
+  {
+    id: uuid().defaultRandom().notNull(),
+    videoId: text("video_id").notNull(),
+    ipHash: text("ip_hash").notNull(),
+    uaHash: text("ua_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("video_likes_video_id_idx").using(
+      "btree",
+      table.videoId.asc().nullsLast().op("text_ops"),
+    ),
   ],
 );
 
 export const authChallenge = pgTable(
   "auth_challenge",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: uuid().defaultRandom().notNull(),
     challengeTokenHash: text("challenge_token_hash").notNull(),
-    email: text("email").notNull(),
+    email: text().notNull(),
     codeHash: text("code_hash").notNull(),
-    attempts: integer("attempts").notNull().default(0),
-    maxAttempts: integer("max_attempts").notNull().default(5),
-    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-    usedAt: timestamp("used_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    ip: inet("ip"),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true, mode: "string" }).notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true, mode: "string" }),
+    attempts: integer().default(0).notNull(),
+    maxAttempts: integer("max_attempts").default(5).notNull(),
+    ip: inet(),
     userAgent: text("user_agent"),
   },
   (table) => [
-    uniqueIndex("auth_challenge_token_hash_idx").on(table.challengeTokenHash),
-    index("auth_challenge_email_created_idx").on(table.email, table.createdAt),
-    index("auth_challenge_expires_idx").on(table.expiresAt),
-    index("auth_challenge_used_idx").on(table.usedAt),
+    index("auth_challenge_email_created_idx").using(
+      "btree",
+      table.email.asc().nullsLast().op("text_ops"),
+      table.createdAt.desc().nullsFirst().op("text_ops"),
+    ),
+    index("auth_challenge_expires_idx").using(
+      "btree",
+      table.expiresAt.asc().nullsLast().op("timestamptz_ops"),
+    ),
+    uniqueIndex("auth_challenge_token_hash_idx").using(
+      "btree",
+      table.challengeTokenHash.asc().nullsLast().op("text_ops"),
+    ),
+    index("auth_challenge_used_idx").using(
+      "btree",
+      table.usedAt.asc().nullsLast().op("timestamptz_ops"),
+    ),
   ],
 );
 
 export const authToken = pgTable(
   "auth_token",
   {
-    jti: uuid("jti").primaryKey(),
-    userId: uuid("user_id")
-      .notNull()
-      .references(() => appUser.id, { onDelete: "cascade" }),
-    issuedAt: timestamp("issued_at", { withTimezone: true }).notNull().defaultNow(),
-    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-    revokedAt: timestamp("revoked_at", { withTimezone: true }),
-    ip: inet("ip"),
+    jti: uuid().notNull(),
+    userId: uuid("user_id").notNull(),
+    issuedAt: timestamp("issued_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true, mode: "string" }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true, mode: "string" }),
+    ip: inet(),
     userAgent: text("user_agent"),
   },
   (table) => [
-    index("auth_token_user_idx").on(table.userId),
-    index("auth_token_expires_idx").on(table.expiresAt),
-  ],
-);
-
-export const authAttempt = pgTable(
-  "auth_attempt",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").references(() => appUser.id, { onDelete: "set null" }),
-    emailHash: text("email_hash").notNull(),
-    emailDomain: text("email_domain"),
-    outcome: text("outcome").notNull(),
-    method: text("method"),
-    ipHash: text("ip_hash"),
-    userAgentHash: text("user_agent_hash"),
-    userAgentSummary: text("user_agent_summary"),
-    requestId: text("request_id"),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (table) => [
-    index("auth_attempt_user_idx").on(table.userId),
-    index("auth_attempt_email_created_idx").on(table.emailHash, table.createdAt),
+    index("auth_token_expires_idx").using(
+      "btree",
+      table.expiresAt.asc().nullsLast().op("timestamptz_ops"),
+    ),
+    index("auth_token_user_idx").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "auth_token_user_id_fkey",
+    }).onDelete("cascade"),
   ],
 );
 
 export const authRefreshToken = pgTable(
   "auth_refresh_token",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
-    tokenHash: text("token_hash").notNull().unique(),
-    userId: uuid("user_id")
-      .notNull()
-      .references(() => appUser.id, { onDelete: "cascade" }),
+    id: uuid().defaultRandom().notNull(),
+    tokenHash: text("token_hash").notNull(),
+    userId: uuid("user_id").notNull(),
     tokenFamilyId: uuid("token_family_id").notNull(),
     parentId: uuid("parent_id"),
-    issuedAt: timestamp("issued_at", { withTimezone: true }).notNull().defaultNow(),
-    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-    revokedAt: timestamp("revoked_at", { withTimezone: true }),
-    usedAt: timestamp("used_at", { withTimezone: true }),
-    ip: inet("ip"),
+    issuedAt: timestamp("issued_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true, mode: "string" }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true, mode: "string" }),
+    usedAt: timestamp("used_at", { withTimezone: true, mode: "string" }),
+    ip: inet(),
     userAgent: text("user_agent"),
   },
   (table) => [
-    index("auth_refresh_token_hash_idx").on(table.tokenHash),
-    index("auth_refresh_token_user_idx").on(table.userId),
-    index("auth_refresh_token_family_idx").on(table.tokenFamilyId),
-    index("auth_refresh_token_expires_idx").on(table.expiresAt),
+    index("auth_refresh_token_expires_idx").using(
+      "btree",
+      table.expiresAt.asc().nullsLast().op("timestamptz_ops"),
+    ),
+    index("auth_refresh_token_family_idx").using(
+      "btree",
+      table.tokenFamilyId.asc().nullsLast().op("uuid_ops"),
+    ),
+    index("auth_refresh_token_hash_idx").using(
+      "btree",
+      table.tokenHash.asc().nullsLast().op("text_ops"),
+    ),
+    index("auth_refresh_token_user_idx").using(
+      "btree",
+      table.userId.asc().nullsLast().op("uuid_ops"),
+    ),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "auth_refresh_token_user_id_fkey",
+    }).onDelete("cascade"),
     foreignKey({
       columns: [table.parentId],
       foreignColumns: [table.id],
@@ -129,174 +391,78 @@ export const authRefreshToken = pgTable(
   ],
 );
 
-export const authPasskey = pgTable(
-  "auth_passkey",
+export const videoBoosts = pgTable(
+  "video_boosts",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id")
-      .notNull()
-      .references(() => appUser.id, { onDelete: "cascade" }),
-    credentialId: text("credential_id").notNull().unique(),
-    publicKey: text("public_key").notNull(),
-    counter: bigint("counter", { mode: "number" }).notNull().default(0),
-    deviceType: text("device_type"),
-    backedUp: boolean("backed_up").notNull().default(false),
-    transports: text("transports").array(),
-    name: text("name"),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+    id: uuid().defaultRandom().notNull(),
+    videoId: text("video_id").notNull(),
+    userId: uuid("user_id").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
   },
   (table) => [
-    index("idx_auth_passkey_user_id").on(table.userId),
-    index("idx_auth_passkey_credential_id").on(table.credentialId),
+    index("video_boosts_user_id_idx").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
+    index("video_boosts_video_id_idx").using(
+      "btree",
+      table.videoId.asc().nullsLast().op("text_ops"),
+    ),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "video_boosts_user_id_fkey",
+    }).onDelete("cascade"),
   ],
 );
 
 export const authPasskeyChallenge = pgTable(
   "auth_passkey_challenge",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id").references(() => appUser.id, { onDelete: "cascade" }),
-    challenge: text("challenge").notNull(),
-    type: text("type").notNull(),
-    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-    usedAt: timestamp("used_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (table) => [index("idx_auth_passkey_challenge_expires").on(table.expiresAt)],
-);
-
-export const checkIn = pgTable(
-  "check_in",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id")
-      .notNull()
-      .references(() => appUser.id, { onDelete: "cascade" }),
-    eventId: text("event_id").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    id: uuid().defaultRandom().notNull(),
+    userId: uuid("user_id"),
+    challenge: text().notNull(),
+    type: text().notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true, mode: "string" }).notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true, mode: "string" }),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
   },
   (table) => [
-    uniqueIndex("check_in_user_event_idx").on(table.userId, table.eventId),
-    index("check_in_user_id_idx").on(table.userId),
-    index("check_in_event_id_idx").on(table.eventId),
-    index("check_in_created_at_idx").on(table.createdAt),
+    index("idx_auth_passkey_challenge_expires").using(
+      "btree",
+      table.expiresAt.asc().nullsLast().op("timestamptz_ops"),
+    ),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "auth_passkey_challenge_user_id_fkey",
+    }).onDelete("cascade"),
   ],
 );
 
-export const userWatchlist = pgTable(
-  "user_watchlist",
+export const drizzleMigrations = pgTable("__drizzle_migrations", {
+  id: serial().primaryKey().notNull(),
+  hash: text().notNull(),
+  // You can use { mode: "bigint" } if numbers are exceeding js number limitations
+  createdAt: bigint("created_at", { mode: "number" }),
+});
+
+export const newsletterArchive = pgTable(
+  "newsletter_archive",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id")
-      .notNull()
-      .references(() => appUser.id, { onDelete: "cascade" }),
-    videoId: text("video_id").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (table) => [
-    uniqueIndex("user_watchlist_user_video_idx").on(table.userId, table.videoId),
-    index("user_watchlist_user_id_idx").on(table.userId),
-    index("user_watchlist_video_id_idx").on(table.videoId),
-    index("user_watchlist_created_at_idx").on(table.createdAt),
-  ],
-);
-
-export const videoBoosts = pgTable(
-  "video_boosts",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    videoId: text("video_id").notNull(),
-    userId: uuid("user_id")
-      .notNull()
-      .references(() => appUser.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (table) => [
-    uniqueIndex("video_boosts_video_user_idx").on(table.videoId, table.userId),
-    index("video_boosts_video_id_idx").on(table.videoId),
-    index("video_boosts_user_id_idx").on(table.userId),
-  ],
-);
-
-export const userBoostAllocation = pgTable(
-  "user_boost_allocation",
-  {
-    userId: uuid("user_id")
-      .primaryKey()
-      .references(() => appUser.id, { onDelete: "cascade" }),
-    availableBoosts: integer("available_boosts").notNull().default(3),
-    lastAllocationDate: date("last_allocation_date").notNull().defaultNow(),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (table) => [index("user_boost_allocation_last_allocation_idx").on(table.lastAllocationDate)],
-);
-
-export const videoLikes = pgTable(
-  "video_likes",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    videoId: text("video_id").notNull(),
-    ipHash: text("ip_hash").notNull(),
-    uaHash: text("ua_hash").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (table) => [
-    uniqueIndex("video_likes_video_ip_ua_idx").on(table.videoId, table.ipHash, table.uaHash),
-    index("video_likes_video_id_idx").on(table.videoId),
-  ],
-);
-
-export const newsletterSubscription = pgTable(
-  "newsletter_subscription",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    email: text("email").notNull().unique(),
-    ipHash: text("ip_hash"),
-    userAgentHash: text("user_agent_hash"),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (table) => [
-    index("newsletter_subscription_email_idx").on(table.email),
-    index("newsletter_subscription_created_idx").on(table.createdAt),
-  ],
-);
-
-export const contactSubmissions = pgTable(
-  "contact_submissions",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    name: text("name").notNull(),
-    email: text("email").notNull(),
-    inquiryType: text("inquiry_type"),
     subject: text("subject").notNull(),
-    message: text("message").notNull(),
-    ipHash: text("ip_hash").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    previewText: text("preview_text"),
+    data: jsonb("data").notNull(),
+    audienceType: text("audience_type").notNull(),
+    recipientCount: integer("recipient_count").notNull().default(0),
+    sentBy: uuid("sent_by").references(() => appUser.id, { onDelete: "set null" }),
+    sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
+    testSend: boolean("test_send").notNull().default(false),
   },
   (table) => [
-    index("contact_submissions_ip_hash_idx").on(table.ipHash),
-    index("contact_submissions_created_at_idx").on(table.createdAt),
-  ],
-);
-
-export const talkProposals = pgTable(
-  "talk_proposals",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    speakerName: text("speaker_name").notNull(),
-    email: text("email").notNull(),
-    talkTitle: text("talk_title").notNull(),
-    abstract: text("abstract").notNull(),
-    duration: text("duration").notNull(),
-    experience: text("experience"),
-    preferredLocation: text("preferred_location"),
-    ipHash: text("ip_hash").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (table) => [
-    index("talk_proposals_ip_hash_idx").on(table.ipHash),
-    index("talk_proposals_created_at_idx").on(table.createdAt),
+    index("newsletter_archive_sent_at_idx").on(table.sentAt),
+    index("newsletter_archive_sent_by_idx").on(table.sentBy),
   ],
 );

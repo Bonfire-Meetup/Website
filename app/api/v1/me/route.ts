@@ -34,7 +34,7 @@ export const GET = async (request: Request) =>
         getUserBoosts(auth.userId),
         fingerprint.emailHash
           ? getAuthAttemptsByEmailHash({
-              accountCreatedAt: user.createdAt,
+              accountCreatedAt: new Date(user.createdAt),
               emailHash: fingerprint.emailHash,
               limit: 50,
               since,
@@ -56,7 +56,7 @@ export const GET = async (request: Request) =>
           }
 
           return {
-            boostedAt: boost.createdAt.toISOString(),
+            boostedAt: new Date(boost.createdAt).toISOString(),
             date: recording.date,
             shortId: recording.shortId,
             slug: getWatchSlug(recording),
@@ -67,7 +67,7 @@ export const GET = async (request: Request) =>
         .filter((item) => item !== null);
 
       const attemptItems = attempts.map((attempt) => ({
-        createdAt: attempt.createdAt.toISOString(),
+        createdAt: new Date(attempt.createdAt).toISOString(),
         id: attempt.id,
         method: attempt.method,
         outcome: attempt.outcome,
@@ -89,10 +89,10 @@ export const GET = async (request: Request) =>
         boosts: { items: boostItems },
         profile: {
           allowCommunityEmails: user.preferences.allowCommunityEmails ?? false,
-          createdAt: user.createdAt.toISOString(),
+          createdAt: new Date(user.createdAt).toISOString(),
           email: user.email,
           id: user.id,
-          lastLoginAt: user.lastLoginAt ? user.lastLoginAt.toISOString() : null,
+          lastLoginAt: user.lastLoginAt ? new Date(user.lastLoginAt).toISOString() : null,
           name: user.name,
           publicProfile: user.preferences.publicProfile ?? false,
         },

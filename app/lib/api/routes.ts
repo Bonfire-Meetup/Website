@@ -22,6 +22,7 @@ export const API_ROUTES = {
   },
   NEWSLETTER: {
     SUBSCRIBE: "/api/v1/newsletter/subscribe",
+    SEND: "/api/v1/newsletter/send",
   },
   VIDEO: {
     BOOSTS: (id: string) => `/api/v1/video/${id}/boosts`,
