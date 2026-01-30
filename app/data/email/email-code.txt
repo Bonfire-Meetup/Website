@@ -1,7 +1,0 @@
-{{title}}
-
-{{codeLabel}}
-{{expires}}
-
-{{ignore}}
-{{footer}}

@@ -35,7 +35,6 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
     { name: "@simplewebauthn/server", license: "MIT", url: "https://simplewebauthn.dev" },
   ],
   utilities: [
-    { name: "mustache", license: "MIT", url: "https://github.com/janl/mustache.js" },
     { name: "qrcode", license: "MIT", url: "https://github.com/soldair/node-qrcode" },
     { name: "html5-qrcode", license: "Apache-2.0", url: "https://github.com/mebjas/html5-qrcode" },
     { name: "ua-parser-js", license: "MIT", url: "https://github.com/faisalman/ua-parser-js" },
@@ -68,11 +67,6 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
     { name: "ESLint", license: "MIT", url: "https://eslint.org" },
     { name: "@stylistic/eslint-plugin", license: "MIT", url: "https://eslint.style" },
     { name: "@typescript-eslint/parser", license: "MIT", url: "https://typescript-eslint.io" },
-    {
-      name: "@types/mustache",
-      license: "MIT",
-      url: "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    },
     {
       name: "@types/node",
       license: "MIT",

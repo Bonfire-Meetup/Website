@@ -22,6 +22,8 @@ const maxEmailChallenges = 3;
 const maxIpChallenges = 10;
 const rateLimitStore = new Map<string, number[]>();
 
+import { getRequestDescription } from "@/lib/utils/request-description";
+
 export const POST = async (request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
@@ -66,7 +68,13 @@ export const POST = async (request: Request) =>
       rateLimitWindowMs,
       request,
       sendEmail: async (normalizedEmail, code) => {
-        const emailTemplate = await renderEmailCodeTemplate({ code, locale, minutes });
+        const requestFrom = getRequestDescription(request.headers);
+        const emailTemplate = await renderEmailCodeTemplate({
+          code,
+          locale,
+          minutes,
+          requestFrom,
+        });
         await sendEmail({
           from: getAuthFrom(),
           html: emailTemplate.html,

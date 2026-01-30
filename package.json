@@ -10,10 +10,12 @@
     "typecheck": "tsc --noEmit",
     "check": "oxlint . && oxfmt --check . && tsc --noEmit",
     "fix": "oxlint --fix . && oxfmt --write .",
-    "clean": "bun pm cache rm && rm -rf node_modules bun.lock && bun install"
+    "clean": "bun pm cache rm && rm -rf node_modules bun.lock && bun install",
+    "email:dev": "email dev --dir app/components/email"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
+    "@react-email/components": "1.0.6",
     "@reduxjs/toolkit": "^2.11.2",
     "@rollbar/react": "^1.0.0",
     "@simplewebauthn/browser": "^13.2.2",
@@ -29,13 +31,12 @@
     "geist": "^1.5.1",
     "html5-qrcode": "^2.3.8",
     "jose": "^6.1.3",
-    "mustache": "^4.2.0",
     "next": "^16.1.6",
     "next-intl": "^4.7.0",
     "postcss": "^8.5.6",
     "qrcode": "^1.5.4",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-redux": "^9.2.0",
     "rollbar": "^2.26.5",
     "sharp": "^0.34.5",
@@ -45,8 +46,8 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@react-email/preview-server": "5.2.5",
     "@stylistic/eslint-plugin": "^5.7.1",
-    "@types/mustache": "^4.2.6",
     "@types/node": "^25.0.10",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.10",
@@ -58,6 +59,7 @@
     "eslint": "^9.39.2",
     "oxfmt": "^0.26.0",
     "oxlint": "^1.42.0",
+    "react-email": "5.2.5",
     "typescript": "^5.9.3"
   },
   "next-intl": {

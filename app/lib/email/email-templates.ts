@@ -1,13 +1,17 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-import mustache from "mustache";
+import { render } from "@react-email/render";
+import React from "react";
 
+import { EmailCode } from "@/components/email/EmailCode";
 import { defaultLocale } from "@/i18n/routing";
 import { LOCALES, type Locale } from "@/lib/i18n/locales";
 
-const templateCache = new Map<string, string>();
 const localeCache = new Map<string, Record<string, unknown>>();
+
+const interpolate = (template: string, data: Record<string, string>) =>
+  template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] ?? "");
 
 const ttlTextByLocale = (locale: Locale, minutes: number) => {
   if (locale === LOCALES.CS) {
@@ -15,19 +19,6 @@ const ttlTextByLocale = (locale: Locale, minutes: number) => {
   }
 
   return `${minutes} minutes`;
-};
-
-const loadTemplate = async (path: string) => {
-  const cached = templateCache.get(path);
-
-  if (cached) {
-    return cached;
-  }
-
-  const content = await readFile(path, "utf8");
-  templateCache.set(path, content);
-
-  return content;
 };
 
 const loadLocaleMessages = async (locale: Locale) => {
@@ -92,46 +83,62 @@ const getAccountDeleteMessages = async (locale: Locale) => {
   return accountDelete;
 };
 
+const BASE_URL = process.env.PROD_URL ?? "https://bnf.events";
+const LOGO_URL = `${BASE_URL}/assets/brand/RGB_PNG_01_bonfire_black_gradient.png`;
+
+const buildView = (translations: Record<string, string>, baseView: Record<string, string>) => ({
+  brandName: baseView.brandName,
+  codeLabel: interpolate(translations.codeLabel ?? "", baseView),
+  expires: interpolate(translations.expires ?? "", baseView),
+  footer: interpolate(translations.footer ?? "", baseView),
+  ignore: interpolate(translations.ignore ?? "", baseView),
+  securityTip: interpolate(translations.securityTip ?? "", baseView),
+  subtitle: interpolate(translations.subtitle ?? "", baseView),
+  title: interpolate(translations.title ?? "", baseView),
+  subject: interpolate(translations.subject ?? "", baseView),
+});
+
 export const renderEmailCodeTemplate = async ({
   locale,
   code,
   minutes,
+  requestFrom,
 }: {
   locale?: Locale;
   code: string;
   minutes: number;
+  requestFrom?: string;
 }) => {
   const resolvedLocale = locale ?? defaultLocale;
   const translations = await getAuthCodeMessages(resolvedLocale);
   const common = await getCommonValues(resolvedLocale);
-  const htmlPath = join(process.cwd(), "app", "data", "email", "email-code.html");
-  const textPath = join(process.cwd(), "app", "data", "email", "email-code.txt");
-  const html = await loadTemplate(htmlPath);
-  const text = await loadTemplate(textPath);
   const ttl = ttlTextByLocale(resolvedLocale, minutes);
   const formattedCode = code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;
-  const baseView = { brandName: common.brandName, code, tagline: common.tagline, ttl };
-  const view = {
+  const baseView = {
     brandName: common.brandName,
     code,
-    formattedCode,
-    codeLabel: mustache.render(translations.codeLabel ?? "", baseView),
-    expires: mustache.render(translations.expires ?? "", baseView),
-    footer: mustache.render(translations.footer ?? "", baseView),
-    ignore: mustache.render(translations.ignore ?? "", baseView),
-    lang: resolvedLocale,
-    securityTip: mustache.render(translations.securityTip ?? "", baseView),
-    subtitle: mustache.render(translations.subtitle ?? "", baseView),
     tagline: common.tagline,
-    title: mustache.render(translations.title ?? "", baseView),
     ttl,
   };
-  const subject = mustache.render(translations.subject ?? "", baseView);
+  const view = buildView(translations, baseView);
+  const html = await render(
+    React.createElement(EmailCode, {
+      ...view,
+      baseUrl: BASE_URL,
+      formattedCode,
+      lang: resolvedLocale,
+      logoUrl: LOGO_URL,
+      requestFrom,
+    }),
+  );
+  const text = [view.title, "", view.codeLabel, view.expires, "", view.ignore, view.footer].join(
+    "\n",
+  );
 
   return {
-    html: mustache.render(html, view),
-    subject,
-    text: mustache.render(text, view),
+    html,
+    subject: view.subject,
+    text,
   };
 };
 
@@ -147,31 +154,31 @@ export const renderAccountDeleteTemplate = async ({
   const resolvedLocale = locale ?? defaultLocale;
   const translations = await getAccountDeleteMessages(resolvedLocale);
   const common = await getCommonValues(resolvedLocale);
-  const htmlPath = join(process.cwd(), "app", "data", "email", "email-code.html");
-  const textPath = join(process.cwd(), "app", "data", "email", "email-code.txt");
-  const html = await loadTemplate(htmlPath);
-  const text = await loadTemplate(textPath);
   const ttl = ttlTextByLocale(resolvedLocale, minutes);
-  const baseView = { brandName: common.brandName, code, tagline: common.tagline, ttl };
-  const view = {
+  const formattedCode = code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code;
+  const baseView = {
     brandName: common.brandName,
     code,
-    codeLabel: mustache.render(translations.codeLabel ?? "", baseView),
-    expires: mustache.render(translations.expires ?? "", baseView),
-    footer: mustache.render(translations.footer ?? "", baseView),
-    ignore: mustache.render(translations.ignore ?? "", baseView),
-    lang: resolvedLocale,
-    securityTip: mustache.render(translations.securityTip ?? "", baseView),
-    subtitle: mustache.render(translations.subtitle ?? "", baseView),
     tagline: common.tagline,
-    title: mustache.render(translations.title ?? "", baseView),
     ttl,
   };
-  const subject = mustache.render(translations.subject ?? "", baseView);
+  const view = buildView(translations, baseView);
+  const html = await render(
+    React.createElement(EmailCode, {
+      ...view,
+      baseUrl: BASE_URL,
+      formattedCode,
+      lang: resolvedLocale,
+      logoUrl: LOGO_URL,
+    }),
+  );
+  const text = [view.title, "", view.codeLabel, view.expires, "", view.ignore, view.footer].join(
+    "\n",
+  );
 
   return {
-    html: mustache.render(html, view),
-    subject,
-    text: mustache.render(text, view),
+    html,
+    subject: view.subject,
+    text,
   };
 };
