@@ -22,7 +22,6 @@ group "Build version"
 BNF_VERSION="${GITHUB_SHA:0:12}"
 export BNF_VERSION
 export NEXT_PUBLIC_BNF_VERSION="$BNF_VERSION"
-
 info "Build version: $BNF_VERSION"
 endgroup
 
@@ -30,13 +29,15 @@ group "Vercel pull"
 info "Pulling Vercel project settings"
 bunx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
 require_file ".vercel/.env.production.local"
-
-group "Vercel env sanity"
-grep -q '^NEXT_PUBLIC_' .vercel/.env.production.local || info "No NEXT_PUBLIC_* in pulled env (suspicious)"
-grep -q '^BNF_NEON_MIGRATION_DATABASE_URL=' .vercel/.env.production.local || info "No migration DB URL in pulled env (migrations may fail)"
-grep -q '^BNF_ROLLBAR_POST_SERVER_TOKEN=' .vercel/.env.production.local || info "No Rollbar token in pulled env (sourcemap upload may fail)"
 endgroup
 
+group "Vercel env sanity"
+grep -q '^NEXT_PUBLIC_' .vercel/.env.production.local || info "No NEXT_PUBLIC_* in pulled env (may be OK, but suspicious)"
+grep -q '^BNF_NEON_MIGRATION_DATABASE_URL=' .vercel/.env.production.local || info "No migration DB URL in pulled env (migrations will be skipped)"
+grep -q '^BNF_ROLLBAR_POST_SERVER_TOKEN=' .vercel/.env.production.local || info "No Rollbar token in pulled env (sourcemap upload will be skipped)"
+endgroup
+
+group "Inject build version into env"
 info "Injecting build version into env"
 {
   echo ""
@@ -59,12 +60,7 @@ endgroup
 
 group "Migrations"
 info "Checking migrations"
-set +u
-# shellcheck disable=SC1091
-source .vercel/.env.production.local
-set -u
-
-if [ -n "${BNF_NEON_MIGRATION_DATABASE_URL:-}" ]; then
+if grep -q '^BNF_NEON_MIGRATION_DATABASE_URL=' .vercel/.env.production.local; then
   info "Running Drizzle migrations"
   bunx dotenv-cli -e .vercel/.env.production.local -- \
     bash -lc 'bunx drizzle-kit migrate' \
@@ -81,6 +77,10 @@ bunx vercel@latest deploy \
   --archive=tgz \
   --prod \
   --token="$VERCEL_TOKEN"
+endgroup
+
+group "Post-deploy verification"
+bash "$SCRIPT_DIR/verify.sh"
 endgroup
 
 info "✅ Production release completed"
