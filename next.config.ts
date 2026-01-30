@@ -63,6 +63,7 @@ const nextConfig = {
   },
   output: "standalone",
   poweredByHeader: false,
+  productionBrowserSourceMaps: true,
   reactCompiler: true,
   reactStrictMode: true,
 } satisfies NextConfig;

@@ -135,4 +135,5 @@ dist
 cdn/
 cdn-webp/
 .wrangler/
+.rollbar-sourcemaps
 .vercel/

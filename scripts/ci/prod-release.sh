@@ -19,6 +19,7 @@ endgroup
 
 group "Build version"
 BNF_VERSION="${GITHUB_SHA:0:12}"
+export BNF_VERSION
 export NEXT_PUBLIC_BNF_VERSION="$BNF_VERSION"
 
 info "Build version: $BNF_VERSION"
@@ -43,6 +44,8 @@ info "Building (Vercel prebuilt)"
 bunx dotenv-cli -e .vercel/.env.production.local -- \
   bunx vercel@latest build --prod --token="$VERCEL_TOKEN"
 endgroup
+
+bash "$SCRIPT_DIR/rollbar-sourcemaps.sh"
 
 group "Migrations"
 info "Checking migrations"
