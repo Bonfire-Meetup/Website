@@ -8,7 +8,7 @@ import { USER_ROLES } from "@/lib/config/roles";
 import { db } from "@/lib/data/db";
 import { saveNewsletterToArchive } from "@/lib/data/newsletter-archive";
 import { appUser, newsletterSubscription } from "@/lib/data/schema";
-import { sendEmail } from "@/lib/email/email";
+import { getNewsletterFrom, sendEmail } from "@/lib/email/email";
 import { renderNewsletterTemplate } from "@/lib/email/newsletter-template";
 import { logError, logInfo } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
@@ -148,6 +148,7 @@ export const POST = (request: Request) =>
 
           // oxlint-disable-next-line no-await-in-loop -- Must be sequential for rate limiting
           await sendEmail({
+            from: getNewsletterFrom(),
             to: email,
             subject,
             html,
