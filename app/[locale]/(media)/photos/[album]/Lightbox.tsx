@@ -46,11 +46,14 @@ export function Lightbox({
   const [isZoomed, setIsZoomed] = useState(false);
   const [isPinching, setIsPinching] = useState(false);
   const [dragY, setDragY] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
+  const [isEntering, setIsEntering] = useState(true);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const touchStartY = useRef(0);
   const dragYRef = useRef(0);
   const isMultiTouch = useRef(false);
+  const exitAnimationRef = useRef<number | null>(null);
 
   const DISMISS_DRAG_THRESHOLD = 100;
 
@@ -116,6 +119,14 @@ export function Lightbox({
   }, [index]);
 
   useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setIsEntering(false);
+    }, 350);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
@@ -145,11 +156,21 @@ export function Lightbox({
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+
+      const scrollYFromTop = Math.abs(parseInt(document.body.style.top || "0", 10));
+
       document.body.style.overflow = originalStyle.overflow;
       document.body.style.position = originalStyle.position;
       document.body.style.top = originalStyle.top;
       document.body.style.width = originalStyle.width;
-      window.scrollTo(0, scrollY);
+
+      const _forceReflow = document.body.offsetHeight;
+
+      window.scrollTo({ top: scrollYFromTop || scrollY, behavior: "instant" });
+
+      if (exitAnimationRef.current) {
+        window.clearTimeout(exitAnimationRef.current);
+      }
     };
   }, [onClose, goToPrev, goToNext]);
 
@@ -173,7 +194,6 @@ export function Lightbox({
     if (e.touches.length === 1 && !isMultiTouch.current && deltaY > 0) {
       const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
       if (deltaY >= deltaX) {
-        e.preventDefault();
         setDragY(deltaY);
         dragYRef.current = deltaY;
       }
@@ -191,9 +211,19 @@ export function Lightbox({
 
     const currentDragY = dragYRef.current;
     if (currentDragY > DISMISS_DRAG_THRESHOLD) {
-      onClose();
-      setDragY(0);
-      dragYRef.current = 0;
+      setIsExiting(true);
+      const exitDistance = Math.max(currentDragY, window.innerHeight * 0.6);
+      setDragY(exitDistance);
+      dragYRef.current = exitDistance;
+
+      if (exitAnimationRef.current) {
+        window.clearTimeout(exitAnimationRef.current);
+      }
+
+      exitAnimationRef.current = window.setTimeout(() => {
+        onClose();
+      }, 250);
+
       return;
     }
 
@@ -221,107 +251,64 @@ export function Lightbox({
     document.body.removeChild(a);
   };
 
-  const backdropOpacity = dragY > 0 ? Math.max(0.4, 0.95 - (dragY / 350) * 0.55) : undefined;
-  const contentScale = dragY > 0 ? Math.max(0.85, 1 - (dragY / 500) * 0.15) : 1;
+  const backdropOpacity = dragY > 0 ? Math.max(0, 0.95 - (dragY / 350) * 0.95) : undefined;
+  const contentScale = dragY > 0 ? Math.max(0.8, 1 - (dragY / 500) * 0.2) : 1;
 
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95"
-      style={
-        backdropOpacity !== undefined
-          ? { backgroundColor: `rgba(0,0,0,${backdropOpacity})` }
-          : undefined
-      }
-    >
-      <div className="absolute inset-x-3 top-3 z-30 flex gap-1 sm:hidden">
-        {images.map((_, i) => (
-          <div
-            key={`progress-${i}`}
-            className={`h-1 flex-1 rounded-full ${i <= index ? "bg-white" : "bg-white/30"}`}
-          />
-        ))}
-      </div>
-
-      <div className="absolute top-8 right-3 left-3 z-30 flex items-center justify-between text-white sm:hidden">
-        <button
-          onClick={onClose}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
-          aria-label={closeLabel}
-        >
-          <svg
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <div className="flex h-9 items-center justify-center rounded-full bg-white/10 px-3 text-xs font-medium text-white/80 backdrop-blur-sm">
-          {index + 1} / {images.length}
-        </div>
-        <div className="flex h-9 items-stretch overflow-hidden rounded-full bg-white/10 text-white/90 backdrop-blur-sm">
-          <ShareMenu
-            shareUrl={shareUrl}
-            shareText={shareText}
-            buttonClassName="h-full rounded-none px-3 text-white/90 hover:bg-white/20 hover:text-white"
-            iconClassName="h-4 w-4"
-            showLabel={false}
-          />
-          <div className="h-full w-px bg-white/20" />
-          <button
-            onClick={handleDownload}
-            className="flex h-full items-center justify-center px-3 transition-colors hover:bg-white/20"
-            aria-label={downloadLabel}
-          >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <button
-        onClick={onClose}
-        className="absolute top-6 right-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
-        aria-label="Close"
+    <>
+      <style>{`
+        @keyframes lightboxEnter {
+          0% {
+            opacity: 0;
+            transform: scale(0.92);
+          }
+          40% {
+            opacity: 1;
+            transform: scale(1.02);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        @keyframes lightboxBackdropEnter {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+        .lightbox-enter {
+          animation: lightboxEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .lightbox-backdrop-enter {
+          animation: lightboxBackdropEnter 0.25s ease-out forwards;
+        }
+      `}</style>
+      <div
+        className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/95 ${isEntering ? "lightbox-backdrop-enter" : ""}`}
+        style={
+          backdropOpacity !== undefined
+            ? { backgroundColor: `rgba(0,0,0,${backdropOpacity})` }
+            : undefined
+        }
       >
-        <svg
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+        <div className="absolute inset-x-3 top-3 z-30 flex gap-1 sm:hidden">
+          {images.map((_, i) => (
+            <div
+              key={`progress-${i}`}
+              className={`h-1 flex-1 rounded-full ${i <= index ? "bg-white" : "bg-white/30"}`}
+            />
+          ))}
+        </div>
 
-      <div className="absolute top-6 left-6 z-30 hidden sm:flex">
-        <div className="flex h-12 items-stretch overflow-hidden rounded-full bg-white/10 text-white/90 backdrop-blur-sm">
-          <ShareMenu
-            shareUrl={shareUrl}
-            shareText={shareText}
-            buttonClassName="h-full rounded-none px-4 text-white/90 hover:bg-white/20 hover:text-white"
-            iconClassName="h-5 w-5"
-            showLabel={false}
-          />
-          <div className="h-full w-px bg-white/20" />
+        <div className="absolute top-8 right-3 left-3 z-30 flex items-center justify-between text-white sm:hidden">
           <button
-            onClick={handleDownload}
-            className="flex h-full items-center justify-center px-4 transition-colors hover:bg-white/20"
-            aria-label={downloadLabel}
+            onClick={isExiting ? undefined : onClose}
+            disabled={isExiting}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20 disabled:opacity-50"
+            aria-label={closeLabel}
           >
             <svg
               className="h-5 w-5"
@@ -330,121 +317,199 @@ export function Lightbox({
               stroke="currentColor"
               strokeWidth={2}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-        </div>
-      </div>
-
-      <div className="absolute bottom-4 left-1/2 z-30 hidden -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-sm sm:block">
-        {index + 1} / {images.length}
-      </div>
-
-      {hasPrev && (
-        <button
-          onClick={goToPrev}
-          className="absolute left-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
-          aria-label={previousLabel}
-        >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-      )}
-
-      {hasNext && (
-        <button
-          onClick={goToNext}
-          className="absolute right-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
-          aria-label="Next"
-        >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      )}
-
-      <div
-        className="relative flex h-full w-full items-center justify-center px-0 pt-0 pb-0 sm:px-16 sm:pt-24 sm:pb-16"
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            onClose();
-          }
-        }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        <img
-          src={current.src}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full scale-105 object-cover opacity-70 blur-lg sm:hidden"
-        />
-        <div className="absolute inset-0 bg-black/30 sm:hidden" />
-        <div
-          className="relative z-20 flex items-center justify-center"
-          style={{
-            transform: dragY > 0 ? `translateY(${dragY}px) scale(${contentScale})` : undefined,
-            transition: dragY === 0 ? "transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
-          }}
-        >
-          <div
-            className={`absolute inset-0 z-20 flex sm:hidden ${isPinching ? "pointer-events-none" : ""}`}
-          >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                goToPrev();
-              }}
-              disabled={!hasPrev}
-              aria-label={previousLabel}
-              className="flex-1 disabled:opacity-0"
-            />
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                goToNext();
-              }}
-              disabled={!hasNext}
-              aria-label={nextLabel}
-              className="flex-1 disabled:opacity-0"
-            />
+          <div className="flex h-9 items-center justify-center rounded-full bg-white/10 px-3 text-xs font-medium text-white/80 backdrop-blur-sm">
+            {index + 1} / {images.length}
           </div>
+          <div className="flex h-9 items-stretch overflow-hidden rounded-full bg-white/10 text-white/90 backdrop-blur-sm">
+            <ShareMenu
+              shareUrl={shareUrl}
+              shareText={shareText}
+              buttonClassName="h-full rounded-none px-3 text-white/90 hover:bg-white/20 hover:text-white"
+              iconClassName="h-4 w-4"
+              showLabel={false}
+            />
+            <div className="h-full w-px bg-white/20" />
+            <button
+              onClick={handleDownload}
+              className="flex h-full items-center justify-center px-3 transition-colors hover:bg-white/20"
+              aria-label={downloadLabel}
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button
+          onClick={isExiting ? undefined : onClose}
+          disabled={isExiting}
+          className="absolute top-6 right-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 disabled:opacity-50 sm:flex"
+          aria-label="Close"
+        >
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <div className="absolute top-6 left-6 z-30 hidden sm:flex">
+          <div className="flex h-12 items-stretch overflow-hidden rounded-full bg-white/10 text-white/90 backdrop-blur-sm">
+            <ShareMenu
+              shareUrl={shareUrl}
+              shareText={shareText}
+              buttonClassName="h-full rounded-none px-4 text-white/90 hover:bg-white/20 hover:text-white"
+              iconClassName="h-5 w-5"
+              showLabel={false}
+            />
+            <div className="h-full w-px bg-white/20" />
+            <button
+              onClick={handleDownload}
+              className="flex h-full items-center justify-center px-4 transition-colors hover:bg-white/20"
+              aria-label={downloadLabel}
+            >
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div className="absolute bottom-4 left-1/2 z-30 hidden -translate-x-1/2 rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-sm sm:block">
+          {index + 1} / {images.length}
+        </div>
+
+        {hasPrev && (
+          <button
+            onClick={goToPrev}
+            className="absolute left-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
+            aria-label={previousLabel}
+          >
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        )}
+
+        {hasNext && (
+          <button
+            onClick={goToNext}
+            className="absolute right-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
+            aria-label="Next"
+          >
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
+
+        <div
+          className="relative flex h-full w-full touch-none items-center justify-center px-0 pt-0 pb-0 sm:px-16 sm:pt-24 sm:pb-16"
+          onClick={(e) => {
+            if (!isExiting && e.target === e.currentTarget) {
+              onClose();
+            }
+          }}
+          onTouchStart={isExiting ? undefined : handleTouchStart}
+          onTouchMove={isExiting ? undefined : handleTouchMove}
+          onTouchEnd={isExiting ? undefined : handleTouchEnd}
+        >
           <img
             src={current.src}
-            alt={current.alt}
-            className={`block max-h-[100svh] max-w-[100vw] object-contain sm:max-h-[calc(100vh-10rem)] sm:max-w-[calc(100vw-8rem)] sm:transition-transform sm:duration-200 ${
-              isZoomed ? "sm:scale-150 sm:cursor-zoom-out" : "sm:cursor-zoom-in"
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-
-              if (isDesktopViewport()) {
-                setIsZoomed(!isZoomed);
-              }
-            }}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full scale-105 object-cover opacity-70 blur-lg sm:hidden"
           />
+          <div className="absolute inset-0 bg-black/30 sm:hidden" />
+          <div
+            className={`relative z-20 flex items-center justify-center ${isEntering && !isExiting ? "lightbox-enter" : ""}`}
+            style={{
+              transform: dragY > 0 ? `translateY(${dragY}px) scale(${contentScale})` : undefined,
+              transition:
+                isExiting || dragY === 0 ? "transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
+            }}
+          >
+            <div
+              className={`absolute inset-0 z-20 flex sm:hidden ${isPinching ? "pointer-events-none" : ""}`}
+            >
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToPrev();
+                }}
+                disabled={!hasPrev}
+                aria-label={previousLabel}
+                className="flex-1 disabled:opacity-0"
+              />
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToNext();
+                }}
+                disabled={!hasNext}
+                aria-label={nextLabel}
+                className="flex-1 disabled:opacity-0"
+              />
+            </div>
+            <img
+              src={current.src}
+              alt={current.alt}
+              className={`block max-h-[100svh] max-w-[100vw] object-contain sm:max-h-[calc(100vh-10rem)] sm:max-w-[calc(100vw-8rem)] sm:transition-transform sm:duration-200 ${
+                isZoomed ? "sm:scale-150 sm:cursor-zoom-out" : "sm:cursor-zoom-in"
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+
+                if (isDesktopViewport()) {
+                  setIsZoomed(!isZoomed);
+                }
+              }}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
