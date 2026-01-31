@@ -113,8 +113,8 @@ export function MeClient() {
     setMounted(true);
   }, []);
 
-  const profileQuery = useUserProfile();
-  const watchlistQuery = useWatchlist();
+  const profileQuery = useUserProfile(auth.hydrated && auth.isAuthenticated);
+  const watchlistQuery = useWatchlist(auth.hydrated && auth.isAuthenticated);
   const updatePreferenceMutation = useUpdatePreferenceMutation();
   const removeBoostMutation = useRemoveBoostMutation();
   const deleteChallengeMutation = useDeleteAccountChallengeMutation();

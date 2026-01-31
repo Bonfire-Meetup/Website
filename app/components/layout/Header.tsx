@@ -11,26 +11,12 @@ import { LanguageToggle } from "../theme/LanguageToggle";
 import { ThemeToggle } from "../theme/ThemeToggle";
 import { Button } from "../ui/Button";
 
-import { MobileMenu } from "./MobileMenu";
-
 export function Header() {
   const t = useTranslations("header");
 
-  const mobileLinks = [
-    { href: PAGE_ROUTES.HOME, label: t("home") },
-    { href: PAGE_ROUTES.ANCHOR.EVENTS, label: t("upcoming") },
-    { href: PAGE_ROUTES.LIBRARY, label: t("library") },
-    { href: PAGE_ROUTES.PHOTOS, label: t("photos") },
-    { href: PAGE_ROUTES.CREW, label: t("crew") },
-    { href: PAGE_ROUTES.PRESS, label: t("press"), prefetch: false },
-    { href: PAGE_ROUTES.FAQ, label: t("faq"), prefetch: false },
-    { href: PAGE_ROUTES.CONTACT_WITH_TYPE("general"), label: t("contact") },
-    { href: PAGE_ROUTES.LEGAL, label: t("codeOfConduct"), prefetch: false },
-  ];
-
   return (
     <header className="glass fixed top-0 right-0 left-0 z-50">
-      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-4 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-3 sm:px-6 md:grid md:h-18 md:grid-cols-[1fr_auto_1fr] md:gap-4 lg:px-8">
         <div className="flex items-center gap-3 md:justify-self-start">
           <Link
             href={PAGE_ROUTES.HOME}
@@ -41,7 +27,7 @@ export function Header() {
               alt={t("logoAlt")}
               width={140}
               height={40}
-              className="h-9 w-auto dark:hidden"
+              className="h-8 w-auto md:h-9 dark:hidden"
               priority
             />
             <Image
@@ -49,7 +35,7 @@ export function Header() {
               alt={t("logoAlt")}
               width={140}
               height={40}
-              className="hidden h-9 w-auto dark:block"
+              className="hidden h-8 w-auto md:h-9 dark:block"
               priority
             />
           </Link>
@@ -81,11 +67,17 @@ export function Header() {
             <LanguageToggle />
             <ThemeToggle />
           </div>
-          <AuthNavButton />
-          <Button href={PAGE_ROUTES.LIBRARY} variant="primary">
+          <div className="hidden md:block">
+            <AuthNavButton />
+          </div>
+          <Button
+            href={PAGE_ROUTES.LIBRARY}
+            variant="primary"
+            size="sm"
+            className="md:size-[default]"
+          >
             {t("library")}
           </Button>
-          <MobileMenu links={mobileLinks} menuLabel={t("menu")} closeLabel={t("close")} />
         </div>
       </div>
     </header>

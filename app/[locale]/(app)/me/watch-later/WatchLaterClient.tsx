@@ -31,7 +31,7 @@ export function WatchLaterClient() {
     }
   }, [router]);
 
-  const { data: watchlistData, isLoading, error } = useWatchlist();
+  const { data: watchlistData, isLoading, error } = useWatchlist(hasToken);
 
   useEffect(() => {
     if (watchlistData?.items) {

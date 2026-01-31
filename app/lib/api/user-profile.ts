@@ -65,8 +65,9 @@ async function fetchJsonOrNull<T>(response: Response): Promise<T | null> {
   }
 }
 
-export function useUserProfile() {
+export function useUserProfile(enabled = true) {
   return useQuery<UserProfileData, ApiError>({
+    enabled,
     queryFn: async () => {
       const response = await authFetch(API_ROUTES.ME.BASE);
       if (!response.ok) {
@@ -226,8 +227,9 @@ export function useDeleteAccountMutation() {
   });
 }
 
-export function useWatchlist() {
+export function useWatchlist(enabled = true) {
   return useQuery<{ items: { videoId: string; addedAt: string }[] }, ApiError>({
+    enabled,
     queryFn: async () => {
       const response = await authFetch(API_ROUTES.USERS.ME.WATCHLIST);
       if (!response.ok) {
@@ -359,8 +361,9 @@ export function useRemoveFromWatchlistMutation() {
     retry: shouldRetryMutation,
   });
 }
-export function useCheckInToken() {
+export function useCheckInToken(enabled = true) {
   return useQuery<{ token: string; expiresAt: string }, ApiError>({
+    enabled,
     queryFn: async () => {
       const response = await authFetch(API_ROUTES.USERS.ME.CHECK_IN);
       if (!response.ok) {
@@ -390,8 +393,9 @@ interface Passkey {
 
 const PASSKEYS_QUERY_KEY = ["passkeys"] as const;
 
-export function usePasskeys() {
+export function usePasskeys(enabled = true) {
   return useQuery<{ items: Passkey[] }, ApiError>({
+    enabled,
     queryFn: async () => {
       const response = await authFetch(API_ROUTES.ME.PASSKEYS);
       if (!response.ok) {

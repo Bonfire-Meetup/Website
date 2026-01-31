@@ -33,23 +33,29 @@ export function CookieBanner() {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 z-50">
-      <div className="glass flex max-w-[420px] items-center gap-2 rounded-lg px-3 py-2">
-        <p className="shrink-1 text-xs leading-relaxed text-neutral-600 dark:text-neutral-400">
+    <div className="fixed right-4 bottom-24 left-4 z-50 md:right-auto md:bottom-4 md:left-4">
+      <div className="glass mx-auto flex max-w-[420px] flex-col gap-3 rounded-xl px-4 py-3 sm:flex-row sm:items-center sm:gap-2 sm:rounded-lg sm:px-3 sm:py-2">
+        <p className="text-xs leading-relaxed text-neutral-600 dark:text-neutral-400">
           {t("message")}
         </p>
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex shrink-0 items-center justify-center gap-2 sm:gap-1">
           <button
             onClick={handleDismiss}
-            className="cursor-pointer rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 ring-1 ring-neutral-200 transition hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-700 dark:hover:bg-neutral-700"
+            className="flex-1 cursor-pointer rounded-lg bg-gradient-to-r from-fuchsia-700 via-orange-500 to-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-orange-500/25 transition hover:opacity-90 active:scale-95 sm:flex-none sm:rounded-md sm:px-3 sm:py-1 sm:font-medium sm:shadow-none dark:shadow-orange-500/30"
           >
             {t("accept")}
           </button>
           <a
             href="/legal#cookies"
-            className="rounded-md p-1 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 sm:rounded-md sm:p-1 sm:hover:rounded-md dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+            aria-label={t("learnMoreAria")}
           >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="h-4 w-4 sm:h-3.5 sm:w-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -60,10 +66,15 @@ export function CookieBanner() {
           </a>
           <button
             onClick={handleClose}
-            className="cursor-pointer rounded-md p-1 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 sm:rounded-md sm:p-1 sm:hover:rounded-md dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
             aria-label={t("closeAria")}
           >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="h-4 w-4 sm:h-3.5 sm:w-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

@@ -28,7 +28,13 @@
     "back": "Back",
     "menu": "Open menu",
     "close": "Close menu",
-    "logoAlt": "Bonfire Events logo"
+    "logoAlt": "Bonfire Events logo",
+    "profile": "Profile",
+    "more": "More",
+    "moreMenuTitle": "Menu",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme"
   },
   "hero": {
     "eyebrow": "Bonfire Community",
@@ -1325,6 +1331,7 @@
     "accept": "OK",
     "close": "Close",
     "closeAria": "Dismiss cookie notice",
-    "learnMore": "Learn more"
+    "learnMore": "Learn more",
+    "learnMoreAria": "Learn more about cookies"
   }
 }

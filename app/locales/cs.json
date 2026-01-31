@@ -28,7 +28,13 @@
     "back": "Zpět",
     "menu": "Otevřít menu",
     "close": "Zavřít menu",
-    "logoAlt": "Logo Bonfire Events"
+    "logoAlt": "Logo Bonfire Events",
+    "profile": "Profil",
+    "more": "Více",
+    "moreMenuTitle": "Menu",
+    "settings": "Nastavení",
+    "language": "Jazyk",
+    "theme": "Motiv"
   },
   "hero": {
     "eyebrow": "BONFIRE KOMUNITA",
@@ -1336,6 +1342,7 @@
     "accept": "OK",
     "close": "Zavřít",
     "closeAria": "Zavřít upozornění",
-    "learnMore": "Více info"
+    "learnMore": "Více info",
+    "learnMoreAria": "Více informací o cookies"
   }
 }

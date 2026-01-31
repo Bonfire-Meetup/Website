@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { ApiError } from "@/lib/api/errors";
 import { useCheckInToken } from "@/lib/api/user-profile";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { useAppSelector } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 
 const REFRESH_INTERVAL_MS = 9 * 60 * 1000;
@@ -18,9 +19,10 @@ const DEVICE_WAKE_THRESHOLD_MS = 30 * 1000;
 export function CheckInClient() {
   const t = useTranslations("checkIn");
   const router = useRouter();
+  const auth = useAppSelector((state) => state.auth);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const tokenQuery = useCheckInToken();
+  const tokenQuery = useCheckInToken(auth.hydrated && auth.isAuthenticated);
   const [lastActivityTime, setLastActivityTime] = useState(Date.now());
 
   useEffect(() => {
