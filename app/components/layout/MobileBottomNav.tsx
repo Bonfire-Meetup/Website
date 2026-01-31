@@ -54,7 +54,13 @@ export function MobileBottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 md:hidden">
+    <nav
+      className="fixed bottom-6 left-1/2 z-50 md:hidden"
+      style={{
+        transform: "translateX(-50%) translateZ(0)",
+        WebkitTransform: "translateX(-50%) translateZ(0)",
+      }}
+    >
       <div className="nav-pill flex items-center gap-1 rounded-full bg-white/85 px-2 py-2 shadow-2xl backdrop-blur-xl dark:bg-neutral-900/85">
         {navItems.map((item) => {
           const active = isActive(item);

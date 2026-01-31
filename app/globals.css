@@ -76,7 +76,6 @@
 
 html {
   color-scheme: light dark;
-  overscroll-behavior: none;
 }
 
 html.smooth-scroll {
