@@ -60,12 +60,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
 
-  const [scriptLoaded, setScriptLoaded] = useState(() => {
-    if (typeof window !== "undefined") {
-      return Boolean(window.turnstile);
-    }
-    return false;
-  });
+  const [scriptLoaded, setScriptLoaded] = useState(false);
   const [scriptError, setScriptError] = useState(false);
 
   const [token, setToken] = useState<string>("");

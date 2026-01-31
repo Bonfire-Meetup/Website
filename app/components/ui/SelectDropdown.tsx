@@ -72,13 +72,7 @@ export function SelectDropdown({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [menuWidth, setMenuWidth] = useState<number | null>(null);
-  const [useNative, setUseNative] = useState(() => {
-    if (!nativeOnMobile || typeof window === "undefined") {
-      return false;
-    }
-
-    return window.matchMedia("(max-width: 767px)").matches;
-  });
+  const [useNative, setUseNative] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const measureRef = useRef<HTMLSpanElement | null>(null);
   const listboxId = useId();
