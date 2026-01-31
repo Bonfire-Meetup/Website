@@ -5,10 +5,12 @@ import { LegalPageContent } from "./LegalPageContent";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("legal");
+  const tCommon = await getTranslations("common");
+  const brandName = tCommon("brandName");
 
   return {
     description: t("subtitle"),
-    title: t("title"),
+    title: `${t("title")} | ${brandName}`,
   };
 }
 

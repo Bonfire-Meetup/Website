@@ -150,9 +150,26 @@
   "events": {
     "comingSoon": "Již brzy",
     "speakers": "Speakeři",
+    "speakersTba": "Speakeři budou oznámeni brzy",
     "tba": "Dáme vědět brzy",
     "locationLabel": "Kde: {location}",
     "episodeLabel": "Epizoda",
+    "backToEvents": "Zpět na akce",
+    "venueTitle": "Místo konání",
+    "openInMaps": "Otevřít v Google Mapách",
+    "saveTheDate": "Ulož si datum",
+    "registerNow": "Registruj se nyní",
+    "tbaDescription": "Datum bude oznámeno brzy. Přihlaste se k odběru našeho newsletteru a buďte první, kdo se dozví, kdy se otevře registrace!",
+    "registerDescription": "Zajisti si místo na {location}. Míst je omezený počet, platí pravidlo kdo dřív přijde, ten dřív má.",
+    "stayTuned": "Zůstaňte naladěni!",
+    "registrationOpensSoon": "Registrace se brzy otevře. Zkontrolujte stránky později!",
+    "registerVia": "Registrace přes:",
+    "timeLabel": "Čas",
+    "locationSimple": "Místo",
+    "shareEvent": "Sdílet tuto akci",
+    "copyLink": "Kopírovat odkaz",
+    "copied": "Zkopírováno!",
+    "viewDetails": "Zobrazit detail",
     "platforms": {
       "luma": "Lu.ma",
       "facebook": "Facebook",
@@ -461,9 +478,9 @@
     "attributionsLabel": "Attribuce"
   },
   "meta": {
-    "siteTitle": "{brandName} - Game Dev Meetupy",
+    "siteTitle": "Home | {brandName}",
     "siteDescription": "{brandName} je gamedev komunita pořádající meetupy v {prague} a {zlin}.",
-    "homeTitle": "{brandName} - Game Dev Meetupy",
+    "homeTitle": "Home | {brandName}",
     "homeDescription": "{brandName} je komunita herních vývojářů. Pořádáme meetupy v {prague} a {zlin}. Doraž na přednášku a pokec.",
     "libraryTitle": "Knihovna | {brandName}",
     "libraryDescription": "Archiv Bonfire přednášek o techu, artu a produkci, včetně live podcastů.",
@@ -502,7 +519,8 @@
     "userProfileNotFound": "Profil uživatele nenalezen | {brandName}",
     "privateProfileTitle": "Soukromý profil | {brandName}",
     "privateProfileDescription": "Tento komunitní profil je soukromý.",
-    "recordingNotFound": "Záznam nenalezen",
+    "eventNotFound": "Akce nenalezena | {brandName}",
+    "recordingNotFound": "Záznam nenalezen | {brandName}",
     "siteName": "{brandName}",
     "author": "{brandName}",
     "keywords": [
@@ -517,7 +535,7 @@
       "unreal",
       "godot"
     ],
-    "titleSuffix": " | Bonfire"
+    "titleSuffix": " | {brandName}"
   },
   "faqPage": {
     "eyebrow": "FAQ",
@@ -1344,6 +1362,8 @@
     "close": "Zavřít",
     "closeAria": "Zavřít upozornění",
     "learnMore": "Více info",
-    "learnMoreAria": "Více informací o cookies"
+    "learnMoreAria": "Více informací o cookies",
+    "expandAria": "Zobrazit možnosti cookies",
+    "minimalLabel": "Cookies"
   }
 }

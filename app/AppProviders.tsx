@@ -31,7 +31,9 @@ export function AppProviders({ children, initialLocale, initialMessages }: AppPr
               <ThemeProvider>
                 <GlobalPlayerProvider>
                   {children}
-                  <CookieBanner />
+                  <div className="hidden md:block">
+                    <CookieBanner />
+                  </div>
                 </GlobalPlayerProvider>
               </ThemeProvider>
             </div>

@@ -26,6 +26,7 @@ export const PAGE_ROUTES = {
   LOGIN_WITH_REASON_AND_RETURN: (reason: LoginReason, returnPath?: string) =>
     `/login?reason-hint=${reason}${returnPath ? `&returnPath=${encodeURIComponent(returnPath)}` : ""}`,
   ME: "/me",
+  EVENT: (id: string) => `/event/${id}`,
   EVENT_CHECK_IN: "/event/check-in",
   EVENT_READER: "/event/reader",
   PHOTOS: "/photos",

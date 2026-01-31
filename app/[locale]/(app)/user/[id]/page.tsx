@@ -23,7 +23,7 @@ export async function generateMetadata({
   const userId = decompressUuid(id);
 
   if (!userId) {
-    return { title: t("userProfileNotFound") };
+    return { title: t("userProfileNotFound", { brandName: tCommon("brandName") }) };
   }
 
   const user = await getAuthUserById(userId);

@@ -1,9 +1,12 @@
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { LocationPill } from "../locations/LocationPill";
 import {
+  ArrowRightIcon,
   CalendarIcon,
   ClockIcon,
   EventbriteIcon,
@@ -12,6 +15,7 @@ import {
   LumaIcon,
   MapPinIcon,
 } from "../shared/icons";
+import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { MetaRow } from "../ui/MetaRow";
 import { Pill } from "../ui/Pill";
@@ -37,6 +41,7 @@ interface EventCardProps {
 }
 
 export function EventCard({
+  id,
   title,
   episode,
   location,
@@ -177,6 +182,13 @@ export function EventCard({
               </div>
             </div>
           )}
+
+          <Link href={PAGE_ROUTES.EVENT(id)}>
+            <Button variant="secondary" size="sm" className="group w-full gap-2">
+              {t("viewDetails")}
+              <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
         </div>
       </Card>
     );
@@ -257,7 +269,15 @@ export function EventCard({
           </div>
         )}
 
-        <p className="section-label-spaced">{t("register")}</p>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <p className="section-label-spaced mb-0">{t("register")}</p>
+          <Link href={PAGE_ROUTES.EVENT(id)}>
+            <Button variant="secondary" size="sm" className="group gap-2">
+              {t("viewDetails")}
+              <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
+        </div>
 
         <div className="flex flex-wrap gap-3">
           {platformLinks.map((platform) => (

@@ -45,19 +45,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const episode = getEpisodeById(album.episodeId);
   const title = episode ? formatEpisodeTitle(episode) : album.id;
+  const brandName = tCommon("brandName");
 
   return {
     description: t("photosDescription", commonValues),
     openGraph: {
       description: t("photosDescription", commonValues),
-      title: `${title} | ${t("photosTitle", commonValues)}`,
+      title: `${title} | ${brandName}`,
       type: "website",
     },
-    title: `${title} | ${t("photosTitle", commonValues)}`,
+    title: `${title} | ${brandName}`,
     twitter: {
       card: "summary_large_image",
       description: t("photosDescription", commonValues),
-      title: `${title} | ${t("photosTitle", commonValues)}`,
+      title: `${title} | ${brandName}`,
     },
   };
 }

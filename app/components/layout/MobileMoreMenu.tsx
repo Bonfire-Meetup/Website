@@ -6,10 +6,11 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { COOKIE_KEYS, getCookie, setCookie } from "@/lib/storage/keys";
 
-import { CameraIcon, CloseIcon, ShieldIcon } from "../shared/icons";
-import { LanguageToggle } from "../theme/LanguageToggle";
-import { ThemeToggle } from "../theme/ThemeToggle";
+import { useI18n } from "../providers/I18nClientSync";
+import { CameraIcon, CloseIcon, MoonIcon, ShieldIcon, SunIcon, SystemIcon } from "../shared/icons";
+import { useTheme } from "../theme/ThemeProvider";
 
 function EnvelopeIcon({ className }: { className?: string }) {
   return (
@@ -83,6 +84,42 @@ function QuestionMarkCircleIcon({ className }: { className?: string }) {
   );
 }
 
+function CookieIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5M8.5 8.5v.01M16 15v.01M12 12v.01M11 17v.01M17 12v.01"
+      />
+    </svg>
+  );
+}
+
+function GlobeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"
+      />
+    </svg>
+  );
+}
+
 interface MenuItem {
   href: string;
   label: string;
@@ -92,9 +129,13 @@ interface MenuItem {
 
 export function MobileMoreMenu() {
   const t = useTranslations("header");
+  const tCookie = useTranslations("cookieConsent");
+  const { locale, setLocale } = useI18n();
+  const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isRendered, setIsRendered] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [hasConsent, setHasConsent] = useState(true);
   const animationMs = 300;
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -109,6 +150,8 @@ export function MobileMoreMenu() {
 
   useEffect(() => {
     setMounted(true);
+    const consent = getCookie(COOKIE_KEYS.CONSENT);
+    setHasConsent(Boolean(consent));
   }, []);
 
   useEffect(() => {
@@ -138,6 +181,27 @@ export function MobileMoreMenu() {
   }, [isOpen, isRendered, animationMs]);
 
   const closeMenu = () => setIsOpen(false);
+
+  const handleAcceptCookies = () => {
+    setCookie(COOKIE_KEYS.CONSENT, "essential", 365);
+    setHasConsent(true);
+  };
+
+  const handleDismissCookies = () => {
+    setCookie(COOKIE_KEYS.CONSENT, "dismissed", 365);
+    setHasConsent(true);
+  };
+
+  const toggleLocale = () => {
+    setLocale(locale === "en" ? "cs" : "en");
+  };
+
+  const cycleTheme = () => {
+    const themes: ("light" | "dark" | "system")[] = ["light", "dark", "system"];
+    const currentIndex = themes.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setTheme(themes[nextIndex]);
+  };
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -269,19 +333,79 @@ export function MobileMoreMenu() {
                       "transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 250ms, opacity 400ms cubic-bezier(0.4, 0, 0.2, 1) 250ms",
                   }}
                 >
-                  <div className="grid grid-cols-2 gap-px bg-neutral-200/50 dark:bg-neutral-700/50">
-                    <div className="flex items-center justify-center gap-2 bg-white/95 px-4 py-3 transition hover:bg-neutral-50 dark:bg-neutral-900/95 dark:hover:bg-neutral-800/95">
-                      <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
-                        {t("language")}
-                      </span>
-                      <LanguageToggle />
+                  {!hasConsent ? (
+                    <div className="flex items-center justify-between gap-3 bg-gradient-to-r from-fuchsia-50/50 via-orange-50/50 to-red-50/50 px-4 py-3 dark:from-fuchsia-950/30 dark:via-orange-950/30 dark:to-red-950/30">
+                      <div className="flex items-center gap-2">
+                        <CookieIcon className="h-4 w-4 text-neutral-500 dark:text-neutral-400" />
+                        <span className="text-xs text-neutral-600 dark:text-neutral-400">
+                          {tCookie("message")}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={handleAcceptCookies}
+                          className="rounded-md bg-gradient-to-r from-fuchsia-600 to-orange-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:opacity-90 active:scale-95"
+                        >
+                          {tCookie("accept")}
+                        </button>
+                        <button
+                          onClick={handleDismissCookies}
+                          className="flex h-7 w-7 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-200/50 hover:text-neutral-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-400"
+                          aria-label={tCookie("closeAria")}
+                        >
+                          <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-center gap-2 bg-white/95 px-4 py-3 transition hover:bg-neutral-50 dark:bg-neutral-900/95 dark:hover:bg-neutral-800/95">
-                      <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
-                        {t("theme")}
+                  ) : null}
+
+                  <div className="grid grid-cols-3 gap-px bg-neutral-200/50 dark:bg-neutral-700/50">
+                    <button
+                      onClick={toggleLocale}
+                      className="flex items-center justify-center gap-2 bg-white/95 px-4 py-3 transition hover:bg-neutral-50 active:scale-95 dark:bg-neutral-900/95 dark:hover:bg-neutral-800/95"
+                    >
+                      <GlobeIcon className="h-4 w-4 text-neutral-500 dark:text-neutral-400" />
+                      <span className="text-xs font-medium text-neutral-500 uppercase dark:text-neutral-400">
+                        {locale}
                       </span>
-                      <ThemeToggle />
-                    </div>
+                    </button>
+
+                    <button
+                      onClick={cycleTheme}
+                      className="flex items-center justify-center gap-2 bg-white/95 px-4 py-3 transition hover:bg-neutral-50 active:scale-95 dark:bg-neutral-900/95 dark:hover:bg-neutral-800/95"
+                    >
+                      {theme === "light" && <SunIcon className="h-4 w-4 text-amber-500" />}
+                      {theme === "dark" && <MoonIcon className="h-4 w-4 text-blue-400" />}
+                      {theme === "system" && (
+                        <SystemIcon className="h-4 w-4 text-neutral-500 dark:text-neutral-400" />
+                      )}
+                      <span className="text-xs font-medium text-neutral-500 capitalize dark:text-neutral-400">
+                        {theme}
+                      </span>
+                    </button>
+
+                    <Link
+                      href="/legal#cookies"
+                      className="flex items-center justify-center gap-2 bg-white/95 px-4 py-3 transition hover:bg-neutral-50 active:scale-95 dark:bg-neutral-900/95 dark:hover:bg-neutral-800/95"
+                      onClick={closeMenu}
+                    >
+                      <CookieIcon className="h-4 w-4 text-neutral-500 dark:text-neutral-400" />
+                      <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                        Cookies
+                      </span>
+                    </Link>
                   </div>
                 </div>
               </div>

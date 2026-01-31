@@ -28,10 +28,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const shortId = parseShortId(slug);
   const recording = getAllRecordings().find((item: Recording) => item.shortId === shortId);
   const t = await getTranslations("meta");
+  const tCommon = await getTranslations("common");
+  const commonValues = { brandName: tCommon("brandName") };
 
   if (!recording) {
     return {
-      title: t("recordingNotFound"),
+      title: t("recordingNotFound", commonValues),
     };
   }
 
@@ -43,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: recording.title,
       url: PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
     },
-    title: `${recording.title}${t("titleSuffix")}`,
+    title: `${recording.title}${t("titleSuffix", commonValues)}`,
     twitter: {
       card: "summary_large_image",
       description: recording.description,

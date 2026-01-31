@@ -150,9 +150,26 @@
   "events": {
     "comingSoon": "Coming soon",
     "speakers": "Speakers",
+    "speakersTba": "Speakers to be announced soon",
     "tba": "To be announced",
     "locationLabel": "Location: {location}",
     "episodeLabel": "Episode",
+    "backToEvents": "Back to events",
+    "venueTitle": "Venue",
+    "openInMaps": "Open in Google Maps",
+    "saveTheDate": "Save the Date",
+    "registerNow": "Register Now",
+    "tbaDescription": "Date to be announced. Subscribe to our newsletter to be the first to know when registration opens!",
+    "registerDescription": "Secure your spot at {location}. Seats are limited and first come, first served.",
+    "stayTuned": "Stay Tuned!",
+    "registrationOpensSoon": "Registration will open soon. Check back later!",
+    "registerVia": "Register via:",
+    "timeLabel": "Time",
+    "locationSimple": "Location",
+    "shareEvent": "Share this event",
+    "copyLink": "Copy link",
+    "copied": "Copied!",
+    "viewDetails": "View Details",
     "platforms": {
       "luma": "Lu.ma",
       "facebook": "Facebook",
@@ -461,9 +478,9 @@
     "attributionsLabel": "Attributions"
   },
   "meta": {
-    "siteTitle": "{brandName} - Game Dev Meetups",
+    "siteTitle": "Home | {brandName}",
     "siteDescription": "{brandName} is a game development community hosting meetups in {prague} and {zlin}, {country}.",
-    "homeTitle": "{brandName} - Game Dev Meetups",
+    "homeTitle": "Home | {brandName}",
     "homeDescription": "{brandName} is a game development community hosting meetups in {prague} and {zlin}, {country}. Join us for talks and networking.",
     "libraryTitle": "Library | {brandName}",
     "libraryDescription": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
@@ -491,7 +508,8 @@
     "userProfileNotFound": "User Profile Not Found | {brandName}",
     "privateProfileTitle": "Private Profile | {brandName}",
     "privateProfileDescription": "This community profile is private.",
-    "recordingNotFound": "Recording Not Found",
+    "eventNotFound": "Event Not Found | {brandName}",
+    "recordingNotFound": "Recording Not Found | {brandName}",
     "siteName": "{brandName}",
     "author": "{brandName}",
     "keywords": [
@@ -506,7 +524,7 @@
       "unreal",
       "godot"
     ],
-    "titleSuffix": " | Bonfire"
+    "titleSuffix": " | {brandName}"
   },
   "faqPage": {
     "eyebrow": "FAQ",
@@ -1333,6 +1351,8 @@
     "close": "Close",
     "closeAria": "Dismiss cookie notice",
     "learnMore": "Learn more",
-    "learnMoreAria": "Learn more about cookies"
+    "learnMoreAria": "Learn more about cookies",
+    "expandAria": "View cookie options",
+    "minimalLabel": "Cookies"
   }
 }
