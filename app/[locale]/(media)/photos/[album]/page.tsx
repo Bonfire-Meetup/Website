@@ -1,9 +1,9 @@
 import type { PhotoAlbum } from "@/lib/photos/types";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import photoAlbums from "@/data/photo-albums.json";
+import { buildMetaPageMetadata, getBrandName } from "@/lib/metadata";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 
 import { AlbumPageContent } from "./AlbumPageContent";
@@ -25,41 +25,23 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const t = await getTranslations("meta");
-  const tCommon = await getTranslations("common");
-  const commonValues = {
-    brandName: tCommon("brandName"),
-    country: tCommon("country"),
-    prague: tCommon("prague"),
-    zlin: tCommon("zlin"),
-  };
   const { album: albumId } = await params;
   const album = albums.find((item) => albumId === item.id || albumId.startsWith(`${item.id}-`));
 
   if (!album) {
-    return {
-      description: t("photosDescription", commonValues),
-      title: t("photosTitle", commonValues),
-    };
+    return buildMetaPageMetadata("photos");
   }
 
+  const [base, brandName] = await Promise.all([buildMetaPageMetadata("photos"), getBrandName()]);
   const episode = getEpisodeById(album.episodeId);
-  const title = episode ? formatEpisodeTitle(episode) : album.id;
-  const brandName = tCommon("brandName");
+  const pageTitle = episode ? formatEpisodeTitle(episode) : album.id;
+  const title = `${pageTitle} | ${brandName}`;
 
   return {
-    description: t("photosDescription", commonValues),
-    openGraph: {
-      description: t("photosDescription", commonValues),
-      title: `${title} | ${brandName}`,
-      type: "website",
-    },
-    title: `${title} | ${brandName}`,
-    twitter: {
-      card: "summary_large_image",
-      description: t("photosDescription", commonValues),
-      title: `${title} | ${brandName}`,
-    },
+    ...base,
+    openGraph: { ...base.openGraph, title },
+    title,
+    twitter: { ...base.twitter, title },
   };
 }
 

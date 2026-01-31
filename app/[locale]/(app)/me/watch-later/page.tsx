@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+
+import { buildMetaPageMetadata } from "@/lib/metadata";
 
 import { WatchLaterClient } from "./WatchLaterClient";
 
@@ -14,14 +15,5 @@ export default function WatchLaterPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("meta");
-  const tCommon = await getTranslations("common");
-  const commonValues = {
-    brandName: tCommon("brandName"),
-  };
-
-  return {
-    description: t("watchLaterDescription"),
-    title: t("watchLaterTitle", commonValues),
-  };
+  return buildMetaPageMetadata("watchLater", { commonValues: "brandOnly" });
 }

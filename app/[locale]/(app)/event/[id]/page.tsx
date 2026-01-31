@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { upcomingEvents } from "@/data/upcoming-events";
+import { buildNotFoundTitleMetadata, getMetaTitleSuffix } from "@/lib/metadata";
 
 import { EventDetailClient } from "./EventDetailClient";
 
@@ -19,16 +19,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const event = upcomingEvents.find((e) => e.id === id);
-  const t = await getTranslations("meta");
-  const tCommon = await getTranslations("common");
 
   if (!event) {
-    const commonValues = { brandName: tCommon("brandName") };
-    return {
-      title: t("eventNotFound", commonValues),
-    };
+    return buildNotFoundTitleMetadata("eventNotFound");
   }
 
+  const titleSuffix = await getMetaTitleSuffix();
   return {
     description: event.description,
     openGraph: {
@@ -36,7 +32,7 @@ export async function generateMetadata({
       title: event.title,
       type: "website",
     },
-    title: `${event.title}${t("titleSuffix", { brandName: tCommon("brandName") })}`,
+    title: `${event.title}${titleSuffix}`,
     twitter: {
       card: "summary_large_image",
       description: event.description,

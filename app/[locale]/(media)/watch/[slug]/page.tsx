@@ -1,7 +1,7 @@
-import { getTranslations } from "next-intl/server";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 
+import { buildNotFoundTitleMetadata, getMetaTitleSuffix } from "@/lib/metadata";
 import {
   type Recording,
   getAllRecordings,
@@ -27,16 +27,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const shortId = parseShortId(slug);
   const recording = getAllRecordings().find((item: Recording) => item.shortId === shortId);
-  const t = await getTranslations("meta");
-  const tCommon = await getTranslations("common");
-  const commonValues = { brandName: tCommon("brandName") };
 
   if (!recording) {
-    return {
-      title: t("recordingNotFound", commonValues),
-    };
+    return buildNotFoundTitleMetadata("recordingNotFound");
   }
 
+  const titleSuffix = await getMetaTitleSuffix();
   return {
     description: recording.description,
     openGraph: {
@@ -45,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: recording.title,
       url: PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
     },
-    title: `${recording.title}${t("titleSuffix", commonValues)}`,
+    title: `${recording.title}${titleSuffix}`,
     twitter: {
       card: "summary_large_image",
       description: recording.description,

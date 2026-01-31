@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { getNewsletterArchiveBySlug } from "@/lib/data/newsletter-archive";
+import { getBrandName } from "@/lib/metadata";
 
 import { type NewsletterArchiveData, NewsletterArchiveContent } from "./NewsletterArchiveContent";
 
@@ -63,14 +63,13 @@ export default async function NewsletterPage({ params }: NewsletterPageProps) {
 
 export async function generateMetadata({ params }: NewsletterPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const newsletter = await getNewsletterArchiveBySlug(slug);
-  const t = await getTranslations("common");
-  const brandName = t("brandName");
+  const [newsletter, brandName] = await Promise.all([
+    getNewsletterArchiveBySlug(slug),
+    getBrandName(),
+  ]);
 
   if (!newsletter) {
-    return {
-      title: `Newsletter Not Found | ${brandName}`,
-    };
+    return { title: `Newsletter Not Found | ${brandName}` };
   }
 
   return {

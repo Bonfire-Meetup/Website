@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+
+import { buildSimplePageMetadata } from "@/lib/metadata";
 
 import { CheckInClient } from "./CheckInClient";
 
@@ -14,11 +15,5 @@ export default function CheckInPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("checkIn");
-  const tCommon = await getTranslations("common");
-
-  return {
-    title: t("title", { brandName: tCommon("brandName") }),
-    description: t("description"),
-  };
+  return buildSimplePageMetadata({ ns: "checkIn" });
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { RecordingsCatalog } from "@/components/recordings/RecordingsCatalog";
+import { buildMetaPageMetadata } from "@/lib/metadata";
 import { getHiddenGems } from "@/lib/recordings/hidden-gems";
 import { getHotRecordingsSafe } from "@/lib/recordings/hot-picks";
 import { buildLibraryRowsPayload } from "@/lib/recordings/library-filter";
@@ -37,27 +38,5 @@ export default async function LibraryPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("meta");
-  const tCommon = await getTranslations("common");
-  const commonValues = {
-    brandName: tCommon("brandName"),
-    country: tCommon("country"),
-    prague: tCommon("prague"),
-    zlin: tCommon("zlin"),
-  };
-
-  return {
-    description: t("libraryDescription"),
-    openGraph: {
-      description: t("libraryDescription"),
-      title: t("libraryTitle", commonValues),
-      type: "website",
-    },
-    title: t("libraryTitle", commonValues),
-    twitter: {
-      card: "summary_large_image",
-      description: t("libraryDescription"),
-      title: t("libraryTitle", commonValues),
-    },
-  };
+  return buildMetaPageMetadata("library");
 }

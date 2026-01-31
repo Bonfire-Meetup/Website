@@ -1,10 +1,10 @@
 import type { PhotoAlbum } from "@/lib/photos/types";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { cacheLife } from "next/cache";
 
 import photoAlbums from "@/data/photo-albums.json";
 import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
+import { buildMetaPageMetadata } from "@/lib/metadata";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 
 import { PhotosPageContent } from "./PhotosPageContent";
@@ -78,29 +78,7 @@ async function getPhotosPageData() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("meta");
-  const tCommon = await getTranslations("common");
-  const commonValues = {
-    brandName: tCommon("brandName"),
-    country: tCommon("country"),
-    prague: tCommon("prague"),
-    zlin: tCommon("zlin"),
-  };
-
-  return {
-    description: t("photosDescription", commonValues),
-    openGraph: {
-      description: t("photosDescription", commonValues),
-      title: t("photosTitle", commonValues),
-      type: "website",
-    },
-    title: t("photosTitle", commonValues),
-    twitter: {
-      card: "summary_large_image",
-      description: t("photosDescription", commonValues),
-      title: t("photosTitle", commonValues),
-    },
-  };
+  return buildMetaPageMetadata("photos");
 }
 
 export default async function PhotosPage() {
