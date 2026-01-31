@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { AppProviders } from "@/AppProviders";
+import { RouteComplete } from "@/components/navigation/RouteComplete";
 import { type Messages } from "@/lib/i18n/initial";
 import { type Locale, LOCALES_ARRAY, isValidLocale } from "@/lib/i18n/locales";
 
@@ -79,6 +80,7 @@ export default async function LocaleLayout({
   return (
     <Suspense fallback={null}>
       <AppProviders initialLocale={locale} initialMessages={messages}>
+        <RouteComplete />
         {children}
       </AppProviders>
     </Suspense>
