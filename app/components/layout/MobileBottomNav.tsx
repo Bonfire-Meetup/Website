@@ -3,10 +3,12 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
+import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-import { CalendarIcon, FilmIcon, UserIcon } from "../shared/icons";
+import { CalendarIcon, FilmIcon, LogInIcon, UserIcon } from "../shared/icons";
 
 import { MobileMoreMenu } from "./MobileMoreMenu";
 
@@ -38,12 +40,24 @@ function HomeIcon({ className }: { className?: string }) {
 export function MobileBottomNav() {
   const t = useTranslations("header");
   const pathname = usePathname();
+  const auth = useAppSelector((state) => state.auth);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isAuthed = mounted && auth.isAuthenticated && auth.hydrated;
 
   const navItems: NavItem[] = [
     { href: PAGE_ROUTES.HOME, label: t("home"), icon: HomeIcon, exact: true },
     { href: PAGE_ROUTES.ANCHOR.EVENTS, label: t("upcoming"), icon: CalendarIcon },
     { href: PAGE_ROUTES.LIBRARY, label: t("library"), icon: FilmIcon },
-    { href: PAGE_ROUTES.ME, label: t("profile"), icon: UserIcon },
+    {
+      href: isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN,
+      label: isAuthed ? t("profile") : t("login"),
+      icon: isAuthed ? UserIcon : LogInIcon,
+    },
   ];
 
   const isActive = (item: NavItem) => {
