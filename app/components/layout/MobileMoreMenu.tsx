@@ -164,7 +164,11 @@ export function MobileMoreMenu() {
         }}
         aria-label={t("more")}
       >
-        <GridIcon className="h-5 w-5" />
+        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+          <circle cx="5" cy="12" r="2" />
+          <circle cx="12" cy="12" r="2" />
+          <circle cx="19" cy="12" r="2" />
+        </svg>
       </button>
     );
   }
@@ -173,54 +177,82 @@ export function MobileMoreMenu() {
     isRendered && mounted
       ? createPortal(
           <>
-            {/* Backdrop */}
             <div
-              className={`fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-out md:hidden ${
-                isOpen ? "opacity-100" : "opacity-0"
-              }`}
+              className={`fixed inset-0 z-50 md:hidden ${isOpen ? "opacity-100" : "opacity-0"}`}
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.4)",
+                backdropFilter: isOpen ? "blur(8px)" : "blur(0px)",
+                WebkitBackdropFilter: isOpen ? "blur(8px)" : "blur(0px)",
+                transition:
+                  "opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 400ms cubic-bezier(0.4, 0, 0.2, 1)",
+              }}
               onClick={closeMenu}
             />
 
-            {/* Sheet */}
             <div
-              className={`fixed right-0 bottom-0 left-0 z-50 md:hidden ${
-                isOpen ? "translate-y-0" : "translate-y-full"
-              }`}
+              className="fixed right-0 bottom-0 left-0 z-50 md:hidden"
               style={{
-                transition: "transform 300ms cubic-bezier(0.32, 0.72, 0, 1)",
+                transform: isOpen ? "translateY(0)" : "translateY(120%)",
+                transition: "transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1)",
               }}
             >
-              <div className="mx-4 mb-6 overflow-hidden rounded-3xl bg-white/95 shadow-2xl backdrop-blur-xl dark:bg-neutral-900/95">
-                {/* Header */}
-                <div className="flex items-center justify-between border-b border-neutral-100 px-4 py-2 dark:border-neutral-800">
-                  <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-                    {t("moreMenuTitle")}
-                  </span>
+              <div
+                className="mx-4 mb-6 overflow-hidden rounded-3xl bg-white/95 shadow-2xl backdrop-blur-xl dark:bg-neutral-900/95"
+                style={{
+                  transform: isOpen ? "scale(1)" : "scale(0.92)",
+                  opacity: isOpen ? 1 : 0,
+                  transition:
+                    "transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 400ms cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+              >
+                <div className="flex items-center justify-end px-3 pb-2">
                   <button
                     type="button"
                     onClick={closeMenu}
-                    className="flex h-7 w-7 items-center justify-center rounded-full text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800"
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
                     aria-label={t("close")}
                   >
                     <CloseIcon className="h-4 w-4" />
                   </button>
                 </div>
 
-                {/* Grid - 2 rows of 3 */}
-                <div className="grid grid-cols-3 gap-0.5 p-2">
-                  {menuItems.map((item) => {
+                <div className="grid grid-cols-3 gap-2 px-4 pb-4">
+                  {menuItems.map((item, index) => {
                     const Icon = item.icon;
+                    const delay = isOpen ? index * 50 : 0;
                     return (
                       <Link
                         key={item.href}
                         href={item.href}
                         onClick={closeMenu}
-                        className="flex flex-col items-center justify-center gap-1 rounded-xl p-2 transition hover:bg-neutral-50 active:scale-95 dark:hover:bg-neutral-800"
+                        className="group flex flex-col items-center justify-center gap-2 rounded-2xl p-3 transition active:scale-95"
+                        style={{
+                          transform: isOpen
+                            ? "translateY(0) scale(1)"
+                            : "translateY(16px) scale(0.85)",
+                          opacity: isOpen ? 1 : 0,
+                          transition: `transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}ms, opacity 400ms cubic-bezier(0.4, 0, 0.2, 1) ${delay}ms`,
+                        }}
                       >
-                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-600/20 via-orange-500/20 to-red-500/20 text-rose-600 dark:from-fuchsia-500/20 dark:via-orange-400/20 dark:to-red-400/20 dark:text-rose-400">
-                          <Icon className="h-5 w-5" />
+                        <div
+                          className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-600/15 via-orange-500/15 to-red-500/15 text-rose-600 transition-all group-hover:from-fuchsia-600/25 group-hover:via-orange-500/25 group-hover:to-red-500/25 dark:from-fuchsia-500/15 dark:via-orange-400/15 dark:to-red-400/15 dark:text-rose-400 dark:group-hover:from-fuchsia-500/25 dark:group-hover:via-orange-400/25 dark:group-hover:to-red-400/25"
+                          style={{
+                            transform: isOpen
+                              ? "scale(1) rotate(0deg)"
+                              : "scale(0.7) rotate(-15deg)",
+                            transition: `transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1) ${delay + 60}ms, background-color 200ms ease`,
+                          }}
+                        >
+                          <Icon className="h-6 w-6" />
                         </div>
-                        <span className="line-clamp-2 text-center text-[10px] leading-tight font-medium text-neutral-700 dark:text-neutral-300">
+                        <span
+                          className="text-center text-[11px] leading-tight font-medium text-neutral-700 dark:text-neutral-300"
+                          style={{
+                            transform: isOpen ? "translateY(0)" : "translateY(6px)",
+                            opacity: isOpen ? 1 : 0,
+                            transition: `transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) ${delay + 100}ms, opacity 300ms ease-out ${delay + 100}ms`,
+                          }}
+                        >
                           {item.label}
                         </span>
                       </Link>
@@ -228,17 +260,24 @@ export function MobileMoreMenu() {
                   })}
                 </div>
 
-                {/* Settings */}
-                <div className="border-t border-neutral-100 px-2 py-2 dark:border-neutral-800">
-                  <div className="grid grid-cols-2 gap-0.5">
-                    <div className="flex items-center justify-center gap-1 rounded-xl py-2 transition hover:bg-neutral-50 dark:hover:bg-neutral-800">
-                      <span className="text-[10px] font-medium text-neutral-500 dark:text-neutral-400">
+                <div
+                  className="border-t border-neutral-200/70 dark:border-neutral-700/50"
+                  style={{
+                    transform: isOpen ? "translateY(0)" : "translateY(20px)",
+                    opacity: isOpen ? 1 : 0,
+                    transition:
+                      "transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 250ms, opacity 400ms cubic-bezier(0.4, 0, 0.2, 1) 250ms",
+                  }}
+                >
+                  <div className="grid grid-cols-2 gap-px bg-neutral-200/50 dark:bg-neutral-700/50">
+                    <div className="flex items-center justify-center gap-2 bg-white/95 px-4 py-3 transition hover:bg-neutral-50 dark:bg-neutral-900/95 dark:hover:bg-neutral-800/95">
+                      <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
                         {t("language")}
                       </span>
                       <LanguageToggle />
                     </div>
-                    <div className="flex items-center justify-center gap-1 rounded-xl py-2 transition hover:bg-neutral-50 dark:hover:bg-neutral-800">
-                      <span className="text-[10px] font-medium text-neutral-500 dark:text-neutral-400">
+                    <div className="flex items-center justify-center gap-2 bg-white/95 px-4 py-3 transition hover:bg-neutral-50 dark:bg-neutral-900/95 dark:hover:bg-neutral-800/95">
+                      <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
                         {t("theme")}
                       </span>
                       <ThemeToggle />
@@ -260,7 +299,7 @@ export function MobileMoreMenu() {
           setIsRendered(true);
           requestAnimationFrame(() => setIsOpen(true));
         }}
-        className={`group relative flex flex-col items-center justify-center ${isOpen ? "text-rose-600 dark:text-rose-400" : ""}`}
+        className="group relative flex flex-col items-center justify-center"
         aria-label={t("more")}
       >
         <div
@@ -273,7 +312,7 @@ export function MobileMoreMenu() {
             transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         >
-          <GridIcon className="h-5 w-5" />
+          <AnimatedMenuIcon isOpen={isOpen} />
         </div>
       </button>
       {sheetContent}
@@ -281,19 +320,79 @@ export function MobileMoreMenu() {
   );
 }
 
-function GridIcon({ className }: { className?: string }) {
+function AnimatedMenuIcon({ isOpen }: { isOpen: boolean }) {
   return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
+    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+      <circle
+        cx="12"
+        cy="12"
+        r="2"
+        style={{
+          transformOrigin: "center",
+          transform: isOpen
+            ? "translateX(-7px) translateY(-7px) rotate(45deg) scaleY(3)"
+            : "translateX(-7px) translateY(0) rotate(0deg) scaleY(1)",
+          transition: "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+        }}
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="2"
+        style={{
+          transformOrigin: "center",
+          transform: isOpen
+            ? "translateX(7px) translateY(7px) rotate(45deg) scaleY(3)"
+            : "translateX(7px) translateY(0) rotate(0deg) scaleY(1)",
+          transition: "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 50ms",
+        }}
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="2"
+        style={{
+          transformOrigin: "center",
+          transform: isOpen ? "scale(0)" : "scale(1)",
+          opacity: isOpen ? 0 : 1,
+          transition: "transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 200ms ease-out",
+        }}
+      />
+      <line
+        x1="12"
+        y1="12"
+        x2="12"
+        y2="12"
+        stroke="currentColor"
+        strokeWidth="4"
         strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+        style={{
+          transformOrigin: "center",
+          transform: isOpen
+            ? "translateX(-7px) translateY(-7px) rotate(-45deg) scaleY(1.5)"
+            : "scale(0)",
+          opacity: isOpen ? 1 : 0,
+          transition:
+            "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 100ms, opacity 300ms ease-out 100ms",
+        }}
+      />
+      <line
+        x1="12"
+        y1="12"
+        x2="12"
+        y2="12"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+        style={{
+          transformOrigin: "center",
+          transform: isOpen
+            ? "translateX(7px) translateY(7px) rotate(-45deg) scaleY(1.5)"
+            : "scale(0)",
+          opacity: isOpen ? 1 : 0,
+          transition:
+            "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms, opacity 300ms ease-out 150ms",
+        }}
       />
     </svg>
   );
