@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { AuthInitializer } from "./components/providers/AuthInitializer";
 import { I18nClientSync } from "./components/providers/I18nClientSync";
 import { ReduxProvider } from "./components/providers/ReduxProvider";
+import { CookieBanner } from "./components/shared/CookieBanner";
 import { GlobalPlayerProvider } from "./components/shared/GlobalPlayerProvider";
 import { QueryProvider } from "./components/shared/QueryProvider";
 import { LocaleSync } from "./components/theme/LocaleSync";
@@ -28,7 +29,10 @@ export function AppProviders({ children, initialLocale, initialMessages }: AppPr
             <MotionManager />
             <div className="relative flex min-h-screen flex-col">
               <ThemeProvider>
-                <GlobalPlayerProvider>{children}</GlobalPlayerProvider>
+                <GlobalPlayerProvider>
+                  {children}
+                  <CookieBanner />
+                </GlobalPlayerProvider>
               </ThemeProvider>
             </div>
           </QueryProvider>

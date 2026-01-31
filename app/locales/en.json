@@ -700,7 +700,7 @@
       },
       "cookies": {
         "title": "Cookies & Tracking",
-        "content": "We use the following cookies:\n\n<bullet><bold>Essential Cookies</bold>: bnf_csrf (CSRF protection), NEXT_LOCALE (language preference), bonfire-theme (theme preference)</bullet>\n<bullet><bold>Analytics</bold>: Vercel Analytics collects anonymized usage data</bullet>\n\nYou can manage cookies through your browser settings. Essential cookies are required for the website to function properly."
+        "content": "We use the following cookies and services:\n\n<bullet><bold>Essential Cookies</bold>: bnf_csrf (CSRF protection), NEXT_LOCALE (language preference), bonfire-theme (theme preference)</bullet>\n<bullet><bold>Analytics</bold>: Vercel Analytics collects anonymized, cookie-less usage data</bullet>\n<bullet><bold>Error Reporting</bold>: Rollbar collects error data to help us fix bugs (may include page URL and browser info)</bullet>\n\nYou can manage cookies through your browser settings. Essential cookies are required for the website to function properly."
       },
       "security": {
         "title": "Security",
@@ -1319,5 +1319,12 @@
       "security": "Security",
       "linting": "Linting & Formatting"
     }
+  },
+  "cookieConsent": {
+    "message": "We use essential cookies for site functionality.",
+    "accept": "OK",
+    "close": "Close",
+    "closeAria": "Dismiss cookie notice",
+    "learnMore": "Learn more"
   }
 }

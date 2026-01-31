@@ -143,7 +143,7 @@ export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySec
           <RichText t={tPrivacy} translationKey="yourRights.content" />
         </div>
 
-        <div className="space-y-4">
+        <div id="cookies" className="scroll-mt-24 space-y-4">
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {tPrivacy("cookies.title")}
           </h3>

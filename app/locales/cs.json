@@ -711,7 +711,7 @@
       },
       "cookies": {
         "title": "Cookies a sledování",
-        "content": "Používáme následující cookies:\n\n<bullet><bold>Základní cookies</bold>: bnf_csrf (ochrana CSRF), NEXT_LOCALE (předvolba jazyka), bonfire-theme (předvolba motivu)</bullet>\n<bullet><bold>Analýza</bold>: Vercel Analytics shromažďuje anonymizované údaje o použití</bullet>\n\nCookies můžete spravovat prostřednictvím nastavení prohlížeče. Základní cookies jsou nezbytné pro správné fungování webu."
+        "content": "Používáme následující cookies a služby:\n\n<bullet><bold>Základní cookies</bold>: bnf_csrf (ochrana CSRF), NEXT_LOCALE (předvolba jazyka), bonfire-theme (předvolba motivu)</bullet>\n<bullet><bold>Analýza</bold>: Vercel Analytics shromažďuje anonymizované údaje o použití bez cookies</bullet>\n<bullet><bold>Hlášení chyb</bold>: Rollbar shromažďuje údaje o chybách pro opravu bugů (může obsahovat URL stránky a info o prohlížeči)</bullet>\n\nCookies můžete spravovat prostřednictvím nastavení prohlížeče. Základní cookies jsou nezbytné pro správné fungování webu."
       },
       "security": {
         "title": "Zabezpečení",
@@ -1330,5 +1330,12 @@
       "security": "Bezpečnost",
       "linting": "Linting a formátování"
     }
+  },
+  "cookieConsent": {
+    "message": "Používáme cookies pro základní funkce.",
+    "accept": "OK",
+    "close": "Zavřít",
+    "closeAria": "Zavřít upozornění",
+    "learnMore": "Více info"
   }
 }
