@@ -69,7 +69,7 @@ export function MobileBottomNav() {
 
   return (
     <nav
-      className="fixed bottom-6 left-1/2 z-50 md:hidden"
+      className="fixed bottom-3 left-1/2 z-50 md:hidden"
       style={{
         transform: "translateX(-50%) translateZ(0)",
         WebkitTransform: "translateX(-50%) translateZ(0)",
