@@ -102,7 +102,11 @@ export function EventCard({
 
   if (isTba) {
     return (
-      <Card as="article" className="fire-glow group relative p-6 sm:p-7">
+      <Card
+        as="article"
+        className="fire-glow group relative p-6 sm:p-7"
+        data-glow={location === LOCATIONS.ZLIN ? "zlin" : "prague"}
+      >
         <div
           className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full opacity-50 blur-3xl ${
             location === LOCATIONS.PRAGUE
@@ -195,7 +199,11 @@ export function EventCard({
   }
 
   return (
-    <Card as="article" className="fire-glow group relative p-7 sm:p-9">
+    <Card
+      as="article"
+      className="fire-glow group relative p-7 sm:p-9"
+      data-glow={location === LOCATIONS.ZLIN ? "zlin" : "prague"}
+    >
       <div
         className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full blur-3xl ${
           location === LOCATIONS.PRAGUE

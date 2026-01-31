@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 import { useState } from "react";
 
 import {
@@ -11,7 +10,6 @@ import {
   FacebookIcon,
   LumaIcon,
   MapPinIcon,
-  ArrowLeftIcon,
   MicIcon,
   SparklesIcon,
   ExternalLinkIcon,
@@ -20,7 +18,6 @@ import {
 } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 interface Speaker {
   name: string;
@@ -125,33 +122,12 @@ export function EventDetailClient({
         <div
           className={`absolute -bottom-[20%] -left-[10%] h-[500px] w-[500px] rounded-full bg-gradient-to-tr ${locationGlow} opacity-40 blur-[100px]`}
         />
-        <div
-          className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(${locationColor} 1px, transparent 1px), linear-gradient(90deg, ${locationColor} 1px, transparent 1px)`,
-            backgroundSize: "60px 60px",
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.015]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          }}
-        />
       </div>
 
       <div className="relative z-10">
         {/* Navigation */}
         <div className="glass sticky top-0 z-40 border-b border-neutral-200/50 px-4 py-4 dark:border-neutral-800/50">
-          <div className="mx-auto flex max-w-5xl items-center justify-between">
-            <Link
-              href={PAGE_ROUTES.HOME}
-              className="group flex items-center gap-2 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
-            >
-              <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-              {t("backToEvents")}
-            </Link>
-
+          <div className="mx-auto flex max-w-5xl items-center justify-end">
             <div className="flex items-center gap-2">
               <span
                 className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold tracking-wider uppercase"
