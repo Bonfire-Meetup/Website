@@ -244,9 +244,9 @@ export function MobileMoreMenu() {
             <div
               className={`fixed inset-0 z-50 md:hidden ${isOpen ? "opacity-100" : "opacity-0"}`}
               style={{
-                backgroundColor: "rgba(0, 0, 0, 0.4)",
-                backdropFilter: isOpen ? "blur(8px)" : "blur(0px)",
-                WebkitBackdropFilter: isOpen ? "blur(8px)" : "blur(0px)",
+                backgroundColor: "rgba(0, 0, 0, 0.25)",
+                backdropFilter: isOpen ? "blur(12px)" : "blur(0px)",
+                WebkitBackdropFilter: isOpen ? "blur(12px)" : "blur(0px)",
                 transition:
                   "opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 400ms cubic-bezier(0.4, 0, 0.2, 1)",
               }}
@@ -261,7 +261,7 @@ export function MobileMoreMenu() {
               }}
             >
               <div
-                className="mx-4 mb-6 overflow-hidden rounded-3xl bg-white/95 shadow-2xl backdrop-blur-xl dark:bg-neutral-900/95"
+                className="mx-4 mb-6 overflow-hidden rounded-3xl border border-white/30 bg-white/60 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-neutral-900/55"
                 style={{
                   transform: isOpen ? "scale(1)" : "scale(0.92)",
                   opacity: isOpen ? 1 : 0,
@@ -371,10 +371,10 @@ export function MobileMoreMenu() {
                     </div>
                   ) : null}
 
-                  <div className="grid grid-cols-3 gap-px bg-neutral-200/50 dark:bg-neutral-700/50">
+                  <div className="grid grid-cols-3 gap-px bg-neutral-200/40 dark:bg-neutral-700/40">
                     <button
                       onClick={toggleLocale}
-                      className="flex items-center justify-center gap-2 bg-white/95 px-4 py-3 transition hover:bg-neutral-50 active:scale-95 dark:bg-neutral-900/95 dark:hover:bg-neutral-800/95"
+                      className="flex items-center justify-center gap-2 bg-white/70 px-4 py-3 transition hover:bg-white/80 active:scale-95 dark:bg-neutral-900/60 dark:hover:bg-neutral-800/70"
                     >
                       <GlobeIcon className="h-4 w-4 text-neutral-500 dark:text-neutral-400" />
                       <span className="text-xs font-medium text-neutral-500 uppercase dark:text-neutral-400">
@@ -384,7 +384,7 @@ export function MobileMoreMenu() {
 
                     <button
                       onClick={cycleTheme}
-                      className="flex items-center justify-center gap-2 bg-white/95 px-4 py-3 transition hover:bg-neutral-50 active:scale-95 dark:bg-neutral-900/95 dark:hover:bg-neutral-800/95"
+                      className="flex items-center justify-center gap-2 bg-white/70 px-4 py-3 transition hover:bg-white/80 active:scale-95 dark:bg-neutral-900/60 dark:hover:bg-neutral-800/70"
                     >
                       {theme === "light" && <SunIcon className="h-4 w-4 text-amber-500" />}
                       {theme === "dark" && <MoonIcon className="h-4 w-4 text-blue-400" />}
@@ -398,7 +398,7 @@ export function MobileMoreMenu() {
 
                     <Link
                       href="/legal#cookies"
-                      className="flex items-center justify-center gap-2 bg-white/95 px-4 py-3 transition hover:bg-neutral-50 active:scale-95 dark:bg-neutral-900/95 dark:hover:bg-neutral-800/95"
+                      className="flex items-center justify-center gap-2 bg-white/70 px-4 py-3 transition hover:bg-white/80 active:scale-95 dark:bg-neutral-900/60 dark:hover:bg-neutral-800/70"
                       onClick={closeMenu}
                     >
                       <CookieIcon className="h-4 w-4 text-neutral-500 dark:text-neutral-400" />

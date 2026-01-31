@@ -45,9 +45,14 @@ export function Lightbox({
   );
   const [isZoomed, setIsZoomed] = useState(false);
   const [isPinching, setIsPinching] = useState(false);
+  const [dragY, setDragY] = useState(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+  const touchStartY = useRef(0);
+  const dragYRef = useRef(0);
   const isMultiTouch = useRef(false);
+
+  const DISMISS_DRAG_THRESHOLD = 100;
 
   const setPinching = useCallback((value: boolean) => {
     if (isMultiTouch.current === value) {
@@ -152,6 +157,8 @@ export function Lightbox({
     setPinching(e.touches.length > 1);
     touchStartX.current = e.touches[0].clientX;
     touchEndX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    dragYRef.current = 0;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -160,6 +167,17 @@ export function Lightbox({
     }
 
     touchEndX.current = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const deltaY = currentY - touchStartY.current;
+
+    if (e.touches.length === 1 && !isMultiTouch.current && deltaY > 0) {
+      const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
+      if (deltaY >= deltaX) {
+        e.preventDefault();
+        setDragY(deltaY);
+        dragYRef.current = deltaY;
+      }
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -170,6 +188,17 @@ export function Lightbox({
 
       return;
     }
+
+    const currentDragY = dragYRef.current;
+    if (currentDragY > DISMISS_DRAG_THRESHOLD) {
+      onClose();
+      setDragY(0);
+      dragYRef.current = 0;
+      return;
+    }
+
+    setDragY(0);
+    dragYRef.current = 0;
 
     const diff = touchStartX.current - touchEndX.current;
     const threshold = 50;
@@ -192,8 +221,18 @@ export function Lightbox({
     document.body.removeChild(a);
   };
 
+  const backdropOpacity = dragY > 0 ? Math.max(0.4, 0.95 - (dragY / 350) * 0.55) : undefined;
+  const contentScale = dragY > 0 ? Math.max(0.85, 1 - (dragY / 500) * 0.15) : 1;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95"
+      style={
+        backdropOpacity !== undefined
+          ? { backgroundColor: `rgba(0,0,0,${backdropOpacity})` }
+          : undefined
+      }
+    >
       <div className="absolute inset-x-3 top-3 z-30 flex gap-1 sm:hidden">
         {images.map((_, i) => (
           <div
@@ -359,7 +398,13 @@ export function Lightbox({
           className="absolute inset-0 h-full w-full scale-105 object-cover opacity-70 blur-lg sm:hidden"
         />
         <div className="absolute inset-0 bg-black/30 sm:hidden" />
-        <div className="relative z-20 flex items-center justify-center">
+        <div
+          className="relative z-20 flex items-center justify-center"
+          style={{
+            transform: dragY > 0 ? `translateY(${dragY}px) scale(${contentScale})` : undefined,
+            transition: dragY === 0 ? "transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)" : "none",
+          }}
+        >
           <div
             className={`absolute inset-0 z-20 flex sm:hidden ${isPinching ? "pointer-events-none" : ""}`}
           >

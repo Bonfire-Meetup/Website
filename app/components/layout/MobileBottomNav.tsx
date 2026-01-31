@@ -75,7 +75,7 @@ export function MobileBottomNav() {
         WebkitTransform: "translateX(-50%) translateZ(0)",
       }}
     >
-      <div className="nav-pill flex items-center gap-1 rounded-full bg-white/85 px-2 py-2 shadow-lg backdrop-blur-xl dark:bg-neutral-900/85">
+      <div className="nav-pill flex items-center gap-1 rounded-full bg-white/60 px-2 py-2 backdrop-blur-xl dark:bg-neutral-900/55">
         {navItems.map((item) => {
           const active = isActive(item);
           const Icon = item.icon;
