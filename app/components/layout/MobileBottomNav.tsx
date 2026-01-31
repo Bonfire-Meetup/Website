@@ -51,7 +51,7 @@ export function MobileBottomNav() {
 
   const navItems: NavItem[] = [
     { href: PAGE_ROUTES.HOME, label: t("home"), icon: HomeIcon, exact: true },
-    { href: PAGE_ROUTES.ANCHOR.EVENTS, label: t("upcoming"), icon: CalendarIcon },
+    { href: PAGE_ROUTES.EVENT_UPCOMING, label: t("upcoming"), icon: CalendarIcon },
     { href: PAGE_ROUTES.LIBRARY, label: t("library"), icon: FilmIcon },
     {
       href: isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN,

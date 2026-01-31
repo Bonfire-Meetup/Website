@@ -34,10 +34,12 @@ export function EventsSectionClient({
   events,
   initialEpisode,
   preFilteredEvents,
+  hideHeader = false,
 }: {
   events: EventItem[];
   initialEpisode?: string;
   preFilteredEvents?: EventItem[];
+  hideHeader?: boolean;
 }) {
   const t = useTranslations("sections.events");
   const [activeEpisode, setActiveEpisode] = useState(initialEpisode ?? "all");
@@ -65,7 +67,7 @@ export function EventsSectionClient({
 
   return (
     <>
-      <SectionHeader id="events" title={t("title")} subtitle={t("subtitle")} />
+      {!hideHeader && <SectionHeader id="events" title={t("title")} subtitle={t("subtitle")} />}
       {episodes.length > 0 && (
         <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
           <Pill

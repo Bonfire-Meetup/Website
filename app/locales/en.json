@@ -63,7 +63,10 @@
   },
   "sections": {
     "events": {
+      "eyebrow": "Upcoming",
       "title": "Upcoming Events",
+      "titlePart1": "Upcoming",
+      "titleHighlight": "Events",
       "subtitle": "Join us at the next meetup! Seats are first come, first served.",
       "noEvents": "No upcoming events scheduled. Check back soon!",
       "filter": {
@@ -490,6 +493,8 @@
     "checkInDescription": "Show this QR at the door to check in and collect rewards.",
     "crewTitle": "Crew | {brandName}",
     "crewDescription": "Meet the crew behind Bonfire events in {prague} and {zlin}.",
+    "upcomingEventsTitle": "Upcoming Events | {brandName}",
+    "upcomingEventsDescription": "Discover upcoming game development meetups and events hosted by {brandName} in {prague} and {zlin}.",
     "pressTitle": "Press Kit | {brandName}",
     "pressDescription": "Download logos, brand colors, and usage guidelines for {brandName}.",
     "photosTitle": "Photos | {brandName}",

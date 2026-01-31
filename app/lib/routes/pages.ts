@@ -29,6 +29,7 @@ export const PAGE_ROUTES = {
   EVENT: (id: string) => `/event/${id}`,
   EVENT_CHECK_IN: "/event/check-in",
   EVENT_READER: "/event/reader",
+  EVENT_UPCOMING: "/event/upcoming",
   PHOTOS: "/photos",
   PHOTOS_ALBUM: (album: string) => `/photos/${album}`,
   PRESS: "/press",

@@ -6,7 +6,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main className="pb-16 md:pb-0">{children}</main>
+      <main className="flex min-h-dvh flex-col pb-16 md:pb-0">{children}</main>
       <div className="hidden md:block">
         <Footer />
       </div>

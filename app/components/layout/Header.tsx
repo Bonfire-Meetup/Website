@@ -45,7 +45,7 @@ export function Header() {
           <Button href={PAGE_ROUTES.ANCHOR.TOP} variant="ghost" size="sm">
             {t("home")}
           </Button>
-          <Button href={PAGE_ROUTES.ANCHOR.EVENTS} variant="ghost" size="sm">
+          <Button href={PAGE_ROUTES.EVENT_UPCOMING} variant="ghost" size="sm">
             {t("upcoming")}
           </Button>
           <Button href={PAGE_ROUTES.PHOTOS} variant="ghost" size="sm">

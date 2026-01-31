@@ -63,7 +63,10 @@
   },
   "sections": {
     "events": {
+      "eyebrow": "Akce",
       "title": "Akce",
+      "titlePart1": "Nadcházející",
+      "titleHighlight": "Akce",
       "subtitle": "Doraž na další meetup. Kdo dřív přijde, ten sedí.",
       "noEvents": "Zatím nic nevisí. Mrkni sem později!",
       "filter": {
@@ -501,6 +504,8 @@
     "checkInDescription": "Ukažte tento QR u vstupu pro check-in a odměny.",
     "crewTitle": "Crew | {brandName}",
     "crewDescription": "Poznej crew Bonfire v {prague} a {zlin}.",
+    "upcomingEventsTitle": "Akce | {brandName}",
+    "upcomingEventsDescription": "Objevte nadcházející gamedev meetupy a akce pořádané {brandName} v {prague} a {zlin}.",
     "pressTitle": "Press kit | {brandName}",
     "pressDescription": "Stáhněte loga, brand barvy a pravidla použití pro {brandName}.",
     "photosTitle": "Fotky | {brandName}",

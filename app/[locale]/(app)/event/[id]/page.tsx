@@ -54,7 +54,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-neutral-50 to-white dark:from-neutral-950 dark:to-neutral-900">
+    <div className="flex-1 bg-neutral-50 dark:bg-neutral-950">
       <EventDetailClient
         id={event.id}
         title={event.title}
@@ -67,6 +67,6 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
         speakers={event.speakers}
         links={event.links}
       />
-    </main>
+    </div>
   );
 }
