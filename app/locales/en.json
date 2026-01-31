@@ -1358,6 +1358,7 @@
     "learnMore": "Learn more",
     "learnMoreAria": "Learn more about cookies",
     "expandAria": "View cookie options",
-    "minimalLabel": "Cookies"
+    "minimalLabel": "Cookies",
+    "resetBanner": "Reset cookies banner"
   }
 }

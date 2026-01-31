@@ -1,3 +1,4 @@
+import { ResetCookieBannerButton } from "./ResetCookieBannerButton";
 import { RichText } from "./RichText";
 
 interface PrivacyPolicySectionProps {
@@ -148,6 +149,7 @@ export function PrivacyPolicySection({ tPrivacy, currentDate }: PrivacyPolicySec
             {tPrivacy("cookies.title")}
           </h3>
           <RichText t={tPrivacy} translationKey="cookies.content" />
+          <ResetCookieBannerButton />
         </div>
 
         <div className="space-y-4">
