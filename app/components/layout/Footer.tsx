@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import {
   DiscordIcon,
@@ -16,6 +17,11 @@ import { PAGE_ROUTES } from "@/lib/routes/pages";
 export function Footer() {
   const t = useTranslations("footer");
   const tCommon = useTranslations("common");
+  const [year, setYear] = useState(2026);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
 
   return (
     <footer className="glass relative mt-auto overflow-hidden">
@@ -83,7 +89,7 @@ export function Footer() {
           <p>
             {t("copyright", {
               brandName: tCommon("brandName"),
-              year: new Date().getFullYear(),
+              year,
             })}
           </p>
           <div className="flex items-center gap-4">

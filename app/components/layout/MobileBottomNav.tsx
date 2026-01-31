@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -37,7 +37,7 @@ function HomeIcon({ className }: { className?: string }) {
   );
 }
 
-export function MobileBottomNav() {
+function MobileBottomNavInner() {
   const t = useTranslations("header");
   const pathname = usePathname();
   const auth = useAppSelector((state) => state.auth);
@@ -115,5 +115,13 @@ export function MobileBottomNav() {
         <MobileMoreMenu />
       </div>
     </nav>
+  );
+}
+
+export function MobileBottomNav() {
+  return (
+    <Suspense fallback={null}>
+      <MobileBottomNavInner />
+    </Suspense>
   );
 }

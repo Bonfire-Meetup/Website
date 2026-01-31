@@ -10,6 +10,7 @@ import { decompressUuid, compressUuid } from "@/lib/utils/uuid-compress";
 import { BoostedVideos } from "./BoostedVideos";
 import { BoostedVideosSkeleton } from "./BoostedVideosSkeleton";
 import { CheckedInEvents } from "./CheckedInEvents";
+import { CheckedInEventsSkeleton } from "./CheckedInEventsSkeleton";
 import { PrivateProfileContent, UserProfileContent } from "./UserProfileContent";
 
 export async function generateMetadata({
@@ -109,7 +110,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
         </Suspense>
       }
       checkedInEventsSlot={
-        <Suspense fallback={null}>
+        <Suspense fallback={<CheckedInEventsSkeleton />}>
           <CheckedInEvents userId={userId} />
         </Suspense>
       }

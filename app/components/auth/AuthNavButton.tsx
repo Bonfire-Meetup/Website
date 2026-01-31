@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { Link } from "@/i18n/navigation";
 import { useAppSelector } from "@/lib/redux/hooks";
@@ -9,7 +9,7 @@ import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { LogInIcon, UserIcon } from "../shared/icons";
 import { IconButton } from "../ui/IconButton";
 
-export function AuthNavButton() {
+function AuthNavButtonInner() {
   const auth = useAppSelector((state) => state.auth);
   const [mounted, setMounted] = useState(false);
 
@@ -37,5 +37,13 @@ export function AuthNavButton() {
         {isAuthed ? <UserIcon className="h-5 w-5" /> : <LogInIcon className="h-5 w-5" />}
       </IconButton>
     </Link>
+  );
+}
+
+export function AuthNavButton() {
+  return (
+    <Suspense fallback={null}>
+      <AuthNavButtonInner />
+    </Suspense>
   );
 }

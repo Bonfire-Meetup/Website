@@ -63,6 +63,15 @@ export function NavigationProvider({ children }: { children: React.ReactNode }) 
         return;
       }
 
+      const currentPath = window.location.pathname + window.location.search;
+      const targetPath = href.startsWith("/")
+        ? href
+        : new URL(href, window.location.href).pathname + new URL(href, window.location.href).search;
+
+      if (targetPath === currentPath) {
+        return;
+      }
+
       if (!isNavigatingRef.current) {
         startNavigation();
       }

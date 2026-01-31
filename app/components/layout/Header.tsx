@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -11,7 +12,7 @@ import { LanguageToggle } from "../theme/LanguageToggle";
 import { ThemeToggle } from "../theme/ThemeToggle";
 import { Button } from "../ui/Button";
 
-export function Header() {
+function HeaderInner() {
   const t = useTranslations("header");
 
   return (
@@ -81,5 +82,13 @@ export function Header() {
         </div>
       </div>
     </header>
+  );
+}
+
+export function Header() {
+  return (
+    <Suspense fallback={null}>
+      <HeaderInner />
+    </Suspense>
   );
 }

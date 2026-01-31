@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 import { AppProviders } from "@/AppProviders";
 import { RouteComplete } from "@/components/navigation/RouteComplete";
@@ -78,11 +77,9 @@ export default async function LocaleLayout({
   const messages = (await getMessages({ locale })) as Messages;
 
   return (
-    <Suspense fallback={null}>
-      <AppProviders initialLocale={locale} initialMessages={messages}>
-        <RouteComplete />
-        {children}
-      </AppProviders>
-    </Suspense>
+    <AppProviders initialLocale={locale} initialMessages={messages}>
+      <RouteComplete />
+      {children}
+    </AppProviders>
   );
 }

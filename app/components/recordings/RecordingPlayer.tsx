@@ -3,7 +3,7 @@
 import type { Recording } from "@/lib/recordings/recordings";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useGlobalPlayer } from "@/components/shared/GlobalPlayerProvider";
 import { ArrowLeftIcon, CinemaIcon } from "@/components/shared/icons";
@@ -151,33 +151,7 @@ export function RecordingPlayer({
             </div>
           </div>
 
-          <Suspense
-            fallback={
-              <section className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-                <div className="flex items-center gap-4 lg:gap-3">
-                  <div className="h-px flex-1 bg-neutral-200/50 lg:hidden dark:bg-white/10" />
-                  <div className="h-6 w-32 animate-pulse rounded bg-neutral-200/70 dark:bg-white/10" />
-                  <div className="h-px flex-1 bg-neutral-200/50 lg:hidden dark:bg-white/10" />
-                </div>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div
-                      key={`related-video-skeleton-${i}`}
-                      className="relative flex animate-pulse flex-col overflow-hidden rounded-[24px] bg-white/90 dark:bg-neutral-950"
-                    >
-                      <div className="relative aspect-video w-full bg-neutral-900" />
-                      <div className="flex flex-1 flex-col p-4">
-                        <div className="h-4 w-full rounded bg-neutral-200/80 dark:bg-white/15" />
-                        <div className="mt-2 h-4 w-3/4 rounded bg-neutral-200/70 dark:bg-white/10" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            }
-          >
-            <RelatedVideosSection relatedRecordings={relatedRecordings} />
-          </Suspense>
+          <RelatedVideosSection relatedRecordings={relatedRecordings} />
         </div>
       </div>
     </div>
