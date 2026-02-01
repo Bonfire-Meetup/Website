@@ -2,7 +2,7 @@
 
 import type { RootState } from "@/lib/redux/store";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -49,6 +49,7 @@ import {
   type ProfileState,
 } from "@/lib/redux/slices/profileSlice";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatDayMonthUTC } from "@/lib/utils/locale";
 import { logWarn } from "@/lib/utils/log-client";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
@@ -83,6 +84,7 @@ function getApiErrorReason(err: unknown): string | null {
 export function MeClient() {
   const t = useTranslations("account");
   const tDelete = useTranslations("account.delete");
+  const locale = useLocale();
   const router = useRouter();
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
@@ -483,10 +485,7 @@ export function MeClient() {
                         </h3>
                         <div className="text-right text-[11px] font-normal text-emerald-700/80 sm:shrink-0 dark:text-emerald-300/80">
                           {t("boostAllocation.nextAllocation", {
-                            date: new Date(boostAllocation.nextAllocationDate).toLocaleDateString(
-                              undefined,
-                              { day: "numeric", month: "long" },
-                            ),
+                            date: formatDayMonthUTC(boostAllocation.nextAllocationDate, locale),
                           })}
                         </div>
                       </div>

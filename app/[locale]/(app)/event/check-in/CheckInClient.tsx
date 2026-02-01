@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import QRCode from "qrcode";
 import { useEffect, useMemo, useState } from "react";
@@ -12,12 +12,14 @@ import { useCheckInToken } from "@/lib/api/user-profile";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatTimeUTC } from "@/lib/utils/locale";
 
 const REFRESH_INTERVAL_MS = 9 * 60 * 1000;
 const DEVICE_WAKE_THRESHOLD_MS = 30 * 1000;
 
 export function CheckInClient() {
   const t = useTranslations("checkIn");
+  const locale = useLocale();
   const router = useRouter();
   const auth = useAppSelector((state) => state.auth);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
@@ -118,9 +120,8 @@ export function CheckInClient() {
     if (!tokenQuery.data?.expiresAt) {
       return null;
     }
-    const date = new Date(tokenQuery.data.expiresAt);
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  }, [tokenQuery.data?.expiresAt]);
+    return formatTimeUTC(tokenQuery.data.expiresAt, locale);
+  }, [locale, tokenQuery.data?.expiresAt]);
 
   const handleManualRefresh = async () => {
     setRefreshing(true);

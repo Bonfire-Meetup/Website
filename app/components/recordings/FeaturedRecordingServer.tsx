@@ -2,6 +2,7 @@ import type { CatalogRecording } from "./RecordingsCatalogTypes";
 import Image from "next/image";
 
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatShortDateUTC } from "@/lib/utils/locale";
 
 import { Pill } from "../ui/Pill";
 import { TagPill } from "../ui/TagPill";
@@ -49,13 +50,7 @@ function FeaturedContent({
         >
           {recording.location}
         </Pill>
-        <span>
-          {new Date(recording.date).toLocaleDateString(locale, {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })}
-        </span>
+        <span>{formatShortDateUTC(recording.date, locale)}</span>
       </div>
       <h2
         className={`line-clamp-2 text-xl leading-tight font-semibold break-words sm:text-3xl lg:text-4xl ${

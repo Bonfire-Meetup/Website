@@ -18,6 +18,7 @@ import {
 } from "@/components/shared/icons";
 import { Button } from "@/components/ui/Button";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { formatEventDateUTC } from "@/lib/utils/locale";
 
 interface Speaker {
   name: string;
@@ -60,14 +61,7 @@ export function EventDetailClient({
   const isTba = date.trim().toUpperCase() === "TBA";
   const [copied, setCopied] = useState(false);
 
-  const formattedDate = !isTba
-    ? new Date(date).toLocaleDateString(locale, {
-        day: "numeric",
-        month: "long",
-        weekday: "long",
-        year: "numeric",
-      })
-    : t("tba");
+  const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
 
   const isPrague = location === LOCATIONS.PRAGUE;
   const locationColor = isPrague ? "#dc2626" : "#2563eb";

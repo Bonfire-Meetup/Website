@@ -11,6 +11,7 @@ import photoAlbums from "@/data/photo-albums.json";
 import { buildAlbumSlug, episodes, type EpisodeEntry } from "@/lib/recordings/episodes";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatMonthUTC, getUTCDateParts } from "@/lib/utils/locale";
 
 const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
 
@@ -116,25 +117,28 @@ export function TimelinePageContent() {
                               </div>
                             )}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                            {entry.date && (
-                              <div
-                                className={`absolute top-3 left-3 z-10 flex flex-col items-center rounded-md border border-white/20 bg-black/60 px-2 py-1 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-black/70 ${
-                                  isRight ? "lg:right-3 lg:left-auto" : "lg:left-3"
-                                }`}
-                              >
-                                <span className="text-[10px] leading-none font-bold tracking-wider text-white/90 uppercase">
-                                  {new Date(entry.date).toLocaleDateString(locale, {
-                                    month: "short",
-                                  })}
-                                </span>
-                                <span className="text-lg leading-none font-black text-white">
-                                  {new Date(entry.date).getDate()}
-                                </span>
-                                <span className="text-[9px] leading-none font-medium text-white/70">
-                                  {new Date(entry.date).getFullYear()}
-                                </span>
-                              </div>
-                            )}
+                            {entry.date &&
+                              (() => {
+                                const { day, year } = getUTCDateParts(entry.date);
+
+                                return (
+                                  <div
+                                    className={`absolute top-3 left-3 z-10 flex flex-col items-center rounded-md border border-white/20 bg-black/60 px-2 py-1 shadow-lg backdrop-blur-md dark:border-white/10 dark:bg-black/70 ${
+                                      isRight ? "lg:right-3 lg:left-auto" : "lg:left-3"
+                                    }`}
+                                  >
+                                    <span className="text-[10px] leading-none font-bold tracking-wider text-white/90 uppercase">
+                                      {formatMonthUTC(entry.date, locale)}
+                                    </span>
+                                    <span className="text-lg leading-none font-black text-white">
+                                      {day}
+                                    </span>
+                                    <span className="text-[9px] leading-none font-medium text-white/70">
+                                      {year}
+                                    </span>
+                                  </div>
+                                );
+                              })()}
                           </div>
                           <div className="flex min-w-0 flex-1 flex-col gap-4 px-6 pt-1 pb-6 lg:py-6">
                             <div className="flex flex-wrap items-center gap-3 text-xs font-semibold tracking-[0.25em] text-neutral-500 uppercase dark:text-neutral-400">

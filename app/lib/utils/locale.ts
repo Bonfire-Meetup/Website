@@ -45,10 +45,75 @@ const getLocaleFromAcceptLanguage = (headers: Headers) => {
 export const getRequestLocale = (headers: Headers): Locale =>
   getLocaleFromCookie(headers) ?? getLocaleFromAcceptLanguage(headers) ?? defaultLocale;
 
-export function formatDate(date: string, locale: string) {
-  return new Date(date).toLocaleDateString(locale, {
-    day: "numeric",
+export function formatDate(date: string, locale: string): string {
+  return formatShortDateUTC(date, locale);
+}
+
+const EVENT_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+  day: "numeric",
+  month: "long",
+  weekday: "long",
+  year: "numeric",
+  timeZone: "UTC",
+};
+
+const SHORT_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+};
+
+function parseDateUTC(dateString: string): Date {
+  return new Date(dateString.includes("T") ? dateString : `${dateString}T00:00:00.000Z`);
+}
+
+export function formatEventDateUTC(dateString: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, EVENT_DATE_OPTIONS).format(parseDateUTC(dateString));
+}
+
+export function formatShortDateUTC(dateString: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, SHORT_DATE_OPTIONS).format(parseDateUTC(dateString));
+}
+
+const LONG_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+};
+
+export function formatLongDateUTC(dateString: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, LONG_DATE_OPTIONS).format(parseDateUTC(dateString));
+}
+
+export function formatMonthUTC(dateString: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
     month: "short",
-    year: "numeric",
-  });
+    timeZone: "UTC",
+  }).format(parseDateUTC(dateString));
+}
+
+export function getUTCDateParts(dateString: string): { day: number; year: number } {
+  const d = parseDateUTC(dateString);
+
+  return { day: d.getUTCDate(), year: d.getUTCFullYear() };
+}
+
+export function formatDayMonthUTC(dateString: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+  }).format(parseDateUTC(dateString));
+}
+
+const TIME_OPTIONS: Intl.DateTimeFormatOptions = {
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "UTC",
+};
+
+export function formatTimeUTC(isoDateString: string, locale?: string): string {
+  return new Intl.DateTimeFormat(locale ?? "en", TIME_OPTIONS).format(new Date(isoDateString));
 }

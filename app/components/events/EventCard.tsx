@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatEventDateUTC } from "@/lib/utils/locale";
 
 import { LocationPill } from "../locations/LocationPill";
 import {
@@ -58,14 +59,7 @@ export function EventCard({
   const isTba = date.trim().toUpperCase() === "TBA";
   const hasSpeakers = speakers.some((speaker) => speaker.name.trim().length > 0);
 
-  const formattedDate = !isTba
-    ? new Date(date).toLocaleDateString(locale, {
-        day: "numeric",
-        month: "long",
-        weekday: "long",
-        year: "numeric",
-      })
-    : "";
+  const formattedDate = !isTba ? formatEventDateUTC(date, locale) : "";
 
   const getMapUrl = (address: string) => {
     const encodedAddress = encodeURIComponent(address);

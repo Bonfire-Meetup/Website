@@ -2,6 +2,8 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
+import { formatLongDateUTC } from "@/lib/utils/locale";
+
 import { CodeOfConductSection } from "./components/CodeOfConductSection";
 import { PrivacyPolicySection } from "./components/PrivacyPolicySection";
 import { TableOfContents } from "./components/TableOfContents";
@@ -14,11 +16,7 @@ export function LegalPageContent() {
   const tToc = useTranslations("legal.toc");
   const locale = useLocale();
 
-  const lastUpdated = new Date("2025-01-01").toLocaleDateString(locale, {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const lastUpdated = formatLongDateUTC("2025-01-01", locale);
 
   return (
     <main className="gradient-bg min-h-screen px-4 pt-32 pb-20">

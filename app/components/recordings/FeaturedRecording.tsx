@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatShortDateUTC } from "@/lib/utils/locale";
 
 import { Pill } from "../ui/Pill";
 
@@ -223,13 +224,7 @@ export function FeaturedRecording({
             >
               {currentFeatured.location}
             </Pill>
-            <span>
-              {new Date(currentFeatured.date).toLocaleDateString(locale, {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
+            <span>{formatShortDateUTC(currentFeatured.date, locale)}</span>
           </div>
           <h2
             className={`line-clamp-2 text-xl leading-tight font-semibold break-words sm:text-3xl lg:text-4xl ${

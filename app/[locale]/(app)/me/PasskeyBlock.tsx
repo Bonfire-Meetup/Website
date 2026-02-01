@@ -18,6 +18,7 @@ import {
   isWebAuthnSupported,
   registerPasskey,
 } from "@/lib/auth/webauthn-client";
+import { formatShortDateUTC } from "@/lib/utils/locale";
 
 export function PasskeyBlock() {
   const t = useTranslations("account.passkeys");
@@ -158,13 +159,13 @@ export function PasskeyBlock() {
                   </div>
                   <div className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
                     {t("createdAt", {
-                      date: new Date(passkey.createdAt).toLocaleDateString(locale),
+                      date: formatShortDateUTC(passkey.createdAt, locale),
                     })}
                     {passkey.lastUsedAt && (
                       <>
                         {" · "}
                         {t("lastUsed", {
-                          date: new Date(passkey.lastUsedAt).toLocaleDateString(locale),
+                          date: formatShortDateUTC(passkey.lastUsedAt, locale),
                         })}
                       </>
                     )}

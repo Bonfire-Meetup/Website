@@ -16,6 +16,7 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { extractTokenFromUrl, parseCheckInToken } from "@/lib/utils/check-in-token";
 import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
+import { formatTimeUTC } from "@/lib/utils/locale";
 
 interface ScanResult {
   valid: boolean;
@@ -539,7 +540,7 @@ export function ReaderClient() {
                           : "text-red-600/70 dark:text-red-300/70"
                       }`}
                     >
-                      {new Date(scanResult.timestamp).toLocaleTimeString()}
+                      {formatTimeUTC(new Date(scanResult.timestamp).toISOString())}
                     </div>
                   </div>
                   {scanResult.valid && scanResult.name && (
