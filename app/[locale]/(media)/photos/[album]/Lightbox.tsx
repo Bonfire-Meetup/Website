@@ -175,7 +175,12 @@ export function Lightbox({
   }, [onClose, goToPrev, goToNext]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setPinching(e.touches.length > 1);
+    if (e.touches.length > 1) {
+      setPinching(true);
+      return;
+    }
+
+    setPinching(false);
     touchStartX.current = e.touches[0].clientX;
     touchEndX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
@@ -185,13 +190,18 @@ export function Lightbox({
   const handleTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length > 1) {
       setPinching(true);
+      return;
+    }
+
+    if (isMultiTouch.current) {
+      return;
     }
 
     touchEndX.current = e.touches[0].clientX;
     const currentY = e.touches[0].clientY;
     const deltaY = currentY - touchStartY.current;
 
-    if (e.touches.length === 1 && !isMultiTouch.current && deltaY > 0) {
+    if (deltaY > 0) {
       const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
       if (deltaY >= deltaX) {
         setDragY(deltaY);
@@ -499,6 +509,7 @@ export function Lightbox({
               className={`block max-h-[100svh] max-w-[100vw] object-contain sm:max-h-[calc(100vh-10rem)] sm:max-w-[calc(100vw-8rem)] sm:transition-transform sm:duration-200 ${
                 isZoomed ? "sm:scale-150 sm:cursor-zoom-out" : "sm:cursor-zoom-in"
               }`}
+              style={{ touchAction: "pinch-zoom" }}
               onClick={(e) => {
                 e.stopPropagation();
 
