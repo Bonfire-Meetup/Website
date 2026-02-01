@@ -35,12 +35,17 @@ interface HintConfig {
 }
 
 const HINT_CONFIGS: Record<LoginReason, HintConfig> = {
-  [LOGIN_REASON.VIDEO_BOOST]: {
-    borderClass: "border-emerald-200/70 dark:border-emerald-500/20",
-    bgClass: "bg-emerald-50 dark:bg-emerald-500/10",
-    textClass: "text-emerald-700 dark:text-emerald-200",
-    icon: <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />,
-    translationKey: "boostHint",
+  [LOGIN_REASON.EVENT_RSVP]: {
+    borderClass: "border-blue-200/70 dark:border-blue-500/20",
+    bgClass: "bg-blue-50 dark:bg-blue-500/10",
+    textClass: "text-blue-700 dark:text-blue-200",
+    icon: (
+      <>
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      </>
+    ),
+    translationKey: "rsvpHint",
   },
   [LOGIN_REASON.SESSION_EXPIRED]: {
     borderClass: "border-amber-200/70 dark:border-amber-500/20",
@@ -53,6 +58,13 @@ const HINT_CONFIGS: Record<LoginReason, HintConfig> = {
       </>
     ),
     translationKey: "sessionExpiredHint",
+  },
+  [LOGIN_REASON.VIDEO_BOOST]: {
+    borderClass: "border-emerald-200/70 dark:border-emerald-500/20",
+    bgClass: "bg-emerald-50 dark:bg-emerald-500/10",
+    textClass: "text-emerald-700 dark:text-emerald-200",
+    icon: <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />,
+    translationKey: "boostHint",
   },
 };
 

@@ -19,6 +19,7 @@ export const API_ROUTES = {
     PASSKEYS: "/api/v1/me/passkeys",
     PASSKEY: (id: string) => `/api/v1/me/passkeys/${id}`,
     PREFERENCES: "/api/v1/me/preferences",
+    RSVPS: "/api/v1/me/rsvps",
   },
   NEWSLETTER: {
     SUBSCRIBE: "/api/v1/newsletter/subscribe",
@@ -42,5 +43,9 @@ export const API_ROUTES = {
       WATCHLIST_VIDEO: (videoId: string) => `/api/v1/users/me/watchlist/${videoId}`,
       CHECK_IN: "/api/v1/users/me/check-in",
     },
+  },
+  EVENTS: {
+    RSVPS: (eventId: string) => `/api/v1/events/${eventId}/rsvps`,
+    RSVPS_PATTERN: "/api/v1/events/*/rsvps",
   },
 } as const;

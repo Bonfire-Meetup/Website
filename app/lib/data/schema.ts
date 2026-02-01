@@ -466,3 +466,27 @@ export const newsletterArchive = pgTable(
     index("newsletter_archive_sent_by_idx").on(table.sentBy),
   ],
 );
+
+export const eventRsvp = pgTable(
+  "event_rsvp",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").notNull(),
+    eventId: text("event_id").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("event_rsvp_event_id_idx").using("btree", table.eventId.asc().nullsLast().op("text_ops")),
+    index("event_rsvp_user_id_idx").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
+    uniqueIndex("event_rsvp_user_event_unique_idx").using(
+      "btree",
+      table.userId.asc().nullsLast().op("uuid_ops"),
+      table.eventId.asc().nullsLast().op("text_ops"),
+    ),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "event_rsvp_user_id_app_user_id_fk",
+    }).onDelete("cascade"),
+  ],
+);

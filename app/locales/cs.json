@@ -178,7 +178,16 @@
       "facebook": "Facebook",
       "eventbrite": "Eventbrite"
     },
-    "register": "Registrace přes:"
+    "register": "Registrace přes:",
+    "illBeThere": "Zúčastním se",
+    "youreGoing": "Jdeš na to",
+    "attendingCount": "{count} účastníků",
+    "andMore": "+{count} dalších",
+    "beFirst": "Buďte první!",
+    "rsvpOnBonfire": "Registrace na Bonfire",
+    "orRegisterVia": "Nebo se registruj přes:",
+    "onePrivateRsvp": "1 soukromý",
+    "multiplePrivateRsvps": "{count} soukromých"
   },
   "recordings": {
     "backToLibrary": "Zpět do knihovny",
@@ -977,6 +986,7 @@
     "verifying": "Ověřuji",
     "cancel": "Zrušit",
     "boostHint": "Boostování je pouze pro členy.",
+    "rsvpHint": "Přihlaste se a dejte ostatním vědět, že přijdete.",
     "sessionExpiredHint": "Platnost relace vypršela. Přihlaste se znovu.",
     "termsPrefix": "Pokračováním souhlasíte s ",
     "termsLink": "podmínkami a zpracováním osobních údajů",

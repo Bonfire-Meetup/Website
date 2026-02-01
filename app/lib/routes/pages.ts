@@ -1,6 +1,7 @@
 export const LOGIN_REASON = {
-  VIDEO_BOOST: "video-boost",
+  EVENT_RSVP: "event-rsvp",
   SESSION_EXPIRED: "session-expired",
+  VIDEO_BOOST: "video-boost",
 } as const;
 
 export type LoginReason = (typeof LOGIN_REASON)[keyof typeof LOGIN_REASON];

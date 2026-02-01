@@ -178,7 +178,16 @@
       "facebook": "Facebook",
       "eventbrite": "Eventbrite"
     },
-    "register": "Register via:"
+    "register": "Register via:",
+    "illBeThere": "I'll be there",
+    "youreGoing": "You're going",
+    "attendingCount": "{count} attending",
+    "andMore": "+{count} more",
+    "beFirst": "Be first to RSVP!",
+    "rsvpOnBonfire": "Register on Bonfire",
+    "orRegisterVia": "Or register via:",
+    "onePrivateRsvp": "1 private",
+    "multiplePrivateRsvps": "{count} private"
   },
   "recordings": {
     "backToLibrary": "Back to Library",
@@ -966,6 +975,7 @@
     "verifying": "Verifying",
     "cancel": "Cancel",
     "boostHint": "Boosting is for members only.",
+    "rsvpHint": "Sign in to let others know you're coming.",
     "sessionExpiredHint": "Your session expired. Please log in again.",
     "termsPrefix": "By continuing you agree to the ",
     "termsLink": "terms and acknowledge the privacy policy",

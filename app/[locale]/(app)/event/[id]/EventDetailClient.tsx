@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { RsvpSection } from "@/components/events/RsvpSection";
 import {
   CalendarIcon,
   ClockIcon,
@@ -45,6 +46,7 @@ interface EventDetailClientProps {
 }
 
 export function EventDetailClient({
+  id,
   title,
   episode,
   location,
@@ -119,26 +121,8 @@ export function EventDetailClient({
       </div>
 
       <div className="relative z-10">
-        {/* Navigation */}
-        <div className="glass sticky top-0 z-40 border-b border-neutral-200/50 px-4 py-4 dark:border-neutral-800/50">
-          <div className="mx-auto flex max-w-5xl items-center justify-end">
-            <div className="flex items-center gap-2">
-              <span
-                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold tracking-wider uppercase"
-                style={{
-                  background: `${locationColor}15`,
-                  color: locationColor,
-                }}
-              >
-                <MapPinIcon className="h-3.5 w-3.5" />
-                {location}
-              </span>
-            </div>
-          </div>
-        </div>
-
         {/* Hero Section */}
-        <div className="relative overflow-hidden px-4 pt-16 pb-12 sm:pt-24 sm:pb-16">
+        <div className="relative overflow-hidden px-4 pt-20 pb-12 sm:pt-20 sm:pb-16">
           <div className="mx-auto max-w-5xl">
             {episode && (
               <div className="mb-6 flex justify-center">
@@ -277,30 +261,36 @@ export function EventDetailClient({
                   {isTba ? t("tbaDescription") : t("registerDescription", { location })}
                 </p>
 
+                {/* Bonfire RSVP - Primary */}
+                <RsvpSection eventId={id} />
+
+                {/* External Links - Secondary */}
                 {platformLinks.length > 0 && (
-                  <div className="space-y-3">
+                  <div className="mt-6 space-y-2 border-t border-neutral-200/50 pt-6 dark:border-neutral-700/50">
                     <p className="text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400">
-                      {t("registerVia")}
+                      {t("orRegisterVia")}
                     </p>
 
-                    {platformLinks.map((platform) => (
-                      <a
-                        key={platform.key}
-                        href={platform.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r ${platform.gradient} px-6 py-4 font-bold text-white shadow-lg ${platform.shadow} transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0`}
-                      >
-                        <platform.icon className="h-5 w-5" />
-                        <span>{platform.label}</span>
-                        <ExternalLinkIcon className="h-4 w-4 opacity-60 transition-transform group-hover:translate-x-1" />
-                      </a>
-                    ))}
+                    <div className="grid grid-cols-1 gap-2">
+                      {platformLinks.map((platform) => (
+                        <a
+                          key={platform.key}
+                          href={platform.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${platform.gradient} px-4 py-2.5 text-xs font-semibold text-white shadow-md ${platform.shadow} transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0`}
+                        >
+                          <platform.icon className="h-4 w-4" />
+                          <span>{platform.label}</span>
+                          <ExternalLinkIcon className="h-3 w-3 opacity-60 transition-transform group-hover:translate-x-1" />
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 )}
 
                 {platformLinks.length === 0 && isTba && (
-                  <div className="rounded-2xl border-2 border-dashed border-orange-300/50 bg-orange-50/50 p-6 text-center dark:border-orange-500/30 dark:bg-orange-500/10">
+                  <div className="mt-6 rounded-2xl border-2 border-dashed border-orange-300/50 bg-orange-50/50 p-6 text-center dark:border-orange-500/30 dark:bg-orange-500/10">
                     <SparklesIcon className="mx-auto mb-3 h-8 w-8 text-orange-500" />
                     <p className="font-semibold text-neutral-900 dark:text-white">
                       {t("stayTuned")}
@@ -311,20 +301,8 @@ export function EventDetailClient({
                   </div>
                 )}
 
-                <div className="mt-6 space-y-3 border-t border-neutral-200/50 pt-6 dark:border-neutral-700/50">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-neutral-500 dark:text-neutral-400">
-                      {t("locationSimple")}
-                    </span>
-                    <span className="font-semibold text-neutral-900 dark:text-white">
-                      {location}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-neutral-500 dark:text-neutral-400">{t("timeLabel")}</span>
-                    <span className="font-semibold text-neutral-900 dark:text-white">{time}</span>
-                  </div>
-                  {episode && (
+                {episode && (
+                  <div className="mt-6 space-y-3 border-t border-neutral-200/50 pt-6 dark:border-neutral-700/50">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-neutral-500 dark:text-neutral-400">
                         {t("episodeLabel")}
@@ -333,8 +311,8 @@ export function EventDetailClient({
                         {episode}
                       </span>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
               {/* Share - Desktop */}
@@ -466,30 +444,36 @@ export function EventDetailClient({
                   {isTba ? t("tbaDescription") : t("registerDescription", { location })}
                 </p>
 
+                {/* Bonfire RSVP - Primary */}
+                <RsvpSection eventId={id} />
+
+                {/* External Links - Secondary */}
                 {platformLinks.length > 0 && (
-                  <div className="space-y-3">
+                  <div className="mt-6 space-y-2 border-t border-neutral-200/50 pt-6 dark:border-neutral-700/50">
                     <p className="text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400">
-                      {t("registerVia")}
+                      {t("orRegisterVia")}
                     </p>
 
-                    {platformLinks.map((platform) => (
-                      <a
-                        key={platform.key}
-                        href={platform.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r ${platform.gradient} px-6 py-4 font-bold text-white shadow-lg ${platform.shadow} transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0`}
-                      >
-                        <platform.icon className="h-5 w-5" />
-                        <span>{platform.label}</span>
-                        <ExternalLinkIcon className="h-4 w-4 opacity-60 transition-transform group-hover:translate-x-1" />
-                      </a>
-                    ))}
+                    <div className="grid grid-cols-1 gap-2">
+                      {platformLinks.map((platform) => (
+                        <a
+                          key={platform.key}
+                          href={platform.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${platform.gradient} px-4 py-2.5 text-xs font-semibold text-white shadow-md ${platform.shadow} transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0`}
+                        >
+                          <platform.icon className="h-4 w-4" />
+                          <span>{platform.label}</span>
+                          <ExternalLinkIcon className="h-3 w-3 opacity-60 transition-transform group-hover:translate-x-1" />
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 )}
 
                 {platformLinks.length === 0 && isTba && (
-                  <div className="rounded-2xl border-2 border-dashed border-orange-300/50 bg-orange-50/50 p-6 text-center dark:border-orange-500/30 dark:bg-orange-500/10">
+                  <div className="mt-6 rounded-2xl border-2 border-dashed border-orange-300/50 bg-orange-50/50 p-6 text-center dark:border-orange-500/30 dark:bg-orange-500/10">
                     <SparklesIcon className="mx-auto mb-3 h-8 w-8 text-orange-500" />
                     <p className="font-semibold text-neutral-900 dark:text-white">
                       {t("stayTuned")}
