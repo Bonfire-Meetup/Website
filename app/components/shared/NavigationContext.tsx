@@ -65,10 +65,15 @@ export function NavigationProvider({ children }: { children: React.ReactNode }) 
 
       const currentPath = window.location.pathname + window.location.search;
       const targetPath = href.startsWith("/")
-        ? href
+        ? href.split("#")[0]
         : new URL(href, window.location.href).pathname + new URL(href, window.location.href).search;
 
       if (targetPath === currentPath) {
+        if (isNavigatingRef.current) {
+          window.setTimeout(() => {
+            completeNavigation();
+          }, 100);
+        }
         return;
       }
 
@@ -77,15 +82,35 @@ export function NavigationProvider({ children }: { children: React.ReactNode }) 
       }
     };
 
+    const handleHashChange = () => {
+      if (isNavigatingRef.current) {
+        window.setTimeout(() => {
+          completeNavigation();
+        }, 100);
+      }
+    };
+
+    const handlePopState = () => {
+      if (isNavigatingRef.current) {
+        window.setTimeout(() => {
+          completeNavigation();
+        }, 100);
+      }
+    };
+
     document.addEventListener("click", handleClick, true);
+    window.addEventListener("hashchange", handleHashChange);
+    window.addEventListener("popstate", handlePopState);
 
     return () => {
       document.removeEventListener("click", handleClick, true);
+      window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("popstate", handlePopState);
       if (completeTimerRef.current) {
         window.clearTimeout(completeTimerRef.current);
       }
     };
-  }, [startNavigation]);
+  }, [startNavigation, completeNavigation]);
 
   return (
     <NavigationContext.Provider value={{ startNavigation, completeNavigation, isNavigating }}>

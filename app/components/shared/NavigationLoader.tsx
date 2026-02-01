@@ -9,6 +9,7 @@ export function NavigationLoader() {
   const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(false);
   const progressIntervalRef = useRef<number | null>(null);
+  const timeoutFallbackRef = useRef<number | null>(null);
   const wasNavigatingRef = useRef(false);
 
   useEffect(() => {
@@ -25,12 +26,34 @@ export function NavigationLoader() {
         }
         setProgress(currentProgress);
       }, 120);
+
+      timeoutFallbackRef.current = window.setTimeout(() => {
+        if (wasNavigatingRef.current) {
+          wasNavigatingRef.current = false;
+          if (progressIntervalRef.current) {
+            window.clearInterval(progressIntervalRef.current);
+            progressIntervalRef.current = null;
+          }
+          setProgress(100);
+          window.setTimeout(() => {
+            setVisible(false);
+            window.setTimeout(() => {
+              setProgress(0);
+            }, 300);
+          }, 200);
+        }
+      }, 5000);
     } else if (!isNavigating && wasNavigatingRef.current) {
       wasNavigatingRef.current = false;
 
       if (progressIntervalRef.current) {
         window.clearInterval(progressIntervalRef.current);
         progressIntervalRef.current = null;
+      }
+
+      if (timeoutFallbackRef.current) {
+        window.clearTimeout(timeoutFallbackRef.current);
+        timeoutFallbackRef.current = null;
       }
 
       setProgress(100);
@@ -46,6 +69,9 @@ export function NavigationLoader() {
     return () => {
       if (progressIntervalRef.current) {
         window.clearInterval(progressIntervalRef.current);
+      }
+      if (timeoutFallbackRef.current) {
+        window.clearTimeout(timeoutFallbackRef.current);
       }
     };
   }, [isNavigating]);

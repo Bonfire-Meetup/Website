@@ -61,6 +61,9 @@ function MobileBottomNavInner() {
   ];
 
   const isActive = (item: NavItem) => {
+    if (!mounted) {
+      return false;
+    }
     if (item.exact) {
       return pathname === item.href;
     }
