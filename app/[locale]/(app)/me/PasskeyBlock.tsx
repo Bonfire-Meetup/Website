@@ -158,17 +158,22 @@ export function PasskeyBlock() {
                     )}
                   </div>
                   <div className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
-                    {t("createdAt", {
-                      date: formatShortDateUTC(passkey.createdAt, locale),
-                    })}
-                    {passkey.lastUsedAt && (
-                      <>
-                        {" · "}
-                        {t("lastUsed", {
-                          date: formatShortDateUTC(passkey.lastUsedAt, locale),
-                        })}
-                      </>
-                    )}
+                    {(() => {
+                      const createdAtFormatted = passkey.createdAt
+                        ? formatShortDateUTC(passkey.createdAt, locale)
+                        : "";
+                      const lastUsedAtFormatted = passkey.lastUsedAt
+                        ? formatShortDateUTC(passkey.lastUsedAt, locale)
+                        : "";
+                      const parts: string[] = [];
+                      if (createdAtFormatted) {
+                        parts.push(t("createdAt", { date: createdAtFormatted }));
+                      }
+                      if (lastUsedAtFormatted) {
+                        parts.push(t("lastUsed", { date: lastUsedAtFormatted }));
+                      }
+                      return parts.length > 0 ? parts.join(" · ") : null;
+                    })()}
                   </div>
                 </div>
                 {confirmingId === passkey.id ? (

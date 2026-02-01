@@ -64,16 +64,47 @@ const SHORT_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   timeZone: "UTC",
 };
 
-function parseDateUTC(dateString: string): Date {
-  return new Date(dateString.includes("T") ? dateString : `${dateString}T00:00:00.000Z`);
+function parseDateUTC(dateString: string | null | undefined): Date {
+  if (!dateString) {
+    return new Date(NaN);
+  }
+  let normalized = dateString.trim();
+  if (!normalized.includes("T")) {
+    if (normalized.includes(" ")) {
+      normalized = normalized.replace(" ", "T");
+    } else {
+      normalized = `${normalized}T00:00:00.000Z`;
+    }
+  }
+  normalized = normalized.replace(/\+00(:00)?$/, "Z");
+  const date = new Date(normalized);
+  if (Number.isNaN(date.getTime())) {
+    return new Date(NaN);
+  }
+  return date;
+}
+
+function isValidDate(date: Date): boolean {
+  return !Number.isNaN(date.getTime());
 }
 
 export function formatEventDateUTC(dateString: string, locale: string): string {
-  return new Intl.DateTimeFormat(locale, EVENT_DATE_OPTIONS).format(parseDateUTC(dateString));
+  const date = parseDateUTC(dateString);
+  if (!isValidDate(date)) {
+    return "";
+  }
+  return new Intl.DateTimeFormat(locale, EVENT_DATE_OPTIONS).format(date);
 }
 
-export function formatShortDateUTC(dateString: string, locale: string): string {
-  return new Intl.DateTimeFormat(locale, SHORT_DATE_OPTIONS).format(parseDateUTC(dateString));
+export function formatShortDateUTC(dateString: string | null | undefined, locale: string): string {
+  if (!dateString) {
+    return "";
+  }
+  const date = parseDateUTC(dateString);
+  if (!isValidDate(date)) {
+    return "";
+  }
+  return new Intl.DateTimeFormat(locale, SHORT_DATE_OPTIONS).format(date);
 }
 
 const LONG_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
