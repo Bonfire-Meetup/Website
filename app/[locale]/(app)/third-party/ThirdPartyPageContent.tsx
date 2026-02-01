@@ -2,6 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
+import { ShouldersOfGiants } from "./ShouldersOfGiants";
+
 interface Technology {
   name: string;
   license: string;
@@ -27,7 +29,11 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
     { name: "tailwind-merge", license: "MIT", url: "https://github.com/dcastil/tailwind-merge" },
     { name: "clsx", license: "MIT", url: "https://github.com/lukeed/clsx" },
   ],
-  database: [{ name: "Neon Postgres", license: "Apache-2.0", url: "https://neon.tech" }],
+  database: [
+    { name: "Neon Postgres", license: "Apache-2.0", url: "https://neon.tech" },
+    { name: "@neondatabase/serverless", license: "MIT", url: "https://neon.tech/docs/serverless" },
+    { name: "Drizzle ORM", license: "Apache-2.0", url: "https://orm.drizzle.team" },
+  ],
   i18n: [{ name: "next-intl", license: "MIT", url: "https://next-intl-docs.vercel.app" }],
   auth: [
     { name: "jose", license: "MIT", url: "https://github.com/panva/jose" },
@@ -51,6 +57,11 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
       license: "MIT",
       url: "https://react.dev/learn/react-compiler",
     },
+    {
+      name: "React Email",
+      license: "MIT",
+      url: "https://react.email",
+    },
   ],
   analytics: [
     { name: "Vercel Analytics", license: "Commercial", url: "https://vercel.com/analytics" },
@@ -59,6 +70,7 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
       license: "Commercial",
       url: "https://vercel.com/speed-insights",
     },
+    { name: "Rollbar", license: "MIT", url: "https://rollbar.com" },
   ],
   security: [{ name: "botid", license: "MIT", url: "https://botid.io" }],
   linting: [
@@ -96,11 +108,15 @@ export function ThirdPartyPageContent() {
   return (
     <main className="gradient-bg min-h-screen px-4 pt-32 pb-20">
       <div className="mx-auto max-w-4xl">
-        <div className="mb-12 text-center">
+        <div className="mb-10 text-center">
           <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl dark:text-white">
             {t("title")}
           </h1>
           <p className="text-lg text-neutral-600 dark:text-neutral-400">{t("subtitle")}</p>
+        </div>
+
+        <div className="mb-12">
+          <ShouldersOfGiants />
         </div>
 
         <div className="glass-card no-hover-pop space-y-8 p-8 sm:p-12">

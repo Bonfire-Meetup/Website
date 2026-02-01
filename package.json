@@ -57,7 +57,7 @@
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.8",
     "eslint": "^9.39.2",
-    "oxfmt": "^0.26.0",
+    "oxfmt": "^0.27.0",
     "oxlint": "^1.42.0",
     "react-email": "5.2.5",
     "typescript": "^5.9.3"

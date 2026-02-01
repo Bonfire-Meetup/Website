@@ -24,7 +24,7 @@
     "faq": "FAQ",
     "press": "Press kit",
     "contact": "Kontakt",
-    "codeOfConduct": "Kodex chování",
+    "codeOfConduct": "Kodex",
     "back": "Zpět",
     "menu": "Otevřít menu",
     "close": "Zavřít menu",
@@ -1342,6 +1342,19 @@
     "sendError": "Nepodařilo se odeslat newsletter. Zkuste to znovu."
   },
   "attributions": {
+    "giants": {
+      "headline": "Stojíme na ramenou obrů",
+      "subline": "Postaveno na špičkové infrastruktuře a nástrojích.",
+      "cloud": "Cloud",
+      "database": "Databáze",
+      "storage": "Úložiště objektů (fotky)",
+      "emails": "E-maily",
+      "bugReporting": "Hlášení chyb",
+      "botProtection": "Ochrana proti botům",
+      "vcs": "VCS",
+      "cicdRunners": "CI/CD runners",
+      "thankYou": "Děkujeme všem, kdo za takovými službami stojí, vážíme si toho, co budujete a provozujete."
+    },
     "title": "Použité technologie",
     "subtitle": "Open source technologie a knihovny použité v tomto projektu",
     "intro": "Tento web je postaven na open source technologiích. Děkujeme vývojářům a správcům těchto projektů. Níže je seznam hlavních technologií a jejich licencí.",
@@ -1350,7 +1363,7 @@
       "framework": "Framework a jádro",
       "state": "Správa stavu",
       "styling": "Styling",
-      "database": "Databáze",
+      "database": "Databáze a ORM",
       "i18n": "Internationalizace",
       "auth": "Autentizace",
       "utilities": "Nástroje",
