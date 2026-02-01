@@ -13,7 +13,6 @@ import {
 } from "@/lib/utils/hash-rng";
 
 const AVATAR_CSS = `
-/* Scoped to .bnfAvatar to avoid leaking styles */
 .bnfAvatar .av-line {
   opacity: var(--op, 0.18);
   stroke-dasharray: none;
@@ -26,19 +25,16 @@ const AVATAR_CSS = `
   transform-origin: center;
 }
 
-/* Sprite hooks */
 .bnfAvatar .av-px {
   opacity: var(--op, 0.16);
 }
 
-/* Polygon hooks */
 .bnfAvatar .av-poly {
   opacity: var(--op, 0.14);
   transform-box: fill-box;
   transform-origin: center;
 }
 
-/* Animation mode: tracing */
 .bnfAvatar .av-anim .av-line {
   stroke-dasharray: var(--len);
   stroke-dashoffset: var(--len);
@@ -52,16 +48,14 @@ const AVATAR_CSS = `
 }
 
 .bnfAvatar .av-anim .av-node-end {
-  opacity: 0; /* avoid double-dot: hide static end node while animated dot is shown */
+  opacity: 0;
 }
 
-/* Animation: subtle sprite pulse (only few pixels) */
 .bnfAvatar .av-anim .av-px.av-px-anim {
   animation: bnfAvPx var(--dur) ease-in-out infinite;
   animation-delay: var(--delay);
 }
 
-/* Animation: polygons (pulse + micro-drift + tiny rotation) */
 .bnfAvatar .av-anim .av-poly {
   animation: bnfAvPoly var(--dur) ease-in-out infinite;
   animation-delay: var(--delay);

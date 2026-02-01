@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { upcomingEvents } from "@/data/upcoming-events";
 import { buildNotFoundTitleMetadata, getMetaTitleSuffix } from "@/lib/metadata";
 
-import { EventDetailClient } from "./EventDetailClient";
+import { EventDetailContent } from "./EventDetailContent";
 
 export function generateStaticParams() {
   return upcomingEvents.map((event) => ({
@@ -51,7 +51,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="flex-1 bg-neutral-50 dark:bg-neutral-950">
-      <EventDetailClient
+      <EventDetailContent
         id={event.id}
         title={event.title}
         episode={event.episode}
