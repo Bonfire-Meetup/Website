@@ -62,12 +62,6 @@ export function ShouldersOfGiants() {
               </span>
               <span className="font-semibold text-neutral-900 dark:text-white">
                 {item.provider}
-                {"suffixKey" in item && (
-                  <span className="font-normal text-neutral-600 dark:text-neutral-300">
-                    {" "}
-                    {t(item.suffixKey)}
-                  </span>
-                )}
               </span>
             </a>
           ))}
