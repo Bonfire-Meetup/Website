@@ -2,6 +2,8 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
+import { formatDateTimeUTC } from "@/lib/utils/locale";
+
 interface Attempt {
   id: string;
   outcome: string;
@@ -78,7 +80,7 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
                     )}
                   </div>
                   <div className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
-                    <div>{new Date(attempt.createdAt).toLocaleString(locale)}</div>
+                    <div>{formatDateTimeUTC(attempt.createdAt, locale)}</div>
                     {attempt.userAgentSummary && (
                       <div className="mt-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
                         {attempt.userAgentSummary}

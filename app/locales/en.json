@@ -147,7 +147,7 @@
       "testBannerTitle": "Test Email",
       "testBannerMessage": "This newsletter was sent as a test",
       "updateLabel": "Update {number}",
-      "sentOn": "Sent {sentDate, date, long}"
+      "sentOn": "Sent {sentDate}"
     }
   },
   "events": {

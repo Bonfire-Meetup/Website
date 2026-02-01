@@ -1,9 +1,10 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
+import { formatLongDateUTC } from "@/lib/utils/locale";
 
 export interface NewsletterSection {
   id: string;
@@ -28,7 +29,8 @@ interface NewsletterArchiveContentProps {
 
 export function NewsletterArchiveContent({ newsletter }: NewsletterArchiveContentProps) {
   const t = useTranslations("sections.newsletterArchive");
-  const sentDate = new Date(newsletter.sentAt);
+  const locale = useLocale();
+  const sentDate = formatLongDateUTC(newsletter.sentAt, locale);
 
   return (
     <main className="gradient-bg-static relative min-h-screen overflow-hidden px-4 pt-32 pb-24">

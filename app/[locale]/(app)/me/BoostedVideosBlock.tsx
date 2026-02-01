@@ -1,11 +1,12 @@
 "use client";
 
 import type { BoostedRecording } from "@/lib/api/user-profile";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { Link } from "@/i18n/navigation";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatShortDateUTC } from "@/lib/utils/locale";
 
 interface BoostedVideosBlockProps {
   loading: boolean;
@@ -16,6 +17,7 @@ interface BoostedVideosBlockProps {
 
 export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedVideosBlockProps) {
   const t = useTranslations("account.boosted");
+  const locale = useLocale();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -56,12 +58,7 @@ export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedV
         ) : (
           <div className="-mx-4 max-h-[280px] space-y-2 overflow-y-auto overscroll-contain px-4 sm:max-h-[320px]">
             {items.map((boost) => {
-              const boostedDate = new Date(boost.boostedAt);
-              const formattedDate = new Intl.DateTimeFormat("en-US", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              }).format(boostedDate);
+              const formattedDate = formatShortDateUTC(boost.boostedAt, locale);
 
               return (
                 <div

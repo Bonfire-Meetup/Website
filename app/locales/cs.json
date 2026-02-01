@@ -147,7 +147,7 @@
       "testBannerTitle": "Testovací e-mail",
       "testBannerMessage": "Tento newsletter byl odeslán jako test",
       "updateLabel": "Update {number}",
-      "sentOn": "Odesláno {sentDate, date, long}"
+      "sentOn": "Odesláno {sentDate}"
     }
   },
   "events": {
