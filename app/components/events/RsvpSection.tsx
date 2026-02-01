@@ -37,7 +37,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
     setError(null);
 
     if (!isAuthenticated) {
-      const returnPath = `/event/${eventId}`;
+      const returnPath = PAGE_ROUTES.EVENT(eventId);
       router.push(PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(LOGIN_REASON.EVENT_RSVP, returnPath));
       return;
     }

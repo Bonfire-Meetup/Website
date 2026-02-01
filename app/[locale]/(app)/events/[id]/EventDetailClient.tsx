@@ -122,7 +122,7 @@ export function EventDetailClient({
 
       <div className="relative z-10">
         {/* Hero Section */}
-        <div className="relative overflow-hidden px-4 pt-20 pb-12 sm:pt-20 sm:pb-16">
+        <div className="relative overflow-hidden px-4 pt-32 pb-12 sm:pt-32 sm:pb-16">
           <div className="mx-auto max-w-5xl">
             {episode && (
               <div className="mb-6 flex justify-center">

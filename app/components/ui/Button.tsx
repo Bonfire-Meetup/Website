@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { DYNAMIC_ROUTE_PREFIXES } from "@/lib/routes/pages";
+
 type ButtonVariant = "primary" | "secondary" | "ghost" | "glass" | "plain" | "glass-secondary";
 type ButtonSize = "xs" | "sm" | "md" | "lg";
 
@@ -75,11 +77,7 @@ export function Button({
     }
 
     const isDynamicRoute =
-      href.includes("/watch/") ||
-      href.includes("/user/") ||
-      href.includes("/photos/") ||
-      href.includes("?") ||
-      href.startsWith("/me/");
+      DYNAMIC_ROUTE_PREFIXES.some((prefix) => href.startsWith(prefix)) || href.includes("?");
     const shouldPrefetch = prefetch ?? !isDynamicRoute;
 
     return (

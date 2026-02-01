@@ -27,18 +27,26 @@ export const PAGE_ROUTES = {
   LOGIN_WITH_REASON_AND_RETURN: (reason: LoginReason, returnPath?: string) =>
     `/login?reason-hint=${reason}${returnPath ? `&returnPath=${encodeURIComponent(returnPath)}` : ""}`,
   ME: "/me",
-  EVENT: (id: string) => `/event/${id}`,
-  EVENT_CHECK_IN: "/event/check-in",
-  EVENT_READER: "/event/reader",
-  EVENT_UPCOMING: "/event/upcoming",
+  EVENT: (id: string) => `/events/${id}`,
+  EVENT_CHECK_IN: "/events/check-in",
+  EVENT_READER: "/events/reader",
+  EVENT_UPCOMING: "/events/upcoming",
   PHOTOS: "/photos",
   PHOTOS_ALBUM: (album: string) => `/photos/${album}`,
   PRESS: "/press",
   SPEAK: "/speak",
   THIRD_PARTY: "/third-party",
   TIMELINE: "/timeline",
-  USER: (publicId: string) => `/user/${publicId}`,
+  USER: (publicId: string) => `/users/${publicId}`,
   WATCH: (slug: string, shortId: string) => `/watch/${slug}-${shortId}`,
   WATCH_LATER: "/me/watch-later",
   NEWSLETTER_EDITOR: "/newsletter/editor/compose",
 } as const;
+
+export const DYNAMIC_ROUTE_PREFIXES = [
+  "/watch/",
+  "/users/",
+  "/events/",
+  "/photos/",
+  "/me/",
+] as const;
