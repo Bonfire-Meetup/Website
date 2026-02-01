@@ -15,6 +15,13 @@
       "when": 1769809589605,
       "tag": "0001_add_newsletter_archive",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769988966314,
+      "tag": "0002_add_event_rsvp",
+      "breakpoints": true
     }
   ]
 }
