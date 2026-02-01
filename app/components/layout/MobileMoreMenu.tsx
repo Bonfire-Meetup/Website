@@ -10,7 +10,7 @@ import { COOKIE_KEYS, getCookie, setCookie } from "@/lib/storage/keys";
 
 import { useI18n } from "../providers/I18nClientSync";
 import { CameraIcon, CloseIcon, MoonIcon, ShieldIcon, SunIcon, SystemIcon } from "../shared/icons";
-import { useTheme } from "../theme/ThemeProvider";
+import { useTheme } from "../theme/useTheme";
 
 function EnvelopeIcon({ className }: { className?: string }) {
   return (

@@ -3,7 +3,7 @@
 import { MoonIcon, SunIcon, SystemIcon } from "../shared/icons";
 import { IconButton } from "../ui/IconButton";
 
-import { useTheme } from "./ThemeProvider";
+import { useTheme } from "./useTheme";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();

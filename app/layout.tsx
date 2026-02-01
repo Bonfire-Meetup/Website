@@ -10,7 +10,6 @@ import { NavigationProvider } from "./components/shared/NavigationContext";
 import { NavigationLoader } from "./components/shared/NavigationLoader";
 import { RollbarProvider } from "./components/shared/RollbarProvider";
 import { DEFAULT_LOCALE } from "./lib/i18n/locales";
-import { STORAGE_KEYS } from "./lib/storage/keys";
 
 export const viewport: Viewport = {
   initialScale: 1,
@@ -29,22 +28,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem("${STORAGE_KEYS.THEME}");
-                  var resolved = theme;
-                  if (!theme || theme === "system") {
-                    resolved = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-                  }
-                  document.documentElement.classList.add(resolved);
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
