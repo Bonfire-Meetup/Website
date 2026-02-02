@@ -454,7 +454,8 @@ export function Lightbox({
         )}
 
         <div
-          className="relative flex h-full w-full touch-none items-center justify-center px-0 pt-0 pb-0 sm:px-16 sm:pt-24 sm:pb-16"
+          className="relative flex h-full w-full items-center justify-center px-0 pt-0 pb-0 sm:px-16 sm:pt-24 sm:pb-16"
+          style={{ touchAction: "pan-y" }}
           onClick={(e) => {
             if (!isExiting && e.target === e.currentTarget) {
               onClose();
@@ -509,7 +510,7 @@ export function Lightbox({
               className={`block max-h-[100svh] max-w-[100vw] object-contain sm:max-h-[calc(100vh-10rem)] sm:max-w-[calc(100vw-8rem)] sm:transition-transform sm:duration-200 ${
                 isZoomed ? "sm:scale-150 sm:cursor-zoom-out" : "sm:cursor-zoom-in"
               }`}
-              style={{ touchAction: "pinch-zoom" }}
+              style={{ touchAction: "manipulation" }}
               onClick={(e) => {
                 e.stopPropagation();
 
