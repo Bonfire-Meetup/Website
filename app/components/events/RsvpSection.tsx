@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 
 import { RsvpAvatarList } from "@/components/events/RsvpAvatarList";
 import { useRouter } from "@/i18n/navigation";
-import { useCreateRsvpMutation, useDeleteRsvpMutation, useUserRsvps } from "@/lib/api/events";
+import { useCreateRsvpMutation, useDeleteRsvpMutation, useEventRsvps } from "@/lib/api/events";
 import { useUserProfile } from "@/lib/api/user-profile";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
@@ -18,18 +18,13 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
   const t = useTranslations("events");
   const router = useRouter();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  const { data: userRsvps } = useUserRsvps(isAuthenticated);
+  const { data: rsvps } = useEventRsvps(eventId);
   const { data: userProfile } = useUserProfile(isAuthenticated);
   const createMutation = useCreateRsvpMutation(eventId);
   const deleteMutation = useDeleteRsvpMutation(eventId);
   const [error, setError] = useState<string | null>(null);
 
-  const isRsvped = useMemo(() => {
-    if (!userRsvps) {
-      return false;
-    }
-    return userRsvps.eventIds.includes(eventId);
-  }, [userRsvps, eventId]);
+  const isRsvped = useMemo(() => rsvps?.hasRsvped ?? false, [rsvps]);
 
   const isLoading = createMutation.isPending || deleteMutation.isPending;
 
@@ -44,13 +39,14 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
 
     const userId = userProfile?.profile.id;
     const userName = userProfile?.profile.name;
+    const isPublic = userProfile?.profile.publicProfile ?? false;
 
     if (!userId) {
       setError("Unable to RSVP. Please refresh the page.");
       return;
     }
 
-    const userInfo = { userId, name: userName ?? null };
+    const userInfo = { userId, name: userName ?? null, isPublic };
 
     if (isRsvped) {
       deleteMutation.mutate(userInfo, {

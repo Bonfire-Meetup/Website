@@ -1,7 +1,9 @@
 import "server-only";
 
 import { and, eq, sql } from "drizzle-orm";
+import { cacheLife, cacheTag } from "next/cache";
 
+import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 import { db } from "@/lib/data/db";
 import { appUser, eventRsvp } from "@/lib/data/schema";
 import { logError } from "@/lib/utils/log";
@@ -13,18 +15,21 @@ export interface RsvpResult {
   error?: string;
 }
 
+const normalizeEventId = (eventId: string): string => eventId.trim().toLowerCase();
+
 export const createRsvp = async (userId: string, eventId: string): Promise<RsvpResult> => {
+  const normalized = normalizeEventId(eventId);
   try {
     const existing = await db()
       .select({ id: eventRsvp.id })
       .from(eventRsvp)
-      .where(and(eq(eventRsvp.userId, userId), eq(eventRsvp.eventId, eventId)));
+      .where(and(eq(eventRsvp.userId, userId), eq(eventRsvp.eventId, normalized)));
 
     if (existing.length > 0) {
       return { success: false, alreadyRsvped: true };
     }
 
-    await db().insert(eventRsvp).values({ userId, eventId });
+    await db().insert(eventRsvp).values({ userId, eventId: normalized });
 
     return { success: true, alreadyRsvped: false };
   } catch (error) {
@@ -34,10 +39,11 @@ export const createRsvp = async (userId: string, eventId: string): Promise<RsvpR
 };
 
 export const deleteRsvp = async (userId: string, eventId: string): Promise<boolean> => {
+  const normalized = normalizeEventId(eventId);
   try {
     await db()
       .delete(eventRsvp)
-      .where(and(eq(eventRsvp.userId, userId), eq(eventRsvp.eventId, eventId)));
+      .where(and(eq(eventRsvp.userId, userId), eq(eventRsvp.eventId, normalized)));
 
     return true;
   } catch (error) {
@@ -47,11 +53,12 @@ export const deleteRsvp = async (userId: string, eventId: string): Promise<boole
 };
 
 export const isUserRsvped = async (userId: string, eventId: string): Promise<boolean> => {
+  const normalized = normalizeEventId(eventId);
   try {
     const result = await db()
       .select({ exists: sql<boolean>`true` })
       .from(eventRsvp)
-      .where(and(eq(eventRsvp.userId, userId), eq(eventRsvp.eventId, eventId)))
+      .where(and(eq(eventRsvp.userId, userId), eq(eventRsvp.eventId, normalized)))
       .limit(1);
 
     return result.length > 0;
@@ -66,19 +73,27 @@ export interface PublicRsvpUser {
   name: string | null;
 }
 
-export interface EventRsvpsResult {
+export interface EventRsvpsBaseData {
   totalCount: number;
   publicUsers: PublicRsvpUser[];
   privateCount: number;
   hasMore: boolean;
 }
 
-export const getEventRsvps = async (eventId: string, limit = 12): Promise<EventRsvpsResult> => {
+export interface EventRsvpsResult extends EventRsvpsBaseData {
+  hasRsvped: boolean;
+}
+
+const getEventRsvpsBase = async (eventId: string, limit = 12): Promise<EventRsvpsBaseData> => {
+  "use cache";
+  const normalizedEventId = normalizeEventId(eventId);
+  cacheTag(`event-rsvps-${normalizedEventId}`);
+  cacheLife({ revalidate: CACHE_LIFETIMES.EVENT_RSVPS });
   try {
     const countResult = await db()
       .select({ count: sql<number>`count(*)::int` })
       .from(eventRsvp)
-      .where(eq(eventRsvp.eventId, eventId));
+      .where(sql`LOWER(${eventRsvp.eventId}) = ${normalizedEventId}`);
 
     const totalCount = countResult[0]?.count ?? 0;
 
@@ -90,7 +105,7 @@ export const getEventRsvps = async (eventId: string, limit = 12): Promise<EventR
       })
       .from(eventRsvp)
       .innerJoin(appUser, eq(eventRsvp.userId, appUser.id))
-      .where(eq(eventRsvp.eventId, eventId))
+      .where(sql`LOWER(${eventRsvp.eventId}) = ${normalizedEventId}`)
       .orderBy(sql`${eventRsvp.createdAt} DESC`)
       .limit(limit);
 
@@ -123,17 +138,35 @@ export const getEventRsvps = async (eventId: string, limit = 12): Promise<EventR
   }
 };
 
-export const getUserRsvpEventIds = async (userId: string): Promise<string[]> => {
-  try {
-    const rows = await db()
-      .select({ eventId: eventRsvp.eventId })
-      .from(eventRsvp)
-      .where(eq(eventRsvp.userId, userId))
-      .orderBy(sql`${eventRsvp.createdAt} DESC`);
+export const getEventRsvps = async (
+  eventId: string,
+  limit = 12,
+  userId: string | null = null,
+): Promise<EventRsvpsResult> => {
+  const normalizedEventId = normalizeEventId(eventId);
+  const baseData = await getEventRsvpsBase(eventId, limit);
 
-    return rows.map((row) => row.eventId);
-  } catch (error) {
-    logError("data.rsvp.get_user_rsvps_failed", error, { userId });
-    return [];
+  let hasRsvped = false;
+  if (userId) {
+    try {
+      const userRsvpCheck = await db()
+        .select({ id: eventRsvp.id })
+        .from(eventRsvp)
+        .where(
+          and(
+            eq(eventRsvp.userId, userId),
+            sql`LOWER(${eventRsvp.eventId}) = ${normalizedEventId}`,
+          ),
+        )
+        .limit(1);
+      hasRsvped = userRsvpCheck.length > 0;
+    } catch (error) {
+      logError("data.rsvp.check_user_rsvp_failed", error, { eventId, userId });
+    }
   }
+
+  return {
+    ...baseData,
+    hasRsvped,
+  };
 };

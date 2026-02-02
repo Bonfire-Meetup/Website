@@ -6,6 +6,7 @@ import { API_ROUTES } from "@/lib/api/routes";
 import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
 import { createAuthHeaders } from "@/lib/utils/http";
 import { logError } from "@/lib/utils/log-client";
+import { compressUuid } from "@/lib/utils/uuid-compress";
 
 interface EventRsvpUser {
   publicId: string;
@@ -17,19 +18,22 @@ interface EventRsvpsData {
   publicUsers: EventRsvpUser[];
   privateCount: number;
   hasMore: boolean;
-}
-
-interface UserRsvpsData {
-  eventIds: string[];
+  hasRsvped: boolean;
 }
 
 interface OptimisticUserInfo {
   userId: string;
   name: string | null;
+  isPublic: boolean;
 }
 
-async function fetchEventRsvps(eventId: string): Promise<EventRsvpsData> {
-  const response = await fetch(API_ROUTES.EVENTS.RSVPS(eventId));
+async function fetchEventRsvps(
+  eventId: string,
+  accessToken: string | null,
+): Promise<EventRsvpsData> {
+  const response = await fetch(API_ROUTES.EVENTS.RSVPS(eventId), {
+    headers: createAuthHeaders(accessToken),
+  });
 
   if (!response.ok) {
     throw new ApiError("Event RSVPs fetch failed", response.status);
@@ -38,53 +42,30 @@ async function fetchEventRsvps(eventId: string): Promise<EventRsvpsData> {
   return response.json() as Promise<EventRsvpsData>;
 }
 
-async function fetchUserRsvps(accessToken: string | null): Promise<UserRsvpsData> {
-  const response = await fetch(API_ROUTES.ME.RSVPS, {
-    headers: createAuthHeaders(accessToken),
-  });
-
-  if (!response.ok) {
-    throw new ApiError("User RSVPs fetch failed", response.status);
-  }
-
-  return response.json() as Promise<UserRsvpsData>;
-}
-
 export function useEventRsvps(eventId: string) {
   const canFetch = Boolean(eventId);
-
-  return useQuery({
-    enabled: canFetch,
-    queryFn: () => fetchEventRsvps(eventId),
-    queryKey: ["event-rsvps", eventId],
-    staleTime: 60000,
-  });
-}
-
-export function useUserRsvps(enabled = true) {
   const hasToken = Boolean(readAccessToken());
 
   return useQuery({
-    enabled: enabled && hasToken,
+    enabled: canFetch,
     queryFn: () => {
       const token = readAccessToken();
       const isValid = token ? isAccessTokenValid(token) : false;
-      return fetchUserRsvps(isValid ? token : null);
+      return fetchEventRsvps(eventId, isValid ? token : null);
     },
-    queryKey: ["user-rsvps", hasToken ? "auth" : "anon"],
-    staleTime: 300000,
+    queryKey: ["event-rsvps", eventId, hasToken ? "auth" : "anon"],
+    staleTime: 60000,
   });
 }
 
 export function useCreateRsvpMutation(eventId: string) {
   const queryClient = useQueryClient();
-  const hasToken = Boolean(readAccessToken());
 
   return useMutation<
     { success: boolean },
     ApiError,
     OptimisticUserInfo,
-    { previousEventData?: EventRsvpsData; previousUserData?: UserRsvpsData }
+    { previousEventData?: EventRsvpsData }
   >({
     mutationFn: async () => {
       if (!eventId) {
@@ -115,56 +96,56 @@ export function useCreateRsvpMutation(eventId: string) {
 
       if (context?.previousEventData) {
         queryClient.setQueryData<EventRsvpsData>(
-          ["event-rsvps", eventId],
+          ["event-rsvps", eventId, "auth"],
           context.previousEventData,
         );
-      }
-      if (context?.previousUserData) {
-        queryClient.setQueryData<UserRsvpsData>(["user-rsvps", "auth"], context.previousUserData);
+        queryClient.setQueryData<EventRsvpsData>(
+          ["event-rsvps", eventId, "anon"],
+          context.previousEventData,
+        );
       }
     },
     onMutate: async (userInfo) => {
       await queryClient.cancelQueries({ queryKey: ["event-rsvps", eventId] });
-      await queryClient.cancelQueries({ queryKey: ["user-rsvps", "auth"] });
 
-      const previousEventData = queryClient.getQueryData<EventRsvpsData>(["event-rsvps", eventId]);
-      const previousUserData = queryClient.getQueryData<UserRsvpsData>(["user-rsvps", "auth"]);
+      const authKey = ["event-rsvps", eventId, "auth"] as const;
+      const anonKey = ["event-rsvps", eventId, "anon"] as const;
+      const previousEventData =
+        queryClient.getQueryData<EventRsvpsData>(authKey) ??
+        queryClient.getQueryData<EventRsvpsData>(anonKey);
 
-      if (previousUserData && !previousUserData.eventIds.includes(eventId)) {
-        queryClient.setQueryData<UserRsvpsData>(["user-rsvps", "auth"], {
-          eventIds: [eventId, ...previousUserData.eventIds],
-        });
-      }
+      const userPublicId = compressUuid(userInfo.userId);
+      const optimisticUser: EventRsvpUser = {
+        publicId: userPublicId,
+        name: userInfo.name,
+      };
 
-      if (previousEventData) {
-        const optimisticUser: EventRsvpUser = {
-          publicId: userInfo.userId,
-          name: userInfo.name,
-        };
+      const baseData: EventRsvpsData = previousEventData ?? {
+        totalCount: 0,
+        publicUsers: [],
+        privateCount: 0,
+        hasMore: false,
+        hasRsvped: false,
+      };
 
-        const alreadyInList = previousEventData.publicUsers.some(
-          (u) => u.publicId === userInfo.userId,
-        );
+      const alreadyInList = baseData.publicUsers.some((u) => u.publicId === userPublicId);
+      const nextData: EventRsvpsData = {
+        ...baseData,
+        totalCount: baseData.totalCount + 1,
+        hasRsvped: true,
+        publicUsers: alreadyInList
+          ? baseData.publicUsers
+          : [optimisticUser, ...baseData.publicUsers],
+        privateCount: userInfo.isPublic ? baseData.privateCount : baseData.privateCount + 1,
+      };
 
-        if (!alreadyInList) {
-          queryClient.setQueryData<EventRsvpsData>(["event-rsvps", eventId], {
-            ...previousEventData,
-            totalCount: previousEventData.totalCount + 1,
-            publicUsers: [optimisticUser, ...previousEventData.publicUsers],
-          });
-        } else {
-          queryClient.setQueryData<EventRsvpsData>(["event-rsvps", eventId], {
-            ...previousEventData,
-            totalCount: previousEventData.totalCount + 1,
-          });
-        }
-      }
+      queryClient.setQueryData<EventRsvpsData>(authKey, nextData);
+      queryClient.setQueryData<EventRsvpsData>(anonKey, nextData);
 
-      return { previousEventData, previousUserData };
+      return { previousEventData };
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["event-rsvps", eventId] });
-      queryClient.invalidateQueries({ queryKey: ["user-rsvps", hasToken ? "auth" : "anon"] });
     },
     retry: shouldRetryMutation,
   });
@@ -172,13 +153,12 @@ export function useCreateRsvpMutation(eventId: string) {
 
 export function useDeleteRsvpMutation(eventId: string) {
   const queryClient = useQueryClient();
-  const hasToken = Boolean(readAccessToken());
 
   return useMutation<
     { success: boolean },
     ApiError,
     OptimisticUserInfo,
-    { previousEventData?: EventRsvpsData; previousUserData?: UserRsvpsData }
+    { previousEventData?: EventRsvpsData }
   >({
     mutationFn: async () => {
       if (!eventId) {
@@ -208,47 +188,50 @@ export function useDeleteRsvpMutation(eventId: string) {
 
       if (context?.previousEventData) {
         queryClient.setQueryData<EventRsvpsData>(
-          ["event-rsvps", eventId],
+          ["event-rsvps", eventId, "auth"],
           context.previousEventData,
         );
-      }
-      if (context?.previousUserData) {
-        queryClient.setQueryData<UserRsvpsData>(["user-rsvps", "auth"], context.previousUserData);
+        queryClient.setQueryData<EventRsvpsData>(
+          ["event-rsvps", eventId, "anon"],
+          context.previousEventData,
+        );
       }
     },
     onMutate: async (userInfo) => {
       await queryClient.cancelQueries({ queryKey: ["event-rsvps", eventId] });
-      await queryClient.cancelQueries({ queryKey: ["user-rsvps", "auth"] });
 
-      const previousEventData = queryClient.getQueryData<EventRsvpsData>(["event-rsvps", eventId]);
-      const previousUserData = queryClient.getQueryData<UserRsvpsData>(["user-rsvps", "auth"]);
-
-      if (previousUserData) {
-        queryClient.setQueryData<UserRsvpsData>(["user-rsvps", "auth"], {
-          eventIds: previousUserData.eventIds.filter((id) => id !== eventId),
-        });
-      }
+      const authKey = ["event-rsvps", eventId, "auth"] as const;
+      const anonKey = ["event-rsvps", eventId, "anon"] as const;
+      const previousEventData =
+        queryClient.getQueryData<EventRsvpsData>(authKey) ??
+        queryClient.getQueryData<EventRsvpsData>(anonKey);
 
       if (previousEventData) {
-        const filteredUsers = previousEventData.publicUsers.filter(
-          (u) => u.publicId !== userInfo.userId,
+        const userPublicId = compressUuid(userInfo.userId);
+        const filteredPublicUsers = previousEventData.publicUsers.filter(
+          (u) => u.publicId !== userPublicId,
         );
-
-        queryClient.setQueryData<EventRsvpsData>(["event-rsvps", eventId], {
+        const nextData: EventRsvpsData = {
           ...previousEventData,
           totalCount: Math.max(0, previousEventData.totalCount - 1),
-          publicUsers: filteredUsers,
-        });
+          hasRsvped: false,
+          publicUsers: filteredPublicUsers,
+          privateCount: userInfo.isPublic
+            ? previousEventData.privateCount
+            : Math.max(0, previousEventData.privateCount - 1),
+        };
+
+        queryClient.setQueryData<EventRsvpsData>(authKey, nextData);
+        queryClient.setQueryData<EventRsvpsData>(anonKey, nextData);
       }
 
-      return { previousEventData, previousUserData };
+      return { previousEventData };
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["event-rsvps", eventId] });
-      queryClient.invalidateQueries({ queryKey: ["user-rsvps", hasToken ? "auth" : "anon"] });
     },
     retry: shouldRetryMutation,
   });
 }
 
-export type { EventRsvpsData, EventRsvpUser, UserRsvpsData, OptimisticUserInfo };
+export type { EventRsvpsData, EventRsvpUser, OptimisticUserInfo };

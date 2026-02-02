@@ -19,7 +19,6 @@ export const API_ROUTES = {
     PASSKEYS: "/api/v1/me/passkeys",
     PASSKEY: (id: string) => `/api/v1/me/passkeys/${id}`,
     PREFERENCES: "/api/v1/me/preferences",
-    RSVPS: "/api/v1/me/rsvps",
   },
   NEWSLETTER: {
     SUBSCRIBE: "/api/v1/newsletter/subscribe",

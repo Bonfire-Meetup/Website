@@ -1,6 +1,7 @@
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
-import { requireAuth } from "@/lib/api/auth";
+import { getAuthUserId, requireAuth } from "@/lib/api/auth";
 import { getClientHashes, isRateLimited } from "@/lib/api/rate-limit";
 import { createRsvp, deleteRsvp, getEventRsvps } from "@/lib/data/rsvps";
 import { logError, logWarn } from "@/lib/utils/log";
@@ -9,18 +10,21 @@ import { runWithRequestContext } from "@/lib/utils/request-context";
 const RATE_LIMIT_STORE_KEY = "events.rsvps";
 const MAX_RSVP_ATTEMPTS = 5;
 
-export async function GET(_: Request, { params }: { params: Promise<{ eventId: string }> }) {
-  return runWithRequestContext(_, async () => {
+export async function GET(request: Request, { params }: { params: Promise<{ eventId: string }> }) {
+  return runWithRequestContext(request, async () => {
     const { eventId } = await params;
 
-    try {
-      const result = await getEventRsvps(eventId, 12);
+    let userId: string | null = null;
 
-      return NextResponse.json(result, {
-        headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=300" },
-      });
+    try {
+      const authResult = await getAuthUserId(request);
+      ({ userId } = authResult);
+
+      const result = await getEventRsvps(eventId, 12, userId);
+
+      return NextResponse.json(result);
     } catch (error) {
-      logError("events.rsvps.get_failed", error, { eventId });
+      logError("events.rsvps.get_failed", error, { eventId, userId });
 
       return NextResponse.json({ error: "Failed to load RSVPs" }, { status: 500 });
     }
@@ -56,6 +60,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ eve
       if (!result.success) {
         return NextResponse.json({ error: result.error ?? "Failed to RSVP" }, { status: 500 });
       }
+
+      const normalizedEventId = eventId.trim().toLowerCase();
+      revalidateTag(`event-rsvps-${normalizedEventId}`, { expire: 0 });
 
       return NextResponse.json({ success: true });
     } catch (error) {
@@ -94,6 +101,9 @@ export async function DELETE(
       if (!success) {
         return NextResponse.json({ error: "Failed to cancel RSVP" }, { status: 500 });
       }
+
+      const normalizedEventId = eventId.trim().toLowerCase();
+      revalidateTag(`event-rsvps-${normalizedEventId}`, { expire: 0 });
 
       return NextResponse.json({ success: true });
     } catch (error) {
