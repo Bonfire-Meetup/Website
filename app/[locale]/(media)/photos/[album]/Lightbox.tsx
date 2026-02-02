@@ -455,7 +455,7 @@ export function Lightbox({
 
         <div
           className="relative flex h-full w-full items-center justify-center px-0 pt-0 pb-0 sm:px-16 sm:pt-24 sm:pb-16"
-          style={{ touchAction: "pan-y" }}
+          style={{ touchAction: "pinch-zoom" }}
           onClick={(e) => {
             if (!isExiting && e.target === e.currentTarget) {
               onClose();
