@@ -120,7 +120,6 @@ i18n/                  # i18n configuration
 - Tailwind CSS 4 with custom theme
 - Dark mode: `.dark` class on `<html>`
 - Custom colors: Brand (fuchsia), Fire gradient, Location colors
-- Utility: `clsx` + `tailwind-merge` for conditional classes
 
 ### Path Aliases
 

@@ -26,8 +26,6 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
   styling: [
     { name: "Tailwind CSS", license: "MIT", url: "https://tailwindcss.com" },
     { name: "@tailwindcss/postcss", license: "MIT", url: "https://tailwindcss.com" },
-    { name: "tailwind-merge", license: "MIT", url: "https://github.com/dcastil/tailwind-merge" },
-    { name: "clsx", license: "MIT", url: "https://github.com/lukeed/clsx" },
   ],
   database: [
     { name: "Neon Postgres", license: "Apache-2.0", url: "https://neon.tech" },

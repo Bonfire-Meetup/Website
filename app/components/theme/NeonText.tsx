@@ -23,7 +23,7 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
       return;
     }
 
-    let timeout: NodeJS.Timeout;
+    let timeout: ReturnType<typeof setTimeout>;
     let isMounted = true;
 
     const triggerGlitch = () => {

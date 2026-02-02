@@ -5,6 +5,7 @@ import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 import { db, getDatabaseErrorDetails } from "@/lib/data/db";
 import { videoBoosts, videoLikes } from "@/lib/data/schema";
 import { logError, logWarn } from "@/lib/utils/log";
+import { isBuildPhase } from "@/lib/utils/runtime";
 import { withRetry } from "@/lib/utils/retry";
 
 type LikeCounts = Record<string, number>;
@@ -46,6 +47,15 @@ export async function fetchEngagementCounts(): Promise<EngagementCounts> {
   "use cache";
   cacheTag("engagement-counts");
   cacheLife({ revalidate: CACHE_LIFETIMES.ENGAGEMENT_COUNTS });
+
+  if (isBuildPhase()) {
+    if (lastEngagementCounts) {
+      return lastEngagementCounts;
+    }
+
+    lastEngagementCounts = { boosts: {}, likes: {} };
+    return lastEngagementCounts;
+  }
 
   const client = db({ required: false });
 
@@ -111,6 +121,18 @@ export async function fetchWindowedEngagementCounts(
   "use cache";
   cacheTag("engagement-counts", `engagement-counts-${days}d`);
   cacheLife({ revalidate: CACHE_LIFETIMES.ENGAGEMENT_COUNTS });
+
+  if (isBuildPhase()) {
+    const cached = lastWindowedCounts.get(days);
+    if (cached) {
+      return cached;
+    }
+
+    const empty = { boosts: {}, likes: {} };
+    const counts = { recent: empty, total: empty };
+    lastWindowedCounts.set(days, counts);
+    return counts;
+  }
 
   const client = db({ required: false });
 
