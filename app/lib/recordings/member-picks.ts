@@ -5,8 +5,8 @@ import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 import { db, getDatabaseErrorDetails } from "@/lib/data/db";
 import { videoBoosts } from "@/lib/data/schema";
 import { logError, logWarn } from "@/lib/utils/log";
-import { isBuildPhase } from "@/lib/utils/runtime";
 import { withRetry } from "@/lib/utils/retry";
+import { shouldDisableDbDuringBuild } from "@/lib/utils/runtime";
 
 import { type Recording, getAllRecordings } from "./recordings";
 
@@ -29,7 +29,7 @@ interface BoostFetchResult {
 let lastMemberPicks: MemberPickRecording[] | null = null;
 
 const fetchTopBoostedVideos = async (limit: number): Promise<BoostFetchResult> => {
-  if (isBuildPhase()) {
+  if (shouldDisableDbDuringBuild()) {
     return { rows: [], status: "unavailable" };
   }
 
@@ -152,7 +152,7 @@ const createMemberPicksBackfill = (
     .map((r) => ({ ...r, boostCount: 0 }));
 
 export async function getMemberPicksSafe(limit = 6): Promise<MemberPickRecording[]> {
-  if (isBuildPhase()) {
+  if (shouldDisableDbDuringBuild()) {
     const allRecordings = getAllRecordings();
     return createMemberPicksBackfill(allRecordings, limit);
   }

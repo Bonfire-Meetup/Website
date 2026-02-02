@@ -5,8 +5,8 @@ import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 import { db, getDatabaseErrorDetails } from "@/lib/data/db";
 import { videoBoosts, videoLikes } from "@/lib/data/schema";
 import { logError, logWarn } from "@/lib/utils/log";
-import { isBuildPhase } from "@/lib/utils/runtime";
 import { withRetry } from "@/lib/utils/retry";
+import { shouldDisableDbDuringBuild } from "@/lib/utils/runtime";
 
 type LikeCounts = Record<string, number>;
 type BoostCounts = Record<string, number>;
@@ -48,7 +48,7 @@ export async function fetchEngagementCounts(): Promise<EngagementCounts> {
   cacheTag("engagement-counts");
   cacheLife({ revalidate: CACHE_LIFETIMES.ENGAGEMENT_COUNTS });
 
-  if (isBuildPhase()) {
+  if (shouldDisableDbDuringBuild()) {
     if (lastEngagementCounts) {
       return lastEngagementCounts;
     }
@@ -122,7 +122,7 @@ export async function fetchWindowedEngagementCounts(
   cacheTag("engagement-counts", `engagement-counts-${days}d`);
   cacheLife({ revalidate: CACHE_LIFETIMES.ENGAGEMENT_COUNTS });
 
-  if (isBuildPhase()) {
+  if (shouldDisableDbDuringBuild()) {
     const cached = lastWindowedCounts.get(days);
     if (cached) {
       return cached;

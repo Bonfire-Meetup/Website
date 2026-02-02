@@ -2,6 +2,15 @@ import { z } from "zod";
 
 const serverSchema = z.object({
   BNF_DB_PROVIDER: z.enum(["neon"]).optional(),
+  BNF_DISABLE_DB_DURING_BUILD: z
+    .preprocess((value) => {
+      if (typeof value === "string") {
+        return value === "1" || value.toLowerCase() === "true";
+      }
+      return value;
+    }, z.boolean())
+    .optional()
+    .default(false),
   BNF_HEARTS_SALT: z.string().min(1),
   BNF_JWT_AUDIENCE: z.string().min(1),
   BNF_JWT_ISSUER: z.string().min(1),
@@ -31,6 +40,7 @@ const isServer = typeof window === "undefined";
 export const serverEnv = isServer
   ? serverSchema.parse({
       BNF_DB_PROVIDER: process.env.BNF_DB_PROVIDER,
+      BNF_DISABLE_DB_DURING_BUILD: process.env.BNF_DISABLE_DB_DURING_BUILD,
       BNF_HEARTS_SALT: process.env.BNF_HEARTS_SALT,
       BNF_JWT_AUDIENCE: process.env.BNF_JWT_AUDIENCE,
       BNF_JWT_ISSUER: process.env.BNF_JWT_ISSUER,
