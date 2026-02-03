@@ -69,130 +69,8 @@ const useMediaQuery = (query: string) => {
 const MINI_WIDTH = 320;
 const MINI_HEIGHT = (MINI_WIDTH * 9) / 16;
 
-interface GlobalPlayerUIProps {
-  cinemaMode: boolean;
-  dispatch: ReturnType<typeof useAppDispatch>;
-  iframeRef: React.RefObject<HTMLIFrameElement | null>;
-  isAnimating: boolean;
-  isInline: boolean;
-  isLoading: boolean;
-  origin: string;
-  playerRect: Rect;
-  video: VideoInfo;
-}
-
-function GlobalPlayerUI({
-  cinemaMode,
-  dispatch,
-  iframeRef,
-  isAnimating,
-  isInline,
-  isLoading,
-  origin,
-  playerRect,
-  video,
-}: GlobalPlayerUIProps) {
-  const t = useTranslations("recordings");
-  const showMiniControls = !cinemaMode && !isInline && Boolean(playerRect);
-
-  return (
-    <>
-      {cinemaMode && (
-        <>
-          <div
-            className="fixed inset-0 z-[70] bg-black/95"
-            onClick={() => dispatch(setCinemaModeAction(false))}
-          />
-          <button
-            type="button"
-            onClick={() => dispatch(setCinemaModeAction(false))}
-            className="fixed top-6 right-6 z-[90] inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white/80 backdrop-blur-sm transition hover:bg-white/20 hover:text-white"
-            aria-label={t("exitCinema")}
-          >
-            <CloseIcon className="h-5 w-5" />
-          </button>
-        </>
-      )}
-
-      {showMiniControls && (
-        <div
-          className="fixed right-6 z-[60] flex items-center gap-2"
-          style={{ bottom: `${24 + MINI_HEIGHT + 8}px` }}
-        >
-          <Link
-            href={video.watchUrl}
-            className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold tracking-[0.2em] text-neutral-700 uppercase shadow-lg ring-1 ring-black/5 transition dark:bg-neutral-950/90 dark:text-neutral-200 dark:ring-white/10"
-          >
-            {t("returnToPlayer")}
-          </Link>
-          <button
-            type="button"
-            onClick={() => dispatch(clearVideoAction())}
-            className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/70 text-white/80 shadow-lg transition hover:bg-black/90 hover:text-white"
-            aria-label={t("closePlayer")}
-          >
-            <CloseIcon className="h-4 w-4" />
-          </button>
-        </div>
-      )}
-
-      <div
-        className={`fixed overflow-hidden bg-black ${
-          cinemaMode
-            ? "z-[80] rounded-2xl"
-            : isInline
-              ? "z-40 rounded-xl"
-              : "z-50 rounded-2xl shadow-2xl ring-1 ring-black/20"
-        } ${isAnimating ? "transition-all duration-300" : ""}`}
-        style={{
-          height: playerRect.height,
-          left: playerRect.left,
-          top: playerRect.top,
-          width: playerRect.width,
-        }}
-      >
-        {isLoading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black">
-            <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-white" />
-          </div>
-        )}
-        <iframe
-          ref={iframeRef}
-          src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?rel=0&modestbranding=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
-          title={video.title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-          sandbox="allow-same-origin allow-scripts allow-presentation allow-popups allow-popups-to-escape-sandbox"
-          onLoad={() => {
-            dispatch(setIsLoading(false));
-            registerPlayerListener(iframeRef);
-          }}
-          className={`absolute inset-0 h-full w-full ${cinemaMode ? "rounded-2xl" : ""}`}
-        />
-      </div>
-    </>
-  );
-}
-
-function registerPlayerListener(iframeRef: React.RefObject<HTMLIFrameElement | null>) {
-  const target = iframeRef.current?.contentWindow;
-
-  if (!target) {
-    return;
-  }
-
-  target.postMessage(JSON.stringify({ event: "listening", id: "global-player" }), "*");
-  target.postMessage(
-    JSON.stringify({
-      args: ["onStateChange"],
-      event: "command",
-      func: "addEventListener",
-    }),
-    "*",
-  );
-}
-
 export function GlobalPlayerProvider({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("recordings");
   const dispatch = useAppDispatch();
   const player = useAppSelector((state) => state.player) as RootState["player"];
   const video = player.video as VideoInfo | null;
@@ -378,6 +256,24 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     return () => window.removeEventListener("message", handleMessage);
   }, [video, dispatch]);
 
+  const registerPlayerListener = () => {
+    const target = iframeRef.current?.contentWindow;
+
+    if (!target) {
+      return;
+    }
+
+    target.postMessage(JSON.stringify({ event: "listening", id: "global-player" }), "*");
+    target.postMessage(
+      JSON.stringify({
+        args: ["onStateChange"],
+        event: "command",
+        func: "addEventListener",
+      }),
+      "*",
+    );
+  };
+
   const value = useMemo(
     () => ({
       cinemaMode,
@@ -403,6 +299,10 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     [cinemaMode, dispatch, video],
   );
 
+  const isNotInline = !isInline;
+  const isNotCinemaMode = !cinemaMode;
+  const showMiniControls = isNotInline && isNotCinemaMode && canMiniPlayer && playerRect;
+
   const isMiniPlayerEnabled = ENABLE_GLOBAL_MINI_PLAYER;
   const hasVideo = Boolean(video);
   const hasPlayerRect = Boolean(playerRect);
@@ -413,17 +313,81 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     <GlobalPlayerContext.Provider value={value}>
       {children}
       {shouldShowPlayer && video && playerRect && (
-        <GlobalPlayerUI
-          cinemaMode={cinemaMode}
-          dispatch={dispatch}
-          iframeRef={iframeRef}
-          isAnimating={isAnimating}
-          isInline={isInline}
-          isLoading={isLoading}
-          origin={origin}
-          playerRect={playerRect}
-          video={video}
-        />
+        <>
+          {cinemaMode && (
+            <>
+              <div
+                className="fixed inset-0 z-[70] bg-black/95"
+                onClick={() => dispatch(setCinemaModeAction(false))}
+              />
+              <button
+                type="button"
+                onClick={() => dispatch(setCinemaModeAction(false))}
+                className="fixed top-6 right-6 z-[90] inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white/80 backdrop-blur-sm transition hover:bg-white/20 hover:text-white"
+                aria-label={t("exitCinema")}
+              >
+                <CloseIcon className="h-5 w-5" />
+              </button>
+            </>
+          )}
+
+          {showMiniControls && (
+            <div
+              className="fixed right-6 z-[60] flex items-center gap-2"
+              style={{ bottom: `${24 + MINI_HEIGHT + 8}px` }}
+            >
+              <Link
+                href={video.watchUrl}
+                className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold tracking-[0.2em] text-neutral-700 uppercase shadow-lg ring-1 ring-black/5 transition dark:bg-neutral-950/90 dark:text-neutral-200 dark:ring-white/10"
+              >
+                {t("returnToPlayer")}
+              </Link>
+              <button
+                type="button"
+                onClick={() => dispatch(clearVideoAction())}
+                className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/70 text-white/80 shadow-lg transition hover:bg-black/90 hover:text-white"
+                aria-label={t("closePlayer")}
+              >
+                <CloseIcon className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
+          <div
+            className={`fixed overflow-hidden bg-black ${
+              cinemaMode
+                ? "z-[80] rounded-2xl"
+                : isInline
+                  ? "z-40 rounded-xl"
+                  : "z-50 rounded-2xl shadow-2xl ring-1 ring-black/20"
+            } ${isAnimating ? "transition-all duration-300" : ""}`}
+            style={{
+              height: playerRect.height,
+              left: playerRect.left,
+              top: playerRect.top,
+              width: playerRect.width,
+            }}
+          >
+            {isLoading && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-black">
+                <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+              </div>
+            )}
+            <iframe
+              ref={iframeRef}
+              src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?rel=0&modestbranding=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
+              title={video.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              sandbox="allow-same-origin allow-scripts allow-presentation allow-popups allow-popups-to-escape-sandbox"
+              onLoad={() => {
+                dispatch(setIsLoading(false));
+                registerPlayerListener();
+              }}
+              className={`absolute inset-0 h-full w-full ${cinemaMode ? "rounded-2xl" : ""}`}
+            />
+          </div>
+        </>
       )}
     </GlobalPlayerContext.Provider>
   );
