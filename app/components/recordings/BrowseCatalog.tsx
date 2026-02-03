@@ -45,8 +45,9 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
   const deferredSearchQuery = useDeferredValue(payload.searchQuery);
   const [isFiltering, setIsFiltering] = useState(false);
   const [rateLimitError, setRateLimitError] = useState(false);
-  const isFirstFilter = useRef(true);
   const searchDebounceRef = useRef<number | null>(null);
+  const requestIdRef = useRef(0);
+  const activeRequestRef = useRef<AbortController | null>(null);
   const lastCommittedSearchRef = useRef(initialPayload.searchQuery);
   const { activeLocation } = payload;
   const { activeTag } = payload;
@@ -90,18 +91,33 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
   );
 
   const fetchPayload = useCallback(async (params: URLSearchParams) => {
+    requestIdRef.current += 1;
+    const requestId = requestIdRef.current;
+    if (activeRequestRef.current) {
+      activeRequestRef.current.abort();
+    }
+    const controller = new AbortController();
+    activeRequestRef.current = controller;
+
     setIsFiltering(true);
     setRateLimitError(false);
     try {
-      const response = await fetch(`/api/v1/library?${params.toString()}`);
+      const response = await fetch(`/api/v1/library?${params.toString()}`, {
+        signal: controller.signal,
+      });
       if (response.status === 429) {
-        setRateLimitError(true);
+        if (requestId === requestIdRef.current && !controller.signal.aborted) {
+          setRateLimitError(true);
+        }
         return;
       }
       if (!response.ok) {
         return;
       }
       const data = (await response.json()) as LibraryApiPayload;
+      if (requestId !== requestIdRef.current || controller.signal.aborted) {
+        return;
+      }
       setPayload((prev) => ({
         ...prev,
         recordings: data.recordings,
@@ -114,8 +130,15 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
         episodeDropdownGroups: data.filter.episodeDropdownGroups,
         locationAvailability: data.filter.locationAvailability,
       }));
+    } catch (error) {
+      if (controller.signal.aborted) {
+        return;
+      }
+      return;
     } finally {
-      setIsFiltering(false);
+      if (requestId === requestIdRef.current && !controller.signal.aborted) {
+        setIsFiltering(false);
+      }
     }
   }, []);
 
@@ -126,12 +149,12 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
 
       const params = buildParams(location, tag, episode, trimmedSearch);
 
-      if (typeof window !== "undefined") {
-        const nextUrl = params.toString()
-          ? `${PAGE_ROUTES.LIBRARY_BROWSE}?${params.toString()}`
-          : PAGE_ROUTES.LIBRARY_BROWSE;
-        window.history.replaceState(null, "", nextUrl);
-      }
+      const nextUrl = params.toString()
+        ? `${PAGE_ROUTES.LIBRARY_BROWSE}?${params.toString()}`
+        : PAGE_ROUTES.LIBRARY_BROWSE;
+      startTransition(() => {
+        router.replace(nextUrl, { scroll: false });
+      });
 
       fetchPayload(params);
     },
@@ -140,17 +163,6 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
 
-  useEffect(() => {
-    if (isFirstFilter.current) {
-      isFirstFilter.current = false;
-      return;
-    }
-
-    const timer = setTimeout(() => setIsFiltering(false), 200);
-    setIsFiltering(true);
-
-    return () => clearTimeout(timer);
-  }, [filterKey]);
 
   useEffect(() => {
     const trimmed = localSearchQuery.trim();

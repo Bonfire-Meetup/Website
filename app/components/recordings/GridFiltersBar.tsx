@@ -70,7 +70,7 @@ export const GridFiltersBar = memo(function GridFiltersBar({
         inputRef.current.setSelectionRange(selectionStart, selectionEnd);
       }
     }
-  });
+  }, [localValue]);
 
   return (
     <div className="glass relative z-10 mb-8 rounded-2xl px-4 py-3">

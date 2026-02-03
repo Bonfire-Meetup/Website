@@ -110,8 +110,9 @@ export function RecordingsCatalog({
   const [localSearchQuery, setLocalSearchQuery] = useState(initialPayload.searchQuery);
   const deferredSearchQuery = useDeferredValue(payload.searchQuery);
   const [isFiltering, setIsFiltering] = useState(false);
-  const isFirstFilter = useRef(true);
   const searchDebounceRef = useRef<number | null>(null);
+  const requestIdRef = useRef(0);
+  const activeRequestRef = useRef<AbortController | null>(null);
   const lastCommittedSearchRef = useRef(initialPayload.searchQuery);
   const [canHover, setCanHover] = useState(false);
   const [localViewMode, setLocalViewMode] = useState<"rows" | "grid">("rows");
@@ -166,13 +167,26 @@ export function RecordingsCatalog({
   );
 
   const fetchPayload = useCallback(async (params: URLSearchParams) => {
+    requestIdRef.current += 1;
+    const requestId = requestIdRef.current;
+    if (activeRequestRef.current) {
+      activeRequestRef.current.abort();
+    }
+    const controller = new AbortController();
+    activeRequestRef.current = controller;
+
     setIsFiltering(true);
     try {
-      const response = await fetch(`/api/v1/library?${params.toString()}`);
+      const response = await fetch(`/api/v1/library?${params.toString()}`, {
+        signal: controller.signal,
+      });
       if (!response.ok) {
         return;
       }
       const data = (await response.json()) as LibraryApiPayload;
+      if (requestId !== requestIdRef.current || controller.signal.aborted) {
+        return;
+      }
       setPayload((prev) => ({
         ...prev,
         recordings: data.recordings,
@@ -185,8 +199,15 @@ export function RecordingsCatalog({
         episodeDropdownGroups: data.filter.episodeDropdownGroups,
         locationAvailability: data.filter.locationAvailability,
       }));
+    } catch (error) {
+      if (controller.signal.aborted) {
+        return;
+      }
+      return;
     } finally {
-      setIsFiltering(false);
+      if (requestId === requestIdRef.current && !controller.signal.aborted) {
+        setIsFiltering(false);
+      }
     }
   }, []);
 
@@ -219,12 +240,12 @@ export function RecordingsCatalog({
       setLocalViewMode("rows");
       const apiParams = buildParams(location, tag, episode, trimmedSearch);
 
-      if (typeof window !== "undefined") {
-        const nextUrl = params.toString()
-          ? `${PAGE_ROUTES.LIBRARY}?${params.toString()}`
-          : PAGE_ROUTES.LIBRARY;
-        window.history.replaceState(null, "", nextUrl);
-      }
+      const nextUrl = params.toString()
+        ? `${PAGE_ROUTES.LIBRARY}?${params.toString()}`
+        : PAGE_ROUTES.LIBRARY;
+      startTransition(() => {
+        router.replace(nextUrl, { scroll: false });
+      });
 
       fetchPayload(apiParams);
     },
@@ -233,17 +254,6 @@ export function RecordingsCatalog({
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
 
-  useEffect(() => {
-    if (isFirstFilter.current) {
-      isFirstFilter.current = false;
-      return;
-    }
-
-    const timer = setTimeout(() => setIsFiltering(false), 200);
-    setIsFiltering(true);
-
-    return () => clearTimeout(timer);
-  }, [filterKey]);
 
   useEffect(() => {
     const trimmed = localSearchQuery.trim();
@@ -268,7 +278,7 @@ export function RecordingsCatalog({
 
   const handleBrowseAll = () => {
     updateFilters("all", "all", "all", "", "grid");
-    window.scrollTo({ behavior: "instant" as ScrollBehavior, left: 0, top: 0 });
+    window.scrollTo({ behavior: "auto", left: 0, top: 0 });
   };
 
   const featuredCandidates = recordings?.slice(0, 5) ?? [];
@@ -299,7 +309,6 @@ export function RecordingsCatalog({
   const handleViewRows = useCallback(() => {
     startTransition(() => {
       router.push(PAGE_ROUTES.LIBRARY);
-      router.refresh();
     });
   }, [router]);
 
