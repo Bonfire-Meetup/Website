@@ -8,6 +8,7 @@ import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useS
 import { InfoIcon } from "@/components/shared/Icons";
 import { Skeleton } from "@/components/shared/Skeletons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { logError } from "@/lib/utils/log-client";
 
 import { EmptyState } from "../ui/EmptyState";
 
@@ -131,10 +132,9 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
         locationAvailability: data.filter.locationAvailability,
       }));
     } catch (error) {
-      if (controller.signal.aborted) {
-        return;
+      if (!controller.signal.aborted) {
+        logError("library.fetch_failed", error);
       }
-      return;
     } finally {
       if (requestId === requestIdRef.current && !controller.signal.aborted) {
         setIsFiltering(false);
@@ -158,11 +158,10 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
 
       fetchPayload(params);
     },
-    [buildParams, fetchPayload],
+    [buildParams, fetchPayload, router],
   );
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
-
 
   useEffect(() => {
     const trimmed = localSearchQuery.trim();

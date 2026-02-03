@@ -2,16 +2,16 @@
 
 import { useEffect } from "react";
 
-type LockOptions = {
+interface LockOptions {
   preserveScroll?: boolean;
-};
+}
 
-type BodyStyleSnapshot = {
+interface BodyStyleSnapshot {
   overflow: string;
   position: string;
   top: string;
   width: string;
-};
+}
 
 let lockCount = 0;
 let fixedCount = 0;
@@ -102,13 +102,15 @@ const unlockBody = (options: LockOptions) => {
 };
 
 export function useBodyScrollLock(locked: boolean, options: LockOptions = {}) {
+  const { preserveScroll = false } = options;
+
   useEffect(() => {
     if (!locked) {
       return;
     }
 
-    lockBody(options);
+    lockBody({ preserveScroll });
 
-    return () => unlockBody(options);
-  }, [locked, options.preserveScroll]);
+    return () => unlockBody({ preserveScroll });
+  }, [locked, preserveScroll]);
 }

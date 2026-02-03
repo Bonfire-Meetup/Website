@@ -9,6 +9,7 @@ import { InfoIcon } from "@/components/shared/Icons";
 import { Skeleton } from "@/components/shared/Skeletons";
 import { Button } from "@/components/ui/Button";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { logError } from "@/lib/utils/log-client";
 
 import { EmptyStateMessage } from "./EmptyStateMessage";
 import { FeaturedRecording } from "./FeaturedRecording";
@@ -210,10 +211,9 @@ export function RecordingsCatalog({
         locationAvailability: data.filter.locationAvailability,
       }));
     } catch (error) {
-      if (controller.signal.aborted) {
-        return;
+      if (!controller.signal.aborted) {
+        logError("library.fetch_failed", error);
       }
-      return;
     } finally {
       if (requestId === requestIdRef.current && !controller.signal.aborted) {
         setIsFiltering(false);
@@ -263,7 +263,6 @@ export function RecordingsCatalog({
   );
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
-
 
   useEffect(() => {
     const trimmed = localSearchQuery.trim();

@@ -50,7 +50,12 @@ const verifyToken = (token: string): { valid: boolean; userId?: string; error?: 
       .update(encodedPayload)
       .digest("hex");
 
-    if (signature !== expectedSignature) {
+    const signatureBuffer = Buffer.from(signature, "hex");
+    const expectedBuffer = Buffer.from(expectedSignature, "hex");
+    if (
+      signatureBuffer.length !== expectedBuffer.length ||
+      !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
+    ) {
       return { valid: false, error: "Invalid signature" };
     }
 
@@ -90,7 +95,7 @@ export async function POST(request: NextRequest) {
       const result = verifyToken(token);
 
       if (!result.valid || !result.userId) {
-        return NextResponse.json(result);
+        return NextResponse.json(result, { status: 401 });
       }
 
       const user = await getAuthUserById(result.userId);

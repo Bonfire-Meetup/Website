@@ -2,7 +2,7 @@ import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { getAuthUserId } from "@/lib/api/auth";
-import { checkRateLimit, validateVideoApiRequest } from "@/lib/api/rate-limit";
+import { checkRateLimit, getClientHashes, validateVideoApiRequest } from "@/lib/api/rate-limit";
 import { videoBoostMutationSchema, videoBoostStatsSchema } from "@/lib/api/schemas";
 import {
   addVideoBoost,
@@ -37,7 +37,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
 
-      const rateLimit = await checkRateLimit(videoId, "read", userId ?? "anonymous", 60);
+      const { ipHash } = await getClientHashes();
+      const identifier = userId ?? ipHash;
+      const rateLimit = await checkRateLimit(videoId, "read", identifier, 60);
 
       if (rateLimit.rateLimited) {
         logWarn("video.boosts.rate_limited", { operation: "get", userId, videoId });

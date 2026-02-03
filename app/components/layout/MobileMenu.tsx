@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { useBodyScrollLock } from "../shared/useBodyScrollLock";
 import { LanguageToggle } from "../theme/LanguageToggle";
 import { ThemeToggle } from "../theme/ThemeToggle";
-import { useBodyScrollLock } from "../shared/useBodyScrollLock";
 
 interface NavLink {
   href: string;

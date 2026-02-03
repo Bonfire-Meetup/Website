@@ -1,12 +1,12 @@
-import { neon } from "@neondatabase/serverless";
+import { and, eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 
 import { getAuthUserId, resolveUserId } from "@/lib/api/auth";
+import { db } from "@/lib/data/db";
+import { userWatchlist } from "@/lib/data/schema";
 import { logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
-
-const sql = neon(process.env.BNF_NEON_DATABASE_URL ?? "");
 
 const videoIdSchema = z.string().min(1).max(100);
 
@@ -36,11 +36,11 @@ export async function GET(
 
       const { userId } = userIdResult;
 
-      const rows = await sql`
-        select id from user_watchlist
-        where user_id = ${userId} and video_id = ${videoId}
-        limit 1
-      `;
+      const rows = await db()
+        .select({ id: userWatchlist.id })
+        .from(userWatchlist)
+        .where(and(eq(userWatchlist.userId, userId), eq(userWatchlist.videoId, videoId)))
+        .limit(1);
 
       return NextResponse.json({ inWatchlist: rows.length > 0 });
     } catch (err) {
@@ -70,11 +70,7 @@ export async function PUT(
 
       const { userId } = userIdResult;
 
-      await sql`
-        insert into user_watchlist (user_id, video_id)
-        values (${userId}, ${videoId})
-        on conflict (user_id, video_id) do nothing
-      `;
+      await db().insert(userWatchlist).values({ userId, videoId }).onConflictDoNothing();
 
       return NextResponse.json({ added: true, inWatchlist: true });
     } catch (err) {
@@ -104,10 +100,9 @@ export async function DELETE(
 
       const { userId } = userIdResult;
 
-      await sql`
-        delete from user_watchlist
-        where user_id = ${userId} and video_id = ${videoId}
-      `;
+      await db()
+        .delete(userWatchlist)
+        .where(and(eq(userWatchlist.userId, userId), eq(userWatchlist.videoId, videoId)));
 
       return NextResponse.json({ removed: true, inWatchlist: false });
     } catch (err) {

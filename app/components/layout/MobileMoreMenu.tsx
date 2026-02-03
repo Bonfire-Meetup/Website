@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { useBodyScrollLock } from "@/components/shared/useBodyScrollLock";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { COOKIE_KEYS, getCookie, setCookie } from "@/lib/storage/keys";
-import { useBodyScrollLock } from "@/components/shared/useBodyScrollLock";
 
 import { useI18n } from "../providers/I18nClientSync";
 import { CameraIcon, CloseIcon, MoonIcon, ShieldIcon, SunIcon, SystemIcon } from "../shared/Icons";
