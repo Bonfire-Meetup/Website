@@ -15,6 +15,7 @@ import {
   SparklesIcon,
   ExternalLinkIcon,
 } from "@/components/shared/Icons";
+import { Button } from "@/components/ui/Button";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
@@ -42,9 +43,90 @@ interface EventDetailContentProps {
   links?: EventLinks;
 }
 
+const CALENDAR_TIMEZONE = "Europe/Prague";
+const DEFAULT_EVENT_DURATION_MINUTES = 120;
+
 function getMapUrl(address: string) {
   const encodedAddress = encodeURIComponent(address);
   return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+}
+
+function parseEventDateTime(date: string, time: string) {
+  const [year, month, day] = date.split("-").map((part) => Number(part));
+  if (!year || !month || !day) {
+    return null;
+  }
+  const [hour, minute] = time.split(":").map((part) => Number(part));
+  if (Number.isNaN(hour) || Number.isNaN(minute)) {
+    return null;
+  }
+
+  return { year, month, day, hour, minute };
+}
+
+function formatCalendarDate({
+  year,
+  month,
+  day,
+  hour,
+  minute,
+}: {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+}) {
+  const pad = (value: number, length = 2) => value.toString().padStart(length, "0");
+  return `${pad(year, 4)}${pad(month)}${pad(day)}T${pad(hour)}${pad(minute)}00`;
+}
+
+function addMinutes(
+  value: { year: number; month: number; day: number; hour: number; minute: number },
+  minutes: number,
+) {
+  const date = new Date(Date.UTC(value.year, value.month - 1, value.day, value.hour, value.minute));
+  date.setUTCMinutes(date.getUTCMinutes() + minutes);
+  return {
+    year: date.getUTCFullYear(),
+    month: date.getUTCMonth() + 1,
+    day: date.getUTCDate(),
+    hour: date.getUTCHours(),
+    minute: date.getUTCMinutes(),
+  };
+}
+
+function escapeIcsValue(value: string) {
+  return value
+    .replaceAll("\\", "\\\\")
+    .replaceAll(",", "\\,")
+    .replaceAll(";", "\\;")
+    .replaceAll("\n", "\\n");
+}
+
+function buildGoogleCalendarUrl({
+  title,
+  description,
+  venue,
+  start,
+  end,
+}: {
+  title: string;
+  description: string;
+  venue: string;
+  start: string;
+  end: string;
+}) {
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${start}/${end}`,
+    details: description,
+    location: venue,
+    ctz: CALENDAR_TIMEZONE,
+  });
+
+  return `https://www.google.com/calendar/render?${params.toString()}`;
 }
 
 export function EventDetailContent({
@@ -63,6 +145,22 @@ export function EventDetailContent({
   const locale = useLocale();
   const isTba = date.trim().toUpperCase() === "TBA";
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
+
+  const calendarDateTime = !isTba ? parseEventDateTime(date, time) : null;
+  const calendarStart = calendarDateTime ? formatCalendarDate(calendarDateTime) : null;
+  const calendarEnd = calendarDateTime
+    ? formatCalendarDate(addMinutes(calendarDateTime, DEFAULT_EVENT_DURATION_MINUTES))
+    : null;
+  const googleCalendarUrl =
+    calendarStart && calendarEnd
+      ? buildGoogleCalendarUrl({
+          title,
+          description,
+          venue,
+          start: calendarStart,
+          end: calendarEnd,
+        })
+      : null;
 
   const isPrague = location === LOCATIONS.PRAGUE;
   const locationColor = isPrague ? "#dc2626" : "#2563eb";
@@ -101,6 +199,48 @@ export function EventDetailContent({
   const confirmedSpeakers = speakers.filter(
     (speaker) => speaker.name.trim().length > 0 && speaker.name !== "TBA",
   );
+
+  const handleDownloadCalendar = () => {
+    if (!calendarDateTime || !calendarStart || !calendarEnd) {
+      return;
+    }
+
+    const dtStamp = new Date()
+      .toISOString()
+      .replace(/\.\d{3}Z$/, "Z")
+      .replace(/[-:]/g, "");
+    const uid = `${id}@bonfire.events`;
+    const icsContent = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Bonfire//Events//EN",
+      "CALSCALE:GREGORIAN",
+      "BEGIN:VEVENT",
+      `UID:${uid}`,
+      `DTSTAMP:${dtStamp}`,
+      `DTSTART;TZID=${CALENDAR_TIMEZONE}:${calendarStart}`,
+      `DTEND;TZID=${CALENDAR_TIMEZONE}:${calendarEnd}`,
+      `SUMMARY:${escapeIcsValue(title)}`,
+      `DESCRIPTION:${escapeIcsValue(description)}`,
+      `LOCATION:${escapeIcsValue(venue)}`,
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+
+    const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    const fileSafeTitle = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+    anchor.href = url;
+    anchor.download = `${fileSafeTitle || "bonfire-event"}.ics`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="relative flex-1">
@@ -247,6 +387,35 @@ export function EventDetailContent({
                 </p>
 
                 <RsvpSection eventId={id} />
+
+                {googleCalendarUrl && calendarStart && calendarEnd && (
+                  <div className="mt-6 space-y-2 border-t border-neutral-200/50 pt-6 dark:border-neutral-700/50">
+                    <p className="text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400">
+                      {t("addToCalendar")}
+                    </p>
+                    <div className="grid grid-cols-1 gap-2">
+                      <Button
+                        href={googleCalendarUrl}
+                        external
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="secondary"
+                        size="sm"
+                        className="w-full justify-center"
+                      >
+                        {t("googleCalendar")}
+                      </Button>
+                      <Button
+                        onClick={handleDownloadCalendar}
+                        variant="secondary"
+                        size="sm"
+                        className="w-full justify-center"
+                      >
+                        {t("downloadIcs")}
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
                 {platformLinks.length > 0 && (
                   <div className="mt-6 space-y-2 border-t border-neutral-200/50 pt-6 dark:border-neutral-700/50">

@@ -181,6 +181,11 @@ export function MobileMoreMenu() {
     { href: PAGE_ROUTES.PHOTOS, label: t("photos"), icon: CameraIcon },
     { href: PAGE_ROUTES.CREW, label: t("crew"), icon: UserGroupIcon },
     { href: PAGE_ROUTES.TIMELINE, label: tFooter("timelineLabel"), icon: ClockIcon },
+    {
+      href: PAGE_ROUTES.NEWSLETTER_ARCHIVE,
+      label: tFooter("newsletterArchiveLabel"),
+      icon: DocumentTextIcon,
+    },
     { href: PAGE_ROUTES.FAQ, label: t("faq"), icon: QuestionMarkCircleIcon },
     { href: PAGE_ROUTES.CONTACT_WITH_TYPE("general"), label: t("contact"), icon: EnvelopeIcon },
     { href: PAGE_ROUTES.PRESS, label: t("press"), icon: NewspaperIcon },

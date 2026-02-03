@@ -148,6 +148,17 @@
       "testBannerMessage": "This newsletter was sent as a test",
       "updateLabel": "Update {number}",
       "sentOn": "Sent {sentDate}"
+    },
+    "newsletterArchiveIndex": {
+      "eyebrow": "Newsletter",
+      "title": "Newsletter archive",
+      "subtitle": "Past Bonfire updates, all in one place.",
+      "empty": "No newsletters yet",
+      "emptyHint": "Check back soon for the first issue.",
+      "updateLabel": "Update {number}",
+      "sentLabel": "Sent {date}",
+      "testBadge": "Test",
+      "read": "Read"
     }
   },
   "events": {
@@ -172,6 +183,9 @@
     "shareEvent": "Share this event",
     "copyLink": "Copy link",
     "copied": "Copied!",
+    "addToCalendar": "Add to calendar",
+    "googleCalendar": "Google Calendar",
+    "downloadIcs": "Download .ics",
     "viewDetails": "View Details",
     "platforms": {
       "luma": "Lu.ma",
@@ -484,6 +498,7 @@
     "copyright": "© {year} {brandName}. Made with love for the gamedev community.",
     "crewLabel": "Crew",
     "timelineLabel": "Timeline",
+    "newsletterArchiveLabel": "Newsletters",
     "faqLabel": "FAQ",
     "pressLabel": "Press",
     "legalLabel": "CoC & Legal",

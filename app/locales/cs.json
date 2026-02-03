@@ -148,6 +148,17 @@
       "testBannerMessage": "Tento newsletter byl odeslán jako test",
       "updateLabel": "Update {number}",
       "sentOn": "Odesláno {sentDate}"
+    },
+    "newsletterArchiveIndex": {
+      "eyebrow": "Newsletter",
+      "title": "Archiv newsletteru",
+      "subtitle": "Všechny předchozí Bonfire novinky na jednom místě.",
+      "empty": "Zatím žádné newslettery",
+      "emptyHint": "Mrkněte později na první vydání.",
+      "updateLabel": "Update {number}",
+      "sentLabel": "Odesláno {date}",
+      "testBadge": "Test",
+      "read": "Číst"
     }
   },
   "events": {
@@ -172,6 +183,9 @@
     "shareEvent": "Sdílet tuto akci",
     "copyLink": "Kopírovat odkaz",
     "copied": "Zkopírováno!",
+    "addToCalendar": "Přidat do kalendáře",
+    "googleCalendar": "Google Calendar",
+    "downloadIcs": "Stáhnout .ics",
     "viewDetails": "Zobrazit detail",
     "platforms": {
       "luma": "Lu.ma",
@@ -484,6 +498,7 @@
     "copyright": "© {year} {brandName}. Ukuchtěno s láskou pro gamedev komunitu.",
     "crewLabel": "Crew",
     "timelineLabel": "Timeline",
+    "newsletterArchiveLabel": "Newslettery",
     "faqLabel": "FAQ",
     "pressLabel": "Press",
     "legalLabel": "Kodex & právo",

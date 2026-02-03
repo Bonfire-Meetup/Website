@@ -102,6 +102,14 @@ export function Footer() {
             </Link>
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <Link
+              href={PAGE_ROUTES.NEWSLETTER_ARCHIVE}
+              prefetch={false}
+              className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
+            >
+              {t("newsletterArchiveLabel")}
+            </Link>
+            <span className="text-neutral-300 dark:text-neutral-700">·</span>
+            <Link
               href={PAGE_ROUTES.PRESS}
               prefetch={false}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
