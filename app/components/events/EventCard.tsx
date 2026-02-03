@@ -1,6 +1,3 @@
-"use client";
-
-import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
@@ -29,6 +26,8 @@ interface EventLinks {
   eventbrite?: string;
 }
 
+type TranslationFn = (key: string, values?: Record<string, string>) => string;
+
 interface EventCardProps {
   id: string;
   title: string;
@@ -41,6 +40,8 @@ interface EventCardProps {
   registrationUrl: string;
   speakers: { name: string; topic: string }[];
   links?: EventLinks;
+  locale: string;
+  t: TranslationFn;
 }
 
 export function EventCard({
@@ -55,9 +56,9 @@ export function EventCard({
   links,
   registrationUrl,
   speakers,
+  locale,
+  t,
 }: EventCardProps) {
-  const t = useTranslations("events");
-  const locale = useLocale();
   const isTba = date.trim().toUpperCase() === "TBA";
   const hasSpeakers = speakers.some((speaker) => speaker.name.trim().length > 0);
 

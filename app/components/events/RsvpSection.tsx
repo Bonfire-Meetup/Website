@@ -1,10 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 
 import { RsvpAvatarList } from "@/components/events/RsvpAvatarList";
-import { useRouter } from "@/i18n/navigation";
 import { useCreateRsvpMutation, useDeleteRsvpMutation, useEventRsvps } from "@/lib/api/events";
 import { useUserProfile } from "@/lib/api/user-profile";
 import { useAppSelector } from "@/lib/redux/hooks";

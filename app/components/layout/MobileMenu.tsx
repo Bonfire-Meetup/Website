@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 
 import { LanguageToggle } from "../theme/LanguageToggle";
 import { ThemeToggle } from "../theme/ThemeToggle";
+import { useBodyScrollLock } from "../shared/useBodyScrollLock";
 
 interface NavLink {
   href: string;
@@ -73,17 +74,7 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
     };
   }, [isOpen, isRendered, animationMs]);
 
-  useEffect(() => {
-    if (isRendered) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isRendered]);
+  useBodyScrollLock(isRendered);
 
   const closeMenu = () => setIsOpen(false);
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   useActionState,
   useCallback,
@@ -46,6 +46,7 @@ function getStoredDraft(): {
 
 export function ContactForm() {
   const t = useTranslations("contactPage.form");
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
   const [isTransitionPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
@@ -258,7 +259,13 @@ export function ContactForm() {
         </h2>
         <p className="text-neutral-600 dark:text-neutral-400">{t("successMessage")}</p>
         <div className="mt-6 flex justify-center">
-          <Button type="button" variant="plain" onClick={() => window.location.reload()}>
+          <Button
+            type="button"
+            variant="plain"
+            onClick={() => {
+              router.refresh();
+            }}
+          >
             {t("sendAnother")}
           </Button>
         </div>

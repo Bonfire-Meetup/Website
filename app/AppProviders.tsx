@@ -1,5 +1,3 @@
-import { NextIntlClientProvider } from "next-intl";
-
 import { AuthInitializer } from "./components/providers/AuthInitializer";
 import { I18nClientSync } from "./components/providers/I18nClientSync";
 import { ReduxProvider } from "./components/providers/ReduxProvider";
@@ -20,26 +18,24 @@ interface AppProvidersProps {
 
 export function AppProviders({ children, initialLocale, initialMessages }: AppProvidersProps) {
   return (
-    <NextIntlClientProvider locale={initialLocale} messages={initialMessages}>
-      <I18nClientSync initialLocale={initialLocale} initialMessages={initialMessages}>
-        <LocaleSync />
-        <ReduxProvider>
-          <AuthInitializer />
-          <QueryProvider>
-            <MotionManager />
-            <div className="relative flex min-h-screen flex-col">
-              <ThemeProvider>
-                <GlobalPlayerProvider>
-                  {children}
-                  <div className="hidden md:block">
-                    <CookieBanner />
-                  </div>
-                </GlobalPlayerProvider>
-              </ThemeProvider>
-            </div>
-          </QueryProvider>
-        </ReduxProvider>
-      </I18nClientSync>
-    </NextIntlClientProvider>
+    <I18nClientSync initialLocale={initialLocale} initialMessages={initialMessages}>
+      <LocaleSync />
+      <ReduxProvider>
+        <AuthInitializer />
+        <QueryProvider>
+          <MotionManager />
+          <div className="relative flex min-h-screen flex-col">
+            <ThemeProvider>
+              <GlobalPlayerProvider>
+                {children}
+                <div className="hidden md:block">
+                  <CookieBanner />
+                </div>
+              </GlobalPlayerProvider>
+            </ThemeProvider>
+          </div>
+        </QueryProvider>
+      </ReduxProvider>
+    </I18nClientSync>
   );
 }

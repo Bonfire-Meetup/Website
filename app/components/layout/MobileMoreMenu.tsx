@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { COOKIE_KEYS, getCookie, setCookie } from "@/lib/storage/keys";
+import { useBodyScrollLock } from "@/components/shared/useBodyScrollLock";
 
 import { useI18n } from "../providers/I18nClientSync";
 import { CameraIcon, CloseIcon, MoonIcon, ShieldIcon, SunIcon, SystemIcon } from "../shared/Icons";
@@ -200,24 +201,21 @@ export function MobileMoreMenu() {
         closeTimer.current = null;
       }
       setIsRendered(true);
-      document.body.style.overflow = "hidden";
-    } else {
-      if (isRendered) {
-        closeTimer.current = setTimeout(() => {
-          setIsRendered(false);
-          closeTimer.current = null;
-        }, animationMs);
-      }
-      document.body.style.overflow = "";
+    } else if (isRendered) {
+      closeTimer.current = setTimeout(() => {
+        setIsRendered(false);
+        closeTimer.current = null;
+      }, animationMs);
     }
 
     return () => {
       if (closeTimer.current) {
         clearTimeout(closeTimer.current);
       }
-      document.body.style.overflow = "";
     };
   }, [isOpen, isRendered, animationMs]);
+
+  useBodyScrollLock(isRendered);
 
   const closeMenu = () => setIsOpen(false);
 

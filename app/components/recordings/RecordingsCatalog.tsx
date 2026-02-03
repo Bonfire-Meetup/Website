@@ -129,7 +129,17 @@ export function RecordingsCatalog({
   }, [initialPayload]);
 
   useEffect(() => {
-    setCanHover(window.matchMedia("(hover: hover)").matches);
+    const media = window.matchMedia("(hover: hover)");
+    const handleChange = () => setCanHover(media.matches);
+    handleChange();
+
+    if (media.addEventListener) {
+      media.addEventListener("change", handleChange);
+      return () => media.removeEventListener("change", handleChange);
+    }
+
+    media.addListener(handleChange);
+    return () => media.removeListener(handleChange);
   }, []);
 
   useEffect(() => {

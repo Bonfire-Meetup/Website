@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
 import { type LocationValue } from "@/lib/config/constants";
@@ -42,6 +42,8 @@ export function EventsSectionClient({
   hideHeader?: boolean;
 }) {
   const t = useTranslations("sections.events");
+  const tEvents = useTranslations("events");
+  const locale = useLocale();
   const [activeEpisode, setActiveEpisode] = useState(initialEpisode ?? "all");
 
   const episodes = useMemo(() => {
@@ -122,6 +124,8 @@ export function EventsSectionClient({
               registrationUrl={event.registrationUrl ?? ""}
               speakers={event.speakers}
               links={event.links}
+              locale={locale}
+              t={tEvents}
             />
           ))}
         </div>
