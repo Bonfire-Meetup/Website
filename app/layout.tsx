@@ -4,11 +4,15 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
+import { getTranslations } from "next-intl/server";
 
+import { AppProviders } from "./AppProviders";
+import { RouteComplete } from "./components/navigation/RouteComplete";
 import { NavigationProvider } from "./components/shared/NavigationContext";
 import { NavigationLoader } from "./components/shared/NavigationLoader";
 import { RollbarProvider } from "./components/shared/RollbarProvider";
+import { getInitialMessages } from "./lib/i18n/initial";
 import { DEFAULT_LOCALE } from "./lib/i18n/locales";
 
 export const viewport: Viewport = {
@@ -20,7 +24,52 @@ export const viewport: Viewport = {
   width: "device-width",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "meta" });
+  const tCommon = await getTranslations({ locale: DEFAULT_LOCALE, namespace: "common" });
+  const commonValues = {
+    brandName: tCommon("brandName"),
+    country: tCommon("country"),
+    prague: tCommon("prague"),
+    zlin: tCommon("zlin"),
+  };
+  const keywords = t.raw("keywords") as string[];
+  const processedKeywords = keywords.map((k) =>
+    k === "{prague}"
+      ? commonValues.prague
+      : k === "{zlin}"
+        ? commonValues.zlin
+        : k === "{country}"
+          ? commonValues.country
+          : k,
+  );
+
+  return {
+    authors: [{ name: t("author", commonValues) }],
+    description: t("siteDescription", commonValues),
+    keywords: processedKeywords,
+    openGraph: {
+      description: t("siteDescription", commonValues),
+      siteName: t("siteName", commonValues),
+      title: t("siteTitle", commonValues),
+      type: "website",
+    },
+    robots: {
+      follow: true,
+      index: true,
+    },
+    title: t("siteTitle", commonValues),
+    twitter: {
+      card: "summary_large_image",
+      description: t("siteDescription", commonValues),
+      title: t("siteTitle", commonValues),
+    },
+  };
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const messages = await getInitialMessages(DEFAULT_LOCALE);
+
   return (
     <html
       lang={DEFAULT_LOCALE}
@@ -47,7 +96,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RollbarProvider>
           <NavigationProvider>
             <NavigationLoader />
-            {children}
+            <AppProviders initialLocale={DEFAULT_LOCALE} initialMessages={messages}>
+              <RouteComplete />
+              {children}
+            </AppProviders>
           </NavigationProvider>
           <Analytics />
           <SpeedInsights />

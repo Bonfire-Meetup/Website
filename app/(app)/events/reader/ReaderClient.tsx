@@ -156,13 +156,9 @@ export function ReaderClient() {
           { facingMode: "environment" },
           config,
           (decodedText) => {
-            handleScanSuccess(decodedText).catch(() => {
-              // Ignore scan errors
-            });
+            handleScanSuccess(decodedText).catch(() => undefined);
           },
-          () => {
-            // Ignore scan errors
-          },
+          () => undefined,
         );
       } catch (cameraError) {
         console.error("Camera error:", cameraError);
@@ -203,13 +199,9 @@ export function ReaderClient() {
               constraints,
               config,
               (decodedText) => {
-                handleScanSuccess(decodedText).catch(() => {
-                  // Ignore scan errors
-                });
+                handleScanSuccess(decodedText).catch(() => undefined);
               },
-              () => {
-                // Ignore scan errors
-              },
+              () => undefined,
             );
           } catch (constraintsError) {
             console.error("Constraints error:", constraintsError);
@@ -218,13 +210,9 @@ export function ReaderClient() {
                 { facingMode: "user" },
                 config,
                 (decodedText) => {
-                  handleScanSuccess(decodedText).catch(() => {
-                    // Ignore scan errors
-                  });
+                  handleScanSuccess(decodedText).catch(() => undefined);
                 },
-                () => {
-                  // Ignore scan errors
-                },
+                () => undefined,
               );
             } catch (fallbackError) {
               console.error("Fallback error:", fallbackError);
@@ -252,9 +240,8 @@ export function ReaderClient() {
       try {
         await scannerRef.current.stop();
         await scannerRef.current.clear();
-      } catch {
-        // Ignore cleanup errors
-      }
+        // oxlint-disable-next-line no-empty
+      } catch {}
       scannerRef.current = null;
     }
     setIsScanning(false);

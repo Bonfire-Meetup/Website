@@ -129,14 +129,14 @@ export const POST = (request: Request) =>
       const slug = compressUuid(archiveRecord.id);
       let sentCount = 0;
 
-      // oxlint-disable-next-line no-await-in-loop -- Intentional sequential sending for unique tokens
+      // oxlint-disable-next-line no-await-in-loop
       for (const email of recipientEmails) {
         try {
-          // oxlint-disable-next-line no-await-in-loop -- Must be sequential for rate limiting
+          // oxlint-disable-next-line no-await-in-loop
           const token = await signUnsubscribeToken(email);
           const unsubscribeUrl = `${BASE_URL}/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
 
-          // oxlint-disable-next-line no-await-in-loop -- Must be sequential for rate limiting
+          // oxlint-disable-next-line no-await-in-loop
           const { html, text } = await renderNewsletterTemplate({
             subject,
             previewText,
@@ -146,7 +146,7 @@ export const POST = (request: Request) =>
             viewUrlSlug: slug,
           });
 
-          // oxlint-disable-next-line no-await-in-loop -- Must be sequential for rate limiting
+          // oxlint-disable-next-line no-await-in-loop
           await sendEmail({
             from: getNewsletterFrom(),
             to: email,

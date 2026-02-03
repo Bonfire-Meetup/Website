@@ -23,7 +23,6 @@ export function useTheme(): ThemeContextType {
     setNextTheme(newTheme);
   };
 
-  // During SSR and initial hydration, return safe defaults
   if (!mounted) {
     return {
       theme: "system",
