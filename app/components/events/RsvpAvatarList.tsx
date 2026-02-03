@@ -39,16 +39,14 @@ export function RsvpAvatarList({ eventId }: RsvpAvatarListProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2" aria-hidden="true">
-        <div className="flex items-center">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-5 w-5 animate-pulse rounded-full bg-neutral-200 dark:bg-white/10"
-              style={{ marginLeft: i === 1 ? 0 : `${AVATAR_OVERLAP}px` }}
-            />
-          ))}
-        </div>
+      <div className="flex items-center" aria-hidden="true">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="h-5 w-5 animate-pulse rounded-full bg-neutral-200 dark:bg-white/10"
+            style={{ marginLeft: i === 1 ? 0 : `${AVATAR_OVERLAP}px` }}
+          />
+        ))}
       </div>
     );
   }

@@ -18,13 +18,14 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
   const t = useTranslations("events");
   const router = useRouter();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  const { data: rsvps } = useEventRsvps(eventId);
+  const { data: rsvps, isLoading: rsvpsLoading } = useEventRsvps(eventId);
   const { data: userProfile } = useUserProfile(isAuthenticated);
   const createMutation = useCreateRsvpMutation(eventId);
   const deleteMutation = useDeleteRsvpMutation(eventId);
   const [error, setError] = useState<string | null>(null);
 
   const isRsvped = useMemo(() => rsvps?.hasRsvped ?? false, [rsvps]);
+  const totalCount = rsvps?.totalCount ?? 0;
 
   const isLoading = createMutation.isPending || deleteMutation.isPending;
 
@@ -105,9 +106,14 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
 
       {error && <p className="text-sm font-medium text-red-600 dark:text-red-400">{error}</p>}
 
-      <div className="flex items-center justify-start">
-        <RsvpAvatarList eventId={eventId} />
-      </div>
+      {(rsvpsLoading || totalCount > 0) && (
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-2 text-xs text-neutral-500 dark:text-neutral-400">
+          <span className="font-semibold text-neutral-700 dark:text-neutral-200">
+            {t("attendingLabel")}
+          </span>
+          <RsvpAvatarList eventId={eventId} />
+        </div>
+      )}
     </div>
   );
 }

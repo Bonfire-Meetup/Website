@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 
 import { NewsletterSectionClient } from "@/components/newsletter/NewsletterSectionClient";
 import { Button } from "@/components/ui/Button";
@@ -62,11 +61,11 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
                     </div>
 
                     <Button
-                      asChild
+                      href={`/newsletter/${compressUuid(item.id)}`}
                       size="sm"
                       className="h-10 w-full shrink-0 bg-neutral-900 text-white hover:bg-neutral-800 sm:w-auto dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
                     >
-                      <Link href={`/newsletter/${compressUuid(item.id)}`}>{t("read")}</Link>
+                      {t("read")}
                     </Button>
                   </div>
                 </Card>

@@ -11,6 +11,7 @@ import { SpeakerList } from "../ui/SpeakerList";
 
 import { RecordingImage } from "./RecordingImage";
 import { RecordingMeta } from "./RecordingMeta";
+import { WatchLaterButton } from "./WatchLaterButton";
 
 export function GridView({
   recordings,
@@ -26,12 +27,19 @@ export function GridView({
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {recordings.map((recording, index) => (
-        <Link
+        <div
           key={`${recording.shortId}-${filterKey}`}
-          href={PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}
-          prefetch={false}
           className="group relative flex cursor-pointer flex-col overflow-hidden rounded-[28px] bg-white/90 text-neutral-900 shadow-lg ring-1 shadow-black/5 ring-black/5 transition-all hover:shadow-xl dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10"
         >
+          <Link
+            href={PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}
+            prefetch={false}
+            className="absolute inset-0 z-0"
+            aria-label={recording.title}
+          >
+            <span className="sr-only">{recording.title}</span>
+          </Link>
+
           <div className="relative shrink-0">
             <RecordingImage
               src={recording.thumbnail}
@@ -41,8 +49,16 @@ export function GridView({
               loading={index < 8 ? "eager" : "lazy"}
               fetchPriority={index < 8 ? "high" : "low"}
             />
+            <div className="pointer-events-auto absolute top-2 left-2 z-10">
+              <WatchLaterButton
+                shortId={recording.shortId}
+                variant="icon"
+                size="sm"
+                showLabel={false}
+              />
+            </div>
           </div>
-          <div className="flex flex-1 flex-col space-y-3 bg-white/85 px-5 pt-5 pb-6 text-neutral-900 dark:bg-black/75 dark:text-white">
+          <div className="pointer-events-none relative z-10 flex flex-1 flex-col space-y-3 bg-white/85 px-5 pt-5 pb-6 text-neutral-900 dark:bg-black/75 dark:text-white">
             <RecordingMeta
               location={recording.location}
               date={recording.date}
@@ -53,13 +69,11 @@ export function GridView({
               {recording.title}
             </h3>
             <SpeakerList speakers={recording.speaker} />
-            <div className="flex flex-wrap gap-2" onClick={(event) => event.stopPropagation()}>
+            <div className="pointer-events-auto flex flex-wrap gap-2">
               {recording.tags.map((tag: string) => (
                 <Pill
                   key={tag}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
+                  onClick={() => {
                     router.push(`${PAGE_ROUTES.LIBRARY_BROWSE}?tag=${encodeURIComponent(tag)}`);
                   }}
                   size="xxs"
@@ -71,7 +85,7 @@ export function GridView({
               ))}
             </div>
           </div>
-        </Link>
+        </div>
       ))}
     </div>
   );

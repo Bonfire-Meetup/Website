@@ -22,12 +22,14 @@ interface WatchLaterButtonProps {
   shortId: string;
   variant?: "icon" | "full";
   size?: "sm" | "md";
+  showLabel?: boolean;
 }
 
 export function WatchLaterButton({
   shortId,
   variant = "full",
   size = "md",
+  showLabel = true,
 }: WatchLaterButtonProps) {
   const t = useTranslations("recordings");
   const router = useRouter();
@@ -82,15 +84,25 @@ export function WatchLaterButton({
   const iconSize = size === "sm" ? "h-4 w-4" : "h-5 w-5";
 
   if (variant === "icon") {
+    const isIconOnly = !showLabel;
+    const layoutClasses = isIconOnly
+      ? "h-8 w-8 rounded-full p-0 justify-center"
+      : "rounded-lg px-3 py-1.5";
+    const gapClasses = isIconOnly ? "gap-0" : "gap-1.5";
+    const iconOnlyColors = inWatchlist
+      ? "bg-violet-600/80 text-white hover:bg-violet-600 dark:bg-violet-500/80 dark:hover:bg-violet-500"
+      : "bg-black/40 text-white hover:bg-black/55 dark:bg-white/20 dark:text-white dark:hover:bg-white/30";
+    const iconLabelColors = inWatchlist
+      ? "bg-violet-100 text-violet-700 hover:bg-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:hover:bg-violet-950/50"
+      : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white";
+
     return (
       <button
         type="button"
         onClick={handleClick}
         disabled={isLoading}
-        className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs leading-none font-medium transition-all sm:leading-tight ${
-          inWatchlist
-            ? "bg-violet-100 text-violet-700 hover:bg-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:hover:bg-violet-950/50"
-            : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+        className={`inline-flex items-center text-xs leading-none font-medium transition-all sm:leading-tight ${layoutClasses} ${gapClasses} ${
+          isIconOnly ? iconOnlyColors : iconLabelColors
         } ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
         aria-label={inWatchlist ? t("removeFromWatchLater") : t("addToWatchLater")}
       >
@@ -99,9 +111,11 @@ export function WatchLaterButton({
         ) : (
           <BookmarkIcon className="h-3.5 w-3.5" />
         )}
-        <span className="hidden sm:inline sm:translate-y-[1px]">
-          {inWatchlist ? t("inWatchlist") : t("watchLater")}
-        </span>
+        {showLabel ? (
+          <span className="hidden sm:inline sm:translate-y-[1px]">
+            {inWatchlist ? t("inWatchlist") : t("watchLater")}
+          </span>
+        ) : null}
       </button>
     );
   }
