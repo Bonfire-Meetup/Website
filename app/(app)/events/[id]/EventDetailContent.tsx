@@ -16,7 +16,7 @@ import {
   ExternalLinkIcon,
 } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
-import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { DEFAULT_TIMEZONE, LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
 interface Speaker {
@@ -43,7 +43,6 @@ interface EventDetailContentProps {
   links?: EventLinks;
 }
 
-const CALENDAR_TIMEZONE = "Europe/Prague";
 const DEFAULT_EVENT_DURATION_MINUTES = 120;
 
 function getMapUrl(address: string) {
@@ -123,7 +122,7 @@ function buildGoogleCalendarUrl({
     dates: `${start}/${end}`,
     details: description,
     location: venue,
-    ctz: CALENDAR_TIMEZONE,
+    ctz: DEFAULT_TIMEZONE,
   });
 
   return `https://www.google.com/calendar/render?${params.toString()}`;
@@ -218,8 +217,8 @@ export function EventDetailContent({
       "BEGIN:VEVENT",
       `UID:${uid}`,
       `DTSTAMP:${dtStamp}`,
-      `DTSTART;TZID=${CALENDAR_TIMEZONE}:${calendarStart}`,
-      `DTEND;TZID=${CALENDAR_TIMEZONE}:${calendarEnd}`,
+      `DTSTART;TZID=${DEFAULT_TIMEZONE}:${calendarStart}`,
+      `DTEND;TZID=${DEFAULT_TIMEZONE}:${calendarEnd}`,
       `SUMMARY:${escapeIcsValue(title)}`,
       `DESCRIPTION:${escapeIcsValue(description)}`,
       `LOCATION:${escapeIcsValue(venue)}`,

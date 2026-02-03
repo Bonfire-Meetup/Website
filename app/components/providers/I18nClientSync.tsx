@@ -3,6 +3,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
+import { DEFAULT_TIMEZONE } from "@/lib/config/constants";
 import { type Messages } from "@/lib/i18n/initial";
 import { DEFAULT_LOCALE, type Locale, isValidLocale } from "@/lib/i18n/locales";
 
@@ -70,7 +71,11 @@ export function I18nClientSync({ children, initialLocale, initialMessages }: I18
 
   return (
     <I18nContext.Provider value={{ locale: state.locale, setLocale }}>
-      <NextIntlClientProvider locale={state.locale} messages={state.messages}>
+      <NextIntlClientProvider
+        locale={state.locale}
+        messages={state.messages}
+        timeZone={DEFAULT_TIMEZONE}
+      >
         {children}
       </NextIntlClientProvider>
     </I18nContext.Provider>
