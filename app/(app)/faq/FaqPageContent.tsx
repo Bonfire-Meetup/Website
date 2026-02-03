@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { QuestionAnchor } from "@/components/faq/QuestionAnchor";
-import { BoltIcon, FireIcon, GuildIcon } from "@/components/shared/icons";
+import { BoltIcon, FireIcon, GuildIcon } from "@/components/shared/Icons";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 

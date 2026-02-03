@@ -12,7 +12,7 @@ import {
   MicIcon,
   ShieldIcon,
   VideoIcon,
-} from "@/components/shared/icons";
+} from "@/components/shared/Icons";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 

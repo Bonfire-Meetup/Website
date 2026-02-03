@@ -4,7 +4,7 @@ import type { HotRecording } from "./RecordingsCatalogTypes";
 
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 
-import { FireIcon } from "../shared/icons";
+import { FireIcon } from "../shared/Icons";
 
 import { Rail } from "./Rail";
 import { RailCard } from "./RailCard";

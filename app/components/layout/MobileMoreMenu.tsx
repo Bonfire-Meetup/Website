@@ -9,7 +9,7 @@ import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { COOKIE_KEYS, getCookie, setCookie } from "@/lib/storage/keys";
 
 import { useI18n } from "../providers/I18nClientSync";
-import { CameraIcon, CloseIcon, MoonIcon, ShieldIcon, SunIcon, SystemIcon } from "../shared/icons";
+import { CameraIcon, CloseIcon, MoonIcon, ShieldIcon, SunIcon, SystemIcon } from "../shared/Icons";
 import { useTheme } from "../theme/useTheme";
 
 function EnvelopeIcon({ className }: { className?: string }) {

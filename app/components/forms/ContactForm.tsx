@@ -18,7 +18,7 @@ import { type ContactFormState, submitContactForm } from "@/lib/forms/form-actio
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { logError } from "@/lib/utils/log-client";
 
-import { CheckIcon, CloseIcon, MailIcon } from "../shared/icons";
+import { CheckIcon, CloseIcon, MailIcon } from "../shared/Icons";
 import { Button } from "../ui/Button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 

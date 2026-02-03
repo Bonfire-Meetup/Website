@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { CheckIcon, CloseIcon, KeyIcon, PlusIcon, TrashIcon } from "@/components/shared/icons";
+import { CheckIcon, CloseIcon, KeyIcon, PlusIcon, TrashIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import {

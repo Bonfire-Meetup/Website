@@ -14,7 +14,7 @@ import {
   MicIcon,
   SparklesIcon,
   ExternalLinkIcon,
-} from "@/components/shared/icons";
+} from "@/components/shared/Icons";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 

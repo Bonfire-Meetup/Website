@@ -17,7 +17,7 @@ import {
   FacebookIcon,
   LumaIcon,
   MapPinIcon,
-} from "../shared/icons";
+} from "../shared/Icons";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { MetaRow } from "../ui/MetaRow";

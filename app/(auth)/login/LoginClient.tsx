@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { AuthControls } from "@/components/auth/AuthControls";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
-import { FingerprintIcon } from "@/components/shared/icons";
+import { FingerprintIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Link } from "@/i18n/navigation";

@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-import { LogInIcon, UserIcon } from "../shared/icons";
+import { LogInIcon, UserIcon } from "../shared/Icons";
 import { IconButton } from "../ui/IconButton";
 
 function AuthNavButtonInner() {

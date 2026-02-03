@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { VideoCard } from "@/components/recordings/VideoCard";
-import { BookmarkIcon } from "@/components/shared/icons";
+import { BookmarkIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { ApiError } from "@/lib/api/errors";
 import { useWatchlist } from "@/lib/api/user-profile";

@@ -4,7 +4,7 @@ import type { NewsletterSection, NewsletterWizardData, WizardStep } from "./type
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import { ArrowLeftIcon, ArrowRightIcon } from "@/components/shared/icons";
+import { ArrowLeftIcon, ArrowRightIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { logWarn } from "@/lib/utils/log-client";

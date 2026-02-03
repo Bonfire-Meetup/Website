@@ -6,7 +6,7 @@ import Link from "next/link";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { LocationPill } from "../locations/LocationPill";
-import { PlayIcon } from "../shared/icons";
+import { PlayIcon } from "../shared/Icons";
 
 interface RelatedVideosSectionProps {
   relatedRecordings: RelatedRecording[];

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import QRCode from "qrcode";
 import { useEffect, useMemo, useState } from "react";
 
-import { ClockIcon, QrCodeIcon, InfoIcon } from "@/components/shared/icons";
+import { ClockIcon, QrCodeIcon, InfoIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { ApiError } from "@/lib/api/errors";
 import { useCheckInToken } from "@/lib/api/user-profile";

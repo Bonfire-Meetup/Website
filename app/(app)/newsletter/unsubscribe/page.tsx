@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-import { CheckIcon, CloseIcon, MailIcon } from "@/components/shared/icons";
+import { CheckIcon, CloseIcon, MailIcon } from "@/components/shared/Icons";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";

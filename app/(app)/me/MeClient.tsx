@@ -14,7 +14,7 @@ import {
   QrCodeIcon,
   CameraIcon,
   MailIcon,
-} from "@/components/shared/icons";
+} from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { ApiError } from "@/lib/api/errors";

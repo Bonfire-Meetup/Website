@@ -4,7 +4,7 @@ import type { PhotoAlbum } from "@/lib/photos/types";
 import { useTranslations } from "next-intl";
 
 import { AlbumImage } from "@/components/shared/AlbumImage";
-import { ArrowLeftIcon, ExternalLinkIcon } from "@/components/shared/icons";
+import { ArrowLeftIcon, ExternalLinkIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import photoAlbums from "@/data/photo-albums.json";
 import { WEBSITE_URLS } from "@/lib/config/constants";

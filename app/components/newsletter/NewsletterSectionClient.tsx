@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { API_ROUTES } from "@/lib/api/routes";
 
 import { TurnstileWidget, type TurnstileWidgetHandle } from "../forms/TurnstileWidget";
-import { CheckIcon } from "../shared/icons";
+import { CheckIcon } from "../shared/Icons";
 import { Button } from "../ui/Button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 

@@ -6,7 +6,7 @@ import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { Button } from "../ui/Button";
 
-import { ArrowRightIcon } from "./icons";
+import { ArrowRightIcon } from "./Icons";
 
 export function TalkBanner() {
   const t = useTranslations("sections.talkBanner");

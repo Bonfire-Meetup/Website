@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
-import { BoltIcon } from "@/components/shared/icons";
+import { BoltIcon } from "@/components/shared/Icons";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { Link } from "@/i18n/navigation";
 import { type BoostedByData, useVideoBoosts } from "@/lib/api/video-engagement";

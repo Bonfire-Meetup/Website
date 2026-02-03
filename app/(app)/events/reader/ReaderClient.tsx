@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { QrCodeIcon, CheckIcon, CloseIcon } from "@/components/shared/icons";
+import { QrCodeIcon, CheckIcon, CloseIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { upcomingEvents } from "@/data/upcoming-events";

@@ -5,7 +5,7 @@ import Image from "next/image";
 
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 
-import { FireIcon, MapPinIcon } from "../shared/icons";
+import { FireIcon, MapPinIcon } from "../shared/Icons";
 
 interface LocationCardProps {
   name: string;

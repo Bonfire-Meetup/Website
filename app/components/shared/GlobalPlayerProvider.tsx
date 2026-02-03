@@ -17,7 +17,7 @@ import {
   setVideo as setVideoAction,
 } from "@/lib/redux/slices/playerSlice";
 
-import { CloseIcon } from "./icons";
+import { CloseIcon } from "./Icons";
 
 export const ENABLE_GLOBAL_MINI_PLAYER = true;
 

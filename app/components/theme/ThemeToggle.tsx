@@ -1,6 +1,6 @@
 "use client";
 
-import { MoonIcon, SunIcon, SystemIcon } from "../shared/icons";
+import { MoonIcon, SunIcon, SystemIcon } from "../shared/Icons";
 import { IconButton } from "../ui/IconButton";
 
 import { useTheme } from "./useTheme";

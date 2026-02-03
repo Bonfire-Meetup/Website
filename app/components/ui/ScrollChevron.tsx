@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { ChevronDownIcon } from "../shared/icons";
+import { ChevronDownIcon } from "../shared/Icons";
 
 export function ScrollChevron({ label, scrollLabel }: { label: string; scrollLabel: string }) {
   const [isVisible, setIsVisible] = useState(true);

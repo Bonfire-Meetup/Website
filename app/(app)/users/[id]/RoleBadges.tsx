@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { GuildIcon } from "@/components/shared/icons";
+import { GuildIcon } from "@/components/shared/Icons";
 import {
   hasMembership,
   MEMBERSHIP_TIER_LABELS,

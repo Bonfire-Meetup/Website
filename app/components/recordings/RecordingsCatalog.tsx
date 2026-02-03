@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
 
-import { InfoIcon } from "@/components/shared/icons";
+import { InfoIcon } from "@/components/shared/Icons";
 import { Skeleton } from "@/components/shared/Skeletons";
 import { Button } from "@/components/ui/Button";
 import { PAGE_ROUTES } from "@/lib/routes/pages";

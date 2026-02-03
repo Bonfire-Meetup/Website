@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { CheckIcon, LinkIcon } from "@/components/shared/icons";
+import { CheckIcon, LinkIcon } from "@/components/shared/Icons";
 import { copyToClipboard } from "@/lib/utils/clipboard";
 
 interface QuestionAnchorProps {

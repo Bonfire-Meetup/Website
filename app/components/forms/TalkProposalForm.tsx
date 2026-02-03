@@ -17,7 +17,7 @@ import { type TalkProposalFormState, submitTalkProposal } from "@/lib/forms/form
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { logError } from "@/lib/utils/log-client";
 
-import { CheckIcon, CloseIcon, MicIcon } from "../shared/icons";
+import { CheckIcon, CloseIcon, MicIcon } from "../shared/Icons";
 import { Button } from "../ui/Button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 

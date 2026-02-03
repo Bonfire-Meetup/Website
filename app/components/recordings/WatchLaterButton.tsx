@@ -15,7 +15,7 @@ import { addToWatchlist, removeFromWatchlist } from "@/lib/redux/slices/profileS
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { logError } from "@/lib/utils/log-client";
 
-import { BookmarkIcon, BookmarkFilledIcon } from "../shared/icons";
+import { BookmarkIcon, BookmarkFilledIcon } from "../shared/Icons";
 import { Button } from "../ui/Button";
 
 interface WatchLaterButtonProps {

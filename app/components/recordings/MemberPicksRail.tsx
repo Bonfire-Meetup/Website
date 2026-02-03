@@ -4,7 +4,7 @@ import type { MemberPickRecording } from "./RecordingsCatalogTypes";
 
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 
-import { BoltIcon } from "../shared/icons";
+import { BoltIcon } from "../shared/Icons";
 
 import { Rail } from "./Rail";
 import { RailCard } from "./RailCard";

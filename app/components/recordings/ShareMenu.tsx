@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { copyToClipboard } from "@/lib/utils/clipboard";
 
-import { CheckIcon, FacebookIcon, LinkIcon, LinkedInIcon, ShareIcon, XIcon } from "../shared/icons";
+import { CheckIcon, FacebookIcon, LinkIcon, LinkedInIcon, ShareIcon, XIcon } from "../shared/Icons";
 
 interface ShareMenuProps {
   shareUrl: string;

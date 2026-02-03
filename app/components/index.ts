@@ -40,4 +40,4 @@ export { TalkBanner } from "./shared/TalkBanner";
 
 export { LocationsSection } from "./locations/LocationsSection";
 
-export * from "./shared/icons";
+export * from "./shared/Icons";

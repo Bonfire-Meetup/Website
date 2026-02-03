@@ -17,7 +17,7 @@ import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { useVideoEngagementRedux } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 
-import { BoltIcon, FireIcon, FrownIcon } from "../shared/icons";
+import { BoltIcon, FireIcon, FrownIcon } from "../shared/Icons";
 
 interface LikeBoostButtonsProps {
   onBoostedByLoad?: (boostedBy: BoostedByData | null) => void;

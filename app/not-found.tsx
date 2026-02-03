@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { FireIcon } from "@/components/shared/icons";
+import { FireIcon } from "@/components/shared/Icons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export default function NotFound() {

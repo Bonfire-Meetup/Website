@@ -8,7 +8,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-import { CalendarIcon, FilmIcon, LogInIcon, UserIcon } from "../shared/icons";
+import { CalendarIcon, FilmIcon, LogInIcon, UserIcon } from "../shared/Icons";
 
 import { MobileMoreMenu } from "./MobileMoreMenu";
 

@@ -6,7 +6,7 @@ import { getHiddenGems } from "@/lib/recordings/hidden-gems";
 import { getHotRecordingsSafe } from "@/lib/recordings/hot-picks";
 import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
 
-import { BoltIcon, FireIcon } from "../shared/icons";
+import { BoltIcon, FireIcon } from "../shared/Icons";
 
 import { RailCardServer } from "./RailCardServer";
 import { RailServer } from "./RailServer";

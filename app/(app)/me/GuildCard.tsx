@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 
-import { GuildIcon } from "@/components/shared/icons";
+import { GuildIcon } from "@/components/shared/Icons";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 
 export function GuildCard() {

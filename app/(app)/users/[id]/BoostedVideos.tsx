@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 
-import { BoltIcon } from "@/components/shared/icons";
+import { BoltIcon } from "@/components/shared/Icons";
 import { Link } from "@/i18n/navigation";
 import { getUserBoosts } from "@/lib/data/boosts";
 import { getAllRecordings } from "@/lib/recordings/recordings";

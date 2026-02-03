@@ -2,7 +2,7 @@
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "../shared/icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "../shared/Icons";
 
 interface RailScrollWrapperProps {
   children: ReactNode;

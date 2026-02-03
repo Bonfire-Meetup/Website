@@ -3,7 +3,7 @@
 import type { NewsletterSection, NewsletterWizardData } from "./types";
 import { useTranslations } from "next-intl";
 
-import { PlusIcon, TrashIcon } from "@/components/shared/icons";
+import { PlusIcon, TrashIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 
 interface EditorStepProps {

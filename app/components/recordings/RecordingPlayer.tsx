@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { useGlobalPlayer } from "@/components/shared/GlobalPlayerProvider";
-import { ArrowLeftIcon, CinemaIcon } from "@/components/shared/icons";
+import { ArrowLeftIcon, CinemaIcon } from "@/components/shared/Icons";
 import { type BoostedByData } from "@/lib/api/video-engagement";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDate } from "@/lib/utils/locale";

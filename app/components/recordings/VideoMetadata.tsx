@@ -1,7 +1,7 @@
 import type { Recording } from "@/lib/recordings/recordings";
 import { useTranslations } from "next-intl";
 
-import { CalendarIcon, MapPinIcon, UserIcon } from "@/components/shared/icons";
+import { CalendarIcon, MapPinIcon, UserIcon } from "@/components/shared/Icons";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Pill } from "@/components/ui/Pill";
 import { PAGE_ROUTES } from "@/lib/routes/pages";

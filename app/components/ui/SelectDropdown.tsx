@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
-import { ChevronDownIcon } from "../shared/icons";
+import { ChevronDownIcon } from "../shared/Icons";
 
 export interface DropdownOption {
   value: string;

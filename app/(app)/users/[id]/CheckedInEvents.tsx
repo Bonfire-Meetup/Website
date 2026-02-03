@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 
-import { CheckIcon } from "@/components/shared/icons";
+import { CheckIcon } from "@/components/shared/Icons";
 import { upcomingEvents } from "@/data/upcoming-events";
 import { getAuthUserById } from "@/lib/data/auth";
 import { getUserCheckIns } from "@/lib/data/check-in";

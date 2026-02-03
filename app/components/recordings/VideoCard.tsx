@@ -2,7 +2,7 @@ import Link from "next/link";
 import { memo } from "react";
 
 import { LocationPill } from "@/components/locations/LocationPill";
-import { BoltIcon, FireIcon, MapPinIcon } from "@/components/shared/icons";
+import { BoltIcon, FireIcon, MapPinIcon } from "@/components/shared/Icons";
 import { type LocationValue } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDate } from "@/lib/utils/locale";
