@@ -2,7 +2,8 @@ import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { getAuthUserId } from "@/lib/api/auth";
-import { checkRateLimit, getClientHashes, validateVideoApiRequest } from "@/lib/api/rate-limit";
+import { validateVideoApiRequest } from "@/lib/api/rate-limit";
+import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
 import { videoBoostMutationSchema, videoBoostStatsSchema } from "@/lib/api/schemas";
 import {
   addVideoBoost,
@@ -14,10 +15,24 @@ import {
   removeVideoBoost,
 } from "@/lib/data/boosts";
 import { logError, logWarn } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  return runWithRequestContext(request, async () => {
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
+
+export const GET = withRequestContext(
+  withRateLimit<RouteParams>({
+    maxHits: 60,
+    keyFn: async ({ ctx, ipHash, request }) => {
+      const { id } = await ctx.params;
+      const authResult = await getAuthUserId(request);
+      const identifier =
+        authResult.status === "valid" && authResult.userId ? authResult.userId : ipHash;
+      return `read:${id}:${identifier}`;
+    },
+    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    storeKey: "video-api",
+  })(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
     const validation = await validateVideoApiRequest(videoId, "read");
 
@@ -35,16 +50,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         logWarn("video.boosts.unauthorized", { operation: "get", videoId });
 
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-      }
-
-      const { ipHash } = await getClientHashes();
-      const identifier = userId ?? ipHash;
-      const rateLimit = await checkRateLimit(videoId, "read", identifier, 60);
-
-      if (rateLimit.rateLimited) {
-        logWarn("video.boosts.rate_limited", { operation: "get", userId, videoId });
-
-        return NextResponse.json({ error: "Rate limited" }, { status: 429 });
       }
 
       const [stats, boostedUsers] = await Promise.all([
@@ -88,11 +93,22 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
       return NextResponse.json({ error: "Failed to load boosts" }, { status: 500 });
     }
-  });
-}
+  }),
+);
 
-export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  return runWithRequestContext(request, async () => {
+export const POST = withRequestContext(
+  withRateLimit<RouteParams>({
+    maxHits: 10,
+    keyFn: async ({ ctx, ipHash, request }) => {
+      const { id } = await ctx.params;
+      const authResult = await getAuthUserId(request);
+      const identifier =
+        authResult.status === "valid" && authResult.userId ? authResult.userId : ipHash;
+      return `write:${id}:${identifier}`;
+    },
+    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    storeKey: "video-api",
+  })(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
     const validation = await validateVideoApiRequest(videoId, "write");
 
@@ -107,14 +123,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         logWarn("video.boosts.unauthorized", { operation: "post", videoId });
 
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-      }
-
-      const rateLimit = await checkRateLimit(videoId, "write", userId, 10);
-
-      if (rateLimit.rateLimited) {
-        logWarn("video.boosts.rate_limited", { operation: "post", userId, videoId });
-
-        return NextResponse.json({ error: "Rate limited" }, { status: 429 });
       }
 
       const boostResult = await consumeBoost(userId);
@@ -146,11 +154,22 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
       return NextResponse.json({ error: "Failed to save boost" }, { status: 500 });
     }
-  });
-}
+  }),
+);
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  return runWithRequestContext(request, async () => {
+export const DELETE = withRequestContext(
+  withRateLimit<RouteParams>({
+    maxHits: 10,
+    keyFn: async ({ ctx, ipHash, request }) => {
+      const { id } = await ctx.params;
+      const authResult = await getAuthUserId(request);
+      const identifier =
+        authResult.status === "valid" && authResult.userId ? authResult.userId : ipHash;
+      return `write:${id}:${identifier}`;
+    },
+    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    storeKey: "video-api",
+  })(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
     const validation = await validateVideoApiRequest(videoId, "write");
 
@@ -165,14 +184,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         logWarn("video.boosts.unauthorized", { operation: "delete", videoId });
 
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-      }
-
-      const rateLimit = await checkRateLimit(videoId, "write", userId, 10);
-
-      if (rateLimit.rateLimited) {
-        logWarn("video.boosts.rate_limited", { operation: "delete", userId, videoId });
-
-        return NextResponse.json({ error: "Rate limited" }, { status: 429 });
       }
 
       const result = await removeVideoBoost(videoId, userId);
@@ -197,5 +208,5 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
       return NextResponse.json({ error: "Failed to remove boost" }, { status: 500 });
     }
-  });
-}
+  }),
+);

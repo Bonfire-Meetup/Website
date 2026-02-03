@@ -2,11 +2,10 @@ import { getLocale } from "next-intl/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAuth } from "@/lib/api/auth";
+import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
 import { updateAuthUserPreferences, updateAuthUserName } from "@/lib/data/auth";
 import { logError, logWarn } from "@/lib/utils/log";
 import { containsProfanity } from "@/lib/utils/profanity-filter";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
 const NAME_MAX_LENGTH = 50;
 
@@ -16,15 +15,9 @@ const preferencesSchema = z.object({
   publicProfile: z.boolean().optional(),
 });
 
-export const PATCH = async (request: Request) =>
-  runWithRequestContext(request, async () => {
+export const PATCH = withRequestContext(
+  withAuth("account.preferences")(async (request: Request, { auth }) => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
-
-    const auth = await requireAuth(request, "account.preferences");
-
-    if (!auth.success) {
-      return auth.response;
-    }
 
     let payload: unknown;
 
@@ -112,4 +105,5 @@ export const PATCH = async (request: Request) =>
 
       return respond({ error: "update_failed" }, { status: 500 });
     }
-  });
+  }),
+);

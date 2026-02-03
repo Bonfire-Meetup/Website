@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireRole } from "@/lib/api/auth";
+import { withRequestContext, withRole } from "@/lib/api/route-wrappers";
 import { signUnsubscribeToken } from "@/lib/auth/jwt";
 import { USER_ROLES } from "@/lib/config/roles";
 import { db } from "@/lib/data/db";
@@ -11,7 +11,6 @@ import { appUser, newsletterSubscription } from "@/lib/data/schema";
 import { getNewsletterFrom, sendEmail } from "@/lib/email/email";
 import { renderNewsletterTemplate } from "@/lib/email/newsletter-template";
 import { logError, logInfo } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
 const sectionSchema = z.object({
@@ -34,14 +33,12 @@ const sendSchema = z.object({
   testMode: z.boolean().default(false),
 });
 
-export const POST = (request: Request) =>
-  runWithRequestContext(request, async () => {
+export const POST = withRequestContext(
+  withRole(
+    "newsletter.send",
+    USER_ROLES.EDITOR,
+  )(async (request: Request, { auth }) => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
-
-    const auth = await requireRole(request, "newsletter.send", USER_ROLES.EDITOR);
-    if (!auth.success) {
-      return auth.response;
-    }
 
     let payload: unknown;
     try {
@@ -183,4 +180,5 @@ export const POST = (request: Request) =>
 
       return respond({ error: "send_failed" }, { status: 500 });
     }
-  });
+  }),
+);

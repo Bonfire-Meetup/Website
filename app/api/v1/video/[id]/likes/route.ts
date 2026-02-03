@@ -1,14 +1,26 @@
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
-import { checkRateLimit, getClientHashes, validateVideoApiRequest } from "@/lib/api/rate-limit";
+import { getClientHashes, validateVideoApiRequest } from "@/lib/api/rate-limit";
+import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
 import { videoLikeMutationSchema, videoLikeStatsSchema } from "@/lib/api/schemas";
 import { addVideoLike, getVideoLikeStats, removeVideoLike } from "@/lib/data/likes";
 import { logError } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
-export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
-  return runWithRequestContext(_, async () => {
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
+
+export const GET = withRequestContext(
+  withRateLimit<RouteParams>({
+    maxHits: 60,
+    keyFn: async ({ ctx, ipHash }) => {
+      const { id } = await ctx.params;
+      return `read:${id}:${ipHash}`;
+    },
+    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    storeKey: "video-api",
+  })(async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
     const validation = await validateVideoApiRequest(videoId, "read");
 
@@ -18,12 +30,6 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 
     try {
       const { ipHash, uaHash } = await getClientHashes();
-      const rateLimit = await checkRateLimit(videoId, "read", ipHash, 60);
-
-      if (rateLimit.rateLimited) {
-        return NextResponse.json({ error: "Rate limited" }, { status: 429 });
-      }
-
       const stats = await getVideoLikeStats(videoId, ipHash, uaHash);
       const validated = videoLikeStatsSchema.parse(stats);
 
@@ -33,11 +39,19 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 
       return NextResponse.json({ error: "Failed to load likes" }, { status: 500 });
     }
-  });
-}
+  }),
+);
 
-export async function POST(_: Request, { params }: { params: Promise<{ id: string }> }) {
-  return runWithRequestContext(_, async () => {
+export const POST = withRequestContext(
+  withRateLimit<RouteParams>({
+    maxHits: 5,
+    keyFn: async ({ ctx, ipHash }) => {
+      const { id } = await ctx.params;
+      return `write:${id}:${ipHash}`;
+    },
+    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    storeKey: "video-api",
+  })(async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
     const validation = await validateVideoApiRequest(videoId, "write");
 
@@ -47,12 +61,6 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
 
     try {
       const { ipHash, uaHash } = await getClientHashes();
-      const rateLimit = await checkRateLimit(videoId, "write", ipHash, 5);
-
-      if (rateLimit.rateLimited) {
-        return NextResponse.json({ error: "Rate limited" }, { status: 429 });
-      }
-
       const result = await addVideoLike(videoId, ipHash, uaHash);
       const validated = videoLikeMutationSchema.parse(result);
 
@@ -65,11 +73,19 @@ export async function POST(_: Request, { params }: { params: Promise<{ id: strin
 
       return NextResponse.json({ error: "Failed to save like" }, { status: 500 });
     }
-  });
-}
+  }),
+);
 
-export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
-  return runWithRequestContext(_, async () => {
+export const DELETE = withRequestContext(
+  withRateLimit<RouteParams>({
+    maxHits: 5,
+    keyFn: async ({ ctx, ipHash }) => {
+      const { id } = await ctx.params;
+      return `write:${id}:${ipHash}`;
+    },
+    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    storeKey: "video-api",
+  })(async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
     const validation = await validateVideoApiRequest(videoId, "write");
 
@@ -79,12 +95,6 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
 
     try {
       const { ipHash, uaHash } = await getClientHashes();
-      const rateLimit = await checkRateLimit(videoId, "write", ipHash, 5);
-
-      if (rateLimit.rateLimited) {
-        return NextResponse.json({ error: "Rate limited" }, { status: 429 });
-      }
-
       const result = await removeVideoLike(videoId, ipHash, uaHash);
       const validated = videoLikeMutationSchema.parse(result);
 
@@ -97,5 +107,5 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
 
       return NextResponse.json({ error: "Failed to remove like" }, { status: 500 });
     }
-  });
-}
+  }),
+);

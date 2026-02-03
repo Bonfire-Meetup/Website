@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAuth } from "@/lib/api/auth";
+import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
 import { timingGuardHash, verifyOtpChallenge } from "@/lib/auth/challenge";
 import { getAuthUserById, markAuthChallengeUsed } from "@/lib/data/auth";
 import { runTransaction } from "@/lib/data/db";
@@ -26,25 +26,18 @@ import {
   logInfo,
   logWarn,
 } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
 const deleteSchema = z.object({
   challenge_token: z.string().min(32),
   code: z.string().regex(/^\d{1,6}$/),
 });
 
-export const POST = async (request: Request) =>
-  runWithRequestContext(request, async () => {
+export const POST = withRequestContext(
+  withAuth("account.delete")(async (request: Request, { auth }) => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
     const invalidResponse = () => respond({ error: "invalid_code" }, { status: 400 });
     const expiredResponse = () => respond({ error: "expired" }, { status: 410 });
     const tooManyAttemptsResponse = () => respond({ error: "too_many_attempts" }, { status: 429 });
-
-    const auth = await requireAuth(request, "account.delete");
-
-    if (!auth.success) {
-      return auth.response;
-    }
 
     let payload: unknown;
 
@@ -129,4 +122,5 @@ export const POST = async (request: Request) =>
     });
 
     return respond({ ok: true });
-  });
+  }),
+);

@@ -1,26 +1,17 @@
 import { eq, sql } from "drizzle-orm";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-import { resolveUserId } from "@/lib/api/auth";
+import { withRequestContext, withResolvedUserId } from "@/lib/api/route-wrappers";
 import { db } from "@/lib/data/db";
 import { userWatchlist } from "@/lib/data/schema";
 import { logError } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ userId: string }> },
-) {
-  return runWithRequestContext(request, async () => {
-    const { userId: userIdParam } = await params;
-    const userIdResult = await resolveUserId(request, "watchlist.get", userIdParam);
+interface RouteParams {
+  params: Promise<{ userId: string }>;
+}
 
-    if (!userIdResult.success) {
-      return userIdResult.response;
-    }
-
-    const { userId } = userIdResult;
-
+export const GET = withRequestContext(
+  withResolvedUserId<RouteParams>("watchlist.get")(async (_request: Request, { userId }) => {
     try {
       const rows = await db()
         .select({
@@ -41,5 +32,5 @@ export async function GET(
       logError("watchlist_fetch_failed", err, { userId });
       return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
-  });
-}
+  }),
+);

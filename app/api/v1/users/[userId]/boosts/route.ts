@@ -1,25 +1,19 @@
 import { NextResponse } from "next/server";
 
-import { resolveUserId } from "@/lib/api/auth";
+import { withRequestContext, withResolvedUserId } from "@/lib/api/route-wrappers";
 import { getUserBoosts } from "@/lib/data/boosts";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { logError, logWarn } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
 const getWatchSlug = (recording: { slug: string; shortId: string }) =>
   `${recording.slug}-${recording.shortId}`;
 
-export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
-  return runWithRequestContext(request, async () => {
-    const { userId: userIdParam } = await params;
-    const userIdResult = await resolveUserId(request, "account.boosts", userIdParam);
+interface RouteParams {
+  params: Promise<{ userId: string }>;
+}
 
-    if (!userIdResult.success) {
-      return userIdResult.response;
-    }
-
-    const { userId } = userIdResult;
-
+export const GET = withRequestContext(
+  withResolvedUserId<RouteParams>("account.boosts")(async (_request: Request, { userId }) => {
     try {
       const boosts = await getUserBoosts(userId);
       const recordings = getAllRecordings();
@@ -53,5 +47,5 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
 
       return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
-  });
-}
+  }),
+);

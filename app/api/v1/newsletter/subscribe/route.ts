@@ -1,20 +1,34 @@
 import { checkBotId } from "botid/server";
 import { NextResponse } from "next/server";
 
-import { getClientHashes, isOriginAllowed, isRateLimited } from "@/lib/api/rate-limit";
+import { getClientHashes, isOriginAllowed } from "@/lib/api/rate-limit";
+import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
 import {
   newsletterSubscribeRequestSchema,
   newsletterSubscribeResponseSchema,
 } from "@/lib/api/schemas";
 import { subscribeToNewsletter } from "@/lib/data/newsletter";
 import { logError, logWarn } from "@/lib/utils/log";
-import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
+import { getRequestId } from "@/lib/utils/request-context";
 
 const RATE_LIMIT_STORE = "newsletter";
 const MAX_REQUESTS_PER_MINUTE = 3;
 
-export async function POST(request: Request) {
-  return runWithRequestContext(request, async () => {
+export const POST = withRequestContext(
+  withRateLimit({
+    maxHits: MAX_REQUESTS_PER_MINUTE,
+    onLimit: ({ ipHash }) => {
+      logWarn("newsletter.rate_limited", {
+        ipHash,
+        maxHits: MAX_REQUESTS_PER_MINUTE,
+        requestId: getRequestId(),
+        storeKey: RATE_LIMIT_STORE,
+      });
+
+      return NextResponse.json({ error: "Rate limited" }, { status: 429 });
+    },
+    storeKey: RATE_LIMIT_STORE,
+  })(async (request: Request) => {
     const originAllowed = await isOriginAllowed();
 
     if (!originAllowed) {
@@ -33,17 +47,6 @@ export async function POST(request: Request) {
 
     const { ipHash, uaHash } = await getClientHashes();
 
-    if (isRateLimited(RATE_LIMIT_STORE, ipHash, MAX_REQUESTS_PER_MINUTE)) {
-      logWarn("newsletter.rate_limited", {
-        ipHash,
-        maxHits: MAX_REQUESTS_PER_MINUTE,
-        requestId: getRequestId(),
-        storeKey: RATE_LIMIT_STORE,
-      });
-
-      return NextResponse.json({ error: "Rate limited" }, { status: 429 });
-    }
-
     try {
       const body = await request.json();
       const { email } = newsletterSubscribeRequestSchema.parse(body);
@@ -61,5 +64,5 @@ export async function POST(request: Request) {
 
       return NextResponse.json({ error: "Failed to subscribe" }, { status: 500 });
     }
-  });
-}
+  }),
+);

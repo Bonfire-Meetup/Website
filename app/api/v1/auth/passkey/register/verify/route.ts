@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAuth } from "@/lib/api/auth";
-import { getClientHashes, isRateLimited } from "@/lib/api/rate-limit";
+import {
+  type AuthContext,
+  withAuth,
+  withRateLimit,
+  withRequestContext,
+} from "@/lib/api/route-wrappers";
 import { encodePublicKey, formatDeviceType, verifyRegistration } from "@/lib/auth/webauthn";
 import { getPasskeyChallenge, insertPasskey, markPasskeyChallengeUsed } from "@/lib/data/passkey";
 import { logError, logInfo, logWarn } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
 const RATE_LIMIT_STORE = "passkey.register.verify";
 const MAX_REQUESTS_PER_MINUTE = 10;
@@ -31,97 +34,95 @@ const requestSchema = z.object({
   name: z.string().max(100).optional(),
 });
 
-export const POST = async (request: Request) =>
-  runWithRequestContext(request, async () => {
-    const authResult = await requireAuth(request, "passkey.register.verify");
+export const POST = withRequestContext(
+  withAuth("passkey.register.verify")(
+    withRateLimit<AuthContext>({
+      maxHits: MAX_REQUESTS_PER_MINUTE,
+      keyFn: ({ ctx, ipHash }) => `${ctx.auth.userId}:${ipHash}`,
+      onLimit: ({ ctx, ipHash }) => {
+        logWarn("passkey.register.verify.rate_limited", {
+          ipHash,
+          maxHits: MAX_REQUESTS_PER_MINUTE,
+          storeKey: RATE_LIMIT_STORE,
+          userId: ctx.auth.userId,
+        });
 
-    if (!authResult.success) {
-      return authResult.response;
-    }
+        return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+      },
+      storeKey: RATE_LIMIT_STORE,
+    })(async (request: Request, { auth }) => {
+      const { userId } = auth;
 
-    const { userId } = authResult;
+      let payload: unknown;
 
-    let payload: unknown;
-
-    try {
-      payload = await request.json();
-    } catch {
-      return NextResponse.json({ error: "invalid_request" }, { status: 400 });
-    }
-
-    const result = requestSchema.safeParse(payload);
-
-    if (!result.success) {
-      logWarn("passkey.register.invalid_request", { userId, errors: result.error.flatten() });
-      return NextResponse.json({ error: "invalid_request" }, { status: 400 });
-    }
-
-    const { response, challenge, name } = result.data;
-
-    const { ipHash } = await getClientHashes();
-
-    if (isRateLimited(RATE_LIMIT_STORE, `${userId}:${ipHash}`, MAX_REQUESTS_PER_MINUTE)) {
-      logWarn("passkey.register.verify.rate_limited", {
-        ipHash,
-        maxHits: MAX_REQUESTS_PER_MINUTE,
-        storeKey: RATE_LIMIT_STORE,
-        userId,
-      });
-
-      return NextResponse.json({ error: "rate_limited" }, { status: 429 });
-    }
-
-    try {
-      const storedChallenge = await getPasskeyChallenge(challenge, "registration");
-
-      if (!storedChallenge) {
-        logWarn("passkey.register.challenge_not_found", { userId });
-        return NextResponse.json({ error: "challenge_expired" }, { status: 400 });
+      try {
+        payload = await request.json();
+      } catch {
+        return NextResponse.json({ error: "invalid_request" }, { status: 400 });
       }
 
-      if (storedChallenge.userId !== userId) {
-        logWarn("passkey.register.challenge_user_mismatch", { userId });
-        return NextResponse.json({ error: "invalid_challenge" }, { status: 400 });
+      const result = requestSchema.safeParse(payload);
+
+      if (!result.success) {
+        logWarn("passkey.register.invalid_request", { userId, errors: result.error.flatten() });
+        return NextResponse.json({ error: "invalid_request" }, { status: 400 });
       }
 
-      const verification = await verifyRegistration({
-        response: response as Parameters<typeof verifyRegistration>[0]["response"],
-        expectedChallenge: challenge,
-      });
+      const { response, challenge, name } = result.data;
 
-      if (!verification.verified || !verification.registrationInfo) {
-        logWarn("passkey.register.verification_failed", { userId });
-        return NextResponse.json({ error: "verification_failed" }, { status: 400 });
-      }
+      try {
+        const storedChallenge = await getPasskeyChallenge(challenge, "registration");
 
-      const { credential, credentialDeviceType, credentialBackedUp } =
-        verification.registrationInfo;
+        if (!storedChallenge) {
+          logWarn("passkey.register.challenge_not_found", { userId });
+          return NextResponse.json({ error: "challenge_expired" }, { status: 400 });
+        }
 
-      await markPasskeyChallengeUsed(storedChallenge.id);
+        if (storedChallenge.userId !== userId) {
+          logWarn("passkey.register.challenge_user_mismatch", { userId });
+          return NextResponse.json({ error: "invalid_challenge" }, { status: 400 });
+        }
 
-      const passkeyId = await insertPasskey({
-        userId,
-        credentialId: credential.id,
-        publicKey: encodePublicKey(credential.publicKey),
-        counter: credential.counter,
-        deviceType: formatDeviceType(credentialDeviceType),
-        backedUp: credentialBackedUp,
-        transports: credential.transports,
-        name: name ?? null,
-      });
+        const verification = await verifyRegistration({
+          response: response as Parameters<typeof verifyRegistration>[0]["response"],
+          expectedChallenge: challenge,
+        });
 
-      logInfo("passkey.register.success", { userId, passkeyId });
+        if (!verification.verified || !verification.registrationInfo) {
+          logWarn("passkey.register.verification_failed", { userId });
+          return NextResponse.json({ error: "verification_failed" }, { status: 400 });
+        }
 
-      return NextResponse.json({
-        ok: true,
-        passkey: {
-          id: passkeyId,
+        const { credential, credentialDeviceType, credentialBackedUp } =
+          verification.registrationInfo;
+
+        await markPasskeyChallengeUsed(storedChallenge.id);
+
+        const passkeyId = await insertPasskey({
+          userId,
+          credentialId: credential.id,
+          publicKey: encodePublicKey(credential.publicKey),
+          counter: credential.counter,
+          deviceType: formatDeviceType(credentialDeviceType),
+          backedUp: credentialBackedUp,
+          transports: credential.transports,
           name: name ?? null,
-          createdAt: new Date().toISOString(),
-        },
-      });
-    } catch (error) {
-      logError("passkey.register.error", error, { userId });
-      return NextResponse.json({ error: "internal_error" }, { status: 500 });
-    }
-  });
+        });
+
+        logInfo("passkey.register.success", { userId, passkeyId });
+
+        return NextResponse.json({
+          ok: true,
+          passkey: {
+            id: passkeyId,
+            name: name ?? null,
+            createdAt: new Date().toISOString(),
+          },
+        });
+      } catch (error) {
+        logError("passkey.register.error", error, { userId });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
+      }
+    }),
+  ),
+);

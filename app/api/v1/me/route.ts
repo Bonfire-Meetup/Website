@@ -1,24 +1,17 @@
 import { NextResponse } from "next/server";
 
-import { requireAuth } from "@/lib/api/auth";
+import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
 import { getAuthAttemptsByEmailHash, getAuthUserById } from "@/lib/data/auth";
 import { getUserBoostAllocation, getUserBoosts } from "@/lib/data/boosts";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { getEmailFingerprint, logError } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
 const getWatchSlug = (recording: { slug: string; shortId: string }) =>
   `${recording.slug}-${recording.shortId}`;
 
-export const GET = async (request: Request) =>
-  runWithRequestContext(request, async () => {
+export const GET = withRequestContext(
+  withAuth("account.me")(async (_request: Request, { auth }) => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
-
-    const auth = await requireAuth(request, "account.me");
-
-    if (!auth.success) {
-      return auth.response;
-    }
 
     try {
       const user = await getAuthUserById(auth.userId);
@@ -103,4 +96,5 @@ export const GET = async (request: Request) =>
 
       return respond({ error: "internal_error" }, { status: 500 });
     }
-  });
+  }),
+);

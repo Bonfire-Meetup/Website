@@ -1,18 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { requireAuth } from "@/lib/api/auth";
+import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
 import { getAuthAttemptsByEmailHash, getAuthUserById } from "@/lib/data/auth";
 import { getEmailFingerprint, logError, logWarn } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
-export async function GET(request: Request) {
-  return runWithRequestContext(request, async () => {
-    const auth = await requireAuth(request, "account.attempts");
-
-    if (!auth.success) {
-      return auth.response;
-    }
-
+export const GET = withRequestContext(
+  withAuth("account.attempts")(async (_request: Request, { auth }) => {
     try {
       const user = await getAuthUserById(auth.userId);
 
@@ -50,5 +43,5 @@ export async function GET(request: Request) {
 
       return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
-  });
-}
+  }),
+);

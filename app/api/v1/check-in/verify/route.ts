@@ -1,12 +1,11 @@
 import crypto from "crypto";
 
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-import { requireRole } from "@/lib/api/auth";
+import { withRequestContext, withRole } from "@/lib/api/route-wrappers";
 import { USER_ROLES } from "@/lib/config/roles";
 import { getAuthUserById } from "@/lib/data/auth";
 import { logError } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
 const TOKEN_VERSION = "v1";
@@ -76,14 +75,11 @@ const verifyToken = (token: string): { valid: boolean; userId?: string; error?: 
   }
 };
 
-export async function POST(request: NextRequest) {
-  return runWithRequestContext(request, async () => {
-    const auth = await requireRole(request, "check_in.verify", USER_ROLES.CREW);
-
-    if (!auth.success) {
-      return auth.response;
-    }
-
+export const POST = withRequestContext(
+  withRole(
+    "check_in.verify",
+    USER_ROLES.CREW,
+  )(async (request: Request) => {
     try {
       const body = await request.json();
       const { token } = body;
@@ -112,5 +108,5 @@ export async function POST(request: NextRequest) {
       logError("check_in.verify_request_failed", error);
       return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
-  });
-}
+  }),
+);

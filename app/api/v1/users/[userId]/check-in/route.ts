@@ -1,11 +1,15 @@
 import crypto from "crypto";
 
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-import { resolveUserId } from "@/lib/api/auth";
-import { isRateLimited } from "@/lib/api/rate-limit";
+import {
+  type ResolvedUserContext,
+  withRateLimit,
+  withRequestContext,
+  withResolvedUserId,
+} from "@/lib/api/route-wrappers";
 import { logError, logWarn } from "@/lib/utils/log";
-import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
+import { getRequestId } from "@/lib/utils/request-context";
 
 const TOKEN_VERSION = "v1";
 const TOKEN_TTL_SECONDS = 10 * 60;
@@ -26,6 +30,10 @@ interface CheckInTokenPayload {
   v: string;
 }
 
+interface RouteParams {
+  params: Promise<{ userId: string }>;
+}
+
 const base64UrlEncode = (value: string) =>
   Buffer.from(value).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 
@@ -38,24 +46,14 @@ const signPayload = (payload: CheckInTokenPayload) => {
   return `${TOKEN_VERSION}.${encodedPayload}.${signature}`;
 };
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ userId: string }> },
-) {
-  return runWithRequestContext(request, async () => {
-    const { userId: userIdParam } = await params;
-    const userIdResult = await resolveUserId(request, "check_in.get", userIdParam);
-
-    if (!userIdResult.success) {
-      return userIdResult.response;
-    }
-
-    const { userId } = userIdResult;
-
-    try {
-      if (isRateLimited(RATE_LIMIT_STORE, userId, MAX_REQUESTS_PER_MINUTE)) {
+export const GET = withRequestContext(
+  withResolvedUserId<RouteParams>("check_in.get")(
+    withRateLimit<RouteParams & ResolvedUserContext>({
+      keyFn: ({ ctx }) => ctx.userId,
+      maxHits: MAX_REQUESTS_PER_MINUTE,
+      onLimit: ({ ctx }) => {
         logWarn("check_in.rate_limited", {
-          userId,
+          userId: ctx.userId,
           maxHits: MAX_REQUESTS_PER_MINUTE,
           requestId: getRequestId(),
           storeKey: RATE_LIMIT_STORE,
@@ -71,28 +69,34 @@ export async function GET(
             },
           },
         );
+      },
+      storeKey: RATE_LIMIT_STORE,
+    })(async (_request: Request, { userId }) => {
+      try {
+        if (!SECRET) {
+          logError("check_in.secret_not_configured", new Error("BNF_CHECKIN_SECRET not set"));
+          return NextResponse.json({ error: "Check-in not configured" }, { status: 500 });
+        }
+
+        const nowSeconds = Math.floor(Date.now() / 1000);
+        const exp = nowSeconds + TOKEN_TTL_SECONDS;
+        const checkInPayload: CheckInTokenPayload = {
+          sub: userId,
+          iat: nowSeconds,
+          exp,
+          v: TOKEN_VERSION,
+        };
+
+        const signed = signPayload(checkInPayload);
+
+        return NextResponse.json({
+          token: signed,
+          expiresAt: new Date(exp * 1000).toISOString(),
+        });
+      } catch (err) {
+        logError("check_in.token_generation_failed", err, { userId });
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
       }
-
-      if (!SECRET) {
-        logError("check_in.secret_not_configured", new Error("BNF_CHECKIN_SECRET not set"));
-        return NextResponse.json({ error: "Check-in not configured" }, { status: 500 });
-      }
-
-      const nowSeconds = Math.floor(Date.now() / 1000);
-      const exp = nowSeconds + TOKEN_TTL_SECONDS;
-      const checkInPayload: CheckInTokenPayload = {
-        sub: userId,
-        iat: nowSeconds,
-        exp,
-        v: TOKEN_VERSION,
-      };
-
-      const signed = signPayload(checkInPayload);
-
-      return NextResponse.json({ token: signed, expiresAt: new Date(exp * 1000).toISOString() });
-    } catch (err) {
-      logError("check_in.token_generation_failed", err, { userId });
-      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-    }
-  });
-}
+    }),
+  ),
+);

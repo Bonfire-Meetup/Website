@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 
-import { requireAuth } from "@/lib/api/auth";
+import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
 import { createEmailChallenge } from "@/lib/auth/challenge-request";
 import { getAuthUserById } from "@/lib/data/auth";
 import { getAuthFrom, sendEmail } from "@/lib/email/email";
 import { renderAccountDeleteTemplate } from "@/lib/email/email-templates";
 import { getRequestLocale } from "@/lib/utils/locale";
 import { getClientFingerprint, getEmailFingerprint, logWarn } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
 const challengeTtlMs = 10 * 60_000;
 const maxAttempts = 5;
@@ -16,15 +15,9 @@ const maxEmailChallenges = 2;
 const maxIpChallenges = 5;
 const rateLimitStore = new Map<string, number[]>();
 
-export const POST = async (request: Request) =>
-  runWithRequestContext(request, async () => {
+export const POST = withRequestContext(
+  withAuth("account.delete-challenge")(async (request: Request, { auth }) => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
-
-    const auth = await requireAuth(request, "account.delete-challenge");
-
-    if (!auth.success) {
-      return auth.response;
-    }
 
     const user = await getAuthUserById(auth.userId);
 
@@ -81,4 +74,5 @@ export const POST = async (request: Request) =>
     }
 
     return respond({ challenge_token: resultChallenge.challenge_token, ok: true });
-  });
+  }),
+);

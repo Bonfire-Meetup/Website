@@ -1,20 +1,19 @@
 import { getTranslations } from "next-intl/server";
 import { NextResponse } from "next/server";
 
-import { getClientHashes, isRateLimited } from "@/lib/api/rate-limit";
+import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
 import { getRequestLocale } from "@/lib/i18n/request-locale";
 import { buildLibraryBrowsePayload, type LibraryApiPayload } from "@/lib/recordings/library-filter";
 import { logWarn } from "@/lib/utils/log";
-import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
+import { getRequestId } from "@/lib/utils/request-context";
 
 const RATE_LIMIT_STORE = "library";
 const MAX_REQUESTS_PER_MINUTE = 60;
 
-export async function GET(request: Request) {
-  return runWithRequestContext(request, async () => {
-    const { ipHash } = await getClientHashes();
-
-    if (isRateLimited(RATE_LIMIT_STORE, ipHash, MAX_REQUESTS_PER_MINUTE)) {
+export const GET = withRequestContext(
+  withRateLimit({
+    maxHits: MAX_REQUESTS_PER_MINUTE,
+    onLimit: ({ ipHash }) => {
       logWarn("library.rate_limited", {
         ipHash,
         maxHits: MAX_REQUESTS_PER_MINUTE,
@@ -32,8 +31,9 @@ export async function GET(request: Request) {
           },
         },
       );
-    }
-
+    },
+    storeKey: RATE_LIMIT_STORE,
+  })(async (request: Request) => {
     const locale = await getRequestLocale();
     const tCommon = await getTranslations({ locale, namespace: "common" });
     const tFilters = await getTranslations({ locale, namespace: "libraryPage.filters" });
@@ -63,5 +63,5 @@ export async function GET(request: Request) {
     };
 
     return NextResponse.json(response);
-  });
-}
+  }),
+);

@@ -1,19 +1,12 @@
 import { NextResponse } from "next/server";
 
-import { requireAuth } from "@/lib/api/auth";
+import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
 import { getPasskeysByUserId } from "@/lib/data/passkey";
 import { logError } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
-export const GET = async (request: Request) =>
-  runWithRequestContext(request, async () => {
-    const authResult = await requireAuth(request, "passkey.list");
-
-    if (!authResult.success) {
-      return authResult.response;
-    }
-
-    const { userId } = authResult;
+export const GET = withRequestContext(
+  withAuth("passkey.list")(async (_request: Request, { auth }) => {
+    const { userId } = auth;
 
     try {
       const passkeys = await getPasskeysByUserId(userId);
@@ -32,4 +25,5 @@ export const GET = async (request: Request) =>
       logError("passkey.list.error", error, { userId });
       return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
-  });
+  }),
+);

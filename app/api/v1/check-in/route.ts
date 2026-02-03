@@ -1,20 +1,16 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-import { requireRole } from "@/lib/api/auth";
+import { withRequestContext, withRole } from "@/lib/api/route-wrappers";
 import { USER_ROLES } from "@/lib/config/roles";
 import { checkInUser } from "@/lib/data/check-in";
 import { logError } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 import { decompressUuid } from "@/lib/utils/uuid-compress";
 
-export async function POST(request: NextRequest) {
-  return runWithRequestContext(request, async () => {
-    const auth = await requireRole(request, "check_in.create", USER_ROLES.CREW);
-
-    if (!auth.success) {
-      return auth.response;
-    }
-
+export const POST = withRequestContext(
+  withRole(
+    "check_in.create",
+    USER_ROLES.CREW,
+  )(async (request: Request, { auth: _auth }) => {
     try {
       const body = await request.json();
       const { userId, eventId } = body;
@@ -49,5 +45,5 @@ export async function POST(request: NextRequest) {
       logError("check_in.create_request_failed", error);
       return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
-  });
-}
+  }),
+);

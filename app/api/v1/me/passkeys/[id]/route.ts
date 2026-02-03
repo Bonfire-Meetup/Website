@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAuth } from "@/lib/api/auth";
+import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
 import {
   deletePasskey,
   getPasskeyById,
@@ -9,7 +9,6 @@ import {
   updatePasskeyName,
 } from "@/lib/data/passkey";
 import { logError, logInfo, logWarn } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -19,15 +18,9 @@ const updateSchema = z.object({
   name: z.string().max(100).nullable(),
 });
 
-export const PATCH = async (request: Request, { params }: RouteParams) =>
-  runWithRequestContext(request, async () => {
-    const authResult = await requireAuth(request, "passkey.update");
-
-    if (!authResult.success) {
-      return authResult.response;
-    }
-
-    const { userId } = authResult;
+export const PATCH = withRequestContext(
+  withAuth<RouteParams>("passkey.update")(async (request: Request, { params, auth }) => {
+    const { userId } = auth;
     const { id } = await params;
 
     let payload: unknown;
@@ -60,17 +53,12 @@ export const PATCH = async (request: Request, { params }: RouteParams) =>
       logError("passkey.update.error", error, { userId, passkeyId: id });
       return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
-  });
+  }),
+);
 
-export const DELETE = async (request: Request, { params }: RouteParams) =>
-  runWithRequestContext(request, async () => {
-    const authResult = await requireAuth(request, "passkey.delete");
-
-    if (!authResult.success) {
-      return authResult.response;
-    }
-
-    const { userId } = authResult;
+export const DELETE = withRequestContext(
+  withAuth<RouteParams>("passkey.delete")(async (_request: Request, { params, auth }) => {
+    const { userId } = auth;
     const { id } = await params;
 
     try {
@@ -99,4 +87,5 @@ export const DELETE = async (request: Request, { params }: RouteParams) =>
       logError("passkey.delete.error", error, { userId, passkeyId: id });
       return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
-  });
+  }),
+);

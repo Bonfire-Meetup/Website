@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { getClientHashes, isRateLimited } from "@/lib/api/rate-limit";
+import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
 import {
   generateRefreshToken,
   getAccessTokenTtlSeconds,
@@ -33,7 +33,7 @@ import {
   logInfo,
   logWarn,
 } from "@/lib/utils/log";
-import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
+import { getRequestId } from "@/lib/utils/request-context";
 import { getUserAgentSummary } from "@/lib/utils/user-agent";
 
 const RATE_LIMIT_STORE = "passkey.authenticate.verify";
@@ -112,8 +112,21 @@ const issueTokens = async (
   };
 };
 
-export const POST = async (request: Request) =>
-  runWithRequestContext(request, async () => {
+export const POST = withRequestContext(
+  withRateLimit({
+    maxHits: MAX_REQUESTS_PER_MINUTE,
+    onLimit: ({ ipHash }) => {
+      logWarn("passkey.authenticate.verify.rate_limited", {
+        ipHash,
+        maxHits: MAX_REQUESTS_PER_MINUTE,
+        requestId: getRequestId(),
+        storeKey: RATE_LIMIT_STORE,
+      });
+
+      return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+    },
+    storeKey: RATE_LIMIT_STORE,
+  })(async (request: Request) => {
     const { headers } = request;
     const ip = getClientIp(headers);
     const userAgent = headers.get("user-agent");
@@ -138,19 +151,6 @@ export const POST = async (request: Request) =>
     const { response, challenge } = result.data;
 
     try {
-      const { ipHash } = await getClientHashes();
-
-      if (isRateLimited(RATE_LIMIT_STORE, ipHash, MAX_REQUESTS_PER_MINUTE)) {
-        logWarn("passkey.authenticate.verify.rate_limited", {
-          ipHash,
-          maxHits: MAX_REQUESTS_PER_MINUTE,
-          requestId: getRequestId(),
-          storeKey: RATE_LIMIT_STORE,
-        });
-
-        return NextResponse.json({ error: "rate_limited" }, { status: 429 });
-      }
-
       const storedChallenge = await getPasskeyChallenge(challenge, "authentication");
 
       if (!storedChallenge) {
@@ -245,4 +245,5 @@ export const POST = async (request: Request) =>
       logError("passkey.authenticate.error", error, clientFingerprint);
       return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
-  });
+  }),
+);
