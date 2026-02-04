@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   useActionState,
   useCallback,
@@ -44,9 +44,12 @@ function getStoredDraft(): {
   }
 }
 
-export function ContactForm() {
+interface ContactFormInnerProps {
+  onReset: () => void;
+}
+
+function ContactFormInner({ onReset }: ContactFormInnerProps) {
   const t = useTranslations("contactPage.form");
-  const router = useRouter();
   const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
   const [isTransitionPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
@@ -259,13 +262,7 @@ export function ContactForm() {
         </h2>
         <p className="text-neutral-600 dark:text-neutral-400">{t("successMessage")}</p>
         <div className="mt-6 flex justify-center">
-          <Button
-            type="button"
-            variant="plain"
-            onClick={() => {
-              router.refresh();
-            }}
-          >
+          <Button type="button" variant="plain" onClick={onReset}>
             {t("sendAnother")}
           </Button>
         </div>
@@ -455,4 +452,17 @@ export function ContactForm() {
       </div>
     </form>
   );
+}
+
+export function ContactForm() {
+  const [instanceKey, setInstanceKey] = useState(0);
+
+  const handleReset = useCallback(() => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+    }
+    setInstanceKey((prev) => prev + 1);
+  }, []);
+
+  return <ContactFormInner key={instanceKey} onReset={handleReset} />;
 }

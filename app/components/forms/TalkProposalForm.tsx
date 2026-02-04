@@ -25,6 +25,10 @@ import { TurnstileWidget, type TurnstileWidgetHandle } from "./TurnstileWidget";
 
 const initialState: TalkProposalFormState = { success: false };
 
+interface TalkProposalFormInnerProps {
+  onReset: () => void;
+}
+
 function getStoredDraft(): {
   speakerName?: string;
   email?: string;
@@ -45,7 +49,7 @@ function getStoredDraft(): {
   }
 }
 
-export function TalkProposalForm() {
+function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
   const t = useTranslations("talkProposalPage.form");
   const tCommon = useTranslations("common");
   const [state, formAction, isPending] = useActionState(submitTalkProposal, initialState);
@@ -305,7 +309,7 @@ export function TalkProposalForm() {
         </h2>
         <p className="text-neutral-600 dark:text-neutral-400">{t("successMessage")}</p>
         <div className="mt-6 flex justify-center">
-          <Button type="button" variant="plain" onClick={() => window.location.reload()}>
+          <Button type="button" variant="plain" onClick={onReset}>
             {t("submitAnother")}
           </Button>
         </div>
@@ -562,4 +566,17 @@ export function TalkProposalForm() {
       </div>
     </form>
   );
+}
+
+export function TalkProposalForm() {
+  const [instanceKey, setInstanceKey] = useState(0);
+
+  const handleReset = useCallback(() => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+    }
+    setInstanceKey((prev) => prev + 1);
+  }, []);
+
+  return <TalkProposalFormInner key={instanceKey} onReset={handleReset} />;
 }
