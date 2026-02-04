@@ -324,7 +324,7 @@ export function Lightbox({
             <div className="h-full w-px bg-white/20" />
             <button
               onClick={handleDownload}
-              className="flex h-full items-center justify-center px-3 transition-colors hover:bg-white/20"
+              className="flex h-full cursor-pointer items-center justify-center px-3 text-white/90 transition-all hover:bg-white/20 hover:text-white"
               aria-label={downloadLabel}
             >
               <svg
@@ -373,7 +373,7 @@ export function Lightbox({
             <div className="h-full w-px bg-white/20" />
             <button
               onClick={handleDownload}
-              className="flex h-full items-center justify-center px-4 transition-colors hover:bg-white/20"
+              className="flex h-full cursor-pointer items-center justify-center px-4 text-white/90 transition-all hover:bg-white/20 hover:text-white"
               aria-label={downloadLabel}
             >
               <svg
