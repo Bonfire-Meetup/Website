@@ -3,7 +3,15 @@
 import type { RootState } from "@/lib/redux/store";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
@@ -42,6 +50,15 @@ interface GlobalPlayerContextValue {
   setCinemaMode: (value: boolean) => void;
 }
 
+type Corner = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
+const INFO_BAR_HEIGHT = 48;
+const MIN_VIDEO_WIDTH = 280;
+const MAX_VIDEO_WIDTH = 1120;
+const MINI_WIDTH = 320;
+const MINI_HEIGHT = (MINI_WIDTH * 9) / 16;
+const EDGE_MARGIN = 16;
+
 const GlobalPlayerContext = createContext<GlobalPlayerContextValue | null>(null);
 
 const useMediaQuery = (query: string) => {
@@ -54,20 +71,33 @@ const useMediaQuery = (query: string) => {
 
     if (media.addEventListener) {
       media.addEventListener("change", handleChange);
-
-      return () => media.removeEventListener("change", handleChange);
+    } else {
+      media.addListener(handleChange);
     }
-
-    media.addListener(handleChange);
-
-    return () => media.removeListener(handleChange);
+    return () => {
+      if (media.removeEventListener) {
+        media.removeEventListener("change", handleChange);
+      } else {
+        media.removeListener(handleChange);
+      }
+    };
   }, [query]);
 
   return matches;
 };
 
-const MINI_WIDTH = 320;
-const MINI_HEIGHT = (MINI_WIDTH * 9) / 16;
+const useWindowSize = () => {
+  const [size, setSize] = useState({ height: 0, width: 0 });
+
+  useEffect(() => {
+    const update = () => setSize({ height: window.innerHeight, width: window.innerWidth });
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return size;
+};
 
 export function GlobalPlayerProvider({ children }: { children: React.ReactNode }) {
   const t = useTranslations("recordings");
@@ -75,17 +105,96 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
   const player = useAppSelector((state) => state.player) as RootState["player"];
   const video = player.video as VideoInfo | null;
   const [inlineElement, setInlineElement] = useState<HTMLDivElement | null>(null);
-  const { cinemaMode } = player;
+  const { cinemaMode, isAnimating, isLoading, hasPlaybackStarted } = player;
   const playerRect = player.playerRect as Rect | null;
-  const { isAnimating } = player;
-  const { isLoading } = player;
-  const { hasPlaybackStarted } = player;
   const lastInlineRectRef = useRef<Rect | null>(null);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const canMiniPlayer = useMediaQuery("(min-width: 768px)");
+  const windowSize = useWindowSize();
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
   const isInline = Boolean(inlineElement);
+  const showMiniPlayer = !isInline && !cinemaMode && canMiniPlayer && Boolean(playerRect);
+  const shouldShowPlayer =
+    ENABLE_GLOBAL_MINI_PLAYER &&
+    Boolean(video) &&
+    Boolean(playerRect) &&
+    (isInline || canMiniPlayer);
+
+  const [corner, setCorner] = useState<Corner>("bottom-right");
+  const [miniSize, setMiniSize] = useState<number>(MINI_WIDTH);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
+  const dragStartRef = useRef<{ x: number; y: number; startX: number; startY: number } | null>(
+    null,
+  );
+  const resizeStartRef = useRef<{ width: number; mouseX: number } | null>(null);
+
+  const miniVideoWidth = miniSize;
+  const miniVideoHeight = (miniSize * 9) / 16;
+  const miniWrapperWidth = miniVideoWidth;
+  const miniWrapperHeight = miniVideoHeight + INFO_BAR_HEIGHT;
+
+  const getCornerPosition = useCallback(
+    (c: Corner, wrapperW: number, wrapperH: number) => {
+      const positions = {
+        "bottom-left": { x: EDGE_MARGIN, y: windowSize.height - EDGE_MARGIN - wrapperH },
+        "bottom-right": {
+          x: windowSize.width - EDGE_MARGIN - wrapperW,
+          y: windowSize.height - EDGE_MARGIN - wrapperH,
+        },
+        "top-left": { x: EDGE_MARGIN, y: EDGE_MARGIN },
+        "top-right": { x: windowSize.width - EDGE_MARGIN - wrapperW, y: EDGE_MARGIN },
+      };
+      return positions[c];
+    },
+    [windowSize.width, windowSize.height],
+  );
+
+  const getNearestCorner = useCallback(
+    (x: number, y: number, wrapperW: number, wrapperH: number): Corner => {
+      const centerX = x + wrapperW / 2;
+      const centerY = y + wrapperH / 2;
+      const isLeft = centerX < windowSize.width / 2;
+      const isTop = centerY < windowSize.height / 2;
+      if (isTop && isLeft) {
+        return "top-left";
+      }
+      if (isTop && !isLeft) {
+        return "top-right";
+      }
+      if (!isTop && isLeft) {
+        return "bottom-left";
+      }
+      return "bottom-right";
+    },
+    [windowSize.width, windowSize.height],
+  );
+
+  const currentPosition =
+    dragPosition ?? getCornerPosition(corner, miniWrapperWidth, miniWrapperHeight);
+
+  const handleDragStart = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      const pos = getCornerPosition(corner, miniWrapperWidth, miniWrapperHeight);
+      dragStartRef.current = { startX: pos.x, startY: pos.y, x: e.clientX, y: e.clientY };
+      setDragPosition(pos);
+      setIsDragging(true);
+    },
+    [corner, miniWrapperWidth, miniWrapperHeight, getCornerPosition],
+  );
+
+  const handleResizeStart = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      resizeStartRef.current = { mouseX: e.clientX, width: miniSize };
+      setIsResizing(true);
+    },
+    [miniSize],
+  );
 
   useEffect(() => {
     dispatch(setIsLoading(true));
@@ -99,11 +208,9 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
 
     const updateRect = () => {
       const rect = inlineElement.getBoundingClientRect();
-
       if (rect.width > 0 && rect.height > 0) {
         const newRect = { height: rect.height, left: rect.left, top: rect.top, width: rect.width };
         lastInlineRectRef.current = newRect;
-
         if (!cinemaMode) {
           dispatch(setPlayerRect(newRect));
         }
@@ -136,7 +243,6 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
           width,
         }),
       );
-
       return;
     }
 
@@ -146,7 +252,6 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
 
     if (!canMiniPlayer || !video || !hasPlaybackStarted) {
       dispatch(setPlayerRect(null));
-
       return;
     }
 
@@ -189,7 +294,6 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     };
 
     window.addEventListener("resize", update);
-
     return () => window.removeEventListener("resize", update);
   }, [isInline, isAnimating, cinemaMode, canMiniPlayer, hasPlaybackStarted, dispatch]);
 
@@ -199,18 +303,12 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     }
 
     const handleMessage = (event: MessageEvent) => {
-      if (!iframeRef.current?.contentWindow) {
+      if (!iframeRef.current?.contentWindow || event.source !== iframeRef.current.contentWindow) {
         return;
       }
-
-      if (event.source !== iframeRef.current.contentWindow) {
-        return;
-      }
-
       if (!event.origin.includes("youtube")) {
         return;
       }
-
       if (typeof event.data !== "string" && typeof event.data !== "object") {
         return;
       }
@@ -226,13 +324,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
             })()
           : (event.data as { event?: string; info?: unknown });
 
-      if (!parsed) {
-        return;
-      }
-
-      const eventName = parsed.event;
-
-      if (!eventName) {
+      if (!parsed?.event) {
         return;
       }
 
@@ -244,32 +336,89 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
             ? (info as { playerState?: number }).playerState
             : undefined;
 
-      if (eventName === "onStateChange" || eventName === "infoDelivery") {
-        if (playerState === 1 || playerState === 2 || playerState === 3) {
-          dispatch(setHasPlaybackStarted(true));
-        }
+      if (
+        (parsed.event === "onStateChange" || parsed.event === "infoDelivery") &&
+        (playerState === 1 || playerState === 2 || playerState === 3)
+      ) {
+        dispatch(setHasPlaybackStarted(true));
       }
     };
 
     window.addEventListener("message", handleMessage);
-
     return () => window.removeEventListener("message", handleMessage);
   }, [video, dispatch]);
 
-  const registerPlayerListener = () => {
-    const target = iframeRef.current?.contentWindow;
-
-    if (!target) {
+  useEffect(() => {
+    if (!isDragging && !isResizing) {
       return;
     }
 
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
+      if (isDragging && dragStartRef.current) {
+        const dx = e.clientX - dragStartRef.current.x;
+        const dy = e.clientY - dragStartRef.current.y;
+        const newX = Math.max(
+          0,
+          Math.min(windowSize.width - miniWrapperWidth, dragStartRef.current.startX + dx),
+        );
+        const newY = Math.max(
+          0,
+          Math.min(windowSize.height - miniWrapperHeight, dragStartRef.current.startY + dy),
+        );
+        setDragPosition({ x: newX, y: newY });
+      }
+      if (isResizing && resizeStartRef.current) {
+        const dx = e.clientX - resizeStartRef.current.mouseX;
+        const resizeDir = corner.includes("right") ? -dx : dx;
+        setMiniSize(
+          Math.max(
+            MIN_VIDEO_WIDTH,
+            Math.min(MAX_VIDEO_WIDTH, resizeStartRef.current.width + resizeDir),
+          ),
+        );
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (isDragging && dragPosition) {
+        setCorner(
+          getNearestCorner(dragPosition.x, dragPosition.y, miniWrapperWidth, miniWrapperHeight),
+        );
+      }
+      setIsDragging(false);
+      setIsResizing(false);
+      setDragPosition(null);
+      dragStartRef.current = null;
+      resizeStartRef.current = null;
+    };
+
+    document.addEventListener("mousemove", handleMouseMove, { capture: true });
+    document.addEventListener("mouseup", handleMouseUp, { capture: true });
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove, { capture: true });
+      document.removeEventListener("mouseup", handleMouseUp, { capture: true });
+    };
+  }, [
+    isDragging,
+    isResizing,
+    corner,
+    dragPosition,
+    miniWrapperWidth,
+    miniWrapperHeight,
+    windowSize.width,
+    windowSize.height,
+    getNearestCorner,
+  ]);
+
+  const registerPlayerListener = () => {
+    const target = iframeRef.current?.contentWindow;
+    if (!target) {
+      return;
+    }
     target.postMessage(JSON.stringify({ event: "listening", id: "global-player" }), "*");
     target.postMessage(
-      JSON.stringify({
-        args: ["onStateChange"],
-        event: "command",
-        func: "addEventListener",
-      }),
+      JSON.stringify({ args: ["onStateChange"], event: "command", func: "addEventListener" }),
       "*",
     );
   };
@@ -278,36 +427,20 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     () => ({
       cinemaMode,
       clearVideo: () => dispatch(clearVideoAction()),
-      setCinemaMode: (value: boolean) => dispatch(setCinemaModeAction(value)),
+      setCinemaMode: (v: boolean) => dispatch(setCinemaModeAction(v)),
       setInlineContainer: (element: HTMLDivElement | null) => {
         setInlineElement(element);
         dispatch(setInlineContainerAction(element?.id ?? null));
       },
       setVideo: (next: VideoInfo) => {
-        const hasCurrentVideo = Boolean(video);
-        const isSameYoutubeId = video?.youtubeId === next.youtubeId;
-        const isSameWatchUrl = video?.watchUrl === next.watchUrl;
-        const isSameVideo = hasCurrentVideo && isSameYoutubeId && isSameWatchUrl;
-
-        if (isSameVideo) {
+        if (video?.youtubeId === next.youtubeId && video?.watchUrl === next.watchUrl) {
           return;
         }
-
         dispatch(setVideoAction(next));
       },
     }),
     [cinemaMode, dispatch, video],
   );
-
-  const isNotInline = !isInline;
-  const isNotCinemaMode = !cinemaMode;
-  const showMiniControls = isNotInline && isNotCinemaMode && canMiniPlayer && playerRect;
-
-  const isMiniPlayerEnabled = ENABLE_GLOBAL_MINI_PLAYER;
-  const hasVideo = Boolean(video);
-  const hasPlayerRect = Boolean(playerRect);
-  const canShowPlayer = isInline || canMiniPlayer;
-  const shouldShowPlayer = isMiniPlayerEnabled && hasVideo && hasPlayerRect && canShowPlayer;
 
   return (
     <GlobalPlayerContext.Provider value={value}>
@@ -331,42 +464,76 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
             </>
           )}
 
-          {showMiniControls && (
+          {showMiniPlayer && (
             <div
-              className="fixed right-6 z-[60] flex items-center gap-2"
-              style={{ bottom: `${24 + MINI_HEIGHT + 8}px` }}
+              className={`fixed z-40 overflow-hidden rounded-xl bg-white/80 shadow-[0_4px_24px_rgba(0,0,0,0.15)] ring-1 ring-black/5 backdrop-blur-xl dark:bg-neutral-900/80 dark:shadow-[0_4px_24px_rgba(0,0,0,0.5)] dark:ring-white/10 ${isDragging || isResizing ? "" : "transition-all duration-300 ease-out"}`}
+              style={{
+                height: miniWrapperHeight,
+                left: currentPosition.x,
+                top: currentPosition.y,
+                width: miniWrapperWidth,
+              }}
             >
-              <Link
-                href={video.watchUrl}
-                className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold tracking-[0.2em] text-neutral-700 uppercase shadow-lg ring-1 ring-black/5 transition dark:bg-neutral-950/90 dark:text-neutral-200 dark:ring-white/10"
+              <div
+                className="absolute right-0 bottom-0 left-0 flex cursor-move items-center gap-3 border-t border-black/5 bg-white/50 px-3 backdrop-blur-md dark:border-white/5 dark:bg-neutral-800/50"
+                style={{ height: INFO_BAR_HEIGHT }}
+                onMouseDown={handleDragStart}
               >
-                {t("returnToPlayer")}
-              </Link>
-              <button
-                type="button"
-                onClick={() => dispatch(clearVideoAction())}
-                className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/70 text-white/80 shadow-lg transition hover:bg-black/90 hover:text-white"
-                aria-label={t("closePlayer")}
-              >
-                <CloseIcon className="h-4 w-4" />
-              </button>
+                <div className="flex items-end gap-0.5">
+                  <span
+                    className="w-0.5 animate-[bounce_0.6s_ease-in-out_infinite] rounded-full bg-red-500"
+                    style={{ height: 12 }}
+                  />
+                  <span
+                    className="w-0.5 animate-[bounce_0.6s_ease-in-out_0.15s_infinite] rounded-full bg-red-500"
+                    style={{ height: 16 }}
+                  />
+                  <span
+                    className="w-0.5 animate-[bounce_0.6s_ease-in-out_0.3s_infinite] rounded-full bg-red-500"
+                    style={{ height: 10 }}
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-neutral-900 dark:text-white">
+                    {video.title}
+                  </p>
+                </div>
+                <Link
+                  href={video.watchUrl}
+                  className="flex-shrink-0 rounded-full p-1.5 text-neutral-500 transition-colors hover:bg-black/5 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                  title={t("returnToPlayer")}
+                >
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </Link>
+              </div>
             </div>
           )}
 
           <div
-            className={`fixed overflow-hidden bg-black ${
-              cinemaMode
-                ? "z-[80] rounded-2xl"
-                : isInline
-                  ? "z-40 rounded-xl"
-                  : "z-50 rounded-2xl shadow-2xl ring-1 ring-black/20"
-            } ${isAnimating ? "transition-all duration-300" : ""}`}
-            style={{
-              height: playerRect.height,
-              left: playerRect.left,
-              top: playerRect.top,
-              width: playerRect.width,
-            }}
+            className={`fixed overflow-hidden bg-black ${showMiniPlayer ? "z-50 rounded-t-xl" : cinemaMode ? "z-[80] rounded-2xl shadow-2xl" : "z-40 rounded-xl"} ${!showMiniPlayer && isAnimating ? "transition-all duration-300" : ""} ${showMiniPlayer && !isDragging && !isResizing ? "transition-all duration-300 ease-out" : ""}`}
+            style={
+              showMiniPlayer
+                ? {
+                    height: miniVideoHeight,
+                    left: currentPosition.x,
+                    top: currentPosition.y,
+                    width: miniVideoWidth,
+                  }
+                : {
+                    height: playerRect.height,
+                    left: playerRect.left,
+                    top: playerRect.top,
+                    width: playerRect.width,
+                  }
+            }
           >
             {isLoading && (
               <div className="absolute inset-0 z-10 flex items-center justify-center bg-black">
@@ -387,6 +554,35 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
               className={`absolute inset-0 h-full w-full ${cinemaMode ? "rounded-2xl" : ""}`}
             />
           </div>
+
+          {showMiniPlayer && (
+            <div
+              className={`pointer-events-none fixed z-60 ${isDragging || isResizing ? "" : "transition-all duration-300 ease-out"}`}
+              style={{
+                height: miniVideoHeight,
+                left: currentPosition.x,
+                top: currentPosition.y,
+                width: miniVideoWidth,
+              }}
+            >
+              {(isDragging || isResizing) && (
+                <div className="pointer-events-auto absolute inset-0" />
+              )}
+              <button
+                type="button"
+                onClick={() => dispatch(clearVideoAction())}
+                className="pointer-events-auto absolute top-2 right-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-200 hover:bg-black/80 hover:text-white active:scale-95"
+                aria-label={t("closePlayer")}
+              >
+                <CloseIcon className="h-4 w-4" />
+              </button>
+              <div
+                className={`pointer-events-auto absolute top-0 w-3 cursor-ew-resize ${corner.includes("right") ? "left-0" : "right-0"}`}
+                style={{ height: miniWrapperHeight }}
+                onMouseDown={handleResizeStart}
+              />
+            </div>
+          )}
         </>
       )}
     </GlobalPlayerContext.Provider>
@@ -395,10 +591,8 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
 
 export function useGlobalPlayer() {
   const context = useContext(GlobalPlayerContext);
-
   if (!context) {
     throw new Error("useGlobalPlayer must be used within GlobalPlayerProvider");
   }
-
   return context;
 }
