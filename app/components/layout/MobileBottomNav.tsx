@@ -9,6 +9,7 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { CalendarIcon, FilmIcon, LogInIcon, UserIcon } from "../shared/Icons";
+import { LoadingSpinner } from "../ui/LoadingSpinner";
 
 import { MobileMoreMenu } from "./MobileMoreMenu";
 
@@ -37,6 +38,10 @@ function HomeIcon({ className }: { className?: string }) {
   );
 }
 
+function SpinnerIcon({ className }: { className?: string }) {
+  return <LoadingSpinner className={className} ariaLabel="Authenticating" />;
+}
+
 function MobileBottomNavInner() {
   const t = useTranslations("header");
   const pathname = usePathname();
@@ -47,6 +52,7 @@ function MobileBottomNavInner() {
     setMounted(true);
   }, []);
 
+  const isResolvingAuth = mounted && auth.loading && !auth.hydrated;
   const isAuthed = mounted && auth.isAuthenticated && auth.hydrated;
 
   const navItems: NavItem[] = [
@@ -56,7 +62,7 @@ function MobileBottomNavInner() {
     {
       href: isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN,
       label: isAuthed ? t("profile") : t("login"),
-      icon: isAuthed ? UserIcon : LogInIcon,
+      icon: isResolvingAuth ? SpinnerIcon : isAuthed ? UserIcon : LogInIcon,
     },
   ];
 

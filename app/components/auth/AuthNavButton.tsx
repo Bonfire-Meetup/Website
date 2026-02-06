@@ -8,6 +8,7 @@ import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { LogInIcon, UserIcon } from "../shared/Icons";
 import { IconButton } from "../ui/IconButton";
+import { LoadingSpinner } from "../ui/LoadingSpinner";
 
 function AuthNavButtonInner() {
   const auth = useAppSelector((state) => state.auth);
@@ -17,24 +18,27 @@ function AuthNavButtonInner() {
     setMounted(true);
   }, []);
 
+  const isResolvingAuth = mounted && auth.loading && !auth.hydrated;
   const isAuthed = mounted && auth.isAuthenticated && auth.hydrated;
   const href = isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN;
+  const ariaLabel = isResolvingAuth ? "Authenticating" : isAuthed ? "Account" : "Login";
 
   return (
-    <Link
-      href={href}
-      prefetch={false}
-      aria-label={isAuthed ? "Account" : "Login"}
-      className="cursor-pointer"
-    >
+    <Link href={href} prefetch={false} aria-label={ariaLabel} className="cursor-pointer">
       <IconButton
-        ariaLabel={isAuthed ? "Account" : "Login"}
+        ariaLabel={ariaLabel}
         size="md"
         shape="rounded"
         variant="glass"
         className="hover:scale-105 active:scale-95"
       >
-        {isAuthed ? <UserIcon className="h-5 w-5" /> : <LogInIcon className="h-5 w-5" />}
+        {isResolvingAuth ? (
+          <LoadingSpinner size="md" ariaLabel="Authenticating" />
+        ) : isAuthed ? (
+          <UserIcon className="h-5 w-5" />
+        ) : (
+          <LogInIcon className="h-5 w-5" />
+        )}
       </IconButton>
     </Link>
   );

@@ -19,7 +19,7 @@ import {
   writeAccessToken,
 } from "@/lib/auth/client";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { clearAuth, setToken } from "@/lib/redux/slices/authSlice";
+import { clearAuth, setAuthLoading, setToken } from "@/lib/redux/slices/authSlice";
 
 const REFRESH_BUFFER_SECONDS = 120;
 const BASE_CHECK_INTERVAL_MS = 15000;
@@ -49,6 +49,7 @@ export function useAuthSync() {
     }
 
     isRefreshingRef.current = true;
+    dispatch(setAuthLoading(true));
 
     try {
       const newToken = await refreshAccessToken();
@@ -60,8 +61,9 @@ export function useAuthSync() {
       return newToken;
     } finally {
       isRefreshingRef.current = false;
+      dispatch(setAuthLoading(false));
     }
-  }, []);
+  }, [dispatch]);
 
   const checkAndRefreshToken = useCallback(async () => {
     if (getIsLoggingOut() || !isMountedRef.current) {
