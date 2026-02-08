@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { Link } from "@/i18n/navigation";
@@ -20,6 +20,7 @@ interface RsvpAvatarListProps {
 export function RsvpAvatarList({ eventId }: RsvpAvatarListProps) {
   const t = useTranslations("events");
   const { data: rsvps, isLoading } = useEventRsvps(eventId);
+  const [activeAvatarPublicId, setActiveAvatarPublicId] = useState<string | null>(null);
 
   const { visibleUsers, remainingCount, totalCount, privateCount } = useMemo(() => {
     if (!rsvps) {
@@ -67,11 +68,20 @@ export function RsvpAvatarList({ eventId }: RsvpAvatarListProps) {
             key={user.publicId}
             href={PAGE_ROUTES.USER(user.publicId)}
             prefetch={false}
-            className="group relative transition-all hover:z-10 hover:scale-110"
+            className="group relative transition-all hover:scale-110"
             style={{
               marginLeft: index === 0 ? 0 : `${AVATAR_OVERLAP}px`,
-              zIndex: visibleUsers.length - index,
+              zIndex:
+                activeAvatarPublicId === user.publicId
+                  ? visibleUsers.length + 1
+                  : visibleUsers.length - index,
             }}
+            onMouseEnter={() => setActiveAvatarPublicId(user.publicId)}
+            onMouseLeave={() =>
+              setActiveAvatarPublicId((prev) => (prev === user.publicId ? null : prev))
+            }
+            onFocus={() => setActiveAvatarPublicId(user.publicId)}
+            onBlur={() => setActiveAvatarPublicId((prev) => (prev === user.publicId ? null : prev))}
             title={user.name || undefined}
           >
             <div className="relative">
