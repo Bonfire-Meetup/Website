@@ -595,12 +595,25 @@ function getInitials(name: string): string {
   if (words.length === 0) {
     return "";
   }
-  const first = words[0];
-  if (words.length === 1) {
-    return first?.charAt(0).toUpperCase() ?? "";
+
+  const getWordInitial = (word: string): string => {
+    const match = word.match(/[\p{L}\p{N}]/u);
+    return match?.[0]?.toUpperCase() ?? "";
+  };
+
+  const first = words.find((word) => getWordInitial(word) !== "");
+  if (!first) {
+    return "";
   }
-  const last = words[words.length - 1];
-  return ((first?.charAt(0) ?? "") + (last?.charAt(0) ?? "")).toUpperCase();
+
+  const firstInitial = getWordInitial(first);
+  if (words.length === 1) {
+    return firstInitial;
+  }
+
+  const last = [...words].reverse().find((word) => getWordInitial(word) !== "" && word !== first);
+  const lastInitial = last ? getWordInitial(last) : "";
+  return `${firstInitial}${lastInitial}` || firstInitial;
 }
 
 interface UserAvatarProps {
