@@ -1382,13 +1382,13 @@
       "subline": "Built on best-in-class infrastructure and tools.",
       "cloud": "Cloud",
       "database": "Database",
-      "storage": "Object storage (photos)",
+      "storage": "Object storage",
       "emails": "Emails",
       "bugReporting": "Bug reporting",
       "botProtection": "Bot protection",
       "vcs": "VCS",
       "cicdRunners": "CI/CD Runners",
-      "thankYou": "Thank you to everyone behind services like these - we're really grateful for what you build and run."
+      "thankYou": "Our heartfelt thanks to everyone behind services like these. We’re deeply grateful for everything you build, maintain, and run."
     },
     "title": "Attributions",
     "subtitle": "Open source technologies and libraries used in this project",

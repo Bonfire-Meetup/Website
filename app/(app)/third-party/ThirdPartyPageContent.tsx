@@ -26,6 +26,7 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
   styling: [
     { name: "Tailwind CSS", license: "MIT", url: "https://tailwindcss.com" },
     { name: "@tailwindcss/postcss", license: "MIT", url: "https://tailwindcss.com" },
+    { name: "next-themes", license: "MIT", url: "https://github.com/pacocoursey/next-themes" },
   ],
   database: [
     { name: "Neon Postgres", license: "Apache-2.0", url: "https://neon.tech" },
@@ -50,6 +51,7 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
     { name: "PostCSS", license: "MIT", url: "https://postcss.org" },
     { name: "cssnano", license: "MIT", url: "https://cssnano.co" },
     { name: "Sharp", license: "Apache-2.0", url: "https://sharp.pixelplumbing.com" },
+    { name: "drizzle-kit", license: "Apache-2.0", url: "https://orm.drizzle.team" },
     {
       name: "babel-plugin-react-compiler",
       license: "MIT",
@@ -60,6 +62,16 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
       license: "MIT",
       url: "https://react.email",
     },
+    {
+      name: "@react-email/components",
+      license: "MIT",
+      url: "https://react.email/docs/components",
+    },
+    {
+      name: "@react-email/preview-server",
+      license: "MIT",
+      url: "https://react.email/docs/cli",
+    },
   ],
   analytics: [
     { name: "Vercel Analytics", license: "Commercial", url: "https://vercel.com/analytics" },
@@ -68,6 +80,7 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
       license: "Commercial",
       url: "https://vercel.com/speed-insights",
     },
+    { name: "@rollbar/react", license: "MIT", url: "https://github.com/rollbar/rollbar-react" },
     { name: "Rollbar", license: "MIT", url: "https://rollbar.com" },
   ],
   security: [{ name: "botid", license: "MIT", url: "https://botid.io" }],
