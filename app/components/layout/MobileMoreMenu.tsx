@@ -205,6 +205,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
   const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const focusRestoreRef = useRef<HTMLElement | null>(null);
+  const openedWithPointerRef = useRef(false);
 
   const menuItems: MenuItem[] = [
     { href: PAGE_ROUTES.PHOTOS, label: t("photos"), icon: CameraIcon },
@@ -246,15 +247,20 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
         closeButtonRef.current?.focus();
       });
     } else if (isRendered) {
-      if (focusRestoreRef.current && focusRestoreRef.current !== document.body) {
+      if (
+        !openedWithPointerRef.current &&
+        focusRestoreRef.current &&
+        focusRestoreRef.current !== document.body &&
+        focusRestoreRef.current !== triggerButtonRef.current
+      ) {
         focusRestoreRef.current.focus();
-      } else {
-        triggerButtonRef.current?.focus();
       }
+      triggerButtonRef.current?.blur();
       closeTimer.current = setTimeout(() => {
         setIsRendered(false);
         closeTimer.current = null;
       }, animationMs);
+      openedWithPointerRef.current = false;
     }
 
     return () => {
@@ -329,11 +335,15 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
     return (
       <button
         type="button"
+        onPointerDown={() => {
+          openedWithPointerRef.current = true;
+        }}
         onClick={openMenu}
-        className="group relative flex h-12 w-12 items-center justify-center rounded-full text-neutral-500 transition-all duration-300 ease-out outline-none [-webkit-tap-highlight-color:transparent] hover:bg-neutral-100 hover:text-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-neutral-200 dark:focus-visible:ring-offset-neutral-900"
+        className="group relative flex h-12 w-12 appearance-none items-center justify-center rounded-full border-0 text-neutral-500 transition-all duration-300 ease-out outline-none [-webkit-tap-highlight-color:transparent] hover:bg-neutral-100 hover:text-neutral-700 focus:outline-none focus-visible:outline-none dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-neutral-200"
         style={{
           transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
           WebkitTapHighlightColor: "transparent",
+          WebkitAppearance: "none",
         }}
         aria-label={t("more")}
       >
@@ -539,10 +549,13 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
       <button
         ref={triggerButtonRef}
         type="button"
+        onPointerDown={() => {
+          openedWithPointerRef.current = true;
+        }}
         onClick={openMenu}
-        className="group relative flex flex-col items-center justify-center rounded-full outline-none [-webkit-tap-highlight-color:transparent] focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900"
+        className="group relative flex appearance-none flex-col items-center justify-center rounded-full border-0 outline-none [-webkit-tap-highlight-color:transparent] focus:outline-none focus-visible:outline-none"
         aria-label={t("more")}
-        style={{ WebkitTapHighlightColor: "transparent" }}
+        style={{ WebkitAppearance: "none", WebkitTapHighlightColor: "transparent" }}
       >
         <div
           className={`relative flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ease-out ${
