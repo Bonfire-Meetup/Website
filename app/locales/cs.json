@@ -1134,12 +1134,15 @@
       "boosted": {
         "title": "Boostnutá videa",
         "count": "{count} {count, plural, one {video} few {videa} other {videí}} podpořeno",
-        "badge": "Boostnuto"
+        "badge": "Boostnuto",
+        "empty": "Zatím žádná boostnutá videa.",
+        "emptyHint": "Narazíš na video, co tě baví? Hoď mu na detailu boost, ať ho objeví víc lidí."
       },
       "checkedIn": {
         "title": "Navštívené akce",
         "count": "{count} {count, plural, one {akce} few {akce} other {akcí}} navštíveno",
         "empty": "Zatím žádné navštívené akce.",
+        "emptyHint": "Na příštím eventu klikni na stránce účtu na Check-in a nech crew naskenovat kód.",
         "verified": "Ověřeno {date}",
         "tba": "Bude upřesněno"
       },

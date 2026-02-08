@@ -1123,12 +1123,15 @@
       "boosted": {
         "title": "Boosted videos",
         "count": "{count} {count, plural, one {video} other {videos}} supported",
-        "badge": "Boosted"
+        "badge": "Boosted",
+        "empty": "No boosted videos yet.",
+        "emptyHint": "See a video you vibe with? Drop it a boost on the detail page so more people catch it."
       },
       "checkedIn": {
         "title": "Events attended",
         "count": "{count} {count, plural, one {event} other {events}} attended",
         "empty": "No events attended yet.",
+        "emptyHint": "At the next event, hit Check-in on your account page and have the crew scan your code.",
         "verified": "Verified {date}",
         "tba": "TBA"
       },

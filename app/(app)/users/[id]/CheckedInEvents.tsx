@@ -68,10 +68,6 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
     events = [];
   }
 
-  if (events.length === 0) {
-    return null;
-  }
-
   return (
     <section className="relative">
       <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-blue-500/5 to-transparent" />
@@ -99,62 +95,41 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
         </div>
 
         <div className="p-4 sm:p-6">
-          <div className="space-y-3">
-            {events.map((event, index) => {
-              let formattedDate = t("checkedIn.tba");
-              if (event.date && event.date !== "TBA") {
-                const date = new Date(event.date);
-                if (!isNaN(date.getTime())) {
-                  formattedDate = new Intl.DateTimeFormat("en-US", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  }).format(date);
+          {events.length > 0 ? (
+            <div className="space-y-3">
+              {events.map((event, index) => {
+                let formattedDate = t("checkedIn.tba");
+                if (event.date && event.date !== "TBA") {
+                  const date = new Date(event.date);
+                  if (!isNaN(date.getTime())) {
+                    formattedDate = new Intl.DateTimeFormat("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    }).format(date);
+                  }
                 }
-              }
 
-              const formattedCheckedInAt = event.checkedInAt
-                ? new Intl.DateTimeFormat("en-US", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  }).format(new Date(event.checkedInAt))
-                : null;
+                const formattedCheckedInAt = event.checkedInAt
+                  ? new Intl.DateTimeFormat("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    }).format(new Date(event.checkedInAt))
+                  : null;
 
-              return (
-                <div
-                  key={event.id}
-                  className="group relative overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 p-4 transition-all duration-300 hover:border-blue-500/20 hover:bg-neutral-100 dark:border-white/5 dark:bg-neutral-800/30 dark:hover:bg-neutral-800/50"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 space-y-2">
-                      <h3 className="text-sm leading-snug font-bold text-neutral-900 sm:text-base dark:text-white">
-                        {event.title}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
-                        <span className="flex items-center gap-1.5">
-                          <svg
-                            className="h-3 w-3 text-neutral-400 dark:text-neutral-500"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                          <span className="capitalize">{event.location}</span>
-                        </span>
-                        {event.date && (
+                return (
+                  <div
+                    key={event.id}
+                    className="group relative overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 p-4 transition-all duration-300 hover:border-blue-500/20 hover:bg-neutral-100 dark:border-white/5 dark:bg-neutral-800/30 dark:hover:bg-neutral-800/50"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        <h3 className="text-sm leading-snug font-bold text-neutral-900 sm:text-base dark:text-white">
+                          {event.title}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
                           <span className="flex items-center gap-1.5">
                             <svg
                               className="h-3 w-3 text-neutral-400 dark:text-neutral-500"
@@ -166,43 +141,75 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
                               <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                               />
                             </svg>
-                            {formattedDate}
+                            <span className="capitalize">{event.location}</span>
                           </span>
+                          {event.date && (
+                            <span className="flex items-center gap-1.5">
+                              <svg
+                                className="h-3 w-3 text-neutral-400 dark:text-neutral-500"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                />
+                              </svg>
+                              {formattedDate}
+                            </span>
+                          )}
+                        </div>
+                        {formattedCheckedInAt && (
+                          <div className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+                            <svg
+                              className="h-3 w-3"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            {t("checkedIn.verified", { date: formattedCheckedInAt })}
+                          </div>
                         )}
                       </div>
-                      {formattedCheckedInAt && (
-                        <div className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400">
-                          <svg
-                            className="h-3 w-3"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                          {t("checkedIn.verified", { date: formattedCheckedInAt })}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-400/20 to-indigo-500/20 ring-1 ring-blue-500/20">
-                      <CheckIcon
-                        className="h-5 w-5 text-blue-500 dark:text-blue-400"
-                        aria-hidden="true"
-                      />
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-400/20 to-indigo-500/20 ring-1 ring-blue-500/20">
+                        <CheckIcon
+                          className="h-5 w-5 text-blue-500 dark:text-blue-400"
+                          aria-hidden="true"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-dashed border-blue-500/25 bg-blue-500/5 p-5 text-sm">
+              <p className="font-semibold text-neutral-800 dark:text-neutral-100">
+                {t("checkedIn.empty")}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
+                {t("checkedIn.emptyHint")}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </section>
