@@ -10,22 +10,38 @@ export default function UserProfileLoading() {
               <div className="relative mb-8 lg:mb-0">
                 <Skeleton className="h-[180px] w-[180px] rounded-full" />
               </div>
-              <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
-                <Skeleton className="mb-2 h-8 w-48" />
-                <Skeleton className="mb-4 h-4 w-32" />
+              <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:pt-4 lg:text-left">
+                <div className="mb-4 flex items-baseline gap-2">
+                  <Skeleton className="h-4 w-36" />
+                  <Skeleton className="h-6 w-6 rounded-full" />
+                </div>
+
+                <Skeleton className="mb-5 h-12 w-56 sm:h-14 sm:w-72" />
+
                 <div className="flex flex-wrap justify-center gap-2 lg:justify-start">
                   <Skeleton className="h-6 w-20 rounded-full" />
                   <Skeleton className="h-6 w-24 rounded-full" />
                 </div>
-                <div className="mt-6 flex flex-wrap justify-center gap-2 lg:justify-start">
-                  <Skeleton className="h-10 w-28 rounded-xl" />
-                  <Skeleton className="h-10 w-28 rounded-xl" />
+
+                <div className="mt-6 w-full max-w-md space-y-3">
+                  <Skeleton className="h-8 w-48 rounded-full" />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="space-y-10">
+          <section className="mb-8 rounded-2xl border border-neutral-200 bg-white/75 px-4 py-3 dark:border-white/10 dark:bg-neutral-900/60">
+            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="space-y-1">
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-3 w-44" />
+                <Skeleton className="h-3 w-40" />
+              </div>
+              <Skeleton className="h-6 w-28 rounded-full" />
+            </div>
+          </section>
+
+          <div className="space-y-8">
             <section className="relative overflow-hidden rounded-2xl border border-white/5 bg-neutral-900/50">
               <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
                 <div className="flex items-center gap-4">

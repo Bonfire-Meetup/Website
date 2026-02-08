@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
 
 import { UserAvatar } from "@/components/user/UserAvatar";
@@ -20,18 +20,26 @@ interface UserData {
   isMember: boolean;
 }
 
+interface UserProfileStats {
+  lastBoostedAt: string | null;
+  lastCheckedInAt: string | null;
+}
+
 interface UserProfileContentProps {
   user: UserData;
+  stats: UserProfileStats;
   boostedVideosSlot: ReactNode;
   checkedInEventsSlot: ReactNode;
 }
 
 export function UserProfileContent({
   user,
+  stats,
   boostedVideosSlot,
   checkedInEventsSlot,
 }: UserProfileContentProps) {
   const t = useTranslations("account.userProfile");
+  const locale = useLocale();
   const [copied, setCopied] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -45,6 +53,25 @@ export function UserProfileContent({
 
   const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}${PAGE_ROUTES.USER(user.publicId)}`;
   const shareText = user.name ? t("shareText", { name: user.name }) : t("shareTextAnonymous");
+  const lastBoostedDate = stats.lastBoostedAt
+    ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(
+        new Date(stats.lastBoostedAt),
+      )
+    : null;
+  const lastCheckedInDate = stats.lastCheckedInAt
+    ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(
+        new Date(stats.lastCheckedInAt),
+      )
+    : null;
+  const RECENT_ACTIVITY_WINDOW_DAYS = 30;
+  const now = Date.now();
+  const recentWindowMs = RECENT_ACTIVITY_WINDOW_DAYS * 24 * 60 * 60 * 1000;
+  const hasRecentBoost =
+    stats.lastBoostedAt !== null && now - new Date(stats.lastBoostedAt).getTime() <= recentWindowMs;
+  const hasRecentCheckIn =
+    stats.lastCheckedInAt !== null &&
+    now - new Date(stats.lastCheckedInAt).getTime() <= recentWindowMs;
+  const isRecentlyActive = hasRecentBoost || hasRecentCheckIn;
 
   const handleCopyId = async () => {
     await copyToClipboard(user.publicId);
@@ -138,11 +165,11 @@ export function UserProfileContent({
                 </div>
 
                 {user.name ? (
-                  <h1 className="mb-6 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
+                  <h1 className="mb-5 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
                     {user.name}
                   </h1>
                 ) : (
-                  <h1 className="mb-6 text-4xl font-black tracking-tight text-neutral-400 sm:text-5xl lg:text-6xl">
+                  <h1 className="mb-5 text-4xl font-black tracking-tight text-neutral-400 sm:text-5xl lg:text-6xl">
                     {t("anonymousMember")}
                   </h1>
                 )}
@@ -152,28 +179,60 @@ export function UserProfileContent({
                   membershipTier={user.isMember ? user.membershipTier : null}
                 />
 
-                <div className="mt-8 flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
-                  <svg
-                    className="h-4 w-4 text-neutral-400 dark:text-neutral-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
-                    />
-                  </svg>
-                  <span className="text-sm font-medium">
-                    {t("memberSince")}{" "}
-                    <span className="text-neutral-900 dark:text-white">{user.memberSince}</span>
-                  </span>
+                <div className="mt-6 w-full max-w-md space-y-3">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/80 px-3 py-1.5 text-xs text-neutral-600 dark:border-white/10 dark:bg-neutral-900/70 dark:text-neutral-300">
+                    <svg
+                      className="h-3.5 w-3.5 text-neutral-400 dark:text-neutral-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.75}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+                      />
+                    </svg>
+                    <span>
+                      {t("memberSince")}{" "}
+                      <span className="font-semibold text-neutral-800 dark:text-neutral-100">
+                        {user.memberSince}
+                      </span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <section
+            className="mb-8 rounded-2xl border border-neutral-200 bg-white/75 px-4 py-3 backdrop-blur-sm dark:border-white/10 dark:bg-neutral-900/60"
+            aria-labelledby="profile-recent-activity-heading"
+          >
+            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="space-y-1 text-[11px] text-neutral-500 dark:text-neutral-400">
+                <p id="profile-recent-activity-heading" className="font-semibold uppercase">
+                  {t("activity.recentTitle")}
+                </p>
+                <p>{t("activity.lastBoosted", { date: lastBoostedDate ?? t("activity.none") })}</p>
+                <p>
+                  {t("activity.lastCheckedIn", {
+                    date: lastCheckedInDate ?? t("activity.none"),
+                  })}
+                </p>
+              </div>
+              <span
+                className={`inline-flex items-center self-start rounded-full px-3 py-1 text-[11px] font-semibold ${
+                  isRecentlyActive
+                    ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
+                    : "bg-neutral-500/15 text-neutral-700 dark:text-neutral-300"
+                }`}
+              >
+                {isRecentlyActive ? t("activity.activeStatus") : t("activity.quietStatus")}
+              </span>
+            </div>
+          </section>
 
           <div className="space-y-8">
             {boostedVideosSlot}

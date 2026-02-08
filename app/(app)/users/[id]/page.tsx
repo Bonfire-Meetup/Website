@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { hasMembership } from "@/lib/config/membership";
 import { getAuthUserById } from "@/lib/data/auth";
+import { getUserBoosts } from "@/lib/data/boosts";
+import { getUserCheckIns } from "@/lib/data/check-in";
 import { decompressUuid, compressUuid } from "@/lib/utils/uuid-compress";
 
 import { BoostedVideos } from "./BoostedVideos";
@@ -19,6 +21,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
+  const locale = await getLocale();
   const t = await getTranslations("meta");
   const tCommon = await getTranslations("common");
   const userId = decompressUuid(id);
@@ -42,7 +45,7 @@ export async function generateMetadata({
     };
   }
 
-  const memberSince = new Intl.DateTimeFormat("en-US", {
+  const memberSince = new Intl.DateTimeFormat(locale, {
     month: "long",
     year: "numeric",
   }).format(new Date(user.createdAt));
@@ -72,6 +75,7 @@ export async function generateMetadata({
 
 export default async function UserProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const locale = await getLocale();
   const userId = decompressUuid(id);
 
   if (!userId) {
@@ -87,12 +91,13 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
     return <PrivateProfileContent />;
   }
 
-  const memberSince = new Intl.DateTimeFormat("en-US", {
+  const memberSince = new Intl.DateTimeFormat(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",
   }).format(new Date(user.createdAt));
   const isMember = hasMembership(user.membershipTier);
+  const [boosts, checkIns] = await Promise.all([getUserBoosts(userId), getUserCheckIns(userId)]);
 
   return (
     <UserProfileContent
@@ -104,14 +109,18 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
         membershipTier: user.membershipTier,
         isMember,
       }}
+      stats={{
+        lastBoostedAt: boosts[0]?.createdAt ?? null,
+        lastCheckedInAt: checkIns[0]?.createdAt ?? null,
+      }}
       boostedVideosSlot={
         <Suspense fallback={<BoostedVideosSkeleton />}>
-          <BoostedVideos userId={userId} />
+          <BoostedVideos userId={userId} profileUserId={user.id} />
         </Suspense>
       }
       checkedInEventsSlot={
         <Suspense fallback={<CheckedInEventsSkeleton />}>
-          <CheckedInEvents userId={userId} />
+          <CheckedInEvents userId={userId} profileUserId={user.id} />
         </Suspense>
       }
     />

@@ -1,13 +1,18 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { CheckIcon } from "@/components/shared/Icons";
 import { upcomingEvents } from "@/data/upcoming-events";
+import { Link } from "@/i18n/navigation";
 import { getAuthUserById } from "@/lib/data/auth";
 import { getUserCheckIns } from "@/lib/data/check-in";
 import { getEpisodeById } from "@/lib/recordings/episodes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+
+import { OwnerOnlyAction } from "./OwnerOnlyAction";
 
 interface CheckedInEventsProps {
   userId: string;
+  profileUserId: string;
 }
 
 interface CheckInEvent {
@@ -19,8 +24,9 @@ interface CheckInEvent {
   checkedInAt?: string;
 }
 
-export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
+export async function CheckedInEvents({ userId, profileUserId }: CheckedInEventsProps) {
   const t = await getTranslations("account.userProfile");
+  const locale = await getLocale();
 
   let events: CheckInEvent[] = [];
 
@@ -69,7 +75,12 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
   }
 
   return (
-    <section className="relative">
+    <section
+      className="relative"
+      role="region"
+      aria-labelledby="profile-checkedin-events-heading"
+      aria-describedby="profile-checkedin-events-count"
+    >
       <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-blue-500/5 to-transparent" />
 
       <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-white/5 dark:bg-neutral-900/50">
@@ -84,10 +95,13 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
               </div>
             </div>
             <div>
-              <h2 className="text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
+              <h2
+                id="profile-checkedin-events-heading"
+                className="text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white"
+              >
                 {t("checkedIn.title")}
               </h2>
-              <p className="text-sm text-neutral-500">
+              <p id="profile-checkedin-events-count" className="text-sm text-neutral-500">
                 {t("checkedIn.count", { count: events.length })}
               </p>
             </div>
@@ -102,7 +116,7 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
                 if (event.date && event.date !== "TBA") {
                   const date = new Date(event.date);
                   if (!isNaN(date.getTime())) {
-                    formattedDate = new Intl.DateTimeFormat("en-US", {
+                    formattedDate = new Intl.DateTimeFormat(locale, {
                       day: "numeric",
                       month: "short",
                       year: "numeric",
@@ -111,7 +125,7 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
                 }
 
                 const formattedCheckedInAt = event.checkedInAt
-                  ? new Intl.DateTimeFormat("en-US", {
+                  ? new Intl.DateTimeFormat(locale, {
                       day: "numeric",
                       month: "short",
                       year: "numeric",
@@ -201,13 +215,27 @@ export async function CheckedInEvents({ userId }: CheckedInEventsProps) {
               })}
             </div>
           ) : (
-            <div className="rounded-xl border border-dashed border-blue-500/25 bg-blue-500/5 p-5 text-sm">
+            <div
+              className="rounded-xl border border-dashed border-blue-500/25 bg-blue-500/5 p-5 text-sm"
+              role="status"
+              aria-live="polite"
+            >
               <p className="font-semibold text-neutral-800 dark:text-neutral-100">
                 {t("checkedIn.empty")}
               </p>
               <p className="mt-2 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">
                 {t("checkedIn.emptyHint")}
               </p>
+              <OwnerOnlyAction profileUserId={profileUserId}>
+                <div className="mt-3">
+                  <Link
+                    href={PAGE_ROUTES.ME}
+                    className="inline-flex items-center rounded-lg border border-blue-500/30 bg-white/80 px-3 py-1.5 text-xs font-semibold text-blue-700 transition-colors hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 focus-visible:outline-none dark:bg-neutral-900/60 dark:text-blue-300 dark:hover:bg-blue-500/10 dark:focus-visible:ring-offset-neutral-900"
+                  >
+                    {t("checkedIn.cta")}
+                  </Link>
+                </div>
+              </OwnerOnlyAction>
             </div>
           )}
         </div>

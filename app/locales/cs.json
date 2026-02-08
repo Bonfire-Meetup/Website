@@ -1131,18 +1131,31 @@
         "speaker": "Speaker",
         "tierFallback": "Úroveň {tier}"
       },
+      "activity": {
+        "title": "Aktivita",
+        "boostedVideos": "Boostnutá videa",
+        "eventsAttended": "Navštívené akce",
+        "recentTitle": "Nedávná aktivita",
+        "lastBoosted": "Poslední boost: {date}",
+        "lastCheckedIn": "Poslední check-in: {date}",
+        "activeStatus": "Aktivní tento měsíc",
+        "quietStatus": "Teď klidněji",
+        "none": "zatím ne"
+      },
       "boosted": {
         "title": "Boostnutá videa",
         "count": "{count} {count, plural, one {video} few {videa} other {videí}} podpořeno",
         "badge": "Boostnuto",
         "empty": "Zatím žádná boostnutá videa.",
-        "emptyHint": "Narazíš na video, co tě baví? Hoď mu na detailu boost, ať ho objeví víc lidí."
+        "emptyHint": "Narazíš na video, co tě baví? Hoď mu na detailu boost, ať ho objeví víc lidí.",
+        "cta": "Projít videa"
       },
       "checkedIn": {
         "title": "Navštívené akce",
         "count": "{count} {count, plural, one {akce} few {akce} other {akcí}} navštíveno",
         "empty": "Zatím žádné navštívené akce.",
         "emptyHint": "Na příštím eventu klikni na stránce účtu na Check-in a nech crew naskenovat kód.",
+        "cta": "Otevřít účet",
         "verified": "Ověřeno {date}",
         "tba": "Bude upřesněno"
       },

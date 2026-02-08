@@ -1120,18 +1120,31 @@
         "speaker": "Speaker",
         "tierFallback": "Tier {tier}"
       },
+      "activity": {
+        "title": "Activity",
+        "boostedVideos": "Boosted videos",
+        "eventsAttended": "Events attended",
+        "recentTitle": "Recent activity",
+        "lastBoosted": "Last boost: {date}",
+        "lastCheckedIn": "Last check-in: {date}",
+        "activeStatus": "Active this month",
+        "quietStatus": "Quiet lately",
+        "none": "not yet"
+      },
       "boosted": {
         "title": "Boosted videos",
         "count": "{count} {count, plural, one {video} other {videos}} supported",
         "badge": "Boosted",
         "empty": "No boosted videos yet.",
-        "emptyHint": "See a video you vibe with? Drop it a boost on the detail page so more people catch it."
+        "emptyHint": "See a video you vibe with? Drop it a boost on the detail page so more people catch it.",
+        "cta": "Browse videos"
       },
       "checkedIn": {
         "title": "Events attended",
         "count": "{count} {count, plural, one {event} other {events}} attended",
         "empty": "No events attended yet.",
         "emptyHint": "At the next event, hit Check-in on your account page and have the crew scan your code.",
+        "cta": "Open account",
         "verified": "Verified {date}",
         "tba": "TBA"
       },
