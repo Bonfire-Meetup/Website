@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -157,6 +158,26 @@ function DocumentTextIcon({ className }: { className?: string }) {
   );
 }
 
+function NewsletterIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3.75 6.75A2.25 2.25 0 0 1 6 4.5h12a2.25 2.25 0 0 1 2.25 2.25v10.5A2.25 2.25 0 0 1 18 19.5H6a2.25 2.25 0 0 1-2.25-2.25V6.75Z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 8.25 12 13.5l8.25-5.25" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.625h2.25M14.25 8.625h2.25" />
+    </svg>
+  );
+}
+
 interface MenuItem {
   href: string;
   label: string;
@@ -164,18 +185,26 @@ interface MenuItem {
   external?: boolean;
 }
 
-export function MobileMoreMenu() {
+interface MobileMoreMenuProps {
+  onOpenChange?: (isOpen: boolean) => void;
+}
+
+export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
   const t = useTranslations("header");
   const tFooter = useTranslations("footer");
   const tCookie = useTranslations("cookieConsent");
+  const pathname = usePathname();
   const { locale, setLocale } = useI18n();
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [isRendered, setIsRendered] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [hasConsent, setHasConsent] = useState(true);
-  const animationMs = 300;
+  const animationMs = 320;
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const focusRestoreRef = useRef<HTMLElement | null>(null);
 
   const menuItems: MenuItem[] = [
     { href: PAGE_ROUTES.PHOTOS, label: t("photos"), icon: CameraIcon },
@@ -184,7 +213,7 @@ export function MobileMoreMenu() {
     {
       href: PAGE_ROUTES.NEWSLETTER_ARCHIVE,
       label: tFooter("newsletterArchiveLabel"),
-      icon: DocumentTextIcon,
+      icon: NewsletterIcon,
     },
     { href: PAGE_ROUTES.FAQ, label: t("faq"), icon: QuestionMarkCircleIcon },
     { href: PAGE_ROUTES.CONTACT_WITH_TYPE("general"), label: t("contact"), icon: EnvelopeIcon },
@@ -200,13 +229,28 @@ export function MobileMoreMenu() {
   }, []);
 
   useEffect(() => {
+    onOpenChange?.(isOpen);
+  }, [isOpen, onOpenChange]);
+
+  useEffect(() => {
     if (isOpen) {
       if (closeTimer.current) {
         clearTimeout(closeTimer.current);
         closeTimer.current = null;
       }
       setIsRendered(true);
+
+      focusRestoreRef.current =
+        document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      requestAnimationFrame(() => {
+        closeButtonRef.current?.focus();
+      });
     } else if (isRendered) {
+      if (focusRestoreRef.current && focusRestoreRef.current !== document.body) {
+        focusRestoreRef.current.focus();
+      } else {
+        triggerButtonRef.current?.focus();
+      }
       closeTimer.current = setTimeout(() => {
         setIsRendered(false);
         closeTimer.current = null;
@@ -222,7 +266,20 @@ export function MobileMoreMenu() {
 
   useBodyScrollLock(isRendered);
 
-  const closeMenu = () => setIsOpen(false);
+  const openMenu = () => {
+    if (isOpen) {
+      return;
+    }
+    setIsRendered(true);
+    requestAnimationFrame(() => setIsOpen(true));
+  };
+
+  const closeMenu = () => {
+    if (!isOpen) {
+      return;
+    }
+    setIsOpen(false);
+  };
 
   const handleAcceptCookies = () => {
     setCookie(COOKIE_KEYS.CONSENT, "essential", 365);
@@ -245,10 +302,18 @@ export function MobileMoreMenu() {
     setTheme(themes[nextIndex]);
   };
 
+  const isMenuItemActive = (href: string) => {
+    if (!mounted) {
+      return false;
+    }
+    const itemPath = href.split(/[?#]/, 1)[0];
+    return pathname === itemPath || pathname.startsWith(itemPath);
+  };
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        closeMenu();
+        setIsOpen(false);
       }
     };
 
@@ -256,14 +321,15 @@ export function MobileMoreMenu() {
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
 
+  useEffect(() => {
+    setIsOpen((previous) => (previous ? false : previous));
+  }, [pathname]);
+
   if (!mounted) {
     return (
       <button
         type="button"
-        onClick={() => {
-          setIsRendered(true);
-          requestAnimationFrame(() => setIsOpen(true));
-        }}
+        onClick={openMenu}
         className="group relative flex h-12 w-12 items-center justify-center rounded-full text-neutral-500 transition-all duration-300 ease-out hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-neutral-200"
         style={{
           transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
@@ -284,7 +350,7 @@ export function MobileMoreMenu() {
       ? createPortal(
           <>
             <div
-              className={`fixed inset-0 z-50 md:hidden ${isOpen ? "opacity-100" : "opacity-0"}`}
+              className={`fixed inset-0 z-[70] md:hidden ${isOpen ? "opacity-100" : "opacity-0"}`}
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.25)",
                 backdropFilter: isOpen ? "blur(12px)" : "blur(0px)",
@@ -296,7 +362,7 @@ export function MobileMoreMenu() {
             />
 
             <div
-              className="fixed right-0 bottom-0 left-0 z-50 md:hidden"
+              className="fixed right-0 bottom-0 left-0 z-[71] md:hidden"
               style={{
                 transform: isOpen ? "translateY(0)" : "translateY(120%)",
                 transition: "transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1)",
@@ -313,6 +379,7 @@ export function MobileMoreMenu() {
               >
                 <div className="flex items-center justify-end px-3 pb-2">
                   <button
+                    ref={closeButtonRef}
                     type="button"
                     onClick={closeMenu}
                     className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
@@ -326,6 +393,7 @@ export function MobileMoreMenu() {
                   {menuItems.map((item, index) => {
                     const Icon = item.icon;
                     const delay = isOpen ? index * 50 : 0;
+                    const active = isMenuItemActive(item.href);
                     return (
                       <Link
                         key={item.href}
@@ -341,7 +409,11 @@ export function MobileMoreMenu() {
                         }}
                       >
                         <div
-                          className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-600/15 via-orange-500/15 to-red-500/15 text-rose-600 transition-all group-hover:from-fuchsia-600/25 group-hover:via-orange-500/25 group-hover:to-red-500/25 dark:from-fuchsia-500/15 dark:via-orange-400/15 dark:to-red-400/15 dark:text-rose-400 dark:group-hover:from-fuchsia-500/25 dark:group-hover:via-orange-400/25 dark:group-hover:to-red-400/25"
+                          className={`flex h-12 w-12 items-center justify-center rounded-xl transition-all ${
+                            active
+                              ? "bg-gradient-to-br from-fuchsia-600 via-orange-500 to-red-500 text-white shadow-md shadow-orange-500/35"
+                              : "bg-gradient-to-br from-fuchsia-600/15 via-orange-500/15 to-red-500/15 text-rose-600 group-hover:from-fuchsia-600/25 group-hover:via-orange-500/25 group-hover:to-red-500/25 dark:from-fuchsia-500/15 dark:via-orange-400/15 dark:to-red-400/15 dark:text-rose-400 dark:group-hover:from-fuchsia-500/25 dark:group-hover:via-orange-400/25 dark:group-hover:to-red-400/25"
+                          }`}
                           style={{
                             transform: isOpen
                               ? "scale(1) rotate(0deg)"
@@ -352,7 +424,11 @@ export function MobileMoreMenu() {
                           <Icon className="h-6 w-6" />
                         </div>
                         <span
-                          className="text-center text-[11px] leading-tight font-medium text-neutral-700 dark:text-neutral-300"
+                          className={`text-center text-[11px] leading-tight font-medium ${
+                            active
+                              ? "text-fuchsia-700 dark:text-fuchsia-300"
+                              : "text-neutral-700 dark:text-neutral-300"
+                          }`}
                           style={{
                             transform: isOpen ? "translateY(0)" : "translateY(6px)",
                             opacity: isOpen ? 1 : 0,
@@ -460,11 +536,9 @@ export function MobileMoreMenu() {
   return (
     <>
       <button
+        ref={triggerButtonRef}
         type="button"
-        onClick={() => {
-          setIsRendered(true);
-          requestAnimationFrame(() => setIsOpen(true));
-        }}
+        onClick={openMenu}
         className="group relative flex flex-col items-center justify-center"
         aria-label={t("more")}
       >

@@ -1,6 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { ShareMenu } from "@/components/recordings/ShareMenu";
 import { useBodyScrollLock } from "@/components/shared/useBodyScrollLock";
@@ -16,6 +24,210 @@ interface LightboxProps {
   nextLabel?: string;
 }
 
+interface MobileBarrelIndicatorHandle {
+  setDragPreview: (deltaX: number) => void;
+  resetPreview: () => void;
+  commitStep: (direction: "prev" | "next") => void;
+}
+
+interface MobileBarrelIndicatorProps {
+  currentIndex: number;
+  totalCount: number;
+}
+
+const MobileBarrelIndicator = forwardRef<MobileBarrelIndicatorHandle, MobileBarrelIndicatorProps>(
+  function MobileBarrelIndicator({ currentIndex, totalCount }, ref) {
+    const slots = 11;
+    const half = Math.floor(slots / 2);
+    const renderCount = slots + 6;
+    const MAX_TRACK_WIDTH = 228;
+    const VIEWPORT_GUTTER = 32;
+    const [trackWidth, setTrackWidth] = useState(MAX_TRACK_WIDTH);
+    const slotSpacing = 13;
+    const currentCenterRef = useRef(currentIndex);
+    const targetCenterRef = useRef(currentIndex);
+    const isDraggingRef = useRef(false);
+    const frameRef = useRef<number | null>(null);
+    const stepReleaseTimerRef = useRef<number | null>(null);
+    const pillRefs = useRef<(HTMLSpanElement | null)[]>([]);
+    const glowRef = useRef<HTMLSpanElement | null>(null);
+    const STEP_HOLD_MS = 90;
+    const STEP_CARRY = 0.92;
+    const EDGE_SOFTNESS_PX = 34;
+
+    const paint = useCallback(
+      (center: number) => {
+        const baseIndex = Math.floor(center) - half - 3;
+        const halfTrack = trackWidth / 2;
+
+        for (let i = 0; i < renderCount; i += 1) {
+          const pill = pillRefs.current[i];
+          if (pill) {
+            const photoIndex = baseIndex + i;
+            const delta = photoIndex - center;
+            const distance = Math.abs(delta);
+            const emphasis = Math.exp(-(distance * distance) * 0.72);
+            const widthPx = 5.5 + emphasis * 6.5;
+            const alpha = 0.14 + emphasis * 0.86;
+            const yOffset = 0.2 + Math.min(2.2, distance * 0.6);
+            const x = delta * slotSpacing;
+            const distanceToEdge = halfTrack - (Math.abs(x) + widthPx / 2);
+            const edgeFade = Math.max(0, Math.min(1, distanceToEdge / EDGE_SOFTNESS_PX));
+            const isInRange = photoIndex >= 0 && photoIndex < totalCount;
+
+            pill.style.left = `${halfTrack + x}px`;
+            pill.style.width = `${widthPx}px`;
+            pill.style.opacity = isInRange ? `${edgeFade}` : "0";
+            pill.style.backgroundColor = `rgba(255,255,255,${alpha})`;
+            pill.style.transform = `translate(-50%, calc(-50% + ${yOffset}px))`;
+          }
+        }
+
+        const glow = glowRef.current;
+        if (glow) {
+          const motion = Math.min(1, Math.abs(targetCenterRef.current - center));
+          glow.style.opacity = `${0.35 + motion * 0.2}`;
+        }
+      },
+      [half, renderCount, slotSpacing, totalCount, trackWidth],
+    );
+
+    const stopLoop = useCallback(() => {
+      if (frameRef.current) {
+        window.cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
+      }
+      if (stepReleaseTimerRef.current) {
+        window.clearTimeout(stepReleaseTimerRef.current);
+        stepReleaseTimerRef.current = null;
+      }
+    }, []);
+
+    const animate = useCallback(() => {
+      frameRef.current = null;
+      const { current } = currentCenterRef;
+      const { current: target } = targetCenterRef;
+      const next = current + (target - current) * 0.16;
+
+      if (Math.abs(target - next) < 0.002) {
+        currentCenterRef.current = target;
+        paint(target);
+        return;
+      }
+
+      currentCenterRef.current = next;
+      paint(next);
+      frameRef.current = window.requestAnimationFrame(animate);
+    }, [paint]);
+
+    const startLoop = useCallback(() => {
+      if (frameRef.current) {
+        return;
+      }
+
+      frameRef.current = window.requestAnimationFrame(animate);
+    }, [animate]);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        setDragPreview: (deltaX: number) => {
+          isDraggingRef.current = true;
+          const clamped = Math.max(-96, Math.min(96, deltaX));
+          targetCenterRef.current = currentIndex - (clamped / 96) * STEP_CARRY;
+          startLoop();
+        },
+        resetPreview: () => {
+          isDraggingRef.current = false;
+          targetCenterRef.current = currentIndex;
+          startLoop();
+        },
+        commitStep: (direction: "prev" | "next") => {
+          isDraggingRef.current = false;
+          if (stepReleaseTimerRef.current) {
+            window.clearTimeout(stepReleaseTimerRef.current);
+          }
+          targetCenterRef.current =
+            currentIndex + (direction === "next" ? STEP_CARRY : -STEP_CARRY);
+          stepReleaseTimerRef.current = window.setTimeout(() => {
+            targetCenterRef.current = currentIndex + (direction === "next" ? 1 : -1);
+            startLoop();
+            stepReleaseTimerRef.current = null;
+          }, STEP_HOLD_MS);
+          startLoop();
+        },
+      }),
+      [STEP_CARRY, STEP_HOLD_MS, currentIndex, startLoop],
+    );
+
+    useEffect(() => {
+      paint(currentCenterRef.current);
+    }, [paint]);
+
+    useEffect(() => {
+      const updateTrackWidth = () => {
+        const nextWidth = Math.min(MAX_TRACK_WIDTH, window.innerWidth - VIEWPORT_GUTTER);
+        setTrackWidth((prev) => {
+          const width = Math.max(156, nextWidth);
+          return prev === width ? prev : width;
+        });
+      };
+
+      updateTrackWidth();
+      window.addEventListener("resize", updateTrackWidth);
+
+      return () => {
+        window.removeEventListener("resize", updateTrackWidth);
+      };
+    }, []);
+
+    useEffect(() => {
+      if (!isDraggingRef.current) {
+        targetCenterRef.current = currentIndex;
+        startLoop();
+      }
+    }, [currentIndex, startLoop]);
+
+    useEffect(() => () => stopLoop(), [stopLoop]);
+
+    const pillSlots = useMemo(
+      () => Array.from({ length: renderCount }, (_, i) => i),
+      [renderCount],
+    );
+
+    return (
+      <div className="absolute inset-x-3 top-3 z-30 sm:hidden">
+        <div
+          className="relative mx-auto h-3 overflow-hidden"
+          style={{
+            width: `${trackWidth}px`,
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+          }}
+        >
+          <span
+            ref={glowRef}
+            className="pointer-events-none absolute top-1/2 left-1/2 h-2 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/20 blur-sm"
+            style={{ opacity: 0.55 }}
+          />
+          {pillSlots.map((slot) => (
+            <span
+              key={`progress-slot-${slot}`}
+              ref={(node) => {
+                pillRefs.current[slot] = node;
+              }}
+              className="absolute top-1/2 h-1 rounded-full"
+              style={{ left: "50%", opacity: 0 }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  },
+);
+
 export function Lightbox({
   images,
   initialIndex,
@@ -26,6 +238,7 @@ export function Lightbox({
   previousLabel = "Previous",
   nextLabel = "Next",
 }: LightboxProps) {
+  type NavigationSource = "tap" | "swipe" | "keyboard" | "desktop";
   const [index, setIndex] = useState(initialIndex);
   const [saveData, setSaveData] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
@@ -56,6 +269,7 @@ export function Lightbox({
   const dragYRef = useRef(0);
   const isMultiTouch = useRef(false);
   const exitAnimationRef = useRef<number | null>(null);
+  const indicatorRef = useRef<MobileBarrelIndicatorHandle | null>(null);
 
   const DISMISS_DRAG_THRESHOLD = 100;
 
@@ -73,17 +287,29 @@ export function Lightbox({
   const hasNext = index < images.length - 1;
   const shareText = current?.alt ?? "";
 
-  const goToPrev = useCallback(() => {
-    if (hasPrev) {
-      updateIndex(index - 1);
-    }
-  }, [hasPrev, index, updateIndex]);
+  const goToPrev = useCallback(
+    (_source: NavigationSource = "tap") => {
+      if (!hasPrev) {
+        return;
+      }
 
-  const goToNext = useCallback(() => {
-    if (hasNext) {
+      indicatorRef.current?.commitStep("prev");
+      updateIndex(index - 1);
+    },
+    [hasPrev, index, updateIndex],
+  );
+
+  const goToNext = useCallback(
+    (_source: NavigationSource = "tap") => {
+      if (!hasNext) {
+        return;
+      }
+
+      indicatorRef.current?.commitStep("next");
       updateIndex(index + 1);
-    }
-  }, [hasNext, index, updateIndex]);
+    },
+    [hasNext, index, updateIndex],
+  );
 
   useEffect(() => {
     if (typeof navigator === "undefined") {
@@ -135,11 +361,11 @@ export function Lightbox({
       }
 
       if (e.key === "ArrowLeft") {
-        goToPrev();
+        goToPrev("keyboard");
       }
 
       if (e.key === "ArrowRight") {
-        goToNext();
+        goToNext("keyboard");
       }
     };
 
@@ -157,10 +383,12 @@ export function Lightbox({
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length > 1) {
       setPinching(true);
+      indicatorRef.current?.resetPreview();
       return;
     }
 
     setPinching(false);
+    indicatorRef.current?.resetPreview();
     touchStartX.current = e.touches[0].clientX;
     touchEndX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
@@ -170,6 +398,7 @@ export function Lightbox({
   const handleTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length > 1) {
       setPinching(true);
+      indicatorRef.current?.resetPreview();
       return;
     }
 
@@ -178,15 +407,25 @@ export function Lightbox({
     }
 
     touchEndX.current = e.touches[0].clientX;
+    const deltaX = touchEndX.current - touchStartX.current;
     const currentY = e.touches[0].clientY;
     const deltaY = currentY - touchStartY.current;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
 
     if (deltaY > 0) {
-      const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
-      if (deltaY >= deltaX) {
+      if (absDeltaY >= absDeltaX) {
+        indicatorRef.current?.resetPreview();
         setDragY(deltaY);
         dragYRef.current = deltaY;
+        return;
       }
+    }
+
+    if (absDeltaX >= absDeltaY * 0.8) {
+      indicatorRef.current?.setDragPreview(deltaX);
+    } else {
+      indicatorRef.current?.resetPreview();
     }
   };
 
@@ -195,6 +434,7 @@ export function Lightbox({
       if (e.touches.length === 0) {
         setPinching(false);
       }
+      indicatorRef.current?.resetPreview();
 
       return;
     }
@@ -202,6 +442,7 @@ export function Lightbox({
     const currentDragY = dragYRef.current;
     if (currentDragY > DISMISS_DRAG_THRESHOLD) {
       setIsExiting(true);
+      indicatorRef.current?.resetPreview();
       const exitDistance = Math.max(currentDragY, window.innerHeight * 0.6);
       setDragY(exitDistance);
       dragYRef.current = exitDistance;
@@ -224,9 +465,11 @@ export function Lightbox({
     const threshold = 50;
 
     if (diff > threshold && hasNext) {
-      goToNext();
+      goToNext("swipe");
     } else if (diff < -threshold && hasPrev) {
-      goToPrev();
+      goToPrev("swipe");
+    } else {
+      indicatorRef.current?.resetPreview();
     }
   };
 
@@ -284,14 +527,7 @@ export function Lightbox({
             : undefined
         }
       >
-        <div className="absolute inset-x-3 top-3 z-30 flex gap-1 sm:hidden">
-          {images.map((_, i) => (
-            <div
-              key={`progress-${i}`}
-              className={`h-1 flex-1 rounded-full ${i <= index ? "bg-white" : "bg-white/30"}`}
-            />
-          ))}
-        </div>
+        <MobileBarrelIndicator ref={indicatorRef} currentIndex={index} totalCount={images.length} />
 
         <div className="absolute top-8 right-3 left-3 z-30 flex items-center justify-between text-white sm:hidden">
           <button
@@ -399,7 +635,7 @@ export function Lightbox({
 
         {hasPrev && (
           <button
-            onClick={goToPrev}
+            onClick={() => goToPrev("desktop")}
             className="absolute left-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
             aria-label={previousLabel}
           >
@@ -417,7 +653,7 @@ export function Lightbox({
 
         {hasNext && (
           <button
-            onClick={goToNext}
+            onClick={() => goToNext("desktop")}
             className="absolute right-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
             aria-label="Next"
           >
@@ -467,7 +703,7 @@ export function Lightbox({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  goToPrev();
+                  goToPrev("tap");
                 }}
                 disabled={!hasPrev}
                 aria-label={previousLabel}
@@ -477,7 +713,7 @@ export function Lightbox({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  goToNext();
+                  goToNext("tap");
                 }}
                 disabled={!hasNext}
                 aria-label={nextLabel}

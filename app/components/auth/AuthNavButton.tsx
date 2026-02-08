@@ -23,23 +23,38 @@ function AuthNavButtonInner() {
   const href = isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN;
   const ariaLabel = isResolvingAuth ? "Authenticating" : isAuthed ? "Account" : "Login";
 
+  const buttonContent = (
+    <IconButton
+      ariaLabel={ariaLabel}
+      size="md"
+      shape="rounded"
+      variant="glass"
+      disabled={isResolvingAuth}
+      className={
+        isResolvingAuth ? "cursor-not-allowed opacity-75" : "hover:scale-105 active:scale-95"
+      }
+    >
+      {isResolvingAuth ? (
+        <LoadingSpinner size="md" ariaLabel="Authenticating" />
+      ) : isAuthed ? (
+        <UserIcon className="h-5 w-5" />
+      ) : (
+        <LogInIcon className="h-5 w-5" />
+      )}
+    </IconButton>
+  );
+
+  if (isResolvingAuth) {
+    return (
+      <span aria-label={ariaLabel} aria-disabled="true">
+        {buttonContent}
+      </span>
+    );
+  }
+
   return (
     <Link href={href} prefetch={false} aria-label={ariaLabel} className="cursor-pointer">
-      <IconButton
-        ariaLabel={ariaLabel}
-        size="md"
-        shape="rounded"
-        variant="glass"
-        className="hover:scale-105 active:scale-95"
-      >
-        {isResolvingAuth ? (
-          <LoadingSpinner size="md" ariaLabel="Authenticating" />
-        ) : isAuthed ? (
-          <UserIcon className="h-5 w-5" />
-        ) : (
-          <LogInIcon className="h-5 w-5" />
-        )}
-      </IconButton>
+      {buttonContent}
     </Link>
   );
 }
