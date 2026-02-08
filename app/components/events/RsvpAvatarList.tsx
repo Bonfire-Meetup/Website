@@ -68,9 +68,10 @@ export function RsvpAvatarList({ eventId }: RsvpAvatarListProps) {
             key={user.publicId}
             href={PAGE_ROUTES.USER(user.publicId)}
             prefetch={false}
-            className="group relative transition-all hover:scale-110"
+            className={`group focus-visible:ring-brand-400/65 dark:focus-visible:ring-brand-400/70 relative flex h-8 w-8 items-center justify-center rounded-full transition-transform focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-white focus-visible:outline-none motion-safe:hover:scale-110 sm:h-5 sm:w-5 ${
+              index === 0 ? "ml-0" : "ml-0 sm:-ml-2"
+            } dark:focus-visible:ring-offset-neutral-900`}
             style={{
-              marginLeft: index === 0 ? 0 : `${AVATAR_OVERLAP}px`,
               zIndex:
                 activeAvatarPublicId === user.publicId
                   ? visibleUsers.length + 1
@@ -82,6 +83,7 @@ export function RsvpAvatarList({ eventId }: RsvpAvatarListProps) {
             }
             onFocus={() => setActiveAvatarPublicId(user.publicId)}
             onBlur={() => setActiveAvatarPublicId((prev) => (prev === user.publicId ? null : prev))}
+            aria-label={user.name ? `View ${user.name}'s profile` : "View attendee profile"}
             title={user.name || undefined}
           >
             <div className="relative">
