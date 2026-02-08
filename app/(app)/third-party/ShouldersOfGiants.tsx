@@ -2,6 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
+import { HeartFilledIcon } from "@/components/shared/Icons";
+
 const GIANTS = [
   { key: "cloud", provider: "Vercel", url: "https://vercel.com" },
   { key: "database", provider: "Neon Serverless", url: "https://neon.tech" },
@@ -62,19 +64,18 @@ export function ShouldersOfGiants() {
           <div className="group relative isolate overflow-hidden rounded-2xl border border-white/60 bg-white/40 px-4 py-3.5 shadow-[0_22px_48px_-34px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-transform duration-300 motion-safe:hover:-translate-y-0.5 sm:px-5 sm:py-4 dark:border-white/16 dark:bg-white/8">
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.72),rgba(255,255,255,0.1)_58%,rgba(255,255,255,0.03))] dark:bg-[linear-gradient(145deg,rgba(255,255,255,0.2),rgba(255,255,255,0.05)_58%,rgba(255,255,255,0.02))]" />
             <div className="bg-brand-400/28 dark:bg-brand-400/30 pointer-events-none absolute -top-8 -right-8 h-24 w-24 rounded-full blur-2xl" />
-            <div className="pointer-events-none absolute top-0 right-0 h-9 w-9 translate-x-4 -translate-y-4 rotate-45 border border-white/70 bg-white/65 shadow-sm dark:border-white/30 dark:bg-white/12" />
             <div className="pointer-events-none absolute inset-x-5 top-0 h-px bg-white/80 dark:bg-white/30" />
 
-            <div className="relative">
-              <div className="mb-2.5 flex items-center gap-2">
+            <div className="relative text-center">
+              <div className="mb-2.5 inline-flex items-center gap-2">
                 <span className="bg-brand-500/14 text-brand-700 dark:bg-brand-300/18 dark:text-brand-100 inline-flex h-7 w-7 items-center justify-center rounded-full text-[13px]">
-                  ❤
+                  <HeartFilledIcon className="h-3.5 w-3.5" aria-hidden />
                 </span>
                 <span className="text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-300">
                   With gratitude
                 </span>
               </div>
-              <p className="text-[13px] leading-relaxed font-medium text-neutral-700 sm:text-sm dark:text-neutral-100">
+              <p className="mx-auto max-w-[42ch] text-[13px] leading-relaxed font-medium text-neutral-700 sm:text-sm dark:text-neutral-100">
                 {t("thankYou")}
               </p>
             </div>

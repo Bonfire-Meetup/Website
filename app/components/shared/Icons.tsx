@@ -601,6 +601,14 @@ export function HeartIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function HeartFilledIcon({ className, ...props }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M11.645 20.91a.75.75 0 0 0 .71 0C14.948 19.617 21 15.266 21 9.75 21 6.462 18.364 4 15.75 4c-1.79 0-3.403.902-4.5 2.24A5.66 5.66 0 0 0 6.75 4C4.136 4 1.5 6.462 1.5 9.75c0 5.516 6.052 9.867 10.145 11.16Z" />
+    </svg>
+  );
+}
+
 export function ShareIcon({ className, ...props }: IconProps) {
   return (
     <svg
