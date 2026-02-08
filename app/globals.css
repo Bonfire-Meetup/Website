@@ -869,6 +869,178 @@ html.smooth-scroll {
   animation: boostGlowExpand 0.5s cubic-bezier(0.26, 1.85, 0.42, 1) !important;
 }
 
+@keyframes engagementHit {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  28% {
+    transform: translateY(-1px) scale(1.045);
+  }
+
+  62% {
+    transform: translateY(0.5px) scale(0.992);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes likePopImpact {
+  0% {
+    transform: scale(0.72) rotate(-14deg);
+    filter: brightness(1);
+  }
+
+  30% {
+    transform: scale(1.9) rotate(8deg);
+    filter: brightness(1.5);
+  }
+
+  62% {
+    transform: scale(1.14) rotate(-3deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes boostPopImpact {
+  0% {
+    transform: scale(0.7) rotate(-18deg);
+    filter: brightness(0.95);
+  }
+
+  32% {
+    transform: scale(2) rotate(14deg);
+    filter: brightness(1.55);
+  }
+
+  64% {
+    transform: scale(1.16) rotate(-5deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes likeImpactRing {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.55;
+    border-color: rgba(251, 146, 60, 0.95);
+  }
+
+  100% {
+    transform: scale(1.17);
+    opacity: 0;
+    border-color: rgba(251, 146, 60, 0);
+  }
+}
+
+@keyframes boostImpactRing {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.55;
+    border-color: rgba(16, 185, 129, 0.95);
+  }
+
+  100% {
+    transform: scale(1.18);
+    opacity: 0;
+    border-color: rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes countBump {
+  0% {
+    transform: scale(0.85) translateY(2px);
+    opacity: 0.82;
+  }
+
+  35% {
+    transform: scale(1.22) translateY(-2px);
+    opacity: 1;
+  }
+
+  68% {
+    transform: scale(1.04) translateY(0);
+  }
+
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.like-hit,
+.boost-hit {
+  animation: engagementHit 0.58s cubic-bezier(0.2, 1, 0.2, 1) !important;
+  transform-origin: center;
+}
+
+.like-pop-impact {
+  animation: likePopImpact 0.62s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.boost-pop-impact {
+  animation: boostPopImpact 0.66s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.like-glow-impact {
+  animation: likeGlowExpand 0.62s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.boost-glow-impact {
+  animation: boostGlowExpand 0.66s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.like-impact-ring,
+.boost-impact-ring {
+  border-width: 1.5px;
+  border-style: solid;
+  will-change: transform, opacity;
+}
+
+.like-impact-ring {
+  animation: likeImpactRing 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.boost-impact-ring {
+  animation: boostImpactRing 0.66s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.like-count-bump,
+.boost-count-bump {
+  animation: countBump 0.52s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.both-active-aura {
+  background:
+    radial-gradient(62% 128% at 28% 50%, rgba(251, 146, 60, 0.4), transparent 76%),
+    radial-gradient(62% 128% at 72% 50%, rgba(16, 185, 129, 0.4), transparent 76%);
+  opacity: 0.92;
+  filter: blur(16px) saturate(1.14);
+  transform: scale(1.035);
+}
+
+.both-active-sheen {
+  background: linear-gradient(
+    108deg,
+    transparent 34%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 66%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.68;
+  transform: translateX(-3%);
+}
+
 @keyframes cardEnter {
   from {
     opacity: 0;
@@ -1008,7 +1180,21 @@ html.smooth-scroll {
   .border-gradient::before,
   .animate-rise,
   .recording-card-enter,
-  .hero-progress-fill {
+  .hero-progress-fill,
+  .like-pop,
+  .like-glow,
+  .boost-pop,
+  .boost-glow,
+  .like-hit,
+  .boost-hit,
+  .like-pop-impact,
+  .boost-pop-impact,
+  .like-glow-impact,
+  .boost-glow-impact,
+  .like-impact-ring,
+  .boost-impact-ring,
+  .like-count-bump,
+  .boost-count-bump {
     animation: none;
   }
 

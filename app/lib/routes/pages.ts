@@ -2,6 +2,7 @@ export const LOGIN_REASON = {
   EVENT_RSVP: "event-rsvp",
   SESSION_EXPIRED: "session-expired",
   VIDEO_BOOST: "video-boost",
+  WATCH_LATER: "watch-later",
 } as const;
 
 export type LoginReason = (typeof LOGIN_REASON)[keyof typeof LOGIN_REASON];

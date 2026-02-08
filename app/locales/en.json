@@ -996,6 +996,7 @@
     "boostHint": "Boosting is for members only.",
     "rsvpHint": "Sign in to let others know you're coming.",
     "sessionExpiredHint": "Your session expired. Please log in again.",
+    "watchLaterHint": "Sign in to save this video for later.",
     "termsPrefix": "By continuing you agree to the ",
     "termsLink": "terms and acknowledge the privacy policy",
     "termsSuffix": ".",

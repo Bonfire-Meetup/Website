@@ -66,6 +66,13 @@ const HINT_CONFIGS: Record<LoginReason, HintConfig> = {
     icon: <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />,
     translationKey: "boostHint",
   },
+  [LOGIN_REASON.WATCH_LATER]: {
+    borderClass: "border-violet-200/70 dark:border-violet-500/20",
+    bgClass: "bg-violet-50 dark:bg-violet-500/10",
+    textClass: "text-violet-700 dark:text-violet-200",
+    icon: <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />,
+    translationKey: "watchLaterHint",
+  },
 };
 
 function ReasonHintBanner({

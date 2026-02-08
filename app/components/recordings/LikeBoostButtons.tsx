@@ -33,6 +33,12 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
 
   const [likePulse, setLikePulse] = useState(false);
   const [boostPulse, setBoostPulse] = useState(false);
+  const [likeAddFx, setLikeAddFx] = useState(false);
+  const [boostAddFx, setBoostAddFx] = useState(false);
+  const [likeImpactRing, setLikeImpactRing] = useState(false);
+  const [boostImpactRing, setBoostImpactRing] = useState(false);
+  const [likeCountBurst, setLikeCountBurst] = useState(false);
+  const [boostCountBurst, setBoostCountBurst] = useState(false);
   const [likeRateLimitError, setLikeRateLimitError] = useState(false);
   const [boostRateLimitError, setBoostRateLimitError] = useState(false);
 
@@ -87,6 +93,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
     engagement?.boosts.availableBoosts ?? boostsQuery.data?.availableBoosts ?? null;
   const boostLoadError = boostsQuery.isError;
   const isBoosting = boostMutation.isPending;
+  const bothActive = hasLiked && hasBoosted;
 
   useEffect(() => {
     if (!likesQuery.data) {
@@ -128,13 +135,27 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
     onBoostedByLoad(boostedByOrNull);
   }, [boostedByOrNull, onBoostedByLoad]);
 
-  const pulse = (kind: "like" | "boost") => {
+  const pulse = (kind: "like" | "boost", adding: boolean) => {
     if (kind === "like") {
+      setLikeAddFx(adding);
       setLikePulse(true);
       timeoutsRef.current.push(window.setTimeout(() => setLikePulse(false), 450));
+      if (adding) {
+        setLikeImpactRing(true);
+        setLikeCountBurst(true);
+        timeoutsRef.current.push(window.setTimeout(() => setLikeImpactRing(false), 620));
+        timeoutsRef.current.push(window.setTimeout(() => setLikeCountBurst(false), 520));
+      }
     } else {
+      setBoostAddFx(adding);
       setBoostPulse(true);
       timeoutsRef.current.push(window.setTimeout(() => setBoostPulse(false), 500));
+      if (adding) {
+        setBoostImpactRing(true);
+        setBoostCountBurst(true);
+        timeoutsRef.current.push(window.setTimeout(() => setBoostImpactRing(false), 680));
+        timeoutsRef.current.push(window.setTimeout(() => setBoostCountBurst(false), 560));
+      }
     }
   };
 
@@ -143,8 +164,8 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
       return;
     }
 
-    pulse("like");
     const adding = !hasLiked;
+    pulse("like", adding);
 
     try {
       await likeMutation.mutateAsync(adding);
@@ -172,8 +193,8 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
       return;
     }
 
-    pulse("boost");
     const adding = !hasBoosted;
+    pulse("boost", adding);
 
     try {
       await boostMutation.mutateAsync(adding);
@@ -195,9 +216,28 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
 
   return (
     <div className="space-y-3">
-      <div className="group relative inline-flex">
+      <div
+        className={`group relative isolate inline-flex ${bothActive ? "rounded-full shadow-[0_14px_30px_-14px_rgba(245,158,11,0.72),0_16px_34px_-16px_rgba(16,185,129,0.72),0_0_0_1px_rgba(255,255,255,0.22)]" : ""}`}
+      >
+        {bothActive ? (
+          <>
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-0 rounded-full bg-[linear-gradient(90deg,#f97316_0%,#facc15_42%,#4ade80_62%,#10b981_100%)]"
+            />
+            <span
+              aria-hidden="true"
+              className="both-active-aura pointer-events-none absolute -inset-1 z-[1] rounded-full"
+            />
+            <span
+              aria-hidden="true"
+              className="both-active-sheen pointer-events-none absolute inset-0 z-[2] rounded-full"
+            />
+          </>
+        ) : null}
+
         <div
-          className={`relative z-0 transition-transform ${
+          className={`relative z-10 transition-transform ${
             likeCount === null ? "" : "hover:-translate-y-0.5"
           }`}
         >
@@ -207,22 +247,43 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
             aria-pressed={hasLiked}
             disabled={isLiking || likeCount === null}
             className={`relative inline-flex h-11 min-w-[6.5rem] items-center justify-center gap-2 rounded-l-full border border-r-0 border-neutral-200/60 px-3 py-2.5 text-sm leading-none font-semibold transition-all sm:min-w-[8.5rem] sm:gap-3 sm:px-5 dark:border-white/10 ${
-              hasLiked
-                ? `${ENGAGEMENT_BRANDING.like.classes.activeGradient} ${ENGAGEMENT_BRANDING.like.classes.activeText} ${ENGAGEMENT_BRANDING.like.classes.activeShadow}`
-                : `bg-white ring-1 ring-rose-400/15 ring-inset ${ENGAGEMENT_BRANDING.like.classes.inactiveText} dark:bg-white/5 dark:ring-rose-400/12`
+              bothActive
+                ? "!border-transparent bg-transparent text-white shadow-none"
+                : hasLiked
+                  ? `${ENGAGEMENT_BRANDING.like.classes.activeGradient} ${ENGAGEMENT_BRANDING.like.classes.activeText} ${ENGAGEMENT_BRANDING.like.classes.activeShadow}`
+                  : `bg-white ring-1 ring-rose-400/15 ring-inset ${ENGAGEMENT_BRANDING.like.classes.inactiveText} dark:bg-white/5 dark:ring-rose-400/12`
             } ${isLiking || likeCount === null ? "opacity-80" : ""} ${
               likeCount === null
                 ? "cursor-not-allowed"
-                : `cursor-pointer ${ENGAGEMENT_BRANDING.like.classes.hoverShadow}`
-            } ${likePulse ? ENGAGEMENT_BRANDING.like.animations.glow : ""}`}
+                : `cursor-pointer ${bothActive ? "" : ENGAGEMENT_BRANDING.like.classes.hoverShadow}`
+            } ${
+              likePulse
+                ? likeAddFx
+                  ? "like-glow-impact like-hit"
+                  : ENGAGEMENT_BRANDING.like.animations.glow
+                : ""
+            }`}
           >
-            <span className="pointer-events-none absolute top-2 right-0 bottom-2 w-px bg-white/80 opacity-70 transition-opacity group-hover:opacity-0 dark:bg-white/25" />
-            <FireIcon
-              className={`h-5 w-5 shrink-0 ${hasLiked ? "fill-white stroke-white" : ""} ${
-                likePulse ? ENGAGEMENT_BRANDING.like.animations.pop : ""
+            <span
+              aria-hidden="true"
+              className={`pointer-events-none absolute inset-0 rounded-l-full ${
+                likeImpactRing ? "like-impact-ring" : ""
               }`}
             />
-            <span className="flex min-w-[2.5rem] justify-center sm:min-w-[2.75rem]">
+            <FireIcon
+              className={`relative z-10 h-5 w-5 shrink-0 ${hasLiked ? "fill-white stroke-white" : ""} ${
+                likePulse
+                  ? likeAddFx
+                    ? "like-pop-impact"
+                    : ENGAGEMENT_BRANDING.like.animations.pop
+                  : ""
+              }`}
+            />
+            <span
+              className={`relative z-10 flex min-w-[2.5rem] justify-center sm:min-w-[2.75rem] ${
+                likeCountBurst ? "like-count-bump" : ""
+              }`}
+            >
               {likeCount === null ? (
                 likeLoadError ? (
                   <FrownIcon className="h-4 w-4" />
@@ -243,7 +304,7 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
         </div>
 
         <div
-          className={`relative z-0 transition-transform ${boostCount === null ? "" : "hover:-translate-y-0.5"}`}
+          className={`relative z-10 transition-transform ${boostCount === null ? "" : "hover:-translate-y-0.5"}`}
         >
           <button
             type="button"
@@ -255,27 +316,49 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
               (availableBoosts !== null && availableBoosts === 0 && !hasBoosted)
             }
             className={`relative inline-flex h-11 min-w-[6.5rem] items-center justify-center gap-2 rounded-r-full border border-l-0 border-neutral-200/60 px-3 py-2.5 text-sm leading-none font-semibold transition-all sm:min-w-[8.5rem] sm:gap-3 sm:px-5 dark:border-white/10 ${
-              hasBoosted
-                ? `${ENGAGEMENT_BRANDING.boost.classes.activeGradient} ${ENGAGEMENT_BRANDING.boost.classes.activeText} ${ENGAGEMENT_BRANDING.boost.classes.activeShadow}`
-                : `bg-white ring-1 ring-emerald-500/15 ring-inset ${ENGAGEMENT_BRANDING.boost.classes.inactiveText} dark:bg-white/5 dark:ring-emerald-400/12`
+              bothActive
+                ? "!border-transparent bg-transparent text-white shadow-none"
+                : hasBoosted
+                  ? `${ENGAGEMENT_BRANDING.boost.classes.activeGradient} ${ENGAGEMENT_BRANDING.boost.classes.activeText} ${ENGAGEMENT_BRANDING.boost.classes.activeShadow}`
+                  : `bg-white ring-1 ring-emerald-500/15 ring-inset ${ENGAGEMENT_BRANDING.boost.classes.inactiveText} dark:bg-white/5 dark:ring-emerald-400/12`
             } ${isBoosting || boostCount === null ? "opacity-80" : ""} ${
               boostCount === null ||
               (availableBoosts !== null && availableBoosts === 0 && !hasBoosted)
                 ? "cursor-not-allowed"
-                : `cursor-pointer ${ENGAGEMENT_BRANDING.boost.classes.hoverShadow}`
-            } ${boostPulse ? ENGAGEMENT_BRANDING.boost.animations.glow : ""}`}
+                : `cursor-pointer ${bothActive ? "" : ENGAGEMENT_BRANDING.boost.classes.hoverShadow}`
+            } ${
+              boostPulse
+                ? boostAddFx
+                  ? "boost-glow-impact boost-hit"
+                  : ENGAGEMENT_BRANDING.boost.animations.glow
+                : ""
+            }`}
             title={
               availableBoosts !== null && availableBoosts === 0 && !hasBoosted
                 ? t(ENGAGEMENT_BRANDING.boost.i18nKeys.noBoostsAvailable)
                 : undefined
             }
           >
-            <BoltIcon
-              className={`h-5 w-5 shrink-0 ${hasBoosted ? "stroke-white" : ""} ${
-                boostPulse ? ENGAGEMENT_BRANDING.boost.animations.pop : ""
+            <span
+              aria-hidden="true"
+              className={`pointer-events-none absolute inset-0 rounded-r-full ${
+                boostImpactRing ? "boost-impact-ring" : ""
               }`}
             />
-            <span className="flex min-w-[2.5rem] justify-center sm:min-w-[2.75rem]">
+            <BoltIcon
+              className={`relative z-10 h-5 w-5 shrink-0 ${hasBoosted ? "stroke-white" : ""} ${
+                boostPulse
+                  ? boostAddFx
+                    ? "boost-pop-impact"
+                    : ENGAGEMENT_BRANDING.boost.animations.pop
+                  : ""
+              }`}
+            />
+            <span
+              className={`relative z-10 flex min-w-[2.5rem] justify-center sm:min-w-[2.75rem] ${
+                boostCountBurst ? "boost-count-bump" : ""
+              }`}
+            >
               {boostCount === null ? (
                 boostLoadError ? (
                   <FrownIcon className="h-4 w-4" />

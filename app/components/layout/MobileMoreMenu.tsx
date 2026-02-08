@@ -330,9 +330,10 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
       <button
         type="button"
         onClick={openMenu}
-        className="group relative flex h-12 w-12 items-center justify-center rounded-full text-neutral-500 transition-all duration-300 ease-out hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-neutral-200"
+        className="group relative flex h-12 w-12 items-center justify-center rounded-full text-neutral-500 transition-all duration-300 ease-out outline-none [-webkit-tap-highlight-color:transparent] hover:bg-neutral-100 hover:text-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-neutral-200 dark:focus-visible:ring-offset-neutral-900"
         style={{
           transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+          WebkitTapHighlightColor: "transparent",
         }}
         aria-label={t("more")}
       >
@@ -539,8 +540,9 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
         ref={triggerButtonRef}
         type="button"
         onClick={openMenu}
-        className="group relative flex flex-col items-center justify-center"
+        className="group relative flex flex-col items-center justify-center rounded-full outline-none [-webkit-tap-highlight-color:transparent] focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-neutral-900"
         aria-label={t("more")}
+        style={{ WebkitTapHighlightColor: "transparent" }}
       >
         <div
           className={`relative flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ease-out ${

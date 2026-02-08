@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import {
@@ -9,10 +9,9 @@ import {
   useRemoveFromWatchlistMutation,
   useVideoWatchlistStatus,
 } from "@/lib/api/user-profile";
-import { getHasValidToken } from "@/lib/auth/client";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { addToWatchlist, removeFromWatchlist } from "@/lib/redux/slices/profileSlice";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { logError } from "@/lib/utils/log-client";
 
 import { BookmarkIcon, BookmarkFilledIcon } from "../shared/Icons";
@@ -33,12 +32,15 @@ export function WatchLaterButton({
 }: WatchLaterButtonProps) {
   const t = useTranslations("recordings");
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
+  const auth = useAppSelector((state) => state.auth);
   const watchlistFromRedux = useAppSelector((state) => state.profile.watchlist);
-  const [hasToken, setHasToken] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setHasToken(getHasValidToken());
+    setMounted(true);
   }, []);
 
   const { data: watchlistStatus } = useVideoWatchlistStatus(shortId);
@@ -54,11 +56,19 @@ export function WatchLaterButton({
   }, [watchlistStatus, shortId, watchlistFromRedux, dispatch]);
 
   const inWatchlist = watchlistFromRedux.includes(shortId);
+  const isResolvingAuth = mounted && auth.loading && !auth.hydrated;
+  const isAuthed = mounted && auth.isAuthenticated && auth.hydrated;
   const isLoading = addMutation.isPending || removeMutation.isPending;
 
   const handleClick = async () => {
-    if (!hasToken) {
-      router.push(PAGE_ROUTES.LOGIN);
+    if (isResolvingAuth) {
+      return;
+    }
+
+    if (!isAuthed) {
+      const query = searchParams.toString();
+      const returnPath = `${pathname}${query ? `?${query}` : ""}`;
+      router.push(PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(LOGIN_REASON.WATCH_LATER, returnPath));
       return;
     }
 
@@ -100,10 +110,10 @@ export function WatchLaterButton({
       <button
         type="button"
         onClick={handleClick}
-        disabled={isLoading}
+        disabled={isLoading || isResolvingAuth}
         className={`inline-flex items-center text-xs leading-none font-medium transition-all sm:leading-tight ${layoutClasses} ${gapClasses} ${
           isIconOnly ? iconOnlyColors : iconLabelColors
-        } ${isLoading ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+        } ${isLoading || isResolvingAuth ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
         aria-label={inWatchlist ? t("removeFromWatchLater") : t("addToWatchLater")}
       >
         {inWatchlist ? (
@@ -123,7 +133,7 @@ export function WatchLaterButton({
   return (
     <Button
       onClick={handleClick}
-      disabled={isLoading}
+      disabled={isLoading || isResolvingAuth}
       className={`${buttonSize} ${inWatchlist ? "bg-violet-600 hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-600" : "bg-neutral-800 hover:bg-neutral-700 dark:bg-neutral-700 dark:hover:bg-neutral-600"} gap-2 text-white transition-colors`}
     >
       {inWatchlist ? (
