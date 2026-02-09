@@ -1,7 +1,8 @@
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 
-import { buildNotFoundTitleMetadata, getMetaTitleSuffix } from "@/lib/metadata";
+import { WEBSITE_URLS } from "@/lib/config/constants";
+import { buildNotFoundTitleMetadata, getBrandName, getMetaTitleSuffix } from "@/lib/metadata";
 import {
   type Recording,
   getAllRecordings,
@@ -32,19 +33,37 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return buildNotFoundTitleMetadata("recordingNotFound");
   }
 
-  const titleSuffix = await getMetaTitleSuffix();
+  const [titleSuffix, brandName] = await Promise.all([getMetaTitleSuffix(), getBrandName()]);
+  const absoluteUrl = `${WEBSITE_URLS.BASE}${PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}`;
+  const description = recording.description || `${recording.title} - ${brandName}`;
+
   return {
-    description: recording.description,
+    description,
     openGraph: {
-      description: recording.description,
-      images: [recording.thumbnail],
+      description,
+      images: [
+        {
+          url: recording.thumbnail,
+          width: 1280,
+          height: 720,
+          alt: recording.title,
+        },
+      ],
+      siteName: brandName,
       title: recording.title,
-      url: PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
+      type: "video.other",
+      url: absoluteUrl,
+      videos: [
+        {
+          url: recording.url,
+          type: "text/html",
+        },
+      ],
     },
     title: `${recording.title}${titleSuffix}`,
     twitter: {
       card: "summary_large_image",
-      description: recording.description,
+      description,
       images: [recording.thumbnail],
       title: recording.title,
     },
