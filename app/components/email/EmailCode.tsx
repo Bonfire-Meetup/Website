@@ -15,6 +15,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { FIRE_GRADIENT } from "./brand";
+
 export interface EmailCodeProps {
   baseUrl: string;
   brandName: string;
@@ -84,12 +86,14 @@ export function EmailCode({
             </Section>
 
             <Section
-              className="overflow-hidden rounded-2xl border border-neutral-200/80 bg-white"
+              className="overflow-hidden rounded-2xl bg-white"
               style={{
+                border: "1px solid #e5e5e5",
+                borderRadius: "16px",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06)",
               }}
             >
-              <Section className="h-1 bg-[linear-gradient(90deg,#8b5cf6_0%,#f43f5e_50%,#f59e0b_100%)]" />
+              <Section className="h-1" style={{ background: FIRE_GRADIENT, height: "6px" }} />
 
               <Section className="code-container px-8 pt-10 pb-8 text-center">
                 <Section className="mb-6">
@@ -97,7 +101,7 @@ export function EmailCode({
                     className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl"
                     style={{
                       background:
-                        "linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(244, 63, 94, 0.1) 100%)",
+                        "linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(244,63,94,0.1) 100%)",
                     }}
                   >
                     <Text className="m-0 text-2xl">🔐</Text>

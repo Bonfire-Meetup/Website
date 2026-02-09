@@ -16,12 +16,7 @@ import {
   Text,
 } from "@react-email/components";
 
-const COLORS = {
-  bonfire: "#ff5555",
-  violet: "#8b5cf6",
-  magenta: "#f43f5e",
-  coral: "#f59e0b",
-};
+import { BRAND, FIRE_GRADIENT, FIRE_GRADIENT_DIAGONAL } from "./brand";
 
 export interface NewsletterProps {
   appName: string;
@@ -66,11 +61,11 @@ export function Newsletter({
       <Tailwind>
         <Body className="m-0 bg-neutral-50 p-0 font-sans antialiased">
           <Container className="max-w-[600px] px-4 py-10">
-            <Section className="pb-8">
+            <Section className="pb-8" style={{ paddingBottom: "32px" }}>
               <Row>
                 <Column width={320} className="align-middle">
                   <Link href={baseUrl} style={{ textDecoration: "none" }}>
-                    <Img src={logoUrl} alt={appName} width={110} height={58} className="block" />
+                    <Img src={logoUrl} alt={appName} width={100} height={52} className="block" />
                   </Link>
                 </Column>
                 <Column align="right" className="align-middle">
@@ -78,8 +73,7 @@ export function Newsletter({
                     href={
                       viewUrlSlug ? `${baseUrl}/newsletter/${viewUrlSlug}` : `${baseUrl}/newsletter`
                     }
-                    className="text-[13px] font-medium text-neutral-500"
-                    style={{ textDecoration: "none" }}
+                    style={{ color: "#a3a3a3", fontSize: "12px", textDecoration: "none" }}
                   >
                     View online →
                   </Link>
@@ -90,24 +84,20 @@ export function Newsletter({
             {sections.map((section, index) => (
               <Section
                 key={section.id}
-                className="mb-6 overflow-hidden rounded-lg border border-neutral-200 bg-white"
+                className="mb-8 overflow-hidden rounded-2xl bg-white"
                 style={{
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05)",
+                  border: "1px solid #e5e5e5",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06)",
+                  borderRadius: "16px",
                 }}
               >
-                <table role="presentation" width="100%" cellPadding="0" cellSpacing="0" border={0}>
-                  <tr>
-                    <td
-                      style={{
-                        backgroundColor: COLORS.bonfire,
-                        fontSize: "4px",
-                        lineHeight: "4px",
-                      }}
-                    >
-                      &nbsp;
-                    </td>
-                  </tr>
-                </table>
+                <Section
+                  className="h-1.5"
+                  style={{
+                    background: FIRE_GRADIENT,
+                    height: "6px",
+                  }}
+                />
 
                 {section.imageUrl && (
                   <Img
@@ -120,31 +110,35 @@ export function Newsletter({
                   />
                 )}
 
-                <Section className="px-8 pt-8 pb-8">
-                  {!section.imageUrl && index > 0 && (
+                <Section
+                  className="px-8 pt-8 pb-8"
+                  style={{ padding: index === 0 ? "36px 32px 32px" : "32px" }}
+                >
+                  {!section.imageUrl && index === 0 && (
                     <Text
-                      className="m-0 mb-3 text-[11px] font-bold tracking-[0.2em] uppercase"
-                      style={{ color: COLORS.coral }}
-                    >
-                      Update {String(index).padStart(2, "0")}
-                    </Text>
-                  )}
-
-                  {index === 0 && !section.imageUrl && (
-                    <Text
-                      className="m-0 mb-3 text-[11px] font-bold tracking-[0.2em] uppercase"
-                      style={{ color: COLORS.coral }}
+                      className="m-0 mb-3 text-[11px] font-bold tracking-[0.15em] uppercase"
+                      style={{ color: BRAND.violet, margin: "0 0 12px" }}
                     >
                       Featured
                     </Text>
                   )}
 
+                  {!section.imageUrl && index > 0 && (
+                    <Text
+                      className="m-0 mb-3 text-[11px] font-bold tracking-[0.15em] uppercase"
+                      style={{ color: "#a3a3a3", margin: "0 0 12px" }}
+                    >
+                      Update {String(index).padStart(2, "0")}
+                    </Text>
+                  )}
+
                   <Heading
                     as="h2"
-                    className="m-0 mb-5 text-[24px] leading-[1.25] font-bold tracking-[-0.3px] text-neutral-900"
+                    className="m-0 mb-4 font-bold tracking-[-0.3px] text-neutral-900"
                     style={{
-                      fontSize: index === 0 ? "28px" : "24px",
-                      lineHeight: "1.25",
+                      fontSize: index === 0 ? "26px" : "22px",
+                      lineHeight: "1.3",
+                      margin: "0 0 16px",
                     }}
                   >
                     {section.title}
@@ -153,10 +147,12 @@ export function Newsletter({
                   {section.text.split("\n\n").map((paragraph, pIndex, paragraphs) => (
                     <Text
                       key={`${section.id}-p-${pIndex}`}
-                      className="m-0 text-neutral-600"
+                      className="m-0"
                       style={{
+                        color: "#525252",
                         fontSize: index === 0 ? "16px" : "15px",
                         lineHeight: "1.7",
+                        margin: 0,
                         marginBottom: pIndex === paragraphs.length - 1 ? "24px" : "16px",
                       }}
                     >
@@ -167,42 +163,52 @@ export function Newsletter({
                   {section.ctaHref && section.ctaLabel && (
                     <Button
                       href={section.ctaHref}
-                      className="inline-block rounded-lg px-6 py-3 text-[14px] font-semibold text-white"
+                      className="inline-block text-[14px] font-semibold text-white"
                       style={{
-                        backgroundColor: COLORS.magenta,
+                        background: FIRE_GRADIENT_DIAGONAL,
+                        borderRadius: "10px",
+                        padding: "12px 24px",
                         textDecoration: "none",
-                        boxShadow: "0 2px 8px rgba(244, 63, 94, 0.35)",
+                        boxShadow: "0 2px 8px rgba(255,85,85,0.35), 0 1px 2px rgba(0,0,0,0.06)",
                       }}
                     >
-                      {section.ctaLabel}
+                      {section.ctaLabel} →
                     </Button>
                   )}
                 </Section>
               </Section>
             ))}
 
-            <Section className="pt-6">
-              <Hr className="m-0 mb-6 border-t border-neutral-200" />
+            <Section className="pt-8" style={{ paddingTop: "32px" }}>
+              <Hr
+                className="m-0 mb-6"
+                style={{ border: "none", borderTop: "1px solid #e5e5e5", margin: "0 0 24px" }}
+              />
               <Row>
                 <Column>
-                  <Text className="m-0 text-[14px] font-bold text-neutral-900">{appName}</Text>
-                  <Text className="m-0 mt-1 text-[13px] text-neutral-500">
+                  <Text
+                    className="m-0 text-[13px] font-semibold"
+                    style={{ color: "#171717", margin: 0 }}
+                  >
+                    {appName}
+                  </Text>
+                  <Text className="m-0 text-[12px]" style={{ color: "#a3a3a3", margin: "4px 0 0" }}>
                     Community events for developers
                   </Text>
                 </Column>
                 <Column align="right" className="table-cell align-bottom">
                   <Link
                     href={unsubscribeUrl}
-                    className="text-[12px] text-neutral-400"
-                    style={{ textDecoration: "underline" }}
+                    className="text-[12px]"
+                    style={{ color: "#a3a3a3", textDecoration: "underline" }}
                   >
                     Unsubscribe
                   </Link>
                 </Column>
               </Row>
-              <Row className="mt-6">
+              <Row style={{ marginTop: "20px" }}>
                 <Column>
-                  <Text className="m-0 text-[11px] text-neutral-400">
+                  <Text className="m-0 text-[11px]" style={{ color: "#d4d4d4", margin: 0 }}>
                     © {new Date().getFullYear()} {appName}. All rights reserved.
                   </Text>
                 </Column>

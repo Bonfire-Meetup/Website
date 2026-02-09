@@ -237,7 +237,7 @@ export function UserProfileContent({
           </section>
 
           <div className="space-y-8">
-            <div className="grid gap-8 lg:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
               {upcomingRsvpsSlot}
               {checkedInEventsSlot}
             </div>
