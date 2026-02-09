@@ -118,29 +118,7 @@ export function RecordingPlayer({
                 </div>
 
                 <div className="px-5 pb-4 sm:px-6">
-                  {boostedBy === undefined ? (
-                    <div
-                      className="flex h-10 items-center gap-2 rounded-lg border border-neutral-200/30 bg-neutral-50/30 px-3 py-2 dark:border-neutral-700/20 dark:bg-neutral-800/20"
-                      aria-hidden="true"
-                    >
-                      <div className="flex shrink-0 items-center gap-1.5">
-                        <div className="h-3 w-3 animate-pulse rounded bg-neutral-200 dark:bg-white/10" />
-                        <div className="h-3 w-20 animate-pulse rounded bg-neutral-200 dark:bg-white/10" />
-                      </div>
-                      <div className="flex flex-1 items-center gap-1.5">
-                        <div className="flex gap-1.5">
-                          {[1, 2, 3].map((i) => (
-                            <div
-                              key={i}
-                              className="h-6 w-6 animate-pulse rounded-full bg-neutral-200 dark:bg-white/10"
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
-                  )}
+                  <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
                   <p className="mt-3 text-[10px] leading-tight text-neutral-500/90 dark:text-neutral-500">
                     {t("youtubeNotice")}
                   </p>
