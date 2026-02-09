@@ -76,14 +76,14 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
 
   return (
     <section
-      className="relative"
+      className="relative h-full"
       role="region"
       aria-labelledby="profile-checkedin-events-heading"
       aria-describedby="profile-checkedin-events-count"
     >
       <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-blue-500/5 to-transparent" />
 
-      <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-white/5 dark:bg-neutral-900/50">
+      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-white/5 dark:bg-neutral-900/50">
         <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
@@ -108,7 +108,7 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
           </div>
         </div>
 
-        <div className="p-4 sm:p-6">
+        <div className="flex-1 p-4 sm:p-6">
           {events.length > 0 ? (
             <div className="space-y-3">
               {events.map((event, index) => {
@@ -185,7 +185,7 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
                           )}
                         </div>
                         {formattedCheckedInAt && (
-                          <div className="inline-flex items-center gap-1.5 rounded-md bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+                          <div className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 px-1.5 py-0.5 text-[11px] font-medium text-blue-600 dark:text-blue-400">
                             <svg
                               className="h-3 w-3"
                               fill="none"

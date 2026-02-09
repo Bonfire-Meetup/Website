@@ -1159,6 +1159,14 @@
         "verified": "Ověřeno {date}",
         "tba": "Bude upřesněno"
       },
+      "goingTo": {
+        "title": "Chystá se na",
+        "count": "{count} {count, plural, one {nadcházející akce} few {nadcházející akce} other {nadcházejících akcí}}",
+        "empty": "Zatím žádné nadcházející akce.",
+        "emptyHint": "Zaujala tě nějaká akce? Klikni na stránce eventu na \u201eBudu tam\u201c a objeví se tu.",
+        "cta": "Projít akce",
+        "tba": "Bude upřesněno"
+      },
       "private": {
         "title": "Soukromý profil",
         "message": "Tento profil je soukromý a není k dispozici pro prohlížení."

@@ -8,6 +8,7 @@ import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useS
 import { InfoIcon } from "@/components/shared/Icons";
 import { Skeleton } from "@/components/shared/Skeletons";
 import { Button } from "@/components/ui/Button";
+import { getFeaturedCandidates } from "@/lib/recordings/library-featured";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { logError } from "@/lib/utils/log-client";
 
@@ -201,6 +202,7 @@ export function RecordingsCatalog({
       setPayload((prev) => ({
         ...prev,
         recordings: data.recordings,
+        featuredShortIdOrder: data.filter.featuredShortIdOrder,
         activeLocation: data.filter.activeLocation,
         activeTag: data.filter.activeTag,
         activeEpisode: data.filter.activeEpisode,
@@ -290,7 +292,11 @@ export function RecordingsCatalog({
     window.scrollTo({ behavior: "auto", left: 0, top: 0 });
   };
 
-  const featuredCandidates = recordings?.slice(0, 5) ?? [];
+  const featuredCandidates = getFeaturedCandidates(
+    recordings ?? [],
+    5,
+    payload.featuredShortIdOrder,
+  );
   const featured = featuredCandidates[0];
   const gridRecordings = recordings ?? [];
 

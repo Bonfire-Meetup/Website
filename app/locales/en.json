@@ -1148,6 +1148,14 @@
         "verified": "Verified {date}",
         "tba": "TBA"
       },
+      "goingTo": {
+        "title": "Going to",
+        "count": "{count} upcoming {count, plural, one {event} other {events}}",
+        "empty": "No upcoming events yet.",
+        "emptyHint": "Spotted an event you like? Hit \"I'll be there\" on the event page and it'll show up here.",
+        "cta": "Browse events",
+        "tba": "TBA"
+      },
       "private": {
         "title": "Private Profile",
         "message": "This profile is private and not available for viewing."

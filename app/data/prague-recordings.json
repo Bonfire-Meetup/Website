@@ -30,6 +30,20 @@
       "episodeId": "prague-7"
     },
     {
+      "youtubeId": "CZxVfH1NajI",
+      "shortId": "czv1aj",
+      "slug": "svety-a-biomy-mafia-the-old-country",
+      "title": "Světy a Biomy Mafia: The Old Country",
+      "speaker": ["Dominik Regec"],
+      "date": "2025-11-11",
+      "thumbnail": "https://img.youtube.com/vi/CZxVfH1NajI/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=CZxVfH1NajI",
+      "description": null,
+      "tags": ["Art", "Environment"],
+      "featureHeroThumbnail": "https://cdn-img.bnf.events/prague-7/585211451_122249770070184727_306156335171359865_n.webp",
+      "episodeId": "prague-7"
+    },
+    {
       "youtubeId": "mxKJaivKieA",
       "shortId": "kj9via",
       "slug": "chill-chat-3-david-vavra",

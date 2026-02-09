@@ -13,6 +13,8 @@ import { BoostedVideos } from "./BoostedVideos";
 import { BoostedVideosSkeleton } from "./BoostedVideosSkeleton";
 import { CheckedInEvents } from "./CheckedInEvents";
 import { CheckedInEventsSkeleton } from "./CheckedInEventsSkeleton";
+import { UpcomingRsvps } from "./UpcomingRsvps";
+import { UpcomingRsvpsSkeleton } from "./UpcomingRsvpsSkeleton";
 import { PrivateProfileContent, UserProfileContent } from "./UserProfileContent";
 
 export async function generateMetadata({
@@ -113,6 +115,11 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
         lastBoostedAt: boosts[0]?.createdAt ?? null,
         lastCheckedInAt: checkIns[0]?.createdAt ?? null,
       }}
+      upcomingRsvpsSlot={
+        <Suspense fallback={<UpcomingRsvpsSkeleton />}>
+          <UpcomingRsvps userId={userId} profileUserId={user.id} />
+        </Suspense>
+      }
       boostedVideosSlot={
         <Suspense fallback={<BoostedVideosSkeleton />}>
           <BoostedVideos userId={userId} profileUserId={user.id} />

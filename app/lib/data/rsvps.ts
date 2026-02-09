@@ -138,6 +138,29 @@ const getEventRsvpsBase = async (eventId: string, limit = 12): Promise<EventRsvp
   }
 };
 
+export const getUserRsvps = async (
+  userId: string,
+): Promise<{ eventId: string; createdAt: string }[]> => {
+  try {
+    const rows = await db()
+      .select({
+        eventId: eventRsvp.eventId,
+        createdAt: eventRsvp.createdAt,
+      })
+      .from(eventRsvp)
+      .where(eq(eventRsvp.userId, userId))
+      .orderBy(sql`${eventRsvp.createdAt} DESC`);
+
+    return rows.map((row) => ({
+      eventId: row.eventId,
+      createdAt: row.createdAt.toISOString(),
+    }));
+  } catch (error) {
+    logError("data.rsvp.get_user_rsvps_failed", error, { userId });
+    return [];
+  }
+};
+
 export const getEventRsvps = async (
   eventId: string,
   limit = 12,

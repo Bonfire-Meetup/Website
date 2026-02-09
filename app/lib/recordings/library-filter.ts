@@ -4,6 +4,7 @@ import {
 } from "@/components/recordings/RecordingsCatalogTypes";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { getEpisodeById } from "@/lib/recordings/episodes";
+import { getShuffledFeaturedOrder } from "@/lib/recordings/library-featured-order";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { normalizeText } from "@/lib/utils/text";
 
@@ -11,6 +12,7 @@ export type LocationFilter = "all" | LocationValue;
 
 export interface LibraryBasePayload {
   recordings: CatalogRecording[];
+  featuredShortIdOrder: string[];
   activeLocation: LocationFilter;
   activeTag: string;
   activeEpisode: string;
@@ -38,6 +40,7 @@ export interface LibraryApiPayload {
     | "activeTag"
     | "activeEpisode"
     | "searchQuery"
+    | "featuredShortIdOrder"
     | "tagDropdownOptions"
     | "episodeDropdownOptions"
     | "episodeDropdownGroups"
@@ -45,7 +48,7 @@ export interface LibraryApiPayload {
   >;
 }
 
-function buildLibraryPayload({
+async function buildLibraryPayload({
   searchParams,
   tCommon,
   tFilters,
@@ -57,7 +60,8 @@ function buildLibraryPayload({
   tFilters: (key: string, values?: Record<string, string>) => string;
   tRecordings: (key: string) => string;
   includeRows?: boolean;
-}): LibraryBasePayload & { rows: LibraryRowsPayload["rows"] } {
+}): Promise<LibraryBasePayload & { rows: LibraryRowsPayload["rows"] }> {
+  const featuredShortIdOrder = await getShuffledFeaturedOrder();
   const locationParam = searchParams.get("location") ?? "";
   const isPragueLocation = locationParam === LOCATIONS.PRAGUE;
   const isZlinLocation = locationParam === LOCATIONS.ZLIN;
@@ -309,6 +313,7 @@ function buildLibraryPayload({
 
   const basePayload: LibraryBasePayload = {
     recordings: filteredRecordings,
+    featuredShortIdOrder,
     activeLocation,
     activeTag,
     activeEpisode,
@@ -325,16 +330,16 @@ function buildLibraryPayload({
   };
 }
 
-export function buildLibraryRowsPayload(
+export async function buildLibraryRowsPayload(
   args: Omit<Parameters<typeof buildLibraryPayload>[0], "includeRows">,
-): LibraryRowsPayload {
-  return buildLibraryPayload({ ...args, includeRows: true });
+): Promise<LibraryRowsPayload> {
+  return await buildLibraryPayload({ ...args, includeRows: true });
 }
 
-export function buildLibraryBrowsePayload(
+export async function buildLibraryBrowsePayload(
   args: Omit<Parameters<typeof buildLibraryPayload>[0], "includeRows">,
-): LibraryBasePayload {
-  const payload = buildLibraryPayload({ ...args, includeRows: false });
+): Promise<LibraryBasePayload> {
+  const payload = await buildLibraryPayload({ ...args, includeRows: false });
   const { rows: _rows, ...base } = payload;
   return base;
 }

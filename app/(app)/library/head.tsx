@@ -1,11 +1,22 @@
+import { getFeaturedCandidates } from "@/lib/recordings/library-featured";
+import { getShuffledFeaturedOrder } from "@/lib/recordings/library-featured-order";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 
 const FEATURED_PRELOAD_COUNT = 5;
 
-export default function Head() {
-  const featuredImages = getAllRecordings()
-    .slice(0, FEATURED_PRELOAD_COUNT)
-    .map((recording) => recording.featureHeroThumbnail || recording.thumbnail);
+export default async function Head() {
+  const [featuredOrder, allRecordings] = await Promise.all([
+    getShuffledFeaturedOrder(),
+    Promise.resolve(getAllRecordings()),
+  ]);
+  const featuredRecordings = getFeaturedCandidates(
+    allRecordings,
+    FEATURED_PRELOAD_COUNT,
+    featuredOrder,
+  );
+  const featuredImages = featuredRecordings.map(
+    (recording) => recording.featureHeroThumbnail || recording.thumbnail,
+  );
 
   const uniqueImages = Array.from(new Set(featuredImages));
 

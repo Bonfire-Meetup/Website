@@ -28,6 +28,7 @@ interface UserProfileStats {
 interface UserProfileContentProps {
   user: UserData;
   stats: UserProfileStats;
+  upcomingRsvpsSlot: ReactNode;
   boostedVideosSlot: ReactNode;
   checkedInEventsSlot: ReactNode;
 }
@@ -35,6 +36,7 @@ interface UserProfileContentProps {
 export function UserProfileContent({
   user,
   stats,
+  upcomingRsvpsSlot,
   boostedVideosSlot,
   checkedInEventsSlot,
 }: UserProfileContentProps) {
@@ -235,8 +237,11 @@ export function UserProfileContent({
           </section>
 
           <div className="space-y-8">
+            <div className="grid gap-8 lg:grid-cols-2">
+              {upcomingRsvpsSlot}
+              {checkedInEventsSlot}
+            </div>
             {boostedVideosSlot}
-            {checkedInEventsSlot}
           </div>
         </div>
       </div>

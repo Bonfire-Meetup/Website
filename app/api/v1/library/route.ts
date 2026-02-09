@@ -41,7 +41,7 @@ export const GET = withRequestContext(
     const { searchParams } = new URL(request.url);
     const apiParams = new URLSearchParams(searchParams);
     apiParams.delete("view");
-    const payload = buildLibraryBrowsePayload({
+    const payload = await buildLibraryBrowsePayload({
       searchParams: apiParams,
       tCommon,
       tFilters,
@@ -55,6 +55,7 @@ export const GET = withRequestContext(
         activeTag: payload.activeTag,
         activeEpisode: payload.activeEpisode,
         searchQuery: payload.searchQuery,
+        featuredShortIdOrder: payload.featuredShortIdOrder,
         tagDropdownOptions: payload.tagDropdownOptions,
         episodeDropdownOptions: payload.episodeDropdownOptions,
         episodeDropdownGroups: payload.episodeDropdownGroups,

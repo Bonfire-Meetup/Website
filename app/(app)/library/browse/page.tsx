@@ -34,7 +34,7 @@ export default async function LibraryBrowsePage({
     urlParams.set("q", params.q);
   }
 
-  const payload = buildLibraryBrowsePayload({
+  const payload = await buildLibraryBrowsePayload({
     searchParams: urlParams,
     tCommon,
     tFilters,
