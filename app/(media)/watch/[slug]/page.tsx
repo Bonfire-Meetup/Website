@@ -35,7 +35,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const [titleSuffix, brandName] = await Promise.all([getMetaTitleSuffix(), getBrandName()]);
   const absoluteUrl = `${WEBSITE_URLS.BASE}${PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}`;
-  const description = recording.description || `${recording.title} - ${brandName}`;
+  const speakersText = recording.speaker.join(", ");
+  const description = recording.description
+    ? `${recording.description} | ${speakersText}`
+    : `${recording.title} | ${speakersText}`;
 
   return {
     description,
