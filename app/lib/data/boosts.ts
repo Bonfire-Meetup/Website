@@ -111,6 +111,72 @@ export const getUserBoosts = async (userId: string) => {
   }
 };
 
+export const getUserBoostCount = async (userId: string): Promise<number> => {
+  try {
+    const boosts = await getUserBoosts(userId);
+    return boosts.length;
+  } catch (error) {
+    logError("data.boosts.count_failed", error, { userId });
+    return 0;
+  }
+};
+
+export const getUserBoostsThisMonth = async (userId: string): Promise<number> => {
+  try {
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const boosts = await getUserBoosts(userId);
+    return boosts.filter((boost) => new Date(boost.createdAt) >= firstDayOfMonth).length;
+  } catch (error) {
+    logError("data.boosts.monthly_count_failed", error, { userId });
+    return 0;
+  }
+};
+
+function getPreviousMonth(monthKey: string): string {
+  const [year, month] = monthKey.split("-").map(Number);
+  if (month === 0) {
+    return `${year - 1}-11`;
+  }
+  return `${year}-${month - 1}`;
+}
+
+export const getUserBoostStreak = async (userId: string): Promise<number> => {
+  try {
+    const boosts = await getUserBoosts(userId);
+    if (boosts.length === 0) {
+      return 0;
+    }
+
+    const boostsByMonth = new Map<string, number>();
+    boosts.forEach((boost) => {
+      const date = new Date(boost.createdAt);
+      const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+      boostsByMonth.set(monthKey, (boostsByMonth.get(monthKey) || 0) + 1);
+    });
+
+    const sortedMonths = Array.from(boostsByMonth.keys()).sort().reverse();
+    let streak = 0;
+    const now = new Date();
+    let currentMonth = `${now.getFullYear()}-${now.getMonth()}`;
+
+    for (const month of sortedMonths) {
+      if (month === currentMonth || month === getPreviousMonth(currentMonth)) {
+        streak++;
+        currentMonth = getPreviousMonth(currentMonth);
+      } else {
+        break;
+      }
+    }
+
+    return streak;
+  } catch (error) {
+    logError("data.boosts.streak_failed", error, { userId });
+    return 0;
+  }
+};
+
 interface BoostAllocation {
   availableBoosts: number;
   lastAllocationDate: string;

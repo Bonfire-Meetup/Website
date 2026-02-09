@@ -3,11 +3,13 @@
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
 
+import { BoltIcon } from "@/components/shared/Icons";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { copyToClipboard } from "@/lib/utils/clipboard";
 import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
 
+import { BoostTitleBadge } from "./BoostTitleBadge";
 import { ProfileShareButton } from "./ProfileShareButton";
 import { RoleBadges } from "./RoleBadges";
 
@@ -18,6 +20,9 @@ interface UserData {
   roles: string[];
   membershipTier: number | null;
   isMember: boolean;
+  boostCount: number;
+  boostsThisMonth: number;
+  boostStreak: number;
 }
 
 interface UserProfileStats {
@@ -109,7 +114,17 @@ export function UserProfileContent({
                     size={180}
                     name={user.name}
                     animated={!prefersReducedMotion}
-                    className="relative ring-4 ring-neutral-50 dark:ring-neutral-950"
+                    className={`relative ring-4 ring-neutral-50 dark:ring-neutral-950 ${
+                      user.boostCount >= 10 ? "ring-emerald-500/30 dark:ring-emerald-500/40" : ""
+                    } ${
+                      user.boostCount >= 25
+                        ? "ring-8 ring-emerald-500/50 dark:ring-emerald-500/60"
+                        : ""
+                    } ${
+                      user.boostCount >= 50
+                        ? "animate-pulse ring-8 ring-emerald-400/60 ring-orange-400/40 dark:ring-emerald-400/70 dark:ring-orange-400/50"
+                        : ""
+                    }`}
                   />
                 </div>
                 {user.isMember && (
@@ -176,12 +191,15 @@ export function UserProfileContent({
                   </h1>
                 )}
 
-                <RoleBadges
-                  roles={user.roles}
-                  membershipTier={user.isMember ? user.membershipTier : null}
-                />
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+                  <RoleBadges
+                    roles={user.roles}
+                    membershipTier={user.isMember ? user.membershipTier : null}
+                  />
+                  <BoostTitleBadge boostCount={user.boostCount} boostStreak={user.boostStreak} />
+                </div>
 
-                <div className="mt-6 w-full max-w-md space-y-3">
+                <div className="mt-6 w-full max-w-md">
                   <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/80 px-3 py-1.5 text-xs text-neutral-600 dark:border-white/10 dark:bg-neutral-900/70 dark:text-neutral-300">
                     <svg
                       className="h-3.5 w-3.5 text-neutral-400 dark:text-neutral-500"
@@ -209,23 +227,96 @@ export function UserProfileContent({
           </div>
 
           <section
-            className="mb-8 rounded-2xl border border-neutral-200 bg-white/75 px-4 py-3 backdrop-blur-sm dark:border-white/10 dark:bg-neutral-900/60"
-            aria-labelledby="profile-recent-activity-heading"
+            className="mb-8 rounded-2xl border border-neutral-200 bg-white/75 px-4 py-4 backdrop-blur-sm sm:px-6 sm:py-5 dark:border-white/10 dark:bg-neutral-900/60"
+            aria-labelledby="profile-activity-heading"
           >
-            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
-              <div className="space-y-1 text-[11px] text-neutral-500 dark:text-neutral-400">
-                <p id="profile-recent-activity-heading" className="font-semibold uppercase">
-                  {t("activity.recentTitle")}
-                </p>
-                <p>{t("activity.lastBoosted", { date: lastBoostedDate ?? t("activity.none") })}</p>
-                <p>
-                  {t("activity.lastCheckedIn", {
-                    date: lastCheckedInDate ?? t("activity.none"),
-                  })}
-                </p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex-1 space-y-3 text-[11px] text-neutral-500 dark:text-neutral-400">
+                <div className="flex items-start justify-between gap-3 sm:block">
+                  <p id="profile-activity-heading" className="font-semibold uppercase">
+                    {t("activity.title")}
+                  </p>
+                  <span
+                    className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-semibold sm:hidden ${
+                      isRecentlyActive
+                        ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
+                        : "bg-neutral-500/15 text-neutral-700 dark:text-neutral-300"
+                    }`}
+                  >
+                    {isRecentlyActive ? t("activity.activeStatus") : t("activity.quietStatus")}
+                  </span>
+                </div>
+                <div className="space-y-1.5">
+                  <p>
+                    {t("activity.lastBoosted", { date: lastBoostedDate ?? t("activity.none") })}
+                  </p>
+                  <p>
+                    {t("activity.lastCheckedIn", {
+                      date: lastCheckedInDate ?? t("activity.none"),
+                    })}
+                  </p>
+                  {user.boostCount > 0 && (
+                    <div className="flex flex-wrap items-center gap-2 pt-2.5">
+                      <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-semibold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300">
+                        <BoltIcon className="h-3 w-3 shrink-0" />
+                        <span>
+                          <span className="font-bold">{user.boostCount}</span>{" "}
+                          {t("activity.totalBoostsLabel", { count: user.boostCount })}
+                        </span>
+                      </div>
+                      {user.boostsThisMonth > 0 && (
+                        <div className="inline-flex items-center gap-1.5 rounded-full border border-orange-500/20 bg-orange-500/10 px-2.5 py-1 text-[10px] font-semibold text-orange-700 dark:border-orange-500/30 dark:bg-orange-500/15 dark:text-orange-300">
+                          <svg
+                            className="h-3 w-3 shrink-0"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+                            />
+                          </svg>
+                          <span>
+                            <span className="font-bold">{user.boostsThisMonth}</span>{" "}
+                            {t("activity.boostsThisMonthLabel", { count: user.boostsThisMonth })}
+                          </span>
+                        </div>
+                      )}
+                      {user.boostStreak > 0 && (
+                        <div className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 px-2.5 py-1 text-[10px] font-semibold text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/15 dark:text-rose-300">
+                          <svg
+                            className="h-3 w-3 shrink-0"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"
+                            />
+                          </svg>
+                          <span>
+                            <span className="font-bold">{user.boostStreak}</span>{" "}
+                            {t("activity.boostStreakLabel", { count: user.boostStreak })}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
               <span
-                className={`inline-flex items-center self-start rounded-full px-3 py-1 text-[11px] font-semibold ${
+                className={`hidden items-center self-start rounded-full px-2.5 py-1 text-[10px] font-semibold sm:inline-flex ${
                   isRecentlyActive
                     ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
                     : "bg-neutral-500/15 text-neutral-700 dark:text-neutral-300"

@@ -93,13 +93,13 @@ export async function getHotRecordings(limit = 6): Promise<HotRecording[]> {
   if (selected.length < limit) {
     const usedIds = new Set(selected.map((r) => r.shortId));
 
-    const olderClassicsBackfill = allRecordings
+    const recentBackfill = allRecordings
       .filter((r) => !usedIds.has(r.shortId))
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, limit - selected.length)
       .map((r) => ({ ...r, hotScore: 0, likeCount: 0 }));
 
-    selected.push(...olderClassicsBackfill);
+    selected.push(...recentBackfill);
   }
 
   if (withLikes.length > 0) {

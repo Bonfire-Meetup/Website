@@ -79,13 +79,20 @@ export function RoleBadges({ roles, membershipTier }: RoleBadgesProps) {
       {hasGuild && membershipTier && (
         <div className="group relative">
           <div
-            className="absolute -inset-1 rounded-full opacity-60 blur-md transition-opacity duration-300 group-hover:opacity-100"
+            className="absolute -inset-2 animate-pulse rounded-full opacity-40 blur-xl"
             style={{
               background:
-                "linear-gradient(135deg, rgba(251, 146, 60, 0.5), rgba(244, 63, 94, 0.3))",
+                "radial-gradient(circle, rgba(251, 146, 60, 0.5) 0%, rgba(244, 63, 94, 0.3) 50%, transparent 70%)",
             }}
           />
-          <div className="relative flex items-center gap-2 rounded-full border border-amber-500/20 bg-white/80 px-4 py-2 backdrop-blur-sm dark:bg-neutral-900/80">
+          <div
+            className="absolute -inset-1 rounded-full opacity-70 blur-md transition-opacity duration-300 group-hover:opacity-100"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(251, 146, 60, 0.6), rgba(244, 63, 94, 0.4), rgba(251, 146, 60, 0.5))",
+            }}
+          />
+          <div className="relative flex items-center gap-2 rounded-full border border-amber-400/30 bg-white/80 px-4 py-2 shadow-lg shadow-amber-500/15 backdrop-blur-sm dark:border-amber-400/40 dark:bg-neutral-900/80 dark:shadow-amber-500/20">
             <GuildIcon className="h-4 w-4 text-amber-500 dark:text-amber-400" />
             <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-sm font-bold tracking-wide text-transparent uppercase dark:from-amber-300 dark:via-orange-300 dark:to-rose-300">
               {MEMBERSHIP_TIER_LABELS[membershipTier as MembershipTier] ??

@@ -1127,6 +1127,12 @@
         "recentTitle": "Recent activity",
         "lastBoosted": "Last boost: {date}",
         "lastCheckedIn": "Last check-in: {date}",
+        "totalBoosts": "{count} {count, plural, one {boost} other {boosts}} total",
+        "totalBoostsLabel": "{count, plural, one {boost} other {boosts}} total",
+        "boostsThisMonth": "{count} {count, plural, one {boost} other {boosts}} this month",
+        "boostsThisMonthLabel": "{count, plural, one {boost} other {boosts}} this month",
+        "boostStreak": "{count} {count, plural, one {month} other {months}} streak",
+        "boostStreakLabel": "{count, plural, one {month} other {months}} streak",
         "activeStatus": "Active this month",
         "quietStatus": "Quiet lately",
         "none": "not yet"
@@ -1162,6 +1168,27 @@
       },
       "notFound": {
         "title": "User Not Found"
+      },
+      "boostRewards": {
+        "titles": {
+          "spark": "Spark",
+          "ember": "Ember",
+          "flame": "Flame",
+          "blaze": "Blaze",
+          "inferno": "Inferno"
+        },
+        "milestones": {
+          "milestone1": "First Spark",
+          "milestone5": "Kindling",
+          "milestone10": "Campfire",
+          "milestone25": "Bonfire",
+          "milestone50": "Inferno"
+        },
+        "stats": {
+          "totalBoosts": "total boosts",
+          "thisMonth": "this month",
+          "streakMonths": "month streak"
+        }
       }
     },
     "delete": {

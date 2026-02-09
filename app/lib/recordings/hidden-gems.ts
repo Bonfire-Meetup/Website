@@ -8,6 +8,16 @@ import { type Recording, getAllRecordings } from "./recordings";
 
 export type HiddenGemRecording = Recording;
 
+function hashShortId(shortId: string, seed: number): number {
+  let hash = seed;
+
+  for (let i = 0; i < shortId.length; i++) {
+    hash = (hash * 31 + shortId.charCodeAt(i)) | 0;
+  }
+
+  return hash >>> 0;
+}
+
 export async function getHiddenGems(limit = 6): Promise<HiddenGemRecording[]> {
   "use cache";
   cacheTag("hidden-gems");
@@ -60,8 +70,8 @@ export async function getHiddenGems(limit = 6): Promise<HiddenGemRecording[]> {
   const today = new Date();
   const seed = today.getFullYear() * 10000 + today.getMonth() * 100 + today.getDate();
   const shuffled = [...hiddenGems].sort((a, b) => {
-    const hashA = (a.shortId.charCodeAt(0) + seed) % 1000;
-    const hashB = (b.shortId.charCodeAt(0) + seed) % 1000;
+    const hashA = hashShortId(a.shortId, seed);
+    const hashB = hashShortId(b.shortId, seed);
 
     return hashA - hashB;
   });

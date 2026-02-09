@@ -1138,6 +1138,12 @@
         "recentTitle": "Nedávná aktivita",
         "lastBoosted": "Poslední boost: {date}",
         "lastCheckedIn": "Poslední check-in: {date}",
+        "totalBoosts": "{count} {count, plural, one {boost} few {boosty} other {boostů}} celkem",
+        "totalBoostsLabel": "{count, plural, one {boost} few {boosty} other {boostů}} celkem",
+        "boostsThisMonth": "{count} {count, plural, one {boost} few {boosty} other {boostů}} tento měsíc",
+        "boostsThisMonthLabel": "{count, plural, one {boost} few {boosty} other {boostů}} tento měsíc",
+        "boostStreak": "{count} {count, plural, one {měsíc} few {měsíce} other {měsíců}} v řadě",
+        "boostStreakLabel": "{count, plural, one {měsíc} few {měsíce} other {měsíců}} v řadě",
         "activeStatus": "Aktivní tento měsíc",
         "quietStatus": "Teď klidněji",
         "none": "zatím ne"
@@ -1173,6 +1179,27 @@
       },
       "notFound": {
         "title": "Uživatel nenalezen"
+      },
+      "boostRewards": {
+        "titles": {
+          "spark": "Jiskra",
+          "ember": "Žár",
+          "flame": "Plamen",
+          "blaze": "Požár",
+          "inferno": "Inferno"
+        },
+        "milestones": {
+          "milestone1": "První jiskra",
+          "milestone5": "Troud",
+          "milestone10": "Táborák",
+          "milestone25": "Oheň",
+          "milestone50": "Inferno"
+        },
+        "stats": {
+          "totalBoosts": "celkem boostů",
+          "thisMonth": "tento měsíc",
+          "streakMonths": "měsíců v řadě"
+        }
       }
     },
     "delete": {

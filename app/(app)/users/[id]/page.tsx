@@ -5,7 +5,12 @@ import { Suspense } from "react";
 
 import { hasMembership } from "@/lib/config/membership";
 import { getAuthUserById } from "@/lib/data/auth";
-import { getUserBoosts } from "@/lib/data/boosts";
+import {
+  getUserBoosts,
+  getUserBoostCount,
+  getUserBoostsThisMonth,
+  getUserBoostStreak,
+} from "@/lib/data/boosts";
 import { getUserCheckIns } from "@/lib/data/check-in";
 import { decompressUuid, compressUuid } from "@/lib/utils/uuid-compress";
 
@@ -99,7 +104,13 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
     year: "numeric",
   }).format(new Date(user.createdAt));
   const isMember = hasMembership(user.membershipTier);
-  const [boosts, checkIns] = await Promise.all([getUserBoosts(userId), getUserCheckIns(userId)]);
+  const [boosts, checkIns, boostCount, boostsThisMonth, boostStreak] = await Promise.all([
+    getUserBoosts(userId),
+    getUserCheckIns(userId),
+    getUserBoostCount(userId),
+    getUserBoostsThisMonth(userId),
+    getUserBoostStreak(userId),
+  ]);
 
   return (
     <UserProfileContent
@@ -110,6 +121,9 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
         roles: user.roles,
         membershipTier: user.membershipTier,
         isMember,
+        boostCount,
+        boostsThisMonth,
+        boostStreak,
       }}
       stats={{
         lastBoostedAt: boosts[0]?.createdAt ?? null,
