@@ -1411,20 +1411,26 @@ html:not([data-motion="active"]) * {
 
 .guild-fireplace {
   position: absolute;
-  bottom: 0;
-  left: -10%;
-  right: -10%;
-  height: 70%;
+  bottom: -48px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: calc(70% + 48px);
   pointer-events: none;
   overflow: visible;
   z-index: 1;
-  mask-image: linear-gradient(to top, black 0%, black 20%, transparent 85%);
-  -webkit-mask-image: linear-gradient(to top, black 0%, black 20%, transparent 85%);
+  mask-image: linear-gradient(to top, black 0%, black 18%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to top, black 0%, black 18%, transparent 85%);
+  contain: layout style paint;
+  isolation: isolate;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 @media (min-width: 640px) {
   .guild-fireplace {
-    height: 75%;
+    height: calc(75% + 48px);
+    bottom: -48px;
   }
 }
 
@@ -1432,40 +1438,38 @@ html:not([data-motion="active"]) * {
   position: absolute;
   bottom: -15%;
   border-radius: 45% 45% 50% 50% / 55% 55% 45% 45%;
-  filter: blur(40px);
+  filter: blur(32px);
   will-change: transform, opacity;
   transform-origin: center bottom;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
 }
 
 .guild-flame-tongue {
   position: absolute;
   bottom: 0;
   border-radius: 40% 40% 50% 50% / 70% 70% 30% 30%;
-  filter: blur(25px);
+  filter: blur(20px);
   will-change: transform, opacity;
   transform-origin: center bottom;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
 }
 
 @keyframes guildFlame1 {
   0%,
   100% {
-    transform: scaleY(1) scaleX(1) translateY(0);
+    transform: translate3d(0, 0, 0) scaleY(1) scaleX(1);
     opacity: 0.9;
   }
-  20% {
-    transform: scaleY(1.2) scaleX(0.88) translateY(-12%);
-    opacity: 1;
-  }
-  40% {
-    transform: scaleY(0.85) scaleX(1.1) translateY(3%);
-    opacity: 0.8;
-  }
-  60% {
-    transform: scaleY(1.15) scaleX(0.92) translateY(-8%);
+  33% {
+    transform: translate3d(0, -8%, 0) scaleY(1.15) scaleX(0.95);
     opacity: 0.95;
   }
-  80% {
-    transform: scaleY(0.95) scaleX(1.05) translateY(-2%);
+  66% {
+    transform: translate3d(0, -4%, 0) scaleY(0.9) scaleX(1.08);
     opacity: 0.85;
   }
 }
@@ -1473,19 +1477,11 @@ html:not([data-motion="active"]) * {
 @keyframes guildFlame2 {
   0%,
   100% {
-    transform: scaleY(1.05) scaleX(0.95) translateY(-3%);
+    transform: translate3d(0, -3%, 0) scaleY(1.05) scaleX(0.95);
     opacity: 0.85;
   }
-  25% {
-    transform: scaleY(0.85) scaleX(1.12) translateY(4%);
-    opacity: 0.95;
-  }
   50% {
-    transform: scaleY(1.25) scaleX(0.85) translateY(-15%);
-    opacity: 0.8;
-  }
-  75% {
-    transform: scaleY(0.95) scaleX(1.08) translateY(-1%);
+    transform: translate3d(0, -10%, 0) scaleY(1.1) scaleX(0.9);
     opacity: 0.9;
   }
 }
@@ -1493,19 +1489,11 @@ html:not([data-motion="active"]) * {
 @keyframes guildFlame3 {
   0%,
   100% {
-    transform: scaleY(0.9) scaleX(1.08) translateY(2%);
+    transform: translate3d(0, 2%, 0) scaleY(0.9) scaleX(1.08);
     opacity: 0.8;
   }
-  18% {
-    transform: scaleY(1.3) scaleX(0.82) translateY(-18%);
-    opacity: 0.95;
-  }
-  40% {
-    transform: scaleY(1) scaleX(1) translateY(-3%);
-    opacity: 0.85;
-  }
-  65% {
-    transform: scaleY(1.15) scaleX(0.9) translateY(-10%);
+  50% {
+    transform: translate3d(0, -12%, 0) scaleY(1.2) scaleX(0.85);
     opacity: 0.9;
   }
 }
@@ -1514,71 +1502,35 @@ html:not([data-motion="active"]) * {
   0%,
   100% {
     opacity: 0.65;
-    transform: scaleY(1) scaleX(1) translateX(0);
+    transform: translate3d(0, 0, 0) scaleY(1) scaleX(1);
   }
-  12% {
-    opacity: 0.85;
-    transform: scaleY(1.15) scaleX(0.9) translateX(-3%);
-  }
-  30% {
-    opacity: 0.6;
-    transform: scaleY(0.9) scaleX(1.1) translateX(2%);
-  }
-  48% {
-    opacity: 0.8;
-    transform: scaleY(1.2) scaleX(0.88) translateX(-1%);
-  }
-  70% {
-    opacity: 0.65;
-    transform: scaleY(0.95) scaleX(1.05) translateX(1%);
-  }
-  85% {
-    opacity: 0.78;
-    transform: scaleY(1.1) scaleX(0.93) translateX(-2%);
+  50% {
+    opacity: 0.75;
+    transform: translate3d(-1%, 0, 0) scaleY(1.1) scaleX(0.95);
   }
 }
 
 @keyframes guildFlameTongue {
   0%,
   100% {
-    transform: scaleY(1) scaleX(1) translateY(0) rotate(0deg);
+    transform: translate3d(0, 0, 0) scaleY(1) scaleX(1) rotate(0deg);
     opacity: 0.65;
   }
-  15% {
-    transform: scaleY(1.4) scaleX(0.7) translateY(-25%) rotate(-2deg);
-    opacity: 0.85;
-  }
-  35% {
-    transform: scaleY(0.8) scaleX(1.1) translateY(5%) rotate(1deg);
-    opacity: 0.5;
-  }
-  55% {
-    transform: scaleY(1.5) scaleX(0.65) translateY(-30%) rotate(-1deg);
-    opacity: 0.8;
-  }
-  75% {
-    transform: scaleY(1.1) scaleX(0.85) translateY(-10%) rotate(2deg);
-    opacity: 0.65;
+  50% {
+    transform: translate3d(0, -20%, 0) scaleY(1.3) scaleX(0.75) rotate(-1deg);
+    opacity: 0.75;
   }
 }
 
 @keyframes guildFlameTongue2 {
   0%,
   100% {
-    transform: scaleY(1.1) scaleX(0.9) translateY(-5%) rotate(1deg);
+    transform: translate3d(0, -5%, 0) scaleY(1.1) scaleX(0.9) rotate(1deg);
     opacity: 0.55;
   }
-  20% {
-    transform: scaleY(1.6) scaleX(0.6) translateY(-35%) rotate(-3deg);
-    opacity: 0.78;
-  }
-  45% {
-    transform: scaleY(0.9) scaleX(1.05) translateY(0) rotate(0deg);
-    opacity: 0.5;
-  }
-  65% {
-    transform: scaleY(1.35) scaleX(0.72) translateY(-22%) rotate(2deg);
-    opacity: 0.72;
+  50% {
+    transform: translate3d(0, -25%, 0) scaleY(1.4) scaleX(0.7) rotate(-1deg);
+    opacity: 0.7;
   }
 }
 
@@ -1662,8 +1614,11 @@ html:not([data-motion="active"]) * {
     rgba(239, 68, 68, 0.2) 55%,
     transparent 70%
   );
-  filter: blur(25px);
+  filter: blur(20px);
   animation: guildFlame1 6s ease-in-out 0.5s infinite;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
 }
 
 .guild-flame-tongue-1 {

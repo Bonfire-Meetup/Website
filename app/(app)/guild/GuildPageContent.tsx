@@ -328,7 +328,20 @@ export function GuildPageContent() {
           ))}
         </div>
 
-        <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-[2] h-40 bg-gradient-to-t from-neutral-50 via-neutral-50/80 to-transparent dark:from-neutral-950 dark:via-neutral-950/90" />
+        <div
+          className="pointer-events-none absolute right-0 bottom-[-50px] left-0 z-[2] h-40 dark:hidden"
+          style={{
+            background:
+              "linear-gradient(to top, rgb(250 250 250) 0%, rgba(250, 250, 250, 0.85) 15%, rgba(250, 250, 250, 0.6) 35%, rgba(250, 250, 250, 0.3) 55%, rgba(250, 250, 250, 0.1) 75%, transparent 100%)",
+          }}
+        />
+        <div
+          className="pointer-events-none absolute right-0 bottom-[-50px] left-0 z-[2] hidden h-40 dark:block"
+          style={{
+            background:
+              "linear-gradient(to top, rgb(10 10 10) 0%, rgba(10, 10, 10, 0.85) 15%, rgba(10, 10, 10, 0.6) 35%, rgba(10, 10, 10, 0.3) 55%, rgba(10, 10, 10, 0.1) 75%, transparent 100%)",
+          }}
+        />
       </section>
 
       <section className="relative px-4 pt-16 pb-16 sm:pt-24 sm:pb-20">
