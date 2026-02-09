@@ -1455,6 +1455,96 @@
       "linting": "Linting a formátování"
     }
   },
+  "guildPage": {
+    "meta": {
+      "title": "Bonfire Guild",
+      "description": "Bonfire Guild je způsob, jak se víc zapojit do komunity - s přednostním přístupem k záznamům, zákulisním obsahem a možností ovlivnit, co bude dál."
+    },
+    "kicker": "Představujeme",
+    "title": {
+      "part1": "Vstupte do",
+      "highlight": "Bonfire Guild"
+    },
+    "subtitle": "Místo pro lidi, kteří se chtějí víc zapojit. Přednostní přístup k záznamům, zákulisní obsah a reálný vliv na to, kam Bonfire směřuje.",
+    "comingSoon": "Již brzy - Zůstaňte naladěni",
+    "openNoteLabel": "Poznámka",
+    "openNote": "Akce Bonfire jsou <bold>otevřené všem</bold> - členství v Guildu není potřeba. Guild je jen dobrovolná možnost pro ty, kdo chtějí podpořit, co děláme, a pomoct komunitě růst.",
+    "tiersSection": {
+      "kicker": "Jak to funguje",
+      "title": "Vyberte si, co vám sedí",
+      "subtitle": "Tři úrovně pro různou míru zapojení. Začněte, kde chcete, a posouvejte se dál."
+    },
+    "tiers": {
+      "scout": {
+        "name": "Scout",
+        "badge": "Úroveň 1",
+        "tagline": "Koukněte, co se tu peče.",
+        "features": [
+          "Guild odznak na profilu",
+          "Členské Discord kanály",
+          "Včasné info o nadcházejících akcích",
+          "Prioritní registrace na akce",
+          "Připomínky akcí a Guild oznámení"
+        ]
+      },
+      "explorer": {
+        "name": "Explorer",
+        "badge": "Úroveň 2",
+        "tagline": "Přednostní záznamy a slovo v tom, co bude dál.",
+        "features": [
+          "Vše ze Scout",
+          "Přednostní přístup k záznamům z akcí",
+          "Hlasování o budoucích tématech přednášek",
+          "Zákulisní obsah",
+          "Čtvrtletní souhrn (záznamy, zákulisí, rekapitulace)"
+        ]
+      },
+      "trailblazer": {
+        "name": "Trailblazer",
+        "badge": "Úroveň 3",
+        "tagline": "Pomozte nám utvářet, čím se Bonfire stane.",
+        "features": [
+          "Vše z Explorer",
+          "Účast na plánovacích hovorech s crew",
+          "Navrhujte řečníky a témata",
+          "Pozvánky na Trailblazer setkání",
+          "První náhled na nové funkce platformy"
+        ]
+      }
+    },
+    "perksSection": {
+      "kicker": "Co v tom je",
+      "title": "Výhody",
+      "subtitle": "Guild je o tom být blíž dění - vidět, jak věci vznikají, a pomoct nám vymyslet, co dál.",
+      "items": [
+        {
+          "icon": "film",
+          "title": "Záznamy s předstihem",
+          "description": "Koukněte na přednášky dřív, než budou veřejné. Jednoduché."
+        },
+        {
+          "icon": "sparkles",
+          "title": "Pohled do zákulisí",
+          "description": "Plánovací schůzky, přípravy, autentické momenty crew. Věci, co se do highlight reelu nedostanou."
+        },
+        {
+          "icon": "bolt",
+          "title": "Máte slovo",
+          "description": "Pomozte vybrat témata, navrhujte řečníky a ovlivněte, co Bonfire bude dělat dál. Váš hlas tu má váhu."
+        },
+        {
+          "icon": "users",
+          "title": "Pokecy s crew",
+          "description": "Soukromé kanály s řečníky, crew a dalšími členy. Klidné místo na pokec a sdílení nápadů."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Pracujeme na tom",
+      "body": "Guild zatím není hotový - dáváme ho dohromady s péčí. Jestli vás to zaujalo, sledujte nás. Dáme vědět, až to bude.",
+      "badge": "Již brzy"
+    }
+  },
   "cookieConsent": {
     "message": "Používáme cookies pro základní funkce.",
     "accept": "OK",

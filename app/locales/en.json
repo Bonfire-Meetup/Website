@@ -1444,6 +1444,96 @@
       "linting": "Linting & Formatting"
     }
   },
+  "guildPage": {
+    "meta": {
+      "title": "Bonfire Guild",
+      "description": "Bonfire Guild is a way for our community to get more involved - with early access to recordings, behind-the-scenes content, and a say in what comes next."
+    },
+    "kicker": "Introducing",
+    "title": {
+      "part1": "Join the",
+      "highlight": "Bonfire Guild"
+    },
+    "subtitle": "A place for folks who want to get more involved. Early access to recordings, behind-the-scenes stuff, and a real say in where Bonfire goes next.",
+    "comingSoon": "Coming Soon - Stay Tuned",
+    "openNoteLabel": "A note",
+    "openNote": "Bonfire events are <bold>open to everyone</bold> - no membership required. Guild is simply an optional way for those who want to support what we do and help the community grow.",
+    "tiersSection": {
+      "kicker": "How It Works",
+      "title": "Pick What Fits",
+      "subtitle": "Three tiers for different levels of involvement. Start wherever you like and grow from there."
+    },
+    "tiers": {
+      "scout": {
+        "name": "Scout",
+        "badge": "Tier 1",
+        "tagline": "Hop in and see what's cooking.",
+        "features": [
+          "Guild badge on your profile",
+          "Member-only Discord channels",
+          "Early heads-up on upcoming events",
+          "Priority event registration",
+          "Event reminders and Guild announcements"
+        ]
+      },
+      "explorer": {
+        "name": "Explorer",
+        "badge": "Tier 2",
+        "tagline": "Early access to recordings and a say in what's next.",
+        "features": [
+          "Everything in Scout",
+          "Early access to event recordings",
+          "Vote on future talk topics",
+          "Behind-the-scenes content",
+          "Quarterly digest (recordings, BTS, recap)"
+        ]
+      },
+      "trailblazer": {
+        "name": "Trailblazer",
+        "badge": "Tier 3",
+        "tagline": "Help us shape what Bonfire becomes.",
+        "features": [
+          "Everything in Explorer",
+          "Join crew planning calls",
+          "Suggest speakers and topics",
+          "Invitations to Trailblazer hangouts",
+          "First look at new platform features"
+        ]
+      }
+    },
+    "perksSection": {
+      "kicker": "What's In It",
+      "title": "The Perks",
+      "subtitle": "Guild is about getting closer to the action - seeing how things come together and helping us figure out what to do next.",
+      "items": [
+        {
+          "icon": "film",
+          "title": "Early Recordings",
+          "description": "Watch the talks before they go public. Simple as that."
+        },
+        {
+          "icon": "sparkles",
+          "title": "Behind the Scenes",
+          "description": "Planning sessions, backstage prep, raw crew moments. The stuff that doesn't make the highlight reel."
+        },
+        {
+          "icon": "bolt",
+          "title": "Have a Say",
+          "description": "Help pick topics, suggest speakers, and shape what Bonfire does next. Your voice matters here."
+        },
+        {
+          "icon": "users",
+          "title": "Hang With the Crew",
+          "description": "Private channels with speakers, crew, and fellow members. A chill space to chat and share ideas."
+        }
+      ]
+    },
+    "cta": {
+      "title": "We're Working on It",
+      "body": "The Guild isn't ready just yet - we're putting it together with care. If this sounds like your kind of thing, keep an eye out. We'll let you know when it's time.",
+      "badge": "Coming Soon"
+    }
+  },
   "cookieConsent": {
     "message": "We use essential cookies for site functionality.",
     "accept": "OK",

@@ -1308,3 +1308,515 @@ html:not([data-motion="active"]) * {
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
+
+@keyframes guildHeroFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes guildRingPulse1 {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.05);
+    opacity: 0.2;
+  }
+}
+
+@keyframes guildRingPulse2 {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.03);
+    opacity: 0.12;
+  }
+}
+
+@keyframes guildTitleGlow {
+  0%,
+  100% {
+    filter: brightness(1) drop-shadow(0 0 12px rgba(244, 63, 94, 0.3));
+  }
+  25% {
+    filter: brightness(1.15) drop-shadow(0 0 20px rgba(249, 115, 22, 0.45));
+  }
+  50% {
+    filter: brightness(1.05) drop-shadow(0 0 16px rgba(245, 158, 11, 0.35));
+  }
+  75% {
+    filter: brightness(1.12) drop-shadow(0 0 18px rgba(220, 38, 38, 0.4));
+  }
+}
+
+.guild-hero-enter {
+  opacity: 0;
+  animation: guildHeroFadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.guild-ring-1 {
+  animation: guildRingPulse1 6s ease-in-out infinite;
+}
+
+.guild-ring-2 {
+  animation: guildRingPulse2 8s ease-in-out infinite;
+}
+
+.guild-title-gradient {
+  animation: guildTitleGlow 8s ease-in-out infinite;
+}
+
+@keyframes guildIconBreathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.85;
+  }
+}
+
+@keyframes guildIconBreatheGlow {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+.guild-icon-breathe {
+  animation: guildIconBreathe 10s ease-in-out infinite;
+}
+
+.guild-icon-breathe-glow {
+  animation: guildIconBreatheGlow 10s ease-in-out infinite;
+}
+
+.guild-fireplace {
+  position: absolute;
+  bottom: 0;
+  left: -10%;
+  right: -10%;
+  height: 70%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+  mask-image: linear-gradient(to top, black 0%, black 20%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to top, black 0%, black 20%, transparent 85%);
+}
+
+@media (min-width: 640px) {
+  .guild-fireplace {
+    height: 75%;
+  }
+}
+
+.guild-flame {
+  position: absolute;
+  bottom: -15%;
+  border-radius: 45% 45% 50% 50% / 55% 55% 45% 45%;
+  filter: blur(40px);
+  will-change: transform, opacity;
+  transform-origin: center bottom;
+}
+
+.guild-flame-tongue {
+  position: absolute;
+  bottom: 0;
+  border-radius: 40% 40% 50% 50% / 70% 70% 30% 30%;
+  filter: blur(25px);
+  will-change: transform, opacity;
+  transform-origin: center bottom;
+}
+
+@keyframes guildFlame1 {
+  0%,
+  100% {
+    transform: scaleY(1) scaleX(1) translateY(0);
+    opacity: 0.9;
+  }
+  20% {
+    transform: scaleY(1.2) scaleX(0.88) translateY(-12%);
+    opacity: 1;
+  }
+  40% {
+    transform: scaleY(0.85) scaleX(1.1) translateY(3%);
+    opacity: 0.8;
+  }
+  60% {
+    transform: scaleY(1.15) scaleX(0.92) translateY(-8%);
+    opacity: 0.95;
+  }
+  80% {
+    transform: scaleY(0.95) scaleX(1.05) translateY(-2%);
+    opacity: 0.85;
+  }
+}
+
+@keyframes guildFlame2 {
+  0%,
+  100% {
+    transform: scaleY(1.05) scaleX(0.95) translateY(-3%);
+    opacity: 0.85;
+  }
+  25% {
+    transform: scaleY(0.85) scaleX(1.12) translateY(4%);
+    opacity: 0.95;
+  }
+  50% {
+    transform: scaleY(1.25) scaleX(0.85) translateY(-15%);
+    opacity: 0.8;
+  }
+  75% {
+    transform: scaleY(0.95) scaleX(1.08) translateY(-1%);
+    opacity: 0.9;
+  }
+}
+
+@keyframes guildFlame3 {
+  0%,
+  100% {
+    transform: scaleY(0.9) scaleX(1.08) translateY(2%);
+    opacity: 0.8;
+  }
+  18% {
+    transform: scaleY(1.3) scaleX(0.82) translateY(-18%);
+    opacity: 0.95;
+  }
+  40% {
+    transform: scaleY(1) scaleX(1) translateY(-3%);
+    opacity: 0.85;
+  }
+  65% {
+    transform: scaleY(1.15) scaleX(0.9) translateY(-10%);
+    opacity: 0.9;
+  }
+}
+
+@keyframes guildFlameFlicker {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scaleY(1) scaleX(1) translateX(0);
+  }
+  12% {
+    opacity: 0.85;
+    transform: scaleY(1.15) scaleX(0.9) translateX(-3%);
+  }
+  30% {
+    opacity: 0.6;
+    transform: scaleY(0.9) scaleX(1.1) translateX(2%);
+  }
+  48% {
+    opacity: 0.8;
+    transform: scaleY(1.2) scaleX(0.88) translateX(-1%);
+  }
+  70% {
+    opacity: 0.65;
+    transform: scaleY(0.95) scaleX(1.05) translateX(1%);
+  }
+  85% {
+    opacity: 0.78;
+    transform: scaleY(1.1) scaleX(0.93) translateX(-2%);
+  }
+}
+
+@keyframes guildFlameTongue {
+  0%,
+  100% {
+    transform: scaleY(1) scaleX(1) translateY(0) rotate(0deg);
+    opacity: 0.65;
+  }
+  15% {
+    transform: scaleY(1.4) scaleX(0.7) translateY(-25%) rotate(-2deg);
+    opacity: 0.85;
+  }
+  35% {
+    transform: scaleY(0.8) scaleX(1.1) translateY(5%) rotate(1deg);
+    opacity: 0.5;
+  }
+  55% {
+    transform: scaleY(1.5) scaleX(0.65) translateY(-30%) rotate(-1deg);
+    opacity: 0.8;
+  }
+  75% {
+    transform: scaleY(1.1) scaleX(0.85) translateY(-10%) rotate(2deg);
+    opacity: 0.65;
+  }
+}
+
+@keyframes guildFlameTongue2 {
+  0%,
+  100% {
+    transform: scaleY(1.1) scaleX(0.9) translateY(-5%) rotate(1deg);
+    opacity: 0.55;
+  }
+  20% {
+    transform: scaleY(1.6) scaleX(0.6) translateY(-35%) rotate(-3deg);
+    opacity: 0.78;
+  }
+  45% {
+    transform: scaleY(0.9) scaleX(1.05) translateY(0) rotate(0deg);
+    opacity: 0.5;
+  }
+  65% {
+    transform: scaleY(1.35) scaleX(0.72) translateY(-22%) rotate(2deg);
+    opacity: 0.72;
+  }
+}
+
+.guild-flame-1 {
+  left: 15%;
+  width: 70%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at 50% 75%,
+    rgba(249, 115, 22, 0.75) 0%,
+    rgba(239, 68, 68, 0.5) 30%,
+    rgba(220, 38, 38, 0.2) 55%,
+    transparent 75%
+  );
+  animation: guildFlame1 7s ease-in-out infinite;
+}
+
+.guild-flame-2 {
+  left: 0;
+  width: 55%;
+  height: 90%;
+  background: radial-gradient(
+    ellipse at 55% 80%,
+    rgba(244, 63, 94, 0.6) 0%,
+    rgba(220, 38, 38, 0.4) 35%,
+    rgba(190, 18, 60, 0.15) 55%,
+    transparent 75%
+  );
+  animation: guildFlame2 8s ease-in-out infinite;
+}
+
+.guild-flame-3 {
+  right: 0;
+  width: 55%;
+  height: 90%;
+  background: radial-gradient(
+    ellipse at 45% 80%,
+    rgba(245, 158, 11, 0.55) 0%,
+    rgba(249, 115, 22, 0.4) 35%,
+    rgba(234, 88, 12, 0.15) 55%,
+    transparent 75%
+  );
+  animation: guildFlame3 9s ease-in-out infinite;
+}
+
+.guild-flame-4 {
+  left: -5%;
+  width: 40%;
+  height: 70%;
+  background: radial-gradient(
+    ellipse at 50% 85%,
+    rgba(220, 38, 38, 0.45) 0%,
+    rgba(190, 18, 60, 0.28) 40%,
+    transparent 70%
+  );
+  animation: guildFlameFlicker 6s ease-in-out infinite;
+}
+
+.guild-flame-5 {
+  right: -5%;
+  width: 40%;
+  height: 70%;
+  background: radial-gradient(
+    ellipse at 50% 85%,
+    rgba(234, 88, 12, 0.45) 0%,
+    rgba(245, 158, 11, 0.28) 40%,
+    transparent 70%
+  );
+  animation: guildFlameFlicker 6.5s ease-in-out 1s infinite;
+}
+
+.guild-flame-core {
+  left: 10%;
+  width: 80%;
+  height: 50%;
+  bottom: -20%;
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(255, 220, 120, 0.55) 0%,
+    rgba(249, 115, 22, 0.45) 30%,
+    rgba(239, 68, 68, 0.2) 55%,
+    transparent 70%
+  );
+  filter: blur(25px);
+  animation: guildFlame1 6s ease-in-out 0.5s infinite;
+}
+
+.guild-flame-tongue-1 {
+  left: 28%;
+  width: 18%;
+  height: 85%;
+  bottom: 5%;
+  background: radial-gradient(
+    ellipse at 50% 70%,
+    rgba(249, 115, 22, 0.5) 0%,
+    rgba(239, 68, 68, 0.28) 40%,
+    transparent 70%
+  );
+  animation: guildFlameTongue 5.5s ease-in-out infinite;
+}
+
+.guild-flame-tongue-2 {
+  right: 25%;
+  width: 16%;
+  height: 80%;
+  bottom: 5%;
+  background: radial-gradient(
+    ellipse at 50% 70%,
+    rgba(245, 158, 11, 0.45) 0%,
+    rgba(249, 115, 22, 0.25) 40%,
+    transparent 70%
+  );
+  animation: guildFlameTongue2 6.5s ease-in-out 0.8s infinite;
+}
+
+.guild-flame-tongue-3 {
+  left: 38%;
+  width: 24%;
+  height: 95%;
+  bottom: 5%;
+  background: radial-gradient(
+    ellipse at 50% 65%,
+    rgba(244, 63, 94, 0.4) 0%,
+    rgba(249, 115, 22, 0.28) 35%,
+    transparent 65%
+  );
+  animation: guildFlameTongue 7s ease-in-out 1.5s infinite;
+}
+
+.dark .guild-flame-1 {
+  background: radial-gradient(
+    ellipse at 50% 75%,
+    rgba(249, 115, 22, 0.65) 0%,
+    rgba(239, 68, 68, 0.4) 30%,
+    rgba(220, 38, 38, 0.15) 55%,
+    transparent 75%
+  );
+}
+
+.dark .guild-flame-2 {
+  background: radial-gradient(
+    ellipse at 55% 80%,
+    rgba(244, 63, 94, 0.5) 0%,
+    rgba(220, 38, 38, 0.3) 35%,
+    rgba(190, 18, 60, 0.12) 55%,
+    transparent 75%
+  );
+}
+
+.dark .guild-flame-3 {
+  background: radial-gradient(
+    ellipse at 45% 80%,
+    rgba(245, 158, 11, 0.45) 0%,
+    rgba(249, 115, 22, 0.3) 35%,
+    rgba(234, 88, 12, 0.12) 55%,
+    transparent 75%
+  );
+}
+
+.dark .guild-flame-4 {
+  background: radial-gradient(
+    ellipse at 50% 85%,
+    rgba(220, 38, 38, 0.35) 0%,
+    rgba(190, 18, 60, 0.2) 40%,
+    transparent 70%
+  );
+}
+
+.dark .guild-flame-5 {
+  background: radial-gradient(
+    ellipse at 50% 85%,
+    rgba(234, 88, 12, 0.35) 0%,
+    rgba(245, 158, 11, 0.2) 40%,
+    transparent 70%
+  );
+}
+
+.dark .guild-flame-core {
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(255, 220, 120, 0.4) 0%,
+    rgba(249, 115, 22, 0.35) 30%,
+    rgba(239, 68, 68, 0.15) 55%,
+    transparent 70%
+  );
+}
+
+.dark .guild-flame-tongue-1 {
+  background: radial-gradient(
+    ellipse at 50% 70%,
+    rgba(249, 115, 22, 0.4) 0%,
+    rgba(239, 68, 68, 0.22) 40%,
+    transparent 70%
+  );
+}
+
+.dark .guild-flame-tongue-2 {
+  background: radial-gradient(
+    ellipse at 50% 70%,
+    rgba(245, 158, 11, 0.35) 0%,
+    rgba(249, 115, 22, 0.18) 40%,
+    transparent 70%
+  );
+}
+
+.dark .guild-flame-tongue-3 {
+  background: radial-gradient(
+    ellipse at 50% 65%,
+    rgba(244, 63, 94, 0.32) 0%,
+    rgba(249, 115, 22, 0.2) 35%,
+    transparent 65%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guild-hero-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .guild-ring-1,
+  .guild-ring-2,
+  .guild-title-gradient,
+  .guild-icon-breathe,
+  .guild-icon-breathe-glow {
+    animation: none;
+  }
+
+  .guild-flame-1,
+  .guild-flame-2,
+  .guild-flame-3,
+  .guild-flame-4,
+  .guild-flame-5,
+  .guild-flame-core,
+  .guild-flame-tongue-1,
+  .guild-flame-tongue-2,
+  .guild-flame-tongue-3 {
+    animation: none;
+  }
+}
