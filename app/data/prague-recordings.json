@@ -39,7 +39,7 @@
       "thumbnail": "https://img.youtube.com/vi/CZxVfH1NajI/maxresdefault.jpg",
       "url": "https://www.youtube.com/watch?v=CZxVfH1NajI",
       "description": null,
-      "tags": ["Art", "Environment"],
+      "tags": ["Art", "Environment", "Rendering"],
       "featureHeroThumbnail": "https://cdn-img.bnf.events/prague-7/585211451_122249770070184727_306156335171359865_n.webp",
       "episodeId": "prague-7"
     },
@@ -109,7 +109,7 @@
       "thumbnail": "https://img.youtube.com/vi/6ydELWEEKIo/maxresdefault.jpg",
       "url": "https://www.youtube.com/watch?v=6ydELWEEKIo",
       "description": null,
-      "tags": ["Rendering", "Art"],
+      "tags": ["Rendering", "Art", "Lighting"],
       "featureHeroThumbnail": "",
       "episodeId": "prague-5"
     },
