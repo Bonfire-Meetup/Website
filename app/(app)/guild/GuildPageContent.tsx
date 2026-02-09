@@ -256,7 +256,7 @@ export function GuildPageContent() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(245,158,11,0.05),transparent_50%)] dark:bg-[radial-gradient(circle_at_20%_80%,rgba(245,158,11,0.03),transparent_50%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_100%_at_50%_50%,transparent_50%,rgba(0,0,0,0.03)_100%)] dark:bg-[radial-gradient(ellipse_100%_100%_at_50%_50%,transparent_45%,rgba(0,0,0,0.12)_100%)]" />
 
-        <div className="guild-hero-enter pointer-events-none absolute top-[28%] left-1/2 z-[1] -translate-x-1/2 -translate-y-1/2 select-none sm:top-[32%]">
+        <div className="guild-hero-enter pointer-events-none absolute top-[34%] left-1/2 z-[1] -translate-x-1/2 -translate-y-1/2 select-none sm:top-[38%]">
           <div className="guild-icon-breathe relative h-[70vw] w-[70vw] sm:h-[50vw] sm:w-[50vw] md:h-[40vw] md:w-[40vw]">
             <GuildIcon className="h-full w-full text-red-500/10 dark:text-red-400/[0.08]" />
 
