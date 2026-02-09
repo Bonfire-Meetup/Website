@@ -35,10 +35,12 @@ export function ShouldersOfGiants() {
       className="relative overflow-hidden rounded-[2rem] border border-neutral-200/80 bg-[radial-gradient(circle_at_top_right,rgba(236,72,153,0.14),transparent_44%),radial-gradient(circle_at_bottom_left,rgba(251,113,133,0.12),transparent_45%),linear-gradient(140deg,#ffffff,rgba(250,250,250,0.98)_52%,#ffffff)] p-5 shadow-[0_32px_90px_-44px_rgba(0,0,0,0.38)] sm:p-8 md:p-10 dark:border-white/10 dark:bg-[radial-gradient(circle_at_top_right,rgba(236,72,153,0.22),transparent_44%),radial-gradient(circle_at_bottom_left,rgba(251,113,133,0.18),transparent_45%),linear-gradient(140deg,#09090b,#111113_55%,#09090b)]"
       aria-labelledby="giants-heading"
     >
-      <div className="from-brand-500/8 to-accent-rose/8 dark:from-brand-400/14 dark:to-accent-rose/14 absolute inset-0 rounded-[2rem] bg-gradient-to-br via-transparent" />
-      <div className="bg-brand-500/12 dark:bg-brand-400/22 absolute -top-28 -right-28 h-56 w-56 rounded-full blur-3xl" />
-      <div className="bg-accent-rose/12 dark:bg-accent-rose/22 absolute -bottom-24 -left-24 h-48 w-48 rounded-full blur-3xl" />
-      <div className="pointer-events-none absolute inset-0 rounded-[2rem] ring-1 ring-white/45 dark:ring-white/8" />
+      <div className="absolute inset-0 overflow-hidden rounded-[2rem]">
+        <div className="from-brand-500/8 to-accent-rose/8 dark:from-brand-400/14 dark:to-accent-rose/14 absolute inset-0 rounded-[2rem] bg-gradient-to-br via-transparent" />
+        <div className="bg-brand-500/12 dark:bg-brand-400/22 absolute -top-28 -right-28 h-56 w-56 rounded-full blur-3xl" />
+        <div className="bg-accent-rose/12 dark:bg-accent-rose/22 absolute -bottom-24 -left-24 h-48 w-48 rounded-full blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 rounded-[2rem] ring-1 ring-white/45 dark:ring-white/8" />
+      </div>
 
       <div className="relative space-y-7 sm:space-y-8">
         <div className="grid items-end gap-4 sm:gap-6 md:grid-cols-[minmax(0,1fr)_minmax(260px,0.9fr)]">

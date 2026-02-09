@@ -70,46 +70,46 @@ function TierCard({
   };
 }) {
   return (
-    <div className={`relative flex flex-col overflow-hidden rounded-3xl border ${tier.border}`}>
+    <div
+      className={`group relative flex flex-col overflow-hidden rounded-2xl border ${tier.border} bg-white/80 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.12)] dark:bg-neutral-950/80 dark:shadow-none dark:hover:shadow-[0_8px_40px_-8px_rgba(0,0,0,0.35)]`}
+    >
       <div className={`relative h-full ${tier.gradient} p-px`}>
-        <div className="relative flex h-full flex-col rounded-[23px] bg-white/95 p-6 backdrop-blur-xl sm:p-8 dark:bg-neutral-950/95">
+        <div className="relative flex h-full flex-col rounded-[15px] bg-white/95 p-6 backdrop-blur-sm sm:p-7 dark:bg-neutral-950/95">
           <div
-            className={`pointer-events-none absolute -top-20 -right-20 h-60 w-60 rounded-full ${tier.glow} blur-3xl`}
+            className={`pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full ${tier.glow} opacity-80 blur-3xl`}
           />
           <div
-            className={`pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full ${tier.glow} opacity-50 blur-3xl`}
+            className={`pointer-events-none absolute -bottom-20 -left-20 h-40 w-40 rounded-full ${tier.glow} opacity-40 blur-3xl`}
           />
 
           <div className="relative">
             <div className="mb-4">
               <span
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase ${tier.badge}`}
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-widest uppercase ${tier.badge}`}
               >
-                <StarIcon className="h-3 w-3" />
+                <StarIcon className="h-2.5 w-2.5" />
                 {tier.badgeText}
               </span>
             </div>
 
-            <div className="mb-1">
-              <h3 className={`text-2xl font-black tracking-tight sm:text-3xl ${tier.accent}`}>
-                {tier.name}
-              </h3>
-            </div>
-            <p className="mb-6 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
+            <h3 className={`mb-2 text-xl font-black tracking-tight sm:text-2xl ${tier.accent}`}>
+              {tier.name}
+            </h3>
+            <p className="mb-5 text-sm leading-[1.55] text-neutral-500 dark:text-neutral-400">
               {tier.tagline}
             </p>
 
-            <div className="mb-6 h-px w-full bg-gradient-to-r from-transparent via-neutral-200 to-transparent dark:via-neutral-800" />
+            <div className="mb-5 h-px w-full bg-gradient-to-r from-transparent via-neutral-200/80 to-transparent dark:via-neutral-700/60" />
 
-            <ul className="flex-1 space-y-3">
+            <ul className="flex-1 space-y-3.5">
               {tier.features.map((feature) => (
                 <li key={feature} className="flex items-start gap-3">
                   <span
-                    className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${tier.iconBg}`}
+                    className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${tier.iconBg} shadow-sm`}
                   >
                     <CheckIcon className="h-3 w-3 text-white" />
                   </span>
-                  <span className="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+                  <span className="text-sm leading-[1.5] text-neutral-700 dark:text-neutral-300">
                     {feature}
                   </span>
                 </li>
@@ -129,27 +129,11 @@ const PERK_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>>
   users: UsersIcon,
 };
 
-const PERK_STYLES = [
-  {
-    iconBg: "bg-gradient-to-br from-rose-500 to-red-600",
-    glow: "from-rose-500/15 to-red-500/10",
-    accent: "border-rose-200/50 dark:border-rose-500/15",
-  },
-  {
-    iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-    glow: "from-amber-500/15 to-orange-500/10",
-    accent: "border-amber-200/50 dark:border-amber-500/15",
-  },
-  {
-    iconBg: "bg-gradient-to-br from-violet-500 to-purple-600",
-    glow: "from-violet-500/15 to-purple-500/10",
-    accent: "border-violet-200/50 dark:border-violet-500/15",
-  },
-  {
-    iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
-    glow: "from-emerald-500/15 to-teal-500/10",
-    accent: "border-emerald-200/50 dark:border-emerald-500/15",
-  },
+const PERK_ACCENT = [
+  "text-rose-500 dark:text-rose-400",
+  "text-amber-500 dark:text-amber-400",
+  "text-violet-500 dark:text-violet-400",
+  "text-emerald-500 dark:text-emerald-400",
 ];
 
 function PerkCard({
@@ -160,33 +144,30 @@ function PerkCard({
   index: number;
 }) {
   const Icon = PERK_ICON_MAP[item.icon] ?? SparklesIcon;
-  const style = PERK_STYLES[index % PERK_STYLES.length] ?? PERK_STYLES[0];
+  const accent = PERK_ACCENT[index % PERK_ACCENT.length] ?? PERK_ACCENT[0];
 
   return (
-    <div
-      className={`relative overflow-hidden rounded-2xl border bg-white/90 p-6 shadow-sm backdrop-blur-sm sm:p-7 dark:bg-white/[0.04] ${style.accent}`}
-    >
-      <div
-        className={`pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-gradient-to-br ${style.glow} blur-3xl`}
-      />
-      <div
-        className={`pointer-events-none absolute -bottom-12 -left-12 h-32 w-32 rounded-full bg-gradient-to-tr ${style.glow} opacity-50 blur-3xl`}
-      />
+    <div className="relative overflow-hidden rounded-2xl border border-neutral-200/60 bg-white/70 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-sm sm:p-7 dark:border-neutral-800/60 dark:bg-neutral-950/50">
+      {/* Subtle gradient wash */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-50/50 via-transparent to-neutral-100/30 dark:from-neutral-900/30 dark:to-neutral-800/20" />
 
-      <div className="relative">
-        <div
-          className={`mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl ${style.iconBg} shadow-lg`}
-        >
-          <Icon className="h-6 w-6 text-white" />
+      <div className="relative flex gap-5">
+        {/* Floating icon with soft glow */}
+        <div className="relative flex h-10 w-10 shrink-0 items-center justify-center">
+          <div className={`absolute inset-0 ${accent} opacity-20 blur-xl`}>
+            <Icon className="h-full w-full" />
+          </div>
+          <Icon className={`relative h-5 w-5 ${accent}`} />
         </div>
 
-        <h3 className="mb-2 text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
-          {item.title}
-        </h3>
-
-        <p className="text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
-          {item.description}
-        </p>
+        <div className="min-w-0 flex-1">
+          <h3 className="mb-1.5 text-base font-semibold tracking-tight text-neutral-900 dark:text-white">
+            {item.title}
+          </h3>
+          <p className="text-sm leading-[1.55] text-neutral-500 dark:text-neutral-400">
+            {item.description}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -250,37 +231,36 @@ export function GuildPageContent() {
 
   return (
     <div className="relative overflow-hidden">
-      <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-24 pb-20 sm:pt-28">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_30%,rgba(220,38,38,0.08),transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_30%,rgba(220,38,38,0.04),transparent_70%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(244,63,94,0.06),transparent_50%)] dark:bg-[radial-gradient(circle_at_80%_20%,rgba(244,63,94,0.03),transparent_50%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(245,158,11,0.05),transparent_50%)] dark:bg-[radial-gradient(circle_at_20%_80%,rgba(245,158,11,0.03),transparent_50%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_100%_at_50%_50%,transparent_50%,rgba(0,0,0,0.03)_100%)] dark:bg-[radial-gradient(ellipse_100%_100%_at_50%_50%,transparent_45%,rgba(0,0,0,0.12)_100%)]" />
+      <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-20 pb-24 sm:pt-24 sm:pb-28">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_25%,rgba(220,38,38,0.06),transparent_65%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_25%,rgba(220,38,38,0.03),transparent_65%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgba(244,63,94,0.05),transparent_45%)] dark:bg-[radial-gradient(circle_at_80%_15%,rgba(244,63,94,0.02),transparent_45%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_75%,rgba(245,158,11,0.04),transparent_45%)] dark:bg-[radial-gradient(circle_at_20%_75%,rgba(245,158,11,0.02),transparent_45%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_100%_100%_at_50%_50%,transparent_55%,rgba(0,0,0,0.02)_100%)] dark:bg-[radial-gradient(ellipse_100%_100%_at_50%_50%,transparent_50%,rgba(0,0,0,0.1)_100%)]" />
 
-        <div className="guild-hero-enter pointer-events-none absolute top-[34%] left-1/2 z-[1] -translate-x-1/2 -translate-y-1/2 select-none sm:top-[38%]">
-          <div className="guild-icon-breathe relative h-[70vw] w-[70vw] sm:h-[50vw] sm:w-[50vw] md:h-[40vw] md:w-[40vw]">
-            <GuildIcon className="h-full w-full text-red-500/10 dark:text-red-400/[0.08]" />
-
-            <div className="guild-icon-breathe-glow absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(249,115,22,0.12)_0%,rgba(244,63,94,0.06)_40%,transparent_70%)] mix-blend-screen dark:bg-[radial-gradient(circle,rgba(249,115,22,0.08)_0%,rgba(244,63,94,0.04)_40%,transparent_70%)]" />
+        <div className="guild-hero-enter pointer-events-none absolute top-[32%] left-1/2 z-[1] -translate-x-1/2 -translate-y-1/2 select-none sm:top-[36%]">
+          <div className="guild-icon-breathe relative h-[72vw] w-[72vw] sm:h-[52vw] sm:w-[52vw] md:h-[42vw] md:w-[42vw]">
+            <GuildIcon className="h-full w-full text-red-500/[0.08] dark:text-red-400/[0.06]" />
+            <div className="guild-icon-breathe-glow absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(249,115,22,0.1)_0%,rgba(244,63,94,0.05)_40%,transparent_68%)] mix-blend-screen dark:bg-[radial-gradient(circle,rgba(249,115,22,0.06)_0%,rgba(244,63,94,0.03)_40%,transparent_68%)]" />
           </div>
         </div>
 
         <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className="guild-ring-1 h-[400px] w-[400px] rounded-full border border-red-500/15 sm:h-[600px] sm:w-[600px] dark:border-red-500/10" />
+          <div className="guild-ring-1 h-[400px] w-[400px] rounded-full border border-red-500/12 sm:h-[600px] sm:w-[600px] dark:border-red-500/8" />
         </div>
         <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <div className="guild-ring-2 h-[550px] w-[550px] rounded-full border border-rose-500/10 sm:h-[800px] sm:w-[800px] dark:border-rose-500/5" />
+          <div className="guild-ring-2 h-[550px] w-[550px] rounded-full border border-rose-500/8 sm:h-[800px] sm:w-[800px] dark:border-rose-500/4" />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-5xl text-center">
+        <div className="relative z-10 mx-auto w-full max-w-4xl text-center">
           <p
-            className="guild-hero-enter mb-4 text-xs font-bold tracking-[0.4em] text-red-600/80 uppercase sm:text-sm sm:tracking-[0.5em] dark:text-red-400/80"
+            className="guild-hero-enter mb-5 text-[11px] font-semibold tracking-[0.35em] text-neutral-500 uppercase sm:text-xs sm:tracking-[0.45em] dark:text-neutral-400"
             style={{ animationDelay: "100ms" }}
           >
             {t("kicker")}
           </p>
 
           <h1
-            className="guild-hero-enter mb-6 text-4xl font-black tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:mb-8 sm:text-6xl md:text-7xl lg:text-8xl dark:drop-shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
+            className="guild-hero-enter mb-5 text-4xl font-black tracking-tight sm:mb-6 sm:text-6xl md:text-7xl lg:text-[4.25rem] dark:tracking-tight"
             style={{ animationDelay: "200ms" }}
           >
             <span className="text-neutral-900 dark:text-white">{t("title.part1")} </span>
@@ -290,21 +270,21 @@ export function GuildPageContent() {
           </h1>
 
           <p
-            className="guild-hero-enter mx-auto mb-10 max-w-2xl text-base leading-relaxed text-neutral-600 sm:mb-14 sm:text-lg md:text-xl dark:text-neutral-400"
+            className="guild-hero-enter mx-auto mb-12 max-w-xl text-base leading-[1.7] text-neutral-600 sm:mb-14 sm:text-lg dark:text-neutral-400"
             style={{ animationDelay: "300ms" }}
           >
             {t("subtitle")}
           </p>
 
           <div
-            className="guild-hero-enter inline-flex items-center gap-3 rounded-full border border-red-200/50 bg-white/90 px-5 py-2.5 shadow-[0_0_24px_-4px_rgba(244,63,94,0.12),0_4px_14px_-2px_rgba(0,0,0,0.06)] backdrop-blur-md dark:border-red-500/25 dark:bg-white/10 dark:shadow-[0_0_32px_-4px_rgba(244,63,94,0.2),0_4px_14px_-2px_rgba(0,0,0,0.2)]"
+            className="guild-hero-enter inline-flex items-center gap-2.5 rounded-full border border-neutral-200/80 bg-white/95 px-4 py-2 shadow-sm backdrop-blur-sm dark:border-neutral-700/60 dark:bg-neutral-900/80"
             style={{ animationDelay: "400ms" }}
           >
-            <span className="guild-status-dot relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+            <span className="guild-status-dot relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-70" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
             </span>
-            <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+            <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">
               {t("comingSoon")}
             </span>
           </div>
@@ -344,23 +324,23 @@ export function GuildPageContent() {
         />
       </section>
 
-      <section className="relative px-4 pt-16 pb-16 sm:pt-24 sm:pb-20">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(220,38,38,0.04),transparent_70%)] dark:bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(220,38,38,0.02),transparent_70%)]" />
+      <section className="relative px-4 pt-20 pb-20 sm:pt-28 sm:pb-24">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(220,38,38,0.03),transparent_70%)] dark:bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(220,38,38,0.015),transparent_70%)]" />
 
         <div className="relative mx-auto max-w-6xl">
-          <div className="mb-12 text-center sm:mb-16">
-            <p className="mb-3 text-xs font-bold tracking-[0.3em] text-red-600/70 uppercase sm:text-sm dark:text-red-400/70">
+          <div className="mb-14 text-center sm:mb-16">
+            <p className="mb-3 text-[11px] font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
               {t("tiersSection.kicker")}
             </p>
-            <h2 className="mb-4 text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl md:text-5xl dark:text-white">
+            <h2 className="mb-3 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl md:text-4xl dark:text-white">
               {t("tiersSection.title")}
             </h2>
-            <p className="mx-auto max-w-xl text-sm leading-relaxed text-neutral-500 sm:text-base dark:text-neutral-400">
+            <p className="mx-auto max-w-lg text-sm leading-[1.6] text-neutral-500 dark:text-neutral-400">
               {t("tiersSection.subtitle")}
             </p>
           </div>
 
-          <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
+          <div className="grid gap-5 sm:gap-6 md:grid-cols-3">
             {tiers.map((tier) => (
               <TierCard key={tier.name} tier={tier} />
             ))}
@@ -368,25 +348,16 @@ export function GuildPageContent() {
         </div>
       </section>
 
-      <section className="relative px-4 py-16 sm:py-20">
+      <section className="relative px-4 py-20 sm:py-24">
         <div className="relative mx-auto max-w-2xl">
-          <article className="group relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-gradient-to-br from-[#fafaf9] via-white to-[#fafaf9] px-8 py-8 shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.9)] sm:px-10 sm:py-10 dark:border-neutral-700/50 dark:from-neutral-900 dark:via-neutral-900/95 dark:to-neutral-900 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),0_2px_8px_rgba(0,0,0,0.2)]">
-            <div className="absolute top-0 right-0 h-12 w-12 overflow-hidden rounded-tr-2xl">
-              <div
-                className="absolute top-0 right-0 h-full w-full bg-gradient-to-br from-red-500/10 to-transparent dark:from-red-400/8"
-                style={{ clipPath: "polygon(100% 0, 100% 100%, 0 0)" }}
-              />
-            </div>
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_0%,rgba(244,63,94,0.04),transparent_50%),radial-gradient(circle_at_0%_100%,rgba(245,158,11,0.02),transparent_50%)] dark:bg-[radial-gradient(circle_at_100%_0%,rgba(244,63,94,0.02),transparent_50%),radial-gradient(circle_at_0%_100%,rgba(245,158,11,0.01),transparent_50%)]" />
-            <div className="absolute inset-0 rounded-2xl ring-1 ring-red-500/5 ring-inset dark:ring-red-400/5" />
-            <div className="relative border-t-2 border-red-500/25 pt-6 dark:border-red-400/20">
-              <div className="mb-4 flex items-center gap-2">
-                <div className="h-1 w-1 rounded-full bg-red-500/40 dark:bg-red-400/30" />
-                <p className="text-[10px] font-bold tracking-[0.25em] text-red-600/70 uppercase dark:text-red-400/60">
-                  {t("openNoteLabel")}
-                </p>
-              </div>
-              <p className="text-lg leading-[1.75] text-neutral-800 sm:text-[1.0625rem] sm:leading-[1.8] dark:text-neutral-100">
+          <article className="relative overflow-hidden rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-neutral-50/90 via-white to-neutral-50/90 px-8 py-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-10 sm:py-10 dark:border-neutral-700/40 dark:from-neutral-900/80 dark:via-neutral-900 dark:to-neutral-900/80 dark:shadow-[0_1px_0_rgba(255,255,255,0.03)_inset]">
+            <div className="absolute top-0 left-0 h-full w-1 bg-gradient-to-b from-amber-400/60 via-rose-400/50 to-red-400/40 dark:from-amber-500/40 dark:via-rose-500/30 dark:to-red-500/30" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(251,191,36,0.04),transparent_60%)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(251,191,36,0.02),transparent_60%)]" />
+            <div className="relative pl-5 sm:pl-6">
+              <p className="mb-3 text-[10px] font-semibold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                {t("openNoteLabel")}
+              </p>
+              <p className="text-base leading-[1.75] text-neutral-700 sm:text-[1.0625rem] sm:leading-[1.8] dark:text-neutral-200">
                 {t.rich("openNote", {
                   bold: (chunks) => (
                     <strong className="font-semibold text-neutral-900 dark:text-white">
@@ -400,18 +371,18 @@ export function GuildPageContent() {
         </div>
       </section>
 
-      <section className="relative px-4 pt-16 pb-16 sm:pt-20 sm:pb-24">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,63,94,0.04),transparent_60%)] dark:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,63,94,0.02),transparent_60%)]" />
+      <section className="relative px-4 pt-20 pb-20 sm:pt-24 sm:pb-28">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,63,94,0.03),transparent_60%)] dark:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,63,94,0.015),transparent_60%)]" />
 
         <div className="relative mx-auto max-w-5xl">
-          <div className="mb-14 text-center sm:mb-20">
-            <p className="mb-3 text-xs font-bold tracking-[0.3em] text-red-600/70 uppercase sm:text-sm dark:text-red-400/70">
+          <div className="mb-12 text-center sm:mb-16">
+            <p className="mb-3 text-[11px] font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
               {t("perksSection.kicker")}
             </p>
-            <h2 className="mb-4 text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl md:text-5xl dark:text-white">
+            <h2 className="mb-3 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl md:text-4xl dark:text-white">
               {t("perksSection.title")}
             </h2>
-            <p className="mx-auto max-w-2xl text-sm leading-relaxed text-neutral-500 sm:text-base dark:text-neutral-400">
+            <p className="mx-auto max-w-xl text-sm leading-[1.6] text-neutral-500 dark:text-neutral-400">
               {t("perksSection.subtitle")}
             </p>
           </div>
@@ -426,25 +397,42 @@ export function GuildPageContent() {
         </div>
       </section>
 
-      <section className="relative px-4 py-16 sm:py-24">
-        <div className="relative mx-auto max-w-3xl text-center">
-          <div className="guild-cta-card relative overflow-hidden rounded-3xl border border-red-200/40 bg-gradient-to-br from-red-50/80 via-white to-rose-50/60 p-8 shadow-2xl shadow-red-500/5 sm:p-12 dark:border-red-500/15 dark:from-red-950/40 dark:via-neutral-950 dark:to-rose-950/30 dark:shadow-red-500/10">
-            <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-gradient-to-br from-red-400/15 via-rose-300/10 to-transparent blur-3xl dark:from-red-500/10" />
-            <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-gradient-to-tr from-amber-400/10 via-rose-300/10 to-transparent blur-3xl dark:from-amber-500/5" />
+      <section className="relative px-4 py-20 sm:py-28">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(244,63,94,0.04),transparent_65%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(244,63,94,0.02),transparent_65%)]" />
+
+        <div className="relative mx-auto max-w-2xl text-center">
+          <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/80 px-8 py-14 shadow-[0_8px_50px_-12px_rgba(0,0,0,0.06)] backdrop-blur-2xl sm:px-14 sm:py-16 dark:border-neutral-800/60 dark:bg-neutral-950/60 dark:shadow-[0_8px_50px_-12px_rgba(0,0,0,0.4)]">
+            {/* Gradient mesh background */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-rose-500/[0.03] via-transparent to-amber-500/[0.03] dark:from-rose-500/[0.04] dark:to-amber-500/[0.04]" />
+            <div className="pointer-events-none absolute -top-32 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-rose-500/10 blur-[100px] dark:bg-rose-500/8" />
+            <div className="pointer-events-none absolute right-0 -bottom-24 h-48 w-48 rounded-full bg-amber-500/8 blur-[80px] dark:bg-amber-500/6" />
+
+            {/* Subtle border glow */}
+            <div className="pointer-events-none absolute inset-0 rounded-3xl border border-rose-500/10 dark:border-rose-500/5" />
 
             <div className="relative">
-              <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-rose-600 shadow-lg shadow-red-500/30">
-                <GuildIcon className="h-7 w-7 text-white" />
+              {/* Floating icon - no container, just pure icon with soft glow */}
+              <div className="relative mb-8 inline-flex">
+                <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-rose-500 to-amber-500 opacity-30 blur-2xl" />
+                <GuildIcon className="relative h-12 w-12 text-neutral-900 dark:text-white" />
               </div>
-              <h2 className="mb-4 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
+
+              {/* Title with subtle gradient */}
+              <h2 className="mb-5 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
                 {t("cta.title")}
               </h2>
-              <p className="mx-auto mb-8 max-w-lg text-sm leading-relaxed text-neutral-600 sm:text-base dark:text-neutral-400">
+
+              <p className="mx-auto mb-10 max-w-md text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
                 {t("cta.body")}
               </p>
-              <div className="inline-flex items-center gap-3 rounded-full border border-red-200/60 bg-white/80 px-5 py-2.5 shadow-md backdrop-blur-sm dark:border-red-500/20 dark:bg-white/5">
-                <span className="inline-flex h-2 w-2 rounded-full bg-red-500" />
-                <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+
+              {/* Minimal status indicator */}
+              <div className="inline-flex items-center gap-2.5 rounded-full bg-neutral-100/80 px-4 py-2 dark:bg-neutral-800/60">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
+                </span>
+                <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
                   {t("cta.badge")}
                 </span>
               </div>
