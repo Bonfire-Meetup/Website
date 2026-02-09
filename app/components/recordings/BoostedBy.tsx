@@ -47,15 +47,15 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
       {loading ? (
         <>
           <div className="flex shrink-0 items-center gap-1.5">
-            <div className="h-3 w-3 animate-pulse rounded bg-neutral-200 dark:bg-white/10" />
-            <div className="h-3 w-20 animate-pulse rounded bg-neutral-200 dark:bg-white/10" />
+            <div className="h-3 w-3 animate-pulse rounded bg-emerald-600/70 dark:bg-emerald-400/70" />
+            <div className="h-3 w-20 animate-pulse rounded bg-neutral-500 dark:bg-neutral-400" />
           </div>
           <div className="flex flex-1 items-center gap-1.5">
             <div className="flex gap-1 sm:gap-0">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className={`h-6 w-6 animate-pulse rounded-full bg-neutral-200 dark:bg-white/10 ${
+                  className={`h-6 w-6 animate-pulse rounded-full bg-neutral-400 ring-1 ring-white/50 dark:bg-neutral-500 dark:ring-neutral-900/50 ${
                     i === 1 ? "ml-0" : "ml-0 sm:-ml-2"
                   }`}
                 />
