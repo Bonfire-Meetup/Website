@@ -49,7 +49,7 @@ export function GridView({
               loading={index < 8 ? "eager" : "lazy"}
               fetchPriority={index < 8 ? "high" : "low"}
             />
-            <div className="pointer-events-auto absolute top-2 left-2 z-10">
+            <div className="pointer-events-auto absolute top-2 left-2 z-5">
               <WatchLaterButton
                 shortId={recording.shortId}
                 variant="icon"
