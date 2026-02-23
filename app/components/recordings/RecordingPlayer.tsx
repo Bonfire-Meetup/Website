@@ -39,17 +39,15 @@ export type RelatedRecording = Pick<
 export function RecordingPlayer({
   recording,
   relatedRecordings,
-  nowMs: initialNowMs,
 }: {
   recording: Recording;
   relatedRecordings: RelatedRecording[];
-  nowMs: number;
 }) {
   const t = useTranslations("recordings");
   const locale = useLocale();
   const router = useRouter();
   const auth = useAppSelector((state) => state.auth);
-  const [nowMs, setNowMs] = useState(initialNowMs);
+  const [nowMs, setNowMs] = useState(() => Date.now());
   const refreshTriggeredRef = useRef(false);
 
   const inlinePlayerRef = useRef<HTMLDivElement | null>(null);

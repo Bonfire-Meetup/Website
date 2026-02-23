@@ -87,11 +87,8 @@ async function WatchPageContent({ params }: { params: Promise<{ slug: string }> 
   }
 
   const relatedRecordings = getRelatedRecordings(recording, allRecordings);
-  const nowMs = Date.now();
 
-  return (
-    <RecordingPlayer recording={recording} relatedRecordings={relatedRecordings} nowMs={nowMs} />
-  );
+  return <RecordingPlayer recording={recording} relatedRecordings={relatedRecordings} />;
 }
 
 export default function WatchPage({ params }: { params: Promise<{ slug: string }> }) {
