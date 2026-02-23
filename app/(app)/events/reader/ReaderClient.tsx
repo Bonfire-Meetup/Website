@@ -11,6 +11,7 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { upcomingEvents } from "@/data/upcoming-events";
 import { ApiError } from "@/lib/api/errors";
 import { authFetch } from "@/lib/api/query-utils";
+import { API_ROUTES } from "@/lib/api/routes";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
@@ -303,7 +304,7 @@ export function ReaderClient() {
     }
 
     try {
-      const response = await authFetch("/api/v1/check-in/verify", {
+      const response = await authFetch(API_ROUTES.CHECK_IN.VERIFY, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
@@ -371,7 +372,7 @@ export function ReaderClient() {
     setError(null);
 
     try {
-      const response = await authFetch("/api/v1/check-in", {
+      const response = await authFetch(API_ROUTES.CHECK_IN.BASE, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

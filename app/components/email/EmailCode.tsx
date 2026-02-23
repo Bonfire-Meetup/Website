@@ -15,6 +15,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { WEBSITE_URLS } from "@/lib/config/constants";
+
 import { FIRE_GRADIENT } from "./brand";
 
 export interface EmailCodeProps {
@@ -177,7 +179,7 @@ export function EmailCode({
 }
 
 EmailCode.PreviewProps = {
-  baseUrl: "https://bnf.events",
+  baseUrl: WEBSITE_URLS.BASE,
   brandName: "Bonfire Events",
   codeLabel: "Your verification code:",
   expires: "This code expires in 10 minutes",
@@ -185,7 +187,7 @@ EmailCode.PreviewProps = {
   formattedCode: "123 456",
   ignore: "If you didn't request this code, you can safely ignore this email.",
   lang: "en",
-  logoUrl: "https://bnf.events/assets/brand/RGB_PNG_01_bonfire_black_gradient.png",
+  logoUrl: `${WEBSITE_URLS.BASE}/assets/brand/RGB_PNG_01_bonfire_black_gradient.png`,
   requestFrom: "Chrome on macOS · Prague, CZ",
   securityTip:
     "Never share this code. Bonfire will never ask for it via phone, chat, or social media.",

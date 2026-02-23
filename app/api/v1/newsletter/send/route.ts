@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { withRequestContext, withRole } from "@/lib/api/route-wrappers";
 import { signUnsubscribeToken } from "@/lib/auth/jwt";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { USER_ROLES } from "@/lib/config/roles";
 import { db } from "@/lib/data/db";
 import { saveNewsletterToArchive } from "@/lib/data/newsletter-archive";
@@ -111,7 +112,7 @@ export const POST = withRequestContext(
         return respond({ error: "no_recipients" }, { status: 400 });
       }
 
-      const BASE_URL = process.env.PROD_URL ?? "https://www.bnf.events";
+      const BASE_URL = process.env.PROD_URL ?? WEBSITE_URLS.BASE;
 
       const archiveRecord = await saveNewsletterToArchive({
         subject,

@@ -13,6 +13,7 @@ interface RecordingHeaderMetaRowProps {
   metaGroupClassName?: string;
   locationHref?: string;
   locationSize?: "xxs" | "xs" | "sm" | "md";
+  locationVariant?: "city" | "neutral";
   locationIcon?: ReactNode;
   locationClassName?: string;
   separator?: ReactNode;
@@ -30,6 +31,7 @@ export function RecordingHeaderMetaRow({
   metaGroupClassName = "flex flex-wrap items-center gap-2",
   locationHref,
   locationSize = "sm",
+  locationVariant = "city",
   locationIcon,
   locationClassName,
   separator,
@@ -45,6 +47,7 @@ export function RecordingHeaderMetaRow({
             location={location}
             href={locationHref}
             size={locationSize}
+            variant={locationVariant}
             icon={locationIcon}
             className={locationClassName}
           />

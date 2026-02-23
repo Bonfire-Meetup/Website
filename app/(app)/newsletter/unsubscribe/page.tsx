@@ -8,6 +8,8 @@ import { CheckIcon, CloseIcon, MailIcon } from "@/components/shared/Icons";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { API_ROUTES } from "@/lib/api/routes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export default function UnsubscribePage() {
   const t = useTranslations("sections.newsletterUnsubscribe");
@@ -27,7 +29,7 @@ export default function UnsubscribePage() {
     setStatus("loading");
 
     try {
-      const response = await fetch("/api/v1/newsletter/unsubscribe", {
+      const response = await fetch(API_ROUTES.NEWSLETTER.UNSUBSCRIBE, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
@@ -82,7 +84,7 @@ export default function UnsubscribePage() {
               {t("success.message", { email: unsubscribedEmail })}
             </p>
             <div className="mt-8">
-              <Button href="/" variant="glass-secondary">
+              <Button href={PAGE_ROUTES.HOME} variant="glass-secondary">
                 {t("backToHome")}
               </Button>
             </div>
@@ -99,7 +101,7 @@ export default function UnsubscribePage() {
               {errorMessage}
             </p>
             <div className="mt-8">
-              <Button href="/" variant="glass-secondary">
+              <Button href={PAGE_ROUTES.HOME} variant="glass-secondary">
                 {t("backToHome")}
               </Button>
             </div>
@@ -133,7 +135,11 @@ export default function UnsubscribePage() {
                 )}
               </Button>
 
-              <Button href="/" variant="glass-secondary" className="w-full sm:w-auto">
+              <Button
+                href={PAGE_ROUTES.HOME}
+                variant="glass-secondary"
+                className="w-full sm:w-auto"
+              >
                 {t("cancel")}
               </Button>
             </div>

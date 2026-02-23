@@ -8,6 +8,12 @@ export type LocationValue = (typeof LOCATIONS)[keyof typeof LOCATIONS];
 export const WEBSITE_URLS = {
   BASE: "https://www.bnf.events",
   CDN: "https://cdn-img.bnf.events",
+  SOCIAL: {
+    DISCORD: "https://discord.com/invite/8Tqm7vAd4h",
+    FACEBOOK: "https://www.facebook.com/bonfire.meetup",
+    GITHUB: "https://github.com/Bonfire-Meetup",
+    YOUTUBE_PLAYLIST: "https://www.youtube.com/playlist?list=PL5JjhpXFzfZp51YDuRgc9w6JVJUM9EQaN",
+  },
   CONTACT_EMAIL: "hello@bnf.events",
   CONTACT_EMAIL_COC: "hello+coc@bnf.events",
   CONTACT_EMAIL_CREW: "hello+crew@bnf.events",

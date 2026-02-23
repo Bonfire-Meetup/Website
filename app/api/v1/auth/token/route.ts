@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { API_ROUTES } from "@/lib/api/routes";
 import { timingGuardHash, verifyOtpChallenge } from "@/lib/auth/challenge";
 import {
   generateRefreshToken,
@@ -192,7 +193,7 @@ const handleRefreshTokenGrant = async (
     await delay();
     logWarn("auth.token.refresh.unauthorized", { reason, ...clientFingerprint, requestId });
 
-    const clearCookie = `${REFRESH_TOKEN_COOKIE_NAME}=; HttpOnly; Secure; SameSite=strict; Path=/api/v1/auth; Max-Age=0`;
+    const clearCookie = `${REFRESH_TOKEN_COOKIE_NAME}=; HttpOnly; Secure; SameSite=strict; Path=${API_ROUTES.AUTH.BASE}; Max-Age=0`;
 
     return NextResponse.json(
       { error: "unauthorized" },

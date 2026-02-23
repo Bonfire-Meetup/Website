@@ -829,20 +829,20 @@ export function EarlyAccessIcon({ className, ...props }: IconProps) {
       className={className}
       viewBox="0 0 24 24"
       fill="none"
-      strokeWidth={1.6}
+      strokeWidth={1.5}
       stroke="currentColor"
       {...props}
     >
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="m12 3.5 1.8 3.7 4.1.6-2.9 2.8.7 4-3.7-1.9-3.7 1.9.7-4-2.9-2.8 4.1-.6L12 3.5Z"
+        d="M8.75 10.75V9.5a3.25 3.25 0 1 1 6.5 0v1.25"
       />
-      <rect x="8.75" y="16.25" width="6.5" height="4.5" rx="1.1" />
+      <rect x="6.75" y="10.75" width="10.5" height="8.5" rx="2" />
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M10.75 16.25v-.75a1.25 1.25 0 1 1 2.5 0v.75M12 18.35v.35"
+        d="M12 13.25v1.75m0 0 1.5.9M12 15h-1.5"
       />
     </svg>
   );

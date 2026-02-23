@@ -1,5 +1,6 @@
 "use client";
 
+import { API_ROUTES } from "@/lib/api/routes";
 import { logWarn } from "@/lib/utils/log-client";
 
 import { STORAGE_KEYS } from "../storage/keys";
@@ -188,7 +189,7 @@ export const refreshAccessToken = (): Promise<string | null> => {
     }
 
     try {
-      const response = await fetch("/api/v1/auth/token", {
+      const response = await fetch(API_ROUTES.AUTH.TOKEN, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -273,7 +274,7 @@ export const revokeSession = async (options?: { revokeAll?: boolean; revokeFamil
   }
 
   try {
-    await fetch("/api/v1/auth/revoke", {
+    await fetch(API_ROUTES.AUTH.REVOKE, {
       method: "POST",
       credentials: "include",
       headers,

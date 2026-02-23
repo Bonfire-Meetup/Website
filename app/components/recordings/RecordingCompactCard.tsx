@@ -20,6 +20,7 @@ interface RecordingCompactCardProps {
   imageSizes?: string;
   className?: string;
   staggerIndex?: number;
+  showInlineAccessPill?: boolean;
 }
 
 export function RecordingCompactCard({
@@ -34,6 +35,7 @@ export function RecordingCompactCard({
   imageSizes = "(max-width: 1024px) 50vw, 360px",
   className,
   staggerIndex,
+  showInlineAccessPill = true,
 }: RecordingCompactCardProps) {
   const staggerClass = typeof staggerIndex === "number" ? `stagger-${(staggerIndex % 8) + 1}` : "";
 
@@ -68,7 +70,9 @@ export function RecordingCompactCard({
             <h3 className="group-hover:text-brand-500 dark:group-hover:text-brand-400 line-clamp-2 text-sm leading-snug font-semibold text-neutral-900 transition-colors dark:text-white">
               {title}
             </h3>
-            <RecordingAccessPill access={access} className="mt-1.5 w-fit" />
+            {showInlineAccessPill ? (
+              <RecordingAccessPill access={access} className="mt-1.5 w-fit" />
+            ) : null}
             <RecordingSpeakerList
               speakers={speaker}
               className="mt-2 flex flex-col gap-1"

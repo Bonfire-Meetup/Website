@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
 
 import { InfoIcon } from "@/components/shared/Icons";
-import { Skeleton } from "@/components/shared/Skeletons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { logError } from "@/lib/utils/log-client";
 
@@ -15,38 +14,11 @@ import { EmptyState } from "../ui/EmptyState";
 import { EmptyStateMessage } from "./EmptyStateMessage";
 import { GridFiltersBar } from "./GridFiltersBar";
 import { GridView } from "./GridView";
+import { buildLibrarySearchParams, fetchLibraryApiPayload } from "./library-client-utils";
+import { RecordingsGridSkeleton } from "./RecordingLoadingSkeletons";
 import { type LocationFilter, UNRECORDED_EPISODES } from "./RecordingsCatalogTypes";
 
 const MIN_SEARCH_LENGTH = 2;
-
-function GridSkeleton() {
-  return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {Array.from({ length: 8 }).map((_, index) => (
-        <div
-          key={`grid-skeleton-${index}`}
-          className="relative overflow-hidden rounded-[28px] bg-white/90 dark:bg-neutral-950"
-        >
-          <Skeleton className="aspect-video w-full !rounded-none" />
-          <div className="absolute top-2 left-2 h-5 w-20 rounded-full bg-neutral-200/80 dark:bg-white/15" />
-          <div className="absolute top-2 right-2 h-8 w-8 rounded-full bg-neutral-200/80 dark:bg-white/15" />
-          <div className="space-y-3 bg-white/85 px-5 pt-5 pb-6 dark:bg-black/75">
-            <Skeleton className="h-3 w-32" />
-            <Skeleton className="h-4 w-3/4" />
-            <div className="space-y-2">
-              <Skeleton className="h-3 w-2/3" />
-              <Skeleton className="h-3 w-1/2" />
-            </div>
-            <div className="flex gap-2">
-              <Skeleton className="h-5 w-16 rounded-full" />
-              <Skeleton className="h-5 w-12 rounded-full" />
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBasePayload }) {
   const tCommon = useTranslations("common");
@@ -78,31 +50,6 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
     lastCommittedSearchRef.current = payload.searchQuery;
   }, [payload.searchQuery]);
 
-  const buildParams = useCallback(
-    (location: LocationFilter, tag: string, episode: string, search: string) => {
-      const params = new URLSearchParams();
-
-      if (location !== "all") {
-        params.set("location", location);
-      }
-
-      if (tag !== "all") {
-        params.set("tag", tag);
-      }
-
-      if (episode !== "all") {
-        params.set("episode", episode);
-      }
-
-      if (search.trim()) {
-        params.set("q", search.trim());
-      }
-
-      return params;
-    },
-    [],
-  );
-
   const fetchPayload = useCallback(async (params: URLSearchParams) => {
     requestIdRef.current += 1;
     const requestId = requestIdRef.current;
@@ -115,19 +62,17 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
     setIsFiltering(true);
     setRateLimitError(false);
     try {
-      const response = await fetch(`/api/v1/library?${params.toString()}`, {
-        signal: controller.signal,
-      });
-      if (response.status === 429) {
+      const result = await fetchLibraryApiPayload(params, controller.signal);
+      if (result.status === 429) {
         if (requestId === requestIdRef.current && !controller.signal.aborted) {
           setRateLimitError(true);
         }
         return;
       }
-      if (!response.ok) {
+      if (!result.data) {
         return;
       }
-      const data = (await response.json()) as LibraryApiPayload;
+      const data = result.data as LibraryApiPayload;
       if (requestId !== requestIdRef.current || controller.signal.aborted) {
         return;
       }
@@ -159,7 +104,7 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
       const trimmedSearch = search.trim();
       lastCommittedSearchRef.current = trimmedSearch;
 
-      const params = buildParams(location, tag, episode, trimmedSearch);
+      const params = buildLibrarySearchParams(location, tag, episode, trimmedSearch);
 
       const nextUrl = params.toString()
         ? `${PAGE_ROUTES.LIBRARY_BROWSE}?${params.toString()}`
@@ -170,7 +115,7 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
 
       fetchPayload(params);
     },
-    [buildParams, fetchPayload, router],
+    [fetchPayload, router],
   );
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
@@ -269,7 +214,7 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
               onReset={() => updateFilters("all", "all", "all", "")}
             />
           ) : isFiltering ? (
-            <GridSkeleton />
+            <RecordingsGridSkeleton />
           ) : (
             <GridView recordings={recordings} locale={locale} filterKey={filterKey} />
           )}

@@ -2,6 +2,7 @@ import crypto from "crypto";
 
 import { SignJWT, importPKCS8, importSPKI, jwtVerify } from "jose";
 
+import { API_ROUTES } from "@/lib/api/routes";
 import { serverEnv } from "@/lib/config/env";
 import { isAuthTokenActive } from "@/lib/data/auth";
 
@@ -91,7 +92,7 @@ export const getRefreshTokenCookieOptions = (maxAge?: number) => ({
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "strict" as const,
-  path: "/api/v1/auth",
+  path: API_ROUTES.AUTH.BASE,
   maxAge: maxAge ?? refreshTokenTtlSeconds,
 });
 

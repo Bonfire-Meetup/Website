@@ -30,11 +30,10 @@ export function RecordingAccessPill({
       )} ${className}`}
     >
       <span className={ENGAGEMENT_BRANDING.access.classes.chip}>{stateLabel}</span>
-      {isSignInAccess ? (
-        <LogInIcon className="h-2.5 w-2.5" />
-      ) : (
-        <GuildIcon className="h-2.5 w-2.5" />
-      )}
+      <span className="h-3 w-px rounded-full bg-black/20 dark:bg-white/25" />
+      <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-black/15 dark:bg-white/20">
+        {isSignInAccess ? <LogInIcon className="h-2.5 w-2.5" /> : <GuildIcon className="h-2.5 w-2.5" />}
+      </span>
     </div>
   );
 }

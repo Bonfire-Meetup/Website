@@ -79,12 +79,12 @@ export const ENGAGEMENT_BRANDING = {
   access: {
     classes: {
       signInPill:
-        "bg-gradient-to-r from-fuchsia-200/95 via-pink-200/90 to-rose-200/85 text-fuchsia-950 ring-1 ring-fuchsia-100/75 shadow-[0_0_14px_rgba(217,70,239,0.2)] dark:from-fuchsia-400/30 dark:via-pink-400/24 dark:to-rose-400/20 dark:text-fuchsia-100 dark:ring-fuchsia-200/30",
+        "bg-gradient-to-r from-fuchsia-500/90 via-pink-500/84 to-rose-500/78 text-white ring-1 ring-white/45 shadow-[0_10px_24px_-14px_rgba(236,72,153,0.95)] backdrop-blur-md dark:ring-white/35",
       signInNav:
         "bg-fuchsia-100/40 text-fuchsia-600 ring-1 ring-fuchsia-200/45 hover:bg-fuchsia-100/55 hover:text-fuchsia-700 dark:bg-fuchsia-400/8 dark:text-fuchsia-200/90 dark:ring-fuchsia-300/18 dark:hover:bg-fuchsia-400/12 dark:hover:text-fuchsia-100",
       guildPill:
-        "bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 text-neutral-900 ring-1 ring-white/45 shadow-[0_0_20px_rgba(251,146,60,0.35)]",
-      chip: "rounded-full bg-black/20 px-1.5 py-0.5 text-[9px]",
+        "bg-gradient-to-r from-amber-300/95 via-orange-300/92 to-rose-300/88 text-neutral-900 ring-1 ring-white/65 shadow-[0_10px_24px_-14px_rgba(251,146,60,0.85)] backdrop-blur-md",
+      chip: "text-[9px] font-bold tracking-[0.14em]",
       compactBadge:
         "rounded-full bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 text-neutral-900 ring-1 ring-white/45 shadow-lg",
       subtleBadge: "bg-amber-500/15 text-amber-700 dark:bg-amber-300/20 dark:text-amber-200",

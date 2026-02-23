@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { QuestionAnchor } from "@/components/faq/QuestionAnchor";
 import { BoltIcon, FireIcon, GuildIcon } from "@/components/shared/Icons";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -99,7 +100,7 @@ export function FaqPageContent() {
                             if (qKey === "discord") {
                               return (
                                 <a
-                                  href="https://discord.com/invite/8Tqm7vAd4h"
+                                  href={WEBSITE_URLS.SOCIAL.DISCORD}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-brand-600 decoration-brand-500/30 hover:text-brand-500 hover:decoration-brand-500 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300 font-semibold underline underline-offset-4 transition-colors"

@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
 
 import { InfoIcon } from "@/components/shared/Icons";
-import { Skeleton } from "@/components/shared/Skeletons";
 import { Button } from "@/components/ui/Button";
 import { getRecordingAccessState } from "@/lib/recordings/early-access";
 import { getFeaturedCandidates } from "@/lib/recordings/library-featured";
@@ -20,7 +19,9 @@ import { GridFiltersBar } from "./GridFiltersBar";
 import { GridView } from "./GridView";
 import { HiddenGemsRail } from "./HiddenGemsRail";
 import { HotPicksRail } from "./HotPicksRail";
+import { buildLibrarySearchParams, fetchLibraryApiPayload } from "./library-client-utils";
 import { MemberPicksRail } from "./MemberPicksRail";
+import { RecordingsGridSkeleton, RecordingsRailSkeleton } from "./RecordingLoadingSkeletons";
 import { RecordingRail } from "./RecordingRail";
 import {
   type HiddenGemRecording,
@@ -29,67 +30,6 @@ import {
   type MemberPickRecording,
   UNRECORDED_EPISODES,
 } from "./RecordingsCatalogTypes";
-
-function RailSkeleton() {
-  return (
-    <div className="space-y-4">
-      <Skeleton className="h-6 w-40" />
-      <div className="flex gap-5 overflow-hidden pt-1 pb-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div
-            key={`rail-skeleton-${index}`}
-            className="relative w-[75vw] shrink-0 overflow-hidden rounded-[24px] bg-white/90 sm:w-[45vw] lg:w-[280px] xl:w-[300px] dark:bg-neutral-950"
-          >
-            <Skeleton className="aspect-video w-full !rounded-none" />
-            <div className="absolute top-3 left-3 h-5 w-20 rounded-full bg-neutral-200/80 dark:bg-white/15" />
-            <div className="absolute top-3 right-3 h-5 w-14 rounded-full bg-neutral-200/70 dark:bg-white/10" />
-            <div className="space-y-3 bg-white/85 px-4 pt-4 pb-5 dark:bg-black/75">
-              <Skeleton className="h-3 w-32" />
-              <Skeleton className="h-4 w-3/4" />
-              <div className="space-y-2">
-                <Skeleton className="h-3 w-2/3" />
-                <Skeleton className="h-3 w-1/2" />
-              </div>
-              <div className="flex gap-2">
-                <Skeleton className="h-5 w-16 rounded-full" />
-                <Skeleton className="h-5 w-12 rounded-full" />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function GridSkeleton() {
-  return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {Array.from({ length: 8 }).map((_, index) => (
-        <div
-          key={`grid-skeleton-${index}`}
-          className="relative overflow-hidden rounded-[28px] bg-white/90 dark:bg-neutral-950"
-        >
-          <Skeleton className="aspect-video w-full !rounded-none" />
-          <div className="absolute top-2 left-2 h-5 w-20 rounded-full bg-neutral-200/80 dark:bg-white/15" />
-          <div className="absolute top-2 right-2 h-8 w-8 rounded-full bg-neutral-200/80 dark:bg-white/15" />
-          <div className="space-y-3 bg-white/85 px-5 pt-5 pb-6 dark:bg-black/75">
-            <Skeleton className="h-3 w-32" />
-            <Skeleton className="h-4 w-3/4" />
-            <div className="space-y-2">
-              <Skeleton className="h-3 w-2/3" />
-              <Skeleton className="h-3 w-1/2" />
-            </div>
-            <div className="flex gap-2">
-              <Skeleton className="h-5 w-16 rounded-full" />
-              <Skeleton className="h-5 w-12 rounded-full" />
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function BrowseAllButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (
@@ -172,31 +112,6 @@ export function RecordingsCatalog({
     router.prefetch(PAGE_ROUTES.LIBRARY_BROWSE);
   }, [router]);
 
-  const buildParams = useCallback(
-    (location: LocationFilter, tag: string, episode: string, search: string) => {
-      const params = new URLSearchParams();
-
-      if (location !== "all") {
-        params.set("location", location);
-      }
-
-      if (tag !== "all") {
-        params.set("tag", tag);
-      }
-
-      if (episode !== "all") {
-        params.set("episode", episode);
-      }
-
-      if (search.trim()) {
-        params.set("q", search.trim());
-      }
-
-      return params;
-    },
-    [],
-  );
-
   const fetchPayload = useCallback(async (params: URLSearchParams) => {
     requestIdRef.current += 1;
     const requestId = requestIdRef.current;
@@ -208,13 +123,11 @@ export function RecordingsCatalog({
 
     setIsFiltering(true);
     try {
-      const response = await fetch(`/api/v1/library?${params.toString()}`, {
-        signal: controller.signal,
-      });
-      if (!response.ok) {
+      const result = await fetchLibraryApiPayload(params, controller.signal);
+      if (!result.data) {
         return;
       }
-      const data = (await response.json()) as LibraryApiPayload;
+      const data = result.data as LibraryApiPayload;
       if (requestId !== requestIdRef.current || controller.signal.aborted) {
         return;
       }
@@ -256,7 +169,7 @@ export function RecordingsCatalog({
       const nextView = viewOverride ?? (localViewMode === "grid" || hasFilters ? "grid" : "rows");
       lastCommittedSearchRef.current = trimmedSearch;
 
-      const params = buildParams(location, tag, episode, trimmedSearch);
+      const params = buildLibrarySearchParams(location, tag, episode, trimmedSearch);
 
       if (nextView === "grid") {
         const nextUrl = params.toString()
@@ -269,7 +182,7 @@ export function RecordingsCatalog({
       }
 
       setLocalViewMode("rows");
-      const apiParams = buildParams(location, tag, episode, trimmedSearch);
+      const apiParams = buildLibrarySearchParams(location, tag, episode, trimmedSearch);
 
       const nextUrl = params.toString()
         ? `${PAGE_ROUTES.LIBRARY}?${params.toString()}`
@@ -280,7 +193,7 @@ export function RecordingsCatalog({
 
       fetchPayload(apiParams);
     },
-    [buildParams, fetchPayload, localViewMode, router],
+    [fetchPayload, localViewMode, router],
   );
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
@@ -407,7 +320,7 @@ export function RecordingsCatalog({
                 isFiltering ? (
                   <div className="space-y-12">
                     {Array.from({ length: 3 }).map((_, index) => (
-                      <RailSkeleton key={`filter-rail-skeleton-${index}`} />
+                      <RecordingsRailSkeleton key={`filter-rail-skeleton-${index}`} />
                     ))}
                   </div>
                 ) : (
@@ -471,7 +384,7 @@ export function RecordingsCatalog({
                   </div>
                 )
               ) : isFiltering ? (
-                <GridSkeleton />
+                <RecordingsGridSkeleton />
               ) : (
                 <GridView recordings={gridRecordings} locale={locale} filterKey={filterKey} />
               )}

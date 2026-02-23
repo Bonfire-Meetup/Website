@@ -6,6 +6,7 @@ import React from "react";
 
 import { EmailCode } from "@/components/email/EmailCode";
 import { defaultLocale } from "@/i18n/routing";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { LOCALES, type Locale } from "@/lib/i18n/locales";
 
 const localeCache = new Map<string, Record<string, unknown>>();
@@ -83,7 +84,7 @@ const getAccountDeleteMessages = async (locale: Locale) => {
   return accountDelete;
 };
 
-const BASE_URL = process.env.PROD_URL ?? "https://bnf.events";
+const BASE_URL = process.env.PROD_URL ?? WEBSITE_URLS.BASE;
 const LOGO_URL = `${BASE_URL}/assets/brand/RGB_PNG_01_bonfire_black_gradient.png`;
 
 const buildView = (translations: Record<string, string>, baseView: Record<string, string>) => ({

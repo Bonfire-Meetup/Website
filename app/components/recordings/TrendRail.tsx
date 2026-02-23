@@ -1,32 +1,44 @@
+"use client";
+
 import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
 import { Rail } from "./Rail";
 import { RailCard } from "./RailCard";
 import { getRailCardKey } from "./rail-card-utils";
+import { getTrendRailBadge, getTrendRailChrome, type TrendRailKind } from "./trend-rail-config";
 
-export function RecordingRail({
+export function TrendRail<T extends CatalogRecording>({
+  kind,
   title,
   recordings,
   scrollLeftLabel,
   scrollRightLabel,
 }: {
+  kind: TrendRailKind;
   title: string;
-  recordings: CatalogRecording[];
+  recordings: T[];
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
 }) {
+  const chrome = getTrendRailChrome(kind);
+
   return (
     <Rail
       title={title}
       items={recordings}
       renderItem={(recording, index) => (
         <RailCard
-          key={getRailCardKey(title, recording.shortId)}
+          key={getRailCardKey(chrome.keyPrefix, recording.shortId)}
           recording={recording}
           isFirst={index < 2}
+          badge={getTrendRailBadge(kind, recording)}
         />
       )}
-      containerClassName="rounded-[28px] bg-white/60 px-2 pt-2 pb-2 dark:bg-neutral-950/60"
+      headerIcon={chrome.headerIcon}
+      headerAccent={chrome.headerAccent}
+      containerClassName={chrome.containerClassName}
+      gradientFrom={chrome.gradientFrom}
+      gradientTo={chrome.gradientTo}
       scrollLeftLabel={scrollLeftLabel}
       scrollRightLabel={scrollRightLabel}
     />

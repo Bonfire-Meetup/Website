@@ -2,6 +2,7 @@ import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
 import { RailCardServer } from "./RailCardServer";
 import { RailServer } from "./RailServer";
+import { getRailCardKey } from "./rail-card-utils";
 
 interface RecordingRailServerProps {
   title: string;
@@ -28,7 +29,7 @@ export function RecordingRailServer({
     >
       {recordings.map((recording, index) => (
         <RailCardServer
-          key={`${recording.shortId}-${title}`}
+          key={getRailCardKey(title, recording.shortId)}
           recording={recording}
           locale={locale}
           isFirst={index < 2}

@@ -2,8 +2,9 @@ import { render } from "@react-email/render";
 import React from "react";
 
 import { Newsletter, type NewsletterProps } from "@/components/email/Newsletter";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 
-const BASE_URL = process.env.PROD_URL ?? "https://www.bnf.events";
+const BASE_URL = process.env.PROD_URL ?? WEBSITE_URLS.BASE;
 const LOGO_URL = `${BASE_URL}/assets/brand/RGB_PNG_01_bonfire_black_gradient.png`;
 
 export interface RenderNewsletterInput {

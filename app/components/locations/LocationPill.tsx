@@ -9,6 +9,7 @@ interface LocationPillProps {
   ariaLabel?: string;
   icon?: ReactNode;
   size?: "xxs" | "xs" | "sm" | "md";
+  variant?: "city" | "neutral";
   href?: string;
   onClick?: (event: MouseEvent<HTMLAnchorElement | HTMLSpanElement>) => void;
   title?: string;
@@ -20,16 +21,18 @@ export function LocationPill({
   ariaLabel,
   icon,
   size = "sm",
+  variant = "city",
   href,
   onClick,
   title,
 }: LocationPillProps) {
+  const variantClass = variant === "city" ? location.toLowerCase() : "";
   return (
     <Pill
       href={href}
       onClick={onClick}
       size={size}
-      className={`location-badge ${location.toLowerCase()} ${className}`}
+      className={`location-badge ${variantClass} ${className}`}
       aria-label={ariaLabel}
       title={title}
     >

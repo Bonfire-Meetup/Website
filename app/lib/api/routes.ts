@@ -1,6 +1,8 @@
 export const API_ROUTES = {
   AUTH: {
+    BASE: "/api/v1/auth",
     CHALLENGES: "/api/v1/auth/challenges",
+    REVOKE: "/api/v1/auth/revoke",
     TOKEN: "/api/v1/auth/token",
     PASSKEY: {
       REGISTER_OPTIONS: "/api/v1/auth/passkey/register/options",
@@ -11,6 +13,11 @@ export const API_ROUTES = {
   },
   JWKS: "/.well-known/jwks.json",
   CSRF: "/api/v1/csrf",
+  CHECK_IN: {
+    BASE: "/api/v1/check-in",
+    VERIFY: "/api/v1/check-in/verify",
+  },
+  LIBRARY: "/api/v1/library",
   ME: {
     AUTH_ATTEMPTS: "/api/v1/me/auth-attempts",
     BASE: "/api/v1/me",
@@ -23,6 +30,7 @@ export const API_ROUTES = {
   NEWSLETTER: {
     SUBSCRIBE: "/api/v1/newsletter/subscribe",
     SEND: "/api/v1/newsletter/send",
+    UNSUBSCRIBE: "/api/v1/newsletter/unsubscribe",
   },
   VIDEO: {
     BOOSTS: (id: string) => `/api/v1/video/${id}/boosts`,

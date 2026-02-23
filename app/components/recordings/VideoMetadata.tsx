@@ -89,6 +89,7 @@ export function VideoMetadata({
         }
         locationHref={`${PAGE_ROUTES.LIBRARY_BROWSE}?location=${recording.location}`}
         locationSize="sm"
+        locationVariant="neutral"
         locationIcon={<MapPinIcon className="text-brand-500 dark:text-brand-400 h-3.5 w-3.5" />}
         locationClassName="gap-2 bg-white font-semibold shadow-sm ring-1 ring-black/5 transition hover:bg-white/80 dark:bg-white/10 dark:ring-white/10 dark:hover:bg-white/20"
         rightContent={

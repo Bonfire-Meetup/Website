@@ -16,6 +16,8 @@ import {
   Text,
 } from "@react-email/components";
 
+import { WEBSITE_URLS } from "@/lib/config/constants";
+
 import { BRAND, FIRE_GRADIENT, FIRE_GRADIENT_DIAGONAL } from "./brand";
 
 export interface NewsletterProps {
@@ -223,12 +225,12 @@ export function Newsletter({
 
 Newsletter.PreviewProps = {
   appName: "Bonfire",
-  baseUrl: "https://bnf.events",
+  baseUrl: WEBSITE_URLS.BASE,
   lang: "en",
-  logoUrl: "https://bnf.events/assets/brand/RGB_PNG_01_bonfire_black_gradient.png",
+  logoUrl: `${WEBSITE_URLS.BASE}/assets/brand/RGB_PNG_01_bonfire_black_gradient.png`,
   previewText: "AI Agents update, new venues, and community spotlight.",
   subject: "Bonfire Weekly: The Future of AI Agents",
-  unsubscribeUrl: "https://bnf.events/unsubscribe",
+  unsubscribeUrl: `${WEBSITE_URLS.BASE}/newsletter/unsubscribe`,
   sections: [
     {
       id: "hero",
@@ -237,14 +239,14 @@ Newsletter.PreviewProps = {
       imageUrl:
         "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80",
       ctaLabel: "Read Full Article",
-      ctaHref: "https://bnf.events/blog/agents",
+      ctaHref: `${WEBSITE_URLS.BASE}/blog/agents`,
     },
     {
       id: "community",
       title: "Community Spotlight: Prague Python",
       text: "Big shoutout to the Pyvo community for hosting their 100th meetup! It's incredible to see the longevity and passion in the local tech scene. Check out the photo gallery from the event.",
       ctaLabel: "View Gallery",
-      ctaHref: "https://bnf.events/gallery/pyvo-100",
+      ctaHref: `${WEBSITE_URLS.BASE}/gallery/pyvo-100`,
     },
     {
       id: "update",
