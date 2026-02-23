@@ -6,6 +6,7 @@ import { checkBotId } from "botid/server";
 import { cookies, headers } from "next/headers";
 import { z } from "zod";
 
+import { WEBSITE_URLS } from "../config/constants";
 import { serverEnv } from "../config/env";
 import { insertContactSubmission, insertTalkProposal } from "../data/forms";
 import { logError, logInfo, logWarn } from "../utils/log";
@@ -13,7 +14,7 @@ import { logError, logInfo, logWarn } from "../utils/log";
 const RATE_LIMIT_WINDOW_MS = 3600_000;
 const RATE_LIMIT_MAX_CONTACT = 5;
 const RATE_LIMIT_MAX_TALK = 3;
-const TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+const TURNSTILE_VERIFY_URL = WEBSITE_URLS.SERVICES.TURNSTILE_VERIFY;
 const CSRF_COOKIE_NAME = "bnf_csrf";
 
 const rateLimitStore = new Map<string, number[]>();

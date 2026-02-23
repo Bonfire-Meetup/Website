@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { LOCATIONS, WEBSITE_URLS, type LocationValue } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
@@ -67,7 +67,7 @@ export function EventCard({
   const getMapUrl = (address: string) => {
     const encodedAddress = encodeURIComponent(address);
 
-    return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+    return `${WEBSITE_URLS.GOOGLE.MAPS_SEARCH}?api=1&query=${encodedAddress}`;
   };
 
   const platformLinks = [

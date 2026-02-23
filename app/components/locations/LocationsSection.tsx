@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { LOCATIONS } from "@/lib/config/constants";
+import { LOCATIONS, WEBSITE_URLS } from "@/lib/config/constants";
 
 import { SectionHeader } from "../ui/SectionHeader";
 
@@ -36,18 +36,18 @@ export function LocationsSection() {
               {
                 logo: "/partners/flyingrat_light.png",
                 name: "Flying Rat Studio",
-                url: "https://flying-rat.studio",
+                url: WEBSITE_URLS.PARTNERS.FLYING_RAT,
               },
               {
                 logo: "/partners/visiongame_light.png",
                 name: "Visiongame",
-                url: "http://visiongame.cz/",
+                url: WEBSITE_URLS.PARTNERS.VISIONGAME,
               },
               {
                 logo: "/partners/space_break_light.png",
                 logoClassName: "h-7 sm:h-8",
                 name: "Space Break",
-                url: "https://www.instagram.com/spacebreakcoffee/",
+                url: WEBSITE_URLS.PARTNERS.SPACE_BREAK,
               },
             ]}
           />
@@ -61,27 +61,27 @@ export function LocationsSection() {
               {
                 logo: "/partners/flyingrat_light.png",
                 name: "Flying Rat Studio",
-                url: "https://flying-rat.studio",
+                url: WEBSITE_URLS.PARTNERS.FLYING_RAT,
               },
               {
                 logo: "/partners/visiongame_light.png",
                 name: "Visiongame",
-                url: "http://visiongame.cz/",
+                url: WEBSITE_URLS.PARTNERS.VISIONGAME,
               },
               {
                 logo: "/partners/polyperfect_light.png",
                 name: "Polyperfect",
-                url: "https://www.polyperfect.com/",
+                url: WEBSITE_URLS.PARTNERS.POLYPERFECT,
               },
               {
                 logo: "/partners/tomas_bata_university_light.png",
                 name: "Tomas Bata University",
-                url: "https://www.utb.cz/",
+                url: WEBSITE_URLS.PARTNERS.UTB,
               },
               {
                 logo: "/partners/upper_light.png",
                 name: "Upper",
-                url: "https://upper.utb.cz/",
+                url: WEBSITE_URLS.PARTNERS.UPPER_UTB,
               },
             ]}
           />

@@ -3,27 +3,28 @@
 import { useTranslations } from "next-intl";
 
 import { HeartFilledIcon } from "@/components/shared/Icons";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 
 const GIANTS = [
-  { key: "cloud", provider: "Vercel", url: "https://vercel.com" },
-  { key: "database", provider: "Neon Serverless", url: "https://neon.tech" },
+  { key: "cloud", provider: "Vercel", url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.VERCEL },
+  { key: "database", provider: "Neon Serverless", url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.NEON },
   {
     key: "storage",
     provider: "Cloudflare R2",
-    url: "https://www.cloudflare.com/products/r2/",
+    url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.CLOUDFLARE_R2,
   },
-  { key: "emails", provider: "Resend", url: "https://resend.com" },
-  { key: "bugReporting", provider: "Rollbar", url: "https://rollbar.com" },
+  { key: "emails", provider: "Resend", url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.RESEND },
+  { key: "bugReporting", provider: "Rollbar", url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.ROLLBAR },
   {
     key: "botProtection",
     provider: "Cloudflare Turnstile",
-    url: "https://www.cloudflare.com/products/turnstile/",
+    url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.CLOUDFLARE_TURNSTILE,
   },
-  { key: "vcs", provider: "GitHub", url: "https://github.com" },
+  { key: "vcs", provider: "GitHub", url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.GITHUB },
   {
     key: "cicdRunners",
     provider: "Blacksmith",
-    url: "https://www.blacksmith.sh",
+    url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.BLACKSMITH,
   },
 ] as const;
 

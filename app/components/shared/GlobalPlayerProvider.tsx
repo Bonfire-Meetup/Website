@@ -13,6 +13,7 @@ import {
   useState,
 } from "react";
 
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   clearVideo as clearVideoAction,
@@ -542,7 +543,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
             )}
             <iframe
               ref={iframeRef}
-              src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?rel=0&modestbranding=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
+              src={`${WEBSITE_URLS.EMBED.YOUTUBE_NOCOOKIE}/${video.youtubeId}?rel=0&modestbranding=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
               title={video.title}
               referrerPolicy="strict-origin-when-cross-origin"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

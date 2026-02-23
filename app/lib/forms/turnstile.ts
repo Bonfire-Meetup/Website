@@ -1,6 +1,7 @@
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { serverEnv } from "@/lib/config/env";
 
-const TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+const TURNSTILE_VERIFY_URL = WEBSITE_URLS.SERVICES.TURNSTILE_VERIFY;
 
 export const verifyTurnstileToken = async (token: string) => {
   if (!token) {

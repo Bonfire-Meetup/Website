@@ -236,8 +236,7 @@ Newsletter.PreviewProps = {
       id: "hero",
       title: "The Rise of Autonomous Agents",
       text: "We are entering a new era of software where agents don't just chat—they do. In this week's update, we explore how Bonfire is integrating agentic workflows into our core event loop, making organizing seamless.",
-      imageUrl:
-        "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80",
+      imageUrl: WEBSITE_URLS.MEDIA.NEWSLETTER_HERO_PLACEHOLDER,
       ctaLabel: "Read Full Article",
       ctaHref: `${WEBSITE_URLS.BASE}/blog/agents`,
     },

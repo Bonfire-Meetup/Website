@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
 
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { copyToClipboard } from "@/lib/utils/clipboard";
 
 import { CheckIcon, FacebookIcon, LinkIcon, LinkedInIcon, ShareIcon, XIcon } from "../shared/Icons";
@@ -63,9 +64,9 @@ export function ShareMenu({
   }, [showShareMenu]);
 
   const shareLinks = {
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
-    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
-    x: `https://x.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
+    facebook: `${WEBSITE_URLS.SHARE.FACEBOOK}?u=${encodeURIComponent(shareUrl)}`,
+    linkedin: `${WEBSITE_URLS.SHARE.LINKEDIN}?url=${encodeURIComponent(shareUrl)}`,
+    x: `${WEBSITE_URLS.SHARE.X}?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
   };
 
   const handleShare = async () => {

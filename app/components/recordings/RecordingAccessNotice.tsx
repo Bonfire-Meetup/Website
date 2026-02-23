@@ -4,8 +4,9 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
-import { GuildIcon, LogInIcon } from "@/components/shared/Icons";
+import { ArrowRightIcon, GuildIcon, LogInIcon } from "@/components/shared/Icons";
 import { ENGAGEMENT_BRANDING, getAccessPillClasses } from "@/lib/config/engagement-branding";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 interface RecordingAccessNoticeProps {
   thumbnail: string;
@@ -86,9 +87,9 @@ export function RecordingAccessNotice({
       <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/65 to-black/78" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(251,191,36,0.18),transparent_45%)]" />
       <div className="relative mx-auto w-full max-w-lg px-3 sm:max-w-2xl sm:px-6">
-        <div className="relative mx-auto max-w-md overflow-hidden rounded-2xl border border-white/20 bg-black/35 p-3.5 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:max-w-none sm:rounded-3xl sm:p-6">
+        <div className="relative mx-auto max-w-md overflow-hidden rounded-2xl border border-white/20 bg-black/35 px-4 py-4 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:max-w-none sm:rounded-3xl sm:px-6 sm:py-5">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(251,191,36,0.18),transparent_38%)]" />
-          <div className="relative space-y-3.5 sm:space-y-5">
+          <div className="relative flex flex-col gap-4 sm:gap-5">
             <div className="flex flex-col items-start gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
               {requiredMembershipTier === 0 ? (
                 <span
@@ -109,14 +110,14 @@ export function RecordingAccessNotice({
                 {accessLockedTitle}
               </span>
             </div>
-            <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 sm:px-4 sm:py-3">
-              <p className="text-xs leading-relaxed break-words text-neutral-100 sm:text-sm">
-                {requiredAccessLabel}
-              </p>
-            </div>
+
+            <p className="text-sm leading-relaxed break-words text-neutral-100 sm:text-[15px]">
+              {requiredAccessLabel}
+            </p>
+
             {isEarlyAccess && countdownText && (
               <div
-                className={`${ENGAGEMENT_BRANDING.access.classes.countdownPanel} rounded-xl px-3 py-2.5 sm:px-4 sm:py-3`}
+                className={`${ENGAGEMENT_BRANDING.access.classes.countdownPanel} px-3 py-2.5 sm:px-4`}
               >
                 <p className={ENGAGEMENT_BRANDING.access.classes.countdownLabel}>
                   {t("earlyAccessCountdownLabel")}
@@ -126,31 +127,39 @@ export function RecordingAccessNotice({
                 </p>
               </div>
             )}
+
             {isAccessCheckPending ? (
-              <div className="rounded-xl border border-white/10 bg-black/25 px-3 py-3 sm:px-4">
-                <div className="space-y-2">
-                  <p className="text-[11px] font-medium text-neutral-300 sm:text-xs">
-                    {t("loadingAccess")}
-                  </p>
-                  <div className="relative h-[3px] w-full overflow-hidden rounded-full bg-white/18 sm:h-1">
-                    <span className="early-access-loader absolute inset-y-0 -left-1/3 w-1/3 rounded-full" />
-                  </div>
+              <div className="border-t border-white/12 pt-3 sm:pt-4">
+                <p className="text-[11px] font-medium text-neutral-300 sm:text-xs">
+                  {t("loadingAccess")}
+                </p>
+                <div className="relative mt-2 h-[3px] w-full overflow-hidden rounded-full bg-white/18 sm:h-1">
+                  <span className="early-access-loader absolute inset-y-0 -left-1/3 w-1/3 rounded-full" />
                 </div>
               </div>
             ) : !isAuthenticated ? (
-              <div className="flex justify-end">
+              <div className="border-t border-white/12 pt-3 sm:pt-4">
                 <Link
                   href={loginHref}
-                  className="inline-flex items-center rounded-lg bg-white px-3 py-1.5 text-[11px] font-semibold text-neutral-900 transition hover:bg-white/90 sm:px-3.5 sm:text-xs"
+                  className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-semibold text-neutral-900 transition hover:bg-white/90 sm:w-auto sm:text-sm"
                 >
+                  <LogInIcon className="h-4 w-4" />
                   {t("signInToWatch")}
+                  <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </div>
             ) : (
-              <div className="rounded-xl border border-white/10 bg-black/25 px-3 py-3 sm:px-4">
+              <div className="flex flex-col gap-3 border-t border-white/12 pt-3 sm:flex-row sm:items-center sm:justify-between sm:pt-4">
                 <p className="text-[11px] font-medium text-neutral-300 sm:text-xs">
                   {isEarlyAccess ? t("earlyAccessUpgradeHint") : t("membersOnlyUpgradeHint")}
                 </p>
+                <Link
+                  href={PAGE_ROUTES.LIBRARY}
+                  className="group inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-3.5 py-2 text-[11px] font-semibold text-white transition hover:border-white/30 hover:bg-white/10 sm:text-xs"
+                >
+                  {t("backToLibrary")}
+                  <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </Link>
               </div>
             )}
           </div>

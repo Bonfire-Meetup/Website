@@ -10,6 +10,7 @@ import React, {
   useState,
 } from "react";
 
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { clientEnv } from "@/lib/config/env";
 import { logWarn } from "@/lib/utils/log-client";
 
@@ -334,7 +335,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function
   return (
     <div className={className}>
       <Script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+        src={WEBSITE_URLS.SERVICES.TURNSTILE_SCRIPT}
         strategy="afterInteractive"
         onReady={handleScriptReady}
         onError={handleWidgetError}

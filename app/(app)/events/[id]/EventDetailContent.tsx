@@ -8,15 +8,20 @@ import {
   CalendarIcon,
   ClockIcon,
   EventbriteIcon,
+  ExternalLinkIcon,
   FacebookIcon,
   LumaIcon,
   MapPinIcon,
   MicIcon,
   SparklesIcon,
-  ExternalLinkIcon,
 } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
-import { DEFAULT_TIMEZONE, LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import {
+  DEFAULT_TIMEZONE,
+  LOCATIONS,
+  WEBSITE_URLS,
+  type LocationValue,
+} from "@/lib/config/constants";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
 interface Speaker {
@@ -47,7 +52,7 @@ const DEFAULT_EVENT_DURATION_MINUTES = 120;
 
 function getMapUrl(address: string) {
   const encodedAddress = encodeURIComponent(address);
-  return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+  return `${WEBSITE_URLS.GOOGLE.MAPS_SEARCH}?api=1&query=${encodedAddress}`;
 }
 
 function parseEventDateTime(date: string, time: string) {
@@ -125,7 +130,7 @@ function buildGoogleCalendarUrl({
     ctz: DEFAULT_TIMEZONE,
   });
 
-  return `https://www.google.com/calendar/render?${params.toString()}`;
+  return `${WEBSITE_URLS.GOOGLE.CALENDAR_RENDER}?${params.toString()}`;
 }
 
 export function EventDetailContent({

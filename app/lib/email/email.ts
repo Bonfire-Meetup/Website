@@ -1,3 +1,4 @@
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { serverEnv } from "@/lib/config/env";
 import { getEmailFingerprint, logError, logInfo } from "@/lib/utils/log";
 
@@ -29,7 +30,7 @@ interface ResendErrorResponse {
   name?: string;
 }
 
-const resendEndpoint = "https://api.resend.com/emails";
+const resendEndpoint = WEBSITE_URLS.SERVICES.RESEND_EMAILS_API;
 
 const getResendApiKey = () => serverEnv.BNF_RESEND_API_KEY;
 
