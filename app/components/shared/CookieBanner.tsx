@@ -3,27 +3,10 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
+import { CloseIcon, CookieIcon, InfoIcon } from "@/components/shared/Icons";
 import { COOKIE_KEYS, getCookie, setCookie } from "@/lib/storage/keys";
 
 const CONSENT_KEY = COOKIE_KEYS.CONSENT;
-
-function CookieIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5M8.5 8.5v.01M16 15v.01M12 12v.01M11 17v.01M17 12v.01"
-      />
-    </svg>
-  );
-}
 
 export function CookieBanner() {
   const [isVisible, setIsVisible] = useState(false);
@@ -86,38 +69,14 @@ export function CookieBanner() {
                 className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 sm:rounded-md sm:p-1 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
                 aria-label={t("learnMoreAria")}
               >
-                <svg
-                  className="h-4 w-4 sm:h-3.5 sm:w-3.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <InfoIcon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
               </a>
               <button
                 onClick={handleClose}
                 className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 sm:rounded-md sm:p-1 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
                 aria-label={t("closeAria")}
               >
-                <svg
-                  className="h-4 w-4 sm:h-3.5 sm:w-3.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <CloseIcon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
               </button>
             </div>
           </div>

@@ -1,11 +1,16 @@
 import type { RelatedRecording } from "./RecordingPlayer";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { LocationPill } from "../locations/LocationPill";
+import { PlayIcon } from "../shared/Icons";
 
 import { RecordingAccessPill } from "./RecordingAccessPill";
 import { RecordingCompactCard } from "./RecordingCompactCard";
 import { RecordingEpisodePill } from "./RecordingEpisodePill";
+import { RecordingImage } from "./RecordingImage";
 
 interface RelatedVideosSectionProps {
   relatedRecordings: RelatedRecording[];
@@ -27,27 +32,36 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
       </div>
 
       {nextUp ? (
-        <RecordingCompactCard
-          shortId={nextUp.shortId}
-          slug={nextUp.slug}
-          title={nextUp.title}
-          thumbnail={nextUp.thumbnail}
-          speaker={nextUp.speaker}
-          access={nextUp.access}
-          showInlineAccessPill={false}
-          prefetch
-          footer={
-            <div className="flex w-full items-center justify-between gap-2">
-              <span className="text-[10px] font-medium tracking-wider text-neutral-400 uppercase">
-                {t("nextUp")}
-              </span>
-              <div className="flex items-center gap-1.5">
-                <RecordingAccessPill access={nextUp.access} className="px-2 py-0.5 text-[9px]" />
-                <LocationPill location={nextUp.location} size="xxs" className="!text-[9px]" />
-              </div>
+        <Link
+          href={PAGE_ROUTES.WATCH(nextUp.slug, nextUp.shortId)}
+          prefetch={false}
+          className="group flex items-center gap-4 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/80 p-3 shadow-lg shadow-black/5 transition hover:-translate-y-0.5 hover:border-neutral-200 hover:shadow-xl dark:border-white/10 dark:bg-neutral-950 dark:shadow-black/20 dark:hover:border-white/20"
+        >
+          <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-xl bg-neutral-900">
+            <RecordingImage
+              src={nextUp.thumbnail}
+              alt={nextUp.title}
+              className="!aspect-video !w-28 !rounded-xl"
+              imgClassName="group-hover:scale-105"
+              sizes="112px"
+              loading="lazy"
+              fetchPriority="low"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-semibold tracking-[0.2em] text-neutral-700 uppercase shadow-sm">
+              <PlayIcon className="h-3 w-3" />
+              {t("nextUp")}
             </div>
-          }
-        />
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+              {t("nextUp")}
+            </p>
+            <p className="group-hover:text-brand-500 dark:group-hover:text-brand-400 mt-1 line-clamp-2 text-sm font-semibold text-neutral-900 dark:text-white">
+              {nextUp.title}
+            </p>
+          </div>
+        </Link>
       ) : null}
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">

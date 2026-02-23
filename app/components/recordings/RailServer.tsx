@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 
 import { AccentBar } from "../ui/AccentBar";
 
-import { RailScrollWrapper } from "./RailScrollWrapper";
 import { buildRailGradientClasses, DEFAULT_RAIL_CONTAINER_CLASS } from "./rail-style-utils";
+import { RailScrollWrapper } from "./RailScrollWrapper";
 
 interface RailServerProps {
   title: string;

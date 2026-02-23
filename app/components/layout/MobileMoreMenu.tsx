@@ -11,172 +11,25 @@ import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { COOKIE_KEYS, getCookie, setCookie } from "@/lib/storage/keys";
 
 import { useI18n } from "../providers/I18nClientSync";
-import { CameraIcon, CloseIcon, MoonIcon, ShieldIcon, SunIcon, SystemIcon } from "../shared/Icons";
+import {
+  AnimatedMenuIcon,
+  CameraIcon,
+  ClockIcon,
+  CloseIcon,
+  CookieIcon,
+  DocumentTextIcon,
+  GlobeIcon,
+  MailIcon,
+  MoonIcon,
+  MoreHorizontalIcon,
+  NewspaperIcon,
+  QuestionMarkCircleIcon,
+  ShieldIcon,
+  SunIcon,
+  SystemIcon,
+  UsersIcon,
+} from "../shared/Icons";
 import { useTheme } from "../theme/useTheme";
-
-function EnvelopeIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-      />
-    </svg>
-  );
-}
-
-function NewspaperIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h10.5A2.25 2.25 0 0018 18V9.75a2.25 2.25 0 00-2.25-2.25H16.5z"
-      />
-    </svg>
-  );
-}
-
-function UserGroupIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-      />
-    </svg>
-  );
-}
-
-function QuestionMarkCircleIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
-      />
-    </svg>
-  );
-}
-
-function CookieIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5M8.5 8.5v.01M16 15v.01M12 12v.01M11 17v.01M17 12v.01"
-      />
-    </svg>
-  );
-}
-
-function GlobeIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"
-      />
-    </svg>
-  );
-}
-
-function ClockIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
-  );
-}
-
-function DocumentTextIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-      />
-    </svg>
-  );
-}
-
-function NewsletterIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M3.75 6.75A2.25 2.25 0 0 1 6 4.5h12a2.25 2.25 0 0 1 2.25 2.25v10.5A2.25 2.25 0 0 1 18 19.5H6a2.25 2.25 0 0 1-2.25-2.25V6.75Z"
-      />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 8.25 12 13.5l8.25-5.25" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.625h2.25M14.25 8.625h2.25" />
-    </svg>
-  );
-}
 
 interface MenuItem {
   href: string;
@@ -209,15 +62,15 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
 
   const menuItems: MenuItem[] = [
     { href: PAGE_ROUTES.PHOTOS, label: t("photos"), icon: CameraIcon },
-    { href: PAGE_ROUTES.CREW, label: t("crew"), icon: UserGroupIcon },
+    { href: PAGE_ROUTES.CREW, label: t("crew"), icon: UsersIcon },
     { href: PAGE_ROUTES.TIMELINE, label: tFooter("timelineLabel"), icon: ClockIcon },
     {
       href: PAGE_ROUTES.NEWSLETTER_ARCHIVE,
       label: tFooter("newsletterArchiveLabel"),
-      icon: NewsletterIcon,
+      icon: MailIcon,
     },
     { href: PAGE_ROUTES.FAQ, label: t("faq"), icon: QuestionMarkCircleIcon },
-    { href: PAGE_ROUTES.CONTACT_WITH_TYPE("general"), label: t("contact"), icon: EnvelopeIcon },
+    { href: PAGE_ROUTES.CONTACT_WITH_TYPE("general"), label: t("contact"), icon: MailIcon },
     { href: PAGE_ROUTES.PRESS, label: t("press"), icon: NewspaperIcon },
     { href: PAGE_ROUTES.LEGAL, label: "CoC", icon: ShieldIcon },
     { href: PAGE_ROUTES.THIRD_PARTY, label: tFooter("attributionsLabel"), icon: DocumentTextIcon },
@@ -347,11 +200,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
         }}
         aria-label={t("more")}
       >
-        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-          <circle cx="5" cy="12" r="2" />
-          <circle cx="12" cy="12" r="2" />
-          <circle cx="19" cy="12" r="2" />
-        </svg>
+        <MoreHorizontalIcon className="h-5 w-5" />
       </button>
     );
   }
@@ -482,19 +331,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                           className="flex h-7 w-7 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-200/50 hover:text-neutral-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-400"
                           aria-label={tCookie("closeAria")}
                         >
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
+                          <CloseIcon className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
@@ -567,88 +404,10 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
             transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         >
-          <AnimatedMenuIcon isOpen={isOpen} />
+          <AnimatedMenuIcon className="h-5 w-5" isOpen={isOpen} />
         </div>
       </button>
       {sheetContent}
     </>
-  );
-}
-
-function AnimatedMenuIcon({ isOpen }: { isOpen: boolean }) {
-  return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-      <circle
-        cx="12"
-        cy="12"
-        r="2"
-        style={{
-          transformOrigin: "center",
-          transform: isOpen
-            ? "translateX(-7px) translateY(-7px) rotate(45deg) scaleY(3)"
-            : "translateX(-7px) translateY(0) rotate(0deg) scaleY(1)",
-          transition: "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1)",
-        }}
-      />
-      <circle
-        cx="12"
-        cy="12"
-        r="2"
-        style={{
-          transformOrigin: "center",
-          transform: isOpen
-            ? "translateX(7px) translateY(7px) rotate(45deg) scaleY(3)"
-            : "translateX(7px) translateY(0) rotate(0deg) scaleY(1)",
-          transition: "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 50ms",
-        }}
-      />
-      <circle
-        cx="12"
-        cy="12"
-        r="2"
-        style={{
-          transformOrigin: "center",
-          transform: isOpen ? "scale(0)" : "scale(1)",
-          opacity: isOpen ? 0 : 1,
-          transition: "transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 200ms ease-out",
-        }}
-      />
-      <line
-        x1="12"
-        y1="12"
-        x2="12"
-        y2="12"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="round"
-        style={{
-          transformOrigin: "center",
-          transform: isOpen
-            ? "translateX(-7px) translateY(-7px) rotate(-45deg) scaleY(1.5)"
-            : "scale(0)",
-          opacity: isOpen ? 1 : 0,
-          transition:
-            "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 100ms, opacity 300ms ease-out 100ms",
-        }}
-      />
-      <line
-        x1="12"
-        y1="12"
-        x2="12"
-        y2="12"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="round"
-        style={{
-          transformOrigin: "center",
-          transform: isOpen
-            ? "translateX(7px) translateY(7px) rotate(-45deg) scaleY(1.5)"
-            : "scale(0)",
-          opacity: isOpen ? 1 : 0,
-          transition:
-            "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms, opacity 300ms ease-out 150ms",
-        }}
-      />
-    </svg>
   );
 }

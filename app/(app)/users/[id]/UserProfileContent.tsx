@@ -3,7 +3,15 @@
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useState } from "react";
 
-import { BoltIcon } from "@/components/shared/Icons";
+import {
+  BoltIcon,
+  CalendarIcon,
+  CheckIcon,
+  FireIcon,
+  HashIcon,
+  LockClosedIcon,
+  StarFilledIcon,
+} from "@/components/shared/Icons";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { copyToClipboard } from "@/lib/utils/clipboard";
@@ -132,9 +140,7 @@ export function UserProfileContent({
                     <div className="relative">
                       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 blur-md" />
                       <div className="relative flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 px-4 py-1.5 text-xs font-black tracking-widest text-neutral-950 uppercase shadow-2xl">
-                        <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                        </svg>
+                        <StarFilledIcon className="h-3.5 w-3.5" />
                         <span>{t("memberBadge")}</span>
                       </div>
                     </div>
@@ -150,29 +156,9 @@ export function UserProfileContent({
                     className="inline-flex cursor-pointer items-center gap-1.5 font-mono text-xs font-medium tracking-wide text-neutral-500 transition-colors hover:text-neutral-700 dark:hover:text-neutral-300"
                   >
                     {copied ? (
-                      <svg
-                        className="h-3 w-3 shrink-0 -translate-y-px text-emerald-500 dark:text-emerald-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
+                      <CheckIcon className="h-3 w-3 shrink-0 -translate-y-px text-emerald-500 dark:text-emerald-400" />
                     ) : (
-                      <svg
-                        className="h-3 w-3 shrink-0 -translate-y-px"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
-                        />
-                      </svg>
+                      <HashIcon className="h-3 w-3 shrink-0 -translate-y-px" />
                     )}
                     <span className={copied ? "text-emerald-500 dark:text-emerald-400" : ""}>
                       {user.publicId}
@@ -201,19 +187,7 @@ export function UserProfileContent({
 
                 <div className="mt-6 w-full max-w-md">
                   <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/80 px-3 py-1.5 text-xs text-neutral-600 dark:border-white/10 dark:bg-neutral-900/70 dark:text-neutral-300">
-                    <svg
-                      className="h-3.5 w-3.5 text-neutral-400 dark:text-neutral-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.75}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
-                      />
-                    </svg>
+                    <CalendarIcon className="h-3.5 w-3.5 text-neutral-400 dark:text-neutral-500" />
                     <span>
                       {t("memberSince")}{" "}
                       <span className="font-semibold text-neutral-800 dark:text-neutral-100">
@@ -266,19 +240,7 @@ export function UserProfileContent({
                       </div>
                       {user.boostsThisMonth > 0 && (
                         <div className="inline-flex items-center gap-1.5 rounded-full border border-orange-500/20 bg-orange-500/10 px-2.5 py-1 text-[10px] font-semibold text-orange-700 dark:border-orange-500/30 dark:bg-orange-500/15 dark:text-orange-300">
-                          <svg
-                            className="h-3 w-3 shrink-0"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
-                            />
-                          </svg>
+                          <CalendarIcon className="h-3 w-3 shrink-0" />
                           <span>
                             <span className="font-bold">{user.boostsThisMonth}</span>{" "}
                             {t("activity.boostsThisMonthLabel", { count: user.boostsThisMonth })}
@@ -287,24 +249,7 @@ export function UserProfileContent({
                       )}
                       {user.boostStreak > 0 && (
                         <div className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 px-2.5 py-1 text-[10px] font-semibold text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/15 dark:text-rose-300">
-                          <svg
-                            className="h-3 w-3 shrink-0"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"
-                            />
-                          </svg>
+                          <FireIcon className="h-3 w-3 shrink-0" />
                           <span>
                             <span className="font-bold">{user.boostStreak}</span>{" "}
                             {t("activity.boostStreakLabel", { count: user.boostStreak })}
@@ -360,19 +305,7 @@ export function PrivateProfileContent() {
           <div className="relative mx-auto mb-8 h-24 w-24">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-neutral-300 to-neutral-400 opacity-30 blur-xl dark:from-neutral-700 dark:to-neutral-800 dark:opacity-50" />
             <div className="relative flex h-full w-full items-center justify-center rounded-2xl border border-neutral-200 bg-neutral-100/90 dark:border-neutral-800 dark:bg-neutral-900/90">
-              <svg
-                className="h-12 w-12 text-neutral-400 dark:text-neutral-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={1.5}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-                />
-              </svg>
+              <LockClosedIcon className="h-12 w-12 text-neutral-400 dark:text-neutral-600" />
             </div>
           </div>
 

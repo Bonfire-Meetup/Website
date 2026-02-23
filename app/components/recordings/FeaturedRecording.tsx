@@ -1,10 +1,10 @@
 "use client";
 
-import { FeaturedCarouselWrapper } from "./FeaturedCarouselWrapper";
 import {
   buildFeaturedCandidateContents,
   buildFeaturedImageElements,
 } from "./featured-carousel-builders";
+import { FeaturedCarouselWrapper } from "./FeaturedCarouselWrapper";
 import { type CatalogRecording } from "./RecordingsCatalogTypes";
 
 export function FeaturedRecording({

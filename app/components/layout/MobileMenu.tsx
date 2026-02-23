@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { CloseIcon, MenuIcon } from "../shared/Icons";
 import { useBodyScrollLock } from "../shared/useBodyScrollLock";
 import { LanguageToggle } from "../theme/LanguageToggle";
 import { ThemeToggle } from "../theme/ThemeToggle";
@@ -117,15 +118,7 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-neutral-700 hover:bg-black/5 dark:text-neutral-300 dark:hover:bg-white/10"
                   aria-label={closeLabel}
                 >
-                  <svg
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <CloseIcon className="h-5 w-5" />
                 </button>
               </div>
               <nav className="px-3 py-3">
@@ -169,15 +162,7 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
         className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-700 hover:bg-black/5 md:hidden dark:text-neutral-300 dark:hover:bg-white/10"
         aria-label={menuLabel}
       >
-        <svg
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
+        <MenuIcon className="h-6 w-6" />
       </button>
       {menuContent}
     </>

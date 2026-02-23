@@ -26,7 +26,7 @@ import {
   setVideo as setVideoAction,
 } from "@/lib/redux/slices/playerSlice";
 
-import { CloseIcon } from "./Icons";
+import { ChevronLeftIcon, CloseIcon } from "./Icons";
 
 export const ENABLE_GLOBAL_MINI_PLAYER = true;
 
@@ -504,15 +504,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
                   className="flex-shrink-0 rounded-full p-1.5 text-neutral-500 transition-colors hover:bg-black/5 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-white/10 dark:hover:text-neutral-200"
                   title={t("returnToPlayer")}
                 >
-                  <svg
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                  </svg>
+                  <ChevronLeftIcon className="h-5 w-5" />
                 </Link>
               </div>
             </div>

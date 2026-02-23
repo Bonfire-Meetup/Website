@@ -1,7 +1,7 @@
 import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
-import { RecordingDetailedCard } from "./RecordingDetailedCard";
 import { buildRailDetailedCardProps, type RailCardBadge } from "./rail-card-utils";
+import { RecordingDetailedCard } from "./RecordingDetailedCard";
 
 interface RailCardServerProps {
   recording: CatalogRecording;

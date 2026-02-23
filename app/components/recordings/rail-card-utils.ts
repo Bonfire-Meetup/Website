@@ -1,6 +1,5 @@
-import type { ReactNode } from "react";
-
 import type { CatalogRecording } from "./RecordingsCatalogTypes";
+import type { ReactNode } from "react";
 
 export interface RailCardBadge {
   icon: ReactNode;

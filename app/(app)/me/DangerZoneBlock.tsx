@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/Button";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface DangerZoneBlockProps {
   status: string | null;
@@ -119,23 +120,7 @@ export function DangerZoneBlock({
                   className="rounded-xl bg-rose-600 text-white hover:bg-rose-700"
                 >
                   <span className="flex items-center gap-2 whitespace-nowrap">
-                    {loading && (
-                      <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                        />
-                        <path
-                          className="opacity-70"
-                          fill="currentColor"
-                          d="M20 12a8 8 0 0 1-8 8v-3a5 5 0 0 0 5-5h3z"
-                        />
-                      </svg>
-                    )}
+                    {loading && <LoadingSpinner size="sm" />}
                     {loading ? t("confirming") : t("confirm")}
                   </span>
                 </Button>
@@ -160,23 +145,7 @@ export function DangerZoneBlock({
                   className="rounded-xl bg-rose-600 text-white hover:bg-rose-700"
                 >
                   <span className="flex items-center gap-2 whitespace-nowrap">
-                    {loading && (
-                      <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                        />
-                        <path
-                          className="opacity-70"
-                          fill="currentColor"
-                          d="M20 12a8 8 0 0 1-8 8v-3a5 5 0 0 0 5-5h3z"
-                        />
-                      </svg>
-                    )}
+                    {loading && <LoadingSpinner size="sm" />}
                     {loading ? t("sendingCode") : t("sendCode")}
                   </span>
                 </Button>

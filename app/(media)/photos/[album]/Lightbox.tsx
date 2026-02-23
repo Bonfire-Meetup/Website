@@ -11,6 +11,12 @@ import {
 } from "react";
 
 import { ShareMenu } from "@/components/recordings/ShareMenu";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CloseIcon,
+  DownloadIcon,
+} from "@/components/shared/Icons";
 import { useBodyScrollLock } from "@/components/shared/useBodyScrollLock";
 
 interface LightboxProps {
@@ -536,15 +542,7 @@ export function Lightbox({
             className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20 disabled:opacity-50"
             aria-label={closeLabel}
           >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <CloseIcon className="h-5 w-5" />
           </button>
           <div className="absolute left-1/2 flex h-9 min-w-[64px] -translate-x-1/2 items-center justify-center rounded-full bg-white/10 px-3 text-xs font-medium text-white/80 tabular-nums backdrop-blur-sm">
             {index + 1} / {images.length}
@@ -563,19 +561,7 @@ export function Lightbox({
               className="flex h-full cursor-pointer items-center justify-center px-3 text-white/90 transition-all hover:bg-white/20 hover:text-white"
               aria-label={downloadLabel}
             >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
+              <DownloadIcon className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -586,15 +572,7 @@ export function Lightbox({
           className="absolute top-6 right-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 disabled:opacity-50 sm:flex"
           aria-label="Close"
         >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <CloseIcon className="h-6 w-6" />
         </button>
 
         <div className="absolute top-6 left-6 z-30 hidden sm:flex">
@@ -612,19 +590,7 @@ export function Lightbox({
               className="flex h-full cursor-pointer items-center justify-center px-4 text-white/90 transition-all hover:bg-white/20 hover:text-white"
               aria-label={downloadLabel}
             >
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
+              <DownloadIcon className="h-5 w-5" />
             </button>
           </div>
         </div>
@@ -639,15 +605,7 @@ export function Lightbox({
             className="absolute left-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
             aria-label={previousLabel}
           >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
+            <ChevronLeftIcon className="h-6 w-6" />
           </button>
         )}
 
@@ -657,15 +615,7 @@ export function Lightbox({
             className="absolute right-6 z-30 hidden h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex"
             aria-label="Next"
           >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
+            <ChevronRightIcon className="h-6 w-6" />
           </button>
         )}
 

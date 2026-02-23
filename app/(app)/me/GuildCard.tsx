@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 
-import { GuildIcon } from "@/components/shared/Icons";
+import { CheckIcon, GuildIcon } from "@/components/shared/Icons";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 
 export function GuildCard() {
@@ -33,17 +33,7 @@ export function GuildCard() {
                 key={perk}
                 className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400"
               >
-                <svg
-                  className={guild.classes.checkmark}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
+                <CheckIcon className={guild.classes.checkmark} />
                 <span>{perk}</span>
               </li>
             ))}

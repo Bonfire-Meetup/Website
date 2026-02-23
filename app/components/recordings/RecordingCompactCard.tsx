@@ -21,6 +21,7 @@ interface RecordingCompactCardProps {
   className?: string;
   staggerIndex?: number;
   showInlineAccessPill?: boolean;
+  size?: "md" | "sm";
 }
 
 export function RecordingCompactCard({
@@ -36,8 +37,10 @@ export function RecordingCompactCard({
   className,
   staggerIndex,
   showInlineAccessPill = true,
+  size = "md",
 }: RecordingCompactCardProps) {
   const staggerClass = typeof staggerIndex === "number" ? `stagger-${(staggerIndex % 8) + 1}` : "";
+  const isSmall = size === "sm";
 
   return (
     <RecordingCardShell
@@ -48,7 +51,9 @@ export function RecordingCompactCard({
         className ??
         `group recording-card-enter ${
           staggerClass ? `${staggerClass} opacity-0` : ""
-        } relative flex flex-col overflow-hidden rounded-[24px] bg-white/90 text-neutral-900 shadow-xl ring-1 shadow-black/5 ring-black/5 transition-all hover:-translate-y-1 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10`
+        } relative flex flex-col overflow-hidden ${
+          isSmall ? "rounded-[20px]" : "rounded-[24px]"
+        } bg-white/90 text-neutral-900 shadow-xl ring-1 shadow-black/5 ring-black/5 transition-all hover:-translate-y-1 dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10`
       }
       imageClassName="relative aspect-video w-full overflow-hidden"
       image={
@@ -65,9 +70,13 @@ export function RecordingCompactCard({
         </>
       }
       body={
-        <div className="flex flex-1 flex-col p-4">
+        <div className={`flex flex-1 flex-col ${isSmall ? "p-3.5" : "p-4"}`}>
           <div className="flex flex-1 flex-col justify-start">
-            <h3 className="group-hover:text-brand-500 dark:group-hover:text-brand-400 line-clamp-2 text-sm leading-snug font-semibold text-neutral-900 transition-colors dark:text-white">
+            <h3
+              className={`group-hover:text-brand-500 dark:group-hover:text-brand-400 line-clamp-2 ${
+                isSmall ? "text-[13px]" : "text-sm"
+              } leading-snug font-semibold text-neutral-900 transition-colors dark:text-white`}
+            >
               {title}
             </h3>
             {showInlineAccessPill ? (
@@ -78,11 +87,15 @@ export function RecordingCompactCard({
               className="mt-2 flex flex-col gap-1"
               itemClassName="flex items-center gap-2"
               dotClassName="bg-brand-500 dark:bg-brand-400 h-1 w-1 shrink-0 rounded-full shadow-[0_0_4px_var(--color-brand-glow-light)]"
-              textClassName="truncate text-[11px] font-medium text-neutral-500 dark:text-neutral-400"
+              textClassName={`truncate ${isSmall ? "text-[10px]" : "text-[11px]"} font-medium text-neutral-500 dark:text-neutral-400`}
             />
           </div>
           {footer ? (
-            <div className="mt-4 flex items-center justify-between border-t border-neutral-100 pt-3 dark:border-white/5">
+            <div
+              className={`flex items-center justify-between border-t border-neutral-100 dark:border-white/5 ${
+                isSmall ? "mt-3 pt-2.5" : "mt-4 pt-3"
+              }`}
+            >
               {footer}
             </div>
           ) : null}

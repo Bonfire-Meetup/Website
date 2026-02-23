@@ -88,7 +88,9 @@ export function RecordingPlayer({
         ? MEMBERSHIP_TIER_LABELS[requiredMembershipTier]
         : "";
   const accessLockedTitle = isEarlyAccess
-    ? t("earlyAccessLockedTitle")
+    ? requiredMembershipTier === 0
+      ? t("earlyAccessLockedTitleLogin")
+      : t("earlyAccessLockedTitle")
     : t("membersOnlyLockedTitle");
   const loginHref = `${PAGE_ROUTES.LOGIN}?returnPath=${encodeURIComponent(
     PAGE_ROUTES.WATCH(recording.slug, recording.shortId),

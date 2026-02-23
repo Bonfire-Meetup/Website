@@ -3,7 +3,15 @@
 import { useTranslations } from "next-intl";
 import { type CSSProperties, useEffect, useState } from "react";
 
-import { BoltIcon, FilmIcon, GuildIcon, SparklesIcon, UsersIcon } from "@/components/shared/Icons";
+import {
+  BoltIcon,
+  CheckIcon,
+  FilmIcon,
+  GuildIcon,
+  SparklesIcon,
+  StarFilledIcon,
+  UsersIcon,
+} from "@/components/shared/Icons";
 
 function GuildEmber({ style, visible }: { style: CSSProperties; visible: boolean }) {
   return (
@@ -27,30 +35,6 @@ function generateGuildEmbers() {
     opacity: Math.random() * 0.4 + 0.55,
     width: `${Math.random() * 6 + 3}px`,
   }));
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
-
-function StarIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-    </svg>
-  );
 }
 
 function TierCard({
@@ -87,7 +71,7 @@ function TierCard({
               <span
                 className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-widest uppercase ${tier.badge}`}
               >
-                <StarIcon className="h-2.5 w-2.5" />
+                <StarFilledIcon className="h-2.5 w-2.5" />
                 {tier.badgeText}
               </span>
             </div>

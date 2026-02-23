@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { GuildIcon } from "@/components/shared/Icons";
+import { GuildIcon, MicIcon, UsersIcon } from "@/components/shared/Icons";
 import {
   hasMembership,
   MEMBERSHIP_TIER_LABELS,
@@ -22,11 +22,7 @@ const roleConfig = {
       "from-blue-500 via-indigo-500 to-violet-500 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400",
     glow: "rgba(99, 102, 241, 0.4)",
     iconColor: "text-indigo-500 dark:text-indigo-400",
-    icon: (
-      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-      </svg>
-    ),
+    icon: <UsersIcon className="h-4 w-4" />,
   },
   [USER_ROLES.SPEAKER]: {
     labelKey: "speaker" as const,
@@ -34,15 +30,7 @@ const roleConfig = {
       "from-orange-500 via-rose-500 to-pink-500 dark:from-orange-400 dark:via-rose-400 dark:to-pink-400",
     glow: "rgba(251, 113, 133, 0.4)",
     iconColor: "text-rose-500 dark:text-rose-400",
-    icon: (
-      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-        <path
-          fillRule="evenodd"
-          d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
-          clipRule="evenodd"
-        />
-      </svg>
-    ),
+    icon: <MicIcon className="h-4 w-4" />,
   },
 } as const;
 

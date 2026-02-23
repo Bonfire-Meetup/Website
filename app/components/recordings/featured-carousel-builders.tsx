@@ -1,8 +1,8 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 
-import { type CatalogRecording } from "./RecordingsCatalogTypes";
 import { RecordingFeaturedContent } from "./RecordingFeaturedContent";
+import { type CatalogRecording } from "./RecordingsCatalogTypes";
 
 export function buildFeaturedImageElements(candidates: CatalogRecording[]): ReactNode {
   return (

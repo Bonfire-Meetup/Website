@@ -7,7 +7,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { AuthControls } from "@/components/auth/AuthControls";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
-import { FingerprintIcon } from "@/components/shared/Icons";
+import {
+  BoltIcon,
+  BookmarkIcon,
+  CheckIcon,
+  ClockIcon,
+  FingerprintIcon,
+  InfoIcon,
+  TicketIcon,
+  XIcon,
+} from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Link } from "@/i18n/navigation";
@@ -30,7 +39,7 @@ interface HintConfig {
   borderClass: string;
   bgClass: string;
   textClass: string;
-  icon: React.ReactNode;
+  icon: React.ComponentType<{ className?: string }>;
   translationKey: string;
 }
 
@@ -39,38 +48,28 @@ const HINT_CONFIGS: Record<LoginReason, HintConfig> = {
     borderClass: "border-blue-200/70 dark:border-blue-500/20",
     bgClass: "bg-blue-50 dark:bg-blue-500/10",
     textClass: "text-blue-700 dark:text-blue-200",
-    icon: (
-      <>
-        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-      </>
-    ),
+    icon: TicketIcon,
     translationKey: "rsvpHint",
   },
   [LOGIN_REASON.SESSION_EXPIRED]: {
     borderClass: "border-amber-200/70 dark:border-amber-500/20",
     bgClass: "bg-amber-50 dark:bg-amber-500/10",
     textClass: "text-amber-700 dark:text-amber-200",
-    icon: (
-      <>
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
-      </>
-    ),
+    icon: ClockIcon,
     translationKey: "sessionExpiredHint",
   },
   [LOGIN_REASON.VIDEO_BOOST]: {
     borderClass: "border-emerald-200/70 dark:border-emerald-500/20",
     bgClass: "bg-emerald-50 dark:bg-emerald-500/10",
     textClass: "text-emerald-700 dark:text-emerald-200",
-    icon: <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />,
+    icon: BoltIcon,
     translationKey: "boostHint",
   },
   [LOGIN_REASON.WATCH_LATER]: {
     borderClass: "border-violet-200/70 dark:border-violet-500/20",
     bgClass: "bg-violet-50 dark:bg-violet-500/10",
     textClass: "text-violet-700 dark:text-violet-200",
-    icon: <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />,
+    icon: BookmarkIcon,
     translationKey: "watchLaterHint",
   },
 };
@@ -92,22 +91,13 @@ function ReasonHintBanner({
   if (!config) {
     return null;
   }
+  const Icon = config.icon;
 
   return (
     <div
       className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm ${config.borderClass} ${config.bgClass} ${config.textClass} ${className}`}
     >
-      <svg
-        className="h-4 w-4 shrink-0"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        {config.icon}
-      </svg>
+      <Icon className="h-4 w-4 shrink-0" />
       <span>{t(config.translationKey)}</span>
     </div>
   );
@@ -513,19 +503,7 @@ export function LoginClient() {
 
               {step === "request" && (
                 <div className="mb-4 inline-flex items-start gap-2.5 rounded-xl border border-blue-200/70 bg-blue-50/80 px-4 py-3 text-sm text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-200">
-                  <svg
-                    className="mt-0.5 h-4 w-4 shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 16v-4" />
-                    <path d="M12 8h.01" />
-                  </svg>
+                  <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" />
                   <span>{t("noRegistrationHint")}</span>
                 </div>
               )}
@@ -592,36 +570,14 @@ export function LoginClient() {
 
                 {status && (
                   <div className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
-                    <svg
-                      className="mt-0.5 h-5 w-5 shrink-0"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
+                    <CheckIcon className="mt-0.5 h-5 w-5 shrink-0" />
                     <span>{status}</span>
                   </div>
                 )}
 
                 {error && (
                   <div className="flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
-                    <svg
-                      className="mt-0.5 h-5 w-5 shrink-0"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="m15 9-6 6" />
-                      <path d="m9 9 6 6" />
-                    </svg>
+                    <XIcon className="mt-0.5 h-5 w-5 shrink-0" />
                     <span>{error}</span>
                   </div>
                 )}

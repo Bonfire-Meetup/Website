@@ -3,6 +3,8 @@
 import type { WizardStep } from "./types";
 import { useTranslations } from "next-intl";
 
+import { CheckIcon } from "@/components/shared/Icons";
+
 interface WizardProgressProps {
   currentStep: WizardStep;
   steps: WizardStep[];
@@ -37,18 +39,7 @@ export function WizardProgress({ currentStep, steps }: WizardProgressProps) {
                       : "bg-neutral-200 text-neutral-600 dark:bg-neutral-700 dark:text-neutral-400"
                 }`}
               >
-                {isCompleted ? (
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                ) : (
-                  index + 1
-                )}
+                {isCompleted ? <CheckIcon className="h-5 w-5" /> : index + 1}
               </div>
               <span
                 className={`ml-2 hidden text-sm font-medium sm:block ${

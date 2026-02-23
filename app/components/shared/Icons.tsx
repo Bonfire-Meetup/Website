@@ -201,6 +201,18 @@ export function CameraIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function CheckCircleIcon({ className, ...props }: IconProps) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 20 20" {...props}>
+      <path
+        clipRule="evenodd"
+        d="M10 20c5.523 0 10-4.477 10-10S15.523 0 10 0 0 4.477 0 10s4.477 10 10 10Zm5.884-11.616a1.25 1.25 0 0 0-1.768-1.768L9 11.732 6.884 9.616a1.25 1.25 0 1 0-1.768 1.768l3 3a1.25 1.25 0 0 0 1.768 0l6-6Z"
+        fillRule="evenodd"
+      />
+    </svg>
+  );
+}
+
 export function CheckIcon({ className, ...props }: IconProps) {
   return (
     <svg
@@ -280,6 +292,25 @@ export function CinemaIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function CookieIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5M8.5 8.5v.01M16 15v.01M12 12v.01M11 17v.01M17 12v.01"
+      />
+    </svg>
+  );
+}
+
 export function ClockIcon({ className, ...props }: IconProps) {
   return (
     <svg
@@ -311,6 +342,25 @@ export function EventbriteIcon({ className, ...props }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" {...props}>
       <path d="M18.157 13.463c-.751-.062-1.614-.062-2.477-.062-.863 0-1.726 0-2.477.062-.751.062-1.502.185-2.14.37-.639.185-1.165.432-1.578.741-.413.309-.751.679-1.014 1.11a4.44 4.44 0 00-.526 1.358c-.112.494-.168 1.049-.168 1.666 0 .617.056 1.172.168 1.666.112.494.28.926.526 1.358.263.432.601.802 1.014 1.11.413.309.939.556 1.578.741.639.185 1.39.309 2.14.37.751.062 1.614.062 2.477.062.863 0 1.726 0 2.477-.062.751-.062 1.502-.185 2.14-.37.639-.185 1.165-.432 1.578-.741.413-.309.751-.679 1.014-1.11.246-.432.414-.864.526-1.358.112-.494.168-1.049.168-1.666 0-.617-.056-1.172-.168-1.666a4.44 4.44 0 00-.526-1.358c-.263-.432-.601-.802-1.014-1.11-.413-.309-.939-.556-1.578-.741-.638-.185-1.389-.309-2.14-.37zm-5.346 5.39c-.863 0-1.614-.309-2.252-.926-.639-.617-.958-1.358-.958-2.222 0-.864.319-1.605.958-2.222.638-.617 1.389-.926 2.252-.926.862 0 1.614.309 2.252.926.639.617.958 1.358.958 2.222 0 .864-.319 1.605-.958 2.222-.638.617-1.39.926-2.252.926zM12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" />
+    </svg>
+  );
+}
+
+export function DocumentTextIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+      />
     </svg>
   );
 }
@@ -399,6 +449,59 @@ export function FrownIcon({ className, ...props }: IconProps) {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M15 16.5a3.75 3.75 0 0 0-6 0m1.125-6.75h.008v.008h-.008V9.75Zm3.75 0h.008v.008h-.008V9.75ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+      />
+    </svg>
+  );
+}
+
+export function GlobeIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
+      />
+    </svg>
+  );
+}
+
+export function HashIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      {...props}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 20 11 4m2 16 4-16M6 9h14M4 15h14" />
+    </svg>
+  );
+}
+
+export function HomeIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
       />
     </svg>
   );
@@ -520,6 +623,21 @@ export function MapPinIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function MenuIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      {...props}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  );
+}
+
 export function MicIcon({ className, ...props }: IconProps) {
   return (
     <svg
@@ -534,6 +652,94 @@ export function MicIcon({ className, ...props }: IconProps) {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
+      />
+    </svg>
+  );
+}
+
+export function MoreHorizontalIcon({ className, ...props }: IconProps) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24" {...props}>
+      <circle cx="5" cy="12" r="2" />
+      <circle cx="12" cy="12" r="2" />
+      <circle cx="19" cy="12" r="2" />
+    </svg>
+  );
+}
+
+export function AnimatedMenuIcon({ className, isOpen, ...props }: IconProps & { isOpen: boolean }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <circle
+        cx="12"
+        cy="12"
+        r="2"
+        style={{
+          transformOrigin: "center",
+          transform: isOpen
+            ? "translateX(-7px) translateY(-7px) rotate(45deg) scaleY(3)"
+            : "translateX(-7px) translateY(0) rotate(0deg) scaleY(1)",
+          transition: "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+        }}
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="2"
+        style={{
+          transformOrigin: "center",
+          transform: isOpen
+            ? "translateX(7px) translateY(7px) rotate(45deg) scaleY(3)"
+            : "translateX(7px) translateY(0) rotate(0deg) scaleY(1)",
+          transition: "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 50ms",
+        }}
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="2"
+        style={{
+          transformOrigin: "center",
+          transform: isOpen ? "scale(0)" : "scale(1)",
+          opacity: isOpen ? 0 : 1,
+          transition: "transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 200ms ease-out",
+        }}
+      />
+      <line
+        x1="12"
+        y1="12"
+        x2="12"
+        y2="12"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+        style={{
+          transformOrigin: "center",
+          transform: isOpen
+            ? "translateX(-7px) translateY(-7px) rotate(-45deg) scaleY(1.5)"
+            : "scale(0)",
+          opacity: isOpen ? 1 : 0,
+          transition:
+            "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 100ms, opacity 300ms ease-out 100ms",
+        }}
+      />
+      <line
+        x1="12"
+        y1="12"
+        x2="12"
+        y2="12"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+        style={{
+          transformOrigin: "center",
+          transform: isOpen
+            ? "translateX(7px) translateY(7px) rotate(-45deg) scaleY(1.5)"
+            : "scale(0)",
+          opacity: isOpen ? 1 : 0,
+          transition:
+            "transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms, opacity 300ms ease-out 150ms",
+        }}
       />
     </svg>
   );
@@ -558,6 +764,25 @@ export function MoonIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function NewspaperIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h10.5A2.25 2.25 0 0 0 18 18V9.75a2.25 2.25 0 0 0-2.25-2.25H16.5Z"
+      />
+    </svg>
+  );
+}
+
 export function PlayIcon({ className, ...props }: IconProps) {
   return (
     <svg
@@ -577,6 +802,25 @@ export function PlayIcon({ className, ...props }: IconProps) {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z"
+      />
+    </svg>
+  );
+}
+
+export function QuestionMarkCircleIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0Zm-9 5.25h.008v.008H12v-.008Z"
       />
     </svg>
   );
@@ -746,6 +990,25 @@ export function CloseIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function DownloadIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"
+      />
+    </svg>
+  );
+}
+
 export function YouTubeIcon({ className, ...props }: IconProps) {
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" {...props}>
@@ -802,6 +1065,33 @@ export function StarIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function LockClosedIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+      />
+    </svg>
+  );
+}
+
+export function StarFilledIcon({ className, ...props }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M12 2 15.09 8.26 22 9.27 17 14.14l1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z" />
+    </svg>
+  );
+}
+
 export function GitHubIcon({ className, ...props }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -839,11 +1129,7 @@ export function EarlyAccessIcon({ className, ...props }: IconProps) {
         d="M8.75 10.75V9.5a3.25 3.25 0 1 1 6.5 0v1.25"
       />
       <rect x="6.75" y="10.75" width="10.5" height="8.5" rx="2" />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 13.25v1.75m0 0 1.5.9M12 15h-1.5"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 13.25v1.75m0 0 1.5.9M12 15h-1.5" />
     </svg>
   );
 }

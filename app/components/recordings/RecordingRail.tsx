@@ -1,8 +1,8 @@
 import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
 import { Rail } from "./Rail";
-import { RailCard } from "./RailCard";
 import { getRailCardKey } from "./rail-card-utils";
+import { RailCard } from "./RailCard";
 
 export function RecordingRail({
   title,

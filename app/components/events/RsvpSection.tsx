@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 
 import { RsvpAvatarList } from "@/components/events/RsvpAvatarList";
+import { CheckCircleIcon, CheckIcon } from "@/components/shared/Icons";
 import { useCreateRsvpMutation, useDeleteRsvpMutation, useEventRsvps } from "@/lib/api/events";
 import { useUserProfile } from "@/lib/api/user-profile";
 import { useAppSelector } from "@/lib/redux/hooks";
@@ -88,7 +89,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
         <div className="relative z-10 flex items-center justify-center gap-3">
           {isRsvped ? (
             <>
-              <CheckFilledIcon className="h-5 w-5" />
+              <CheckCircleIcon className="h-5 w-5" />
               <span>{t("youreGoing")}</span>
             </>
           ) : (
@@ -115,45 +116,5 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
         </div>
       )}
     </div>
-  );
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      height="20"
-      viewBox="0 0 20 20"
-      width="20"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M4 10L9 15L16 6"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2.5"
-      />
-    </svg>
-  );
-}
-
-function CheckFilledIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="currentColor"
-      height="20"
-      viewBox="0 0 20 20"
-      width="20"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        clipRule="evenodd"
-        d="M10 20C15.5228 20 20 15.5228 20 10C20 4.47715 15.5228 0 10 0C4.47715 0 0 4.47715 0 10C0 15.5228 4.47715 20 10 20ZM15.8839 8.38388C16.372 7.89573 16.372 7.10427 15.8839 6.61612C15.3957 6.12796 14.6043 6.12796 14.1161 6.61612L9 11.7322L6.88388 9.61612C6.39573 9.12796 5.60427 9.12796 5.11612 9.61612C4.62796 10.1043 4.62796 10.8957 5.11612 11.3839L8.11612 14.3839C8.60427 14.872 9.39573 14.872 9.88388 14.3839L15.8839 8.38388Z"
-        fillRule="evenodd"
-      />
-    </svg>
   );
 }

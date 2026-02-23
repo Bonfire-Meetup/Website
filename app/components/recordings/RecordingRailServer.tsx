@@ -1,8 +1,8 @@
 import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
+import { getRailCardKey } from "./rail-card-utils";
 import { RailCardServer } from "./RailCardServer";
 import { RailServer } from "./RailServer";
-import { getRailCardKey } from "./rail-card-utils";
 
 interface RecordingRailServerProps {
   title: string;

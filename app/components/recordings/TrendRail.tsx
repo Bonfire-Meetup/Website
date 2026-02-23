@@ -3,8 +3,8 @@
 import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
 import { Rail } from "./Rail";
-import { RailCard } from "./RailCard";
 import { getRailCardKey } from "./rail-card-utils";
+import { RailCard } from "./RailCard";
 import { getTrendRailBadge, getTrendRailChrome, type TrendRailKind } from "./trend-rail-config";
 
 export function TrendRail<T extends CatalogRecording>({
