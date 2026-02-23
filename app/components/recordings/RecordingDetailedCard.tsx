@@ -154,23 +154,18 @@ export function RecordingDetailedCard({
 
   return (
     <RecordingCardShell
-      href={isGrid ? undefined : watchHref}
+      href={undefined}
       prefetch={false}
       ariaLabel={title}
       className={outerClassName}
       overlayContent={
-        isGrid ? (
-          <Link
-            href={watchHref}
-            prefetch={false}
-            className="absolute inset-0 z-0"
-            aria-label={title}
-          >
-            <span className="sr-only">{title}</span>
-          </Link>
-        ) : null
+        <Link href={watchHref} prefetch={false} className="absolute inset-0 z-0" aria-label={title}>
+          <span className="sr-only">{title}</span>
+        </Link>
       }
-      imageClassName={isGrid ? "relative shrink-0" : "relative"}
+      imageClassName={
+        isGrid ? "relative z-10 shrink-0 pointer-events-none" : "relative z-10 pointer-events-none"
+      }
       image={
         <>
           <RecordingImage
@@ -197,11 +192,11 @@ export function RecordingDetailedCard({
       }
       bodyClassName={
         isGrid
-          ? "pointer-events-none relative z-10 flex flex-1 flex-col space-y-3 bg-white/85 px-5 pt-5 pb-6 text-neutral-900 dark:bg-black/75 dark:text-white"
-          : undefined
+          ? "relative z-10 flex flex-1 flex-col space-y-3 bg-white/85 px-5 pt-5 pb-6 text-neutral-900 pointer-events-none dark:bg-black/75 dark:text-white"
+          : "relative z-10 pointer-events-none"
       }
       body={
-        <div className="flex flex-1 flex-col space-y-3 bg-white/85 px-4 pt-4 pb-5 text-neutral-900 dark:bg-black/75 dark:text-white">
+        <div className="pointer-events-none flex flex-1 flex-col space-y-3 bg-white/85 px-4 pt-4 pb-5 text-neutral-900 dark:bg-black/75 dark:text-white">
           <RecordingMeta
             location={location}
             date={date}
@@ -219,11 +214,7 @@ export function RecordingDetailedCard({
               <RecordingTagPill
                 key={tag}
                 tag={tag}
-                href={
-                  isGrid
-                    ? `${PAGE_ROUTES.LIBRARY_BROWSE}?tag=${encodeURIComponent(tag)}`
-                    : undefined
-                }
+                href={`${PAGE_ROUTES.LIBRARY_BROWSE}?tag=${encodeURIComponent(tag)}`}
                 size="xxs"
               />
             ))}
@@ -233,17 +224,23 @@ export function RecordingDetailedCard({
     >
       {isGrid ? (
         <>
-          <RecordingAccessPill access={access} className="absolute top-2 left-2 z-10" />
+          <RecordingAccessPill
+            access={access}
+            className="pointer-events-none absolute top-2 left-2 z-10"
+          />
           <div className="pointer-events-auto absolute top-2 right-2 z-10">
             <WatchLaterButton shortId={shortId} variant="icon" size="sm" showLabel={false} />
           </div>
         </>
       ) : (
         <>
-          <RecordingAccessPill access={access} className="absolute top-3 left-3 z-10" />
+          <RecordingAccessPill
+            access={access}
+            className="pointer-events-none absolute top-3 left-3 z-10"
+          />
           {episode && (
             <RecordingEpisodePill
-              className="absolute top-3 right-3 bg-black/60 font-semibold tracking-[0.18em] text-white uppercase shadow"
+              className="pointer-events-none absolute top-3 right-3 bg-black/60 font-semibold tracking-[0.18em] text-white uppercase shadow"
               episode={episode}
               episodeNumber={episodeNumber}
               epShortLabel={t("epShort")}
