@@ -1,7 +1,8 @@
-import { Hero } from "./Hero";
+import { type HeroRecording, Hero } from "./Hero";
 
 export function HeroWrapper({
   images,
+  trendingRecordings,
 }: {
   images: {
     src: string;
@@ -9,6 +10,7 @@ export function HeroWrapper({
     fallbackSrc?: string;
     fallbackType?: "image/jpeg" | "image/png";
   }[];
+  trendingRecordings?: HeroRecording[];
 }) {
-  return <Hero images={images} />;
+  return <Hero images={images} trendingRecordings={trendingRecordings} />;
 }

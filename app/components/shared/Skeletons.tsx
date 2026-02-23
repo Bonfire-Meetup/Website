@@ -100,24 +100,28 @@ export function HeroSkeleton() {
     <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 pt-16 pb-20 sm:min-h-[110vh] sm:pt-20 sm:pb-0 dark:bg-neutral-950">
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <div className="relative z-10 flex flex-col items-center text-center">
-          <Skeleton className="mb-4 h-4 w-40 sm:mb-8" />
           <div className="mb-6 flex flex-col items-center gap-2 sm:mb-10">
             <Skeleton className="h-12 w-48 sm:h-20 sm:w-72" />
             <Skeleton className="h-14 w-64 sm:h-24 sm:w-96" />
             <Skeleton className="h-12 w-40 sm:h-20 sm:w-64" />
           </div>
-          <Skeleton className="mb-8 h-6 w-full max-w-md sm:mb-12" />
-          <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
-            <Skeleton className="h-14 w-44 rounded-2xl" />
-            <Skeleton className="h-14 w-44 rounded-2xl" />
-          </div>
-          <div className="mt-10 grid w-full max-w-xl grid-cols-3 gap-4 border-t border-neutral-200 pt-8 sm:mt-20 sm:gap-20 sm:pt-12 dark:border-white/5">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex flex-col items-center gap-2">
-                <Skeleton className="h-8 w-12 sm:h-12 sm:w-16" />
-                <Skeleton className="h-3 w-16 sm:h-4 sm:w-20" />
+          <Skeleton className="mb-10 h-6 w-full max-w-md sm:mb-14" />
+          <Skeleton className="h-14 w-44 rounded-2xl" />
+
+          <div className="mt-14 w-full max-w-[52rem] sm:mt-16">
+            <div className="no-scrollbar -mx-3 overflow-x-auto px-3 sm:mx-0 sm:px-0">
+              <div className="flex min-w-max items-start gap-2.5 py-0.5 sm:w-full sm:min-w-0 sm:gap-2.5">
+                <div className="h-[248px] w-[66vw] shrink-0 sm:h-[300px] sm:w-[calc((100%_-_1.25rem)*0.5)]">
+                  <Skeleton className="h-full w-full rounded-xl" />
+                </div>
+                <div className="h-[248px] w-[44vw] shrink-0 sm:h-[300px] sm:w-[calc((100%_-_1.25rem)*0.25)]">
+                  <Skeleton className="h-full w-full rounded-xl" />
+                </div>
+                <div className="h-[248px] w-[44vw] shrink-0 sm:h-[300px] sm:w-[calc((100%_-_1.25rem)*0.25)]">
+                  <Skeleton className="h-full w-full rounded-xl" />
+                </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>

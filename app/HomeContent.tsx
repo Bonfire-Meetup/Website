@@ -19,10 +19,15 @@ interface HomeContentProps {
     fallbackSrc?: string;
     fallbackType?: "image/jpeg" | "image/png";
   }[];
+  heroTrendingRecordings: (Recording | TrendingRecording)[];
   trendingRecordings: (Recording | TrendingRecording)[];
 }
 
-export function HomeContent({ heroImages, trendingRecordings }: HomeContentProps) {
+export function HomeContent({
+  heroImages,
+  heroTrendingRecordings,
+  trendingRecordings,
+}: HomeContentProps) {
   const t = useTranslations("hero");
   const photoAlt = t("photoAlt");
 
@@ -33,7 +38,7 @@ export function HomeContent({ heroImages, trendingRecordings }: HomeContentProps
 
   return (
     <main id="top" className="relative">
-      <HeroWrapper images={imagesWithAlt} />
+      <HeroWrapper images={imagesWithAlt} trendingRecordings={heroTrendingRecordings} />
 
       <EventsSection events={upcomingEvents} />
 

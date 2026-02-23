@@ -25,13 +25,13 @@ export function ScrollChevron({ label, scrollLabel }: { label: string; scrollLab
   return (
     <a
       href="#events"
-      className="hover:text-brand-400 absolute bottom-6 z-20 flex flex-col items-center gap-2 text-neutral-500 transition-colors sm:bottom-10 sm:gap-3"
+      className="hover:text-brand-400 fixed bottom-[calc(env(safe-area-inset-bottom)+6.5rem)] left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1.5 text-neutral-500 transition-colors md:absolute md:bottom-8 md:gap-2"
       aria-label={scrollLabel}
     >
-      <span className="text-[9px] font-bold tracking-[0.3em] uppercase sm:text-[10px]">
+      <span className="text-[9px] font-bold tracking-[0.28em] uppercase sm:text-[10px]">
         {label}
       </span>
-      <ChevronDownIcon className="h-5 w-5 animate-bounce opacity-70 sm:h-6 sm:w-6" />
+      <ChevronDownIcon className="h-4.5 w-4.5 animate-bounce opacity-70 sm:h-5 sm:w-5" />
     </a>
   );
 }
