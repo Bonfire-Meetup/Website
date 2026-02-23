@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
+import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -97,6 +98,7 @@ function MobileBottomNavInner() {
         {navItems.map((item) => {
           const active = isActive(item);
           const Icon = item.icon;
+          const isSignInItem = !isAuthed && !isResolvingAuth && item.href === PAGE_ROUTES.LOGIN;
           const itemBody = (
             <div
               className={`relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 ease-out ${
@@ -104,7 +106,9 @@ function MobileBottomNavInner() {
                   ? "bg-gradient-to-br from-fuchsia-600 via-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/40"
                   : item.disabled
                     ? "cursor-not-allowed text-neutral-400 opacity-70 dark:text-neutral-500"
-                    : "text-neutral-500 hover:bg-neutral-100/50 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-neutral-200"
+                    : isSignInItem
+                      ? ENGAGEMENT_BRANDING.access.classes.signInNav
+                      : "text-neutral-500 hover:bg-neutral-100/50 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-neutral-200"
               }`}
               style={{
                 transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",

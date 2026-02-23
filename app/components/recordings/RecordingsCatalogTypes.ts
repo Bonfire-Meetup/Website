@@ -18,6 +18,7 @@ export type CatalogRecording = Pick<
   | "episodeId"
   | "episode"
   | "episodeNumber"
+  | "access"
 >;
 
 export type MemberPickRecording = CatalogRecording & { boostCount: number };

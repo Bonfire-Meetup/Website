@@ -75,6 +75,7 @@ async function buildLibraryPayload({
   const recordings = getAllRecordings().map((recording) => ({
     date: recording.date,
     description: recording.description,
+    access: recording.access,
     episode: recording.episode,
     episodeId: recording.episodeId,
     episodeNumber: recording.episodeNumber,

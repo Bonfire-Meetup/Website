@@ -4,6 +4,11 @@ import pragueRecordingsData from "@/data/prague-recordings.json";
 import zlinRecordingsData from "@/data/zlin-recordings.json";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 
+import {
+  type RecordingAccessPolicy,
+  normalizeLegacyEarlyAccess,
+  normalizeRecordingAccessPolicy,
+} from "./early-access";
 import { getEpisodeById } from "./episodes";
 
 export interface Recording {
@@ -22,6 +27,7 @@ export interface Recording {
   episodeId?: string;
   episode?: string;
   episodeNumber?: number;
+  access?: RecordingAccessPolicy;
 }
 
 function withEpisode(recording: Recording) {
@@ -46,11 +52,17 @@ export const getAllRecordings = cache((): Recording[] =>
   [
     ...pragueRecordingsData.recordings.map((recording) => ({
       ...recording,
+      access:
+        normalizeRecordingAccessPolicy((recording as { access?: unknown }).access) ??
+        normalizeLegacyEarlyAccess((recording as { earlyAccess?: unknown }).earlyAccess),
       location: LOCATIONS.PRAGUE,
       tags: recording.tags.map((tag) => tag.toLowerCase()),
     })),
     ...zlinRecordingsData.recordings.map((recording) => ({
       ...recording,
+      access:
+        normalizeRecordingAccessPolicy((recording as { access?: unknown }).access) ??
+        normalizeLegacyEarlyAccess((recording as { earlyAccess?: unknown }).earlyAccess),
       location: LOCATIONS.ZLIN,
       tags: recording.tags.map((tag) => tag.toLowerCase()),
     })),

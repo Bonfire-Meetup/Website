@@ -39,18 +39,14 @@ export async function MemberPicksRailServer({
   scrollRightLabel = "Scroll right",
 }: TrendingRailProps) {
   const locale = await getRequestLocale();
-  const [memberPicks, tRows, tRecordings] = await Promise.all([
+  const [memberPicks, tRows] = await Promise.all([
     getMemberPicksSafe(6),
     getTranslations({ locale, namespace: "libraryPage.rows" }),
-    getTranslations({ locale, namespace: "recordings" }),
   ]);
 
   if (memberPicks.length === 0) {
     return null;
   }
-
-  const epShortLabel = tRecordings("epShort");
-
   return (
     <RailServer
       title={tRows("memberPicks")}
@@ -74,7 +70,6 @@ export async function MemberPicksRailServer({
           key={`member-pick-${recording.shortId}`}
           recording={recording}
           locale={locale}
-          epShortLabel={epShortLabel}
           isFirst={index < 2}
           badge={
             recording.boostCount > 0
@@ -96,18 +91,14 @@ export async function HotPicksRailServer({
   scrollRightLabel = "Scroll right",
 }: TrendingRailProps) {
   const locale = await getRequestLocale();
-  const [hotPicks, tRows, tRecordings] = await Promise.all([
+  const [hotPicks, tRows] = await Promise.all([
     getHotRecordingsSafe(6),
     getTranslations({ locale, namespace: "libraryPage.rows" }),
-    getTranslations({ locale, namespace: "recordings" }),
   ]);
 
   if (hotPicks.length === 0) {
     return null;
   }
-
-  const epShortLabel = tRecordings("epShort");
-
   return (
     <RailServer
       title={tRows("hot")}
@@ -131,7 +122,6 @@ export async function HotPicksRailServer({
           key={`hot-${recording.shortId}`}
           recording={recording}
           locale={locale}
-          epShortLabel={epShortLabel}
           isFirst={index < 2}
           badge={
             recording.likeCount > 0
@@ -153,18 +143,14 @@ export async function HiddenGemsRailServer({
   scrollRightLabel = "Scroll right",
 }: TrendingRailProps) {
   const locale = await getRequestLocale();
-  const [hiddenGems, tRows, tRecordings] = await Promise.all([
+  const [hiddenGems, tRows] = await Promise.all([
     getHiddenGems(6),
     getTranslations({ locale, namespace: "libraryPage.rows" }),
-    getTranslations({ locale, namespace: "recordings" }),
   ]);
 
   if (hiddenGems.length === 0) {
     return null;
   }
-
-  const epShortLabel = tRecordings("epShort");
-
   return (
     <RailServer
       title={tRows("hiddenGems")}
@@ -184,7 +170,6 @@ export async function HiddenGemsRailServer({
           key={`hidden-gem-${recording.shortId}`}
           recording={recording}
           locale={locale}
-          epShortLabel={epShortLabel}
           isFirst={index < 2}
         />
       ))}

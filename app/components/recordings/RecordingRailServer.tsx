@@ -7,7 +7,6 @@ interface RecordingRailServerProps {
   title: string;
   recordings: CatalogRecording[];
   locale: string;
-  epShortLabel: string;
   scrollLeftLabel: string;
   scrollRightLabel: string;
 }
@@ -16,7 +15,6 @@ export function RecordingRailServer({
   title,
   recordings,
   locale,
-  epShortLabel,
   scrollLeftLabel,
   scrollRightLabel,
 }: RecordingRailServerProps) {
@@ -33,7 +31,6 @@ export function RecordingRailServer({
           key={`${recording.shortId}-${title}`}
           recording={recording}
           locale={locale}
-          epShortLabel={epShortLabel}
           isFirst={index < 2}
         />
       ))}

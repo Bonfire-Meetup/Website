@@ -15,9 +15,7 @@ interface RecordingsSectionProps {
 export function RecordingsSection({ recordings }: RecordingsSectionProps) {
   const t = useTranslations("sections.recordings");
   const homepageRecordings = recordings.map((recording) => ({
-    boostCount: "boostCount" in recording ? recording.boostCount : undefined,
     date: recording.date,
-    likeCount: "likeCount" in recording ? recording.likeCount : undefined,
     location: recording.location,
     shortId: recording.shortId,
     slug: recording.slug,

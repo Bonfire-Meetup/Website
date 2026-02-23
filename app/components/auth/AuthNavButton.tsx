@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 
 import { Link } from "@/i18n/navigation";
+import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -20,6 +21,7 @@ function AuthNavButtonInner() {
 
   const isResolvingAuth = mounted && auth.loading && !auth.hydrated;
   const isAuthed = mounted && auth.isAuthenticated && auth.hydrated;
+  const isSignInState = !isResolvingAuth && !isAuthed;
   const href = isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN;
   const ariaLabel = isResolvingAuth ? "Authenticating" : isAuthed ? "Account" : "Login";
 
@@ -28,10 +30,14 @@ function AuthNavButtonInner() {
       ariaLabel={ariaLabel}
       size="md"
       shape="rounded"
-      variant="glass"
+      variant={isSignInState ? "plain" : "glass"}
       disabled={isResolvingAuth}
       className={
-        isResolvingAuth ? "cursor-not-allowed opacity-75" : "hover:scale-105 active:scale-95"
+        isResolvingAuth
+          ? "cursor-not-allowed opacity-75"
+          : isAuthed
+            ? "hover:scale-105 active:scale-95"
+            : `${ENGAGEMENT_BRANDING.access.classes.signInNav} hover:scale-105 active:scale-95`
       }
     >
       {isResolvingAuth ? (

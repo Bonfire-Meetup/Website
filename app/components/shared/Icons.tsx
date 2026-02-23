@@ -823,6 +823,31 @@ export function GuildIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function EarlyAccessIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      strokeWidth={1.6}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m12 3.5 1.8 3.7 4.1.6-2.9 2.8.7 4-3.7-1.9-3.7 1.9.7-4-2.9-2.8 4.1-.6L12 3.5Z"
+      />
+      <rect x="8.75" y="16.25" width="6.5" height="4.5" rx="1.1" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M10.75 16.25v-.75a1.25 1.25 0 1 1 2.5 0v.75M12 18.35v.35"
+      />
+    </svg>
+  );
+}
+
 export function KeyIcon({ className, ...props }: IconProps) {
   return (
     <svg

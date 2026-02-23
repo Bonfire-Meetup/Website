@@ -609,9 +609,7 @@ html.smooth-scroll {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
   border-radius: 100px;
-  font-size: 0.875rem;
   font-weight: 500;
   backdrop-filter: blur(12px);
   transition:
@@ -1534,6 +1532,30 @@ html:not([data-motion="active"]) * {
   }
 }
 
+@keyframes earlyAccessSweep {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(420%);
+  }
+}
+
+.early-access-loader {
+  background: linear-gradient(
+    90deg,
+    rgba(253, 230, 138, 0),
+    rgba(253, 230, 138, 0.95),
+    rgba(254, 243, 199, 0)
+  );
+  animation: earlyAccessSweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 .guild-flame-1 {
   left: 15%;
   width: 70%;
@@ -1772,6 +1794,10 @@ html:not([data-motion="active"]) * {
   .guild-flame-tongue-1,
   .guild-flame-tongue-2,
   .guild-flame-tongue-3 {
+    animation: none;
+  }
+
+  .early-access-loader {
     animation: none;
   }
 }

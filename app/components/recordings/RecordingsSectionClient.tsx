@@ -1,45 +1,51 @@
 import type { Recording } from "@/lib/recordings/recordings";
 import { useLocale, useTranslations } from "next-intl";
 
-import { LOCATIONS } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatDate } from "@/lib/utils/locale";
 
+import { LocationPill } from "../locations/LocationPill";
 import { Button } from "../ui/Button";
 import { EmptyState } from "../ui/EmptyState";
 
-import { VideoCard } from "./VideoCard";
+import { RecordingCompactCard } from "./RecordingCompactCard";
 
 type HomepageRecording = Pick<
   Recording,
-  "shortId" | "slug" | "title" | "speaker" | "date" | "thumbnail" | "location"
-> & { likeCount?: number; boostCount?: number };
+  "shortId" | "slug" | "title" | "speaker" | "date" | "thumbnail" | "location" | "access"
+>;
 
 export function RecordingsSectionClient({ recordings }: { recordings: HomepageRecording[] }) {
   const t = useTranslations("sections.recordings");
   const tRecordings = useTranslations("recordings");
-  const tCommon = useTranslations("common");
   const locale = useLocale();
 
   return (
     <>
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {recordings.map((recording) => (
-          <VideoCard
+          <RecordingCompactCard
             key={recording.shortId}
             shortId={recording.shortId}
             slug={recording.slug}
             title={recording.title}
             speaker={recording.speaker}
-            date={recording.date}
             thumbnail={recording.thumbnail}
-            location={recording.location}
-            locationLabel={
-              recording.location === LOCATIONS.PRAGUE ? tCommon("prague") : tCommon("zlin")
+            access={recording.access}
+            imageSizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            footer={
+              <>
+                <span className="text-[10px] font-medium tracking-wider text-neutral-400 uppercase">
+                  {formatDate(recording.date, locale)}
+                </span>
+                <LocationPill
+                  location={recording.location}
+                  size="xxs"
+                  className="!text-[9px]"
+                  ariaLabel={tRecordings("locationLabel", { location: recording.location })}
+                />
+              </>
             }
-            ariaLocationLabel={tRecordings("locationLabel", { location: recording.location })}
-            locale={locale}
-            likeCount={recording.likeCount}
-            boostCount={recording.boostCount}
           />
         ))}
       </div>

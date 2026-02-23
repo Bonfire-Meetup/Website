@@ -76,6 +76,29 @@ export const ENGAGEMENT_BRANDING = {
     },
   },
 
+  access: {
+    classes: {
+      signInPill:
+        "bg-gradient-to-r from-fuchsia-200/95 via-pink-200/90 to-rose-200/85 text-fuchsia-950 ring-1 ring-fuchsia-100/75 shadow-[0_0_14px_rgba(217,70,239,0.2)] dark:from-fuchsia-400/30 dark:via-pink-400/24 dark:to-rose-400/20 dark:text-fuchsia-100 dark:ring-fuchsia-200/30",
+      signInNav:
+        "bg-fuchsia-100/40 text-fuchsia-600 ring-1 ring-fuchsia-200/45 hover:bg-fuchsia-100/55 hover:text-fuchsia-700 dark:bg-fuchsia-400/8 dark:text-fuchsia-200/90 dark:ring-fuchsia-300/18 dark:hover:bg-fuchsia-400/12 dark:hover:text-fuchsia-100",
+      guildPill:
+        "bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 text-neutral-900 ring-1 ring-white/45 shadow-[0_0_20px_rgba(251,146,60,0.35)]",
+      chip: "rounded-full bg-black/20 px-1.5 py-0.5 text-[9px]",
+      compactBadge:
+        "rounded-full bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 text-neutral-900 ring-1 ring-white/45 shadow-lg",
+      subtleBadge: "bg-amber-500/15 text-amber-700 dark:bg-amber-300/20 dark:text-amber-200",
+      subtleBadgeHero:
+        "bg-amber-400/25 text-amber-100 sm:bg-amber-500/15 sm:text-amber-800 dark:sm:bg-amber-300/20 dark:sm:text-amber-200",
+      subtleBadgeDefault: "bg-amber-500/15 text-amber-700 dark:bg-amber-300/20 dark:text-amber-200",
+      metadataPill:
+        "bg-amber-500/15 text-amber-700 ring-1 ring-amber-500/20 dark:bg-amber-400/10 dark:text-amber-300 dark:ring-amber-300/20",
+      countdownPanel:
+        "rounded-xl border border-amber-200/40 bg-gradient-to-r from-amber-400/20 via-orange-400/16 to-rose-400/16 text-amber-50 shadow-[0_0_20px_rgba(251,146,60,0.18)]",
+      countdownLabel: "text-[10px] font-semibold tracking-[0.12em] text-amber-100/90 uppercase",
+    },
+  },
+
   guild: {
     icon: "GuildIcon",
     colors: {
@@ -113,6 +136,12 @@ export const ENGAGEMENT_BRANDING = {
     },
   },
 } as const;
+
+export function getAccessPillClasses(isSignInAccess: boolean) {
+  return isSignInAccess
+    ? ENGAGEMENT_BRANDING.access.classes.signInPill
+    : ENGAGEMENT_BRANDING.access.classes.guildPill;
+}
 
 export function getLikeButtonClasses(isActive: boolean, isPending: boolean, isDisabled: boolean) {
   const { like } = ENGAGEMENT_BRANDING;

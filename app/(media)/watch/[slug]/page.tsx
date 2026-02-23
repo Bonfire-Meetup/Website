@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { buildNotFoundTitleMetadata, getBrandName, getMetaTitleSuffix } from "@/lib/metadata";
@@ -9,6 +10,8 @@ import {
   getRelatedRecordings,
 } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+
+import WatchLoading from "./loading";
 
 const RecordingPlayer = dynamic(() =>
   import("@/components/recordings/RecordingPlayer").then((mod) => mod.RecordingPlayer),
@@ -73,7 +76,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function WatchPage({ params }: { params: Promise<{ slug: string }> }) {
+async function WatchPageContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const shortId = parseShortId(slug);
   const allRecordings = getAllRecordings();
@@ -84,6 +87,17 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
   }
 
   const relatedRecordings = getRelatedRecordings(recording, allRecordings);
+  const nowMs = Date.now();
 
-  return <RecordingPlayer recording={recording} relatedRecordings={relatedRecordings} />;
+  return (
+    <RecordingPlayer recording={recording} relatedRecordings={relatedRecordings} nowMs={nowMs} />
+  );
+}
+
+export default function WatchPage({ params }: { params: Promise<{ slug: string }> }) {
+  return (
+    <Suspense fallback={<WatchLoading />}>
+      <WatchPageContent params={params} />
+    </Suspense>
+  );
 }

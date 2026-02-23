@@ -6,6 +6,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { FEATURED_INTERVAL_MS, type CatalogRecording } from "./RecordingsCatalogTypes";
+import { useFeaturedCarousel } from "./useFeaturedCarousel";
 
 interface FeaturedCarouselWrapperProps {
   candidates: CatalogRecording[];
@@ -14,6 +15,9 @@ interface FeaturedCarouselWrapperProps {
   hasFeaturedHero: boolean;
   previousLabel: string;
   nextLabel: string;
+  onNavigate?: (slug: string, shortId: string) => void;
+  canHover?: boolean;
+  resetKey?: string;
 }
 
 export function FeaturedCarouselWrapper({
@@ -23,15 +27,18 @@ export function FeaturedCarouselWrapper({
   hasFeaturedHero,
   previousLabel,
   nextLabel,
+  onNavigate,
+  canHover: canHoverOverride,
+  resetKey,
 }: FeaturedCarouselWrapperProps) {
   const router = useRouter();
   const imageContainerRef = useRef<HTMLDivElement>(null);
-  const [featuredIndex, setFeaturedIndex] = useState(0);
-  const [isFeaturedPaused, setIsFeaturedPaused] = useState(false);
-  const [isPageVisible, setIsPageVisible] = useState(true);
   const [canHover, setCanHover] = useState(false);
-  const featuredStartRef = useRef(0);
-  const featuredRemainingRef = useRef(FEATURED_INTERVAL_MS);
+  const { featuredIndex, isAutoPlayPaused, setFeaturedIndex, setIsFeaturedPaused } =
+    useFeaturedCarousel({
+      count: candidates.length,
+      resetKey,
+    });
 
   useEffect(() => {
     const container = imageContainerRef.current;
@@ -57,55 +64,18 @@ export function FeaturedCarouselWrapper({
     setCanHover(window.matchMedia("(hover: hover)").matches);
   }, []);
 
-  useEffect(() => {
-    const handleVisibility = () => {
-      setIsPageVisible(document.visibilityState === "visible");
-    };
-
-    handleVisibility();
-    document.addEventListener("visibilitychange", handleVisibility);
-
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, []);
-
-  useEffect(() => {
-    if (candidates.length <= 1) {
-      return;
-    }
-
-    featuredRemainingRef.current = FEATURED_INTERVAL_MS;
-    featuredStartRef.current = performance.now();
-  }, [featuredIndex, candidates.length]);
-
-  const isAutoPlayPaused = isFeaturedPaused || !isPageVisible;
   const currentFeatured = candidates[featuredIndex] ?? candidates[0];
 
-  useEffect(() => {
-    if (candidates.length <= 1) {
-      return;
-    }
-
-    if (isAutoPlayPaused) {
-      const elapsed = performance.now() - featuredStartRef.current;
-      featuredRemainingRef.current = Math.max(FEATURED_INTERVAL_MS - elapsed, 0);
-
-      return;
-    }
-
-    featuredStartRef.current =
-      performance.now() - (FEATURED_INTERVAL_MS - featuredRemainingRef.current);
-
-    const timer = setTimeout(() => {
-      featuredRemainingRef.current = FEATURED_INTERVAL_MS;
-      setFeaturedIndex((prev) => (prev + 1) % candidates.length);
-    }, featuredRemainingRef.current);
-
-    return () => clearTimeout(timer);
-  }, [featuredIndex, candidates.length, isAutoPlayPaused]);
-
   const handleClick = () => {
+    if (onNavigate) {
+      onNavigate(currentFeatured.slug, currentFeatured.shortId);
+      return;
+    }
+
     router.push(PAGE_ROUTES.WATCH(currentFeatured.slug, currentFeatured.shortId));
   };
+
+  const hoverEnabled = canHoverOverride ?? canHover;
 
   return (
     <article
@@ -119,8 +89,8 @@ export function FeaturedCarouselWrapper({
         }
       }}
       aria-label={currentFeatured.title}
-      onMouseEnter={canHover ? () => setIsFeaturedPaused(true) : undefined}
-      onMouseLeave={canHover ? () => setIsFeaturedPaused(false) : undefined}
+      onMouseEnter={hoverEnabled ? () => setIsFeaturedPaused(true) : undefined}
+      onMouseLeave={hoverEnabled ? () => setIsFeaturedPaused(false) : undefined}
       className={`group recording-card-enter relative mb-8 block cursor-pointer overflow-hidden rounded-[32px] bg-white/90 text-neutral-900 shadow-xl ring-1 shadow-black/10 ring-black/5 dark:bg-neutral-950 dark:text-white dark:shadow-black/20 dark:ring-white/10 ${
         hasFeaturedHero ? "min-h-[420px] sm:min-h-0" : ""
       }`}

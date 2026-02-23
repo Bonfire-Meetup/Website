@@ -3,16 +3,21 @@
 import type { Recording } from "@/lib/recordings/recordings";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { useGlobalPlayer } from "@/components/shared/GlobalPlayerProvider";
 import { ArrowLeftIcon, CinemaIcon } from "@/components/shared/Icons";
 import { type BoostedByData } from "@/lib/api/video-engagement";
+import { MEMBERSHIP_TIER_LABELS } from "@/lib/config/membership";
+import { canAccessRecording, getRecordingAccessState } from "@/lib/recordings/early-access";
+import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDate } from "@/lib/utils/locale";
 
 import { BoostedBy } from "./BoostedBy";
 import { LikeBoostButtons } from "./LikeBoostButtons";
+import { RecordingAccessNotice } from "./RecordingAccessNotice";
 import { RelatedVideosSection } from "./RelatedVideosSection";
 import { ShareMenu } from "./ShareMenu";
 import { VideoMetadata } from "./VideoMetadata";
@@ -20,24 +25,74 @@ import { WatchLaterButton } from "./WatchLaterButton";
 
 export type RelatedRecording = Pick<
   Recording,
-  "shortId" | "slug" | "title" | "thumbnail" | "speaker" | "episode" | "episodeNumber" | "location"
+  | "shortId"
+  | "slug"
+  | "title"
+  | "thumbnail"
+  | "speaker"
+  | "episode"
+  | "episodeNumber"
+  | "location"
+  | "access"
 >;
 
 export function RecordingPlayer({
   recording,
   relatedRecordings,
+  nowMs: initialNowMs,
 }: {
   recording: Recording;
   relatedRecordings: RelatedRecording[];
+  nowMs: number;
 }) {
   const t = useTranslations("recordings");
   const locale = useLocale();
+  const router = useRouter();
+  const auth = useAppSelector((state) => state.auth);
+  const [nowMs, setNowMs] = useState(initialNowMs);
+  const refreshTriggeredRef = useRef(false);
 
   const inlinePlayerRef = useRef<HTMLDivElement | null>(null);
-  const { setVideo, setInlineContainer, cinemaMode, setCinemaMode } = useGlobalPlayer();
+  const { setVideo, setInlineContainer, clearVideo, cinemaMode, setCinemaMode } = useGlobalPlayer();
 
   const formattedDate = formatDate(recording.date, locale);
   const [boostedBy, setBoostedBy] = useState<BoostedByData | null | undefined>(undefined);
+  const { earlyAccessEndsAtMs, isEarlyAccess, isRestricted, requiredMembershipTier } =
+    getRecordingAccessState(recording.access, new Date(nowMs));
+  const hasResolvedAuth = auth.hydrated;
+  const hasPlaybackAccess =
+    !isRestricted ||
+    (hasResolvedAuth &&
+      canAccessRecording({
+        isAuthenticated: auth.isAuthenticated,
+        membershipTier: auth.user?.decodedToken?.mbt,
+        now: new Date(nowMs),
+        policy: recording.access,
+      }));
+  const isAccessCheckPending = isRestricted && !hasResolvedAuth;
+  const countdownMs =
+    isEarlyAccess && earlyAccessEndsAtMs ? Math.max(earlyAccessEndsAtMs - nowMs, 0) : 0;
+  const requiredGuildLevelName = requiredMembershipTier
+    ? MEMBERSHIP_TIER_LABELS[requiredMembershipTier]
+    : "";
+  const requiredAccessLabel =
+    requiredMembershipTier === 0
+      ? t("earlyAccessRequiredLogin")
+      : requiredGuildLevelName
+        ? t("earlyAccessRequiredGuildByName", { level: requiredGuildLevelName })
+        : "";
+  const requiredAccessShortLabel =
+    requiredMembershipTier === 0
+      ? t("signInShort")
+      : requiredMembershipTier
+        ? MEMBERSHIP_TIER_LABELS[requiredMembershipTier]
+        : "";
+  const accessLockedTitle = isEarlyAccess
+    ? t("earlyAccessLockedTitle")
+    : t("membersOnlyLockedTitle");
+  const loginHref = `${PAGE_ROUTES.LOGIN}?returnPath=${encodeURIComponent(
+    PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
+  )}`;
 
   const [shareUrl, setShareUrl] = useState("");
   const shareText = `${recording.title} - ${recording.speaker.join(", ")}`;
@@ -45,6 +100,39 @@ export function RecordingPlayer({
   useEffect(() => {
     window.scrollTo({ behavior: "auto", left: 0, top: 0 });
   }, [recording.youtubeId]);
+
+  useEffect(() => {
+    setNowMs(Date.now());
+    refreshTriggeredRef.current = false;
+  }, [recording.youtubeId]);
+
+  useEffect(() => {
+    if (!isEarlyAccess || hasPlaybackAccess || !earlyAccessEndsAtMs) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setNowMs(Date.now());
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [earlyAccessEndsAtMs, hasPlaybackAccess, isEarlyAccess]);
+
+  useEffect(() => {
+    if (
+      !isEarlyAccess ||
+      !earlyAccessEndsAtMs ||
+      hasPlaybackAccess ||
+      refreshTriggeredRef.current
+    ) {
+      return;
+    }
+
+    if (Date.now() >= earlyAccessEndsAtMs) {
+      refreshTriggeredRef.current = true;
+      router.refresh();
+    }
+  }, [earlyAccessEndsAtMs, hasPlaybackAccess, isEarlyAccess, router, nowMs]);
 
   useEffect(() => {
     setShareUrl(window.location.href);
@@ -62,12 +150,25 @@ export function RecordingPlayer({
   }, [setCinemaMode]);
 
   useEffect(() => {
+    if (!hasPlaybackAccess) {
+      clearVideo();
+      return;
+    }
+
     setVideo({
       title: recording.title,
       watchUrl: PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
       youtubeId: recording.youtubeId,
     });
-  }, [recording.title, recording.slug, recording.shortId, recording.youtubeId, setVideo]);
+  }, [
+    clearVideo,
+    hasPlaybackAccess,
+    recording.title,
+    recording.slug,
+    recording.shortId,
+    recording.youtubeId,
+    setVideo,
+  ]);
 
   useEffect(() => {
     const el = inlinePlayerRef.current;
@@ -95,11 +196,29 @@ export function RecordingPlayer({
                 </div>
               </div>
 
-              <div ref={inlinePlayerRef} className="relative aspect-video w-full bg-black" />
+              {hasPlaybackAccess ? (
+                <div ref={inlinePlayerRef} className="relative aspect-video w-full bg-black" />
+              ) : (
+                <RecordingAccessNotice
+                  thumbnail={recording.thumbnail}
+                  title={recording.title}
+                  isEarlyAccess={isEarlyAccess}
+                  requiredMembershipTier={requiredMembershipTier}
+                  requiredAccessLabel={requiredAccessLabel}
+                  requiredAccessShortLabel={requiredAccessShortLabel}
+                  accessLockedTitle={accessLockedTitle}
+                  countdownMs={countdownMs}
+                  isAccessCheckPending={isAccessCheckPending}
+                  isAuthenticated={auth.isAuthenticated}
+                  loginHref={loginHref}
+                />
+              )}
 
               <div className="border-b border-neutral-200/40 dark:border-neutral-700/40">
                 <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-4 sm:gap-3 sm:px-6">
-                  <LikeBoostButtons onBoostedByLoad={setBoostedBy} shortId={recording.shortId} />
+                  {hasPlaybackAccess ? (
+                    <LikeBoostButtons onBoostedByLoad={setBoostedBy} shortId={recording.shortId} />
+                  ) : null}
 
                   <div className="flex items-center gap-2 sm:gap-3">
                     <WatchLaterButton shortId={recording.shortId} variant="icon" size="sm" />
@@ -118,14 +237,20 @@ export function RecordingPlayer({
                 </div>
 
                 <div className="px-5 pb-4 sm:px-6">
-                  <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
+                  {hasPlaybackAccess && (
+                    <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
+                  )}
                   <p className="mt-3 text-[10px] leading-tight text-neutral-500/90 dark:text-neutral-500">
                     {t("youtubeNotice")}
                   </p>
                 </div>
               </div>
 
-              <VideoMetadata recording={recording} formattedDate={formattedDate} />
+              <VideoMetadata
+                recording={recording}
+                formattedDate={formattedDate}
+                hideEarlyAccessBadge={!hasPlaybackAccess}
+              />
             </div>
           </div>
 

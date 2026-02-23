@@ -12,13 +12,18 @@ export function TrendingRailSkeleton() {
         {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={`rail-skeleton-${index}`}
-            className="w-[75vw] shrink-0 sm:w-[45vw] lg:w-[280px] xl:w-[300px]"
+            className="relative w-[75vw] shrink-0 overflow-hidden rounded-[24px] bg-white/90 sm:w-[45vw] lg:w-[280px] xl:w-[300px] dark:bg-neutral-950"
           >
             <Skeleton className="aspect-video w-full !rounded-none" />
+            <div className="absolute top-3 left-3 h-5 w-20 rounded-full bg-neutral-200/80 dark:bg-white/15" />
+            <div className="absolute top-3 right-3 h-5 w-16 rounded-full bg-neutral-200/70 dark:bg-white/10" />
             <div className="space-y-3 bg-white/85 px-4 pt-4 pb-5 dark:bg-black/75">
               <Skeleton className="h-3 w-32" />
               <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-3 w-2/3" />
+              <div className="space-y-2">
+                <Skeleton className="h-3 w-2/3" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
               <div className="flex gap-2">
                 <Skeleton className="h-5 w-16 rounded-full" />
                 <Skeleton className="h-5 w-12 rounded-full" />
@@ -75,13 +80,22 @@ export function RecordingsSectionSkeleton() {
         </div>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="overflow-hidden rounded-3xl bg-white/50 dark:bg-white/5">
+            <div
+              key={i}
+              className="relative overflow-hidden rounded-[24px] bg-white/90 shadow ring-1 ring-black/5 dark:bg-neutral-950 dark:ring-white/10"
+            >
               <Skeleton className="aspect-video w-full !rounded-none" />
-              <div className="space-y-3 p-6">
-                <Skeleton className="h-5 w-3/4" />
-                <div className="flex justify-between">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-4 w-20" />
+              <div className="absolute top-3 left-3 h-5 w-20 rounded-full bg-neutral-200/80 dark:bg-white/15" />
+              <div className="space-y-3 p-4">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <div className="space-y-2">
+                  <Skeleton className="h-3 w-2/3" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+                <div className="flex justify-between border-t border-neutral-100 pt-3 dark:border-white/5">
+                  <Skeleton className="h-3 w-20" />
+                  <Skeleton className="h-5 w-16 rounded-full" />
                 </div>
               </div>
             </div>
@@ -97,28 +111,44 @@ export function RecordingsSectionSkeleton() {
 
 export function HeroSkeleton() {
   return (
-    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 pt-16 pb-20 sm:min-h-[110vh] sm:pt-20 sm:pb-0 dark:bg-neutral-950">
+    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 pt-28 pb-12 sm:min-h-svh sm:pt-32 sm:pb-14 dark:bg-neutral-950">
       <div className="relative z-10 mx-auto w-full max-w-7xl">
-        <div className="relative z-10 flex flex-col items-center text-center">
-          <div className="mb-6 flex flex-col items-center gap-2 sm:mb-10">
-            <Skeleton className="h-12 w-48 sm:h-20 sm:w-72" />
-            <Skeleton className="h-14 w-64 sm:h-24 sm:w-96" />
-            <Skeleton className="h-12 w-40 sm:h-20 sm:w-64" />
+        <div className="grid grid-cols-1">
+          <div className="relative z-10 flex flex-col items-center pt-4 text-center sm:pt-8">
+            <div className="mb-10 flex flex-col items-center gap-2 sm:mb-14">
+              <Skeleton className="h-12 w-48 sm:h-20 sm:w-72" />
+              <Skeleton className="h-14 w-64 sm:h-24 sm:w-96" />
+              <Skeleton className="h-12 w-40 sm:h-20 sm:w-64" />
+            </div>
+            <Skeleton className="mb-10 h-6 w-full max-w-md sm:mb-14" />
+            <Skeleton className="h-14 w-44 rounded-2xl" />
           </div>
-          <Skeleton className="mb-10 h-6 w-full max-w-md sm:mb-14" />
-          <Skeleton className="h-14 w-44 rounded-2xl" />
 
-          <div className="mt-14 w-full max-w-[52rem] sm:mt-16">
-            <div className="no-scrollbar -mx-3 overflow-x-auto px-3 sm:mx-0 sm:px-0">
-              <div className="flex min-w-max items-start gap-2.5 py-0.5 sm:w-full sm:min-w-0 sm:gap-2.5">
-                <div className="h-[248px] w-[66vw] shrink-0 sm:h-[300px] sm:w-[calc((100%_-_1.25rem)*0.5)]">
-                  <Skeleton className="h-full w-full rounded-xl" />
-                </div>
-                <div className="h-[248px] w-[44vw] shrink-0 sm:h-[300px] sm:w-[calc((100%_-_1.25rem)*0.25)]">
-                  <Skeleton className="h-full w-full rounded-xl" />
-                </div>
-                <div className="h-[248px] w-[44vw] shrink-0 sm:h-[300px] sm:w-[calc((100%_-_1.25rem)*0.25)]">
-                  <Skeleton className="h-full w-full rounded-xl" />
+          <div className="relative mt-12 w-full md:mt-16 md:translate-y-5">
+            <div className="mx-auto w-full max-w-[54rem]">
+              <div className="p-2 sm:p-2.5 md:opacity-72">
+                <div className="flex flex-col gap-3">
+                  <div className="mx-auto w-full max-w-[41rem]">
+                    <Skeleton className="aspect-[16/9] w-full rounded-xl" />
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="mx-auto h-3 w-36" />
+                    <div className="no-scrollbar -mx-3 flex gap-2 overflow-x-auto px-3 md:mx-0 md:justify-center md:overflow-visible md:px-0">
+                      {Array.from({ length: 3 }).map((_, index) => (
+                        <div
+                          key={`hero-queue-skeleton-${index}`}
+                          className="min-w-[11rem] rounded-xl border border-white/10 bg-white/5 p-1.5 sm:min-w-[12rem] md:min-w-[12.5rem]"
+                        >
+                          <Skeleton className="aspect-[16/9] w-full rounded-lg" />
+                          <div className="space-y-2 px-1 pt-2 pb-1">
+                            <Skeleton className="h-3 w-24" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-5/6" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

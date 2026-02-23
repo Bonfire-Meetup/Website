@@ -115,6 +115,7 @@ export function WatchLaterClient() {
               date={recording.date}
               thumbnail={recording.thumbnail}
               location={recording.location}
+              access={recording.access}
             />
           ))}
         </div>
