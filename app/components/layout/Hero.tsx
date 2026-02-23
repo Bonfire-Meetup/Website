@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { type CSSProperties, useEffect, useState } from "react";
 
+import { BoltIcon, FireIcon } from "@/components/shared/Icons";
 import { type LocationValue } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -74,11 +75,25 @@ function HeroMiniCard({
           fetchPriority="high"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/8 to-transparent" />
+        <div className="absolute top-2 right-2 z-20 flex items-center gap-1.5">
+          {typeof recording.boostCount === "number" && recording.boostCount > 0 && (
+            <span className="inline-flex items-center gap-1 rounded-md border border-white/8 bg-black/16 px-1.5 py-1 text-[10px] leading-none font-semibold text-emerald-300 backdrop-blur-sm transition-colors group-hover:border-white/14 group-hover:bg-black/24">
+              <BoltIcon className="h-2.5 w-2.5" />
+              {recording.boostCount}
+            </span>
+          )}
+          {typeof recording.likeCount === "number" && recording.likeCount > 0 && (
+            <span className="inline-flex items-center gap-1 rounded-md border border-white/8 bg-black/16 px-1.5 py-1 text-[10px] leading-none font-semibold text-rose-200 backdrop-blur-sm transition-colors group-hover:border-white/14 group-hover:bg-black/24">
+              <FireIcon className="h-2.5 w-2.5" />
+              {recording.likeCount}
+            </span>
+          )}
+        </div>
         <div className="absolute right-0 bottom-0 left-0 z-10 p-3 sm:p-3.5">
-          <p className="mb-1 truncate text-[10px] leading-none font-medium tracking-[0.16em] text-white/62 uppercase">
+          <p className="mb-1 h-[0.7rem] truncate text-[10px] leading-none font-medium tracking-[0.16em] text-white/62 uppercase">
             {recording.speaker[0]}
           </p>
-          <h3 className="line-clamp-2 text-xs leading-snug font-semibold text-white transition-colors group-hover:text-orange-200 sm:text-sm">
+          <h3 className="line-clamp-2 min-h-[2.1rem] text-xs leading-snug font-semibold text-white transition-colors group-hover:text-orange-200 sm:min-h-[2.6rem] sm:text-sm">
             {recording.title}
           </h3>
         </div>
@@ -114,12 +129,12 @@ function TrendingDock({
                 return (
                   <div
                     key={rec.shortId}
-                    className={`h-[248px] shrink-0 transition-[width,transform,opacity] duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[width,transform,opacity] sm:h-[300px] ${
+                    className={`h-[248px] shrink-0 transition-[width,transform,opacity] duration-700 ease-[cubic-bezier(0.2,0.85,0.2,1)] will-change-[width,transform,opacity] sm:h-[300px] ${
                       index === 0 ? "w-[66vw]" : "w-[44vw]"
                     } sm:basis-auto ${
                       isLandscape
-                        ? "sm:w-[calc((100%_-_1.25rem)*0.5)]"
-                        : "sm:w-[calc((100%_-_1.25rem)*0.25)]"
+                        ? "sm:w-[calc((100%_-_1.25rem)*0.46)]"
+                        : "sm:w-[calc((100%_-_1.25rem)*0.27)]"
                     } ${
                       isLandscape ? "sm:z-20" : "sm:z-10"
                     } ${cardsVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}
