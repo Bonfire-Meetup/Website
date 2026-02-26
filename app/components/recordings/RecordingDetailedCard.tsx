@@ -259,7 +259,7 @@ export function RecordingDetailedCard({
             access={access}
             className="pointer-events-none absolute top-2 left-2 z-20"
           />
-          <div className="pointer-events-auto absolute top-2 right-2 z-20">
+          <div className="pointer-events-auto absolute top-2 right-2 z-5">
             <WatchLaterButton shortId={shortId} variant="icon" size="sm" showLabel={false} />
           </div>
         </>
