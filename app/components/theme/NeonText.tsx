@@ -51,26 +51,18 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
               () => {
                 if (isMounted && isPageVisible) {
                   setIsActive(false);
-                  scheduleNextGlitch();
+                  timeout = setTimeout(triggerGlitch, Math.random() * 9000 + 3000);
                 }
               },
               Math.random() * 2000 + 1000,
             );
           } else {
-            scheduleNextGlitch();
+            timeout = setTimeout(triggerGlitch, Math.random() * 9000 + 3000);
           }
         }
       };
 
       flicker();
-    };
-
-    const scheduleNextGlitch = () => {
-      if (!isMounted || !isPageVisible) {
-        return;
-      }
-      const delay = Math.random() * 9000 + 3000;
-      timeout = setTimeout(triggerGlitch, delay);
     };
 
     timeout = setTimeout(triggerGlitch, 500);

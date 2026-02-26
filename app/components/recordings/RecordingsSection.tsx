@@ -1,8 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import type { Recording } from "@/lib/recordings/recordings";
 import type { TrendingRecording } from "@/lib/recordings/trending";
-import { useTranslations } from "next-intl";
 
 import { SectionHeader } from "../ui/SectionHeader";
 

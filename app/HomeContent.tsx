@@ -1,7 +1,5 @@
 "use client";
 
-import type { Recording } from "./lib/recordings/recordings";
-import type { TrendingRecording } from "./lib/recordings/trending";
 import { useTranslations } from "next-intl";
 
 import { EventsSection } from "./components/events/EventsSection";
@@ -11,6 +9,8 @@ import { NewsletterSection } from "./components/newsletter/NewsletterSection";
 import { RecordingsSection } from "./components/recordings/RecordingsSection";
 import { TalkBanner } from "./components/shared/TalkBanner";
 import { upcomingEvents } from "./data/upcoming-events";
+import type { Recording } from "./lib/recordings/recordings";
+import type { TrendingRecording } from "./lib/recordings/trending";
 
 interface HomeContentProps {
   heroImages: {

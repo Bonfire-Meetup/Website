@@ -108,9 +108,12 @@ export function HeroSkeleton() {
                   <div className="space-y-2">
                     <Skeleton className="mx-auto h-3 w-36" />
                     <div className="no-scrollbar -mx-3 flex gap-2 overflow-x-auto px-3 md:mx-0 md:justify-center md:overflow-visible md:px-0">
-                      {Array.from({ length: 3 }).map((_, index) => (
+                      {Array.from(
+                        { length: 3 },
+                        (_, skeletonIndex) => `hero-queue-skeleton-${skeletonIndex}`,
+                      ).map((skeletonId) => (
                         <div
-                          key={`hero-queue-skeleton-${index}`}
+                          key={skeletonId}
                           className="min-w-[11rem] rounded-xl border border-white/10 bg-white/5 p-1.5 sm:min-w-[12rem] md:min-w-[12.5rem]"
                         >
                           <Skeleton className="aspect-[16/9] w-full rounded-lg" />

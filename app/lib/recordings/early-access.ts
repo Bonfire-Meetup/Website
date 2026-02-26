@@ -144,6 +144,20 @@ export const isRecordingRestricted = (
   now = new Date(),
 ): boolean => resolveCurrentRecordingAccess(policy, now).type !== "public";
 
+export const getRequiredMembershipTier = (
+  requirement: RecordingAccessRequirement,
+): RequiredMembershipTier | undefined => {
+  if (requirement.type === "authenticated") {
+    return EARLY_ACCESS_LEVELS.AUTHENTICATED;
+  }
+
+  if (requirement.type === "guild" && requirement.tier) {
+    return requirement.tier;
+  }
+
+  return undefined;
+};
+
 export const getRecordingAccessState = (
   policy: RecordingAccessPolicy | undefined,
   now = new Date(),
@@ -194,18 +208,4 @@ export const canAccessRecording = ({
   }
 
   return (membershipTier ?? 0) >= (current.tier ?? EARLY_ACCESS_LEVELS.GUILD_TIER_1);
-};
-
-export const getRequiredMembershipTier = (
-  requirement: RecordingAccessRequirement,
-): RequiredMembershipTier | undefined => {
-  if (requirement.type === "authenticated") {
-    return EARLY_ACCESS_LEVELS.AUTHENTICATED;
-  }
-
-  if (requirement.type === "guild" && requirement.tier) {
-    return requirement.tier;
-  }
-
-  return undefined;
 };

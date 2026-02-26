@@ -1,10 +1,10 @@
 "use client";
 
-import type { BoostedRecording } from "@/lib/api/user-profile";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { Link } from "@/i18n/navigation";
+import type { BoostedRecording } from "@/lib/api/user-profile";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatShortDateUTC } from "@/lib/utils/locale";
 
@@ -34,18 +34,20 @@ export function BoostedVideosBlock({ loading, error, items, onRemove }: BoostedV
       <div className="p-4">
         {showSkeletons ? (
           <div className="max-h-[280px] space-y-2 overflow-y-auto overscroll-contain sm:max-h-[320px]">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div
-                key={`boost-skeleton-${index}`}
-                className="flex animate-pulse items-center justify-between rounded-xl bg-neutral-50 px-3 py-2.5 dark:bg-white/5"
-              >
-                <div className="space-y-1.5">
-                  <div className="h-3 w-36 rounded bg-neutral-200/70 dark:bg-white/10" />
-                  <div className="h-2.5 w-24 rounded bg-neutral-200/50 dark:bg-white/5" />
+            {Array.from({ length: 3 }, (_, skeletonIndex) => `boost-skeleton-${skeletonIndex}`).map(
+              (skeletonId) => (
+                <div
+                  key={skeletonId}
+                  className="flex animate-pulse items-center justify-between rounded-xl bg-neutral-50 px-3 py-2.5 dark:bg-white/5"
+                >
+                  <div className="space-y-1.5">
+                    <div className="h-3 w-36 rounded bg-neutral-200/70 dark:bg-white/10" />
+                    <div className="h-2.5 w-24 rounded bg-neutral-200/50 dark:bg-white/5" />
+                  </div>
+                  <div className="h-6 w-14 rounded bg-neutral-200/50 dark:bg-white/5" />
                 </div>
-                <div className="h-6 w-14 rounded bg-neutral-200/50 dark:bg-white/5" />
-              </div>
-            ))}
+              ),
+            )}
           </div>
         ) : error ? (
           <div className="py-4 text-center text-sm text-neutral-500 dark:text-neutral-400">

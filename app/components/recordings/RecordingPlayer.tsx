@@ -1,6 +1,5 @@
 "use client";
 
-import type { Recording } from "@/lib/recordings/recordings";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,6 +10,7 @@ import { ArrowLeftIcon, CinemaIcon } from "@/components/shared/Icons";
 import { type BoostedByData } from "@/lib/api/video-engagement";
 import { MEMBERSHIP_TIER_LABELS } from "@/lib/config/membership";
 import { canAccessRecording, getRecordingAccessState } from "@/lib/recordings/early-access";
+import type { Recording } from "@/lib/recordings/recordings";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDate } from "@/lib/utils/locale";

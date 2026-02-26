@@ -117,9 +117,12 @@ export function PasskeyBlock() {
 
         {loading ? (
           <div className="space-y-2">
-            {Array.from({ length: 2 }).map((_, index) => (
+            {Array.from(
+              { length: 2 },
+              (_, skeletonIndex) => `passkey-skeleton-${skeletonIndex}`,
+            ).map((skeletonId) => (
               <div
-                key={`passkey-skeleton-${index}`}
+                key={skeletonId}
                 className="flex animate-pulse items-center justify-between rounded-xl bg-neutral-50 px-3 py-2.5 dark:bg-white/5"
               >
                 <div className="space-y-1.5">

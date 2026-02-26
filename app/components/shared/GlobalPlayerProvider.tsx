@@ -1,6 +1,5 @@
 "use client";
 
-import type { RootState } from "@/lib/redux/store";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
@@ -25,6 +24,7 @@ import {
   setPlayerRect,
   setVideo as setVideoAction,
 } from "@/lib/redux/slices/playerSlice";
+import type { RootState } from "@/lib/redux/store";
 
 import { ChevronLeftIcon, CloseIcon } from "./Icons";
 

@@ -1,11 +1,10 @@
 "use client";
 
-import type { CatalogRecording } from "./RecordingsCatalogTypes";
-
 import { EarlyAccessIcon } from "../shared/Icons";
 
 import { Rail } from "./Rail";
 import { RailCard } from "./RailCard";
+import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
 export function EarlyAccessRail({
   title,

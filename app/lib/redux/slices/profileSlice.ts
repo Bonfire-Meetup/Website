@@ -1,10 +1,11 @@
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+
 import type {
   BoostAllocation,
   BoostedRecording,
   LoginAttempt,
   Profile,
 } from "@/lib/api/user-profile";
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface ProfileState {
   profile: Profile | null;

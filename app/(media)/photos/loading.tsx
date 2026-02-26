@@ -27,11 +27,11 @@ export default function Loading() {
         <div className="relative -mt-20 px-4 sm:-mt-28 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 lg:gap-6">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <Skeleton
-                  key={`photo-skeleton-${index}`}
-                  className="aspect-[3/4] rounded-2xl sm:rounded-3xl"
-                />
+              {Array.from(
+                { length: 4 },
+                (_, skeletonIndex) => `photo-skeleton-${skeletonIndex}`,
+              ).map((skeletonId) => (
+                <Skeleton key={skeletonId} className="aspect-[3/4] rounded-2xl sm:rounded-3xl" />
               ))}
             </div>
           </div>
@@ -50,9 +50,12 @@ export default function Loading() {
             <Skeleton className="h-4 w-72" />
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            {Array.from({ length: 2 }).map((_, index) => (
+            {Array.from(
+              { length: 2 },
+              (_, skeletonIndex) => `filter-skeleton-${skeletonIndex}`,
+            ).map((skeletonId) => (
               <div
-                key={`filter-skeleton-${index}`}
+                key={skeletonId}
                 className="inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-2 ring-1 ring-black/5 dark:bg-white/10 dark:ring-white/10"
               >
                 <Skeleton className="h-6 w-10" />
@@ -63,18 +66,17 @@ export default function Loading() {
         </div>
         <section>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div
-                key={`grid-skeleton-${index}`}
-                className="overflow-hidden rounded-[24px] bg-white/80"
-              >
-                <Skeleton className="aspect-[16/10] w-full !rounded-none" />
-                <div className="space-y-3 p-5">
-                  <Skeleton className="h-5 w-3/4" />
-                  <Skeleton className="h-4 w-24" />
+            {Array.from({ length: 6 }, (_, skeletonIndex) => `grid-skeleton-${skeletonIndex}`).map(
+              (skeletonId) => (
+                <div key={skeletonId} className="overflow-hidden rounded-[24px] bg-white/80">
+                  <Skeleton className="aspect-[16/10] w-full !rounded-none" />
+                  <div className="space-y-3 p-5">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
         </section>
       </div>

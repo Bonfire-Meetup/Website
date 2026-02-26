@@ -1,9 +1,9 @@
-import type { PhotoAlbum } from "@/lib/photos/types";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import photoAlbums from "@/data/photo-albums.json";
 import { buildMetaPageMetadata, getBrandName } from "@/lib/metadata";
+import type { PhotoAlbum } from "@/lib/photos/types";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 
 import { AlbumPageContent } from "./AlbumPageContent";

@@ -1,7 +1,7 @@
 "use client";
 
 import { NextIntlClientProvider } from "next-intl";
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { DEFAULT_TIMEZONE } from "@/lib/config/constants";
 import { type Messages } from "@/lib/i18n/initial";
@@ -69,8 +69,13 @@ export function I18nClientSync({ children, initialLocale, initialMessages }: I18
     [loadLocale],
   );
 
+  const contextValue = useMemo(
+    () => ({ locale: state.locale, setLocale }),
+    [state.locale, setLocale],
+  );
+
   return (
-    <I18nContext.Provider value={{ locale: state.locale, setLocale }}>
+    <I18nContext.Provider value={contextValue}>
       <NextIntlClientProvider
         locale={state.locale}
         messages={state.messages}

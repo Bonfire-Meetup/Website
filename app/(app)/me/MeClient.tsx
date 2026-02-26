@@ -1,6 +1,5 @@
 "use client";
 
-import type { RootState } from "@/lib/redux/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -48,6 +47,7 @@ import {
   setStagedPublicProfile,
   type ProfileState,
 } from "@/lib/redux/slices/profileSlice";
+import type { RootState } from "@/lib/redux/store";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDayMonthUTC } from "@/lib/utils/locale";
 import { logWarn } from "@/lib/utils/log-client";
@@ -203,7 +203,7 @@ export function MeClient() {
 
   const loading = profileQuery.isLoading;
   const showSkeletons = !isHydrated || loading;
-  const error = profileQuery.isError ? t("error") : null;
+  const profileError = profileQuery.isError ? t("error") : null;
 
   const updatingCommunityEmails =
     stagedCommunityEmails !== null && updatePreferenceMutation.isPending;
@@ -271,8 +271,8 @@ export function MeClient() {
       const data = await deleteChallengeMutation.mutateAsync();
       dispatch(setDeleteChallengeToken(data.challenge_token));
       dispatch(setDeleteStep("verify"));
-    } catch (error) {
-      logWarn("account.delete_challenge_failed", { error: String(error) });
+    } catch (deleteChallengeError) {
+      logWarn("account.delete_challenge_failed", { error: String(deleteChallengeError) });
     }
   };
 
@@ -315,8 +315,8 @@ export function MeClient() {
     try {
       await removeBoostMutation.mutateAsync(shortId);
       dispatch(removeBoostAction(shortId));
-    } catch (error) {
-      logWarn("profile.remove_boost_failed", { error: String(error), shortId });
+    } catch (mutationError) {
+      logWarn("profile.remove_boost_failed", { error: String(mutationError), shortId });
     }
   };
 
@@ -422,9 +422,9 @@ export function MeClient() {
         )}
       </div>
 
-      {error && (
+      {profileError && (
         <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
-          {error}
+          {profileError}
         </div>
       )}
 

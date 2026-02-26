@@ -328,11 +328,11 @@ function generateAvatar(seed: string, isTiny: boolean, forcePatternType?: Patter
       }
     }
 
-    pts.forEach((p, i) => {
+    pts.forEach((p) => {
       const hi = rnd() < 0.25;
       patternElements.push(
         <circle
-          key={`s-${i}`}
+          key={`s-${p.x}-${p.y}`}
           cx={`${p.x}%`}
           cy={`${p.y}%`}
           r={hi ? "2.1%" : "1.3%"}
@@ -494,7 +494,7 @@ function generateAvatar(seed: string, isTiny: boolean, forcePatternType?: Patter
 
       patternElements.push(
         <rect
-          key={`px-${i}`}
+          key={`px-${p.x}-${p.y}`}
           x={`${round2(p.x * cell)}%`}
           y={`${round2(p.y * cell)}%`}
           width={`${round2(cell)}%`}

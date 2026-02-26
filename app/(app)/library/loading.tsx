@@ -41,8 +41,11 @@ export default function LibraryLoading() {
           </div>
 
           <div className="mt-10 space-y-12">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <RecordingsRailSkeleton key={`section-skeleton-${index}`} />
+            {Array.from(
+              { length: 3 },
+              (_, skeletonIndex) => `section-skeleton-${skeletonIndex}`,
+            ).map((skeletonId) => (
+              <RecordingsRailSkeleton key={skeletonId} />
             ))}
           </div>
 

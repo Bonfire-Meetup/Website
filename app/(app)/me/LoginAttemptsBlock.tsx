@@ -42,9 +42,12 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
       <div className="p-4">
         {loading ? (
           <div className="max-h-[240px] space-y-2 overflow-y-auto overscroll-contain sm:max-h-[280px]">
-            {Array.from({ length: 3 }).map((_, index) => (
+            {Array.from(
+              { length: 3 },
+              (_, skeletonIndex) => `attempt-skeleton-${skeletonIndex}`,
+            ).map((skeletonId) => (
               <div
-                key={`attempt-skeleton-${index}`}
+                key={skeletonId}
                 className="flex animate-pulse items-center justify-between rounded-xl bg-neutral-50 px-3 py-2.5 dark:bg-white/5"
               >
                 <div className="space-y-1.5">

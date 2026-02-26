@@ -1,4 +1,3 @@
-import type { CatalogRecording } from "./RecordingsCatalogTypes";
 import { getTranslations } from "next-intl/server";
 
 import { getRequestLocale } from "@/lib/i18n/request-locale";
@@ -9,6 +8,7 @@ import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
 import { getRailCardKey } from "./rail-card-utils";
 import { RailCardServer } from "./RailCardServer";
 import { RailServer } from "./RailServer";
+import type { CatalogRecording } from "./RecordingsCatalogTypes";
 import { getTrendRailBadge, getTrendRailChrome, type TrendRailKind } from "./trend-rail-config";
 
 interface TrendingRailProps {

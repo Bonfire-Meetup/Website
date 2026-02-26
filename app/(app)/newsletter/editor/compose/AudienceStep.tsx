@@ -1,11 +1,12 @@
 "use client";
 
-import type { NewsletterWizardData } from "./types";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { PlusIcon, XIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
+
+import type { NewsletterWizardData } from "./types";
 
 interface AudienceStepProps {
   data: NewsletterWizardData["audience"];

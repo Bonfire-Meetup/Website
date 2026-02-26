@@ -175,16 +175,18 @@ export function CheckInClient() {
                 <div className="rounded-2xl bg-white p-4 shadow-inner">
                   <div className="relative h-64 w-64 overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-800">
                     <div className="absolute inset-0 grid grid-cols-8 gap-2 p-3">
-                      {Array.from({ length: 64 }).map((_, i) => (
-                        <div
-                          key={`skeleton-${i}`}
-                          className="animate-pulse rounded-sm bg-neutral-300 dark:bg-neutral-600"
-                          style={{
-                            animationDelay: `${(i % 8) * 50}ms`,
-                            animationDuration: "1.5s",
-                          }}
-                        />
-                      ))}
+                      {Array.from({ length: 64 }, (_, skeletonIndex) => skeletonIndex).map(
+                        (skeletonIndex) => (
+                          <div
+                            key={`skeleton-${skeletonIndex}`}
+                            className="animate-pulse rounded-sm bg-neutral-300 dark:bg-neutral-600"
+                            style={{
+                              animationDelay: `${(skeletonIndex % 8) * 50}ms`,
+                              animationDuration: "1.5s",
+                            }}
+                          />
+                        ),
+                      )}
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="rounded-lg bg-white/80 p-3 backdrop-blur-sm dark:bg-neutral-900/80">

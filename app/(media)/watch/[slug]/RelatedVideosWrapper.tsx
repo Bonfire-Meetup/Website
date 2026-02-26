@@ -1,5 +1,4 @@
 import type { RelatedRecording } from "@/components/recordings/RecordingPlayer";
-
 import { RelatedVideosSection } from "@/components/recordings/RelatedVideosSection";
 
 interface RelatedVideosWrapperProps {

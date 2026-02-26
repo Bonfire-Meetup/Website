@@ -1,6 +1,5 @@
 "use client";
 
-import type { LocationFilter } from "./RecordingsCatalogTypes";
 import { useTranslations } from "next-intl";
 import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
 
@@ -8,6 +7,8 @@ import { LOCATIONS } from "@/lib/config/constants";
 
 import { Button } from "../ui/Button";
 import { type DropdownGroup, type DropdownOption, SelectDropdown } from "../ui/SelectDropdown";
+
+import type { LocationFilter } from "./RecordingsCatalogTypes";
 
 const locationOptions: {
   value: LocationFilter;

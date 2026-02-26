@@ -1,4 +1,3 @@
-import type { RelatedRecording } from "./RecordingPlayer";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
@@ -11,6 +10,7 @@ import { RecordingAccessPill } from "./RecordingAccessPill";
 import { RecordingCompactCard } from "./RecordingCompactCard";
 import { RecordingEpisodePill } from "./RecordingEpisodePill";
 import { RecordingImage } from "./RecordingImage";
+import type { RelatedRecording } from "./RecordingPlayer";
 
 interface RelatedVideosSectionProps {
   relatedRecordings: RelatedRecording[];

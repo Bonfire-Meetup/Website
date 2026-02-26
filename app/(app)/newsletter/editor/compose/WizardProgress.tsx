@@ -1,9 +1,10 @@
 "use client";
 
-import type { WizardStep } from "./types";
 import { useTranslations } from "next-intl";
 
 import { CheckIcon } from "@/components/shared/Icons";
+
+import type { WizardStep } from "./types";
 
 interface WizardProgressProps {
   currentStep: WizardStep;

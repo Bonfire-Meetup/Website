@@ -22,9 +22,11 @@ export default function AlbumLoading() {
           </div>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={`album-skeleton-${index}`} className="aspect-[4/3] w-full" />
-          ))}
+          {Array.from({ length: 6 }, (_, skeletonIndex) => `album-skeleton-${skeletonIndex}`).map(
+            (skeletonId) => (
+              <Skeleton key={skeletonId} className="aspect-[4/3] w-full" />
+            ),
+          )}
         </div>
       </div>
     </main>

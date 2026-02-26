@@ -1,6 +1,6 @@
-import type { Recording } from "@/lib/recordings/recordings";
 import { useLocale, useTranslations } from "next-intl";
 
+import type { Recording } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDate } from "@/lib/utils/locale";
 

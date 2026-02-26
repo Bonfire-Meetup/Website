@@ -1,4 +1,3 @@
-import type { Recording } from "@/lib/recordings/recordings";
 import { useTranslations } from "next-intl";
 
 import { CalendarIcon, MapPinIcon, UserIcon } from "@/components/shared/Icons";
@@ -7,6 +6,7 @@ import { Pill } from "@/components/ui/Pill";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { MEMBERSHIP_TIER_LABELS } from "@/lib/config/membership";
 import { getRecordingAccessState } from "@/lib/recordings/early-access";
+import type { Recording } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { RecordingEpisodePill } from "./RecordingEpisodePill";

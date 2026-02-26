@@ -287,8 +287,12 @@ export function GuildPageContent() {
         </div>
 
         <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden>
-          {embers.map((style, i) => (
-            <GuildEmber key={`guild-ember-${i}`} style={style} visible={embersVisible} />
+          {embers.map((style) => (
+            <GuildEmber
+              key={`guild-ember-${String(style.left)}-${String(style.animationDelay)}-${String(style.animationDuration)}`}
+              style={style}
+              visible={embersVisible}
+            />
           ))}
         </div>
 

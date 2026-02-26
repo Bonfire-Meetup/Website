@@ -308,9 +308,9 @@ export function EventDetailContent({
                   </div>
 
                   <div className="space-y-4">
-                    {confirmedSpeakers.map((speaker, index) => (
+                    {confirmedSpeakers.map((speaker) => (
                       <div
-                        key={`${speaker.name}-${index}`}
+                        key={`${speaker.name}-${speaker.topic}`}
                         className="flex items-start gap-4 rounded-2xl bg-white/50 p-4 dark:bg-white/5"
                       >
                         <div

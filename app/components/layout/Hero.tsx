@@ -324,7 +324,7 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         {embers.map((style, i) => (
           <Ember
-            key={`ember-${i}`}
+            key={`ember-${String(style.left)}-${String(style.animationDelay)}-${String(style.animationDuration)}`}
             style={style}
             className={i >= 2 ? "hidden md:block" : ""}
             visible={embersVisible}

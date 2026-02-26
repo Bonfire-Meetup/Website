@@ -91,8 +91,11 @@ export default function WatchLoading() {
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <RelatedCardSkeleton key={`related-skeleton-${i}`} />
+              {Array.from(
+                { length: 3 },
+                (_, skeletonIndex) => `related-skeleton-${skeletonIndex}`,
+              ).map((skeletonId) => (
+                <RelatedCardSkeleton key={skeletonId} />
               ))}
             </div>
           </section>

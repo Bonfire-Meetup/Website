@@ -85,46 +85,6 @@ const isRateLimited = (key: string, maxHits: number, windowMs: number = rateLimi
   return false;
 };
 
-export const POST = async (request: Request) =>
-  runWithRequestContext(request, async () => {
-    const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
-    const delay = () =>
-      new Promise<void>((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, failureDelayMs);
-      });
-
-    let payload: unknown;
-
-    try {
-      payload = await request.json();
-    } catch {
-      logWarn("auth.token.invalid_request");
-      await delay();
-      return respond({ error: "invalid_request" }, { status: 400 });
-    }
-
-    const result = tokenRequestSchema.safeParse(payload);
-
-    if (!result.success) {
-      logWarn("auth.token.invalid_request");
-      await delay();
-      return respond({ error: "invalid_request" }, { status: 400 });
-    }
-
-    const { headers } = request;
-    const ip = getClientIp(headers);
-    const userAgent = headers.get("user-agent");
-    const clientFingerprint = getClientFingerprint({ ip, userAgent });
-    const requestId = getRequestId() ?? "unknown";
-
-    if (result.data.grant_type === "refresh_token") {
-      return handleRefreshTokenGrant(request, ip, userAgent, clientFingerprint, requestId);
-    }
-    return handleEmailOtpGrant(result.data, ip, userAgent, clientFingerprint, requestId);
-  });
-
 const issueTokens = async (
   userId: string,
   tokenFamilyId: string,
@@ -426,3 +386,43 @@ const handleEmailOtpGrant = async (
     },
   );
 };
+
+export const POST = async (request: Request) =>
+  runWithRequestContext(request, async () => {
+    const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
+    const delay = () =>
+      new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, failureDelayMs);
+      });
+
+    let payload: unknown;
+
+    try {
+      payload = await request.json();
+    } catch {
+      logWarn("auth.token.invalid_request");
+      await delay();
+      return respond({ error: "invalid_request" }, { status: 400 });
+    }
+
+    const result = tokenRequestSchema.safeParse(payload);
+
+    if (!result.success) {
+      logWarn("auth.token.invalid_request");
+      await delay();
+      return respond({ error: "invalid_request" }, { status: 400 });
+    }
+
+    const { headers } = request;
+    const ip = getClientIp(headers);
+    const userAgent = headers.get("user-agent");
+    const clientFingerprint = getClientFingerprint({ ip, userAgent });
+    const requestId = getRequestId() ?? "unknown";
+
+    if (result.data.grant_type === "refresh_token") {
+      return handleRefreshTokenGrant(request, ip, userAgent, clientFingerprint, requestId);
+    }
+    return handleEmailOtpGrant(result.data, ip, userAgent, clientFingerprint, requestId);
+  });

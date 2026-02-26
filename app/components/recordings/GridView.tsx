@@ -1,8 +1,7 @@
 "use client";
 
-import type { CatalogRecording } from "./RecordingsCatalogTypes";
-
 import { RecordingDetailedCard } from "./RecordingDetailedCard";
+import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
 export function GridView({
   recordings,

@@ -1,5 +1,6 @@
-import type { BoostedByData } from "@/lib/api/video-engagement";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+
+import type { BoostedByData } from "@/lib/api/video-engagement";
 
 export type VideoEngagementState = Record<
   string,

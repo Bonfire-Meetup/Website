@@ -1,4 +1,3 @@
-import type { PasskeyRow } from "@/lib/data/passkey";
 import {
   generateAuthenticationOptions,
   generateRegistrationOptions,
@@ -13,6 +12,7 @@ import {
 } from "@simplewebauthn/server";
 
 import { serverEnv } from "@/lib/config/env";
+import type { PasskeyRow } from "@/lib/data/passkey";
 
 const CHALLENGE_TTL_MS = 5 * 60 * 1000;
 

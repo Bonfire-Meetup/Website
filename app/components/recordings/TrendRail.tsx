@@ -1,10 +1,9 @@
 "use client";
 
-import type { CatalogRecording } from "./RecordingsCatalogTypes";
-
 import { Rail } from "./Rail";
 import { getRailCardKey } from "./rail-card-utils";
 import { RailCard } from "./RailCard";
+import type { CatalogRecording } from "./RecordingsCatalogTypes";
 import { getTrendRailBadge, getTrendRailChrome, type TrendRailKind } from "./trend-rail-config";
 
 export function TrendRail<T extends CatalogRecording>({

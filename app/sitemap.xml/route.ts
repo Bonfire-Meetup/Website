@@ -1,7 +1,6 @@
-import type { PhotoAlbum } from "@/lib/photos/types";
-
 import photoAlbums from "@/data/photo-albums.json";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import type { PhotoAlbum } from "@/lib/photos/types";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { buildSitemapIndexXml } from "@/lib/utils/sitemap-utils";
 const PAGE_SIZE = 10000;

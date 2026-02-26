@@ -1,10 +1,10 @@
-import type { PhotoAlbum } from "@/lib/photos/types";
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 
 import photoAlbums from "@/data/photo-albums.json";
 import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 import { buildMetaPageMetadata } from "@/lib/metadata";
+import type { PhotoAlbum } from "@/lib/photos/types";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 
 import { PhotosPageContent } from "./PhotosPageContent";

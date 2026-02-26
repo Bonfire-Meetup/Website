@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 interface NavigationContextType {
   startNavigation: () => void;
@@ -112,11 +120,12 @@ export function NavigationProvider({ children }: { children: React.ReactNode }) 
     };
   }, [startNavigation, completeNavigation]);
 
-  return (
-    <NavigationContext.Provider value={{ startNavigation, completeNavigation, isNavigating }}>
-      {children}
-    </NavigationContext.Provider>
+  const contextValue = useMemo(
+    () => ({ startNavigation, completeNavigation, isNavigating }),
+    [startNavigation, completeNavigation, isNavigating],
   );
+
+  return <NavigationContext.Provider value={contextValue}>{children}</NavigationContext.Provider>;
 }
 
 interface NavigationLinkProps extends React.ComponentPropsWithoutRef<typeof Link> {

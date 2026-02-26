@@ -17,6 +17,28 @@ import {
   serial,
 } from "drizzle-orm/pg-core";
 
+export const appUser = pgTable(
+  "app_user",
+  {
+    id: uuid().defaultRandom().notNull(),
+    email: text().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    lastLoginAt: timestamp("last_login_at", { withTimezone: true, mode: "string" }),
+    name: text(),
+    preferences: jsonb().default({}).notNull(),
+    roles: text().array().default([""]).notNull(),
+    membershipTier: smallint("membership_tier"),
+  },
+  (table) => [
+    index("app_user_email_idx").using("btree", table.email.asc().nullsLast().op("text_ops")),
+    index("app_user_membership_tier_idx")
+      .using("btree", table.membershipTier.asc().nullsLast().op("int2_ops"))
+      .where(sql`(membership_tier IS NOT NULL)`),
+  ],
+);
+
 export const authAttempt = pgTable(
   "auth_attempt",
   {
@@ -239,28 +261,6 @@ export const talkProposals = pgTable(
       "btree",
       table.ipHash.asc().nullsLast().op("text_ops"),
     ),
-  ],
-);
-
-export const appUser = pgTable(
-  "app_user",
-  {
-    id: uuid().defaultRandom().notNull(),
-    email: text().notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
-      .defaultNow()
-      .notNull(),
-    lastLoginAt: timestamp("last_login_at", { withTimezone: true, mode: "string" }),
-    name: text(),
-    preferences: jsonb().default({}).notNull(),
-    roles: text().array().default([""]).notNull(),
-    membershipTier: smallint("membership_tier"),
-  },
-  (table) => [
-    index("app_user_email_idx").using("btree", table.email.asc().nullsLast().op("text_ops")),
-    index("app_user_membership_tier_idx")
-      .using("btree", table.membershipTier.asc().nullsLast().op("int2_ops"))
-      .where(sql`(membership_tier IS NOT NULL)`),
   ],
 );
 

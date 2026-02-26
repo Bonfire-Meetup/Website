@@ -1,10 +1,11 @@
 "use client";
 
-import type { NewsletterSection, NewsletterWizardData } from "./types";
 import { useTranslations } from "next-intl";
 
 import { PlusIcon, TrashIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
+
+import type { NewsletterSection, NewsletterWizardData } from "./types";
 
 interface EditorStepProps {
   data: NewsletterWizardData;

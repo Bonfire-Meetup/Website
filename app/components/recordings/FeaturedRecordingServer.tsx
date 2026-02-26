@@ -1,10 +1,9 @@
-import type { CatalogRecording } from "./RecordingsCatalogTypes";
-
 import {
   buildFeaturedCandidateContents,
   buildFeaturedImageElements,
 } from "./featured-carousel-builders";
 import { FeaturedCarouselWrapper } from "./FeaturedCarouselWrapper";
+import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
 interface FeaturedRecordingServerProps {
   candidates: CatalogRecording[];

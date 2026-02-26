@@ -19,9 +19,12 @@ export function UpcomingRsvpsSkeleton() {
         </div>
 
         <div className="space-y-3 p-4 sm:p-6">
-          {Array.from({ length: 2 }).map((_, i) => (
+          {Array.from(
+            { length: 2 },
+            (_, skeletonIndex) => `upcoming-rsvp-skeleton-${skeletonIndex}`,
+          ).map((skeletonId) => (
             <div
-              key={`upcoming-rsvp-skeleton-${i}`}
+              key={skeletonId}
               className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-white/5 dark:bg-neutral-800/30"
             >
               <Skeleton className="mb-2 h-4 w-3/4" />

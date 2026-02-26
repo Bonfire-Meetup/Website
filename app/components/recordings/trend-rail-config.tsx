@@ -1,10 +1,11 @@
-import type { RailCardBadge } from "./rail-card-utils";
-import type { CatalogRecording } from "./RecordingsCatalogTypes";
 import type { ReactNode } from "react";
 
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 
 import { BoltIcon, FireIcon, SparklesIcon } from "../shared/Icons";
+
+import type { RailCardBadge } from "./rail-card-utils";
+import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
 export type TrendRailKind = "memberPicks" | "hot" | "hiddenGems";
 

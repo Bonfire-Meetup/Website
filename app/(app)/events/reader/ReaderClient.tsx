@@ -90,6 +90,133 @@ export function ReaderClient() {
     );
   }
 
+  const stopScanner = async () => {
+    if (scannerRef.current) {
+      try {
+        await scannerRef.current.stop();
+        await scannerRef.current.clear();
+        // oxlint-disable-next-line no-empty
+      } catch {}
+      scannerRef.current = null;
+    }
+    setIsScanning(false);
+  };
+
+  const handleStopReader = async () => {
+    await stopScanner();
+    setIsVerifying(false);
+    setScanResult(null);
+    isProcessingRef.current = false;
+  };
+
+  const handleScanSuccess = async (decodedText: string) => {
+    if (isProcessingRef.current) {
+      return;
+    }
+    isProcessingRef.current = true;
+
+    const timeoutId = setTimeout(() => {
+      isProcessingRef.current = false;
+      setIsVerifying(false);
+    }, 10000);
+
+    setIsVerifying(true);
+    setScanResult(null);
+
+    const token = extractTokenFromUrl(decodedText);
+
+    if (!token) {
+      clearTimeout(timeoutId);
+      setIsVerifying(false);
+      setScanResult({
+        valid: false,
+        error: t("errors.contentInvalid"),
+        timestamp: Date.now(),
+      });
+      isProcessingRef.current = false;
+      return;
+    }
+
+    const parsed = parseCheckInToken(token);
+
+    if (!parsed.valid) {
+      clearTimeout(timeoutId);
+      setIsVerifying(false);
+      let errorMessage = t("errors.contentInvalid");
+      if (parsed.error === "Token expired") {
+        errorMessage = t("errors.tokenExpired");
+      } else if (parsed.error?.includes("format") || parsed.error?.includes("version")) {
+        errorMessage = t("errors.contentInvalid");
+      }
+      setScanResult({
+        valid: false,
+        error: errorMessage,
+        timestamp: Date.now(),
+      });
+      isProcessingRef.current = false;
+      return;
+    }
+
+    try {
+      const response = await authFetch(API_ROUTES.CHECK_IN.VERIFY, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+
+      const result = await response.json();
+      setIsVerifying(false);
+
+      if (result.valid) {
+        clearTimeout(timeoutId);
+        setScanResult({
+          valid: true,
+          publicId: result.publicId,
+          name: result.name,
+          timestamp: Date.now(),
+          checkedIn: false,
+        });
+        await stopScanner();
+        isProcessingRef.current = false;
+      } else {
+        clearTimeout(timeoutId);
+        let errorMessage = t("errors.verificationFailed");
+        const isInvalidSignature = result.error === "Invalid signature";
+        if (isInvalidSignature) {
+          errorMessage = t("errors.signatureInvalid");
+        } else if (result.error === "Token expired") {
+          errorMessage = t("errors.tokenExpired");
+        } else if (result.error?.includes("format") || result.error?.includes("version")) {
+          errorMessage = t("errors.contentInvalid");
+        } else if (result.error) {
+          errorMessage = result.error;
+        }
+        setScanResult({
+          valid: false,
+          error: errorMessage,
+          timestamp: Date.now(),
+        });
+        if (isInvalidSignature) {
+          await stopScanner();
+        }
+        isProcessingRef.current = false;
+      }
+    } catch (err) {
+      clearTimeout(timeoutId);
+      setIsVerifying(false);
+      if (err instanceof ApiError && err.status === 401) {
+        router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
+        return;
+      }
+      setScanResult({
+        valid: false,
+        error: t("errors.verificationFailed"),
+        timestamp: Date.now(),
+      });
+      isProcessingRef.current = false;
+    }
+  };
+
   const handleStartReader = async () => {
     if (!selectedEvent) {
       setError(t("errors.noEventSelected"));
@@ -233,133 +360,6 @@ export function ReaderClient() {
       setError(t("errors.cameraAccessFailed"));
       setIsScanning(false);
       scannerRef.current = null;
-    }
-  };
-
-  const stopScanner = async () => {
-    if (scannerRef.current) {
-      try {
-        await scannerRef.current.stop();
-        await scannerRef.current.clear();
-        // oxlint-disable-next-line no-empty
-      } catch {}
-      scannerRef.current = null;
-    }
-    setIsScanning(false);
-  };
-
-  const handleStopReader = async () => {
-    await stopScanner();
-    setIsVerifying(false);
-    setScanResult(null);
-    isProcessingRef.current = false;
-  };
-
-  const handleScanSuccess = async (decodedText: string) => {
-    if (isProcessingRef.current) {
-      return;
-    }
-    isProcessingRef.current = true;
-
-    const timeoutId = setTimeout(() => {
-      isProcessingRef.current = false;
-      setIsVerifying(false);
-    }, 10000);
-
-    setIsVerifying(true);
-    setScanResult(null);
-
-    const token = extractTokenFromUrl(decodedText);
-
-    if (!token) {
-      clearTimeout(timeoutId);
-      setIsVerifying(false);
-      setScanResult({
-        valid: false,
-        error: t("errors.contentInvalid"),
-        timestamp: Date.now(),
-      });
-      isProcessingRef.current = false;
-      return;
-    }
-
-    const parsed = parseCheckInToken(token);
-
-    if (!parsed.valid) {
-      clearTimeout(timeoutId);
-      setIsVerifying(false);
-      let errorMessage = t("errors.contentInvalid");
-      if (parsed.error === "Token expired") {
-        errorMessage = t("errors.tokenExpired");
-      } else if (parsed.error?.includes("format") || parsed.error?.includes("version")) {
-        errorMessage = t("errors.contentInvalid");
-      }
-      setScanResult({
-        valid: false,
-        error: errorMessage,
-        timestamp: Date.now(),
-      });
-      isProcessingRef.current = false;
-      return;
-    }
-
-    try {
-      const response = await authFetch(API_ROUTES.CHECK_IN.VERIFY, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      });
-
-      const result = await response.json();
-      setIsVerifying(false);
-
-      if (result.valid) {
-        clearTimeout(timeoutId);
-        setScanResult({
-          valid: true,
-          publicId: result.publicId,
-          name: result.name,
-          timestamp: Date.now(),
-          checkedIn: false,
-        });
-        await stopScanner();
-        isProcessingRef.current = false;
-      } else {
-        clearTimeout(timeoutId);
-        let errorMessage = t("errors.verificationFailed");
-        const isInvalidSignature = result.error === "Invalid signature";
-        if (isInvalidSignature) {
-          errorMessage = t("errors.signatureInvalid");
-        } else if (result.error === "Token expired") {
-          errorMessage = t("errors.tokenExpired");
-        } else if (result.error?.includes("format") || result.error?.includes("version")) {
-          errorMessage = t("errors.contentInvalid");
-        } else if (result.error) {
-          errorMessage = result.error;
-        }
-        setScanResult({
-          valid: false,
-          error: errorMessage,
-          timestamp: Date.now(),
-        });
-        if (isInvalidSignature) {
-          await stopScanner();
-        }
-        isProcessingRef.current = false;
-      }
-    } catch (err) {
-      clearTimeout(timeoutId);
-      setIsVerifying(false);
-      if (err instanceof ApiError && err.status === 401) {
-        router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
-        return;
-      }
-      setScanResult({
-        valid: false,
-        error: t("errors.verificationFailed"),
-        timestamp: Date.now(),
-      });
-      isProcessingRef.current = false;
     }
   };
 

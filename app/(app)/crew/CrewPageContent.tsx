@@ -72,19 +72,23 @@ function RoleIcon({ role, className }: { role: string; className?: string }) {
 
 function renderWithBold(text: string) {
   const parts = text.split(/(\*\*.*?\*\*)/g);
-  return parts.map((part, i) => {
+  let offset = 0;
+  return parts.map((part) => {
+    const partOffset = offset;
+    offset += part.length;
+
     if (part.startsWith("**") && part.endsWith("**")) {
       const content = part.slice(2, -2);
       return (
         <strong
-          key={`bold-${i}-${content.slice(0, 10)}`}
+          key={`bold-${partOffset}-${content.slice(0, 10)}`}
           className="font-semibold text-neutral-700 dark:text-neutral-200"
         >
           {content}
         </strong>
       );
     }
-    return <span key={`text-${i}`}>{part}</span>;
+    return <span key={`text-${partOffset}`}>{part}</span>;
   });
 }
 

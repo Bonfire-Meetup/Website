@@ -19,9 +19,12 @@ export function RelatedVideosSkeleton() {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-        {Array.from({ length: 3 }).map((_, index) => (
+        {Array.from(
+          { length: 3 },
+          (_, skeletonIndex) => `related-video-skeleton-${skeletonIndex}`,
+        ).map((skeletonId) => (
           <div
-            key={`related-video-skeleton-${index}`}
+            key={skeletonId}
             className="relative flex animate-pulse flex-col overflow-hidden rounded-[16px] border border-black/10 bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)]"
           >
             <div className="relative aspect-video w-full bg-neutral-900" />

@@ -1,6 +1,5 @@
 "use client";
 
-import type { PhotoAlbum } from "@/lib/photos/types";
 import { useTranslations } from "next-intl";
 
 import { AlbumImage } from "@/components/shared/AlbumImage";
@@ -8,6 +7,7 @@ import { ArrowLeftIcon, ExternalLinkIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import photoAlbums from "@/data/photo-albums.json";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import type { PhotoAlbum } from "@/lib/photos/types";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -90,7 +90,7 @@ export function AlbumPageContent({ albumId }: AlbumPageContentProps) {
                   <span className="flex flex-wrap items-center gap-2">
                     {photographers.map((photographer, index) => (
                       <span
-                        key={`${photographer.name}-${index}`}
+                        key={`${photographer.name}-${photographer.url ?? "no-url"}`}
                         className="inline-flex items-center gap-2"
                       >
                         {photographer.url ? (

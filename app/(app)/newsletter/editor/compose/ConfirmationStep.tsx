@@ -1,6 +1,5 @@
 "use client";
 
-import type { NewsletterWizardData } from "./types";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -10,6 +9,8 @@ import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { createJsonAuthHeaders } from "@/lib/utils/http";
 import { logWarn } from "@/lib/utils/log-client";
+
+import type { NewsletterWizardData } from "./types";
 
 interface ConfirmationStepProps {
   data: NewsletterWizardData;

@@ -1,6 +1,5 @@
 "use client";
 
-import type { RootState } from "@/lib/redux/store";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,6 +8,7 @@ import { AccentBar } from "@/components/ui/AccentBar";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppSelector } from "@/lib/redux/hooks";
+import type { RootState } from "@/lib/redux/store";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { NewsletterWizard } from "./NewsletterWizard";

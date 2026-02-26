@@ -11,16 +11,18 @@ export default function NewsletterLoading() {
         </div>
 
         <div className="space-y-10">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <div key={`section-skeleton-${index}`} className="space-y-4">
-              <Skeleton className="h-7 w-2/3" />
-              <div className="space-y-3">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-4/5" />
+          {Array.from({ length: 3 }, (_, skeletonIndex) => `section-skeleton-${skeletonIndex}`).map(
+            (skeletonId) => (
+              <div key={skeletonId} className="space-y-4">
+                <Skeleton className="h-7 w-2/3" />
+                <div className="space-y-3">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-4/5" />
+                </div>
               </div>
-            </div>
-          ))}
+            ),
+          )}
         </div>
 
         <div className="mt-12 flex justify-center">

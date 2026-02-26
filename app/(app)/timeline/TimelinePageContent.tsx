@@ -1,6 +1,5 @@
 "use client";
 
-import type { PhotoAlbum } from "@/lib/photos/types";
 import { useLocale, useTranslations } from "next-intl";
 
 import { AlbumImage } from "@/components/shared/AlbumImage";
@@ -8,6 +7,7 @@ import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
 import photoAlbums from "@/data/photo-albums.json";
+import type { PhotoAlbum } from "@/lib/photos/types";
 import { buildAlbumSlug, episodes, type EpisodeEntry } from "@/lib/recordings/episodes";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";

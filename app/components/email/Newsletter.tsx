@@ -146,16 +146,16 @@ export function Newsletter({
                     {section.title}
                   </Heading>
 
-                  {section.text.split("\n\n").map((paragraph, pIndex, paragraphs) => (
+                  {section.text.split("\n\n").map((paragraph, _pIndex, paragraphs) => (
                     <Text
-                      key={`${section.id}-p-${pIndex}`}
+                      key={`${section.id}-p-${paragraph.slice(0, 24)}-${paragraph.length}`}
                       className="m-0"
                       style={{
                         color: "#525252",
                         fontSize: index === 0 ? "16px" : "15px",
                         lineHeight: "1.7",
                         margin: 0,
-                        marginBottom: pIndex === paragraphs.length - 1 ? "24px" : "16px",
+                        marginBottom: paragraph === paragraphs.at(-1) ? "24px" : "16px",
                       }}
                     >
                       {paragraph}

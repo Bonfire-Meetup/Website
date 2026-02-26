@@ -1,6 +1,5 @@
 "use client";
 
-import type { LibraryApiPayload, LibraryRowsPayload } from "@/lib/recordings/library-filter";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
@@ -9,6 +8,7 @@ import { InfoIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { getRecordingAccessState } from "@/lib/recordings/early-access";
 import { getFeaturedCandidates } from "@/lib/recordings/library-featured";
+import type { LibraryApiPayload, LibraryRowsPayload } from "@/lib/recordings/library-filter";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { logError } from "@/lib/utils/log-client";
 
@@ -319,8 +319,11 @@ export function RecordingsCatalog({
               {localViewMode === "rows" ? (
                 isFiltering ? (
                   <div className="space-y-12">
-                    {Array.from({ length: 3 }).map((_, index) => (
-                      <RecordingsRailSkeleton key={`filter-rail-skeleton-${index}`} />
+                    {Array.from(
+                      { length: 3 },
+                      (_, skeletonIndex) => `filter-rail-skeleton-${skeletonIndex}`,
+                    ).map((skeletonId) => (
+                      <RecordingsRailSkeleton key={skeletonId} />
                     ))}
                   </div>
                 ) : (

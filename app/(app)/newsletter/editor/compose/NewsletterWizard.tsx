@@ -1,6 +1,5 @@
 "use client";
 
-import type { NewsletterSection, NewsletterWizardData, WizardStep } from "./types";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -12,6 +11,7 @@ import { logWarn } from "@/lib/utils/log-client";
 import { AudienceStep } from "./AudienceStep";
 import { ConfirmationStep } from "./ConfirmationStep";
 import { EditorStep } from "./EditorStep";
+import type { NewsletterSection, NewsletterWizardData, WizardStep } from "./types";
 import { WizardProgress } from "./WizardProgress";
 
 const STORAGE_KEY = "newsletter-draft";

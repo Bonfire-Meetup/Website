@@ -169,12 +169,9 @@ export function FeaturedCarouselWrapper({
         )}
       </div>
       <div className="absolute right-4 bottom-4 left-4 z-20 sm:right-6 sm:bottom-6 sm:left-6">
-        {candidateContents.map((content, index) => (
-          <div
-            key={candidates[index].shortId}
-            className={index === featuredIndex ? "block" : "hidden"}
-          >
-            {content}
+        {candidates.map((candidate, index) => (
+          <div key={candidate.shortId} className={index === featuredIndex ? "block" : "hidden"}>
+            {candidateContents[index]}
           </div>
         ))}
       </div>

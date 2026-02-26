@@ -1,7 +1,6 @@
-import type { PhotoAlbum } from "@/lib/photos/types";
-
 import photoAlbums from "@/data/photo-albums.json";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import type { PhotoAlbum } from "@/lib/photos/types";
 import { buildAlbumSlug, getEpisodeById } from "@/lib/recordings/episodes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { buildSitemapXml } from "@/lib/utils/sitemap-utils";

@@ -18,9 +18,12 @@ export function BoostedVideosSkeleton() {
 
         <div className="p-4 sm:p-6">
           <div className="grid gap-4 sm:grid-cols-2">
-            {Array.from({ length: 4 }).map((_, index) => (
+            {Array.from(
+              { length: 4 },
+              (_, skeletonIndex) => `boosted-video-skeleton-${skeletonIndex}`,
+            ).map((skeletonId) => (
               <div
-                key={`boosted-video-skeleton-${index}`}
+                key={skeletonId}
                 className="overflow-hidden rounded-xl border border-white/5 bg-neutral-800/50"
               >
                 <div className="aspect-video w-full animate-pulse bg-neutral-800" />
