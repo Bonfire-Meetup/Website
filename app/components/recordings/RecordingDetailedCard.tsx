@@ -196,7 +196,13 @@ export function RecordingDetailedCard({
           : "relative z-10 pointer-events-none"
       }
       body={
-        <div className="pointer-events-none flex flex-1 flex-col space-y-3 bg-white/85 px-4 pt-4 pb-5 text-neutral-900 dark:bg-black/75 dark:text-white">
+        <div
+          className={
+            isGrid
+              ? "pointer-events-none flex flex-1 flex-col space-y-3"
+              : "pointer-events-none flex flex-1 flex-col space-y-3 bg-white/85 px-4 pt-4 pb-5 text-neutral-900 dark:bg-black/75 dark:text-white"
+          }
+        >
           <RecordingMeta
             location={location}
             date={date}
