@@ -13,6 +13,7 @@ import { formatDate } from "@/lib/utils/locale";
 
 import { SpeakerList } from "../ui/SpeakerList";
 
+import { CARD_TILT_CLASS, CARD_TILT_STYLE, createCardTiltHandlers } from "./card-tilt";
 import { RecordingAccessPill } from "./RecordingAccessPill";
 import { RecordingCardShell } from "./RecordingCardShell";
 import { RecordingEpisodePill } from "./RecordingEpisodePill";
@@ -44,6 +45,7 @@ interface RecordingDetailedCardProps {
   likeCount?: number;
   boostCount?: number;
   badge?: { icon: ReactNode; count: number; gradient: string };
+  disableShadow?: boolean;
 }
 
 export function RecordingDetailedCard({
@@ -67,6 +69,7 @@ export function RecordingDetailedCard({
   likeCount,
   boostCount,
   badge,
+  disableShadow = false,
 }: RecordingDetailedCardProps) {
   const t = useTranslations("recordings");
   const localeFromContext = useLocale();
@@ -146,95 +149,117 @@ export function RecordingDetailedCard({
   }
 
   const isGrid = variant === "grid";
+  const tiltHandlers = createCardTiltHandlers();
+  const handleMouseEnter = tiltHandlers.onMouseEnter;
+  const handleMouseMove = tiltHandlers.onMouseMove;
+  const handleMouseLeave = tiltHandlers.onMouseLeave;
+  const shadowClass = disableShadow
+    ? "shadow-none hover:shadow-none"
+    : "shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] hover:shadow-[0_24px_40px_-20px_rgba(17,24,39,0.45)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:hover:shadow-[0_30px_52px_-20px_rgba(0,0,0,0.95)]";
   const outerClassName =
     className ??
     (isGrid
-      ? "group relative flex cursor-pointer flex-col overflow-hidden rounded-[28px] bg-white/90 text-neutral-900 shadow-lg ring-1 shadow-black/5 ring-black/5 transition-all hover:shadow-xl dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10"
-      : "group relative flex w-[75vw] shrink-0 snap-start flex-col overflow-hidden rounded-[24px] bg-white/90 text-neutral-900 shadow-lg ring-1 shadow-black/5 ring-black/5 transition-all hover:-translate-y-1 sm:w-[45vw] lg:w-[280px] xl:w-[300px] dark:bg-neutral-950 dark:text-white dark:shadow-black/10 dark:ring-white/10");
+      ? `group relative flex cursor-pointer flex-col overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] text-white ring-1 ring-black/10 transition-[transform,box-shadow,ring-color,filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:ring-black/20 hover:saturate-110 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12 dark:hover:ring-white/20 ${shadowClass}`
+      : `group relative z-0 flex w-[calc(100%-2.25rem)] shrink-0 snap-start flex-col overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] text-white ring-1 ring-black/10 transition-[transform,box-shadow,ring-color,filter,z-index] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:z-20 hover:ring-black/20 hover:saturate-110 sm:w-[70vw] lg:w-[calc((100%-3rem-1px)/3)] xl:w-[calc((100%-3rem-1px)/3)] dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12 dark:hover:ring-white/20 ${shadowClass}`);
 
   return (
     <RecordingCardShell
       href={undefined}
       prefetch={false}
       ariaLabel={title}
-      className={outerClassName}
+      className={`${outerClassName} ${CARD_TILT_CLASS}`}
+      style={CARD_TILT_STYLE}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       overlayContent={
         <Link href={watchHref} prefetch={false} className="absolute inset-0 z-0" aria-label={title}>
           <span className="sr-only">{title}</span>
         </Link>
       }
       imageClassName={
-        isGrid ? "relative z-10 shrink-0 pointer-events-none" : "relative z-10 pointer-events-none"
+        isGrid ? "relative z-0 shrink-0 pointer-events-none" : "relative z-0 pointer-events-none"
       }
       image={
         <>
           <RecordingImage
             src={thumbnail}
             alt={title}
-            imgClassName="group-hover:scale-105"
+            aspectClassName="aspect-video"
+            imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.02)] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
             sizes={
               isGrid
                 ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                : "(max-width: 640px) 75vw, (max-width: 1024px) 45vw, 300px"
+                : "(max-width: 640px) 88vw, (max-width: 1024px) 70vw, 33vw"
             }
             loading={isFirst ? "eager" : "lazy"}
             fetchPriority={isFirst ? "high" : "low"}
           />
-          {badge && badge.count > 0 && (
-            <div
-              className={`absolute right-3 bottom-3 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-white shadow-lg ${badge.gradient}`}
-            >
-              {badge.icon}
-              {badge.count}
-            </div>
-          )}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-white/12 via-transparent to-transparent dark:from-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/52 via-black/20 via-62% to-transparent transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:from-black/40 dark:from-black/70 dark:via-black/34 dark:group-hover:from-black/56" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-white/18 to-transparent dark:from-white/6" />
         </>
       }
       bodyClassName={
         isGrid
-          ? "relative z-10 flex flex-1 flex-col space-y-3 bg-white/85 px-5 pt-5 pb-6 text-neutral-900 pointer-events-none dark:bg-black/75 dark:text-white"
-          : "relative z-10 pointer-events-none"
+          ? "pointer-events-none absolute inset-0 z-10 flex items-end"
+          : "pointer-events-none absolute inset-0 z-10 flex items-end"
       }
       body={
         <div
           className={
             isGrid
-              ? "pointer-events-none flex flex-1 flex-col space-y-3"
-              : "pointer-events-none flex flex-1 flex-col space-y-3 bg-white/85 px-4 pt-4 pb-5 text-neutral-900 dark:bg-black/75 dark:text-white"
+              ? "pointer-events-none flex h-full w-full items-end bg-gradient-to-t from-black/72 via-black/34 to-transparent text-white dark:from-black/86 dark:via-black/52"
+              : "pointer-events-none flex h-full w-full items-end bg-gradient-to-t from-black/68 via-black/30 to-transparent text-white dark:from-black/82 dark:via-black/48"
           }
         >
-          <RecordingMeta
-            location={location}
-            date={date}
-            locale={resolvedLocale}
-            trackingClass={isGrid ? "tracking-[0.25em]" : "tracking-[0.2em]"}
-          />
-          <h3
-            className={`${isGrid ? "text-base" : "text-sm"} line-clamp-2 leading-snug font-semibold text-neutral-900 dark:text-white`}
+          <div
+            className={
+              isGrid ? "w-full space-y-2 px-4 pt-14 pb-4" : "w-full space-y-2 px-3.5 pt-12 pb-3.5"
+            }
           >
-            {title}
-          </h3>
-          <SpeakerList speakers={speaker} />
-          <div className="pointer-events-auto flex flex-wrap gap-2">
-            {tags.slice(0, isGrid ? tags.length : 3).map((tag: string) => (
-              <RecordingTagPill
-                key={tag}
-                tag={tag}
-                href={`${PAGE_ROUTES.LIBRARY_BROWSE}?tag=${encodeURIComponent(tag)}`}
-                size="xxs"
-              />
-            ))}
+            <RecordingMeta
+              location={location}
+              date={date}
+              locale={resolvedLocale}
+              trackingClass={isGrid ? "tracking-[0.14em]" : "tracking-[0.12em]"}
+            />
+            <h3
+              className={`${isGrid ? "text-[15px]" : "text-sm"} line-clamp-2 leading-[1.28] font-semibold tracking-[-0.01em] text-white`}
+            >
+              {title}
+            </h3>
+            <SpeakerList speakers={speaker.slice(0, 1)} />
+            <div className="pointer-events-auto flex flex-wrap gap-1 pt-0.5">
+              {tags.slice(0, isGrid ? 2 : 2).map((tag: string) => (
+                <RecordingTagPill
+                  key={tag}
+                  tag={tag}
+                  href={`${PAGE_ROUTES.LIBRARY_BROWSE}?tag=${encodeURIComponent(tag)}`}
+                  size="xxxs"
+                  className="tracking-[0.12em]"
+                />
+              ))}
+            </div>
           </div>
         </div>
       }
     >
+      {badge && badge.count > 0 && (
+        <div
+          className={`pointer-events-none absolute right-3 bottom-3 z-30 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-white shadow-lg ${badge.gradient}`}
+        >
+          {badge.icon}
+          {badge.count}
+        </div>
+      )}
       {isGrid ? (
         <>
           <RecordingAccessPill
             access={access}
-            className="pointer-events-none absolute top-2 left-2 z-10"
+            className="pointer-events-none absolute top-2 left-2 z-20"
           />
-          <div className="pointer-events-auto absolute top-2 right-2 z-10">
+          <div className="pointer-events-auto absolute top-2 right-2 z-20">
             <WatchLaterButton shortId={shortId} variant="icon" size="sm" showLabel={false} />
           </div>
         </>
@@ -242,11 +267,11 @@ export function RecordingDetailedCard({
         <>
           <RecordingAccessPill
             access={access}
-            className="pointer-events-none absolute top-3 left-3 z-10"
+            className="pointer-events-none absolute top-3 left-3 z-20"
           />
           {episode && (
             <RecordingEpisodePill
-              className="pointer-events-none absolute top-3 right-3 bg-black/60 font-semibold tracking-[0.18em] text-white uppercase shadow"
+              className="pointer-events-none absolute top-3 right-3 z-20 bg-black/70 font-semibold tracking-[0.18em] text-white uppercase shadow"
               episode={episode}
               episodeNumber={episodeNumber}
               epShortLabel={t("epShort")}

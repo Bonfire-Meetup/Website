@@ -19,7 +19,7 @@ export function RailScrollWrapper({
   children,
   headerContent,
   itemCount,
-  containerClassName = "rounded-[28px] bg-white/60 px-2 pt-2 pb-2 dark:bg-neutral-950/60",
+  containerClassName = "rounded-[28px] bg-white/60 px-5 py-3 dark:bg-neutral-950/60",
   gradientLeft,
   gradientRight,
   scrollLeftLabel,
@@ -102,10 +102,10 @@ export function RailScrollWrapper({
           </button>
         </div>
       </div>
-      <div className={containerClassName}>
+      <div className={`relative ${containerClassName}`}>
         <div
           ref={railRef}
-          className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pt-1 pb-4"
+          className="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-visible scroll-smooth px-2 py-3"
         >
           {children}
         </div>

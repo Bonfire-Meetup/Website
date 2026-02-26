@@ -47,6 +47,7 @@ interface RecordingImageProps {
   src: string;
   alt: string;
   className?: string;
+  aspectClassName?: string;
   imgClassName?: string;
   sizes?: string;
   loading?: "eager" | "lazy";
@@ -57,6 +58,7 @@ export function RecordingImage({
   src,
   alt,
   className = "",
+  aspectClassName = "aspect-video",
   imgClassName = "",
   sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
   loading = "lazy",
@@ -85,7 +87,10 @@ export function RecordingImage({
   }, [loading]);
 
   return (
-    <div ref={containerRef} className={`relative aspect-video w-full overflow-hidden ${className}`}>
+    <div
+      ref={containerRef}
+      className={`relative w-full overflow-hidden ${aspectClassName} ${className}`}
+    >
       {!loaded && (
         <div className="absolute inset-0 animate-pulse bg-neutral-200/70 dark:bg-white/5" />
       )}

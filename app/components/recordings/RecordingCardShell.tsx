@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { AnimationEventHandler, CSSProperties, MouseEventHandler, ReactNode } from "react";
 
 interface RecordingCardShellProps {
   className: string;
@@ -12,6 +12,11 @@ interface RecordingCardShellProps {
   prefetch?: boolean;
   overlayContent?: ReactNode;
   children?: ReactNode;
+  style?: CSSProperties;
+  onMouseEnter?: MouseEventHandler<HTMLElement>;
+  onMouseMove?: MouseEventHandler<HTMLElement>;
+  onMouseLeave?: MouseEventHandler<HTMLElement>;
+  onAnimationEnd?: AnimationEventHandler<HTMLElement>;
 }
 
 export function RecordingCardShell({
@@ -25,6 +30,11 @@ export function RecordingCardShell({
   prefetch = false,
   overlayContent,
   children,
+  style,
+  onMouseEnter,
+  onMouseMove,
+  onMouseLeave,
+  onAnimationEnd,
 }: RecordingCardShellProps) {
   const content = (
     <>
@@ -37,11 +47,32 @@ export function RecordingCardShell({
 
   if (href) {
     return (
-      <Link href={href} prefetch={prefetch} className={className} aria-label={ariaLabel}>
+      <Link
+        href={href}
+        prefetch={prefetch}
+        className={className}
+        aria-label={ariaLabel}
+        style={style}
+        onMouseEnter={onMouseEnter}
+        onMouseMove={onMouseMove}
+        onMouseLeave={onMouseLeave}
+        onAnimationEnd={onAnimationEnd}
+      >
         {content}
       </Link>
     );
   }
 
-  return <div className={className}>{content}</div>;
+  return (
+    <div
+      className={className}
+      style={style}
+      onMouseEnter={onMouseEnter}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      onAnimationEnd={onAnimationEnd}
+    >
+      {content}
+    </div>
+  );
 }

@@ -54,10 +54,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
             </div>
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
-              {t("nextUp")}
-            </p>
-            <p className="group-hover:text-brand-500 dark:group-hover:text-brand-400 mt-1 line-clamp-2 text-sm font-semibold text-neutral-900 dark:text-white">
+            <p className="group-hover:text-brand-500 dark:group-hover:text-brand-400 line-clamp-2 text-sm font-semibold text-neutral-900 dark:text-white">
               {nextUp.title}
             </p>
           </div>

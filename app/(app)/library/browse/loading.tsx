@@ -1,3 +1,4 @@
+import { RecordingsGridSkeleton } from "@/components/recordings/RecordingLoadingSkeletons";
 import { Skeleton } from "@/components/shared/Skeletons";
 
 export default function LibraryBrowseLoading() {
@@ -24,18 +25,7 @@ export default function LibraryBrowseLoading() {
 
           <div className="section-divider mb-8" />
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, index) => (
-              <div key={`grid-skeleton-${index}`} className="overflow-hidden rounded-[28px]">
-                <Skeleton className="aspect-video w-full !rounded-none" />
-                <div className="space-y-3 bg-white/85 px-5 pt-5 pb-6 dark:bg-black/75">
-                  <Skeleton className="h-3 w-32" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-2/3" />
-                </div>
-              </div>
-            ))}
-          </div>
+          <RecordingsGridSkeleton />
         </div>
       </section>
     </main>

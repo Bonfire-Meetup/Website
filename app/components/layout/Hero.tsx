@@ -6,8 +6,10 @@ import { type CSSProperties, useEffect, useState } from "react";
 
 import { ArrowRightIcon, BoltIcon, FireIcon, PlayIcon } from "@/components/shared/Icons";
 import { type LocationValue } from "@/lib/config/constants";
+import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
+import { CARD_TILT_CLASS, CARD_TILT_STYLE, createCardTiltHandlers } from "../recordings/card-tilt";
 import { RecordingImage } from "../recordings/RecordingImage";
 import { NeonText } from "../theme/NeonText";
 import { Button } from "../ui/Button";
@@ -50,7 +52,7 @@ interface TrendingText {
   watchNow: string;
 }
 
-function EngagementChips({ recording, size }: { recording: HeroRecording; size: "sm" | "xs" }) {
+function EngagementChips({ recording }: { recording: HeroRecording }) {
   const hasBoost = typeof recording.boostCount === "number" && recording.boostCount > 0;
   const hasLike = typeof recording.likeCount === "number" && recording.likeCount > 0;
 
@@ -58,23 +60,21 @@ function EngagementChips({ recording, size }: { recording: HeroRecording; size: 
     return null;
   }
 
-  const sizeClass = size === "sm" ? "h-7 px-2 text-[11px]" : "h-6 px-1.5 text-[10px]";
-
   return (
     <div className="flex items-center gap-1.5">
       {hasBoost && (
         <span
-          className={`inline-flex items-center gap-1 rounded-md border border-neutral-300/85 bg-white/90 ${sizeClass} leading-none font-semibold text-emerald-700 shadow-[0_1px_2px_rgba(0,0,0,0.08)] backdrop-blur-sm dark:border-white/12 dark:bg-black/28 dark:text-emerald-300 dark:shadow-none`}
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-white shadow-lg ${ENGAGEMENT_BRANDING.boost.classes.activeGradient}`}
         >
-          <BoltIcon className="h-2.5 w-2.5" />
+          <BoltIcon className="h-3.5 w-3.5" />
           {recording.boostCount}
         </span>
       )}
       {hasLike && (
         <span
-          className={`inline-flex items-center gap-1 rounded-md border border-neutral-300/85 bg-white/90 ${sizeClass} leading-none font-semibold text-rose-700 shadow-[0_1px_2px_rgba(0,0,0,0.08)] backdrop-blur-sm dark:border-white/12 dark:bg-black/28 dark:text-rose-200 dark:shadow-none`}
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-white shadow-lg ${ENGAGEMENT_BRANDING.like.classes.activeGradient}`}
         >
-          <FireIcon className="h-2.5 w-2.5" />
+          <FireIcon className="h-3.5 w-3.5" />
           {recording.likeCount}
         </span>
       )}
@@ -83,39 +83,48 @@ function EngagementChips({ recording, size }: { recording: HeroRecording; size: 
 }
 
 function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: TrendingText }) {
+  const tiltHandlers = createCardTiltHandlers();
+  const handleMouseEnter = tiltHandlers.onMouseEnter;
+  const handleMouseMove = tiltHandlers.onMouseMove;
+  const handleMouseLeave = tiltHandlers.onMouseLeave;
+
   return (
     <Link
       href={PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}
       prefetch={false}
-      className="group relative block w-full min-w-0 overflow-hidden rounded-xl border border-white/8 bg-neutral-900/12 shadow-[0_10px_24px_rgba(0,0,0,0.14)] transition-[border-color,box-shadow] duration-500 hover:border-white/18 hover:shadow-[0_12px_26px_rgba(0,0,0,0.2)] dark:hover:border-white/16"
+      className={`group relative block w-full min-w-0 overflow-hidden rounded-[16px] border border-black/10 bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] transition-[border-color,box-shadow,transform] duration-500 hover:border-black/20 hover:shadow-[0_20px_36px_-20px_rgba(17,24,39,0.45)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:hover:border-white/20 dark:hover:shadow-[0_28px_48px_-20px_rgba(0,0,0,0.95)] ${CARD_TILT_CLASS}`}
+      style={CARD_TILT_STYLE}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
       <div className="video-overlay relative overflow-hidden">
         <RecordingImage
           src={recording.thumbnail}
           alt={recording.title}
           className="aspect-[16/9]"
-          imgClassName="scale-[1.03] object-[100%_center] group-hover:scale-[1.07]"
+          imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.03)] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
           sizes="(max-width: 768px) 94vw, (max-width: 1280px) 58vw, 760px"
           loading="eager"
           fetchPriority="high"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/56 via-black/14 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/54 via-black/22 to-transparent transition-opacity duration-300 group-hover:from-black/40 dark:from-black/62 dark:via-black/26 dark:group-hover:from-black/48" />
         <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 rounded-full border border-white/14 bg-black/24 px-2 py-1 text-[10px] leading-none font-semibold tracking-[0.13em] text-white/82 uppercase backdrop-blur-sm">
           <span className="h-1.5 w-1.5 rounded-full bg-[linear-gradient(135deg,var(--color-brand-500),var(--color-fire-start))]" />
           {text.badge}
         </div>
         <div className="absolute top-2 right-2 z-20 hidden sm:block">
-          <EngagementChips recording={recording} size="sm" />
+          <EngagementChips recording={recording} />
         </div>
-        <div className="absolute right-0 bottom-0 left-0 z-20 bg-gradient-to-t from-black/62 via-black/38 to-transparent p-3 sm:p-4">
+        <div className="absolute right-0 bottom-0 left-0 z-20 bg-gradient-to-t from-black/86 via-black/52 to-transparent p-3 sm:p-4 dark:from-black/96 dark:via-black/68">
           <p className="mb-1 truncate text-[10px] leading-none font-medium tracking-[0.16em] text-white/70 uppercase">
             {recording.speaker[0]}
           </p>
           <h3 className="mb-2 line-clamp-2 min-h-[2.15rem] text-sm leading-snug font-semibold text-white sm:text-base">
             {recording.title}
           </h3>
-          <span className="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/20 bg-black/35 px-2.5 text-[10px] font-semibold tracking-[0.12em] text-white/90 uppercase backdrop-blur-sm">
-            <PlayIcon className="h-3.5 w-3.5" />
+          <span className="from-brand-500/95 inline-flex h-7 items-center gap-1.5 rounded-full border border-white/35 bg-gradient-to-r via-fuchsia-500/90 to-orange-500/90 px-2.5 text-[10px] font-semibold tracking-[0.12em] text-white uppercase shadow-[0_8px_20px_-12px_rgba(244,63,94,0.8)] transition-[transform,box-shadow,filter] duration-300 group-hover:scale-[1.02] group-hover:shadow-[0_10px_24px_-10px_rgba(244,63,94,0.9)]">
+            <PlayIcon className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
             {text.watchNow}
           </span>
         </div>
@@ -140,28 +149,29 @@ function QueueVideoCard({
       onMouseEnter={onActivate}
       onFocus={onActivate}
       onClick={onActivate}
-      className={`group relative min-w-[11rem] basis-[11rem] overflow-hidden rounded-xl border p-1.5 text-left transition-[border-color,background-color,box-shadow,transform] duration-500 sm:min-w-[12rem] sm:basis-[12rem] md:min-w-[12.5rem] md:basis-[12.5rem] ${
+      className={`group relative min-w-[11rem] basis-[11rem] overflow-hidden rounded-[16px] border p-1.5 text-left transition-[border-color,background-color,box-shadow,transform] duration-500 sm:min-w-[12rem] sm:basis-[12rem] md:min-w-[12.5rem] md:basis-[12.5rem] ${
         isActive
-          ? "border-brand-500/60 dark:border-brand-400/60 bg-white/90 shadow-[0_0_0_1px_rgba(217,70,239,0.6),0_0_14px_rgba(217,70,239,0.18)] dark:bg-white/[0.04] dark:shadow-[0_0_0_1px_rgba(232,121,249,0.64),0_0_16px_rgba(232,121,249,0.2)]"
-          : "border-neutral-300/80 bg-white/76 hover:-translate-y-0.5 hover:border-neutral-400/85 hover:bg-white/92 dark:border-white/10 dark:bg-black/20 dark:hover:border-white/18 dark:hover:bg-black/28"
+          ? "border-brand-500/60 dark:border-brand-400/60 bg-white/90 shadow-[0_0_0_1px_rgba(217,70,239,0.6),0_12px_24px_-16px_rgba(17,24,39,0.42)] dark:bg-white/[0.04] dark:shadow-[0_0_0_1px_rgba(232,121,249,0.64),0_20px_32px_-18px_rgba(0,0,0,0.72)]"
+          : "border-black/10 bg-white/82 shadow-[0_12px_24px_-18px_rgba(17,24,39,0.28)] hover:-translate-y-0.5 hover:border-black/20 hover:bg-white/94 dark:border-white/12 dark:bg-black/24 dark:shadow-[0_16px_28px_-20px_rgba(0,0,0,0.65)] dark:hover:border-white/20 dark:hover:bg-black/32"
       }`}
     >
-      <div className="overflow-hidden rounded-lg">
+      <div className="relative overflow-hidden rounded-lg">
         <RecordingImage
           src={recording.thumbnail}
           alt={recording.title}
           className="aspect-[16/9]"
-          imgClassName="scale-[1.05] object-[100%_center] group-hover:scale-[1.09]"
+          imgClassName="scale-[1.05] object-[80%_30%] group-hover:scale-[1.09]"
           sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 220px"
           loading="eager"
           fetchPriority="high"
         />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/46 via-black/16 to-transparent transition-opacity duration-300 group-hover:from-black/34 dark:from-black/56 dark:via-black/20 dark:group-hover:from-black/42" />
       </div>
       <div className="px-0.5 pt-2 pb-1">
-        <p className="mb-1 truncate text-[10px] leading-none font-medium tracking-[0.14em] text-neutral-500 uppercase dark:text-white/62">
+        <p className="mb-1 truncate text-[9px] leading-none font-medium tracking-[0.13em] text-neutral-500 uppercase dark:text-white/62">
           {recording.speaker.join(", ")}
         </p>
-        <h3 className="line-clamp-2 min-h-[2.15rem] text-xs leading-snug font-semibold text-neutral-800 sm:text-sm dark:text-white/95">
+        <h3 className="line-clamp-2 min-h-[2rem] text-[11px] leading-[1.25] font-semibold text-neutral-800 sm:text-xs dark:text-white/95">
           {recording.title}
         </h3>
       </div>

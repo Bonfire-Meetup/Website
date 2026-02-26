@@ -6,7 +6,7 @@ interface PillProps {
   className?: string;
   href?: string;
   onClick?: (event: MouseEvent<HTMLAnchorElement | HTMLSpanElement>) => void;
-  size?: "xxs" | "xs" | "sm" | "md";
+  size?: "xxxs" | "xxs" | "xs" | "sm" | "md";
   ariaLabel?: string;
   title?: string;
 }
@@ -16,6 +16,7 @@ const sizeClasses: Record<NonNullable<PillProps["size"]>, string> = {
   sm: "px-3 py-1.5 text-xs",
   xs: "px-3 py-1 text-[11px]",
   xxs: "px-2.5 py-1 text-[10px]",
+  xxxs: "px-2 py-0.5 text-[9px]",
 };
 
 export function Pill({

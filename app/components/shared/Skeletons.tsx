@@ -52,20 +52,24 @@ export function RecordingsSectionSkeleton() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="relative overflow-hidden rounded-[24px] bg-white/90 shadow ring-1 ring-black/5 dark:bg-neutral-950 dark:ring-white/10"
+              className="relative overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] ring-1 ring-black/10 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:ring-white/12"
             >
               <Skeleton className="aspect-video w-full !rounded-none" />
-              <div className="absolute top-3 left-3 h-5 w-20 rounded-full bg-neutral-200/80 dark:bg-white/15" />
-              <div className="space-y-3 p-4">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-                <div className="space-y-2">
-                  <Skeleton className="h-3 w-2/3" />
-                  <Skeleton className="h-3 w-1/2" />
-                </div>
-                <div className="flex justify-between border-t border-neutral-100 pt-3 dark:border-white/5">
-                  <Skeleton className="h-3 w-20" />
-                  <Skeleton className="h-5 w-16 rounded-full" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/54 via-black/22 to-transparent dark:from-black/62 dark:via-black/26" />
+              <div className="absolute top-2 left-2 h-5 w-20 rounded-full bg-neutral-200/80 dark:bg-white/15" />
+              <div className="absolute inset-0 flex items-end">
+                <div className="w-full space-y-2 bg-gradient-to-t from-black/86 via-black/52 to-transparent px-4 pt-14 pb-4 dark:from-black/96 dark:via-black/68">
+                  <Skeleton className="h-3 w-24 bg-white/35 dark:bg-white/20" />
+                  <Skeleton className="h-4 w-full bg-white/45 dark:bg-white/25" />
+                  <Skeleton className="h-4 w-3/4 bg-white/45 dark:bg-white/25" />
+                  <div className="space-y-1.5">
+                    <Skeleton className="h-3 w-2/3 bg-white/35 dark:bg-white/20" />
+                    <Skeleton className="h-3 w-1/2 bg-white/35 dark:bg-white/20" />
+                  </div>
+                  <div className="flex gap-1 pt-0.5">
+                    <Skeleton className="h-4 w-12 rounded-full bg-white/30 dark:bg-white/15" />
+                    <Skeleton className="h-4 w-10 rounded-full bg-white/30 dark:bg-white/15" />
+                  </div>
                 </div>
               </div>
             </div>

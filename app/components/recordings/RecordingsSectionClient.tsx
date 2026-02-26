@@ -35,13 +35,13 @@ export function RecordingsSectionClient({ recordings }: { recordings: HomepageRe
             imageSizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             footer={
               <>
-                <span className="text-[10px] font-medium tracking-wider text-neutral-400 uppercase">
+                <span className="text-[10px] font-medium tracking-wider text-white/70 uppercase">
                   {formatDate(recording.date, locale)}
                 </span>
                 <LocationPill
                   location={recording.location}
                   size="xxs"
-                  className="!text-[9px]"
+                  className="!text-[9px] !text-white/80"
                   ariaLabel={tRecordings("locationLabel", { location: recording.location })}
                 />
               </>

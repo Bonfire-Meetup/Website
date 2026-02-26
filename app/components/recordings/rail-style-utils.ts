@@ -1,5 +1,5 @@
 export const DEFAULT_RAIL_CONTAINER_CLASS =
-  "rounded-[28px] bg-white/60 px-2 pt-2 pb-2 dark:bg-neutral-950/60";
+  "rounded-[28px] bg-white/60 px-5 py-3 dark:bg-neutral-950/60";
 
 export function buildRailGradientClasses(
   gradientFrom?: string,

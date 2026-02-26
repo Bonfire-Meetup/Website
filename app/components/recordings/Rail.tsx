@@ -35,7 +35,6 @@ export function Rail<T>({
   const railRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
-
   const updateScrollState = () => {
     if (!railRef.current) {
       return;
@@ -81,7 +80,6 @@ export function Rail<T>({
   }
 
   const gradients = buildRailGradientClasses(gradientFrom, gradientTo, containerClassName);
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -121,10 +119,10 @@ export function Rail<T>({
           </button>
         </div>
       </div>
-      <div className={gradients.container}>
+      <div className={`relative ${gradients.container}`}>
         <div
           ref={railRef}
-          className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth pt-1 pb-4"
+          className="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-visible scroll-smooth px-2 py-3"
         >
           {items.map((item, index) => renderItem(item, index))}
         </div>

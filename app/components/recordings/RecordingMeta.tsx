@@ -4,7 +4,7 @@ import { RecordingHeaderMetaRow } from "./RecordingHeaderMetaRow";
 import { formatDate } from "./RecordingsCatalogTypes";
 
 const metaBaseClass =
-  "flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase text-neutral-600 dark:text-white/70";
+  "flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase text-white/85 dark:text-white/75";
 
 export function RecordingMeta({
   location,
@@ -26,7 +26,7 @@ export function RecordingMeta({
       metaGroupClassName="flex flex-wrap items-center gap-2"
       locationSize="xxs"
       locationClassName="tracking-normal"
-      separator={<span className="text-neutral-400 dark:text-white/50">•</span>}
+      separator={<span className="text-white/55 dark:text-white/45">•</span>}
     />
   );
 }

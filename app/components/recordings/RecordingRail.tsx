@@ -26,7 +26,7 @@ export function RecordingRail({
           isFirst={index < 2}
         />
       )}
-      containerClassName="rounded-[28px] bg-white/60 px-2 pt-2 pb-2 dark:bg-neutral-950/60"
+      containerClassName="rounded-[28px] bg-white/60 px-4 py-3 dark:bg-neutral-950/60"
       scrollLeftLabel={scrollLeftLabel}
       scrollRightLabel={scrollRightLabel}
     />

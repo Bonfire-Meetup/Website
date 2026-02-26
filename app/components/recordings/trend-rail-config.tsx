@@ -27,7 +27,7 @@ export function getTrendRailChrome(kind: TrendRailKind): {
           className={`flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-${ENGAGEMENT_BRANDING.boost.colors.gradientFrom} to-${ENGAGEMENT_BRANDING.boost.colors.gradientTo}`}
         />
       ),
-      containerClassName: "rounded-[28px] px-2 pt-2 pb-2",
+      containerClassName: "rounded-[28px] px-4 py-3",
       gradientFrom: `from-${ENGAGEMENT_BRANDING.boost.colors.railLight}`,
       gradientTo: `to-${ENGAGEMENT_BRANDING.boost.colors.railLightSecondary}`,
     };
@@ -44,7 +44,7 @@ export function getTrendRailChrome(kind: TrendRailKind): {
           className={`flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-${ENGAGEMENT_BRANDING.like.colors.gradientFrom} to-${ENGAGEMENT_BRANDING.like.colors.gradientTo}`}
         />
       ),
-      containerClassName: "rounded-[28px] px-2 pt-2 pb-2",
+      containerClassName: "rounded-[28px] px-4 py-3",
       gradientFrom: `from-${ENGAGEMENT_BRANDING.like.colors.railLight}`,
       gradientTo: `to-${ENGAGEMENT_BRANDING.like.colors.railLightSecondary}`,
     };
@@ -56,7 +56,7 @@ export function getTrendRailChrome(kind: TrendRailKind): {
     headerAccent: (
       <div className="flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-purple-500 to-indigo-500" />
     ),
-    containerClassName: "rounded-[28px] px-2 pt-2 pb-2",
+    containerClassName: "rounded-[28px] px-4 py-3",
     gradientFrom: "from-purple-500/5",
     gradientTo: "to-indigo-500/5",
   };

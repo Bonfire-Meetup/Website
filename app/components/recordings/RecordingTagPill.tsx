@@ -6,7 +6,7 @@ interface RecordingTagPillProps {
   tag: string;
   href?: string;
   className?: string;
-  size?: "xxs" | "xs" | "sm" | "md";
+  size?: "xxxs" | "xxs" | "xs" | "sm" | "md";
   showHash?: boolean;
 }
 
