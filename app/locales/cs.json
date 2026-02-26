@@ -273,7 +273,8 @@
     "earlyAccessCountdownMinutesSeconds": "{minutes}m {seconds}s",
     "earlyAccessCountdownSeconds": "{seconds}s",
     "youtubeNotice": "Video poskytuje YouTube. Po spuštění mohou být nastaveny cookies.",
-    "empty": "Nic jsme nenašli."
+    "empty": "Nic jsme nenašli.",
+    "beFirstToBoost": "Zatím žádný boost. Hoď první!"
   },
   "press": {
     "eyebrow": "Média",

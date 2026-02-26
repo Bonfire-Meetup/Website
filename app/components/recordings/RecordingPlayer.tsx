@@ -237,9 +237,11 @@ export function RecordingPlayer({
                 </div>
 
                 <div className="px-5 pb-4 sm:px-6">
-                  {hasPlaybackAccess && (
-                    <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
-                  )}
+                  {hasPlaybackAccess ? (
+                    <div className="h-10">
+                      <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
+                    </div>
+                  ) : null}
                   <p className="mt-3 text-[10px] leading-tight text-neutral-500/90 dark:text-neutral-500">
                     {t("youtubeNotice")}
                   </p>

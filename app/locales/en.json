@@ -273,7 +273,8 @@
     "earlyAccessCountdownMinutesSeconds": "{minutes}m {seconds}s",
     "earlyAccessCountdownSeconds": "{seconds}s",
     "youtubeNotice": "The video is provided by YouTube. Cookies may be set once playback starts.",
-    "empty": "No recordings found."
+    "empty": "No recordings found.",
+    "beFirstToBoost": "No boosts yet. Be the first!"
   },
   "press": {
     "eyebrow": "Media",

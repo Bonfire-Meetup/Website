@@ -35,14 +35,14 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
 
   return (
     <div
-      className={`flex h-10 items-center gap-2 rounded-lg border px-3 py-2 transition-all duration-300 ${
+      className={`flex h-10 w-full items-center gap-2 rounded-lg border px-3 py-2 transition-all duration-300 ${
         loading
           ? "border-neutral-200/30 bg-neutral-50/30 dark:border-neutral-700/20 dark:bg-neutral-800/20"
           : hasBoosts
-            ? "border-neutral-200/30 bg-neutral-50/30 opacity-100 dark:border-neutral-700/20 dark:bg-neutral-800/20"
-            : "border-transparent bg-transparent opacity-0"
+            ? "border-neutral-200/30 bg-neutral-50/30 dark:border-neutral-700/20 dark:bg-neutral-800/20"
+            : "border-neutral-200/30 bg-neutral-50/20 dark:border-neutral-700/20 dark:bg-neutral-800/10"
       }`}
-      aria-hidden={loading || !hasBoosts}
+      aria-hidden={loading}
     >
       {loading ? (
         <>
@@ -94,13 +94,13 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
           </div>
         </>
       ) : (
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex items-center gap-1.5">
           <BoltIcon
-            className="h-3 w-3 text-neutral-300/50 dark:text-neutral-600/50"
+            className="h-3 w-3 text-neutral-400/80 dark:text-neutral-500/80"
             aria-hidden="true"
           />
-          <span className="text-[11px] font-medium text-neutral-300/50 dark:text-neutral-600/50">
-            {t("boostedBy")}
+          <span className="truncate text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
+            {t("beFirstToBoost")}
           </span>
         </div>
       )}
