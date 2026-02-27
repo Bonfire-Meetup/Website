@@ -377,6 +377,8 @@
     },
     "albumsTitle": "All Albums",
     "albumsSubtitle": "Browse the full archive by episode.",
+    "galleryTitle": "Gallery",
+    "galleryHint": "Open any photo to view it fullscreen.",
     "albumPhotos": "{count} photos",
     "photographersBy": "Photographs by",
     "viewAlbum": "View album",

@@ -25,7 +25,7 @@ interface PhotosPageContentProps {
 }
 
 const statPillClass =
-  "inline-flex items-center gap-3 rounded-full bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 ring-1 ring-black/5 dark:bg-white/10 dark:text-neutral-400 dark:ring-white/10";
+  "inline-flex items-center gap-3 rounded-full border border-black/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(255,244,233,0.9)_100%)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 ring-1 ring-white/60 shadow-[0_16px_30px_-20px_rgba(15,23,42,0.35)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(36,36,38,0.8)_0%,rgba(20,20,22,0.9)_100%)] dark:text-neutral-400 dark:ring-white/10 dark:shadow-[0_20px_36px_-24px_rgba(0,0,0,0.75)]";
 
 function StatPill({ value, label }: { value: string | number; label: string }) {
   return (
@@ -64,6 +64,10 @@ export function PhotosPageContent({
 
   return (
     <main id="top" className="gradient-bg min-h-screen pb-24">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute top-[-8rem] left-[-10rem] h-[24rem] w-[24rem] rounded-full bg-orange-500/14 blur-3xl" />
+        <div className="absolute right-[-8rem] bottom-[-10rem] h-[28rem] w-[28rem] rounded-full bg-rose-500/12 blur-3xl" />
+      </div>
       <section className="relative">
         <div className="relative h-[70vh] min-h-[500px] w-full overflow-hidden sm:h-[80vh] sm:min-h-[600px]">
           <HeroSlideshow images={slideshowImages} interval={10000} />
@@ -97,7 +101,7 @@ export function PhotosPageContent({
                   type="button"
                   onClick={() => openLightbox(index)}
                   aria-label={t("openPhoto", { title: album.title })}
-                  className="group aspect-[3/4] overflow-hidden rounded-2xl bg-neutral-100 shadow-2xl ring-1 ring-black/10 transition-transform hover:scale-[1.02] sm:cursor-zoom-in sm:rounded-3xl dark:bg-neutral-900 dark:ring-white/10"
+                  className="group aspect-[3/4] overflow-hidden rounded-2xl border border-black/8 bg-neutral-100 shadow-[0_24px_50px_-26px_rgba(15,23,42,0.45)] ring-1 ring-white/45 transition-all hover:-translate-y-0.5 hover:shadow-[0_28px_56px_-24px_rgba(15,23,42,0.5)] sm:cursor-zoom-in sm:rounded-3xl dark:border-white/10 dark:bg-neutral-900 dark:shadow-[0_24px_50px_-24px_rgba(0,0,0,0.8)] dark:ring-white/10"
                 >
                   <AlbumImage
                     src={album.highlightSrc}
@@ -142,7 +146,7 @@ export function PhotosPageContent({
                 key={album.id}
                 href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
                 prefetch={false}
-                className="glass-card group no-hover-pop overflow-hidden"
+                className="group overflow-hidden rounded-3xl border border-black/10 bg-white/80 shadow-[0_24px_50px_-30px_rgba(15,23,42,0.42)] ring-1 ring-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_30px_60px_-28px_rgba(15,23,42,0.48)] dark:border-white/10 dark:bg-neutral-950/80 dark:shadow-[0_28px_54px_-24px_rgba(0,0,0,0.8)] dark:ring-white/10"
               >
                 <div className="aspect-[16/10] overflow-hidden">
                   <AlbumImage
@@ -151,8 +155,8 @@ export function PhotosPageContent({
                     imgClassName="transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">
+                <div className="bg-[linear-gradient(180deg,rgba(255,255,255,0.72)_0%,rgba(255,245,235,0.76)_100%)] p-5 dark:bg-[linear-gradient(180deg,rgba(26,26,28,0.82)_0%,rgba(14,14,15,0.9)_100%)]">
+                  <h3 className="text-lg font-semibold text-neutral-900 transition-colors group-hover:text-orange-700 dark:text-white dark:group-hover:text-orange-300">
                     {album.title}
                   </h3>
                   <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">

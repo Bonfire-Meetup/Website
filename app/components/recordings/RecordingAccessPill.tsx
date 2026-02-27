@@ -21,7 +21,11 @@ export function RecordingAccessPill({
   }
 
   const isSignInAccess = requiredMembershipTier === 0;
-  const stateLabel = isEarlyAccess ? t("earlyAccessShort") : t("accessLockedShort");
+  const stateLabel = isEarlyAccess
+    ? t("earlyAccessShort")
+    : isSignInAccess
+      ? t("signInShort")
+      : t("membersOnlyShort");
 
   return (
     <div
