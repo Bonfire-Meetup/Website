@@ -22,6 +22,7 @@ interface WatchLaterButtonProps {
   variant?: "icon" | "full";
   size?: "sm" | "md";
   showLabel?: boolean;
+  iconButtonClassName?: string;
 }
 
 export function WatchLaterButton({
@@ -29,6 +30,7 @@ export function WatchLaterButton({
   variant = "full",
   size = "md",
   showLabel = true,
+  iconButtonClassName = "",
 }: WatchLaterButtonProps) {
   const t = useTranslations("recordings");
   const router = useRouter();
@@ -113,7 +115,7 @@ export function WatchLaterButton({
         disabled={isLoading || isResolvingAuth}
         className={`inline-flex items-center text-xs leading-none font-medium transition-all sm:leading-tight ${layoutClasses} ${gapClasses} ${
           isIconOnly ? iconOnlyColors : iconLabelColors
-        } ${isLoading || isResolvingAuth ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+        } ${isLoading || isResolvingAuth ? "cursor-not-allowed opacity-50" : "cursor-pointer"} ${iconButtonClassName}`}
         aria-label={inWatchlist ? t("removeFromWatchLater") : t("addToWatchLater")}
       >
         {inWatchlist ? (

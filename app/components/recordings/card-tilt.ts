@@ -23,9 +23,7 @@ function supportsTilt() {
 
     const recompute = () => {
       tiltCapability =
-        reducedMotionMedia !== null &&
-        !reducedMotionMedia.matches &&
-        finePointerMedia.matches;
+        reducedMotionMedia !== null && !reducedMotionMedia.matches && finePointerMedia.matches;
     };
 
     recompute();

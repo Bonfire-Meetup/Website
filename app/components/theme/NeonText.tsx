@@ -24,14 +24,41 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
     }
 
     let timeout: ReturnType<typeof setTimeout>;
+    const burstTimers: ReturnType<typeof setTimeout>[] = [];
     let isMounted = true;
+
+    const runInitialBurst = () => {
+      const sequence: { on: boolean; wait: number }[] = [
+        { on: true, wait: 80 },
+        { on: false, wait: 90 },
+        { on: true, wait: 70 },
+        { on: false, wait: 85 },
+        { on: true, wait: 120 },
+      ];
+
+      let elapsed = 0;
+      const scheduled = sequence.map((step) => {
+        elapsed += step.wait;
+        return { delay: elapsed, on: step.on };
+      });
+
+      scheduled.forEach(({ delay, on: shouldBeOn }) => {
+        burstTimers.push(
+          setTimeout(() => {
+            if (isMounted && isPageVisible) {
+              setIsActive(shouldBeOn);
+            }
+          }, delay),
+        );
+      });
+    };
 
     const triggerGlitch = () => {
       if (!isMounted || !isPageVisible) {
         return;
       }
 
-      const duration = Math.random() * 500 + 100;
+      const duration = Math.random() * 900 + 260;
       const endTime = Date.now() + duration;
 
       const flicker = () => {
@@ -40,10 +67,10 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
         }
 
         if (Date.now() < endTime) {
-          setIsActive(Math.random() > 0.5);
-          timeout = setTimeout(flicker, Math.random() * 50 + 30);
+          setIsActive(Math.random() > 0.42);
+          timeout = setTimeout(flicker, Math.random() * 45 + 22);
         } else {
-          const stayOn = Math.random() > 0.8;
+          const stayOn = Math.random() > 0.58;
           setIsActive(stayOn);
 
           if (stayOn) {
@@ -51,13 +78,13 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
               () => {
                 if (isMounted && isPageVisible) {
                   setIsActive(false);
-                  timeout = setTimeout(triggerGlitch, Math.random() * 9000 + 3000);
+                  timeout = setTimeout(triggerGlitch, Math.random() * 5200 + 1700);
                 }
               },
-              Math.random() * 2000 + 1000,
+              Math.random() * 1300 + 450,
             );
           } else {
-            timeout = setTimeout(triggerGlitch, Math.random() * 9000 + 3000);
+            timeout = setTimeout(triggerGlitch, Math.random() * 5000 + 1400);
           }
         }
       };
@@ -65,10 +92,14 @@ export function NeonText({ children, className }: { children: ReactNode; classNa
       flicker();
     };
 
-    timeout = setTimeout(triggerGlitch, 500);
+    runInitialBurst();
+    timeout = setTimeout(triggerGlitch, 520);
 
     return () => {
       isMounted = false;
+      for (const timer of burstTimers) {
+        clearTimeout(timer);
+      }
       clearTimeout(timeout);
     };
   }, [isPageVisible]);
