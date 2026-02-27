@@ -551,7 +551,7 @@ export function Lightbox({
             <ShareMenu
               shareUrl={shareUrl}
               shareText={shareText}
-              buttonClassName="h-full rounded-none px-3 text-white/90 hover:bg-white/20 hover:text-white"
+              buttonClassName="h-full w-10 rounded-none text-white/90 hover:bg-white/20 hover:text-white"
               iconClassName="h-4 w-4"
               showLabel={false}
             />
@@ -580,7 +580,7 @@ export function Lightbox({
             <ShareMenu
               shareUrl={shareUrl}
               shareText={shareText}
-              buttonClassName="h-full rounded-none px-4 text-white/90 hover:bg-white/20 hover:text-white"
+              buttonClassName="h-full w-12 rounded-none text-white/90 hover:bg-white/20 hover:text-white"
               iconClassName="h-5 w-5"
               showLabel={false}
             />

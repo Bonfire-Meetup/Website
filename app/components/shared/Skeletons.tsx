@@ -85,7 +85,7 @@ export function RecordingsSectionSkeleton() {
 
 export function HeroSkeleton() {
   return (
-    <section className="relative overflow-hidden bg-neutral-50 px-4 pt-[4.9rem] pb-[4.8rem] sm:px-6 sm:pt-[11rem] sm:pb-[5.4rem] lg:px-8 lg:pt-[11.8rem] lg:pb-[6.1rem] dark:bg-neutral-950">
+    <section className="relative overflow-hidden bg-neutral-50 px-4 pt-[4.9rem] pb-[4.8rem] sm:px-6 sm:pt-[11rem] sm:pb-[5.4rem] lg:px-8 lg:pt-[16.2rem] lg:pb-[8.8rem] dark:bg-neutral-950">
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         <div className="grid items-center gap-[2.9rem] lg:grid-cols-[0.95fr_1.05fr] lg:gap-[3.4rem]">
           <div className="relative min-w-0">

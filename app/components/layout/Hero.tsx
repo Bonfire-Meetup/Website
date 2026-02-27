@@ -376,7 +376,7 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-neutral-50 px-4 pt-[4.9rem] pb-[4.8rem] transition-colors duration-500 sm:px-6 sm:pt-[11rem] sm:pb-[5.4rem] lg:px-8 lg:pt-[11.8rem] lg:pb-[6.1rem] dark:bg-neutral-950">
+    <section className="relative overflow-hidden bg-neutral-50 px-4 pt-[4.9rem] pb-[4.8rem] transition-colors duration-500 sm:px-6 sm:pt-[11rem] sm:pb-[5.4rem] lg:px-8 lg:pt-[16.2rem] lg:pb-[8.8rem] dark:bg-neutral-950">
       <HeroBackground images={heroImages} />
 
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_55%_35%,var(--color-fire-start-glow),transparent_58%)] dark:bg-[radial-gradient(circle_at_55%_35%,var(--color-fire-start-glow-dark),transparent_58%)]" />

@@ -124,7 +124,7 @@ export function ShareMenu({
           aria-haspopup="menu"
           className={`inline-flex cursor-pointer items-center text-xs leading-none font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 sm:leading-tight dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white ${shapeClasses} ${gapClasses} ${buttonClassName}`}
         >
-          <ShareIcon className={iconClassName} />
+          <ShareIcon className={`${iconClassName} shrink-0`} />
           {showLabel ? (
             <span className="hidden sm:inline sm:translate-y-[1px]">{t("share")}</span>
           ) : null}
