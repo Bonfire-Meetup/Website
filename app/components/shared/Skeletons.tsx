@@ -85,46 +85,69 @@ export function RecordingsSectionSkeleton() {
 
 export function HeroSkeleton() {
   return (
-    <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 pt-28 pb-12 sm:min-h-svh sm:pt-32 sm:pb-14 dark:bg-neutral-950">
+    <section className="relative overflow-hidden bg-neutral-50 px-4 pt-[4.9rem] pb-[4.8rem] sm:px-6 sm:pt-[11rem] sm:pb-[5.4rem] lg:px-8 lg:pt-[11.8rem] lg:pb-[6.1rem] dark:bg-neutral-950">
       <div className="relative z-10 mx-auto w-full max-w-7xl">
-        <div className="grid grid-cols-1">
-          <div className="relative z-10 flex flex-col items-center pt-4 text-center sm:pt-8">
-            <div className="mb-10 flex flex-col items-center gap-2 sm:mb-14">
-              <Skeleton className="h-12 w-48 sm:h-20 sm:w-72" />
-              <Skeleton className="h-14 w-64 sm:h-24 sm:w-96" />
-              <Skeleton className="h-12 w-40 sm:h-20 sm:w-64" />
+        <div className="grid items-center gap-[2.9rem] lg:grid-cols-[0.95fr_1.05fr] lg:gap-[3.4rem]">
+          <div className="relative min-w-0">
+            <div className="mx-auto w-full max-w-2xl min-w-0 lg:mx-0">
+              <Skeleton className="mb-5 h-3 w-36" />
+              <div className="mb-7 flex flex-col items-center gap-1 lg:items-start">
+                <Skeleton className="h-12 w-48 sm:h-16 sm:w-64" />
+                <Skeleton className="h-14 w-64 sm:h-20 sm:w-88" />
+                <Skeleton className="h-12 w-44 sm:h-16 sm:w-60" />
+              </div>
+              <Skeleton className="mb-8 h-5 w-full max-w-xl" />
+              <div className="mb-8 grid grid-cols-3 gap-2.5 sm:gap-3.5">
+                {[1, 2, 3].map((id) => (
+                  <div
+                    key={id}
+                    className="rounded-2xl border border-black/10 bg-white/70 px-3 py-2.5 dark:border-white/10 dark:bg-black/28"
+                  >
+                    <Skeleton className="h-3 w-16" />
+                    <Skeleton className="mt-2 h-6 w-10" />
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+                <Skeleton className="h-12 w-44 rounded-2xl" />
+                <Skeleton className="h-12 w-32 rounded-2xl" />
+              </div>
             </div>
-            <Skeleton className="mb-10 h-6 w-full max-w-md sm:mb-14" />
-            <Skeleton className="h-14 w-44 rounded-2xl" />
           </div>
 
-          <div className="relative mt-12 w-full md:mt-16 md:translate-y-5">
-            <div className="mx-auto w-full max-w-[54rem]">
-              <div className="p-2 sm:p-2.5 md:opacity-72">
-                <div className="flex flex-col gap-3">
-                  <div className="mx-auto w-full max-w-[41rem]">
-                    <Skeleton className="aspect-[16/9] w-full rounded-xl" />
-                  </div>
-                  <div className="space-y-2">
-                    <Skeleton className="mx-auto h-3 w-36" />
-                    <div className="no-scrollbar -mx-3 flex gap-2 overflow-x-auto px-3 md:mx-0 md:justify-center md:overflow-visible md:px-0">
-                      {Array.from(
-                        { length: 3 },
-                        (_, skeletonIndex) => `hero-queue-skeleton-${skeletonIndex}`,
-                      ).map((skeletonId) => (
-                        <div
-                          key={skeletonId}
-                          className="min-w-[11rem] rounded-xl border border-white/10 bg-white/5 p-1.5 sm:min-w-[12rem] md:min-w-[12.5rem]"
-                        >
-                          <Skeleton className="aspect-[16/9] w-full rounded-lg" />
-                          <div className="space-y-2 px-1 pt-2 pb-1">
-                            <Skeleton className="h-3 w-24" />
-                            <Skeleton className="h-4 w-full" />
-                            <Skeleton className="h-4 w-5/6" />
-                          </div>
-                        </div>
-                      ))}
+          <div className="min-w-0">
+            <div className="relative min-w-0 overflow-hidden rounded-[30px] border border-black/10 bg-white/40 p-3 backdrop-blur-xl sm:p-4 dark:border-white/10 dark:bg-black/30">
+              <div className="space-y-3">
+                <div className="overflow-hidden rounded-[24px] border border-black/12 dark:border-white/12">
+                  <Skeleton className="aspect-[16/9] w-full !rounded-none" />
+                  <div className="border-t border-black/10 bg-white/66 px-3 py-2.5 sm:px-4 dark:border-white/10 dark:bg-black/28">
+                    <div className="flex items-center justify-between">
+                      <Skeleton className="h-8 w-24 rounded-full" />
+                      <div className="flex gap-1">
+                        <Skeleton className="h-8 w-8 rounded-full" />
+                        <Skeleton className="h-8 w-8 rounded-full" />
+                      </div>
                     </div>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-black/10 bg-white/56 p-2.5 dark:border-white/10 dark:bg-black/28">
+                  <Skeleton className="mx-auto h-3 w-24" />
+                  <Skeleton className="mx-auto mt-1 h-3 w-28 sm:hidden" />
+                  <div className="no-scrollbar mt-2 flex w-full min-w-0 gap-2 overflow-x-auto pb-1 lg:overflow-visible">
+                    {Array.from({ length: 3 }, (_, i) => `hero-queue-skeleton-${i}`).map((id) => (
+                      <div
+                        key={id}
+                        className="flex min-w-[13.5rem] basis-[13.5rem] items-center gap-2 rounded-xl border border-black/10 bg-white/60 p-2 sm:min-w-[14.5rem] sm:basis-[14.5rem] lg:min-w-0 lg:flex-1 lg:basis-0 dark:border-white/10 dark:bg-black/24"
+                      >
+                        <Skeleton className="h-14 w-20 rounded-lg" />
+                        <div className="min-w-0 flex-1 space-y-1.5">
+                          <Skeleton className="h-3 w-20" />
+                          <Skeleton className="h-3.5 w-full" />
+                          <Skeleton className="h-3.5 w-5/6" />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
