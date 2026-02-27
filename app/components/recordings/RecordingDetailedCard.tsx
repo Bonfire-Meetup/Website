@@ -159,8 +159,8 @@ export function RecordingDetailedCard({
   const outerClassName =
     className ??
     (isGrid
-      ? `group relative flex cursor-pointer flex-col overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] text-white ring-1 ring-black/10 transition-[transform,box-shadow,ring-color,filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:ring-black/20 hover:saturate-110 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12 dark:hover:ring-white/20 ${shadowClass}`
-      : `group relative z-0 flex w-[calc(100%-2.25rem)] shrink-0 snap-start flex-col overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] text-white ring-1 ring-black/10 transition-[transform,box-shadow,ring-color,filter,z-index] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:z-20 hover:ring-black/20 hover:saturate-110 sm:w-[70vw] lg:w-[calc((100%-3rem-1px)/3)] xl:w-[calc((100%-3rem-1px)/3)] dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12 dark:hover:ring-white/20 ${shadowClass}`);
+      ? `group relative flex cursor-pointer flex-col overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] text-white ring-1 ring-black/10 transition-[box-shadow,ring-color,filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:ring-black/20 hover:saturate-110 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12 dark:hover:ring-white/20 ${shadowClass}`
+      : `group relative z-0 flex w-[calc(100%-2.25rem)] shrink-0 snap-start flex-col overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] text-white ring-1 ring-black/10 transition-[box-shadow,ring-color,filter,z-index] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:z-20 hover:ring-black/20 hover:saturate-110 sm:w-[70vw] lg:w-[calc((100%-3rem-1px)/3)] xl:w-[calc((100%-3rem-1px)/3)] dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12 dark:hover:ring-white/20 ${shadowClass}`);
 
   return (
     <RecordingCardShell
@@ -186,7 +186,7 @@ export function RecordingDetailedCard({
             src={thumbnail}
             alt={title}
             aspectClassName="aspect-video"
-            imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.02)] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
+            imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.02)] duration-100 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
             sizes={
               isGrid
                 ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

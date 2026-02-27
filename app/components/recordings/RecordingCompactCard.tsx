@@ -71,7 +71,7 @@ export function RecordingCompactCard({
           staggerClass ? `${staggerClass} opacity-0` : ""
         } ${CARD_TILT_CLASS} relative flex flex-col overflow-hidden ${
           isSmall ? "rounded-[14px]" : "rounded-[16px]"
-        } bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] text-white shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] ring-1 ring-black/10 transition-[transform,box-shadow,ring-color,filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_24px_40px_-20px_rgba(17,24,39,0.45)] hover:ring-black/20 hover:saturate-110 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:ring-white/12 dark:hover:shadow-[0_30px_52px_-20px_rgba(0,0,0,0.95)] dark:hover:ring-white/20`
+        } bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] text-white shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] ring-1 ring-black/10 transition-[box-shadow,ring-color,filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_24px_40px_-20px_rgba(17,24,39,0.45)] hover:ring-black/20 hover:saturate-110 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:ring-white/12 dark:hover:shadow-[0_30px_52px_-20px_rgba(0,0,0,0.95)] dark:hover:ring-white/20`
       }
       imageClassName="relative aspect-video w-full overflow-hidden"
       image={
@@ -79,7 +79,7 @@ export function RecordingCompactCard({
           <RecordingImage
             src={thumbnail}
             alt={title}
-            imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.02)] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
+            imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.02)] duration-100 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
             sizes={imageSizes}
             loading="lazy"
             fetchPriority="low"

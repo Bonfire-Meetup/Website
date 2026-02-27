@@ -92,7 +92,7 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
     <Link
       href={PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}
       prefetch={false}
-      className={`group relative block w-full min-w-0 overflow-hidden rounded-[16px] border border-black/10 bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] transition-[border-color,box-shadow,transform] duration-500 hover:border-black/20 hover:shadow-[0_20px_36px_-20px_rgba(17,24,39,0.45)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:hover:border-white/20 dark:hover:shadow-[0_28px_48px_-20px_rgba(0,0,0,0.95)] ${CARD_TILT_CLASS}`}
+      className={`group relative block w-full min-w-0 overflow-hidden rounded-[16px] border border-black/10 bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] transition-[border-color,box-shadow] duration-500 hover:border-black/20 hover:shadow-[0_20px_36px_-20px_rgba(17,24,39,0.45)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:hover:border-white/20 dark:hover:shadow-[0_28px_48px_-20px_rgba(0,0,0,0.95)] ${CARD_TILT_CLASS}`}
       style={CARD_TILT_STYLE}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
@@ -103,7 +103,7 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
           src={recording.thumbnail}
           alt={recording.title}
           className="aspect-[16/9]"
-          imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.03)] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
+          imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.03)] duration-100 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
           sizes="(max-width: 768px) 94vw, (max-width: 1280px) 58vw, 760px"
           loading="eager"
           fetchPriority="high"
@@ -221,6 +221,9 @@ function TrendingDock({
           <div className="min-w-0 space-y-2">
             <p className="px-0.5 text-center text-[10px] font-semibold tracking-[0.16em] text-neutral-500 uppercase dark:text-white/55">
               {text.queue}
+            </p>
+            <p className="px-0.5 text-center text-[10px] font-medium tracking-[0.12em] text-neutral-500/90 uppercase sm:hidden dark:text-white/42">
+              {text.tapHint}
             </p>
             <div className="no-scrollbar flex w-full max-w-full min-w-0 gap-2 overflow-x-auto pb-0.5 md:justify-center md:overflow-visible">
               {trendingCards.map((recording, index) => {
@@ -371,7 +374,7 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
           </div>
 
           {hasTrending && (
-            <div className="relative mt-12 w-full md:mt-16 md:translate-y-5">
+            <div className="relative mt-10 w-full md:mt-14">
               <TrendingDock
                 cardsVisible={cardsVisible}
                 isScrolled={isTrendingRevealed}
