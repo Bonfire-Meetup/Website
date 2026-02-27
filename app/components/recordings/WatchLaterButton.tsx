@@ -102,10 +102,10 @@ export function WatchLaterButton({
       : "rounded-lg px-3 py-1.5";
     const gapClasses = isIconOnly ? "gap-0" : "gap-1.5";
     const iconOnlyColors = inWatchlist
-      ? "bg-violet-600/80 text-white hover:bg-violet-600 dark:bg-violet-500/80 dark:hover:bg-violet-500"
+      ? "bg-orange-600/85 text-white hover:bg-orange-600 dark:bg-orange-500/85 dark:hover:bg-orange-500"
       : "bg-black/40 text-white hover:bg-black/55 dark:bg-white/20 dark:text-white dark:hover:bg-white/30";
     const iconLabelColors = inWatchlist
-      ? "bg-violet-100 text-violet-700 hover:bg-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:hover:bg-violet-950/50"
+      ? "bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-950/35 dark:text-orange-300 dark:hover:bg-orange-950/55"
       : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white";
 
     return (
@@ -136,7 +136,7 @@ export function WatchLaterButton({
     <Button
       onClick={handleClick}
       disabled={isLoading || isResolvingAuth}
-      className={`${buttonSize} ${inWatchlist ? "bg-violet-600 hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-600" : "bg-neutral-800 hover:bg-neutral-700 dark:bg-neutral-700 dark:hover:bg-neutral-600"} gap-2 text-white transition-colors`}
+      className={`${buttonSize} ${inWatchlist ? "bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600" : "bg-neutral-800 hover:bg-neutral-700 dark:bg-neutral-700 dark:hover:bg-neutral-600"} gap-2 text-white transition-colors`}
     >
       {inWatchlist ? (
         <>

@@ -15,6 +15,7 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDate } from "@/lib/utils/locale";
 
+import { AccessStatusPill, type AccessStatusKind } from "./AccessStatusPill";
 import { BoostedBy } from "./BoostedBy";
 import { LikeBoostButtons } from "./LikeBoostButtons";
 import { RecordingAccessNotice } from "./RecordingAccessNotice";
@@ -90,6 +91,11 @@ export function RecordingPlayer({
       ? t("earlyAccessLockedTitleLogin")
       : t("earlyAccessLockedTitle")
     : t("membersOnlyLockedTitle");
+  const accessStatus: AccessStatusKind = isRestricted
+    ? isEarlyAccess
+      ? "earlyAccess"
+      : "membersOnly"
+    : "public";
   const loginHref = `${PAGE_ROUTES.LOGIN}?returnPath=${encodeURIComponent(
     PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
   )}`;
@@ -179,42 +185,49 @@ export function RecordingPlayer({
 
   return (
     <div className="gradient-bg min-h-screen">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute top-[-8rem] right-[-10rem] h-[26rem] w-[26rem] rounded-full bg-orange-500/16 blur-3xl" />
+        <div className="absolute bottom-[-10rem] left-[-8rem] h-[24rem] w-[24rem] rounded-full bg-orange-400/12 blur-3xl" />
+      </div>
       <div className="relative mx-auto px-4 py-6 sm:px-6 lg:px-8" style={{ maxWidth: "85rem" }}>
         <div className="flex flex-col gap-12 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
           <div className="min-w-0 space-y-8">
-            <div className="glass-card no-hover-pop overflow-hidden">
-              <div className="hidden items-center justify-between border-b border-neutral-200/30 px-4 py-3 lg:flex dark:border-neutral-700/30">
-                <div className="hidden lg:block">
-                  <Link
-                    href={PAGE_ROUTES.LIBRARY}
-                    className="group hover:bg-brand-100/60 hover:text-brand-700 dark:hover:bg-brand-500/10 dark:hover:text-brand-400 inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-neutral-600 transition dark:text-neutral-400"
-                    prefetch={false}
-                  >
-                    <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-                    <span>{t("backToLibrary")}</span>
-                  </Link>
+            <div className="relative overflow-hidden rounded-[2rem] border border-black/10 bg-white/80 shadow-[0_28px_70px_-34px_rgba(17,24,39,0.45)] ring-1 ring-white/50 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/85 dark:shadow-[0_34px_84px_-34px_rgba(0,0,0,0.8)] dark:ring-white/10">
+              <div className="hidden items-center justify-between border-b border-neutral-200/40 px-5 py-4 lg:flex dark:border-neutral-700/30">
+                <Link
+                  href={PAGE_ROUTES.LIBRARY}
+                  className="group hover:bg-brand-100/60 hover:text-brand-700 dark:hover:bg-brand-500/10 dark:hover:text-brand-400 inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-neutral-600 transition dark:text-neutral-300"
+                  prefetch={false}
+                >
+                  <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+                  <span>{t("backToLibrary")}</span>
+                </Link>
+                <AccessStatusPill status={accessStatus} />
+              </div>
+
+              <div className="relative z-10 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.2),transparent_62%)] p-2 transition-all duration-300 sm:p-3">
+                <div className="overflow-hidden rounded-[1.35rem] bg-black shadow-[0_30px_62px_-30px_rgba(15,23,42,0.48)] ring-1 ring-black/40 dark:shadow-[0_24px_54px_-28px_rgba(0,0,0,0.85)]">
+                  {hasPlaybackAccess ? (
+                    <div ref={inlinePlayerRef} className="relative aspect-video w-full bg-black" />
+                  ) : (
+                    <RecordingAccessNotice
+                      thumbnail={recording.thumbnail}
+                      title={recording.title}
+                      isEarlyAccess={isEarlyAccess}
+                      requiredMembershipTier={requiredMembershipTier}
+                      requiredAccessLabel={requiredAccessLabel}
+                      requiredAccessShortLabel={requiredAccessShortLabel}
+                      accessLockedTitle={accessLockedTitle}
+                      countdownMs={countdownMs}
+                      isAccessCheckPending={isAccessCheckPending}
+                      isAuthenticated={auth.isAuthenticated}
+                      loginHref={loginHref}
+                    />
+                  )}
                 </div>
               </div>
 
-              {hasPlaybackAccess ? (
-                <div ref={inlinePlayerRef} className="relative aspect-video w-full bg-black" />
-              ) : (
-                <RecordingAccessNotice
-                  thumbnail={recording.thumbnail}
-                  title={recording.title}
-                  isEarlyAccess={isEarlyAccess}
-                  requiredMembershipTier={requiredMembershipTier}
-                  requiredAccessLabel={requiredAccessLabel}
-                  requiredAccessShortLabel={requiredAccessShortLabel}
-                  accessLockedTitle={accessLockedTitle}
-                  countdownMs={countdownMs}
-                  isAccessCheckPending={isAccessCheckPending}
-                  isAuthenticated={auth.isAuthenticated}
-                  loginHref={loginHref}
-                />
-              )}
-
-              <div className="border-b border-neutral-200/40 dark:border-neutral-700/40">
+              <div className="relative z-0 border-b border-neutral-200/50 bg-white/60 dark:border-neutral-700/40 dark:bg-white/[0.02]">
                 <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-4 sm:gap-3 sm:px-6">
                   {hasPlaybackAccess ? (
                     <LikeBoostButtons onBoostedByLoad={setBoostedBy} shortId={recording.shortId} />
@@ -226,7 +239,7 @@ export function RecordingPlayer({
                     <button
                       type="button"
                       onClick={() => setCinemaMode(!cinemaMode)}
-                      className="hidden cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs leading-none font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 sm:inline-flex sm:leading-tight dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white"
+                      className="hidden cursor-pointer items-center gap-1.5 rounded-full bg-black/5 px-3 py-1.5 text-xs leading-none font-medium text-neutral-600 transition-all hover:bg-black/10 hover:text-neutral-900 sm:inline-flex sm:leading-tight dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20 dark:hover:text-white"
                     >
                       <CinemaIcon className="h-3.5 w-3.5" />
                       <span className="sm:translate-y-[1px]">
@@ -242,7 +255,7 @@ export function RecordingPlayer({
                       <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
                     </div>
                   ) : null}
-                  <p className="mt-3 text-[10px] leading-tight text-neutral-500/90 dark:text-neutral-500">
+                  <p className="mt-3 text-[10px] leading-tight text-neutral-500 dark:text-neutral-500">
                     {t("youtubeNotice")}
                   </p>
                 </div>

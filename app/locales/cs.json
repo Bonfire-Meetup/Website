@@ -251,6 +251,7 @@
     "earlyAccess": "Early Access",
     "earlyAccessShort": "EA",
     "membersOnly": "Pouze pro členy",
+    "public": "Veřejné",
     "membersOnlyShort": "Guild",
     "earlyAccessRequiredLogin": "Přihlas se a přidej se k přednostnímu sledování",
     "earlyAccessRequiredGuild": "Právě teď mohou sledovat členové Guild Level {tier}+",

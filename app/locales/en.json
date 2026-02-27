@@ -251,6 +251,7 @@
     "earlyAccess": "Early Access",
     "earlyAccessShort": "EA",
     "membersOnly": "Members Only",
+    "public": "Public",
     "membersOnlyShort": "Guild",
     "earlyAccessRequiredLogin": "Sign in to join the early watch",
     "earlyAccessRequiredGuild": "Guild Level {tier}+ can watch this right now",

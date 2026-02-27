@@ -23,20 +23,24 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
 
   return (
     <section className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-      <div className="flex items-center gap-4 lg:gap-3">
-        <div className="h-px flex-1 bg-neutral-200/50 lg:hidden dark:bg-white/10" />
-        <h2 className="text-xl font-bold tracking-tight text-neutral-900 lg:text-left dark:text-white">
-          {t("relatedTitle")}
-        </h2>
-        <div className="h-px flex-1 bg-neutral-200/50 lg:hidden dark:bg-white/10" />
+      <div className="rounded-2xl border border-black/10 bg-white/70 p-4 shadow-[0_20px_40px_-30px_rgba(17,24,39,0.45)] ring-1 ring-white/45 backdrop-blur-lg transition-transform duration-300 lg:hover:-translate-y-0.5 dark:border-white/10 dark:bg-neutral-950/70 dark:ring-white/10">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white">
+            {t("relatedTitle")}
+          </h2>
+          <span className="rounded-full bg-black/5 px-2.5 py-1 text-[10px] font-semibold tracking-[0.2em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-300">
+            Queue
+          </span>
+        </div>
       </div>
 
       {nextUp ? (
         <Link
           href={PAGE_ROUTES.WATCH(nextUp.slug, nextUp.shortId)}
           prefetch={false}
-          className="group flex items-center gap-4 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/80 p-3 shadow-lg shadow-black/5 transition hover:-translate-y-0.5 hover:border-neutral-200 hover:shadow-xl dark:border-white/10 dark:bg-neutral-950 dark:shadow-black/20 dark:hover:border-white/20"
+          className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-black/10 bg-[linear-gradient(165deg,rgba(255,255,255,0.95)_0%,rgba(255,247,237,0.92)_100%)] p-3 shadow-[0_20px_46px_-28px_rgba(17,24,39,0.5)] ring-1 ring-white/55 transition hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-26px_rgba(17,24,39,0.55)] dark:border-white/12 dark:bg-[linear-gradient(165deg,rgba(24,24,27,0.98)_0%,rgba(10,10,12,0.98)_100%)] dark:ring-white/10"
         >
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.22),transparent_52%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-xl bg-neutral-900">
             <RecordingImage
               src={nextUp.thumbnail}
@@ -54,7 +58,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
             </div>
           </div>
           <div className="min-w-0">
-            <p className="group-hover:text-brand-500 dark:group-hover:text-brand-400 line-clamp-2 text-sm font-semibold text-neutral-900 dark:text-white">
+            <p className="line-clamp-2 text-sm font-semibold text-neutral-900 group-hover:text-orange-600 dark:text-white dark:group-hover:text-orange-300">
               {nextUp.title}
             </p>
           </div>

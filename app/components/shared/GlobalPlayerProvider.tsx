@@ -467,7 +467,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
 
           {showMiniPlayer && (
             <div
-              className={`fixed z-40 overflow-hidden rounded-xl bg-white/80 shadow-[0_4px_24px_rgba(0,0,0,0.15)] ring-1 ring-black/5 backdrop-blur-xl dark:bg-neutral-900/80 dark:shadow-[0_4px_24px_rgba(0,0,0,0.5)] dark:ring-white/10 ${isDragging || isResizing ? "" : "transition-all duration-300 ease-out"}`}
+              className={`fixed z-40 overflow-hidden rounded-2xl border border-black/10 bg-white/75 shadow-[0_24px_54px_-28px_rgba(15,23,42,0.45)] ring-1 ring-white/60 backdrop-blur-xl dark:border-white/12 dark:bg-neutral-900/80 dark:shadow-[0_24px_54px_-26px_rgba(0,0,0,0.75)] dark:ring-white/10 ${isDragging || isResizing ? "" : "transition-all duration-300 ease-out"}`}
               style={{
                 height: miniWrapperHeight,
                 left: currentPosition.x,
@@ -476,32 +476,32 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
               }}
             >
               <div
-                className="absolute right-0 bottom-0 left-0 flex cursor-move items-center gap-3 border-t border-black/5 bg-white/50 px-3 backdrop-blur-md dark:border-white/5 dark:bg-neutral-800/50"
+                className="absolute right-0 bottom-0 left-0 flex cursor-move items-center gap-3 border-t border-black/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.72)_0%,rgba(255,243,229,0.7)_100%)] px-3 backdrop-blur-md dark:border-white/5 dark:bg-[linear-gradient(180deg,rgba(38,38,41,0.72)_0%,rgba(22,22,24,0.8)_100%)]"
                 style={{ height: INFO_BAR_HEIGHT }}
                 onMouseDown={handleDragStart}
               >
                 <div className="flex items-end gap-0.5">
                   <span
-                    className="w-0.5 animate-[bounce_0.6s_ease-in-out_infinite] rounded-full bg-red-500"
+                    className="w-0.5 animate-[bounce_0.6s_ease-in-out_infinite] rounded-full bg-orange-500"
                     style={{ height: 12 }}
                   />
                   <span
-                    className="w-0.5 animate-[bounce_0.6s_ease-in-out_0.15s_infinite] rounded-full bg-red-500"
+                    className="w-0.5 animate-[bounce_0.6s_ease-in-out_0.15s_infinite] rounded-full bg-amber-500"
                     style={{ height: 16 }}
                   />
                   <span
-                    className="w-0.5 animate-[bounce_0.6s_ease-in-out_0.3s_infinite] rounded-full bg-red-500"
+                    className="w-0.5 animate-[bounce_0.6s_ease-in-out_0.3s_infinite] rounded-full bg-rose-500"
                     style={{ height: 10 }}
                   />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-neutral-900 dark:text-white">
+                  <p className="truncate text-sm font-semibold text-neutral-900 dark:text-white">
                     {video.title}
                   </p>
                 </div>
                 <Link
                   href={video.watchUrl}
-                  className="flex-shrink-0 rounded-full p-1.5 text-neutral-500 transition-colors hover:bg-black/5 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                  className="flex-shrink-0 rounded-full p-1.5 text-neutral-600 transition-colors hover:bg-orange-100 hover:text-orange-700 dark:text-neutral-400 dark:hover:bg-orange-500/20 dark:hover:text-orange-200"
                   title={t("returnToPlayer")}
                 >
                   <ChevronLeftIcon className="h-5 w-5" />
@@ -511,7 +511,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
           )}
 
           <div
-            className={`fixed overflow-hidden bg-black ${showMiniPlayer ? "z-50 rounded-t-xl" : cinemaMode ? "z-[80] rounded-2xl shadow-2xl" : "z-40 rounded-xl"} ${!showMiniPlayer && isAnimating ? "transition-all duration-300" : ""} ${showMiniPlayer && !isDragging && !isResizing ? "transition-all duration-300 ease-out" : ""}`}
+            className={`fixed overflow-hidden bg-black ${showMiniPlayer ? "z-50 rounded-t-2xl ring-1 ring-black/40" : cinemaMode ? "z-[80] rounded-2xl shadow-2xl" : "z-40 rounded-xl"} ${!showMiniPlayer && isAnimating ? "transition-all duration-300" : ""} ${showMiniPlayer && !isDragging && !isResizing ? "transition-all duration-300 ease-out" : ""}`}
             style={
               showMiniPlayer
                 ? {
@@ -565,7 +565,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
               <button
                 type="button"
                 onClick={() => dispatch(clearVideoAction())}
-                className="pointer-events-auto absolute top-2 right-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-200 hover:bg-black/80 hover:text-white active:scale-95"
+                className="pointer-events-auto absolute top-2 right-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/58 text-white/90 backdrop-blur-sm transition-all duration-200 hover:border-orange-300/50 hover:bg-orange-500/70 hover:text-white active:scale-95"
                 aria-label={t("closePlayer")}
               >
                 <CloseIcon className="h-4 w-4" />
