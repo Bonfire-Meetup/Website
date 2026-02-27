@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
+import { usePrefersReducedMotion } from "@/lib/utils/prefers-reduced-motion";
+
 interface HeroSlideshowProps {
   images: { src: string; alt: string }[];
   interval?: number;
@@ -85,26 +87,22 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
 
   const currentIndexRef = useRef(state.currentIndex);
   currentIndexRef.current = state.currentIndex;
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const randomIndex = Math.floor(Math.random() * images.length);
     dispatch({
       direction: getRandomDirection(),
       index: randomIndex,
-      reducedMotion: mediaQuery.matches,
+      reducedMotion: prefersReducedMotion,
       type: "INIT",
     });
     currentIndexRef.current = randomIndex;
+  }, [images.length, prefersReducedMotion]);
 
-    const handler = (event: MediaQueryListEvent) => {
-      dispatch({ type: "SET_REDUCED_MOTION", value: event.matches });
-    };
-
-    mediaQuery.addEventListener("change", handler);
-
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, [images.length]);
+  useEffect(() => {
+    dispatch({ type: "SET_REDUCED_MOTION", value: prefersReducedMotion });
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
     const handleVisibility = () => {

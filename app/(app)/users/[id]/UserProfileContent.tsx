@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useState } from "react";
 
 import {
   BoltIcon,
@@ -16,6 +16,7 @@ import { UserAvatar } from "@/components/user/UserAvatar";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { copyToClipboard } from "@/lib/utils/clipboard";
 import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
+import { usePrefersReducedMotion } from "@/lib/utils/prefers-reduced-motion";
 
 import { BoostTitleBadge } from "./BoostTitleBadge";
 import { ProfileShareButton } from "./ProfileShareButton";
@@ -56,15 +57,7 @@ export function UserProfileContent({
   const t = useTranslations("account.userProfile");
   const locale = useLocale();
   const [copied, setCopied] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mq.matches);
-    const handler = () => setPrefersReducedMotion(mq.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}${PAGE_ROUTES.USER(user.publicId)}`;
   const shareText = user.name ? t("shareText", { name: user.name }) : t("shareTextAnonymous");

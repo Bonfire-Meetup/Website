@@ -8,6 +8,7 @@ import { ArrowRightIcon, BoltIcon, FireIcon, PlayIcon } from "@/components/share
 import { type LocationValue } from "@/lib/config/constants";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { prefersReducedMotion } from "@/lib/utils/prefers-reduced-motion";
 
 import { CARD_TILT_CLASS, CARD_TILT_STYLE, createCardTiltHandlers } from "../recordings/card-tilt";
 import { RecordingImage } from "../recordings/RecordingImage";
@@ -92,7 +93,7 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
     <Link
       href={PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}
       prefetch={false}
-      className={`group relative block w-full min-w-0 overflow-hidden rounded-[16px] border border-black/10 bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] transition-[border-color,box-shadow] duration-500 hover:border-black/20 hover:shadow-[0_20px_36px_-20px_rgba(17,24,39,0.45)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:hover:border-white/20 dark:hover:shadow-[0_28px_48px_-20px_rgba(0,0,0,0.95)] ${CARD_TILT_CLASS}`}
+      className={`group relative block w-full min-w-0 overflow-hidden rounded-[20px] border border-black/10 bg-[linear-gradient(180deg,rgba(249,250,251,0.95)_0%,rgba(229,231,235,0.9)_100%)] shadow-[0_20px_42px_-24px_rgba(17,24,39,0.45)] transition-[border-color,box-shadow,transform] duration-500 hover:border-black/22 hover:shadow-[0_28px_56px_-26px_rgba(17,24,39,0.58)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_22px_44px_-18px_rgba(0,0,0,0.92)] dark:hover:border-white/20 dark:hover:shadow-[0_30px_56px_-18px_rgba(0,0,0,0.96)] ${CARD_TILT_CLASS}`}
       style={CARD_TILT_STYLE}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
@@ -103,12 +104,13 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
           src={recording.thumbnail}
           alt={recording.title}
           className="aspect-[16/9]"
-          imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.03)] duration-100 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
+          imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.03)] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
           sizes="(max-width: 768px) 94vw, (max-width: 1280px) 58vw, 760px"
           loading="eager"
           fetchPriority="high"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/54 via-black/22 to-transparent transition-opacity duration-300 group-hover:from-black/40 dark:from-black/62 dark:via-black/26 dark:group-hover:from-black/48" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/62 via-black/24 to-transparent transition-opacity duration-300 group-hover:from-black/48 dark:from-black/68 dark:via-black/28 dark:group-hover:from-black/54" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_86%_14%,rgba(244,114,182,0.34),transparent_36%)] opacity-85 transition-opacity duration-500 group-hover:opacity-100 dark:opacity-75" />
         <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 rounded-full border border-white/14 bg-black/24 px-2 py-1 text-[10px] leading-none font-semibold tracking-[0.13em] text-white/82 uppercase backdrop-blur-sm">
           <span className="h-1.5 w-1.5 rounded-full bg-[linear-gradient(135deg,var(--color-brand-500),var(--color-fire-start))]" />
           {text.badge}
@@ -136,10 +138,12 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
 function QueueVideoCard({
   recording,
   isActive,
+  rank,
   onActivate,
 }: {
   recording: HeroRecording;
   isActive: boolean;
+  rank: number;
   onActivate: () => void;
 }) {
   return (
@@ -149,10 +153,10 @@ function QueueVideoCard({
       onMouseEnter={onActivate}
       onFocus={onActivate}
       onClick={onActivate}
-      className={`group relative min-w-[11rem] basis-[11rem] overflow-hidden rounded-[16px] border p-1.5 text-left transition-[border-color,background-color,box-shadow,transform] duration-500 sm:min-w-[12rem] sm:basis-[12rem] md:min-w-[12.5rem] md:basis-[12.5rem] ${
+      className={`group relative min-w-[9.75rem] basis-[9.75rem] overflow-hidden rounded-[14px] border bg-white/56 p-1 text-left transition-[border-color,background-color,box-shadow,transform,opacity] duration-400 sm:min-w-[10.5rem] sm:basis-[10.5rem] dark:bg-black/18 ${
         isActive
-          ? "border-brand-500/60 dark:border-brand-400/60 bg-white/90 shadow-[0_0_0_1px_rgba(217,70,239,0.6),0_12px_24px_-16px_rgba(17,24,39,0.42)] dark:bg-white/[0.04] dark:shadow-[0_0_0_1px_rgba(232,121,249,0.64),0_20px_32px_-18px_rgba(0,0,0,0.72)]"
-          : "border-black/10 bg-white/82 shadow-[0_12px_24px_-18px_rgba(17,24,39,0.28)] hover:-translate-y-0.5 hover:border-black/20 hover:bg-white/94 dark:border-white/12 dark:bg-black/24 dark:shadow-[0_16px_28px_-20px_rgba(0,0,0,0.65)] dark:hover:border-white/20 dark:hover:bg-black/32"
+          ? "border-brand-500/55 dark:border-brand-400/60 opacity-100 shadow-[0_0_0_1px_rgba(217,70,239,0.48),0_10px_20px_-14px_rgba(17,24,39,0.38)] dark:shadow-[0_0_0_1px_rgba(232,121,249,0.52),0_14px_24px_-16px_rgba(0,0,0,0.72)]"
+          : "border-black/8 opacity-76 shadow-[0_8px_16px_-14px_rgba(17,24,39,0.25)] hover:-translate-y-0.5 hover:border-black/16 hover:opacity-92 dark:border-white/10 dark:shadow-[0_10px_18px_-14px_rgba(0,0,0,0.64)] dark:hover:border-white/16"
       }`}
     >
       <div className="relative overflow-hidden rounded-lg">
@@ -160,18 +164,27 @@ function QueueVideoCard({
           src={recording.thumbnail}
           alt={recording.title}
           className="aspect-[16/9]"
-          imgClassName="scale-[1.05] object-[80%_30%] group-hover:scale-[1.09]"
-          sizes="(max-width: 768px) 45vw, (max-width: 1024px) 30vw, 220px"
+          imgClassName="scale-[1.04] object-[80%_30%] group-hover:scale-[1.08]"
+          sizes="(max-width: 768px) 38vw, (max-width: 1024px) 24vw, 180px"
           loading="eager"
           fetchPriority="high"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/46 via-black/16 to-transparent transition-opacity duration-300 group-hover:from-black/34 dark:from-black/56 dark:via-black/20 dark:group-hover:from-black/42" />
+        <span
+          className={`absolute top-1.5 left-1.5 inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-[10px] leading-none font-bold tracking-[0.08em] ${
+            isActive
+              ? "bg-gradient-to-r from-fuchsia-500/95 to-orange-500/95 text-white shadow-[0_6px_16px_-10px_rgba(244,63,94,0.9)]"
+              : "bg-black/52 text-white/92 backdrop-blur-sm dark:bg-black/62"
+          }`}
+        >
+          {String(rank).padStart(2, "0")}
+        </span>
       </div>
       <div className="px-0.5 pt-2 pb-1">
-        <p className="mb-1 truncate text-[9px] leading-none font-medium tracking-[0.13em] text-neutral-500 uppercase dark:text-white/62">
-          {recording.speaker.join(", ")}
+        <p className="mb-1 truncate text-[8px] leading-none font-medium tracking-[0.12em] text-neutral-500 uppercase dark:text-white/56">
+          {recording.speaker[0]}
         </p>
-        <h3 className="line-clamp-2 min-h-[2rem] text-[11px] leading-[1.25] font-semibold text-neutral-800 sm:text-xs dark:text-white/95">
+        <h3 className="line-clamp-2 min-h-[1.75rem] text-[10px] leading-[1.2] font-semibold text-neutral-800 sm:text-[11px] dark:text-white/90">
           {recording.title}
         </h3>
       </div>
@@ -191,63 +204,91 @@ function TrendingDock({
   text: TrendingText;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isAutoPlayPaused, setIsAutoPlayPaused] = useState(false);
 
   useEffect(() => {
     setActiveIndex((prev) => Math.min(prev, Math.max(trendingCards.length - 1, 0)));
   }, [trendingCards.length]);
 
+  useEffect(() => {
+    if (trendingCards.length <= 1 || isAutoPlayPaused) {
+      return;
+    }
+
+    if (prefersReducedMotion()) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % trendingCards.length);
+    }, 5500);
+
+    return () => clearInterval(timer);
+  }, [isAutoPlayPaused, trendingCards.length]);
+
   const activeRecording = trendingCards[activeIndex] ?? trendingCards[0];
 
   return (
     <div
-      className={`relative mx-auto w-full max-w-[54rem] transition-all duration-700 ease-[cubic-bezier(0.2,0.85,0.2,1)] ${
+      className={`relative mx-auto w-full max-w-[60rem] transition-all duration-700 ease-[cubic-bezier(0.2,0.85,0.2,1)] ${
         cardsVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
       }`}
+      onMouseEnter={() => setIsAutoPlayPaused(true)}
+      onMouseLeave={() => setIsAutoPlayPaused(false)}
     >
       <div
-        className={`relative overflow-visible rounded-2xl p-2 backdrop-blur-[2px] transition-[opacity,filter,box-shadow] duration-500 sm:p-2.5 ${
+        className={`relative overflow-hidden rounded-[28px] p-2 transition-[opacity,filter,box-shadow] duration-500 sm:p-3 ${
           isScrolled
             ? "md:blur-0 md:opacity-100"
             : "md:focus-within:blur-0 md:hover:blur-0 md:opacity-78 md:blur-[0.3px] md:focus-within:opacity-100 md:hover:opacity-100"
         }`}
       >
-        <div className="relative flex min-w-0 flex-col gap-3">
-          {activeRecording && (
-            <div className="mx-auto w-full max-w-[41rem]">
-              <ActiveVideoCard recording={activeRecording} text={text} />
-            </div>
-          )}
+        <div className="pointer-events-none absolute -top-10 right-6 h-28 w-28 rounded-full bg-fuchsia-500/30 blur-3xl dark:bg-fuchsia-500/24" />
+        <div className="pointer-events-none absolute -bottom-6 left-6 h-24 w-36 rounded-full bg-orange-500/24 blur-3xl dark:bg-orange-500/16" />
+        <div className="pointer-events-none absolute inset-0 rounded-[28px] border border-white/42 dark:border-white/10" />
 
-          <div className="min-w-0 space-y-2">
-            <p className="px-0.5 text-center text-[10px] font-semibold tracking-[0.16em] text-neutral-500 uppercase dark:text-white/55">
-              {text.queue}
-            </p>
-            <p className="px-0.5 text-center text-[10px] font-medium tracking-[0.12em] text-neutral-500/90 uppercase sm:hidden dark:text-white/42">
-              {text.tapHint}
-            </p>
-            <div className="no-scrollbar flex w-full max-w-full min-w-0 gap-2 overflow-x-auto pb-0.5 md:justify-center md:overflow-visible">
-              {trendingCards.map((recording, index) => {
-                const isActive = index === activeIndex;
+        <div className="relative min-w-0 space-y-3">
+          <div className="min-w-0 space-y-2.5">
+            {activeRecording && (
+              <div className="mx-auto w-full max-w-[52rem]">
+                <ActiveVideoCard recording={activeRecording} text={text} />
+              </div>
+            )}
 
-                return (
-                  <QueueVideoCard
-                    key={recording.shortId}
-                    recording={recording}
-                    isActive={isActive}
-                    onActivate={() => setActiveIndex(index)}
-                  />
-                );
-              })}
+            <div className="mx-auto w-full max-w-[38rem] rounded-xl border border-black/8 bg-white/38 px-2.5 py-2 shadow-[0_10px_24px_-20px_rgba(17,24,39,0.4)] backdrop-blur-sm dark:border-white/8 dark:bg-black/16 dark:shadow-[0_14px_24px_-20px_rgba(0,0,0,0.72)]">
+              <p className="px-0.5 text-center text-[9px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-white/50">
+                {text.queue}
+              </p>
+              <p className="mt-1 px-0.5 text-center text-[9px] font-medium tracking-[0.12em] text-neutral-500/85 uppercase sm:hidden dark:text-white/36">
+                {text.tapHint}
+              </p>
+
+              <div className="no-scrollbar mt-2 flex w-full max-w-full min-w-0 justify-center gap-2 overflow-x-auto pb-0.5">
+                {trendingCards.map((recording, index) => {
+                  const isActive = index === activeIndex;
+
+                  return (
+                    <QueueVideoCard
+                      key={recording.shortId}
+                      recording={recording}
+                      isActive={isActive}
+                      rank={index + 1}
+                      onActivate={() => setActiveIndex(index)}
+                    />
+                  );
+                })}
+              </div>
             </div>
-            <div className="text-center">
-              <Link
-                href="#recordings"
-                className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.12em] text-neutral-600 uppercase underline decoration-[1.5px] underline-offset-4 transition-colors hover:text-neutral-800 dark:text-white/62 dark:hover:text-white/82"
-              >
-                {text.seeAll}
-                <ArrowRightIcon className="h-3.5 w-3.5" />
-              </Link>
-            </div>
+          </div>
+
+          <div className="text-center">
+            <Link
+              href="#recordings"
+              className="inline-flex items-center gap-1 text-[10px] font-semibold tracking-[0.1em] text-neutral-600 uppercase underline decoration-[1.5px] underline-offset-4 transition-colors hover:text-neutral-800 dark:text-white/62 dark:hover:text-white/82"
+            >
+              {text.seeAll}
+              <ArrowRightIcon className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </div>
       </div>
@@ -344,7 +385,11 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
       <div className="relative z-10 mx-auto w-full max-w-7xl min-w-0">
         <div className="grid grid-cols-1">
           <div className="relative z-10 flex flex-col items-center pt-4 text-center sm:pt-8">
-            <h1 className="mb-10 flex flex-col items-center sm:mb-14">
+            <p className="mb-4 text-[11px] font-semibold tracking-[0.26em] text-neutral-500 uppercase dark:text-neutral-400">
+              {t("eyebrow")}
+            </p>
+
+            <h1 className="mb-8 flex flex-col items-center sm:mb-12">
               <span className="text-outline mx-auto text-5xl font-black tracking-tighter uppercase opacity-65 sm:text-8xl md:text-9xl">
                 {t("title.part1")}
               </span>
@@ -356,19 +401,19 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
               </NeonText>
             </h1>
 
-            <p className="mb-10 max-w-xl text-sm leading-relaxed text-neutral-600 sm:mb-14 sm:text-lg md:text-xl dark:text-neutral-400">
+            <p className="mb-9 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:mb-11 sm:text-lg md:text-xl dark:text-neutral-400">
               {t("subtitle", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
             </p>
 
-            <div>
+            <div className="flex flex-wrap items-center justify-center gap-3">
               <Button
                 href="#events"
                 variant="glass"
                 external
-                className="group relative px-5 py-3 text-sm sm:px-8 sm:py-4 sm:text-base"
+                className="group relative rounded-2xl border border-fuchsia-300/45 bg-gradient-to-r from-fuchsia-600 via-rose-500 to-orange-500 px-6 py-3.5 text-sm font-bold text-white shadow-[0_16px_34px_-16px_rgba(236,72,153,0.75)] transition-[transform,box-shadow,filter] duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_42px_-16px_rgba(236,72,153,0.88)] hover:brightness-105 sm:px-9 sm:py-4.5 sm:text-base dark:border-fuchsia-300/35"
               >
                 <span className="relative z-10">{t("cta.events")}</span>
-                <div className="absolute inset-0 -z-10 bg-fuchsia-700 opacity-30 blur-xl transition-opacity group-hover:opacity-45" />
+                <div className="pointer-events-none absolute -inset-3 -z-10 rounded-[1.35rem] bg-gradient-to-r from-fuchsia-500/35 to-orange-500/35 opacity-85 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
               </Button>
             </div>
           </div>
