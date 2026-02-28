@@ -1547,12 +1547,6 @@ html:not([data-motion="active"]) * {
 }
 
 .early-access-loader {
-  background: linear-gradient(
-    90deg,
-    rgba(253, 230, 138, 0),
-    rgba(253, 230, 138, 0.95),
-    rgba(254, 243, 199, 0)
-  );
   animation: earlyAccessSweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 

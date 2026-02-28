@@ -12,7 +12,7 @@ import { MEMBERSHIP_TIER_LABELS } from "@/lib/config/membership";
 import { canAccessRecording, getRecordingAccessState } from "@/lib/recordings/early-access";
 import type { Recording } from "@/lib/recordings/recordings";
 import { useAppSelector } from "@/lib/redux/hooks";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDate } from "@/lib/utils/locale";
 
 import { AccessStatusPill, type AccessStatusKind } from "./AccessStatusPill";
@@ -23,6 +23,14 @@ import { RelatedVideosSection } from "./RelatedVideosSection";
 import { ShareMenu } from "./ShareMenu";
 import { VideoMetadata } from "./VideoMetadata";
 import { WatchLaterButton } from "./WatchLaterButton";
+
+const getGuildLevelName = (tier?: number | null) => {
+  if (tier === 1 || tier === 2 || tier === 3) {
+    return MEMBERSHIP_TIER_LABELS[tier];
+  }
+
+  return undefined;
+};
 
 export type RelatedRecording = Pick<
   Recording,
@@ -71,12 +79,20 @@ export function RecordingPlayer({
   const isAccessCheckPending = isRestricted && !hasResolvedAuth;
   const countdownMs =
     isEarlyAccess && earlyAccessEndsAtMs ? Math.max(earlyAccessEndsAtMs - nowMs, 0) : 0;
-  const requiredGuildLevelName = requiredMembershipTier
-    ? MEMBERSHIP_TIER_LABELS[requiredMembershipTier]
-    : "";
+  const viewerMembershipTier = auth.user?.decodedToken?.mbt ?? 0;
+  const requiredGuildLevelName = getGuildLevelName(requiredMembershipTier) ?? "";
+  const currentGuildLevelName = getGuildLevelName(viewerMembershipTier);
+  const isGuildTierLockedForMember = Boolean(
+    auth.isAuthenticated &&
+    !hasPlaybackAccess &&
+    requiredMembershipTier &&
+    requiredMembershipTier > 0 &&
+    viewerMembershipTier > 0 &&
+    viewerMembershipTier < requiredMembershipTier,
+  );
   const requiredAccessLabel =
     requiredMembershipTier === 0
-      ? t("earlyAccessRequiredLogin")
+      ? ""
       : requiredGuildLevelName
         ? t("earlyAccessRequiredGuildByName", { level: requiredGuildLevelName })
         : "";
@@ -86,11 +102,24 @@ export function RecordingPlayer({
       : requiredMembershipTier
         ? MEMBERSHIP_TIER_LABELS[requiredMembershipTier]
         : "";
-  const accessLockedTitle = isEarlyAccess
-    ? requiredMembershipTier === 0
-      ? t("earlyAccessLockedTitleLogin")
-      : t("earlyAccessLockedTitle")
-    : t("membersOnlyLockedTitle");
+  const accessLockedTitle = isGuildTierLockedForMember
+    ? isEarlyAccess
+      ? t("earlyAccessLockedTitleGuildLevel", { level: requiredGuildLevelName })
+      : t("membersOnlyLockedTitleGuildLevel", { level: requiredGuildLevelName })
+    : isEarlyAccess
+      ? requiredMembershipTier === 0
+        ? t("earlyAccessLockedTitleLogin")
+        : t("earlyAccessLockedTitle")
+      : requiredMembershipTier === 0
+        ? t("membersOnlyLockedTitleLogin")
+        : t("membersOnlyLockedTitle");
+  const accessLockedSubtitle =
+    isGuildTierLockedForMember && currentGuildLevelName
+      ? t("guildLevelUpgradeHint", {
+          currentLevel: currentGuildLevelName,
+          requiredLevel: requiredGuildLevelName,
+        })
+      : "";
   const accessStatus: AccessStatusKind = isRestricted
     ? isEarlyAccess
       ? "earlyAccess"
@@ -99,6 +128,30 @@ export function RecordingPlayer({
   const loginHref = `${PAGE_ROUTES.LOGIN}?returnPath=${encodeURIComponent(
     PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
   )}`;
+  const likeInteractionGateHref = isAccessCheckPending
+    ? undefined
+    : !hasPlaybackAccess
+      ? !auth.isAuthenticated
+        ? PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(
+            LOGIN_REASON.VIDEO_LOCKED_LIKE,
+            PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
+          )
+        : requiredMembershipTier && requiredMembershipTier > 0
+          ? PAGE_ROUTES.GUILD
+          : undefined
+      : undefined;
+  const boostInteractionGateHref = isAccessCheckPending
+    ? undefined
+    : !hasPlaybackAccess
+      ? !auth.isAuthenticated
+        ? PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(
+            LOGIN_REASON.VIDEO_BOOST,
+            PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
+          )
+        : requiredMembershipTier && requiredMembershipTier > 0
+          ? PAGE_ROUTES.GUILD
+          : undefined
+      : undefined;
 
   const [shareUrl, setShareUrl] = useState("");
   const shareText = `${recording.title} - ${recording.speaker.join(", ")}`;
@@ -202,7 +255,7 @@ export function RecordingPlayer({
                   <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
                   <span>{t("backToLibrary")}</span>
                 </Link>
-                <AccessStatusPill status={accessStatus} />
+                {hasPlaybackAccess && <AccessStatusPill status={accessStatus} />}
               </div>
 
               <div className="relative z-10 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.2),transparent_62%)] p-2 transition-all duration-300 sm:p-3">
@@ -218,6 +271,7 @@ export function RecordingPlayer({
                       requiredAccessLabel={requiredAccessLabel}
                       requiredAccessShortLabel={requiredAccessShortLabel}
                       accessLockedTitle={accessLockedTitle}
+                      accessLockedSubtitle={accessLockedSubtitle}
                       countdownMs={countdownMs}
                       isAccessCheckPending={isAccessCheckPending}
                       isAuthenticated={auth.isAuthenticated}
@@ -229,17 +283,26 @@ export function RecordingPlayer({
 
               <div className="relative z-0 border-b border-neutral-200/50 bg-white/60 dark:border-neutral-700/40 dark:bg-white/[0.02]">
                 <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-4 sm:gap-3 sm:px-6">
-                  {hasPlaybackAccess ? (
-                    <LikeBoostButtons onBoostedByLoad={setBoostedBy} shortId={recording.shortId} />
-                  ) : null}
+                  <LikeBoostButtons
+                    gatedBoostActionHref={boostInteractionGateHref}
+                    gatedLikeActionHref={likeInteractionGateHref}
+                    hasInteractionAccess={hasPlaybackAccess}
+                    onBoostedByLoad={setBoostedBy}
+                    shortId={recording.shortId}
+                  />
 
                   <div className="flex items-center gap-2 sm:gap-3">
                     <WatchLaterButton shortId={recording.shortId} variant="icon" size="sm" />
                     <ShareMenu shareUrl={shareUrl} shareText={shareText} />
                     <button
                       type="button"
+                      disabled={!hasPlaybackAccess}
                       onClick={() => setCinemaMode(!cinemaMode)}
-                      className="hidden cursor-pointer items-center gap-1.5 rounded-full bg-black/5 px-3 py-1.5 text-xs leading-none font-medium text-neutral-600 transition-all hover:bg-black/10 hover:text-neutral-900 sm:inline-flex sm:leading-tight dark:bg-white/10 dark:text-neutral-300 dark:hover:bg-white/20 dark:hover:text-white"
+                      className={`hidden items-center gap-1.5 rounded-full bg-black/5 px-3 py-1.5 text-xs leading-none font-medium text-neutral-600 transition-all sm:inline-flex sm:leading-tight dark:bg-white/10 dark:text-neutral-300 ${
+                        hasPlaybackAccess
+                          ? "cursor-pointer hover:bg-black/10 hover:text-neutral-900 dark:hover:bg-white/20 dark:hover:text-white"
+                          : "cursor-not-allowed opacity-50"
+                      }`}
                     >
                       <CinemaIcon className="h-3.5 w-3.5" />
                       <span className="sm:translate-y-[1px]">
@@ -250,11 +313,9 @@ export function RecordingPlayer({
                 </div>
 
                 <div className="px-5 pb-4 sm:px-6">
-                  {hasPlaybackAccess ? (
-                    <div className="h-10">
-                      <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
-                    </div>
-                  ) : null}
+                  <div className="h-10">
+                    <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
+                  </div>
                   <p className="mt-3 text-[10px] leading-tight text-neutral-500 dark:text-neutral-500">
                     {t("youtubeNotice")}
                   </p>

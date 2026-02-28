@@ -12,6 +12,7 @@ import {
   BookmarkIcon,
   CheckIcon,
   ClockIcon,
+  FireIcon,
   FingerprintIcon,
   InfoIcon,
   TicketIcon,
@@ -57,6 +58,13 @@ const HINT_CONFIGS: Record<LoginReason, HintConfig> = {
     textClass: "text-amber-700 dark:text-amber-200",
     icon: ClockIcon,
     translationKey: "sessionExpiredHint",
+  },
+  [LOGIN_REASON.VIDEO_LOCKED_LIKE]: {
+    borderClass: "border-rose-200/70 dark:border-rose-500/20",
+    bgClass: "bg-rose-50 dark:bg-rose-500/10",
+    textClass: "text-rose-700 dark:text-rose-200",
+    icon: FireIcon,
+    translationKey: "videoLockedLikeHint",
   },
   [LOGIN_REASON.VIDEO_BOOST]: {
     borderClass: "border-emerald-200/70 dark:border-emerald-500/20",

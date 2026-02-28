@@ -20,11 +20,20 @@ import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { BoltIcon, FireIcon, FrownIcon } from "../shared/Icons";
 
 interface LikeBoostButtonsProps {
+  gatedBoostActionHref?: string;
+  gatedLikeActionHref?: string;
+  hasInteractionAccess?: boolean;
   onBoostedByLoad?: (boostedBy: BoostedByData | null) => void;
   shortId: string;
 }
 
-export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsProps) {
+export function LikeBoostButtons({
+  gatedBoostActionHref,
+  gatedLikeActionHref,
+  hasInteractionAccess = true,
+  onBoostedByLoad,
+  shortId,
+}: LikeBoostButtonsProps) {
   const t = useTranslations("recordings");
   const router = useRouter();
   const pathname = usePathname();
@@ -160,6 +169,13 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
   };
 
   const handleLike = async () => {
+    if (!hasInteractionAccess) {
+      if (gatedLikeActionHref) {
+        router.push(gatedLikeActionHref);
+      }
+      return;
+    }
+
     if (!shortId || isLiking || likeCount === null) {
       return;
     }
@@ -179,6 +195,13 @@ export function LikeBoostButtons({ onBoostedByLoad, shortId }: LikeBoostButtonsP
   const handleBoost = async () => {
     const query = searchParams.toString();
     const returnPath = `${pathname}${query ? `?${query}` : ""}`;
+
+    if (!hasInteractionAccess) {
+      if (gatedBoostActionHref) {
+        router.push(gatedBoostActionHref);
+      }
+      return;
+    }
 
     if (!getHasValidToken()) {
       router.push(PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(LOGIN_REASON.VIDEO_BOOST, returnPath));

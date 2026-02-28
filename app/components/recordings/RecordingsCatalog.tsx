@@ -17,6 +17,7 @@ import { EmptyStateMessage } from "./EmptyStateMessage";
 import { FeaturedRecording } from "./FeaturedRecording";
 import { GridFiltersBar } from "./GridFiltersBar";
 import { GridView } from "./GridView";
+import { GuildVaultRail } from "./GuildVaultRail";
 import { HiddenGemsRail } from "./HiddenGemsRail";
 import { HotPicksRail } from "./HotPicksRail";
 import { buildLibrarySearchParams, fetchLibraryApiPayload } from "./library-client-utils";
@@ -234,6 +235,12 @@ export function RecordingsCatalog({
   const earlyAccessRecordings = (recordings ?? [])
     .filter((recording) => getRecordingAccessState(recording.access).isEarlyAccess)
     .slice(0, 12);
+  const guildVaultRecordings = (recordings ?? [])
+    .filter((recording) => {
+      const accessState = getRecordingAccessState(recording.access);
+      return accessState.isGuildAccess && accessState.isRestricted && !accessState.isEarlyAccess;
+    })
+    .slice(0, 12);
 
   const handleLocationChange = useCallback(
     (location: LocationFilter) =>
@@ -357,6 +364,14 @@ export function RecordingsCatalog({
                           scrollRightLabel={tCommon("scrollRight")}
                         />
                       ))}
+                    {guildVaultRecordings.length > 0 && (
+                      <GuildVaultRail
+                        title={tRows("guildVault")}
+                        recordings={guildVaultRecordings}
+                        scrollLeftLabel={tCommon("scrollLeft")}
+                        scrollRightLabel={tCommon("scrollRight")}
+                      />
+                    )}
                     {trendingSlots?.hiddenGems ??
                       (hiddenGems && hiddenGems.length > 0 && (
                         <HiddenGemsRail

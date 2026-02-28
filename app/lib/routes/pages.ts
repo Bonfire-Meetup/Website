@@ -1,6 +1,7 @@
 export const LOGIN_REASON = {
   EVENT_RSVP: "event-rsvp",
   SESSION_EXPIRED: "session-expired",
+  VIDEO_LOCKED_LIKE: "video-locked-like",
   VIDEO_BOOST: "video-boost",
   WATCH_LATER: "watch-later",
 } as const;
@@ -16,6 +17,7 @@ export const PAGE_ROUTES = {
   CONTACT_WITH_TYPE: (type: string) => `/contact?type=${type}`,
   CREW: "/crew",
   FAQ: "/faq",
+  GUILD: "/guild",
   HOME: "/",
   LEGAL: "/legal",
   LIBRARY: "/library",

@@ -79,11 +79,19 @@ export const ENGAGEMENT_BRANDING = {
   access: {
     classes: {
       signInPill:
-        "bg-gradient-to-r from-fuchsia-500/90 via-pink-500/84 to-rose-500/78 text-white ring-1 ring-white/45 shadow-[0_10px_24px_-14px_rgba(236,72,153,0.95)] backdrop-blur-md dark:ring-white/35",
+        "bg-gradient-to-r from-rose-500/92 via-orange-500/86 to-red-500/82 text-white ring-1 ring-white/45 shadow-[0_10px_24px_-14px_rgba(244,63,94,0.88)] backdrop-blur-md dark:ring-white/35",
       signInNav:
-        "bg-fuchsia-100/40 text-fuchsia-600 ring-1 ring-fuchsia-200/45 hover:bg-fuchsia-100/55 hover:text-fuchsia-700 dark:bg-fuchsia-400/8 dark:text-fuchsia-200/90 dark:ring-fuchsia-300/18 dark:hover:bg-fuchsia-400/12 dark:hover:text-fuchsia-100",
+        "bg-rose-100/45 text-rose-700 ring-1 ring-rose-200/50 hover:bg-rose-100/60 hover:text-rose-800 dark:bg-rose-400/8 dark:text-rose-200/90 dark:ring-rose-300/18 dark:hover:bg-rose-400/12 dark:hover:text-rose-100",
       guildPill:
         "bg-gradient-to-r from-amber-300/95 via-orange-300/92 to-rose-300/88 text-neutral-900 ring-1 ring-white/65 shadow-[0_10px_24px_-14px_rgba(251,146,60,0.85)] backdrop-blur-md",
+      signInNoticeAmbient:
+        "bg-[radial-gradient(ellipse_at_top,rgba(244,63,94,0.14),transparent_45%)] dark:bg-[radial-gradient(ellipse_at_top,rgba(251,146,60,0.2),transparent_45%)]",
+      guildNoticeAmbient:
+        "bg-[radial-gradient(ellipse_at_top,rgba(249,115,22,0.12),transparent_45%)] dark:bg-[radial-gradient(ellipse_at_top,rgba(251,191,36,0.18),transparent_45%)]",
+      signInNoticeCardAccent:
+        "bg-[radial-gradient(circle_at_0%_0%,rgba(244,63,94,0.14),transparent_38%)] dark:bg-[radial-gradient(circle_at_0%_0%,rgba(251,146,60,0.22),transparent_38%)]",
+      guildNoticeCardAccent:
+        "bg-[radial-gradient(circle_at_0%_0%,rgba(251,191,36,0.12),transparent_38%)] dark:bg-[radial-gradient(circle_at_0%_0%,rgba(251,191,36,0.18),transparent_38%)]",
       chip: "text-[9px] font-bold tracking-[0.14em]",
       compactBadge:
         "rounded-full bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 text-neutral-900 ring-1 ring-white/45 shadow-lg",
@@ -96,6 +104,20 @@ export const ENGAGEMENT_BRANDING = {
       countdownPanel:
         "rounded-xl border border-amber-200/40 bg-gradient-to-r from-amber-400/20 via-orange-400/16 to-rose-400/16 text-amber-50 shadow-[0_0_20px_rgba(251,146,60,0.18)]",
       countdownLabel: "text-[10px] font-semibold tracking-[0.12em] text-amber-100/90 uppercase",
+      signInCountdownPanel:
+        "w-full border-rose-300/55 bg-gradient-to-r from-rose-200/55 via-orange-200/45 to-red-200/45 px-2.5 py-1.5 text-rose-950 shadow-[0_0_20px_rgba(244,63,94,0.14)] sm:px-3 dark:border-rose-200/40 dark:bg-gradient-to-r dark:from-rose-400/20 dark:via-orange-400/16 dark:to-red-400/16 dark:text-rose-50 dark:shadow-[0_0_20px_rgba(244,63,94,0.2)]",
+      signInCountdownLabel: "text-rose-800 lg:text-[11px] dark:text-rose-100/90",
+      signInCountdownValue:
+        "mt-0.5 text-xs font-bold tracking-tight break-words text-rose-950 tabular-nums lg:text-base dark:text-rose-50",
+      signInLoaderGradient:
+        "bg-[linear-gradient(90deg,rgba(251,146,60,0),rgba(244,63,94,0.95),rgba(254,205,211,0))]",
+      guildCountdownPanel:
+        "w-full border-amber-300/55 bg-gradient-to-r from-amber-200/55 via-orange-200/45 to-rose-200/45 px-2.5 py-1.5 text-amber-950 shadow-[0_0_20px_rgba(251,146,60,0.12)] sm:px-3 dark:border-amber-200/40 dark:bg-gradient-to-r dark:from-amber-400/20 dark:via-orange-400/16 dark:to-rose-400/16 dark:text-amber-50 dark:shadow-[0_0_20px_rgba(251,146,60,0.18)]",
+      guildCountdownLabel: "text-amber-800 lg:text-[11px] dark:text-amber-100/90",
+      guildCountdownValue:
+        "mt-0.5 text-xs font-bold tracking-tight break-words text-amber-950 tabular-nums lg:text-base dark:text-amber-50",
+      guildLoaderGradient:
+        "bg-[linear-gradient(90deg,rgba(253,230,138,0),rgba(253,230,138,0.95),rgba(254,243,199,0))]",
     },
   },
 

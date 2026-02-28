@@ -33,10 +33,16 @@ export function VideoMetadata({
     : "";
   const requiredAccessLabel =
     requiredMembershipTier === 0
-      ? t("earlyAccessRequiredLogin")
+      ? isEarlyAccess
+        ? ""
+        : t("membersOnlyRequiredLogin")
       : requiredGuildLevelName
         ? t("earlyAccessRequiredGuildByName", { level: requiredGuildLevelName })
         : "";
+  const accessLabelPrefix = isEarlyAccess ? t("earlyAccess") : t("membersOnly");
+  const accessLabel = requiredAccessLabel
+    ? `${accessLabelPrefix} · ${requiredAccessLabel}`
+    : accessLabelPrefix;
 
   return (
     <div className="px-5 py-5 sm:px-6 sm:py-6">
@@ -62,7 +68,7 @@ export function VideoMetadata({
                 size="sm"
                 className={`${ENGAGEMENT_BRANDING.access.classes.metadataPill} font-semibold tracking-[0.15em] uppercase`}
               >
-                {isEarlyAccess ? t("earlyAccess") : t("membersOnly")} · {requiredAccessLabel}
+                {accessLabel}
               </Pill>
             )}
             {recording.speaker.map((name) => (
