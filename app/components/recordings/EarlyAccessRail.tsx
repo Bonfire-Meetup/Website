@@ -11,11 +11,15 @@ export function EarlyAccessRail({
   recordings,
   scrollLeftLabel,
   scrollRightLabel,
+  viewAllHref,
+  viewAllLabel,
 }: {
   title: string;
   recordings: CatalogRecording[];
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
+  viewAllHref?: string;
+  viewAllLabel?: string;
 }) {
   return (
     <Rail
@@ -37,6 +41,8 @@ export function EarlyAccessRail({
       gradientTo="to-orange-500/10"
       scrollLeftLabel={scrollLeftLabel}
       scrollRightLabel={scrollRightLabel}
+      viewAllHref={viewAllHref}
+      viewAllLabel={viewAllLabel}
     />
   );
 }

@@ -409,11 +409,11 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
             }`}
           >
             <div className="mx-auto w-full max-w-2xl min-w-0 lg:mx-0">
-              <p className="mb-5 text-center text-[11px] font-semibold tracking-[0.26em] text-neutral-500 uppercase lg:text-left dark:text-neutral-400">
+              <p className="mb-8 text-center text-[11px] font-semibold tracking-[0.26em] text-neutral-500 uppercase lg:mb-5 lg:text-left dark:text-neutral-400">
                 {t("eyebrow")}
               </p>
 
-              <h1 className="mb-7 flex flex-col items-center text-center leading-[0.91] lg:items-start lg:text-left">
+              <h1 className="mb-11 flex flex-col items-center text-center leading-[1.02] lg:mb-7 lg:items-start lg:text-left lg:leading-[0.91]">
                 <span className="text-outline-bold neon-active text-[clamp(2.8rem,13vw,6.5rem)] font-black tracking-tighter uppercase">
                   {t("title.part1")}
                 </span>
@@ -425,11 +425,11 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
                 </NeonText>
               </h1>
 
-              <p className="mb-8 max-w-xl text-center text-sm leading-relaxed text-neutral-600 sm:text-base md:text-lg lg:text-left dark:text-neutral-400">
+              <p className="mb-12 max-w-xl text-center text-sm leading-relaxed text-neutral-600 sm:text-base md:text-lg lg:mb-8 lg:text-left dark:text-neutral-400">
                 {t("subtitle", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
               </p>
 
-              <div className="mb-8 grid grid-cols-3 gap-2.5 sm:gap-3.5">
+              <div className="mb-12 grid grid-cols-3 gap-3.5 sm:gap-3.5 lg:mb-8">
                 {heroStats.map((item) => (
                   <HeroStat key={item.label} label={item.label} value={item.value} />
                 ))}

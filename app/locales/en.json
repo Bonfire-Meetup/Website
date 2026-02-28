@@ -424,7 +424,8 @@
       "hiddenGems": "Hidden Gems"
     },
     "view": {
-      "all": "Browse all",
+      "all": "Open shelf",
+      "allVideos": "Browse all videos",
       "rows": "Back to picks"
     },
     "search": {

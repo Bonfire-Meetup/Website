@@ -79,26 +79,26 @@ export function RailScrollWrapper({
             onClick={() => scrollByAmount(-1)}
             disabled={!canScrollLeft}
             aria-label={scrollLeftLabel}
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-full shadow-sm ring-1 transition ${
+            className={`inline-flex h-8 w-8 items-center justify-center rounded-full shadow-sm ring-1 transition ${
               canScrollLeft
                 ? "cursor-pointer bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
                 : "cursor-not-allowed bg-neutral-100 text-neutral-400 ring-neutral-200 dark:bg-neutral-900 dark:text-neutral-600 dark:ring-neutral-800"
             }`}
           >
-            <ChevronLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-3.5 w-3.5" />
           </button>
           <button
             type="button"
             onClick={() => scrollByAmount(1)}
             disabled={!canScrollRight}
             aria-label={scrollRightLabel}
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-full shadow-sm ring-1 transition ${
+            className={`inline-flex h-8 w-8 items-center justify-center rounded-full shadow-sm ring-1 transition ${
               canScrollRight
                 ? "cursor-pointer bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
                 : "cursor-not-allowed bg-neutral-100 text-neutral-400 ring-neutral-200 dark:bg-neutral-900 dark:text-neutral-600 dark:ring-neutral-800"
             }`}
           >
-            <ChevronRightIcon className="h-4 w-4" />
+            <ChevronRightIcon className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>

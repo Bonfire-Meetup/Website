@@ -8,11 +8,15 @@ export function MemberPicksRail({
   recordings,
   scrollLeftLabel,
   scrollRightLabel,
+  viewAllHref,
+  viewAllLabel,
 }: {
   title: string;
   recordings: MemberPickRecording[];
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
+  viewAllHref?: string;
+  viewAllLabel?: string;
 }) {
   return (
     <TrendRail
@@ -21,6 +25,8 @@ export function MemberPicksRail({
       recordings={recordings}
       scrollLeftLabel={scrollLeftLabel}
       scrollRightLabel={scrollRightLabel}
+      viewAllHref={viewAllHref}
+      viewAllLabel={viewAllLabel}
     />
   );
 }

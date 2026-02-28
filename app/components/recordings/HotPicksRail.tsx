@@ -8,11 +8,15 @@ export function HotPicksRail({
   recordings,
   scrollLeftLabel,
   scrollRightLabel,
+  viewAllHref,
+  viewAllLabel,
 }: {
   title: string;
   recordings: HotRecording[];
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
+  viewAllHref?: string;
+  viewAllLabel?: string;
 }) {
   return (
     <TrendRail
@@ -21,6 +25,8 @@ export function HotPicksRail({
       recordings={recordings}
       scrollLeftLabel={scrollLeftLabel}
       scrollRightLabel={scrollRightLabel}
+      viewAllHref={viewAllHref}
+      viewAllLabel={viewAllLabel}
     />
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "../shared/Icons";
@@ -18,6 +19,8 @@ interface RailProps<T> {
   gradientTo?: string;
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
+  viewAllHref?: string;
+  viewAllLabel?: string;
 }
 
 export function Rail<T>({
@@ -31,6 +34,8 @@ export function Rail<T>({
   gradientTo,
   scrollLeftLabel = "Scroll left",
   scrollRightLabel = "Scroll right",
+  viewAllHref,
+  viewAllLabel,
 }: RailProps<T>) {
   const railRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -83,40 +88,50 @@ export function Rail<T>({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {headerAccent || <AccentBar />}
-          <h3 className="text-lg font-semibold tracking-tight text-neutral-900 sm:text-xl dark:text-white">
+          <h3 className="text-base font-semibold tracking-tight text-neutral-900 sm:text-lg dark:text-white">
             {title}
           </h3>
           {headerIcon}
         </div>
-        <div className="hidden items-center gap-2 md:flex">
-          <button
-            type="button"
-            onClick={() => scrollByAmount(-1)}
-            disabled={!canScrollLeft}
-            aria-label={scrollLeftLabel}
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-full shadow-sm ring-1 transition ${
-              canScrollLeft
-                ? "cursor-pointer bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
-                : "cursor-not-allowed bg-neutral-100 text-neutral-400 ring-neutral-200 dark:bg-neutral-900 dark:text-neutral-600 dark:ring-neutral-800"
-            }`}
-          >
-            <ChevronLeftIcon className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollByAmount(1)}
-            disabled={!canScrollRight}
-            aria-label={scrollRightLabel}
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-full shadow-sm ring-1 transition ${
-              canScrollRight
-                ? "cursor-pointer bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
-                : "cursor-not-allowed bg-neutral-100 text-neutral-400 ring-neutral-200 dark:bg-neutral-900 dark:text-neutral-600 dark:ring-neutral-800"
-            }`}
-          >
-            <ChevronRightIcon className="h-4 w-4" />
-          </button>
+        <div className="flex items-center gap-2">
+          {viewAllHref && viewAllLabel && (
+            <Link
+              href={viewAllHref}
+              className="inline-flex h-8 items-center rounded-full border border-black/10 bg-white/75 px-3 text-[11px] font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-neutral-900 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-neutral-800 dark:hover:text-white"
+            >
+              {viewAllLabel}
+            </Link>
+          )}
+          <div className="hidden items-center gap-2 md:flex">
+            <button
+              type="button"
+              onClick={() => scrollByAmount(-1)}
+              disabled={!canScrollLeft}
+              aria-label={scrollLeftLabel}
+              className={`inline-flex h-8 w-8 items-center justify-center rounded-full shadow-sm ring-1 transition ${
+                canScrollLeft
+                  ? "cursor-pointer bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
+                  : "cursor-not-allowed bg-neutral-100 text-neutral-400 ring-neutral-200 dark:bg-neutral-900 dark:text-neutral-600 dark:ring-neutral-800"
+              }`}
+            >
+              <ChevronLeftIcon className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollByAmount(1)}
+              disabled={!canScrollRight}
+              aria-label={scrollRightLabel}
+              className={`inline-flex h-8 w-8 items-center justify-center rounded-full shadow-sm ring-1 transition ${
+                canScrollRight
+                  ? "cursor-pointer bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
+                  : "cursor-not-allowed bg-neutral-100 text-neutral-400 ring-neutral-200 dark:bg-neutral-900 dark:text-neutral-600 dark:ring-neutral-800"
+              }`}
+            >
+              <ChevronRightIcon className="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
       </div>
       <div className={`relative ${gradients.container}`}>

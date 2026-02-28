@@ -37,9 +37,9 @@ export function RailServer({
   const gradients = buildRailGradientClasses(gradientFrom, gradientTo, containerClassName);
 
   const headerContent = (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5">
       {headerAccent || <AccentBar />}
-      <h3 className="text-lg font-semibold tracking-tight text-neutral-900 sm:text-xl dark:text-white">
+      <h3 className="text-base font-semibold tracking-tight text-neutral-900 sm:text-lg dark:text-white">
         {title}
       </h3>
       {headerIcon}

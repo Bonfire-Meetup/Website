@@ -424,7 +424,8 @@
       "hiddenGems": "Skryté perly"
     },
     "view": {
-      "all": "Projít všechno",
+      "all": "Otevřít kolekci",
+      "allVideos": "Projít všechna videa",
       "rows": "Zpět"
     },
     "search": {

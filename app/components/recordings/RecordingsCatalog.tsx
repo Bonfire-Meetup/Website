@@ -8,7 +8,11 @@ import { InfoIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { getRecordingAccessState } from "@/lib/recordings/early-access";
 import { getFeaturedCandidates } from "@/lib/recordings/library-featured";
-import type { LibraryApiPayload, LibraryRowsPayload } from "@/lib/recordings/library-filter";
+import {
+  LIBRARY_SHELVES,
+  type LibraryApiPayload,
+  type LibraryRowsPayload,
+} from "@/lib/recordings/library-filter";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { logError } from "@/lib/utils/log-client";
 
@@ -32,13 +36,13 @@ import {
   UNRECORDED_EPISODES,
 } from "./RecordingsCatalogTypes";
 
-function BrowseAllButton({ label, onClick }: { label: string; onClick: () => void }) {
+function BrowseAllVideosButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <Button
       onClick={onClick}
-      variant="primary"
+      variant="secondary"
       size="xs"
-      className="from-brand-500 shadow-brand-500/20 rounded-full bg-gradient-to-r to-rose-500 text-white shadow-lg"
+      className="rounded-full border border-black/10 bg-white/70 text-neutral-700 shadow-sm hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-neutral-200 dark:hover:bg-white/10"
     >
       {label}
     </Button>
@@ -139,6 +143,7 @@ export function RecordingsCatalog({
         activeLocation: data.filter.activeLocation,
         activeTag: data.filter.activeTag,
         activeEpisode: data.filter.activeEpisode,
+        activeShelf: data.filter.activeShelf,
         searchQuery: data.filter.searchQuery,
         tagDropdownOptions: data.filter.tagDropdownOptions,
         episodeDropdownOptions: data.filter.episodeDropdownOptions,
@@ -197,7 +202,7 @@ export function RecordingsCatalog({
     [fetchPayload, localViewMode, router],
   );
 
-  const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${deferredSearchQuery}`;
+  const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${payload.activeShelf}-${deferredSearchQuery}`;
 
   useEffect(() => {
     const trimmed = localSearchQuery.trim();
@@ -219,11 +224,6 @@ export function RecordingsCatalog({
       }
     };
   }, [localSearchQuery, activeLocation, activeTag, activeEpisode, updateFilters]);
-
-  const handleBrowseAll = () => {
-    updateFilters("all", "all", "all", "", "grid");
-    window.scrollTo({ behavior: "auto", left: 0, top: 0 });
-  };
 
   const featuredCandidates = getFeaturedCandidates(
     recordings ?? [],
@@ -268,6 +268,10 @@ export function RecordingsCatalog({
       router.push(PAGE_ROUTES.LIBRARY);
     });
   }, [router]);
+  const handleBrowseAllVideos = useCallback(() => {
+    updateFilters("all", "all", "all", "", "grid");
+    window.scrollTo({ behavior: "auto", left: 0, top: 0 });
+  }, [updateFilters]);
 
   return (
     <section className="relative px-4 pb-24 sm:px-6 lg:px-8">
@@ -336,7 +340,10 @@ export function RecordingsCatalog({
                 ) : (
                   <div className="space-y-12">
                     <div className="flex justify-center">
-                      <BrowseAllButton label={tView("all")} onClick={handleBrowseAll} />
+                      <BrowseAllVideosButton
+                        label={tView("allVideos")}
+                        onClick={handleBrowseAllVideos}
+                      />
                     </div>
                     {earlyAccessRecordings.length > 0 && (
                       <EarlyAccessRail
@@ -344,6 +351,8 @@ export function RecordingsCatalog({
                         recordings={earlyAccessRecordings}
                         scrollLeftLabel={tCommon("scrollLeft")}
                         scrollRightLabel={tCommon("scrollRight")}
+                        viewAllHref={`${PAGE_ROUTES.LIBRARY_BROWSE}?shelf=${LIBRARY_SHELVES.EARLY_ACCESS}`}
+                        viewAllLabel={tView("all")}
                       />
                     )}
                     {trendingSlots?.memberPicks ??
@@ -353,6 +362,8 @@ export function RecordingsCatalog({
                           recordings={memberPicks}
                           scrollLeftLabel={tCommon("scrollLeft")}
                           scrollRightLabel={tCommon("scrollRight")}
+                          viewAllHref={`${PAGE_ROUTES.LIBRARY_BROWSE}?shelf=${LIBRARY_SHELVES.MEMBER_PICKS}`}
+                          viewAllLabel={tView("all")}
                         />
                       ))}
                     {trendingSlots?.hotPicks ??
@@ -362,6 +373,8 @@ export function RecordingsCatalog({
                           recordings={hotPicks}
                           scrollLeftLabel={tCommon("scrollLeft")}
                           scrollRightLabel={tCommon("scrollRight")}
+                          viewAllHref={`${PAGE_ROUTES.LIBRARY_BROWSE}?shelf=${LIBRARY_SHELVES.HOT}`}
+                          viewAllLabel={tView("all")}
                         />
                       ))}
                     {guildVaultRecordings.length > 0 && (
@@ -370,6 +383,8 @@ export function RecordingsCatalog({
                         recordings={guildVaultRecordings}
                         scrollLeftLabel={tCommon("scrollLeft")}
                         scrollRightLabel={tCommon("scrollRight")}
+                        viewAllHref={`${PAGE_ROUTES.LIBRARY_BROWSE}?shelf=${LIBRARY_SHELVES.GUILD_VAULT}`}
+                        viewAllLabel={tView("all")}
                       />
                     )}
                     {trendingSlots?.hiddenGems ??
@@ -379,6 +394,8 @@ export function RecordingsCatalog({
                           recordings={hiddenGems}
                           scrollLeftLabel={tCommon("scrollLeft")}
                           scrollRightLabel={tCommon("scrollRight")}
+                          viewAllHref={`${PAGE_ROUTES.LIBRARY_BROWSE}?shelf=${LIBRARY_SHELVES.HIDDEN_GEMS}`}
+                          viewAllLabel={tView("all")}
                         />
                       ))}
                     {payload.rows.map((row) => {
@@ -396,9 +413,6 @@ export function RecordingsCatalog({
                         />
                       );
                     })}
-                    <div className="flex justify-center">
-                      <BrowseAllButton label={tView("all")} onClick={handleBrowseAll} />
-                    </div>
                   </div>
                 )
               ) : isFiltering ? (

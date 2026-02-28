@@ -3,12 +3,36 @@ import {
   type CatalogRecording,
 } from "@/components/recordings/RecordingsCatalogTypes";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { getRecordingAccessState } from "@/lib/recordings/early-access";
 import { getEpisodeById } from "@/lib/recordings/episodes";
 import { getShuffledFeaturedOrder } from "@/lib/recordings/library-featured-order";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { normalizeText } from "@/lib/utils/text";
 
 export type LocationFilter = "all" | LocationValue;
+export const LIBRARY_SHELVES = {
+  ALL: "all",
+  EARLY_ACCESS: "early-access",
+  GUILD_VAULT: "guild-vault",
+  MEMBER_PICKS: "member-picks",
+  HOT: "hot",
+  HIDDEN_GEMS: "hidden-gems",
+} as const;
+export type LibraryShelf = (typeof LIBRARY_SHELVES)[keyof typeof LIBRARY_SHELVES];
+
+export function parseLibraryShelf(value: string | null | undefined): LibraryShelf {
+  if (
+    value === LIBRARY_SHELVES.EARLY_ACCESS ||
+    value === LIBRARY_SHELVES.GUILD_VAULT ||
+    value === LIBRARY_SHELVES.MEMBER_PICKS ||
+    value === LIBRARY_SHELVES.HOT ||
+    value === LIBRARY_SHELVES.HIDDEN_GEMS
+  ) {
+    return value;
+  }
+
+  return LIBRARY_SHELVES.ALL;
+}
 
 export interface LibraryBasePayload {
   recordings: CatalogRecording[];
@@ -16,6 +40,7 @@ export interface LibraryBasePayload {
   activeLocation: LocationFilter;
   activeTag: string;
   activeEpisode: string;
+  activeShelf: LibraryShelf;
   searchQuery: string;
   tagDropdownOptions: { label: string; value: string }[];
   episodeDropdownOptions: { label: string; value: string }[];
@@ -39,6 +64,7 @@ export interface LibraryApiPayload {
     | "activeLocation"
     | "activeTag"
     | "activeEpisode"
+    | "activeShelf"
     | "searchQuery"
     | "featuredShortIdOrder"
     | "tagDropdownOptions"
@@ -54,12 +80,18 @@ async function buildLibraryPayload({
   tFilters,
   tRecordings,
   includeRows,
+  memberPickOrder,
+  hotOrder,
+  hiddenGemOrder,
 }: {
   searchParams: URLSearchParams;
   tCommon: (key: string, values?: Record<string, string>) => string;
   tFilters: (key: string, values?: Record<string, string>) => string;
   tRecordings: (key: string) => string;
   includeRows?: boolean;
+  memberPickOrder?: string[] | null;
+  hotOrder?: string[] | null;
+  hiddenGemOrder?: string[] | null;
 }): Promise<LibraryBasePayload & { rows: LibraryRowsPayload["rows"] }> {
   const featuredShortIdOrder = await getShuffledFeaturedOrder();
   const locationParam = searchParams.get("location") ?? "";
@@ -69,6 +101,7 @@ async function buildLibraryPayload({
   const activeLocation: LocationFilter = isValidLocation && locationParam ? locationParam : "all";
   const activeTag = searchParams.get("tag") ?? "all";
   const activeEpisode = searchParams.get("episode") ?? "all";
+  const activeShelf = parseLibraryShelf(searchParams.get("shelf"));
   const searchQuery = searchParams.get("q") ?? "";
   const normalizedSearchQuery = normalizeText(searchQuery.trim());
 
@@ -88,9 +121,39 @@ async function buildLibraryPayload({
     thumbnail: recording.thumbnail,
     title: recording.title,
   }));
+  const memberPickIdSet = memberPickOrder ? new Set(memberPickOrder) : null;
+  const hotIdSet = hotOrder ? new Set(hotOrder) : null;
+  const hiddenGemIdSet = hiddenGemOrder ? new Set(hiddenGemOrder) : null;
+  const matchesShelf = (recording: CatalogRecording): boolean => {
+    if (activeShelf === LIBRARY_SHELVES.ALL) {
+      return true;
+    }
+
+    if (activeShelf === LIBRARY_SHELVES.MEMBER_PICKS) {
+      return Boolean(memberPickIdSet?.has(recording.shortId));
+    }
+
+    if (activeShelf === LIBRARY_SHELVES.HOT) {
+      return Boolean(hotIdSet?.has(recording.shortId));
+    }
+
+    if (activeShelf === LIBRARY_SHELVES.HIDDEN_GEMS) {
+      return Boolean(hiddenGemIdSet?.has(recording.shortId));
+    }
+
+    const accessState = getRecordingAccessState(recording.access);
+    return (
+      (activeShelf === LIBRARY_SHELVES.EARLY_ACCESS && accessState.isEarlyAccess) ||
+      (activeShelf === LIBRARY_SHELVES.GUILD_VAULT &&
+        accessState.isGuildAccess &&
+        accessState.isRestricted &&
+        !accessState.isEarlyAccess)
+    );
+  };
+  const shelfScopedRecordings = recordings.filter(matchesShelf);
 
   const tagOptions = (() => {
-    const filteredForTags = recordings.filter(
+    const filteredForTags = shelfScopedRecordings.filter(
       (r) =>
         (activeLocation === "all" || r.location === activeLocation) &&
         (activeEpisode === "all" || r.episodeId === activeEpisode),
@@ -110,7 +173,7 @@ async function buildLibraryPayload({
   const episodeDropdownOptions = [{ label: tFilters("allEpisodes"), value: "all" }];
 
   const episodeOptions = (() => {
-    const filteredForEpisodes = recordings.filter(
+    const filteredForEpisodes = shelfScopedRecordings.filter(
       (r) =>
         (activeLocation === "all" || r.location === activeLocation) &&
         (activeTag === "all" || r.tags.includes(activeTag)),
@@ -179,14 +242,14 @@ async function buildLibraryPayload({
 
   const locationAvailability = {
     all: true,
-    [LOCATIONS.PRAGUE]: recordings.some((recording) => {
+    [LOCATIONS.PRAGUE]: shelfScopedRecordings.some((recording) => {
       const isLocationMatch = recording.location === LOCATIONS.PRAGUE;
       const isTagMatch = activeTag === "all" || recording.tags.includes(activeTag);
       const isEpisodeMatch = activeEpisode === "all" || recording.episodeId === activeEpisode;
 
       return isLocationMatch && isTagMatch && isEpisodeMatch;
     }),
-    [LOCATIONS.ZLIN]: recordings.some((recording) => {
+    [LOCATIONS.ZLIN]: shelfScopedRecordings.some((recording) => {
       const isLocationMatch = recording.location === LOCATIONS.ZLIN;
       const isTagMatch = activeTag === "all" || recording.tags.includes(activeTag);
       const isEpisodeMatch = activeEpisode === "all" || recording.episodeId === activeEpisode;
@@ -195,7 +258,7 @@ async function buildLibraryPayload({
     }),
   };
 
-  const filteredRecordings = recordings.filter((recording) => {
+  const filteredRecordings = shelfScopedRecordings.filter((recording) => {
     const isLocationMatch = activeLocation === "all" || recording.location === activeLocation;
     const isTagMatch = activeTag === "all" || recording.tags.includes(activeTag);
     const isEpisodeMatch = activeEpisode === "all" || recording.episodeId === activeEpisode;
@@ -231,6 +294,33 @@ async function buildLibraryPayload({
 
     return isLocationMatch && isTagMatch && isEpisodeMatch && isSearchMatch;
   });
+
+  if (activeShelf === LIBRARY_SHELVES.MEMBER_PICKS && memberPickOrder?.length) {
+    const rankById = new Map(memberPickOrder.map((shortId, index) => [shortId, index]));
+    filteredRecordings.sort(
+      (a, b) =>
+        (rankById.get(a.shortId) ?? Number.MAX_SAFE_INTEGER) -
+        (rankById.get(b.shortId) ?? Number.MAX_SAFE_INTEGER),
+    );
+  }
+
+  if (activeShelf === LIBRARY_SHELVES.HOT && hotOrder?.length) {
+    const rankById = new Map(hotOrder.map((shortId, index) => [shortId, index]));
+    filteredRecordings.sort(
+      (a, b) =>
+        (rankById.get(a.shortId) ?? Number.MAX_SAFE_INTEGER) -
+        (rankById.get(b.shortId) ?? Number.MAX_SAFE_INTEGER),
+    );
+  }
+
+  if (activeShelf === LIBRARY_SHELVES.HIDDEN_GEMS && hiddenGemOrder?.length) {
+    const rankById = new Map(hiddenGemOrder.map((shortId, index) => [shortId, index]));
+    filteredRecordings.sort(
+      (a, b) =>
+        (rankById.get(a.shortId) ?? Number.MAX_SAFE_INTEGER) -
+        (rankById.get(b.shortId) ?? Number.MAX_SAFE_INTEGER),
+    );
+  }
 
   const isLocationFiltered = activeLocation !== "all";
   const isTagFiltered = activeTag !== "all";
@@ -318,6 +408,7 @@ async function buildLibraryPayload({
     activeLocation,
     activeTag,
     activeEpisode,
+    activeShelf,
     searchQuery,
     tagDropdownOptions,
     episodeDropdownOptions,

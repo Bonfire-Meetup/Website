@@ -1,11 +1,17 @@
 import { API_ROUTES } from "@/lib/api/routes";
-import type { LibraryApiPayload, LocationFilter } from "@/lib/recordings/library-filter";
+import {
+  LIBRARY_SHELVES,
+  type LibraryApiPayload,
+  type LibraryShelf,
+  type LocationFilter,
+} from "@/lib/recordings/library-filter";
 
 export function buildLibrarySearchParams(
   location: LocationFilter,
   tag: string,
   episode: string,
   search: string,
+  shelf: LibraryShelf = LIBRARY_SHELVES.ALL,
 ) {
   const params = new URLSearchParams();
 
@@ -23,6 +29,10 @@ export function buildLibrarySearchParams(
 
   if (search.trim()) {
     params.set("q", search.trim());
+  }
+
+  if (shelf !== LIBRARY_SHELVES.ALL) {
+    params.set("shelf", shelf);
   }
 
   return params;

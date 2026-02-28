@@ -3,7 +3,8 @@ import { getTranslations } from "next-intl/server";
 
 import { BrowseCatalog } from "@/components/recordings/BrowseCatalog";
 import { buildMetaPageMetadata } from "@/lib/metadata";
-import { buildLibraryBrowsePayload } from "@/lib/recordings/library-filter";
+import { buildLibraryBrowsePayload, parseLibraryShelf } from "@/lib/recordings/library-filter";
+import { getLibraryShelfOrders } from "@/lib/recordings/library-shelf-orders";
 
 export default async function LibraryBrowsePage({
   searchParams,
@@ -12,6 +13,7 @@ export default async function LibraryBrowsePage({
     location?: string;
     tag?: string;
     episode?: string;
+    shelf?: string;
     q?: string;
   }>;
 }) {
@@ -30,15 +32,23 @@ export default async function LibraryBrowsePage({
   if (params.episode) {
     urlParams.set("episode", params.episode);
   }
+  if (params.shelf) {
+    urlParams.set("shelf", params.shelf);
+  }
   if (params.q) {
     urlParams.set("q", params.q);
   }
+  const activeShelf = parseLibraryShelf(params.shelf ?? null);
+  const { hiddenGemOrder, hotOrder, memberPickOrder } = await getLibraryShelfOrders(activeShelf);
 
   const payload = await buildLibraryBrowsePayload({
     searchParams: urlParams,
     tCommon,
     tFilters,
     tRecordings,
+    memberPickOrder,
+    hotOrder,
+    hiddenGemOrder,
   });
 
   return (

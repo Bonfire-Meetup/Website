@@ -12,12 +12,16 @@ export function TrendRail<T extends CatalogRecording>({
   recordings,
   scrollLeftLabel,
   scrollRightLabel,
+  viewAllHref,
+  viewAllLabel,
 }: {
   kind: TrendRailKind;
   title: string;
   recordings: T[];
   scrollLeftLabel?: string;
   scrollRightLabel?: string;
+  viewAllHref?: string;
+  viewAllLabel?: string;
 }) {
   const chrome = getTrendRailChrome(kind);
 
@@ -40,6 +44,8 @@ export function TrendRail<T extends CatalogRecording>({
       gradientTo={chrome.gradientTo}
       scrollLeftLabel={scrollLeftLabel}
       scrollRightLabel={scrollRightLabel}
+      viewAllHref={viewAllHref}
+      viewAllLabel={viewAllLabel}
     />
   );
 }

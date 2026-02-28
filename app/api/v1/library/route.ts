@@ -3,7 +3,12 @@ import { NextResponse } from "next/server";
 
 import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
 import { getRequestLocale } from "@/lib/i18n/request-locale";
-import { buildLibraryBrowsePayload, type LibraryApiPayload } from "@/lib/recordings/library-filter";
+import {
+  buildLibraryBrowsePayload,
+  parseLibraryShelf,
+  type LibraryApiPayload,
+} from "@/lib/recordings/library-filter";
+import { getLibraryShelfOrders } from "@/lib/recordings/library-shelf-orders";
 import { logWarn } from "@/lib/utils/log";
 import { getRequestId } from "@/lib/utils/request-context";
 
@@ -41,11 +46,16 @@ export const GET = withRequestContext(
     const { searchParams } = new URL(request.url);
     const apiParams = new URLSearchParams(searchParams);
     apiParams.delete("view");
+    const activeShelf = parseLibraryShelf(apiParams.get("shelf"));
+    const { hiddenGemOrder, hotOrder, memberPickOrder } = await getLibraryShelfOrders(activeShelf);
     const payload = await buildLibraryBrowsePayload({
       searchParams: apiParams,
       tCommon,
       tFilters,
       tRecordings,
+      memberPickOrder,
+      hotOrder,
+      hiddenGemOrder,
     });
 
     const response: LibraryApiPayload = {
@@ -54,6 +64,7 @@ export const GET = withRequestContext(
         activeLocation: payload.activeLocation,
         activeTag: payload.activeTag,
         activeEpisode: payload.activeEpisode,
+        activeShelf: payload.activeShelf,
         searchQuery: payload.searchQuery,
         featuredShortIdOrder: payload.featuredShortIdOrder,
         tagDropdownOptions: payload.tagDropdownOptions,
