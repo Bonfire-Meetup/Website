@@ -12,6 +12,7 @@ interface UpcomingEventJson {
   description: string;
   speakers: {
     name: string | string[];
+    company?: string | string[];
     topic: string;
     startTime?: string;
     start?: string;
@@ -34,6 +35,7 @@ function validateEvent(event: UpcomingEventJson): EventItem {
     location: event.location as EventItem["location"],
     speakers: event.speakers.map((speaker) => ({
       name: speaker.name,
+      ...(speaker.company && { company: speaker.company }),
       startTime: speaker.startTime ?? speaker.start,
       topic: speaker.topic,
       ...(speaker.profileId && { profileId: speaker.profileId }),

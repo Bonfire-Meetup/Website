@@ -10,14 +10,16 @@
       "description": "Join us for an evening of game dev talks and networking!",
       "speakers": [
         {
-          "name": "Patrik Smělý (Apparently Studio)",
+          "name": "Patrik Smělý",
+          "company": "Apparently Studio",
           "topic": "Jai: Jak vypadá jazyk herního vývojáře Jonathana Blowa?",
           "startTime": "18:15",
           "profileId": "CtPK2iptd1f-ALRfyXnni4e",
           "url": "https://apparently.studio/"
         },
         {
-          "name": "Jindřich Skeldal (Skeldal Immersive)",
+          "name": "Jindřich Skeldal",
+          "company": "Skeldal Immersive",
           "topic": "Actors: Simulátor herce ve VR",
           "startTime": "19:15",
           "url": "https://www.actorsgame.com/"

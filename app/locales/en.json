@@ -213,6 +213,7 @@
     "andMore": "+{count} more",
     "beFirst": "Be first to RSVP!",
     "rsvpOnBonfire": "RSVP",
+    "speakerPreview": "You can hear inspiring speakers like {names}.",
     "orRegisterVia": "Or register via:",
     "onePrivateRsvp": "1 private",
     "multiplePrivateRsvps": "{count} private"

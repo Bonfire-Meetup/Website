@@ -29,6 +29,7 @@ import { formatEventDateUTC } from "@/lib/utils/locale";
 
 interface Speaker {
   name: string | string[];
+  company?: string | string[];
   topic: string;
   startTime?: string;
   profileId?: string | string[];
@@ -44,6 +45,10 @@ function formatSpeakerNames(name: string | string[]): string {
   return names.join(" & ");
 }
 
+function formatSpeakerNameWithCompany(name: string, company?: string): string {
+  return company ? `${name} (${company})` : name;
+}
+
 function primarySpeakerName(name: string | string[]): string {
   return Array.isArray(name) ? name[0] : name;
 }
@@ -57,16 +62,19 @@ function toStringArray(value: string | string[] | undefined): string[] {
 
 interface ResolvedSpeakerLink {
   name: string;
+  company?: string;
   profileId?: string;
   url?: string;
 }
 
 function resolveSpeakerLinks(speaker: Speaker): ResolvedSpeakerLink[] {
   const names = getSpeakerNames(speaker.name);
+  const companies = toStringArray(speaker.company);
   const profileIds = toStringArray(speaker.profileId);
   const urls = toStringArray(speaker.url);
   return names.map((name, i) => ({
     name,
+    company: companies[i],
     profileId: profileIds[i],
     url: urls[i],
   }));
@@ -644,7 +652,10 @@ export function EventDetailContent({
                                       href={profileHref}
                                       className="block font-semibold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
                                     >
-                                      {resolved.name}
+                                      {formatSpeakerNameWithCompany(
+                                        resolved.name,
+                                        resolved.company,
+                                      )}
                                     </a>
                                   ) : resolved.url ? (
                                     <a
@@ -653,11 +664,17 @@ export function EventDetailContent({
                                       rel="noopener noreferrer"
                                       className="block font-semibold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
                                     >
-                                      {resolved.name}
+                                      {formatSpeakerNameWithCompany(
+                                        resolved.name,
+                                        resolved.company,
+                                      )}
                                     </a>
                                   ) : (
                                     <p className="font-semibold text-neutral-900 dark:text-white">
-                                      {resolved.name}
+                                      {formatSpeakerNameWithCompany(
+                                        resolved.name,
+                                        resolved.company,
+                                      )}
                                     </p>
                                   )}
                                   {domain && (

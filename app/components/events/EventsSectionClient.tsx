@@ -11,6 +11,7 @@ import { Pill } from "../ui/Pill";
 import { SectionHeader } from "../ui/SectionHeader";
 
 import { EventCard } from "./EventCard";
+import { UpcomingEventCompactCard } from "./UpcomingEventCompactCard";
 
 export interface EventItem {
   id: string;
@@ -24,6 +25,7 @@ export interface EventItem {
   registrationUrl?: string;
   speakers: {
     name: string | string[];
+    company?: string | string[];
     topic: string;
     startTime?: string;
     profileId?: string | string[];
@@ -41,11 +43,13 @@ export function EventsSectionClient({
   initialEpisode,
   preFilteredEvents,
   hideHeader = false,
+  cardVariant = "full",
 }: {
   events: EventItem[];
   initialEpisode?: string;
   preFilteredEvents?: EventItem[];
   hideHeader?: boolean;
+  cardVariant?: "full" | "compact";
 }) {
   const t = useTranslations("sections.events");
   const tEvents = useTranslations("events");
@@ -116,24 +120,41 @@ export function EventsSectionClient({
 
       {filteredEvents.length > 0 ? (
         <div className="grid gap-8 md:grid-cols-2">
-          {filteredEvents.map((event) => (
-            <EventCard
-              key={event.id}
-              id={event.id}
-              title={event.title}
-              episode={event.episode}
-              location={event.location}
-              date={event.date}
-              time={event.time}
-              venue={event.venue}
-              description={event.description}
-              registrationUrl={event.registrationUrl ?? ""}
-              speakers={event.speakers}
-              links={event.links}
-              locale={locale}
-              t={tEvents}
-            />
-          ))}
+          {filteredEvents.map((event) =>
+            cardVariant === "compact" ? (
+              <UpcomingEventCompactCard
+                key={event.id}
+                id={event.id}
+                title={event.title}
+                episode={event.episode}
+                location={event.location}
+                date={event.date}
+                time={event.time}
+                venue={event.venue}
+                description={event.description}
+                speakers={event.speakers}
+                locale={locale}
+                t={tEvents}
+              />
+            ) : (
+              <EventCard
+                key={event.id}
+                id={event.id}
+                title={event.title}
+                episode={event.episode}
+                location={event.location}
+                date={event.date}
+                time={event.time}
+                venue={event.venue}
+                description={event.description}
+                registrationUrl={event.registrationUrl ?? ""}
+                speakers={event.speakers}
+                links={event.links}
+                locale={locale}
+                t={tEvents}
+              />
+            ),
+          )}
         </div>
       ) : (
         <EmptyState

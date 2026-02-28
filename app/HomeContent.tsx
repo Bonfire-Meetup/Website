@@ -40,7 +40,7 @@ export function HomeContent({
     <main id="top" className="relative">
       <HeroWrapper images={imagesWithAlt} trendingRecordings={heroTrendingRecordings} />
 
-      <EventsSection events={upcomingEvents} />
+      <EventsSection events={upcomingEvents} cardVariant="compact" />
 
       <div className="section-divider mx-auto max-w-4xl" />
 

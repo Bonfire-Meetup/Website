@@ -22,6 +22,19 @@ function formatSpeakerName(name: string | string[]): string {
   return Array.isArray(name) ? name.join(" & ") : name;
 }
 
+function withCompany(name: string, company?: string): string {
+  return company ? `${name} (${company})` : name;
+}
+
+function formatSpeakerNameWithCompany(
+  name: string | string[],
+  company?: string | string[],
+): string {
+  const names = Array.isArray(name) ? name : [name];
+  const companies = toStringArray(company);
+  return names.map((speakerName, i) => withCompany(speakerName, companies[i])).join(" & ");
+}
+
 function primarySpeakerName(name: string | string[]): string {
   return Array.isArray(name) ? name[0] : name;
 }
@@ -35,14 +48,17 @@ function toStringArray(value: string | string[] | undefined): string[] {
 
 function resolveSpeakerLinks(speaker: {
   name: string | string[];
+  company?: string | string[];
   profileId?: string | string[];
   url?: string | string[];
 }) {
   const names = Array.isArray(speaker.name) ? speaker.name : [speaker.name];
+  const companies = toStringArray(speaker.company);
   const profileIds = toStringArray(speaker.profileId);
   const urls = toStringArray(speaker.url);
   return names.map((name, i) => ({
     name,
+    company: companies[i] as string | undefined,
     profileId: profileIds[i] as string | undefined,
     url: urls[i] as string | undefined,
   }));
@@ -101,6 +117,7 @@ interface EventCardProps {
   registrationUrl: string;
   speakers: {
     name: string | string[];
+    company?: string | string[];
     topic: string;
     startTime?: string;
     profileId?: string | string[];
@@ -274,7 +291,7 @@ export function EventCard({
                         {speaker.topic}
                       </p>
                       <p className="text-xs font-semibold text-neutral-900 dark:text-white">
-                        {formatSpeakerName(speaker.name)}
+                        {formatSpeakerNameWithCompany(speaker.name, speaker.company)}
                       </p>
                     </div>
                   </div>
@@ -419,10 +436,10 @@ export function EventCard({
                                     : {})}
                                   className="underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-700 hover:decoration-neutral-500 dark:decoration-neutral-600 dark:hover:text-neutral-200 dark:hover:decoration-neutral-400"
                                 >
-                                  {r.name}
+                                  {withCompany(r.name, r.company)}
                                 </a>
                               ) : (
-                                <span>{r.name}</span>
+                                <span>{withCompany(r.name, r.company)}</span>
                               )}
                             </span>
                           );
