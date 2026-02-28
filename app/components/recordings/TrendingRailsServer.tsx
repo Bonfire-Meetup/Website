@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import { getRequestLocale } from "@/lib/i18n/request-locale";
+import type { CatalogRecording } from "@/lib/recordings/catalog-types";
 import { getHiddenGems } from "@/lib/recordings/hidden-gems";
 import { getHotRecordingsSafe } from "@/lib/recordings/hot-picks";
 import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
@@ -8,7 +9,6 @@ import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
 import { getRailCardKey } from "./rail-card-utils";
 import { RailCardServer } from "./RailCardServer";
 import { RailServer } from "./RailServer";
-import type { CatalogRecording } from "./RecordingsCatalogTypes";
 import { getTrendRailBadge, getTrendRailChrome, type TrendRailKind } from "./trend-rail-config";
 
 interface TrendingRailProps {

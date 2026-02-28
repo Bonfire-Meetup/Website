@@ -1,9 +1,9 @@
+import { type CatalogRecording } from "@/lib/recordings/catalog-types";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatShortDateUTC } from "@/lib/utils/locale";
 
 import { RecordingAccessPill } from "./RecordingAccessPill";
 import { RecordingHeaderMetaRow } from "./RecordingHeaderMetaRow";
-import { type CatalogRecording } from "./RecordingsCatalogTypes";
 import { RecordingSpeakerList } from "./RecordingSpeakerList";
 import { RecordingTagPill } from "./RecordingTagPill";
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
 
 import { CloseIcon, InfoIcon } from "@/components/shared/Icons";
+import { type LocationFilter, UNRECORDED_EPISODES } from "@/lib/recordings/catalog-types";
 import {
   LIBRARY_SHELVES,
   type LibraryApiPayload,
@@ -21,7 +22,6 @@ import { GridView } from "./GridView";
 import { buildLibrarySearchParams, fetchLibraryApiPayload } from "./library-client-utils";
 import { getLibraryShelfTheme } from "./library-shelf-theme";
 import { RecordingsGridSkeleton } from "./RecordingLoadingSkeletons";
-import { type LocationFilter, UNRECORDED_EPISODES } from "./RecordingsCatalogTypes";
 
 const MIN_SEARCH_LENGTH = 2;
 

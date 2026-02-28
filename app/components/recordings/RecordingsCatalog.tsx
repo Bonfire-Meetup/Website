@@ -6,6 +6,13 @@ import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useS
 
 import { InfoIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
+import {
+  type HiddenGemRecording,
+  type HotRecording,
+  type LocationFilter,
+  type MemberPickRecording,
+  UNRECORDED_EPISODES,
+} from "@/lib/recordings/catalog-types";
 import { getRecordingAccessState } from "@/lib/recordings/early-access";
 import { getFeaturedCandidates } from "@/lib/recordings/library-featured";
 import {
@@ -28,13 +35,6 @@ import { buildLibrarySearchParams, fetchLibraryApiPayload } from "./library-clie
 import { MemberPicksRail } from "./MemberPicksRail";
 import { RecordingsGridSkeleton, RecordingsRailSkeleton } from "./RecordingLoadingSkeletons";
 import { RecordingRail } from "./RecordingRail";
-import {
-  type HiddenGemRecording,
-  type HotRecording,
-  type LocationFilter,
-  type MemberPickRecording,
-  UNRECORDED_EPISODES,
-} from "./RecordingsCatalogTypes";
 
 function BrowseAllVideosButton({ label, onClick }: { label: string; onClick: () => void }) {
   return (

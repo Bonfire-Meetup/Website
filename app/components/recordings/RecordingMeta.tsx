@@ -1,7 +1,7 @@
 import { type LocationValue } from "@/lib/config/constants";
+import { formatDate } from "@/lib/utils/locale";
 
 import { RecordingHeaderMetaRow } from "./RecordingHeaderMetaRow";
-import { formatDate } from "./RecordingsCatalogTypes";
 
 const metaBaseClass =
   "flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase text-white/85 dark:text-white/75";

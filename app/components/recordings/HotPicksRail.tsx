@@ -1,6 +1,7 @@
 "use client";
 
-import type { HotRecording } from "./RecordingsCatalogTypes";
+import type { HotRecording } from "@/lib/recordings/catalog-types";
+
 import { TrendRail } from "./TrendRail";
 
 export function HotPicksRail({

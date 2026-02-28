@@ -1,11 +1,11 @@
 import { useTranslations } from "next-intl";
 
+import { UNRECORDED_EPISODES } from "@/lib/recordings/catalog-types";
 import { getEpisodeById } from "@/lib/recordings/episodes";
 
 import { InfoIcon } from "../shared/Icons";
 import { EmptyState } from "../ui/EmptyState";
 
-import { UNRECORDED_EPISODES } from "./RecordingsCatalogTypes";
 import { ResetFiltersButton } from "./ResetFiltersButton";
 
 export function EmptyStateMessage({

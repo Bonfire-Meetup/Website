@@ -1,11 +1,12 @@
 "use client";
 
+import { type CatalogRecording } from "@/lib/recordings/catalog-types";
+
 import {
   buildFeaturedCandidateContents,
   buildFeaturedImageElements,
 } from "./featured-carousel-builders";
 import { FeaturedCarouselWrapper } from "./FeaturedCarouselWrapper";
-import { type CatalogRecording } from "./RecordingsCatalogTypes";
 
 export function FeaturedRecording({
   featured: _featured,

@@ -1,15 +1,16 @@
+import { LOCATIONS } from "@/lib/config/constants";
 import {
   UNRECORDED_EPISODES,
   type CatalogRecording,
-} from "@/components/recordings/RecordingsCatalogTypes";
-import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+  type LocationFilter,
+} from "@/lib/recordings/catalog-types";
 import { getRecordingAccessState } from "@/lib/recordings/early-access";
 import { getEpisodeById } from "@/lib/recordings/episodes";
 import { getShuffledFeaturedOrder } from "@/lib/recordings/library-featured-order";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { normalizeText } from "@/lib/utils/text";
 
-export type LocationFilter = "all" | LocationValue;
+export type { LocationFilter };
 export const LIBRARY_SHELVES = {
   ALL: "all",
   EARLY_ACCESS: "early-access",

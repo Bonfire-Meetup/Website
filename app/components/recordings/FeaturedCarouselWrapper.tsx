@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
+import { FEATURED_INTERVAL_MS, type CatalogRecording } from "@/lib/recordings/catalog-types";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-import { FEATURED_INTERVAL_MS, type CatalogRecording } from "./RecordingsCatalogTypes";
 import { useFeaturedCarousel } from "./useFeaturedCarousel";
 
 interface FeaturedCarouselWrapperProps {

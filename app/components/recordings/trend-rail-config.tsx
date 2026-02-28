@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
+import type { CatalogRecording } from "@/lib/recordings/catalog-types";
 import { LIBRARY_SHELVES } from "@/lib/recordings/library-filter";
 
 import { BoltIcon, FireIcon } from "../shared/Icons";
 
 import { getLibraryShelfTheme } from "./library-shelf-theme";
 import type { RailCardBadge } from "./rail-card-utils";
-import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
 export type TrendRailKind = "memberPicks" | "hot" | "hiddenGems";
 

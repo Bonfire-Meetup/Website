@@ -1,6 +1,7 @@
 "use client";
 
-import type { MemberPickRecording } from "./RecordingsCatalogTypes";
+import type { MemberPickRecording } from "@/lib/recordings/catalog-types";
+
 import { TrendRail } from "./TrendRail";
 
 export function MemberPicksRail({

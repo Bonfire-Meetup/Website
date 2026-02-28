@@ -1,11 +1,11 @@
 "use client";
 
+import type { CatalogRecording } from "@/lib/recordings/catalog-types";
 import { LIBRARY_SHELVES } from "@/lib/recordings/library-filter";
 
 import { getLibraryShelfTheme } from "./library-shelf-theme";
 import { Rail } from "./Rail";
 import { RailCard } from "./RailCard";
-import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
 export function GuildVaultRail({
   title,

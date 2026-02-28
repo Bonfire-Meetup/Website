@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { FEATURED_INTERVAL_MS } from "./RecordingsCatalogTypes";
+import { FEATURED_INTERVAL_MS } from "@/lib/recordings/catalog-types";
 
 interface UseFeaturedCarouselOptions {
   count: number;

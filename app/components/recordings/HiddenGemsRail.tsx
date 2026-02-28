@@ -1,6 +1,7 @@
 "use client";
 
-import type { HiddenGemRecording } from "./RecordingsCatalogTypes";
+import type { HiddenGemRecording } from "@/lib/recordings/catalog-types";
+
 import { TrendRail } from "./TrendRail";
 
 export function HiddenGemsRail({
