@@ -60,7 +60,7 @@ export function CookieBanner() {
             <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-1">
               <button
                 onClick={handleDismiss}
-                className="flex-1 cursor-pointer rounded-lg bg-gradient-to-r from-fuchsia-700 via-orange-500 to-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-orange-500/25 transition hover:opacity-90 active:scale-95 sm:flex-none sm:rounded-md sm:px-3 sm:py-1 sm:font-medium sm:shadow-none dark:shadow-orange-500/30"
+                className="flex-1 cursor-pointer rounded-lg bg-gradient-to-r from-rose-700 via-orange-500 to-red-600 px-4 py-2 text-xs font-semibold text-white shadow-md shadow-orange-500/25 transition hover:opacity-90 active:scale-95 sm:flex-none sm:rounded-md sm:px-3 sm:py-1 sm:font-medium sm:shadow-none dark:shadow-orange-500/30"
               >
                 {t("accept")}
               </button>

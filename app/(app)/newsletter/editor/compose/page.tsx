@@ -40,7 +40,7 @@ export default function NewsletterEditorPage() {
         </div>
         <div className="relative z-10 mx-auto max-w-3xl">
           <div className="flex min-h-[400px] items-center justify-center">
-            <LoadingSpinner size="lg" className="text-fuchsia-600 dark:text-fuchsia-400" />
+            <LoadingSpinner size="lg" className="text-rose-600 dark:text-rose-400" />
           </div>
         </div>
       </main>

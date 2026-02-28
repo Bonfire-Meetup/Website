@@ -377,6 +377,15 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
 
   return (
     <section className="relative overflow-hidden bg-neutral-50 px-4 pt-[4.9rem] pb-[4.8rem] transition-colors duration-500 sm:px-6 sm:pt-[11rem] sm:pb-[5.4rem] lg:px-8 lg:pt-[16.2rem] lg:pb-[8.8rem] dark:bg-neutral-950">
+      <style>{`
+        .hero-neon.neon-active {
+          -webkit-text-stroke: 2px rgba(139, 92, 246, 0.8);
+          text-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+        }
+        .hero-outline {
+          -webkit-text-stroke: 1px rgba(139, 92, 246, 0.5);
+        }
+      `}</style>
       <HeroBackground images={heroImages} />
 
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_55%_35%,var(--color-fire-start-glow),transparent_58%)] dark:bg-[radial-gradient(circle_at_55%_35%,var(--color-fire-start-glow-dark),transparent_58%)]" />
@@ -394,7 +403,7 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
       </div>
 
       <div className="pointer-events-none absolute top-[37%] left-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none">
-        <span className="text-outline block text-[24vw] leading-none font-black opacity-[0.045] sm:text-[20vw] dark:opacity-[0.03]">
+        <span className="text-outline hero-outline block text-[24vw] leading-none font-black opacity-[0.045] sm:text-[20vw] dark:opacity-[0.03]">
           BONFIRE
         </span>
       </div>
@@ -414,13 +423,13 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
               </p>
 
               <h1 className="mb-11 flex flex-col items-center text-center leading-[1.02] lg:mb-7 lg:items-start lg:text-left lg:leading-[0.91]">
-                <span className="text-outline-bold neon-active text-[clamp(2.8rem,13vw,6.5rem)] font-black tracking-tighter uppercase">
+                <span className="text-outline-bold hero-neon neon-active text-[clamp(2.8rem,13vw,6.5rem)] font-black tracking-tighter uppercase">
                   {t("title.part1")}
                 </span>
                 <span className="text-gradient mt-0 max-w-full text-[clamp(2.7rem,12vw,6.4rem)] font-black tracking-tighter uppercase sm:-mt-1 sm:whitespace-nowrap">
                   {t("title.highlight")}
                 </span>
-                <NeonText className="text-outline-bold mt-0 text-[clamp(2.8rem,13vw,6.5rem)] font-black tracking-tighter uppercase sm:-mt-1">
+                <NeonText className="text-outline-bold hero-neon mt-0 text-[clamp(2.8rem,13vw,6.5rem)] font-black tracking-tighter uppercase sm:-mt-1">
                   {t("title.part2")}
                 </NeonText>
               </h1>

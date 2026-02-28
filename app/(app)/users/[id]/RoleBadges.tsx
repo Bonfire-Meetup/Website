@@ -19,7 +19,7 @@ const roleConfig = {
   [USER_ROLES.CREW]: {
     labelKey: "crew" as const,
     gradient:
-      "from-blue-500 via-indigo-500 to-violet-500 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400",
+      "from-blue-500 via-indigo-500 to-rose-500 dark:from-blue-400 dark:via-indigo-400 dark:to-rose-400",
     glow: "rgba(99, 102, 241, 0.4)",
     iconColor: "text-indigo-500 dark:text-indigo-400",
     icon: <UsersIcon className="h-4 w-4" />,

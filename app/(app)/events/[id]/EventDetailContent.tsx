@@ -178,8 +178,8 @@ export function EventDetailContent({
       label: t("platforms.luma"),
       url: links?.luma,
       icon: LumaIcon,
-      gradient: "from-violet-500 via-purple-600 to-fuchsia-600",
-      shadow: "shadow-violet-500/30",
+      gradient: "from-rose-500 via-red-600 to-rose-600",
+      shadow: "shadow-rose-500/30",
     },
     {
       key: "facebook",
@@ -262,7 +262,7 @@ export function EventDetailContent({
           <div className="mx-auto max-w-5xl">
             {episode && (
               <div className="mb-6 flex justify-center">
-                <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-fuchsia-500 via-orange-500 to-red-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-orange-500/30">
+                <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-rose-500 via-orange-500 to-red-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-orange-500/30">
                   <SparklesIcon className="h-4 w-4" />
                   {t("episodeLabel")} {episode}
                 </span>
@@ -299,7 +299,7 @@ export function EventDetailContent({
               {hasSpeakers && (
                 <div className="glass rounded-3xl p-6 sm:p-8">
                   <div className="mb-6 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-red-600">
                       <MicIcon className="h-5 w-5 text-white" />
                     </div>
                     <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
@@ -380,7 +380,7 @@ export function EventDetailContent({
 
             <div className="space-y-6">
               <div className="glass overflow-hidden rounded-3xl p-6 sm:p-8 lg:sticky lg:top-24">
-                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-500 via-orange-500 to-red-500" />
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-rose-500 via-orange-500 to-red-500" />
 
                 <h3 className="mb-2 text-2xl font-bold text-neutral-900 dark:text-white">
                   {isTba ? t("saveTheDate") : t("registerNow")}

@@ -78,7 +78,7 @@ export function AudienceStep({ data, onUpdate }: AudienceStepProps) {
             key={option.value}
             className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors ${
               data.type === option.value
-                ? "border-fuchsia-500 bg-fuchsia-50 dark:border-fuchsia-400 dark:bg-fuchsia-500/10"
+                ? "border-rose-500 bg-rose-50 dark:border-rose-400 dark:bg-rose-500/10"
                 : "border-neutral-200/80 bg-white/60 dark:border-white/10 dark:bg-white/5"
             }`}
           >
@@ -90,7 +90,7 @@ export function AudienceStep({ data, onUpdate }: AudienceStepProps) {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 handleTypeChange(e.target.value)
               }
-              className="mt-1 h-4 w-4 cursor-pointer text-fuchsia-600 accent-fuchsia-600"
+              className="mt-1 h-4 w-4 cursor-pointer text-rose-600 accent-rose-600"
             />
             <div className="flex-1">
               <span className="font-semibold text-neutral-900 dark:text-white">{option.label}</span>

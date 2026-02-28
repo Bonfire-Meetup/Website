@@ -96,7 +96,7 @@ export function PressPageContent() {
 
   const colors = [
     { hex: "#ff5555", name: t("colors.bonfire") },
-    { hex: "#8b5cf6", name: t("colors.bonfireViolet") },
+    { hex: "#f97316", name: t("colors.bonfireViolet") },
     { hex: "#f43f5e", name: t("colors.fireMagenta") },
     { hex: "#f59e0b", name: t("colors.fireCoral") },
   ];
@@ -236,7 +236,7 @@ export function PressPageContent() {
               <a
                 href={`/assets/${pressKitFilename}`}
                 download
-                className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-fuchsia-700 via-orange-500 to-red-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/25 transition hover:from-fuchsia-800 hover:via-orange-600 hover:to-red-700"
+                className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-rose-700 via-orange-500 to-red-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/25 transition hover:from-rose-800 hover:via-orange-600 hover:to-red-700"
               >
                 {t("logos.downloadAllCta", { fileName: pressKitFilename })}
               </a>

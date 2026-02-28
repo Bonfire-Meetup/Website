@@ -74,9 +74,9 @@ const HINT_CONFIGS: Record<LoginReason, HintConfig> = {
     translationKey: "boostHint",
   },
   [LOGIN_REASON.WATCH_LATER]: {
-    borderClass: "border-violet-200/70 dark:border-violet-500/20",
-    bgClass: "bg-violet-50 dark:bg-violet-500/10",
-    textClass: "text-violet-700 dark:text-violet-200",
+    borderClass: "border-rose-200/70 dark:border-rose-500/20",
+    bgClass: "bg-rose-50 dark:bg-rose-500/10",
+    textClass: "text-rose-700 dark:text-rose-200",
     icon: BookmarkIcon,
     translationKey: "watchLaterHint",
   },
@@ -432,7 +432,7 @@ export function LoginClient() {
   return (
     <main className="relative flex min-h-screen flex-col bg-neutral-100 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 -left-24 h-64 w-64 rounded-full bg-gradient-to-br from-fuchsia-200/40 via-white to-transparent blur-3xl dark:from-fuchsia-600/20 dark:via-rose-500/20" />
+        <div className="absolute top-20 -left-24 h-64 w-64 rounded-full bg-gradient-to-br from-rose-200/40 via-white to-transparent blur-3xl dark:from-rose-600/20 dark:via-rose-500/20" />
         <div className="absolute top-40 -right-16 h-72 w-72 rounded-full bg-gradient-to-br from-rose-200/30 via-slate-100 to-transparent blur-3xl dark:from-orange-500/20 dark:via-amber-500/10" />
       </div>
 
@@ -492,9 +492,9 @@ export function LoginClient() {
               </div>
             </div>
 
-            <div className="relative flex flex-col overflow-hidden bg-gradient-to-br from-fuchsia-50/30 via-white to-rose-50/20 p-5 sm:p-6 md:p-8 lg:p-10 dark:from-neutral-900/50 dark:via-neutral-900 dark:to-neutral-950/50">
+            <div className="relative flex flex-col overflow-hidden bg-gradient-to-br from-rose-50/30 via-white to-rose-50/20 p-5 sm:p-6 md:p-8 lg:p-10 dark:from-neutral-900/50 dark:via-neutral-900 dark:to-neutral-950/50">
               <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                <div className="absolute top-1/4 -right-12 h-64 w-64 rounded-full bg-gradient-to-br from-fuchsia-200/30 to-transparent blur-3xl dark:from-fuchsia-500/10" />
+                <div className="absolute top-1/4 -right-12 h-64 w-64 rounded-full bg-gradient-to-br from-rose-200/30 to-transparent blur-3xl dark:from-rose-500/10" />
                 <div className="absolute -bottom-12 -left-12 h-72 w-72 rounded-full bg-gradient-to-tr from-rose-200/20 to-transparent blur-3xl dark:from-rose-500/5" />
               </div>
 

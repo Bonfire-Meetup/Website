@@ -330,7 +330,7 @@
       "copy": "Kopírovat hex",
       "copied": "Zkopírováno",
       "bonfire": "Bonfire",
-      "bonfireViolet": "Jemná fialová",
+      "bonfireViolet": "Ohnivy jantar",
       "fireMagenta": "Ohnivá magenta",
       "fireCoral": "Ohnivý korál"
     },
@@ -1109,6 +1109,7 @@
       "title": "Odemčení cechu přijde brzy.",
       "body": "Backstage informace, přednostní přístup a další cechovní výhody.",
       "soon": "Brzy",
+      "learnMore": "Zjistit více",
       "perks": [
         "Předběžný přístup k nahrávkám akcí",
         "Exkluzivní zákulisní obsah",

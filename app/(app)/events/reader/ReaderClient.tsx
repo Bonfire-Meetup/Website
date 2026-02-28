@@ -438,7 +438,7 @@ export function ReaderClient() {
             <Button
               onClick={handleStartReader}
               disabled={!selectedEvent}
-              className="flex-1 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 py-3 text-sm font-medium text-white shadow-md hover:shadow-lg disabled:opacity-50 sm:py-3 sm:text-base"
+              className="flex-1 bg-gradient-to-r from-orange-500 via-pink-600 to-red-600 py-3 text-sm font-medium text-white shadow-md hover:shadow-lg disabled:opacity-50 sm:py-3 sm:text-base"
             >
               <QrCodeIcon className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               {t("startReader")}

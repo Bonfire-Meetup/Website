@@ -27,17 +27,17 @@ export function ProfileSkeleton() {
 
 export function GuildSkeleton() {
   return (
-    <div className="animate-pulse overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/70 p-6 dark:border-white/10 dark:bg-white/5">
+    <div className="animate-pulse overflow-hidden rounded-3xl border border-red-300/60 bg-gradient-to-br from-red-50/60 via-white to-red-100/70 p-6 dark:border-red-500/20 dark:from-neutral-900 dark:via-neutral-900/95 dark:to-red-950/30">
       <div className="flex items-start justify-between">
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <div className="h-2.5 w-20 rounded bg-neutral-200/60 dark:bg-white/10" />
-            <div className="h-4 w-12 rounded-full bg-neutral-200/50 dark:bg-white/10" />
+            <div className="h-2.5 w-20 rounded bg-red-200/60 dark:bg-red-500/20" />
+            <div className="h-4 w-12 rounded-full bg-red-200/50 dark:bg-red-500/20" />
           </div>
-          <div className="h-6 w-40 rounded bg-neutral-200/80 dark:bg-white/15" />
-          <div className="h-3.5 w-64 rounded bg-neutral-200/60 dark:bg-white/10" />
+          <div className="h-6 w-40 rounded bg-red-200/80 dark:bg-red-500/25" />
+          <div className="h-3.5 w-64 rounded bg-red-200/60 dark:bg-red-500/20" />
         </div>
-        <div className="h-12 w-12 rounded-2xl bg-neutral-200/50 dark:bg-white/10" />
+        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-red-200 to-rose-200 dark:from-red-500/20 dark:to-rose-500/20" />
       </div>
     </div>
   );

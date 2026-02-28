@@ -155,7 +155,7 @@ export function CheckInClient() {
   return (
     <div className="mx-auto max-w-md pt-4">
       <div className="overflow-hidden rounded-3xl shadow-2xl">
-        <div className="relative h-32 bg-gradient-to-br from-orange-500 via-pink-600 to-purple-600">
+        <div className="relative h-32 bg-gradient-to-br from-orange-500 via-pink-600 to-red-600">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIwLjUiIG9wYWNpdHk9IjAuMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30" />
           <div className="relative flex h-full flex-col items-center justify-center px-6">
             <div className="mb-2 text-sm font-medium tracking-wider text-white/90 uppercase">
@@ -218,7 +218,7 @@ export function CheckInClient() {
             <Button
               onClick={handleManualRefresh}
               disabled={refreshing}
-              className="w-full bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 py-3 text-white shadow-md hover:shadow-lg disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-orange-500 via-pink-600 to-red-600 py-3 text-white shadow-md hover:shadow-lg disabled:opacity-50"
             >
               <ClockIcon className="mr-2 h-4 w-4" />
               {refreshing ? t("refreshing") : t("refresh")}

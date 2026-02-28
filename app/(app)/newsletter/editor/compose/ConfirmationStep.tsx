@@ -127,7 +127,7 @@ export function ConfirmationStep({ data, onSendComplete }: ConfirmationStepProps
         <div className="divide-y divide-neutral-100 dark:divide-white/5">
           {allSections.map((section, index) => (
             <div key={section.id} className="bg-white dark:bg-neutral-900">
-              <div className="h-1 w-full shrink-0 bg-gradient-to-r from-fuchsia-700 via-orange-500 to-red-600" />
+              <div className="h-1 w-full shrink-0 bg-gradient-to-r from-rose-700 via-orange-500 to-red-600" />
 
               {section.imageUrl && (
                 <div className="relative h-40 w-full bg-neutral-100 dark:bg-neutral-800">
@@ -151,7 +151,7 @@ export function ConfirmationStep({ data, onSendComplete }: ConfirmationStepProps
                 </p>
                 {section.ctaLabel && section.ctaHref && (
                   <p className="mt-3">
-                    <span className="inline-flex rounded-lg bg-gradient-to-r from-fuchsia-700 via-orange-500 to-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm">
+                    <span className="inline-flex rounded-lg bg-gradient-to-r from-rose-700 via-orange-500 to-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm">
                       {section.ctaLabel}
                     </span>
                   </p>
@@ -178,7 +178,7 @@ export function ConfirmationStep({ data, onSendComplete }: ConfirmationStepProps
           type="checkbox"
           checked={sendConfirmed}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSendConfirmed(e.target.checked)}
-          className="mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-300 text-fuchsia-600 accent-fuchsia-600 focus:ring-fuchsia-500 dark:border-neutral-600 dark:accent-fuchsia-500"
+          className="mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-300 text-rose-600 accent-rose-600 focus:ring-rose-500 dark:border-neutral-600 dark:accent-rose-500"
           aria-describedby="send-confirm-description"
         />
         <span

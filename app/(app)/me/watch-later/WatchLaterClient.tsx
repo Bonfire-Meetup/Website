@@ -98,7 +98,7 @@ export function WatchLaterClient() {
           <p className="mb-6 text-sm text-neutral-600 dark:text-neutral-400">{t("emptyAction")}</p>
           <Button
             onClick={() => router.push(PAGE_ROUTES.LIBRARY)}
-            className="bg-violet-600 text-white hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-600"
+            className="bg-rose-600 text-white hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-600"
           >
             {tRecordings("backToLibrary")}
           </Button>

@@ -83,7 +83,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
         className={`group relative w-full cursor-pointer overflow-hidden rounded-xl px-6 py-4 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 ${
           isRsvped
             ? "bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 shadow-emerald-500/30"
-            : "bg-gradient-to-r from-fuchsia-600 via-orange-500 to-red-600 shadow-orange-500/30"
+            : "bg-gradient-to-r from-rose-600 via-orange-500 to-red-600 shadow-orange-500/30"
         }`}
       >
         <div className="relative z-10 flex items-center justify-center gap-3">
@@ -101,7 +101,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
         </div>
 
         {!isRsvped && (
-          <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-700 via-orange-600 to-red-700 opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-gradient-to-r from-rose-700 via-orange-600 to-red-700 opacity-0 transition-opacity group-hover:opacity-100" />
         )}
       </button>
 

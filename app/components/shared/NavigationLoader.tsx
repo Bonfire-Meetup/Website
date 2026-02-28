@@ -102,9 +102,9 @@ export function NavigationLoader() {
         .loader-bar {
           background: linear-gradient(
             90deg,
-            rgba(217, 70, 239, 0) 0%,
-            #d946ef 50%,
-            rgba(217, 70, 239, 0) 100%
+            rgba(244, 63, 94, 0) 0%,
+            #f43f5e 50%,
+            rgba(244, 63, 94, 0) 100%
           );
           background-size: 200% 100%;
           animation: shimmer 2s linear infinite;

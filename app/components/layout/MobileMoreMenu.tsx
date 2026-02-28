@@ -271,8 +271,8 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                         <div
                           className={`flex h-12 w-12 items-center justify-center rounded-xl transition-all ${
                             active
-                              ? "bg-gradient-to-br from-fuchsia-600 via-orange-500 to-red-500 text-white shadow-md shadow-orange-500/35"
-                              : "bg-gradient-to-br from-fuchsia-600/15 via-orange-500/15 to-red-500/15 text-rose-600 group-hover:from-fuchsia-600/25 group-hover:via-orange-500/25 group-hover:to-red-500/25 dark:from-fuchsia-500/15 dark:via-orange-400/15 dark:to-red-400/15 dark:text-rose-400 dark:group-hover:from-fuchsia-500/25 dark:group-hover:via-orange-400/25 dark:group-hover:to-red-400/25"
+                              ? "bg-gradient-to-br from-rose-600 via-orange-500 to-red-500 text-white shadow-md shadow-orange-500/35"
+                              : "bg-gradient-to-br from-rose-600/15 via-orange-500/15 to-red-500/15 text-rose-600 group-hover:from-rose-600/25 group-hover:via-orange-500/25 group-hover:to-red-500/25 dark:from-rose-500/15 dark:via-orange-400/15 dark:to-red-400/15 dark:text-rose-400 dark:group-hover:from-rose-500/25 dark:group-hover:via-orange-400/25 dark:group-hover:to-red-400/25"
                           }`}
                           style={{
                             transform: isOpen
@@ -286,7 +286,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                         <span
                           className={`text-center text-[11px] leading-tight font-medium ${
                             active
-                              ? "text-fuchsia-700 dark:text-fuchsia-300"
+                              ? "text-rose-700 dark:text-rose-300"
                               : "text-neutral-700 dark:text-neutral-300"
                           }`}
                           style={{
@@ -312,7 +312,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                   }}
                 >
                   {!hasConsent ? (
-                    <div className="flex items-center justify-between gap-3 bg-gradient-to-r from-fuchsia-50/50 via-orange-50/50 to-red-50/50 px-4 py-3 dark:from-fuchsia-950/30 dark:via-orange-950/30 dark:to-red-950/30">
+                    <div className="flex items-center justify-between gap-3 bg-gradient-to-r from-rose-50/50 via-orange-50/50 to-red-50/50 px-4 py-3 dark:from-rose-950/30 dark:via-orange-950/30 dark:to-red-950/30">
                       <div className="flex items-center gap-2">
                         <CookieIcon className="h-4 w-4 text-neutral-500 dark:text-neutral-400" />
                         <span className="text-xs text-neutral-600 dark:text-neutral-400">
@@ -322,7 +322,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={handleAcceptCookies}
-                          className="rounded-md bg-gradient-to-r from-fuchsia-600 to-orange-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:opacity-90 active:scale-95"
+                          className="rounded-md bg-gradient-to-r from-rose-600 to-orange-500 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:opacity-90 active:scale-95"
                         >
                           {tCookie("accept")}
                         </button>
@@ -397,7 +397,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
         <div
           className={`relative flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ease-out ${
             isOpen
-              ? "scale-110 bg-gradient-to-br from-fuchsia-600 via-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/40"
+              ? "scale-110 bg-gradient-to-br from-rose-600 via-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/40"
               : "text-neutral-500 hover:bg-neutral-100/50 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-neutral-200"
           }`}
           style={{

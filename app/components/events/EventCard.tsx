@@ -73,7 +73,7 @@ export function EventCard({
   const platformLinks = [
     {
       colors:
-        "bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 shadow-violet-500/25",
+        "bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 shadow-rose-500/25",
       icon: LumaIcon,
       key: "luma",
       label: t("platforms.luma"),

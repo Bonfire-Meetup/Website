@@ -85,7 +85,7 @@ function MobileBottomNavInner() {
             <div
               className={`relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 ease-out ${
                 active
-                  ? "bg-gradient-to-br from-fuchsia-600 via-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/40"
+                  ? "bg-gradient-to-br from-rose-600 via-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/40"
                   : item.disabled
                     ? "cursor-not-allowed text-neutral-400 opacity-70 dark:text-neutral-500"
                     : isSignInItem

@@ -17,20 +17,25 @@ export function buildRailGradientClasses(
   const isRose = gradientFrom.includes("rose");
   const isEmerald = gradientFrom.includes("emerald");
   const isPurple = gradientFrom.includes("purple");
+  const isRed = gradientFrom.includes("red");
   const ringClass = isRose
     ? "ring-rose-500/10 dark:ring-rose-400/20"
     : isEmerald
       ? "ring-emerald-500/10 dark:ring-emerald-400/20"
       : isPurple
         ? "ring-purple-500/10 dark:ring-purple-400/20"
-        : "";
+        : isRed
+          ? "ring-red-500/10 dark:ring-red-400/20"
+          : "";
   const leftGradient = isRose
     ? "from-rose-500/5 to-transparent dark:from-rose-500/10"
     : isEmerald
       ? "from-emerald-500/5 to-transparent dark:from-emerald-500/10"
       : isPurple
         ? "from-purple-500/5 to-transparent dark:from-purple-500/10"
-        : null;
+        : isRed
+          ? "from-red-500/5 to-transparent dark:from-red-500/10"
+          : null;
   const rightGradient = gradientTo.includes("orange")
     ? "from-orange-500/5 to-transparent dark:from-orange-500/10"
     : gradientTo.includes("teal")

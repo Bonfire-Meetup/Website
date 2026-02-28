@@ -93,16 +93,16 @@ const AVATAR_CSS = `
 `;
 
 const palettes = [
-  { colors: ["#8B5CF6", "#EC4899", "#F43F5E"], accent: "#FCD34D" },
-  { colors: ["#3B82F6", "#8B5CF6", "#EC4899"], accent: "#34D399" },
-  { colors: ["#10B981", "#3B82F6", "#8B5CF6"], accent: "#F472B6" },
+  { colors: ["#F97316", "#EC4899", "#F43F5E"], accent: "#FCD34D" },
+  { colors: ["#3B82F6", "#F97316", "#EC4899"], accent: "#34D399" },
+  { colors: ["#10B981", "#3B82F6", "#F97316"], accent: "#F472B6" },
   { colors: ["#F97316", "#EF4444", "#EC4899"], accent: "#38BDF8" },
-  { colors: ["#A855F7", "#3B82F6", "#22C55E"], accent: "#FB923C" },
+  { colors: ["#F97316", "#3B82F6", "#22C55E"], accent: "#FB923C" },
   { colors: ["#EC4899", "#F43F5E", "#F97316"], accent: "#2DD4BF" },
-  { colors: ["#06B6D4", "#3B82F6", "#8B5CF6"], accent: "#FBBF24" },
-  { colors: ["#F43F5E", "#A855F7", "#6366F1"], accent: "#4ADE80" },
+  { colors: ["#06B6D4", "#3B82F6", "#F97316"], accent: "#FBBF24" },
+  { colors: ["#F43F5E", "#F97316", "#EF4444"], accent: "#4ADE80" },
   { colors: ["#14B8A6", "#06B6D4", "#3B82F6"], accent: "#F472B6" },
-  { colors: ["#EAB308", "#F97316", "#EF4444"], accent: "#A78BFA" },
+  { colors: ["#EAB308", "#F97316", "#EF4444"], accent: "#FB923C" },
 ];
 
 const patterns = ["sprite", "circuit", "poly", "constellation"] as const;

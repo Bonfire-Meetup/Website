@@ -3,10 +3,10 @@ import { Skeleton } from "@/components/shared/Skeletons";
 export function UpcomingRsvpsSkeleton() {
   return (
     <section className="relative">
-      <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-fuchsia-500/5 to-transparent" />
+      <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-rose-500/5 to-transparent" />
 
       <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-white/5 dark:bg-neutral-900/50">
-        <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-fuchsia-500/50 to-transparent" />
+        <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-rose-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
           <div className="flex items-center gap-4">

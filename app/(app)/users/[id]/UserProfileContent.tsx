@@ -106,10 +106,10 @@ export function UserProfileContent({
           <div className="relative mb-12 sm:mb-16">
             <div className="flex flex-col items-center lg:flex-row lg:items-start lg:gap-12">
               <div className="relative mb-8 lg:mb-0">
-                <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-fuchsia-500/10 via-orange-500/8 to-violet-500/10 blur-2xl dark:from-fuchsia-500/20 dark:via-orange-500/15 dark:to-violet-500/20" />
-                <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-fuchsia-500/15 via-orange-500/12 to-violet-500/15 blur-xl dark:from-fuchsia-500/30 dark:via-orange-500/25 dark:to-violet-500/30" />
+                <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-rose-500/10 via-orange-500/8 to-rose-500/10 blur-2xl dark:from-rose-500/20 dark:via-orange-500/15 dark:to-rose-500/20" />
+                <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-rose-500/15 via-orange-500/12 to-rose-500/15 blur-xl dark:from-rose-500/30 dark:via-orange-500/25 dark:to-rose-500/30" />
                 <div className="relative">
-                  <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-fuchsia-400 via-orange-400 to-violet-400 opacity-60 dark:opacity-80" />
+                  <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-rose-400 via-orange-400 to-rose-400 opacity-60 dark:opacity-80" />
                   <UserAvatar
                     avatarSeed={makeAvatarSeedFromPublicId(user.publicId)}
                     size={180}

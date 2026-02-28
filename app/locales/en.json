@@ -330,7 +330,7 @@
       "copy": "Copy hex",
       "copied": "Copied",
       "bonfire": "Bonfire",
-      "bonfireViolet": "Soft violet",
+      "bonfireViolet": "Fire ember",
       "fireMagenta": "Fire Magenta",
       "fireCoral": "Fire Coral"
     },
@@ -1098,6 +1098,7 @@
       "title": "Guild unlocks are coming soon.",
       "body": "Backstage intel, early access drops, and bonus guild perks.",
       "soon": "Soon",
+      "learnMore": "Learn more",
       "perks": [
         "Early access to event recordings",
         "Exclusive behind-the-scenes content",

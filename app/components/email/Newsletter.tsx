@@ -119,7 +119,7 @@ export function Newsletter({
                   {!section.imageUrl && index === 0 && (
                     <Text
                       className="m-0 mb-3 text-[11px] font-bold tracking-[0.15em] uppercase"
-                      style={{ color: BRAND.violet, margin: "0 0 12px" }}
+                      style={{ color: BRAND.ember, margin: "0 0 12px" }}
                     >
                       Featured
                     </Text>

@@ -76,7 +76,7 @@ export function NewsletterArchiveContent({ newsletter }: NewsletterArchiveConten
               key={section.id}
               className="glass-card no-hover-pop overflow-hidden rounded-[24px]"
             >
-              <div className="h-1.5 w-full shrink-0 bg-gradient-to-r from-fuchsia-700 via-orange-500 to-red-600" />
+              <div className="h-1.5 w-full shrink-0 bg-gradient-to-r from-rose-700 via-orange-500 to-red-600" />
 
               {section.imageUrl && (
                 <div className="relative h-64 w-full overflow-hidden">

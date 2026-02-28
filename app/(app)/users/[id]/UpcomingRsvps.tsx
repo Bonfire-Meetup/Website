@@ -76,16 +76,16 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
           role="region"
           aria-labelledby="profile-upcoming-rsvps-heading"
         >
-          <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-fuchsia-500/5 to-transparent" />
+          <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-rose-500/5 to-transparent" />
 
           <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-white/5 dark:bg-neutral-900/50">
-            <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-fuchsia-500/50 to-transparent" />
+            <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-rose-500/50 to-transparent" />
 
             <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="absolute inset-0 rounded-xl bg-fuchsia-500/30 blur-lg" />
-                  <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-400 to-rose-600 shadow-lg shadow-fuchsia-500/25">
+                  <div className="absolute inset-0 rounded-xl bg-rose-500/30 blur-lg" />
+                  <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-rose-400 to-rose-600 shadow-lg shadow-rose-500/25">
                     <SparklesIcon className="h-6 w-6 text-white" aria-hidden="true" />
                   </div>
                 </div>
@@ -103,7 +103,7 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
 
             <div className="flex-1 p-4 sm:p-6">
               <div
-                className="rounded-xl border border-dashed border-fuchsia-500/25 bg-fuchsia-500/5 p-5 text-sm"
+                className="rounded-xl border border-dashed border-rose-500/25 bg-rose-500/5 p-5 text-sm"
                 role="status"
                 aria-live="polite"
               >
@@ -116,7 +116,7 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
                 <div className="mt-3">
                   <Link
                     href={PAGE_ROUTES.EVENT_UPCOMING}
-                    className="inline-flex items-center rounded-lg border border-fuchsia-500/30 bg-white/80 px-3 py-1.5 text-xs font-semibold text-fuchsia-700 transition-colors hover:bg-fuchsia-50 focus-visible:ring-2 focus-visible:ring-fuchsia-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 focus-visible:outline-none dark:bg-neutral-900/60 dark:text-fuchsia-300 dark:hover:bg-fuchsia-500/10 dark:focus-visible:ring-offset-neutral-900"
+                    className="inline-flex items-center rounded-lg border border-rose-500/30 bg-white/80 px-3 py-1.5 text-xs font-semibold text-rose-700 transition-colors hover:bg-rose-50 focus-visible:ring-2 focus-visible:ring-rose-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 focus-visible:outline-none dark:bg-neutral-900/60 dark:text-rose-300 dark:hover:bg-rose-500/10 dark:focus-visible:ring-offset-neutral-900"
                   >
                     {t("goingTo.cta")}
                   </Link>
@@ -137,16 +137,16 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
       aria-labelledby="profile-upcoming-rsvps-heading"
       aria-describedby="profile-upcoming-rsvps-count"
     >
-      <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-fuchsia-500/5 to-transparent" />
+      <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-rose-500/5 to-transparent" />
 
       <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-white/5 dark:bg-neutral-900/50">
-        <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-fuchsia-500/50 to-transparent" />
+        <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-rose-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-fuchsia-500/30 blur-lg" />
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-400 to-rose-600 shadow-lg shadow-fuchsia-500/25">
+              <div className="absolute inset-0 rounded-xl bg-rose-500/30 blur-lg" />
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-rose-400 to-rose-600 shadow-lg shadow-rose-500/25">
                 <SparklesIcon className="h-6 w-6 text-white" aria-hidden="true" />
               </div>
             </div>
@@ -184,12 +184,12 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
                   key={event.id}
                   href={PAGE_ROUTES.EVENT(event.id)}
                   prefetch={false}
-                  className="group relative block overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 p-4 transition-all duration-300 hover:border-fuchsia-500/20 hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-fuchsia-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 focus-visible:outline-none dark:border-white/5 dark:bg-neutral-800/30 dark:hover:bg-neutral-800/50 dark:focus-visible:ring-offset-neutral-900"
+                  className="group relative block overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 p-4 transition-all duration-300 hover:border-rose-500/20 hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-rose-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 focus-visible:outline-none dark:border-white/5 dark:bg-neutral-800/30 dark:hover:bg-neutral-800/50 dark:focus-visible:ring-offset-neutral-900"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 space-y-2">
-                      <h3 className="text-sm leading-snug font-bold text-neutral-900 transition-colors group-hover:text-fuchsia-600 sm:text-base dark:text-white dark:group-hover:text-fuchsia-300">
+                      <h3 className="text-sm leading-snug font-bold text-neutral-900 transition-colors group-hover:text-rose-600 sm:text-base dark:text-white dark:group-hover:text-rose-300">
                         {event.title}
                       </h3>
                       <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
@@ -203,9 +203,9 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
                         </span>
                       </div>
                     </div>
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-400/20 to-rose-500/20 ring-1 ring-fuchsia-500/20">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-rose-400/20 to-rose-500/20 ring-1 ring-rose-500/20">
                       <TicketIcon
-                        className="h-5 w-5 text-fuchsia-500 dark:text-fuchsia-400"
+                        className="h-5 w-5 text-rose-500 dark:text-rose-400"
                         aria-hidden="true"
                       />
                     </div>

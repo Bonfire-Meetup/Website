@@ -34,7 +34,7 @@ export function WizardProgress({ currentStep, steps }: WizardProgressProps) {
               <div
                 className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition-colors ${
                   isActive
-                    ? "bg-gradient-to-br from-fuchsia-700 via-orange-500 to-red-600 text-white shadow-lg shadow-orange-500/25"
+                    ? "bg-gradient-to-br from-rose-700 via-orange-500 to-red-600 text-white shadow-lg shadow-orange-500/25"
                     : isCompleted
                       ? "bg-emerald-500 text-white"
                       : "bg-neutral-200 text-neutral-600 dark:bg-neutral-700 dark:text-neutral-400"
@@ -45,7 +45,7 @@ export function WizardProgress({ currentStep, steps }: WizardProgressProps) {
               <span
                 className={`ml-2 hidden text-sm font-medium sm:block ${
                   isActive
-                    ? "text-fuchsia-600 dark:text-fuchsia-400"
+                    ? "text-rose-600 dark:text-rose-400"
                     : isCompleted
                       ? "text-emerald-600 dark:text-emerald-400"
                       : "text-neutral-500 dark:text-neutral-500"
@@ -57,7 +57,7 @@ export function WizardProgress({ currentStep, steps }: WizardProgressProps) {
                 <div
                   className={`mx-3 h-0.5 w-8 sm:w-12 ${
                     isCompleted
-                      ? "bg-gradient-to-r from-fuchsia-500 via-orange-500 to-red-500"
+                      ? "bg-gradient-to-r from-rose-500 via-orange-500 to-red-500"
                       : "bg-neutral-200 dark:bg-neutral-700"
                   }`}
                 />

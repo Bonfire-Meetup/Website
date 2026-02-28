@@ -116,7 +116,7 @@ const PERK_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>>
 const PERK_ACCENT = [
   "text-rose-500 dark:text-rose-400",
   "text-amber-500 dark:text-amber-400",
-  "text-violet-500 dark:text-violet-400",
+  "text-rose-500 dark:text-rose-400",
   "text-emerald-500 dark:text-emerald-400",
 ];
 
