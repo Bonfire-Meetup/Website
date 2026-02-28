@@ -2,22 +2,33 @@
   "events": [
     {
       "id": "prague-8",
-      "title": "Bonfire@Prague #8",
+      "title": "Bonfire@Prague #8 - Forge of Possibility",
       "location": "Prague",
-      "date": "TBA",
+      "date": "2026-03-24",
       "time": "18:00",
       "venue": "Space Break, Rytířská 406/10, 110 00 Staré Město",
       "description": "Join us for an evening of game dev talks and networking!",
       "speakers": [
         {
-          "name": "TBA",
-          "topic": "To be announced"
+          "name": "Patrik Smělý (Apparently Studio)",
+          "topic": "Jai: Jak vypadá jazyk herního vývojáře Jonathana Blowa?",
+          "startTime": "18:15"
+        },
+        {
+          "name": "Jindřich Skeldal (Skeldal Immersive)",
+          "topic": "Actors: Simulátor herce ve VR",
+          "startTime": "19:15"
+        },
+        {
+          "name": "Jan Modrák & Jiří Bigas",
+          "topic": "Živá diskuze na Bonfire",
+          "startTime": "20:00"
         }
       ],
       "links": {
-        "luma": "https://lu.ma/bonfire-prague-8",
+        "luma": "https://luma.com/8sq9vu4d",
         "facebook": "https://facebook.com/events/bonfire-prague-8",
-        "eventbrite": "https://eventbrite.com/e/bonfire-prague-8"
+        "eventbrite": "https://www.eventbrite.com/e/bonfireprague-8-forge-of-possibility-tickets-1984180998780"
       }
     },
     {

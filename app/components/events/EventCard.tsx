@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { LOCATIONS, WEBSITE_URLS, type LocationValue } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
@@ -38,7 +36,7 @@ interface EventCardProps {
   venue: string;
   description: string;
   registrationUrl: string;
-  speakers: { name: string; topic: string }[];
+  speakers: { name: string; topic: string; startTime?: string }[];
   links?: EventLinks;
   locale: string;
   t: TranslationFn;
@@ -184,12 +182,15 @@ export function EventCard({
             </div>
           )}
 
-          <Link href={PAGE_ROUTES.EVENT(id)}>
-            <Button variant="secondary" size="sm" className="group w-full gap-2">
-              {t("viewDetails")}
-              <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </Link>
+          <Button
+            href={PAGE_ROUTES.EVENT(id)}
+            variant="primary"
+            size="sm"
+            className="group w-full gap-2"
+          >
+            {t("viewDetails")}
+            <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
         </div>
       </Card>
     );
@@ -274,29 +275,36 @@ export function EventCard({
           </div>
         )}
 
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <p className="section-label-spaced mb-0">{t("register")}</p>
-          <Link href={PAGE_ROUTES.EVENT(id)}>
-            <Button variant="secondary" size="sm" className="group gap-2">
+        <div className="rounded-2xl border border-neutral-200/70 bg-white/60 p-4 dark:border-white/10 dark:bg-white/5">
+          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p className="mb-0 text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+              {t("register")}
+            </p>
+            <Button
+              href={PAGE_ROUTES.EVENT(id)}
+              variant="primary"
+              size="sm"
+              className="group w-full justify-center gap-2 sm:w-auto"
+            >
               {t("viewDetails")}
               <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
-          </Link>
-        </div>
+          </div>
 
-        <div className="flex flex-wrap gap-3">
-          {platformLinks.map((platform) => (
-            <a
-              key={platform.key}
-              href={platform.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl ${platform.colors}`}
-            >
-              <platform.icon className="h-5 w-5" />
-              {platform.label}
-            </a>
-          ))}
+          <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+            {platformLinks.map((platform) => (
+              <a
+                key={platform.key}
+                href={platform.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-neutral-200/70 bg-white/85 px-3 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10"
+              >
+                <platform.icon className="h-3.5 w-3.5 opacity-75" />
+                {platform.label}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </Card>

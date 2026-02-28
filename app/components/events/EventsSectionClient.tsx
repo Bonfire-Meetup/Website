@@ -22,7 +22,7 @@ export interface EventItem {
   venue: string;
   description: string;
   registrationUrl?: string;
-  speakers: { name: string; topic: string }[];
+  speakers: { name: string; topic: string; startTime?: string }[];
   links?: {
     luma?: string;
     facebook?: string;

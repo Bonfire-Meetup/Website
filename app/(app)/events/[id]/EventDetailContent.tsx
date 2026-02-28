@@ -27,6 +27,7 @@ import { formatEventDateUTC } from "@/lib/utils/locale";
 interface Speaker {
   name: string;
   topic: string;
+  startTime?: string;
 }
 
 interface EventLinks {
@@ -50,9 +51,103 @@ interface EventDetailContentProps {
 
 const DEFAULT_EVENT_DURATION_MINUTES = 120;
 
+const SPEAKER_PALETTES = [
+  {
+    card: "border-rose-200/70 from-rose-50/90 to-red-50/70 dark:border-rose-500/20 dark:from-rose-500/12 dark:to-red-500/10",
+    icon: "from-rose-500 to-red-600 shadow-rose-500/25 dark:shadow-rose-500/20",
+    topic: "text-rose-700 dark:text-rose-200",
+    rail: "from-rose-500 to-red-500",
+    orb: "bg-rose-300/45 dark:bg-rose-400/30",
+  },
+  {
+    card: "border-orange-200/70 from-orange-50/90 to-rose-50/70 dark:border-orange-500/20 dark:from-orange-500/12 dark:to-rose-500/10",
+    icon: "from-orange-500 to-rose-600 shadow-orange-500/25 dark:shadow-orange-500/20",
+    topic: "text-orange-700 dark:text-orange-200",
+    rail: "from-orange-500 to-rose-500",
+    orb: "bg-orange-300/45 dark:bg-orange-400/30",
+  },
+  {
+    card: "border-amber-200/70 from-amber-50/90 to-orange-50/70 dark:border-amber-500/20 dark:from-amber-500/12 dark:to-orange-500/10",
+    icon: "from-amber-500 to-orange-600 shadow-amber-500/25 dark:shadow-amber-500/20",
+    topic: "text-amber-700 dark:text-amber-200",
+    rail: "from-amber-500 to-orange-500",
+    orb: "bg-amber-300/45 dark:bg-amber-400/30",
+  },
+  {
+    card: "border-red-200/70 from-red-50/90 to-orange-50/70 dark:border-red-500/20 dark:from-red-500/12 dark:to-orange-500/10",
+    icon: "from-red-500 to-orange-600 shadow-red-500/25 dark:shadow-red-500/20",
+    topic: "text-red-700 dark:text-red-200",
+    rail: "from-red-500 to-orange-500",
+    orb: "bg-red-300/45 dark:bg-red-400/30",
+  },
+  {
+    card: "border-rose-200/70 from-rose-50/90 to-amber-50/70 dark:border-rose-500/20 dark:from-rose-500/12 dark:to-amber-500/10",
+    icon: "from-rose-500 to-amber-500 shadow-rose-500/25 dark:shadow-rose-500/20",
+    topic: "text-rose-700 dark:text-rose-200",
+    rail: "from-rose-500 to-amber-500",
+    orb: "bg-rose-300/45 dark:bg-rose-400/30",
+  },
+] as const;
+
+const SPEAKER_CARD_DIRECTIONS = [
+  "bg-gradient-to-br",
+  "bg-gradient-to-r",
+  "bg-gradient-to-bl",
+] as const;
+const SPEAKER_ICON_DIRECTIONS = [
+  "bg-gradient-to-br",
+  "bg-gradient-to-tr",
+  "bg-gradient-to-r",
+] as const;
+const SPEAKER_ICON_SHAPES = ["rounded-xl", "rounded-2xl", "rounded-[14px]"] as const;
 function getMapUrl(address: string) {
   const encodedAddress = encodeURIComponent(address);
   return `${WEBSITE_URLS.GOOGLE.MAPS_SEARCH}?api=1&query=${encodedAddress}`;
+}
+
+function hashSpeakerSeed(value: string) {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function getSpeakerAccent(speaker: Speaker, location: LocationValue) {
+  const seed = `${speaker.name.trim().toLowerCase()}|${speaker.topic.trim().toLowerCase()}|${location}`;
+  const hash = hashSpeakerSeed(seed);
+  const palette = SPEAKER_PALETTES[hash % SPEAKER_PALETTES.length] ?? SPEAKER_PALETTES[0];
+  const cardDirection =
+    SPEAKER_CARD_DIRECTIONS[(hash >>> 3) % SPEAKER_CARD_DIRECTIONS.length] ??
+    SPEAKER_CARD_DIRECTIONS[0];
+  const iconDirection =
+    SPEAKER_ICON_DIRECTIONS[(hash >>> 6) % SPEAKER_ICON_DIRECTIONS.length] ??
+    SPEAKER_ICON_DIRECTIONS[0];
+  const iconShape =
+    SPEAKER_ICON_SHAPES[(hash >>> 9) % SPEAKER_ICON_SHAPES.length] ?? SPEAKER_ICON_SHAPES[0];
+
+  return {
+    cardClassName: `relative overflow-hidden border ${cardDirection} ${palette.card}`,
+    iconClassName: `flex h-12 w-12 flex-none items-center justify-center ${iconShape} ${iconDirection} ${palette.icon} text-sm font-black text-white shadow-md`,
+    topicClassName: `text-sm ${palette.topic}`,
+    railClassName: `bg-gradient-to-b ${palette.rail}`,
+    orbClassName: palette.orb,
+  };
+}
+
+function getSpeakerInitials(name: string) {
+  const parts = name
+    .trim()
+    .split(/\s+/)
+    .filter((part) => part.length > 0);
+  if (parts.length === 0) {
+    return "?";
+  }
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+  return `${parts[0].charAt(0)}${parts[1].charAt(0)}`.toUpperCase();
 }
 
 function parseEventDateTime(date: string, time: string) {
@@ -297,47 +392,82 @@ export function EventDetailContent({
           <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-8">
             <div className="space-y-6">
               {hasSpeakers && (
-                <div className="glass rounded-3xl p-6 sm:p-8">
-                  <div className="mb-6 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-red-600">
-                      <MicIcon className="h-5 w-5 text-white" />
+                <div className="glass relative overflow-hidden rounded-3xl p-6 sm:p-8">
+                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-rose-500 via-orange-500 to-red-500" />
+                  <div className="pointer-events-none absolute -top-12 -right-12 h-36 w-36 rounded-full bg-gradient-to-br from-orange-400/30 to-rose-500/20 blur-3xl" />
+
+                  <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-red-600 shadow-lg shadow-rose-500/25">
+                        <MicIcon className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                          Event Flow
+                        </p>
+                        <h2 className="text-xl font-black tracking-tight text-neutral-900 dark:text-white">
+                          {t("speakers")}
+                        </h2>
+                      </div>
                     </div>
-                    <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
-                      {t("speakers")}
-                    </h2>
+                    <span className="inline-flex items-center rounded-full border border-neutral-200/70 bg-white/70 px-3 py-1 text-xs font-semibold text-neutral-700 dark:border-white/10 dark:bg-white/10 dark:text-neutral-200">
+                      {confirmedSpeakers.length} {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
+                    </span>
                   </div>
 
-                  <div className="space-y-4">
-                    {confirmedSpeakers.map((speaker) => (
-                      <div
-                        key={`${speaker.name}-${speaker.topic}`}
-                        className="flex items-start gap-4 rounded-2xl bg-white/50 p-4 dark:bg-white/5"
-                      >
-                        <div
-                          className="flex h-12 w-12 flex-none items-center justify-center rounded-xl text-lg font-bold text-white"
-                          style={{
-                            background: `linear-gradient(135deg, ${locationColor}dd, ${locationColor}99)`,
-                          }}
-                        >
-                          {speaker.name.charAt(0)}
-                        </div>
+                  <div className="relative">
+                    <div className="absolute top-0 bottom-0 left-[1.05rem] w-px bg-gradient-to-b from-rose-300 via-orange-300 to-transparent dark:from-rose-500/60 dark:via-orange-500/40" />
+                    <div className="space-y-3">
+                      {confirmedSpeakers.map((speaker, index) => {
+                        const accent = getSpeakerAccent(speaker, location);
+                        const slotTime = speaker.startTime?.trim() ?? "";
 
-                        <div>
-                          <p className="font-bold text-neutral-900 dark:text-white">
-                            {speaker.name}
-                          </p>
-                          <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                            {speaker.topic}
+                        return (
+                          <div key={`${speaker.name}-${speaker.topic}`} className="relative pl-10">
+                            <div className="absolute top-5 left-3 h-2.5 w-2.5 rounded-full bg-rose-500 ring-4 ring-white dark:ring-neutral-900" />
+                            <div className={`rounded-2xl p-4 ${accent.cardClassName}`}>
+                              <div
+                                className={`absolute inset-y-2 left-0 w-1 rounded-full ${accent.railClassName}`}
+                              />
+                              <div
+                                className={`pointer-events-none absolute -top-4 -right-4 h-14 w-14 rounded-full blur-xl ${accent.orbClassName}`}
+                              />
+
+                              <div className="flex items-start gap-4">
+                                <div className={accent.iconClassName}>
+                                  {getSpeakerInitials(speaker.name)}
+                                </div>
+
+                                <div className="min-w-0 flex-1">
+                                  <div className="mb-1 flex flex-wrap items-center gap-2">
+                                    <span className="inline-flex items-center rounded-md bg-black/5 px-2 py-0.5 text-[10px] font-bold tracking-[0.12em] text-neutral-700 uppercase dark:bg-white/10 dark:text-neutral-200">
+                                      #{(index + 1).toString().padStart(2, "0")}
+                                    </span>
+                                    {slotTime.length > 0 && (
+                                      <span className="inline-flex items-center rounded-md bg-white/70 px-2 py-0.5 text-[10px] font-semibold text-neutral-700 dark:bg-black/25 dark:text-neutral-200">
+                                        {slotTime}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="truncate font-bold text-neutral-900 dark:text-white">
+                                    {speaker.name}
+                                  </p>
+                                  <p className={accent.topicClassName}>{speaker.topic}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      {confirmedSpeakers.length === 0 && (
+                        <div className="rounded-2xl border-2 border-dashed border-neutral-200 p-8 text-center dark:border-neutral-700">
+                          <p className="text-neutral-500 dark:text-neutral-400">
+                            {t("speakersTba")}
                           </p>
                         </div>
-                      </div>
-                    ))}
-
-                    {confirmedSpeakers.length === 0 && (
-                      <div className="rounded-2xl border-2 border-dashed border-neutral-200 p-8 text-center dark:border-neutral-700">
-                        <p className="text-neutral-500 dark:text-neutral-400">{t("speakersTba")}</p>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
@@ -422,23 +552,25 @@ export function EventDetailContent({
                 )}
 
                 {platformLinks.length > 0 && (
-                  <div className="mt-6 space-y-2 border-t border-neutral-200/50 pt-6 dark:border-neutral-700/50">
-                    <p className="text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400">
+                  <div className="mt-4 rounded-xl border border-neutral-200/60 bg-neutral-50/70 p-3 dark:border-white/10 dark:bg-white/5">
+                    <p className="mb-2 text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
                       {t("orRegisterVia")}
                     </p>
 
-                    <div className="grid grid-cols-1 gap-2">
+                    <div className="grid grid-cols-1 gap-1.5">
                       {platformLinks.map((platform) => (
                         <a
                           key={platform.key}
                           href={platform.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${platform.gradient} px-4 py-2.5 text-xs font-semibold text-white shadow-md ${platform.shadow} transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0`}
+                          className="group flex w-full items-center justify-between rounded-lg border border-neutral-200/70 bg-white/85 px-3 py-1.5 text-[11px] font-medium text-neutral-700 transition-colors hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10"
                         >
-                          <platform.icon className="h-4 w-4" />
-                          <span>{platform.label}</span>
-                          <ExternalLinkIcon className="h-3 w-3 opacity-60 transition-transform group-hover:translate-x-1" />
+                          <span className="inline-flex items-center gap-1.5">
+                            <platform.icon className="h-3.5 w-3.5 opacity-75" />
+                            <span>{platform.label}</span>
+                          </span>
+                          <ExternalLinkIcon className="h-3 w-3 opacity-40 transition-opacity group-hover:opacity-70" />
                         </a>
                       ))}
                     </div>
