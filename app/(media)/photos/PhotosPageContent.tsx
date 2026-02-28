@@ -61,6 +61,8 @@ export function PhotosPageContent({
   const handleIndexChange = useCallback((index: number) => {
     setLightboxIndex(index);
   }, []);
+  const featuredAlbums = albums.slice(0, 2);
+  const archiveAlbums = albums.slice(2);
 
   return (
     <main id="top" className="gradient-bg min-h-screen pb-24">
@@ -139,33 +141,99 @@ export function PhotosPageContent({
             <StatPill value={totalPhotos.toLocaleString(locale)} label={t("stats.photos")} />
           </div>
         </div>
-        <section>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {albums.map((album) => (
+        <section className="space-y-8">
+          <div className="grid gap-6 lg:grid-cols-2">
+            {featuredAlbums.map((album) => (
               <Link
                 key={album.id}
                 href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
                 prefetch={false}
-                className="group overflow-hidden rounded-3xl border border-black/10 bg-white/80 shadow-[0_24px_50px_-30px_rgba(15,23,42,0.42)] ring-1 ring-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_30px_60px_-28px_rgba(15,23,42,0.48)] dark:border-white/10 dark:bg-neutral-950/80 dark:shadow-[0_28px_54px_-24px_rgba(0,0,0,0.8)] dark:ring-white/10"
+                className="group relative overflow-hidden rounded-[1.75rem] border border-black/10 bg-neutral-900 shadow-[0_32px_70px_-36px_rgba(15,23,42,0.65)] ring-1 ring-white/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_36px_80px_-34px_rgba(15,23,42,0.72)] dark:border-white/10 dark:ring-white/10"
               >
-                <div className="aspect-[16/10] overflow-hidden">
+                <div className="aspect-[5/4] overflow-hidden">
                   <AlbumImage
                     src={album.coverSrc}
                     alt={album.title}
-                    imgClassName="transition-transform duration-500 group-hover:scale-105"
+                    imgClassName="scale-105 transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                 </div>
-                <div className="bg-[linear-gradient(180deg,rgba(255,255,255,0.72)_0%,rgba(255,245,235,0.76)_100%)] p-5 dark:bg-[linear-gradient(180deg,rgba(26,26,28,0.82)_0%,rgba(14,14,15,0.9)_100%)]">
-                  <h3 className="text-lg font-semibold text-neutral-900 transition-colors group-hover:text-orange-700 dark:text-white dark:group-hover:text-orange-300">
-                    {album.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                    {t("albumPhotos", { count: album.count })}
-                  </p>
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
+                <div className="absolute right-4 bottom-4 left-4">
+                  <div className="space-y-2">
+                    <p className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold tracking-[0.22em] text-white/85 uppercase backdrop-blur-md">
+                      {t("albumPhotos", { count: album.count })}
+                    </p>
+                    <h3 className="text-xl leading-tight font-black text-white sm:text-2xl">
+                      {album.title}
+                    </h3>
+                  </div>
                 </div>
               </Link>
             ))}
           </div>
+
+          {archiveAlbums.length > 0 && (
+            <div className="relative overflow-hidden rounded-3xl border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.86)_0%,rgba(255,244,231,0.82)_100%)] p-4 shadow-[0_28px_62px_-38px_rgba(15,23,42,0.52)] ring-1 ring-white/40 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(26,26,28,0.82)_0%,rgba(14,14,15,0.9)_100%)] dark:ring-white/10">
+              <div className="pointer-events-none absolute top-0 right-0 h-24 w-24 rounded-bl-[3rem] bg-orange-500/12 blur-2xl dark:bg-orange-400/10" />
+              <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+                <div className="space-y-1">
+                  <h3 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
+                    {t("albumsTitle")}
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    {t("albumsSubtitle")}
+                  </p>
+                </div>
+                <p className="rounded-full border border-black/10 bg-white/70 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-neutral-600 uppercase dark:border-white/15 dark:bg-white/5 dark:text-neutral-300">
+                  {archiveAlbums.length}
+                </p>
+              </div>
+              <div className="grid gap-3 sm:gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+                {archiveAlbums.map((album, index) => (
+                  <Link
+                    key={album.id}
+                    href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
+                    prefetch={false}
+                    className="group grid h-full overflow-hidden rounded-2xl border border-black/10 bg-white/75 shadow-[0_22px_42px_-30px_rgba(15,23,42,0.46)] ring-1 ring-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_30px_58px_-30px_rgba(15,23,42,0.54)] sm:grid-cols-[180px_minmax(0,1fr)] dark:border-white/10 dark:bg-neutral-950/70 dark:ring-white/10"
+                  >
+                    <div className="aspect-[16/10] overflow-hidden sm:aspect-auto sm:h-full">
+                      <AlbumImage
+                        src={album.coverSrc}
+                        alt={album.title}
+                        imgClassName="transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, 180px"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between gap-4 p-4">
+                      <div className="space-y-1">
+                        <p className="text-xs font-semibold tracking-[0.16em] text-neutral-500 uppercase dark:text-neutral-400">
+                          #{index + 3}
+                        </p>
+                        <h3 className="line-clamp-2 text-base font-semibold text-neutral-900 transition-colors group-hover:text-orange-700 dark:text-white dark:group-hover:text-orange-300">
+                          {album.title}
+                        </h3>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                          {t("albumPhotos", { count: album.count })}
+                        </p>
+                      </div>
+                      <div className="h-8 w-8 shrink-0 rounded-full border border-black/10 bg-white/70 p-2 text-neutral-500 transition-colors group-hover:text-orange-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:group-hover:text-orange-300">
+                        <svg viewBox="0 0 24 24" fill="none" className="h-full w-full">
+                          <path
+                            d="M7 17L17 7M17 7H9M17 7V15"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       </div>
 
