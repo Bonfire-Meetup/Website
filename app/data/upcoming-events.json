@@ -12,17 +12,21 @@
         {
           "name": "Patrik Smělý (Apparently Studio)",
           "topic": "Jai: Jak vypadá jazyk herního vývojáře Jonathana Blowa?",
-          "startTime": "18:15"
+          "startTime": "18:15",
+          "profileId": "CtPK2iptd1f-ALRfyXnni4e",
+          "url": "https://apparently.studio/"
         },
         {
           "name": "Jindřich Skeldal (Skeldal Immersive)",
           "topic": "Actors: Simulátor herce ve VR",
-          "startTime": "19:15"
+          "startTime": "19:15",
+          "url": "https://www.actorsgame.com/"
         },
         {
-          "name": "Jan Modrák & Jiří Bigas",
+          "name": ["Jan Modrák", "Jiří Bigas"],
           "topic": "Živá diskuze na Bonfire",
-          "startTime": "20:00"
+          "startTime": "20:00",
+          "url": ["https://modrak.opinio.cz/", "https://jiribigas.substack.com/"]
         }
       ],
       "links": {

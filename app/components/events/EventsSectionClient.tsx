@@ -22,7 +22,13 @@ export interface EventItem {
   venue: string;
   description: string;
   registrationUrl?: string;
-  speakers: { name: string; topic: string; startTime?: string }[];
+  speakers: {
+    name: string | string[];
+    topic: string;
+    startTime?: string;
+    profileId?: string | string[];
+    url?: string | string[];
+  }[];
   links?: {
     luma?: string;
     facebook?: string;

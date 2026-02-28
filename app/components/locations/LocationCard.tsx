@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
+import type { LocationPartner } from "@/data/location-partners";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 
 import { FireIcon, MapPinIcon } from "../shared/Icons";
@@ -13,7 +14,7 @@ interface LocationCardProps {
   description: string;
   eventCount: number;
   sponsorsTitle: string;
-  sponsors: { name: string; logo: string; url: string; logoClassName?: string }[];
+  sponsors: LocationPartner[];
 }
 
 export function LocationCard({

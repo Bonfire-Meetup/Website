@@ -12,11 +12,74 @@ import {
   FacebookIcon,
   LumaIcon,
   MapPinIcon,
+  MicIcon,
 } from "../shared/Icons";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
-import { MetaRow } from "../ui/MetaRow";
 import { Pill } from "../ui/Pill";
+
+function formatSpeakerName(name: string | string[]): string {
+  return Array.isArray(name) ? name.join(" & ") : name;
+}
+
+function primarySpeakerName(name: string | string[]): string {
+  return Array.isArray(name) ? name[0] : name;
+}
+
+function toStringArray(value: string | string[] | undefined): string[] {
+  if (!value) {
+    return [];
+  }
+  return Array.isArray(value) ? value : [value];
+}
+
+function resolveSpeakerLinks(speaker: {
+  name: string | string[];
+  profileId?: string | string[];
+  url?: string | string[];
+}) {
+  const names = Array.isArray(speaker.name) ? speaker.name : [speaker.name];
+  const profileIds = toStringArray(speaker.profileId);
+  const urls = toStringArray(speaker.url);
+  return names.map((name, i) => ({
+    name,
+    profileId: profileIds[i] as string | undefined,
+    url: urls[i] as string | undefined,
+  }));
+}
+
+function getLocationTheme(location: LocationValue) {
+  const isPrague = location === LOCATIONS.PRAGUE;
+  return isPrague
+    ? {
+        color: "#dc2626",
+        orb: "bg-gradient-to-br from-red-400/25 to-rose-500/15",
+        rail: "bg-gradient-to-r from-rose-500 via-orange-500 to-red-500",
+        iconTint: "text-red-600 dark:text-red-400",
+        speakerDot: "bg-red-500 dark:bg-red-400",
+        metaIcon: "bg-red-100/80 dark:bg-red-500/10",
+        titleGradient:
+          "from-rose-600 via-red-500 to-orange-500 dark:from-rose-400 dark:via-red-400 dark:to-orange-400",
+      }
+    : {
+        color: "#2563eb",
+        orb: "bg-gradient-to-br from-blue-400/25 to-indigo-500/15",
+        rail: "bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600",
+        iconTint: "text-blue-600 dark:text-blue-400",
+        speakerDot: "bg-blue-500 dark:bg-blue-400",
+        metaIcon: "bg-blue-100/80 dark:bg-blue-500/10",
+        titleGradient:
+          "from-blue-600 via-indigo-500 to-violet-500 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400",
+      };
+}
+
+function parseTitle(title: string) {
+  const match = title.match(/^(.+?)\s*[-–—:]\s*(.+)$/);
+  if (match) {
+    return { prefix: match[1], subtitle: match[2] };
+  }
+  return null;
+}
 
 interface EventLinks {
   luma?: string;
@@ -36,7 +99,13 @@ interface EventCardProps {
   venue: string;
   description: string;
   registrationUrl: string;
-  speakers: { name: string; topic: string; startTime?: string }[];
+  speakers: {
+    name: string | string[];
+    topic: string;
+    startTime?: string;
+    profileId?: string | string[];
+    url?: string | string[];
+  }[];
   links?: EventLinks;
   locale: string;
   t: TranslationFn;
@@ -58,36 +127,37 @@ export function EventCard({
   t,
 }: EventCardProps) {
   const isTba = date.trim().toUpperCase() === "TBA";
-  const hasSpeakers = speakers.some((speaker) => speaker.name.trim().length > 0);
+  const hasSpeakers = speakers.some(
+    (speaker) => primarySpeakerName(speaker.name).trim().length > 0,
+  );
+  const confirmedSpeakers = speakers.filter((speaker) => {
+    const primary = primarySpeakerName(speaker.name).trim();
+    return primary.length > 0 && primary !== "TBA";
+  });
 
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : "";
+  const theme = getLocationTheme(location);
+  const parsed = parseTitle(title);
 
   const getMapUrl = (address: string) => {
     const encodedAddress = encodeURIComponent(address);
-
     return `${WEBSITE_URLS.GOOGLE.MAPS_SEARCH}?api=1&query=${encodedAddress}`;
   };
 
   const platformLinks = [
     {
-      colors:
-        "bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 shadow-rose-500/25",
       icon: LumaIcon,
       key: "luma",
       label: t("platforms.luma"),
       url: links?.luma || registrationUrl,
     },
     {
-      colors:
-        "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-blue-500/25",
       icon: FacebookIcon,
       key: "facebook",
       label: t("platforms.facebook"),
       url: links?.facebook,
     },
     {
-      colors:
-        "bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 shadow-brand-500/25",
       icon: EventbriteIcon,
       key: "eventbrite",
       label: t("platforms.eventbrite"),
@@ -95,19 +165,35 @@ export function EventCard({
     },
   ].filter((link) => link.url && link.url.length > 0);
 
+  const titleBlock = parsed ? (
+    <>
+      <span className="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500">
+        {parsed.prefix}
+      </span>
+      <span
+        className={`block bg-gradient-to-r bg-clip-text text-xl font-extrabold tracking-tight text-transparent sm:text-2xl ${theme.titleGradient}`}
+      >
+        {parsed.subtitle}
+      </span>
+    </>
+  ) : (
+    <span className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
+      {title}
+    </span>
+  );
+
   if (isTba) {
     return (
       <Card
         as="article"
-        className="fire-glow group relative p-6 sm:p-7"
+        className="fire-glow group relative overflow-hidden p-6 sm:p-7"
         data-glow={location === LOCATIONS.ZLIN ? "zlin" : "prague"}
       >
+        {/* City-colored top rail */}
+        <div className={`absolute inset-x-0 top-0 h-1 ${theme.rail}`} />
+
         <div
-          className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full opacity-50 blur-3xl ${
-            location === LOCATIONS.PRAGUE
-              ? "bg-gradient-to-br from-red-400/25 to-rose-500/15"
-              : "bg-gradient-to-br from-blue-400/25 to-indigo-500/15"
-          }`}
+          className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full opacity-50 blur-3xl ${theme.orb}`}
         />
 
         <div className="relative">
@@ -125,9 +211,7 @@ export function EventCard({
             </Pill>
           </div>
 
-          <h3 className="mb-2 text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
-            {title}
-          </h3>
+          <h3 className="mb-3">{titleBlock}</h3>
           {episode && (
             <p className="mb-2.5 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
               {t("episodeLabel")}: {episode}
@@ -139,22 +223,32 @@ export function EventCard({
           </p>
 
           <div className="mb-6 space-y-2.5">
-            <MetaRow
-              icon={<CalendarIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />}
-              text={t("tba")}
-            />
-            <MetaRow
-              icon={<ClockIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />}
-              text={time}
-            />
+            <div className="flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
+              <div
+                className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+              >
+                <CalendarIcon className={`h-5 w-5 ${theme.iconTint}`} />
+              </div>
+              <span>{t("tba")}</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
+              <div
+                className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+              >
+                <ClockIcon className={`h-5 w-5 ${theme.iconTint}`} />
+              </div>
+              <span>{time}</span>
+            </div>
             <a
               href={getMapUrl(venue)}
               target="_blank"
               rel="noopener noreferrer"
               className="venue-link"
             >
-              <div className="meta-icon-container">
-                <MapPinIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />
+              <div
+                className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+              >
+                <MapPinIcon className={`h-5 w-5 ${theme.iconTint}`} />
               </div>
               <span className="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline">
                 {venue}
@@ -163,24 +257,36 @@ export function EventCard({
             </a>
           </div>
 
-          {hasSpeakers && (
-            <div className="mb-5">
-              <p className="section-label">{t("speakers")}</p>
+          <div className="mb-5">
+            <p className="section-label">{t("speakers")}</p>
+            {confirmedSpeakers.length > 0 ? (
               <div className="space-y-2">
-                {speakers.map((speaker) => (
-                  <div key={`${speaker.name}-${speaker.topic}`} className="speaker-card">
-                    <div className="bg-brand-500/80 mt-0.5 h-2.5 w-2.5 flex-none rounded-full" />
+                {confirmedSpeakers.map((speaker) => (
+                  <div
+                    key={`${formatSpeakerName(speaker.name)}-${speaker.topic}`}
+                    className="speaker-card"
+                  >
+                    <div
+                      className={`mt-0.5 h-2.5 w-2.5 flex-none rounded-full ${theme.speakerDot}`}
+                    />
                     <div>
-                      <p className="font-semibold text-neutral-900 dark:text-white">
-                        {speaker.name}
+                      <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                        {speaker.topic}
                       </p>
-                      <p className="text-neutral-500 dark:text-neutral-400">{speaker.topic}</p>
+                      <p className="text-xs font-semibold text-neutral-900 dark:text-white">
+                        {formatSpeakerName(speaker.name)}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="flex items-center gap-3 rounded-2xl border border-dashed border-neutral-200/70 p-3.5 dark:border-neutral-700/50">
+                <MicIcon className="h-4 w-4 text-neutral-300 dark:text-neutral-600" />
+                <p className="text-sm text-neutral-400 dark:text-neutral-500">{t("speakersTba")}</p>
+              </div>
+            )}
+          </div>
 
           <Button
             href={PAGE_ROUTES.EVENT(id)}
@@ -199,15 +305,14 @@ export function EventCard({
   return (
     <Card
       as="article"
-      className="fire-glow group relative p-7 sm:p-9"
+      className="fire-glow group relative overflow-hidden p-7 sm:p-9"
       data-glow={location === LOCATIONS.ZLIN ? "zlin" : "prague"}
     >
+      {/* City-colored top rail */}
+      <div className={`absolute inset-x-0 top-0 h-1 ${theme.rail}`} />
+
       <div
-        className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full blur-3xl ${
-          location === LOCATIONS.PRAGUE
-            ? "bg-gradient-to-br from-red-400/25 to-rose-500/15"
-            : "bg-gradient-to-br from-blue-400/25 to-indigo-500/15"
-        }`}
+        className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full blur-3xl ${theme.orb}`}
       />
 
       <div className="relative">
@@ -217,11 +322,15 @@ export function EventCard({
             ariaLabel={t("locationLabel", { location })}
             icon={<MapPinIcon className="h-4 w-4" />}
           />
+          {confirmedSpeakers.length > 0 && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200/70 bg-white/70 px-2.5 py-1 text-[10px] font-semibold text-neutral-600 dark:border-white/10 dark:bg-white/10 dark:text-neutral-300">
+              <MicIcon className="h-3 w-3" style={{ color: theme.color }} />
+              {confirmedSpeakers.length} {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
+            </span>
+          )}
         </div>
 
-        <h3 className="mb-3 text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
-          {title}
-        </h3>
+        <h3 className="mb-3">{titleBlock}</h3>
         {episode && (
           <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
             {t("episodeLabel")}: {episode}
@@ -230,23 +339,34 @@ export function EventCard({
 
         <p className="mb-7 leading-relaxed text-neutral-600 dark:text-neutral-300">{description}</p>
 
+        {/* Meta info with city-colored icons */}
         <div className="mb-8 space-y-3.5">
-          <MetaRow
-            icon={<CalendarIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />}
-            text={formattedDate}
-          />
-          <MetaRow
-            icon={<ClockIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />}
-            text={time}
-          />
+          <div className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300">
+            <div
+              className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+            >
+              <CalendarIcon className={`h-5 w-5 ${theme.iconTint}`} />
+            </div>
+            <span className="font-medium">{formattedDate}</span>
+          </div>
+          <div className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300">
+            <div
+              className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+            >
+              <ClockIcon className={`h-5 w-5 ${theme.iconTint}`} />
+            </div>
+            <span className="font-medium">{time}</span>
+          </div>
           <a
             href={getMapUrl(venue)}
             target="_blank"
             rel="noopener noreferrer"
             className="venue-link"
           >
-            <div className="meta-icon-container">
-              <MapPinIcon className="text-brand-600 dark:text-brand-400 h-5 w-5" />
+            <div
+              className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+            >
+              <MapPinIcon className={`h-5 w-5 ${theme.iconTint}`} />
             </div>
             <span className="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline">
               {venue}
@@ -255,57 +375,98 @@ export function EventCard({
           </a>
         </div>
 
+        {/* Speakers — talk-first layout */}
         {hasSpeakers && (
           <div className="mb-6">
             <p className="section-label-spaced">{t("speakers")}</p>
-            <div className="space-y-3">
-              {speakers.map((speaker) => (
-                <div
-                  key={`${speaker.name}-${speaker.topic}`}
-                  className="flex items-start gap-3 rounded-2xl bg-white/60 p-3 text-sm text-neutral-700 shadow-sm shadow-black/5 dark:bg-white/5 dark:text-neutral-200"
-                >
-                  <div className="bg-brand-500/80 mt-0.5 h-2.5 w-2.5 flex-none rounded-full" />
-                  <div>
-                    <p className="font-semibold text-neutral-900 dark:text-white">{speaker.name}</p>
-                    <p className="text-neutral-500 dark:text-neutral-400">{speaker.topic}</p>
+            <div className="space-y-2.5">
+              {confirmedSpeakers.map((speaker, index) => {
+                const resolved = resolveSpeakerLinks(speaker);
+                return (
+                  <div
+                    key={`${formatSpeakerName(speaker.name)}-${speaker.topic}`}
+                    className="flex items-start gap-3 rounded-2xl bg-white/60 p-3.5 shadow-sm shadow-black/5 dark:bg-white/5"
+                  >
+                    <div
+                      className="mt-1 flex h-7 w-7 flex-none items-center justify-center rounded-lg text-[9px] font-black text-white"
+                      style={{ background: theme.color }}
+                    >
+                      {(index + 1).toString().padStart(2, "0")}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-neutral-900 dark:text-white">
+                        {speaker.topic}
+                      </p>
+                      <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                        {resolved.map((r, i) => {
+                          const profileHref = r.profileId
+                            ? PAGE_ROUTES.USER(r.profileId)
+                            : undefined;
+                          const linkHref = profileHref || r.url;
+                          return (
+                            <span
+                              key={r.name}
+                              className="inline-flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400"
+                            >
+                              {i > 0 && (
+                                <span className="text-neutral-300 dark:text-neutral-600">&</span>
+                              )}
+                              {linkHref ? (
+                                <a
+                                  href={linkHref}
+                                  {...(!profileHref && r.url
+                                    ? { target: "_blank", rel: "noopener noreferrer" }
+                                    : {})}
+                                  className="underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-700 hover:decoration-neutral-500 dark:decoration-neutral-600 dark:hover:text-neutral-200 dark:hover:decoration-neutral-400"
+                                >
+                                  {r.name}
+                                </a>
+                              ) : (
+                                <span>{r.name}</span>
+                              )}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
 
-        <div className="rounded-2xl border border-neutral-200/70 bg-white/60 p-4 dark:border-white/10 dark:bg-white/5">
-          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <p className="mb-0 text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-              {t("register")}
-            </p>
-            <Button
-              href={PAGE_ROUTES.EVENT(id)}
-              variant="primary"
-              size="sm"
-              className="group w-full justify-center gap-2 sm:w-auto"
-            >
-              {t("viewDetails")}
-              <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </div>
+        {/* Primary CTA */}
+        <Button
+          href={PAGE_ROUTES.EVENT(id)}
+          variant="primary"
+          size="sm"
+          className="group w-full justify-center gap-2"
+        >
+          {t("viewDetails")}
+          <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </Button>
 
-          <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* External platforms — subtle */}
+        {platformLinks.length > 0 && (
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+            <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
+              {t("orRegisterVia")}
+            </span>
             {platformLinks.map((platform) => (
               <a
                 key={platform.key}
                 href={platform.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-neutral-200/70 bg-white/85 px-3 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10"
+                className="inline-flex items-center gap-1 text-[11px] text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
               >
-                <platform.icon className="h-3.5 w-3.5 opacity-75" />
+                <platform.icon className="h-3 w-3" />
                 {platform.label}
               </a>
             ))}
           </div>
-        </div>
+        )}
       </div>
     </Card>
   );

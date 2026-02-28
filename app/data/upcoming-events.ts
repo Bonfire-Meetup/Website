@@ -10,7 +10,14 @@ interface UpcomingEventJson {
   time: string;
   venue: string;
   description: string;
-  speakers: { name: string; topic: string; startTime?: string; start?: string }[];
+  speakers: {
+    name: string | string[];
+    topic: string;
+    startTime?: string;
+    start?: string;
+    profileId?: string | string[];
+    url?: string | string[];
+  }[];
   links?: {
     luma?: string;
     facebook?: string;
@@ -29,6 +36,8 @@ function validateEvent(event: UpcomingEventJson): EventItem {
       name: speaker.name,
       startTime: speaker.startTime ?? speaker.start,
       topic: speaker.topic,
+      ...(speaker.profileId && { profileId: speaker.profileId }),
+      ...(speaker.url && { url: speaker.url }),
     })),
     time: event.time,
     title: event.title,

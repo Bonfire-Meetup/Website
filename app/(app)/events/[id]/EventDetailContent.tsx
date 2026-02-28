@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 
 import { RsvpSection } from "@/components/events/RsvpSection";
 import { ShareEventButton } from "@/components/events/ShareEventButton";
@@ -16,18 +17,59 @@ import {
   SparklesIcon,
 } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
+import { getLocationPartners } from "@/data/location-partners";
 import {
   DEFAULT_TIMEZONE,
   LOCATIONS,
   WEBSITE_URLS,
   type LocationValue,
 } from "@/lib/config/constants";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
 interface Speaker {
-  name: string;
+  name: string | string[];
   topic: string;
   startTime?: string;
+  profileId?: string | string[];
+  url?: string | string[];
+}
+
+function getSpeakerNames(name: string | string[]): string[] {
+  return Array.isArray(name) ? name : [name];
+}
+
+function formatSpeakerNames(name: string | string[]): string {
+  const names = getSpeakerNames(name);
+  return names.join(" & ");
+}
+
+function primarySpeakerName(name: string | string[]): string {
+  return Array.isArray(name) ? name[0] : name;
+}
+
+function toStringArray(value: string | string[] | undefined): string[] {
+  if (!value) {
+    return [];
+  }
+  return Array.isArray(value) ? value : [value];
+}
+
+interface ResolvedSpeakerLink {
+  name: string;
+  profileId?: string;
+  url?: string;
+}
+
+function resolveSpeakerLinks(speaker: Speaker): ResolvedSpeakerLink[] {
+  const names = getSpeakerNames(speaker.name);
+  const profileIds = toStringArray(speaker.profileId);
+  const urls = toStringArray(speaker.url);
+  return names.map((name, i) => ({
+    name,
+    profileId: profileIds[i],
+    url: urls[i],
+  }));
 }
 
 interface EventLinks {
@@ -58,6 +100,9 @@ const SPEAKER_PALETTES = [
     topic: "text-rose-700 dark:text-rose-200",
     rail: "from-rose-500 to-red-500",
     orb: "bg-rose-300/45 dark:bg-rose-400/30",
+    glow: "hover:shadow-rose-500/20 dark:hover:shadow-rose-500/15",
+    watermark: "text-rose-200/30 dark:text-rose-400/10",
+    ring: "ring-rose-500/20 dark:ring-rose-400/15",
   },
   {
     card: "border-orange-200/70 from-orange-50/90 to-rose-50/70 dark:border-orange-500/20 dark:from-orange-500/12 dark:to-rose-500/10",
@@ -65,6 +110,9 @@ const SPEAKER_PALETTES = [
     topic: "text-orange-700 dark:text-orange-200",
     rail: "from-orange-500 to-rose-500",
     orb: "bg-orange-300/45 dark:bg-orange-400/30",
+    glow: "hover:shadow-orange-500/20 dark:hover:shadow-orange-500/15",
+    watermark: "text-orange-200/30 dark:text-orange-400/10",
+    ring: "ring-orange-500/20 dark:ring-orange-400/15",
   },
   {
     card: "border-amber-200/70 from-amber-50/90 to-orange-50/70 dark:border-amber-500/20 dark:from-amber-500/12 dark:to-orange-500/10",
@@ -72,6 +120,9 @@ const SPEAKER_PALETTES = [
     topic: "text-amber-700 dark:text-amber-200",
     rail: "from-amber-500 to-orange-500",
     orb: "bg-amber-300/45 dark:bg-amber-400/30",
+    glow: "hover:shadow-amber-500/20 dark:hover:shadow-amber-500/15",
+    watermark: "text-amber-200/30 dark:text-amber-400/10",
+    ring: "ring-amber-500/20 dark:ring-amber-400/15",
   },
   {
     card: "border-red-200/70 from-red-50/90 to-orange-50/70 dark:border-red-500/20 dark:from-red-500/12 dark:to-orange-500/10",
@@ -79,6 +130,9 @@ const SPEAKER_PALETTES = [
     topic: "text-red-700 dark:text-red-200",
     rail: "from-red-500 to-orange-500",
     orb: "bg-red-300/45 dark:bg-red-400/30",
+    glow: "hover:shadow-red-500/20 dark:hover:shadow-red-500/15",
+    watermark: "text-red-200/30 dark:text-red-400/10",
+    ring: "ring-red-500/20 dark:ring-red-400/15",
   },
   {
     card: "border-rose-200/70 from-rose-50/90 to-amber-50/70 dark:border-rose-500/20 dark:from-rose-500/12 dark:to-amber-500/10",
@@ -86,6 +140,9 @@ const SPEAKER_PALETTES = [
     topic: "text-rose-700 dark:text-rose-200",
     rail: "from-rose-500 to-amber-500",
     orb: "bg-rose-300/45 dark:bg-rose-400/30",
+    glow: "hover:shadow-rose-500/20 dark:hover:shadow-rose-500/15",
+    watermark: "text-rose-200/30 dark:text-rose-400/10",
+    ring: "ring-rose-500/20 dark:ring-rose-400/15",
   },
 ] as const;
 
@@ -115,7 +172,7 @@ function hashSpeakerSeed(value: string) {
 }
 
 function getSpeakerAccent(speaker: Speaker, location: LocationValue) {
-  const seed = `${speaker.name.trim().toLowerCase()}|${speaker.topic.trim().toLowerCase()}|${location}`;
+  const seed = `${primarySpeakerName(speaker.name).trim().toLowerCase()}|${speaker.topic.trim().toLowerCase()}|${location}`;
   const hash = hashSpeakerSeed(seed);
   const palette = SPEAKER_PALETTES[hash % SPEAKER_PALETTES.length] ?? SPEAKER_PALETTES[0];
   const cardDirection =
@@ -129,10 +186,15 @@ function getSpeakerAccent(speaker: Speaker, location: LocationValue) {
 
   return {
     cardClassName: `relative overflow-hidden border ${cardDirection} ${palette.card}`,
-    iconClassName: `flex h-12 w-12 flex-none items-center justify-center ${iconShape} ${iconDirection} ${palette.icon} text-sm font-black text-white shadow-md`,
+    iconClassName: `flex h-14 w-14 flex-none items-center justify-center ${iconShape} ${iconDirection} ${palette.icon} text-base font-black text-white shadow-lg`,
+    iconLargeClassName: `flex h-20 w-20 flex-none items-center justify-center rounded-2xl ${iconDirection} ${palette.icon} text-2xl font-black text-white shadow-xl ring-4 ${palette.ring}`,
     topicClassName: `text-sm ${palette.topic}`,
-    railClassName: `bg-gradient-to-b ${palette.rail}`,
+    topicHeadingClassName: `text-xl font-extrabold leading-tight sm:text-2xl ${palette.topic}`,
+    topicFeaturedClassName: `text-2xl font-extrabold leading-tight sm:text-3xl md:text-4xl ${palette.topic}`,
+    railClassName: `bg-gradient-to-r ${palette.rail}`,
     orbClassName: palette.orb,
+    glowClassName: palette.glow,
+    watermarkClassName: palette.watermark,
   };
 }
 
@@ -262,10 +324,35 @@ export function EventDetailContent({
       : null;
 
   const isPrague = location === LOCATIONS.PRAGUE;
-  const locationColor = isPrague ? "#dc2626" : "#2563eb";
-  const locationGlow = isPrague
-    ? "from-red-400/20 to-rose-500/10"
-    : "from-blue-400/20 to-indigo-500/10";
+  const loc = isPrague
+    ? {
+        color: "#dc2626",
+        colorLight: "#f87171",
+        glow: "from-red-400/20 to-rose-500/10",
+        badge: "bg-gradient-to-r from-rose-500 via-orange-500 to-red-500 shadow-rose-500/30",
+        sectionIcon: "bg-gradient-to-br from-rose-500 to-red-600 shadow-lg shadow-rose-500/25",
+        rail: "bg-gradient-to-r from-rose-500 via-orange-500 to-red-500",
+        divider: "via-rose-400/40 dark:via-rose-500/25",
+        titleGradient:
+          "from-rose-600 via-red-500 to-orange-500 dark:from-rose-400 dark:via-red-400 dark:to-orange-400",
+        titleShadow: "0 0 40px rgba(244, 63, 94, 0.15), 0 0 80px rgba(244, 63, 94, 0.05)" as string,
+        titleShadowDark:
+          "0 0 40px rgba(244, 63, 94, 0.25), 0 0 80px rgba(244, 63, 94, 0.1)" as string,
+      }
+    : {
+        color: "#2563eb",
+        colorLight: "#60a5fa",
+        glow: "from-blue-400/20 to-indigo-500/10",
+        badge: "bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600 shadow-blue-500/30",
+        sectionIcon: "bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/25",
+        rail: "bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600",
+        divider: "via-blue-400/40 dark:via-blue-500/25",
+        titleGradient:
+          "from-blue-600 via-indigo-500 to-violet-500 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400",
+        titleShadow: "0 0 40px rgba(37, 99, 235, 0.15), 0 0 80px rgba(37, 99, 235, 0.05)" as string,
+        titleShadowDark:
+          "0 0 40px rgba(59, 130, 246, 0.25), 0 0 80px rgba(59, 130, 246, 0.1)" as string,
+      };
 
   const platformLinks = [
     {
@@ -294,10 +381,13 @@ export function EventDetailContent({
     },
   ].filter((link) => link.url && link.url.length > 0);
 
-  const hasSpeakers = speakers.some((speaker) => speaker.name.trim().length > 0);
-  const confirmedSpeakers = speakers.filter(
-    (speaker) => speaker.name.trim().length > 0 && speaker.name !== "TBA",
+  const hasSpeakers = speakers.some(
+    (speaker) => primarySpeakerName(speaker.name).trim().length > 0,
   );
+  const confirmedSpeakers = speakers.filter((speaker) => {
+    const primary = primarySpeakerName(speaker.name).trim();
+    return primary.length > 0 && primary !== "TBA";
+  });
 
   const handleDownloadCalendar = () => {
     if (!calendarDateTime || !calendarStart || !calendarEnd) {
@@ -343,271 +433,544 @@ export function EventDetailContent({
 
   return (
     <div className="relative flex-1">
+      {/* Ambient background glows */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div
-          className={`absolute -top-[20%] -right-[10%] h-[600px] w-[600px] rounded-full bg-gradient-to-br ${locationGlow} opacity-60 blur-[100px]`}
+          className={`absolute -top-[20%] -right-[10%] h-[600px] w-[600px] rounded-full bg-gradient-to-br ${loc.glow} opacity-60 blur-[100px]`}
         />
         <div
-          className={`absolute -bottom-[20%] -left-[10%] h-[500px] w-[500px] rounded-full bg-gradient-to-tr ${locationGlow} opacity-40 blur-[100px]`}
+          className={`absolute -bottom-[20%] -left-[10%] h-[500px] w-[500px] rounded-full bg-gradient-to-tr ${loc.glow} opacity-40 blur-[100px]`}
         />
       </div>
 
       <div className="relative z-10">
-        <div className="relative overflow-hidden px-4 pt-32 pb-12 sm:pt-32 sm:pb-16">
-          <div className="mx-auto max-w-5xl">
+        {/* ── Hero ── */}
+        <div className="relative overflow-hidden px-4 pt-28 pb-6 sm:pt-32 sm:pb-8">
+          <div className="mx-auto max-w-5xl text-center">
             {episode && (
-              <div className="mb-6 flex justify-center">
-                <span className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-rose-500 via-orange-500 to-red-500 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-orange-500/30">
+              <div className="mb-5 flex justify-center">
+                <span
+                  className={`inline-flex items-center gap-2 rounded-full ${loc.badge} px-4 py-2 text-sm font-bold text-white shadow-lg`}
+                >
                   <SparklesIcon className="h-4 w-4" />
                   {t("episodeLabel")} {episode}
                 </span>
               </div>
             )}
 
-            <h1 className="mb-6 text-center text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl md:text-6xl dark:text-white">
-              {title}
-            </h1>
+            {(() => {
+              const separatorMatch = title.match(/^(.+?)\s*[-–—:]\s*(.+)$/);
+              if (separatorMatch) {
+                const [, prefix, subtitle] = separatorMatch;
+                return (
+                  <h1 className="mb-5">
+                    <span className="mb-3 block text-sm font-bold tracking-[0.2em] text-neutral-400 uppercase sm:text-base dark:text-neutral-500">
+                      {prefix}
+                    </span>
+                    <span className="relative inline-block">
+                      <span
+                        className={`bg-gradient-to-r bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl ${loc.titleGradient}`}
+                      >
+                        {subtitle}
+                      </span>
+                      {/* Soft glow behind the title text */}
+                      <span
+                        className="pointer-events-none absolute inset-0 -z-10 blur-2xl select-none"
+                        aria-hidden="true"
+                      >
+                        <span
+                          className={`bg-gradient-to-r bg-clip-text text-4xl font-extrabold tracking-tight text-transparent opacity-30 sm:text-5xl md:text-6xl lg:text-7xl dark:opacity-40 ${loc.titleGradient}`}
+                        >
+                          {subtitle}
+                        </span>
+                      </span>
+                    </span>
+                  </h1>
+                );
+              }
+              return (
+                <h1 className="mb-5 text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl md:text-6xl lg:text-7xl dark:text-white">
+                  {title}
+                </h1>
+              );
+            })()}
 
-            <p className="mx-auto max-w-2xl text-center text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
+            <p className="mx-auto max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
               {description}
             </p>
 
-            <div className="mx-auto mt-10 flex max-w-xl flex-wrap items-center justify-center gap-4">
-              <div className="glass flex items-center gap-3 rounded-2xl px-5 py-3">
-                <CalendarIcon className="h-5 w-5 text-orange-500" />
-                <span className="font-semibold text-neutral-900 dark:text-white">
+            {/* Info chips */}
+            <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-3">
+              <div className="glass flex items-center gap-2.5 rounded-2xl px-4 py-2.5">
+                <CalendarIcon className="h-[18px] w-[18px]" style={{ color: loc.color }} />
+                <span className="text-sm font-semibold text-neutral-900 dark:text-white">
                   {formattedDate}
                 </span>
               </div>
-
-              <div className="glass flex items-center gap-3 rounded-2xl px-5 py-3">
-                <ClockIcon className="h-5 w-5 text-blue-500" />
-                <span className="font-semibold text-neutral-900 dark:text-white">{time}</span>
+              <div className="glass flex items-center gap-2.5 rounded-2xl px-4 py-2.5">
+                <ClockIcon className="h-[18px] w-[18px]" style={{ color: loc.color }} />
+                <span className="text-sm font-semibold text-neutral-900 dark:text-white">
+                  {time}
+                </span>
               </div>
+              <a
+                href={getMapUrl(venue)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glass group flex items-center gap-2.5 rounded-2xl px-4 py-2.5 transition-colors"
+              >
+                <MapPinIcon className="h-[18px] w-[18px]" style={{ color: loc.color }} />
+                <span
+                  className={`text-sm font-semibold text-neutral-900 ${isPrague ? "group-hover:text-red-600" : "group-hover:text-blue-600"} dark:text-white`}
+                >
+                  {venue.split(",")[0]}
+                </span>
+                <ExternalLinkIcon className="h-3.5 w-3.5 text-neutral-400 transition-colors group-hover:text-neutral-600 dark:text-neutral-500" />
+              </a>
             </div>
           </div>
         </div>
 
-        <div className="mx-auto max-w-5xl px-4 pb-24">
-          <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-8">
-            <div className="space-y-6">
-              {hasSpeakers && (
-                <div className="glass relative overflow-hidden rounded-3xl p-6 sm:p-8">
-                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-rose-500 via-orange-500 to-red-500" />
-                  <div className="pointer-events-none absolute -top-12 -right-12 h-36 w-36 rounded-full bg-gradient-to-br from-orange-400/30 to-rose-500/20 blur-3xl" />
+        {/* ── Gradient divider ── */}
+        <div className="mx-auto max-w-5xl px-4 py-8">
+          <div className={`h-px bg-gradient-to-r from-transparent ${loc.divider} to-transparent`} />
+        </div>
 
-                  <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-red-600 shadow-lg shadow-rose-500/25">
-                        <MicIcon className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
-                          Event Flow
-                        </p>
-                        <h2 className="text-xl font-black tracking-tight text-neutral-900 dark:text-white">
-                          {t("speakers")}
-                        </h2>
-                      </div>
-                    </div>
-                    <span className="inline-flex items-center rounded-full border border-neutral-200/70 bg-white/70 px-3 py-1 text-xs font-semibold text-neutral-700 dark:border-white/10 dark:bg-white/10 dark:text-neutral-200">
-                      {confirmedSpeakers.length} {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
-                    </span>
+        {/* ── Speakers ── */}
+        <div className="mx-auto max-w-5xl px-4 pb-16">
+          {hasSpeakers && (
+            <div className="relative">
+              {/* Section header */}
+              <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-xl ${loc.sectionIcon}`}
+                  >
+                    <MicIcon className="h-5 w-5 text-white" />
                   </div>
+                  <div>
+                    <p className="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                      Event Flow
+                    </p>
+                    <h2 className="text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
+                      {t("speakers")}
+                    </h2>
+                  </div>
+                </div>
+                <span className="inline-flex items-center rounded-full border border-neutral-200/70 bg-white/70 px-3.5 py-1.5 text-xs font-semibold text-neutral-700 dark:border-white/10 dark:bg-white/10 dark:text-neutral-200">
+                  {confirmedSpeakers.length} {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
+                </span>
+              </div>
 
-                  <div className="relative">
-                    <div className="absolute top-0 bottom-0 left-[1.05rem] w-px bg-gradient-to-b from-rose-300 via-orange-300 to-transparent dark:from-rose-500/60 dark:via-orange-500/40" />
-                    <div className="space-y-3">
-                      {confirmedSpeakers.map((speaker, index) => {
-                        const accent = getSpeakerAccent(speaker, location);
-                        const slotTime = speaker.startTime?.trim() ?? "";
+              {/* Speaker cards — equal grid */}
+              {confirmedSpeakers.length > 0 && (
+                <div
+                  className={`grid gap-5 ${confirmedSpeakers.length === 1 ? "mx-auto max-w-xl" : "sm:grid-cols-2"}`}
+                >
+                  {confirmedSpeakers.map((speaker, index) => {
+                    const accent = getSpeakerAccent(speaker, location);
+                    const slotTime = speaker.startTime?.trim() ?? "";
+                    const displayIndex = index + 1;
 
-                        return (
-                          <div key={`${speaker.name}-${speaker.topic}`} className="relative pl-10">
-                            <div className="absolute top-5 left-3 h-2.5 w-2.5 rounded-full bg-rose-500 ring-4 ring-white dark:ring-neutral-900" />
-                            <div className={`rounded-2xl p-4 ${accent.cardClassName}`}>
-                              <div
-                                className={`absolute inset-y-2 left-0 w-1 rounded-full ${accent.railClassName}`}
-                              />
-                              <div
-                                className={`pointer-events-none absolute -top-4 -right-4 h-14 w-14 rounded-full blur-xl ${accent.orbClassName}`}
-                              />
+                    return (
+                      <div
+                        key={`${formatSpeakerNames(speaker.name)}-${speaker.topic}`}
+                        className={`group rounded-3xl p-5 sm:p-6 ${accent.cardClassName}`}
+                      >
+                        {/* Top rail */}
+                        <div
+                          className={`absolute inset-x-0 top-0 h-1 rounded-t-3xl ${accent.railClassName}`}
+                        />
 
-                              <div className="flex items-start gap-4">
-                                <div className={accent.iconClassName}>
-                                  {getSpeakerInitials(speaker.name)}
-                                </div>
+                        {/* Decorative orbs */}
+                        <div
+                          className={`pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl ${accent.orbClassName}`}
+                        />
 
-                                <div className="min-w-0 flex-1">
-                                  <div className="mb-1 flex flex-wrap items-center gap-2">
-                                    <span className="inline-flex items-center rounded-md bg-black/5 px-2 py-0.5 text-[10px] font-bold tracking-[0.12em] text-neutral-700 uppercase dark:bg-white/10 dark:text-neutral-200">
-                                      #{(index + 1).toString().padStart(2, "0")}
-                                    </span>
-                                    {slotTime.length > 0 && (
-                                      <span className="inline-flex items-center rounded-md bg-white/70 px-2 py-0.5 text-[10px] font-semibold text-neutral-700 dark:bg-black/25 dark:text-neutral-200">
-                                        {slotTime}
-                                      </span>
-                                    )}
+                        {/* Giant watermark number */}
+                        <div
+                          className={`pointer-events-none absolute -right-2 -bottom-4 text-[120px] leading-none font-black select-none ${accent.watermarkClassName}`}
+                        >
+                          {displayIndex.toString().padStart(2, "0")}
+                        </div>
+
+                        {/* Badges */}
+                        <div className="relative mb-4 flex flex-wrap items-center gap-2">
+                          <span className="inline-flex items-center rounded-lg bg-black/5 px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] text-neutral-700 uppercase dark:bg-white/10 dark:text-neutral-200">
+                            #{displayIndex.toString().padStart(2, "0")}
+                          </span>
+                          {slotTime.length > 0 && (
+                            <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/70 px-2.5 py-1 text-[10px] font-semibold text-neutral-700 dark:bg-black/25 dark:text-neutral-200">
+                              <ClockIcon className="h-2.5 w-2.5" />
+                              {slotTime}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Topic headline */}
+                        <p className={`relative ${accent.topicHeadingClassName}`}>
+                          {speaker.topic}
+                        </p>
+
+                        {/* Speaker identity */}
+                        <div className="relative mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-black/5 pt-4 dark:border-white/10">
+                          {resolveSpeakerLinks(speaker).map((resolved) => {
+                            const profileHref = resolved.profileId
+                              ? PAGE_ROUTES.USER(resolved.profileId)
+                              : undefined;
+                            const domain = resolved.url
+                              ? new URL(resolved.url).hostname.replace(/^www\./, "")
+                              : undefined;
+
+                            return (
+                              <div key={resolved.name} className="flex items-center gap-2.5">
+                                {profileHref ? (
+                                  <a
+                                    href={profileHref}
+                                    className="transition-opacity hover:opacity-80"
+                                  >
+                                    <div className={accent.iconClassName}>
+                                      {getSpeakerInitials(resolved.name)}
+                                    </div>
+                                  </a>
+                                ) : (
+                                  <div className={accent.iconClassName}>
+                                    {getSpeakerInitials(resolved.name)}
                                   </div>
-                                  <p className="truncate font-bold text-neutral-900 dark:text-white">
-                                    {speaker.name}
-                                  </p>
-                                  <p className={accent.topicClassName}>{speaker.topic}</p>
+                                )}
+                                <div>
+                                  {profileHref ? (
+                                    <a
+                                      href={profileHref}
+                                      className="block font-semibold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
+                                    >
+                                      {resolved.name}
+                                    </a>
+                                  ) : resolved.url ? (
+                                    <a
+                                      href={resolved.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="block font-semibold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
+                                    >
+                                      {resolved.name}
+                                    </a>
+                                  ) : (
+                                    <p className="font-semibold text-neutral-900 dark:text-white">
+                                      {resolved.name}
+                                    </p>
+                                  )}
+                                  {domain && (
+                                    <a
+                                      href={resolved.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="mt-0.5 flex items-center gap-1 text-[11px] text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+                                    >
+                                      <ExternalLinkIcon className="h-2.5 w-2.5" />
+                                      {domain}
+                                    </a>
+                                  )}
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-
-                      {confirmedSpeakers.length === 0 && (
-                        <div className="rounded-2xl border-2 border-dashed border-neutral-200 p-8 text-center dark:border-neutral-700">
-                          <p className="text-neutral-500 dark:text-neutral-400">
-                            {t("speakersTba")}
-                          </p>
+                            );
+                          })}
                         </div>
-                      )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* TBA empty state */}
+              {confirmedSpeakers.length === 0 && (
+                <div className="glass rounded-3xl border-2 border-dashed border-neutral-200 p-16 text-center dark:border-neutral-700">
+                  <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-100 to-orange-100 dark:from-rose-500/15 dark:to-orange-500/10">
+                    <MicIcon className="h-8 w-8 text-rose-400 dark:text-rose-300" />
+                  </div>
+                  <p className="text-xl font-bold text-neutral-500 dark:text-neutral-400">
+                    {t("speakersTba")}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* ── Gradient divider ── */}
+        <div className="mx-auto max-w-5xl px-4 pb-8">
+          <div className="h-px bg-gradient-to-r from-transparent via-neutral-300/50 to-transparent dark:via-neutral-600/30" />
+        </div>
+
+        {/* ── Bottom: Register + Venue ── */}
+        <div className="mx-auto max-w-5xl px-4 pb-24">
+          <div className="grid items-start gap-6 lg:grid-cols-5 lg:gap-8">
+            {/* RSVP — primary CTA, takes 3/5 width */}
+            <div className="lg:col-span-3">
+              <div
+                className="relative overflow-hidden rounded-3xl p-6 sm:p-8"
+                style={{
+                  background: `linear-gradient(135deg, ${loc.color}08 0%, ${loc.color}04 100%)`,
+                }}
+              >
+                {/* Top rail — thicker for emphasis */}
+                <div className={`absolute inset-x-0 top-0 h-1.5 ${loc.rail}`} />
+
+                {/* Ambient glow behind the card */}
+                <div
+                  className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full blur-3xl"
+                  style={{ background: `${loc.color}12` }}
+                />
+                <div
+                  className="pointer-events-none absolute -bottom-12 -left-12 h-36 w-36 rounded-full blur-3xl"
+                  style={{ background: `${loc.color}08` }}
+                />
+
+                {/* Border */}
+                <div
+                  className="pointer-events-none absolute inset-0 rounded-3xl ring-1"
+                  style={{ boxShadow: `inset 0 0 0 1px ${loc.color}18` }}
+                />
+
+                <div className="relative">
+                  <div className="mb-1 flex items-center gap-2.5">
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-xl"
+                      style={{ background: `${loc.color}15` }}
+                    >
+                      <SparklesIcon className="h-5 w-5" style={{ color: loc.color }} />
                     </div>
+                    <p className="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                      {isTba ? t("saveTheDate") : t("joinUs")}
+                    </p>
+                  </div>
+
+                  <h3
+                    className={`mt-3 text-3xl font-black tracking-tight sm:text-4xl ${
+                      isPrague
+                        ? "text-neutral-900 dark:text-white"
+                        : "text-neutral-900 dark:text-white"
+                    }`}
+                  >
+                    {isTba ? t("saveTheDate") : t("registerNow")}
+                  </h3>
+
+                  <p className="mt-2 max-w-lg text-neutral-600 dark:text-neutral-300">
+                    {isTba ? t("tbaDescription") : t("registerDescription", { location })}
+                  </p>
+
+                  <div className="mt-8">
+                    <RsvpSection eventId={id} />
+                  </div>
+
+                  {platformLinks.length > 0 && (
+                    <div className="mt-6 border-t border-neutral-200/40 pt-5 dark:border-white/10">
+                      <p className="mb-2.5 text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                        {t("orRegisterVia")}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {platformLinks.map((platform) => (
+                          <a
+                            key={platform.key}
+                            href={platform.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group inline-flex items-center gap-1.5 rounded-lg border border-neutral-200/70 bg-white/60 px-3 py-1.5 text-[11px] font-medium text-neutral-600 transition-colors hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                          >
+                            <platform.icon className="h-3.5 w-3.5 opacity-70" />
+                            <span>{platform.label}</span>
+                            <ExternalLinkIcon className="h-2.5 w-2.5 opacity-30 group-hover:opacity-60" />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {platformLinks.length === 0 && isTba && (
+                    <div
+                      className="mt-8 rounded-2xl border-2 border-dashed p-6 text-center"
+                      style={{
+                        borderColor: `${loc.color}40`,
+                        background: `${loc.color}06`,
+                      }}
+                    >
+                      <SparklesIcon className="mx-auto mb-3 h-8 w-8" style={{ color: loc.color }} />
+                      <p className="font-semibold text-neutral-900 dark:text-white">
+                        {t("stayTuned")}
+                      </p>
+                      <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+                        {t("registrationOpensSoon")}
+                      </p>
+                    </div>
+                  )}
+
+                  {googleCalendarUrl && calendarStart && calendarEnd && (
+                    <div className="mt-6 border-t border-neutral-200/40 pt-5 dark:border-white/10">
+                      <p className="mb-2.5 text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                        {t("addToCalendar")}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          href={googleCalendarUrl}
+                          external
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          variant="secondary"
+                          size="sm"
+                        >
+                          {t("googleCalendar")}
+                        </Button>
+                        <Button onClick={handleDownloadCalendar} variant="secondary" size="sm">
+                          {t("downloadIcs")}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <ShareEventButton
+                  sectionTitle={t("shareEvent")}
+                  copyLabel={t("copyLink")}
+                  copiedLabel={t("copied")}
+                />
+              </div>
+            </div>
+
+            {/* Venue & details — compact sidebar, 2/5 width */}
+            <div className="glass self-start rounded-3xl p-5 sm:p-6 lg:col-span-2">
+              {/* Location badge */}
+              <div
+                className="mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5"
+                style={{ background: `${loc.color}12` }}
+              >
+                <div className="h-2 w-2 rounded-full" style={{ background: loc.color }} />
+                <span
+                  className="text-xs font-bold tracking-wide uppercase"
+                  style={{ color: loc.color }}
+                >
+                  {location}
+                </span>
+              </div>
+
+              <h3 className="mb-4 text-lg font-bold text-neutral-900 dark:text-white">
+                {t("venueTitle")}
+              </h3>
+
+              {/* Venue address */}
+              <a
+                href={getMapUrl(venue)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-start gap-3"
+              >
+                <div
+                  className="flex h-10 w-10 flex-none items-center justify-center rounded-xl"
+                  style={{ background: `${loc.color}12` }}
+                >
+                  <MapPinIcon className="h-5 w-5" style={{ color: loc.color }} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p
+                    className={`text-sm font-semibold text-neutral-900 transition-colors ${isPrague ? "group-hover:text-red-600" : "group-hover:text-blue-600"} dark:text-white`}
+                  >
+                    {venue}
+                  </p>
+                  <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+                    {t("openInMaps")}
+                  </p>
+                </div>
+              </a>
+
+              {/* Date & time — compact row */}
+              <div className="mt-5 grid grid-cols-2 gap-2 border-t border-neutral-200/50 pt-5 dark:border-neutral-700/50">
+                <div className="rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
+                  <div className="mb-1 flex items-center gap-1.5">
+                    <CalendarIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
+                    <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                      {t("dateLabel")}
+                    </span>
+                  </div>
+                  <p className="text-sm font-semibold text-neutral-900 dark:text-white">
+                    {formattedDate}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
+                  <div className="mb-1 flex items-center gap-1.5">
+                    <ClockIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
+                    <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                      {t("timeLabel")}
+                    </span>
+                  </div>
+                  <p className="text-sm font-semibold text-neutral-900 dark:text-white">{time}</p>
+                </div>
+              </div>
+
+              {/* Speaker count */}
+              {confirmedSpeakers.length > 0 && (
+                <div className="mt-2 rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <MicIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
+                      <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                        {t("speakers")}
+                      </span>
+                    </div>
+                    <span className="text-sm font-semibold text-neutral-900 dark:text-white">
+                      {confirmedSpeakers.length} {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
+                    </span>
                   </div>
                 </div>
               )}
 
-              <div className="glass relative overflow-hidden rounded-3xl p-6 sm:p-8">
-                <div
-                  className={`pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full bg-gradient-to-br ${locationGlow} blur-3xl`}
-                />
-
-                <h2 className="mb-4 text-xl font-bold text-neutral-900 dark:text-white">
-                  {t("venueTitle")}
-                </h2>
-
-                <a
-                  href={getMapUrl(venue)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-start gap-4"
-                >
-                  <div
-                    className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl"
-                    style={{ background: `${locationColor}15` }}
-                  >
-                    <MapPinIcon className="h-7 w-7" style={{ color: locationColor }} />
+              {episode && (
+                <div className="mt-2 rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                      {t("episodeLabel")}
+                    </span>
+                    <span className="text-sm font-semibold text-neutral-900 dark:text-white">
+                      {episode}
+                    </span>
                   </div>
+                </div>
+              )}
 
-                  <div className="flex-1">
-                    <p className="font-semibold text-neutral-900 transition-colors group-hover:text-orange-500 dark:text-white">
-                      {venue}
+              {/* Partners */}
+              {(() => {
+                const partners = getLocationPartners(location);
+                if (partners.length === 0) {
+                  return null;
+                }
+                return (
+                  <div className="mt-5 border-t border-neutral-200/50 pt-5 dark:border-neutral-700/50">
+                    <p className="mb-2.5 text-[9px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                      {t("partners")}
                     </p>
-                    <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                      {t("openInMaps")}
-                    </p>
-                  </div>
-
-                  <ExternalLinkIcon className="h-5 w-5 text-neutral-400 transition-colors group-hover:text-neutral-600 dark:text-neutral-500" />
-                </a>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div className="glass overflow-hidden rounded-3xl p-6 sm:p-8 lg:sticky lg:top-24">
-                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-rose-500 via-orange-500 to-red-500" />
-
-                <h3 className="mb-2 text-2xl font-bold text-neutral-900 dark:text-white">
-                  {isTba ? t("saveTheDate") : t("registerNow")}
-                </h3>
-
-                <p className="mb-6 text-neutral-600 dark:text-neutral-300">
-                  {isTba ? t("tbaDescription") : t("registerDescription", { location })}
-                </p>
-
-                <RsvpSection eventId={id} />
-
-                {googleCalendarUrl && calendarStart && calendarEnd && (
-                  <div className="mt-6 space-y-2 border-t border-neutral-200/50 pt-6 dark:border-neutral-700/50">
-                    <p className="text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400">
-                      {t("addToCalendar")}
-                    </p>
-                    <div className="grid grid-cols-1 gap-2">
-                      <Button
-                        href={googleCalendarUrl}
-                        external
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        variant="secondary"
-                        size="sm"
-                        className="w-full justify-center"
-                      >
-                        {t("googleCalendar")}
-                      </Button>
-                      <Button
-                        onClick={handleDownloadCalendar}
-                        variant="secondary"
-                        size="sm"
-                        className="w-full justify-center"
-                      >
-                        {t("downloadIcs")}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {platformLinks.length > 0 && (
-                  <div className="mt-4 rounded-xl border border-neutral-200/60 bg-neutral-50/70 p-3 dark:border-white/10 dark:bg-white/5">
-                    <p className="mb-2 text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-                      {t("orRegisterVia")}
-                    </p>
-
-                    <div className="grid grid-cols-1 gap-1.5">
-                      {platformLinks.map((platform) => (
+                    <div className="flex flex-wrap gap-2">
+                      {partners.map((partner) => (
                         <a
-                          key={platform.key}
-                          href={platform.url}
+                          key={partner.name}
+                          href={partner.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group flex w-full items-center justify-between rounded-lg border border-neutral-200/70 bg-white/85 px-3 py-1.5 text-[11px] font-medium text-neutral-700 transition-colors hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10"
+                          className="flex items-center justify-center rounded-lg bg-neutral-900/85 px-2.5 py-1.5 ring-1 ring-black/20 transition-opacity hover:opacity-80 dark:bg-white/5 dark:ring-white/10"
+                          aria-label={partner.name}
                         >
-                          <span className="inline-flex items-center gap-1.5">
-                            <platform.icon className="h-3.5 w-3.5 opacity-75" />
-                            <span>{platform.label}</span>
-                          </span>
-                          <ExternalLinkIcon className="h-3 w-3 opacity-40 transition-opacity group-hover:opacity-70" />
+                          <Image
+                            src={partner.logo}
+                            alt={partner.name}
+                            width={100}
+                            height={32}
+                            className={`h-4 w-auto object-contain opacity-90 ${partner.logoClassName ?? ""}`}
+                          />
                         </a>
                       ))}
                     </div>
                   </div>
-                )}
-
-                {platformLinks.length === 0 && isTba && (
-                  <div className="mt-6 rounded-2xl border-2 border-dashed border-orange-300/50 bg-orange-50/50 p-6 text-center dark:border-orange-500/30 dark:bg-orange-500/10">
-                    <SparklesIcon className="mx-auto mb-3 h-8 w-8 text-orange-500" />
-                    <p className="font-semibold text-neutral-900 dark:text-white">
-                      {t("stayTuned")}
-                    </p>
-                    <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                      {t("registrationOpensSoon")}
-                    </p>
-                  </div>
-                )}
-
-                {episode && (
-                  <div className="mt-6 space-y-3 border-t border-neutral-200/50 pt-6 dark:border-neutral-700/50">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-neutral-500 dark:text-neutral-400">
-                        {t("episodeLabel")}
-                      </span>
-                      <span className="font-semibold text-neutral-900 dark:text-white">
-                        {episode}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <ShareEventButton
-                sectionTitle={t("shareEvent")}
-                copyLabel={t("copyLink")}
-                copiedLabel={t("copied")}
-              />
+                );
+              })()}
             </div>
           </div>
         </div>
