@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
+import { LIBRARY_SHELVES } from "@/lib/recordings/library-filter";
 
-import { BoltIcon, FireIcon, SparklesIcon } from "../shared/Icons";
+import { BoltIcon, FireIcon } from "../shared/Icons";
 
+import { getLibraryShelfTheme } from "./library-shelf-theme";
 import type { RailCardBadge } from "./rail-card-utils";
 import type { CatalogRecording } from "./RecordingsCatalogTypes";
 
@@ -17,49 +19,27 @@ export function getTrendRailChrome(kind: TrendRailKind): {
   gradientFrom: string;
   gradientTo: string;
 } {
-  if (kind === "memberPicks") {
-    return {
-      keyPrefix: "member-pick",
-      headerIcon: (
-        <BoltIcon className={`h-5 w-5 text-${ENGAGEMENT_BRANDING.boost.colors.gradientFrom}`} />
-      ),
-      headerAccent: (
-        <div
-          className={`flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-${ENGAGEMENT_BRANDING.boost.colors.gradientFrom} to-${ENGAGEMENT_BRANDING.boost.colors.gradientTo}`}
-        />
-      ),
-      containerClassName: "rounded-[28px] px-4 py-3",
-      gradientFrom: `from-${ENGAGEMENT_BRANDING.boost.colors.railLight}`,
-      gradientTo: `to-${ENGAGEMENT_BRANDING.boost.colors.railLightSecondary}`,
-    };
+  const shelf =
+    kind === "memberPicks"
+      ? LIBRARY_SHELVES.MEMBER_PICKS
+      : kind === "hot"
+        ? LIBRARY_SHELVES.HOT
+        : LIBRARY_SHELVES.HIDDEN_GEMS;
+  const theme = getLibraryShelfTheme(shelf);
+
+  if (!theme) {
+    throw new Error(`Missing theme for shelf "${shelf}"`);
   }
 
-  if (kind === "hot") {
-    return {
-      keyPrefix: "hot",
-      headerIcon: (
-        <FireIcon className={`h-5 w-5 text-${ENGAGEMENT_BRANDING.like.colors.gradientTo}`} />
-      ),
-      headerAccent: (
-        <div
-          className={`flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-${ENGAGEMENT_BRANDING.like.colors.gradientFrom} to-${ENGAGEMENT_BRANDING.like.colors.gradientTo}`}
-        />
-      ),
-      containerClassName: "rounded-[28px] px-4 py-3",
-      gradientFrom: `from-${ENGAGEMENT_BRANDING.like.colors.railLight}`,
-      gradientTo: `to-${ENGAGEMENT_BRANDING.like.colors.railLightSecondary}`,
-    };
-  }
+  const Icon = theme.icon;
 
   return {
-    keyPrefix: "hidden-gem",
-    headerIcon: <SparklesIcon className="h-5 w-5 text-purple-500" />,
-    headerAccent: (
-      <div className="flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-purple-500 to-indigo-500" />
-    ),
-    containerClassName: "rounded-[28px] px-4 py-3",
-    gradientFrom: "from-purple-500/5",
-    gradientTo: "to-indigo-500/5",
+    keyPrefix: theme.keyPrefix,
+    headerIcon: <Icon className={theme.rail.iconClassName} />,
+    headerAccent: <div className={theme.rail.accentClassName} />,
+    containerClassName: theme.rail.containerClassName,
+    gradientFrom: theme.rail.gradientFrom,
+    gradientTo: theme.rail.gradientTo,
   };
 }
 

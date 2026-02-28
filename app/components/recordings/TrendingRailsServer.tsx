@@ -63,13 +63,14 @@ function renderTrendingRailServer<T extends CatalogRecording>({
 }
 
 export async function MemberPicksRailServer({
-  scrollLeftLabel = "Scroll left",
-  scrollRightLabel = "Scroll right",
+  scrollLeftLabel,
+  scrollRightLabel,
 }: TrendingRailProps) {
   const locale = await getRequestLocale();
-  const [memberPicks, tRows] = await Promise.all([
+  const [memberPicks, tRows, tCommon] = await Promise.all([
     getMemberPicksSafe(6),
     getTranslations({ locale, namespace: "libraryPage.rows" }),
+    getTranslations({ locale, namespace: "common" }),
   ]);
 
   return renderTrendingRailServer({
@@ -77,19 +78,17 @@ export async function MemberPicksRailServer({
     title: tRows("memberPicks"),
     recordings: memberPicks,
     locale,
-    scrollLeftLabel,
-    scrollRightLabel,
+    scrollLeftLabel: scrollLeftLabel ?? tCommon("scrollLeft"),
+    scrollRightLabel: scrollRightLabel ?? tCommon("scrollRight"),
   });
 }
 
-export async function HotPicksRailServer({
-  scrollLeftLabel = "Scroll left",
-  scrollRightLabel = "Scroll right",
-}: TrendingRailProps) {
+export async function HotPicksRailServer({ scrollLeftLabel, scrollRightLabel }: TrendingRailProps) {
   const locale = await getRequestLocale();
-  const [hotPicks, tRows] = await Promise.all([
+  const [hotPicks, tRows, tCommon] = await Promise.all([
     getHotRecordingsSafe(6),
     getTranslations({ locale, namespace: "libraryPage.rows" }),
+    getTranslations({ locale, namespace: "common" }),
   ]);
 
   return renderTrendingRailServer({
@@ -97,19 +96,20 @@ export async function HotPicksRailServer({
     title: tRows("hot"),
     recordings: hotPicks,
     locale,
-    scrollLeftLabel,
-    scrollRightLabel,
+    scrollLeftLabel: scrollLeftLabel ?? tCommon("scrollLeft"),
+    scrollRightLabel: scrollRightLabel ?? tCommon("scrollRight"),
   });
 }
 
 export async function HiddenGemsRailServer({
-  scrollLeftLabel = "Scroll left",
-  scrollRightLabel = "Scroll right",
+  scrollLeftLabel,
+  scrollRightLabel,
 }: TrendingRailProps) {
   const locale = await getRequestLocale();
-  const [hiddenGems, tRows] = await Promise.all([
+  const [hiddenGems, tRows, tCommon] = await Promise.all([
     getHiddenGems(6),
     getTranslations({ locale, namespace: "libraryPage.rows" }),
+    getTranslations({ locale, namespace: "common" }),
   ]);
 
   return renderTrendingRailServer({
@@ -117,7 +117,7 @@ export async function HiddenGemsRailServer({
     title: tRows("hiddenGems"),
     recordings: hiddenGems,
     locale,
-    scrollLeftLabel,
-    scrollRightLabel,
+    scrollLeftLabel: scrollLeftLabel ?? tCommon("scrollLeft"),
+    scrollRightLabel: scrollRightLabel ?? tCommon("scrollRight"),
   });
 }

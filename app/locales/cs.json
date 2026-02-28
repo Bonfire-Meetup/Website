@@ -451,6 +451,8 @@
       "body": "{episode} nemá žádný videozáznam.\nMrkni na fotky nebo si pusť jiné session.",
       "cta": "Projít všechny záznamy"
     },
+    "shelfLabel": "Kolekce",
+    "clearShelfFilter": "Zrušit filtr kolekce",
     "disclaimer": "Akce Bonfire@{prague} #1 (The Gathering) a #2 (The Dreamweavers) nebyly nahrávány.",
     "noteLabel": "Pozn.:"
   },

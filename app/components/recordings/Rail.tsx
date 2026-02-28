@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
@@ -32,14 +33,17 @@ export function Rail<T>({
   containerClassName = DEFAULT_RAIL_CONTAINER_CLASS,
   gradientFrom,
   gradientTo,
-  scrollLeftLabel = "Scroll left",
-  scrollRightLabel = "Scroll right",
+  scrollLeftLabel,
+  scrollRightLabel,
   viewAllHref,
   viewAllLabel,
 }: RailProps<T>) {
+  const tCommon = useTranslations("common");
   const railRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const resolvedScrollLeftLabel = scrollLeftLabel ?? tCommon("scrollLeft");
+  const resolvedScrollRightLabel = scrollRightLabel ?? tCommon("scrollRight");
   const updateScrollState = () => {
     if (!railRef.current) {
       return;
@@ -109,7 +113,7 @@ export function Rail<T>({
               type="button"
               onClick={() => scrollByAmount(-1)}
               disabled={!canScrollLeft}
-              aria-label={scrollLeftLabel}
+              aria-label={resolvedScrollLeftLabel}
               className={`inline-flex h-8 w-8 items-center justify-center rounded-full shadow-sm ring-1 transition ${
                 canScrollLeft
                   ? "cursor-pointer bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"
@@ -122,7 +126,7 @@ export function Rail<T>({
               type="button"
               onClick={() => scrollByAmount(1)}
               disabled={!canScrollRight}
-              aria-label={scrollRightLabel}
+              aria-label={resolvedScrollRightLabel}
               className={`inline-flex h-8 w-8 items-center justify-center rounded-full shadow-sm ring-1 transition ${
                 canScrollRight
                   ? "cursor-pointer bg-white text-neutral-700 ring-black/5 hover:bg-neutral-100 dark:bg-neutral-900 dark:text-white dark:ring-white/10 dark:hover:bg-neutral-800"

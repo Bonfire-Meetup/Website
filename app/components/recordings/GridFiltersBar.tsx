@@ -34,6 +34,7 @@ export const GridFiltersBar = memo(function GridFiltersBar({
   onSearchChange,
   onReset,
   onViewRows,
+  className,
 }: {
   activeLocation: LocationFilter;
   activeTag: string;
@@ -49,6 +50,7 @@ export const GridFiltersBar = memo(function GridFiltersBar({
   onSearchChange: (query: string) => void;
   onReset: () => void;
   onViewRows: () => void;
+  className?: string;
 }) {
   const tCommon = useTranslations("common");
   const t = useTranslations("libraryPage.filters");
@@ -74,7 +76,7 @@ export const GridFiltersBar = memo(function GridFiltersBar({
   }, [localValue]);
 
   return (
-    <div className="glass relative z-10 mb-8 rounded-2xl px-4 py-3">
+    <div className={`glass relative z-10 mb-8 rounded-2xl px-4 py-3 ${className ?? ""}`}>
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center lg:gap-2 xl:flex-nowrap">
         <div className="flex w-full flex-col gap-3 lg:w-auto lg:shrink-0 lg:flex-row lg:flex-wrap lg:items-center lg:gap-2">
           <div className="flex w-full gap-2 lg:w-auto">

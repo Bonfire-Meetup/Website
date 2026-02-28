@@ -451,6 +451,8 @@
       "body": "{episode} had no video recordings.\nCheck the photo album or browse other sessions.",
       "cta": "Browse all recordings"
     },
+    "shelfLabel": "Shelf",
+    "clearShelfFilter": "Clear shelf filter",
     "disclaimer": "Bonfire@{prague} #1 (The Gathering) and #2 (The Dreamweavers) were not recorded.",
     "noteLabel": "Note:"
   },

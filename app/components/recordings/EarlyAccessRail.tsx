@@ -1,7 +1,8 @@
 "use client";
 
-import { EarlyAccessIcon } from "../shared/Icons";
+import { LIBRARY_SHELVES } from "@/lib/recordings/library-filter";
 
+import { getLibraryShelfTheme } from "./library-shelf-theme";
 import { Rail } from "./Rail";
 import { RailCard } from "./RailCard";
 import type { CatalogRecording } from "./RecordingsCatalogTypes";
@@ -21,24 +22,30 @@ export function EarlyAccessRail({
   viewAllHref?: string;
   viewAllLabel?: string;
 }) {
+  const theme = getLibraryShelfTheme(LIBRARY_SHELVES.EARLY_ACCESS);
+
+  if (!theme) {
+    return null;
+  }
+
+  const Icon = theme.icon;
+
   return (
     <Rail
       title={title}
       items={recordings}
       renderItem={(recording, index) => (
         <RailCard
-          key={`early-access-${recording.shortId}`}
+          key={`${theme.keyPrefix}-${recording.shortId}`}
           recording={recording}
           isFirst={index < 2}
         />
       )}
-      headerIcon={<EarlyAccessIcon className="h-5 w-5 text-amber-500 dark:text-amber-300" />}
-      headerAccent={
-        <div className="flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-amber-400 to-rose-500" />
-      }
-      containerClassName="rounded-[28px] px-4 py-3 ring-1 ring-amber-500/20 dark:ring-amber-300/20"
-      gradientFrom="from-rose-500/5"
-      gradientTo="to-orange-500/10"
+      headerIcon={<Icon className={theme.rail.iconClassName} />}
+      headerAccent={<div className={theme.rail.accentClassName} />}
+      containerClassName={theme.rail.containerClassName}
+      gradientFrom={theme.rail.gradientFrom}
+      gradientTo={theme.rail.gradientTo}
       scrollLeftLabel={scrollLeftLabel}
       scrollRightLabel={scrollRightLabel}
       viewAllHref={viewAllHref}

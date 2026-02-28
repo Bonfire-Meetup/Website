@@ -4,14 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
 
-import {
-  BoltIcon,
-  CloseIcon,
-  EarlyAccessIcon,
-  GuildIcon,
-  InfoIcon,
-  SparklesIcon,
-} from "@/components/shared/Icons";
+import { CloseIcon, InfoIcon } from "@/components/shared/Icons";
 import {
   LIBRARY_SHELVES,
   type LibraryApiPayload,
@@ -26,6 +19,7 @@ import { EmptyStateMessage } from "./EmptyStateMessage";
 import { GridFiltersBar } from "./GridFiltersBar";
 import { GridView } from "./GridView";
 import { buildLibrarySearchParams, fetchLibraryApiPayload } from "./library-client-utils";
+import { getLibraryShelfTheme } from "./library-shelf-theme";
 import { RecordingsGridSkeleton } from "./RecordingLoadingSkeletons";
 import { type LocationFilter, UNRECORDED_EPISODES } from "./RecordingsCatalogTypes";
 
@@ -51,33 +45,18 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
   const { activeEpisode } = payload;
   const { activeShelf } = payload;
   const { recordings } = payload;
-  const shelfHeader =
-    activeShelf === LIBRARY_SHELVES.EARLY_ACCESS
-      ? {
-          icon: <EarlyAccessIcon className="h-4 w-4 text-amber-600 dark:text-amber-300" />,
-          title: tRows("earlyAccess"),
-        }
-      : activeShelf === LIBRARY_SHELVES.GUILD_VAULT
-        ? {
-            icon: <GuildIcon className="h-4 w-4 text-red-600 dark:text-red-300" />,
-            title: tRows("guildVault"),
-          }
-        : activeShelf === LIBRARY_SHELVES.MEMBER_PICKS
-          ? {
-              icon: <BoltIcon className="h-4 w-4 text-emerald-600 dark:text-emerald-300" />,
-              title: tRows("memberPicks"),
-            }
-          : activeShelf === LIBRARY_SHELVES.HOT
-            ? {
-                icon: <SparklesIcon className="h-4 w-4 text-rose-600 dark:text-rose-300" />,
-                title: tRows("hot"),
-              }
-            : activeShelf === LIBRARY_SHELVES.HIDDEN_GEMS
-              ? {
-                  icon: <SparklesIcon className="h-4 w-4 text-purple-600 dark:text-purple-300" />,
-                  title: tRows("hiddenGems"),
-                }
-              : null;
+  const shelfTheme = getLibraryShelfTheme(activeShelf);
+  const shelfHeader = (() => {
+    if (!shelfTheme) {
+      return null;
+    }
+
+    const Icon = shelfTheme.icon;
+    return {
+      icon: <Icon className={shelfTheme.browse.iconClassName} />,
+      title: tRows(shelfTheme.rowKey),
+    };
+  })();
 
   useEffect(() => {
     setPayload(initialPayload);
@@ -216,26 +195,46 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
 
   return (
     <section className="relative px-4 pb-24 sm:px-6 lg:px-8">
-      <div className="relative mx-auto max-w-7xl">
+      {shelfTheme && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-0 flex justify-center">
+          <div
+            className={`h-44 w-full max-w-6xl rounded-[999px] blur-3xl ${shelfTheme.browse.glow}`}
+          />
+        </div>
+      )}
+
+      <div className="relative z-10 mx-auto max-w-7xl">
         <div className="mb-2 sm:mb-6" />
 
         {shelfHeader && (
-          <div className="mb-6 rounded-2xl border border-black/10 bg-white/70 px-4 py-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+          <div
+            className={`mb-6 rounded-2xl border border-black/10 bg-white/70 px-4 py-4 shadow-sm dark:border-white/10 dark:bg-white/5 ${
+              shelfTheme?.browse.header ?? ""
+            }`}
+          >
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-black/5 dark:bg-white/10">
+                <div
+                  className={`flex h-9 w-9 items-center justify-center rounded-xl bg-black/5 dark:bg-white/10 ${
+                    shelfTheme?.browse.surface ?? ""
+                  }`}
+                >
                   {shelfHeader.icon}
                 </div>
                 <div className="min-w-0">
                   <p className="text-[11px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-                    Shelf
+                    {tLibrary("shelfLabel")}
                   </p>
                   <h2 className="truncate text-lg font-bold tracking-tight text-neutral-900 sm:text-xl dark:text-white">
                     {shelfHeader.title}
                   </h2>
                 </div>
               </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-black/5 dark:bg-white/10">
+              <div
+                className={`flex h-9 w-9 items-center justify-center rounded-xl bg-black/5 dark:bg-white/10 ${
+                  shelfTheme?.browse.surface ?? ""
+                }`}
+              >
                 <button
                   type="button"
                   onClick={() =>
@@ -247,8 +246,10 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
                       LIBRARY_SHELVES.ALL,
                     )
                   }
-                  aria-label="Clear shelf filter"
-                  className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-white/70 text-neutral-600 transition hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white"
+                  aria-label={tLibrary("clearShelfFilter")}
+                  className={`inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-white/70 text-neutral-600 transition hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white ${
+                    shelfTheme?.browse.closeButton ?? ""
+                  }`}
                 >
                   <CloseIcon className="h-3.5 w-3.5" />
                 </button>
@@ -272,9 +273,17 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
           onSearchChange={setLocalSearchQuery}
           onReset={handleReset}
           onViewRows={handleViewRows}
+          className={shelfTheme?.browse.filters}
         />
 
-        <div className="section-divider mb-8" />
+        <div className="relative mb-8">
+          <div className="section-divider" />
+          {shelfTheme && (
+            <div
+              className={`pointer-events-none absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r ${shelfTheme.browse.divider}`}
+            />
+          )}
+        </div>
 
         <div
           className={`min-h-[700px] transition-opacity duration-300 ${
