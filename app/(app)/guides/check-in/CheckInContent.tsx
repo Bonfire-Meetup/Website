@@ -3,8 +3,8 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-import { GuideCtaSection } from "@/components/how-to/GuideCtaSection";
-import { HowToPageShell } from "@/components/how-to/HowToPageShell";
+import { GuideCtaSection } from "@/components/guides/GuideCtaSection";
+import { GuidePageShell } from "@/components/guides/GuidePageShell";
 import {
   ArrowRightIcon,
   BadgeCheckIcon,
@@ -31,13 +31,13 @@ const STEP_ACTIONS: Partial<Record<(typeof STEP_KEYS)[number], string>> = {
 };
 
 export function CheckInContent() {
-  const t = useTranslations("checkInHowTo");
-  const tHowToPage = useTranslations("howToPage");
+  const t = useTranslations("checkInGuide");
+  const tGuidesPage = useTranslations("guidesPage");
 
   return (
-    <HowToPageShell
+    <GuidePageShell
       allGuidesHref={PAGE_ROUTES.GUIDES}
-      allGuidesLabel={tHowToPage("browseAllGuides")}
+      allGuidesLabel={tGuidesPage("browseAllGuides")}
       eyebrow={t("eyebrow")}
       heading={t("heading")}
       heroLead={t("heroLead")}
@@ -92,6 +92,6 @@ export function CheckInContent() {
         primary={{ href: PAGE_ROUTES.LOGIN, label: t("cta.login") }}
         secondary={{ href: PAGE_ROUTES.EVENT_CHECK_IN, label: t("cta.checkIn") }}
       />
-    </HowToPageShell>
+    </GuidePageShell>
   );
 }

@@ -4,10 +4,10 @@ import { buildSimplePageMetadata } from "@/lib/metadata";
 
 import { RegistrationContent } from "./RegistrationContent";
 
-export default function RegistrationHowToPage() {
+export default function RegistrationGuidePage() {
   return <RegistrationContent />;
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "registrationHowTo" });
+  return buildSimplePageMetadata({ ns: "registrationGuide" });
 }

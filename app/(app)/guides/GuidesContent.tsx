@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import type { ComponentType } from "react";
 
-import { HowToPageShell } from "@/components/how-to/HowToPageShell";
+import { GuidePageShell } from "@/components/guides/GuidePageShell";
 import {
   ArrowRightIcon,
   BadgeCheckIcon,
@@ -31,7 +31,7 @@ interface GuideGroup {
 }
 
 export function GuidesContent() {
-  const t = useTranslations("howToPage");
+  const t = useTranslations("guidesPage");
 
   const groups: GuideGroup[] = [
     {
@@ -95,7 +95,7 @@ export function GuidesContent() {
   ];
 
   return (
-    <HowToPageShell
+    <GuidePageShell
       eyebrow={t("eyebrow")}
       heading={t("heading")}
       heroWord="GUIDES"
@@ -166,6 +166,6 @@ export function GuidesContent() {
           </section>
         ))}
       </div>
-    </HowToPageShell>
+    </GuidePageShell>
   );
 }

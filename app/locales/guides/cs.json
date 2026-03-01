@@ -1,5 +1,5 @@
 {
-  "howToPage": {
+  "guidesPage": {
     "title": "Návody | {brandName}",
     "description": "Návody krok za krokem pro funkce Bonfire a postupy na akcích.",
     "eyebrow": "Návody",
@@ -51,7 +51,7 @@
       }
     }
   },
-  "checkInHowTo": {
+  "checkInGuide": {
     "title": "Jak udělat check-in na akci | {brandName}",
     "description": "Krátký návod krok za krokem pro event check-in.",
     "eyebrow": "Návod",
@@ -114,7 +114,7 @@
       "checkIn": "Otevřít check-in"
     }
   },
-  "registrationHowTo": {
+  "registrationGuide": {
     "title": "Návod: registrace a přihlášení | {brandName}",
     "description": "Jak v Bonfire funguje registrace přes e-mailový kód a passkeys.",
     "eyebrow": "Návod",
@@ -167,7 +167,7 @@
       "account": "Otevřít účet"
     }
   },
-  "profilePrivacyHowTo": {
+  "profilePrivacyGuide": {
     "title": "Návod: soukromí profilu | {brandName}",
     "description": "Jak funguje soukromí profilu včetně viditelnosti check-inů a nastavení účtu.",
     "eyebrow": "Návody",
@@ -210,7 +210,7 @@
       "checkInGuide": "Otevřít návod na check-in"
     }
   },
-  "speakingHowTo": {
+  "speakingGuide": {
     "title": "Návod: přednášení na Bonfire | {brandName}",
     "description": "Jak poslat návrh přednášky a co čekat od review a plánování.",
     "eyebrow": "Návody",
@@ -253,7 +253,7 @@
       "contact": "Kontaktovat speaker crew"
     }
   },
-  "eventRsvpHowTo": {
+  "eventRsvpGuide": {
     "title": "Návod: RSVP na akci | {brandName}",
     "description": "Jak funguje RSVP na Bonfire a partnerských platformách.",
     "eyebrow": "Návody",
@@ -300,7 +300,7 @@
       "homeEvents": "Otevřít sekci akcí na homepage"
     }
   },
-  "accountDeletionHowTo": {
+  "accountDeletionGuide": {
     "title": "Návod: smazání účtu | {brandName}",
     "description": "Jak funguje smazání účtu včetně ověřovacího kódu a nevratnosti.",
     "eyebrow": "Návody",
@@ -340,7 +340,7 @@
       "login": "Otevřít přihlášení"
     }
   },
-  "engagementSignalsHowTo": {
+  "engagementSignalsGuide": {
     "title": "Návod: Sparks a boosty | {brandName}",
     "description": "Jak engagement signály ovlivňují viditelnost a jaké mají limity.",
     "eyebrow": "Návody",

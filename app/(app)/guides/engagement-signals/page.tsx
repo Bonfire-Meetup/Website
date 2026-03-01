@@ -9,5 +9,5 @@ export default function EngagementSignalsGuidePage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "engagementSignalsHowTo" });
+  return buildSimplePageMetadata({ ns: "engagementSignalsGuide" });
 }

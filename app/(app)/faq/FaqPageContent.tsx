@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { LegalLinkButton } from "@/components/faq/LegalLinkButton";
 import { QuestionAnchor } from "@/components/faq/QuestionAnchor";
-import { HowToLinkButton } from "@/components/how-to/HowToLinkButton";
+import { GuideLinkButton } from "@/components/guides/GuideLinkButton";
 import { BoltIcon, FireIcon, GuildIcon } from "@/components/shared/Icons";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
@@ -140,9 +140,9 @@ export function FaqPageContent() {
               </div>
               {section.key === "technical" ? (
                 <div className="px-1">
-                  <HowToLinkButton href={PAGE_ROUTES.GUIDES_REGISTRATION}>
+                  <GuideLinkButton href={PAGE_ROUTES.GUIDES_REGISTRATION}>
                     {t("openRegistrationGuide")}
-                  </HowToLinkButton>
+                  </GuideLinkButton>
                 </div>
               ) : null}
             </div>
@@ -193,9 +193,9 @@ export function FaqPageContent() {
               </div>
 
               <div className="px-1">
-                <HowToLinkButton href={PAGE_ROUTES.GUIDES_ENGAGEMENT_SIGNALS}>
+                <GuideLinkButton href={PAGE_ROUTES.GUIDES_ENGAGEMENT_SIGNALS}>
                   {t("openEngagementGuide")}
-                </HowToLinkButton>
+                </GuideLinkButton>
               </div>
 
               <div

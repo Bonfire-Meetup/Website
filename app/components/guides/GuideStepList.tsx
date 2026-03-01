@@ -7,7 +7,7 @@ export function GuideStepList({ items, variant = "numbered" }: GuideStepListProp
   return (
     <ol className="space-y-3">
       {items.map((item, index) => (
-        <li key={index} className="flex gap-3 text-sm leading-relaxed sm:text-base">
+        <li key={item} className="flex gap-3 text-sm leading-relaxed sm:text-base">
           {variant === "numbered" ? (
             <span className="border-brand-300/40 text-brand-700 dark:border-brand-300/25 dark:text-brand-300 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold">
               {index + 1}

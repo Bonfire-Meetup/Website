@@ -4,10 +4,10 @@ import { buildSimplePageMetadata } from "@/lib/metadata";
 
 import { CheckInContent } from "./CheckInContent";
 
-export default function HowToCheckInPage() {
+export default function CheckInGuidePage() {
   return <CheckInContent />;
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "checkInHowTo" });
+  return buildSimplePageMetadata({ ns: "checkInGuide" });
 }

@@ -2,22 +2,22 @@
 
 import { useTranslations } from "next-intl";
 
-import { GuideCtaSection } from "@/components/how-to/GuideCtaSection";
-import { GuideSection } from "@/components/how-to/GuideSection";
-import { GuideStepList } from "@/components/how-to/GuideStepList";
-import { HowToPageShell } from "@/components/how-to/HowToPageShell";
+import { GuideCtaSection } from "@/components/guides/GuideCtaSection";
+import { GuidePageShell } from "@/components/guides/GuidePageShell";
+import { GuideSection } from "@/components/guides/GuideSection";
+import { GuideStepList } from "@/components/guides/GuideStepList";
 import { BoltIcon, FireIcon } from "@/components/shared/Icons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export function EngagementSignalsContent() {
-  const t = useTranslations("engagementSignalsHowTo");
-  const tHowToPage = useTranslations("howToPage");
+  const t = useTranslations("engagementSignalsGuide");
+  const tGuidesPage = useTranslations("guidesPage");
   const tRecordings = useTranslations("recordings");
 
   return (
-    <HowToPageShell
+    <GuidePageShell
       allGuidesHref={PAGE_ROUTES.GUIDES}
-      allGuidesLabel={tHowToPage("browseAllGuides")}
+      allGuidesLabel={tGuidesPage("browseAllGuides")}
       eyebrow={t("eyebrow")}
       heading={t("heading")}
       heroLead={t("heroLead")}
@@ -137,6 +137,6 @@ export function EngagementSignalsContent() {
         primary={{ href: PAGE_ROUTES.LIBRARY, label: t("cta.library") }}
         secondary={{ href: PAGE_ROUTES.ME, label: t("cta.account") }}
       />
-    </HowToPageShell>
+    </GuidePageShell>
   );
 }

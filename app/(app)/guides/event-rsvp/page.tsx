@@ -9,5 +9,5 @@ export default function EventRsvpGuidePage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "eventRsvpHowTo" });
+  return buildSimplePageMetadata({ ns: "eventRsvpGuide" });
 }

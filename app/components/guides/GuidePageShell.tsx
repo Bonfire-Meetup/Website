@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 import { ArrowLeftIcon } from "@/components/shared/Icons";
 
-interface HowToPageShellProps {
+interface GuidePageShellProps {
   allGuidesHref?: string;
   allGuidesLabel?: string;
   children: ReactNode;
@@ -19,7 +19,7 @@ interface HowToPageShellProps {
   subtitle: string;
 }
 
-export function HowToPageShell({
+export function GuidePageShell({
   allGuidesHref,
   allGuidesLabel,
   children,
@@ -33,7 +33,7 @@ export function HowToPageShell({
   heroWordClassName,
   heroWrapperClassName,
   subtitle,
-}: HowToPageShellProps) {
+}: GuidePageShellProps) {
   return (
     <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
       <div className="pointer-events-none absolute inset-0">

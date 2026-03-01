@@ -9,5 +9,5 @@ export default function AccountDeletionGuidePage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "accountDeletionHowTo" });
+  return buildSimplePageMetadata({ ns: "accountDeletionGuide" });
 }

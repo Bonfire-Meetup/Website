@@ -1,5 +1,5 @@
 {
-  "howToPage": {
+  "guidesPage": {
     "title": "How-To Guides | {brandName}",
     "description": "Step-by-step guides for Bonfire features and event actions.",
     "eyebrow": "How-To",
@@ -51,7 +51,7 @@
       }
     }
   },
-  "checkInHowTo": {
+  "checkInGuide": {
     "title": "How to check in at an event | {brandName}",
     "description": "A quick step-by-step manual for event check-in.",
     "eyebrow": "How-To",
@@ -114,7 +114,7 @@
       "checkIn": "Open check-in"
     }
   },
-  "registrationHowTo": {
+  "registrationGuide": {
     "title": "Registration and sign-in guide | {brandName}",
     "description": "How Bonfire registration works with email codes and passkeys.",
     "eyebrow": "How-To",
@@ -167,7 +167,7 @@
       "account": "Open account"
     }
   },
-  "profilePrivacyHowTo": {
+  "profilePrivacyGuide": {
     "title": "Profile privacy guide | {brandName}",
     "description": "How profile privacy works, including check-in visibility and account controls.",
     "eyebrow": "Guides",
@@ -210,7 +210,7 @@
       "checkInGuide": "Open check-in guide"
     }
   },
-  "speakingHowTo": {
+  "speakingGuide": {
     "title": "Speaking at Bonfire guide | {brandName}",
     "description": "How to submit a talk and what to expect from review and scheduling.",
     "eyebrow": "Guides",
@@ -253,7 +253,7 @@
       "contact": "Contact speaker crew"
     }
   },
-  "eventRsvpHowTo": {
+  "eventRsvpGuide": {
     "title": "Event RSVP guide | {brandName}",
     "description": "How event RSVP works on Bonfire and partner platforms.",
     "eyebrow": "Guides",
@@ -300,7 +300,7 @@
       "homeEvents": "Open homepage events"
     }
   },
-  "accountDeletionHowTo": {
+  "accountDeletionGuide": {
     "title": "Account deletion guide | {brandName}",
     "description": "How account deletion works, including code verification and permanence.",
     "eyebrow": "Guides",
@@ -340,7 +340,7 @@
       "login": "Open login"
     }
   },
-  "engagementSignalsHowTo": {
+  "engagementSignalsGuide": {
     "title": "Sparks and boosts guide | {brandName}",
     "description": "How engagement signals affect visibility and what limits apply.",
     "eyebrow": "Guides",

@@ -9,5 +9,5 @@ export default function SpeakingGuidePage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "speakingHowTo" });
+  return buildSimplePageMetadata({ ns: "speakingGuide" });
 }

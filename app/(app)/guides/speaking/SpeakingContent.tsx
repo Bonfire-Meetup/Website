@@ -2,22 +2,22 @@
 
 import { useTranslations } from "next-intl";
 
-import { GuideCtaSection } from "@/components/how-to/GuideCtaSection";
-import { GuideSection } from "@/components/how-to/GuideSection";
-import { GuideSectionCard } from "@/components/how-to/GuideSectionCard";
-import { GuideStepList } from "@/components/how-to/GuideStepList";
-import { HowToPageShell } from "@/components/how-to/HowToPageShell";
+import { GuideCtaSection } from "@/components/guides/GuideCtaSection";
+import { GuidePageShell } from "@/components/guides/GuidePageShell";
+import { GuideSection } from "@/components/guides/GuideSection";
+import { GuideSectionCard } from "@/components/guides/GuideSectionCard";
+import { GuideStepList } from "@/components/guides/GuideStepList";
 import { MicIcon, UsersIcon } from "@/components/shared/Icons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export function SpeakingContent() {
-  const t = useTranslations("speakingHowTo");
-  const tHowToPage = useTranslations("howToPage");
+  const t = useTranslations("speakingGuide");
+  const tGuidesPage = useTranslations("guidesPage");
 
   return (
-    <HowToPageShell
+    <GuidePageShell
       allGuidesHref={PAGE_ROUTES.GUIDES}
-      allGuidesLabel={tHowToPage("browseAllGuides")}
+      allGuidesLabel={tGuidesPage("browseAllGuides")}
       eyebrow={t("eyebrow")}
       heading={t("heading")}
       heroLead={t("heroLead")}
@@ -64,6 +64,6 @@ export function SpeakingContent() {
         primary={{ href: PAGE_ROUTES.SPEAK, label: t("cta.speak") }}
         secondary={{ href: PAGE_ROUTES.CONTACT_WITH_TYPE("crew"), label: t("cta.contact") }}
       />
-    </HowToPageShell>
+    </GuidePageShell>
   );
 }

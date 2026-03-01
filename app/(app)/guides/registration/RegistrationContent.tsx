@@ -2,22 +2,22 @@
 
 import { useTranslations } from "next-intl";
 
-import { GuideCtaSection } from "@/components/how-to/GuideCtaSection";
-import { GuideSection } from "@/components/how-to/GuideSection";
-import { GuideSectionCard } from "@/components/how-to/GuideSectionCard";
-import { GuideStepList } from "@/components/how-to/GuideStepList";
-import { HowToPageShell } from "@/components/how-to/HowToPageShell";
+import { GuideCtaSection } from "@/components/guides/GuideCtaSection";
+import { GuidePageShell } from "@/components/guides/GuidePageShell";
+import { GuideSection } from "@/components/guides/GuideSection";
+import { GuideSectionCard } from "@/components/guides/GuideSectionCard";
+import { GuideStepList } from "@/components/guides/GuideStepList";
 import { FingerprintIcon, MailIcon, ShieldIcon, UserIcon } from "@/components/shared/Icons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export function RegistrationContent() {
-  const t = useTranslations("registrationHowTo");
-  const tHowToPage = useTranslations("howToPage");
+  const t = useTranslations("registrationGuide");
+  const tGuidesPage = useTranslations("guidesPage");
 
   return (
-    <HowToPageShell
+    <GuidePageShell
       allGuidesHref={PAGE_ROUTES.GUIDES}
-      allGuidesLabel={tHowToPage("browseAllGuides")}
+      allGuidesLabel={tGuidesPage("browseAllGuides")}
       eyebrow={t("eyebrow")}
       heading={t("heading")}
       heroLead={t("heroLead")}
@@ -85,6 +85,6 @@ export function RegistrationContent() {
         primary={{ href: PAGE_ROUTES.LOGIN, label: t("cta.login") }}
         secondary={{ href: PAGE_ROUTES.ME, label: t("cta.account") }}
       />
-    </HowToPageShell>
+    </GuidePageShell>
   );
 }

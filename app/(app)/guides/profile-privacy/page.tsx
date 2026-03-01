@@ -9,5 +9,5 @@ export default function ProfilePrivacyGuidePage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "profilePrivacyHowTo" });
+  return buildSimplePageMetadata({ ns: "profilePrivacyGuide" });
 }

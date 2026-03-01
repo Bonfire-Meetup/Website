@@ -3,12 +3,12 @@ import type { ReactNode } from "react";
 
 import { ArrowRightIcon, DocumentTextIcon } from "@/components/shared/Icons";
 
-interface HowToLinkButtonProps {
+interface GuideLinkButtonProps {
   children: ReactNode;
   href: string;
 }
 
-export function HowToLinkButton({ children, href }: HowToLinkButtonProps) {
+export function GuideLinkButton({ children, href }: GuideLinkButtonProps) {
   return (
     <Link
       href={href}
