@@ -7,6 +7,12 @@
     "subtitle": "Praktické postupy, které tě rychle provedou vším důležitým.",
     "availableGuides": "Dostupné návody",
     "browseAllGuides": "Projít všechny návody",
+    "openGuide": "Otevřít návod",
+    "categories": {
+      "events": "Akce",
+      "account": "Tvůj účet",
+      "community": "Komunita"
+    },
     "guides": {
       "checkIn": {
         "title": "Check-in na akci",
@@ -26,6 +32,16 @@
       "registration": {
         "title": "Registrace a přihlášení",
         "description": "Jak fungují e-mailové kódy, passkeys a proč první přihlášení vytváří účet.",
+        "cta": "Otevřít návod"
+      },
+      "profilePrivacy": {
+        "title": "Soukromí profilu",
+        "description": "Jak funguje veřejnost profilu, viditelnost check-inů a nastavení soukromí.",
+        "cta": "Otevřít návod"
+      },
+      "speaking": {
+        "title": "Přednášení na Bonfire",
+        "description": "Jak se přihlásit jako speaker, co dělá návrh silný a co následuje dál.",
         "cta": "Otevřít návod"
       },
       "accountDeletion": {
@@ -149,6 +165,92 @@
     "cta": {
       "login": "Otevřít přihlášení",
       "account": "Otevřít účet"
+    }
+  },
+  "profilePrivacyHowTo": {
+    "title": "Návod: soukromí profilu | {brandName}",
+    "description": "Jak funguje soukromí profilu včetně viditelnosti check-inů a nastavení účtu.",
+    "eyebrow": "Návody",
+    "heading": "Návod k soukromí profilu",
+    "subtitle": "Jasná pravidla viditelnosti, abys měl/a kontrolu nad tím, co ostatní vidí.",
+    "heroLead": "Ty rozhoduješ, jestli je tvůj profil dohledatelný.",
+    "heroSublead": "Viditelnost check-inů a engagementu závisí na stavu soukromí profilu.",
+    "sections": {
+      "visibility": {
+        "title": "Veřejný vs soukromý profil",
+        "items": {
+          "one": "Veřejný profil znamená, že ho ostatní mohou navštívit a sdílet.",
+          "two": "Soukromý profil omezuje, co mohou ostatní z tvého účtu zjistit.",
+          "three": "Aktuální stav soukromí zkontroluješ přímo v Účtu."
+        }
+      },
+      "checkins": {
+        "title": "Jak se zobrazují check-iny",
+        "items": {
+          "one": "Check-iny se na profilu ukazují jen pokud je profil veřejný.",
+          "two": "Když je profil soukromý, historie check-inů není veřejně vidět.",
+          "three": "Změna viditelnosti profilu upraví to, co uvidí návštěvníci."
+        }
+      },
+      "controls": {
+        "title": "Ovládání soukromí a bezpečnost",
+        "items": {
+          "one": "V nastavení Účtu zkontroluj volby profilu a zabezpečení.",
+          "two": "Když je to možné, použij passkeys pro silnější zabezpečení přihlášení.",
+          "three": "Když si nejsi jistý/jistá, začni se soukromým profilem a veřejný zapni později."
+        }
+      }
+    },
+    "notes": {
+      "title": "Dobré vědět",
+      "description": "Veřejná viditelnost pomáhá komunitnímu objevování. Soukromá viditelnost dává přísnější kontrolu nad přítomností tvého účtu."
+    },
+    "cta": {
+      "account": "Otevřít účet",
+      "checkInGuide": "Otevřít návod na check-in"
+    }
+  },
+  "speakingHowTo": {
+    "title": "Návod: přednášení na Bonfire | {brandName}",
+    "description": "Jak poslat návrh přednášky a co čekat od review a plánování.",
+    "eyebrow": "Návody",
+    "heading": "Přednášení na Bonfire",
+    "subtitle": "Praktická cesta od nápadu až na stage.",
+    "heroLead": "Nemusíš být profesionální speaker, abys mohl/a přihlásit talk.",
+    "heroSublead": "Jasné téma, konkrétní přínos a poctivý příběh mají větší váhu než dokonalý polish.",
+    "sections": {
+      "start": {
+        "title": "Jak začít",
+        "items": {
+          "one": "Otevři stránku Speak a pošli návrh tématu.",
+          "two": "Popiš hodnotu pro publikum: co si lidé odnesou, vyřeší nebo přehodnotí.",
+          "three": "Přidej praktický kontext, aby review tým chápal rozsah i úroveň."
+        }
+      },
+      "quality": {
+        "title": "Co dělá návrh silný",
+        "items": {
+          "one": "Lepší je úzké konkrétní téma než příliš široký záběr.",
+          "two": "Uveď reálné příklady, trade-offy nebo lessons learned.",
+          "three": "Název i anotaci drž konkrétní, stručné a orientované na výsledek."
+        }
+      },
+      "review": {
+        "title": "Review a další kroky",
+        "items": {
+          "one": "Crew projde přihlášky a může si vyžádat upřesnění.",
+          "two": "U přijatých talků se domlouvá formát, timing a logistika.",
+          "three": "Když talk neprojde v tomto kole, můžeš ho upravit a poslat znovu."
+        }
+      }
+    },
+    "notes": {
+      "title": "Komunitní přístup",
+      "description": "Nejlepší talks pomáhají ostatním posunout se dál. Praktická hloubka a upřímnost v komunitě dlouhodobě fungují."
+    },
+    "cta": {
+      "speak": "Otevřít Speak stránku",
+      "contact": "Kontaktovat speaker crew"
     }
   },
   "eventRsvpHowTo": {

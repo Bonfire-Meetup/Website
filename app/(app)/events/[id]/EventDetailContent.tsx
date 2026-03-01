@@ -441,7 +441,6 @@ export function EventDetailContent({
 
   return (
     <div className="relative flex-1">
-      {/* Ambient background glows */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div
           className={`absolute -top-[20%] -right-[10%] h-[600px] w-[600px] rounded-full bg-gradient-to-br ${loc.glow} opacity-60 blur-[100px]`}
@@ -452,7 +451,6 @@ export function EventDetailContent({
       </div>
 
       <div className="relative z-10">
-        {/* ── Hero ── */}
         <div className="relative overflow-hidden px-4 pt-28 pb-6 sm:pt-32 sm:pb-8">
           <div className="mx-auto max-w-5xl text-center">
             {episode && (
@@ -481,7 +479,6 @@ export function EventDetailContent({
                       >
                         {subtitle}
                       </span>
-                      {/* Soft glow behind the title text */}
                       <span
                         className="pointer-events-none absolute inset-0 -z-10 blur-2xl select-none"
                         aria-hidden="true"
@@ -506,8 +503,6 @@ export function EventDetailContent({
             <p className="mx-auto max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
               {description}
             </p>
-
-            {/* Info chips */}
             <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-3">
               <div className="glass flex items-center gap-2.5 rounded-2xl px-4 py-2.5">
                 <CalendarIcon className="h-[18px] w-[18px]" style={{ color: loc.color }} />
@@ -539,16 +534,13 @@ export function EventDetailContent({
           </div>
         </div>
 
-        {/* ── Gradient divider ── */}
         <div className="mx-auto max-w-5xl px-4 py-8">
           <div className={`h-px bg-gradient-to-r from-transparent ${loc.divider} to-transparent`} />
         </div>
 
-        {/* ── Speakers ── */}
         <div className="mx-auto max-w-5xl px-4 pb-16">
           {hasSpeakers && (
             <div className="relative">
-              {/* Section header */}
               <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div
@@ -570,7 +562,6 @@ export function EventDetailContent({
                 </span>
               </div>
 
-              {/* Speaker cards — equal grid */}
               {confirmedSpeakers.length > 0 && (
                 <div
                   className={`grid gap-5 ${confirmedSpeakers.length === 1 ? "mx-auto max-w-xl" : "sm:grid-cols-2"}`}
@@ -585,24 +576,20 @@ export function EventDetailContent({
                         key={`${formatSpeakerNames(speaker.name)}-${speaker.topic}`}
                         className={`group rounded-3xl p-5 sm:p-6 ${accent.cardClassName}`}
                       >
-                        {/* Top rail */}
                         <div
                           className={`absolute inset-x-0 top-0 h-1 rounded-t-3xl ${accent.railClassName}`}
                         />
 
-                        {/* Decorative orbs */}
                         <div
                           className={`pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl ${accent.orbClassName}`}
                         />
 
-                        {/* Giant watermark number */}
                         <div
                           className={`pointer-events-none absolute -right-2 -bottom-4 text-[120px] leading-none font-black select-none ${accent.watermarkClassName}`}
                         >
                           {displayIndex.toString().padStart(2, "0")}
                         </div>
 
-                        {/* Badges */}
                         <div className="relative mb-4 flex flex-wrap items-center gap-2">
                           <span className="inline-flex items-center rounded-lg bg-black/5 px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] text-neutral-700 uppercase dark:bg-white/10 dark:text-neutral-200">
                             #{displayIndex.toString().padStart(2, "0")}
@@ -615,12 +602,10 @@ export function EventDetailContent({
                           )}
                         </div>
 
-                        {/* Topic headline */}
                         <p className={`relative ${accent.topicHeadingClassName}`}>
                           {speaker.topic}
                         </p>
 
-                        {/* Speaker identity */}
                         <div className="relative mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-black/5 pt-4 dark:border-white/10">
                           {resolveSpeakerLinks(speaker).map((resolved) => {
                             const profileHref = resolved.profileId
@@ -699,7 +684,6 @@ export function EventDetailContent({
                 </div>
               )}
 
-              {/* TBA empty state */}
               {confirmedSpeakers.length === 0 && (
                 <div className="glass rounded-3xl border-2 border-dashed border-neutral-200 p-16 text-center dark:border-neutral-700">
                   <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-100 to-orange-100 dark:from-rose-500/15 dark:to-orange-500/10">
@@ -714,15 +698,12 @@ export function EventDetailContent({
           )}
         </div>
 
-        {/* ── Gradient divider ── */}
         <div className="mx-auto max-w-5xl px-4 pb-8">
           <div className="h-px bg-gradient-to-r from-transparent via-neutral-300/50 to-transparent dark:via-neutral-600/30" />
         </div>
 
-        {/* ── Bottom: Register + Venue ── */}
         <div className="mx-auto max-w-5xl px-4 pb-24">
           <div className="grid items-start gap-6 lg:grid-cols-5 lg:gap-8">
-            {/* RSVP — primary CTA, takes 3/5 width */}
             <div className="lg:col-span-3">
               <div
                 className="relative overflow-hidden rounded-3xl p-6 sm:p-8"
@@ -730,10 +711,8 @@ export function EventDetailContent({
                   background: `linear-gradient(135deg, ${loc.color}08 0%, ${loc.color}04 100%)`,
                 }}
               >
-                {/* Top rail — thicker for emphasis */}
                 <div className={`absolute inset-x-0 top-0 h-1.5 ${loc.rail}`} />
 
-                {/* Ambient glow behind the card */}
                 <div
                   className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full blur-3xl"
                   style={{ background: `${loc.color}12` }}
@@ -743,7 +722,6 @@ export function EventDetailContent({
                   style={{ background: `${loc.color}08` }}
                 />
 
-                {/* Border */}
                 <div
                   className="pointer-events-none absolute inset-0 rounded-3xl ring-1"
                   style={{ boxShadow: `inset 0 0 0 1px ${loc.color}18` }}
@@ -855,9 +833,7 @@ export function EventDetailContent({
               </div>
             </div>
 
-            {/* Venue & details — compact sidebar, 2/5 width */}
             <div className="glass self-start rounded-3xl p-5 sm:p-6 lg:col-span-2">
-              {/* Location badge */}
               <div
                 className="mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5"
                 style={{ background: `${loc.color}12` }}
@@ -875,7 +851,6 @@ export function EventDetailContent({
                 {t("venueTitle")}
               </h3>
 
-              {/* Venue address */}
               <a
                 href={getMapUrl(venue)}
                 target="_blank"
@@ -900,7 +875,6 @@ export function EventDetailContent({
                 </div>
               </a>
 
-              {/* Date & time — compact row */}
               <div className="mt-5 grid grid-cols-2 gap-2 border-t border-neutral-200/50 pt-5 dark:border-neutral-700/50">
                 <div className="rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
                   <div className="mb-1 flex items-center gap-1.5">
@@ -924,7 +898,6 @@ export function EventDetailContent({
                 </div>
               </div>
 
-              {/* Speaker count */}
               {confirmedSpeakers.length > 0 && (
                 <div className="mt-2 rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
                   <div className="flex items-center justify-between">
@@ -954,7 +927,6 @@ export function EventDetailContent({
                 </div>
               )}
 
-              {/* Partners */}
               {(() => {
                 const partners = getLocationPartners(location);
                 if (partners.length === 0) {

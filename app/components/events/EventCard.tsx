@@ -206,7 +206,6 @@ export function EventCard({
         className="fire-glow group relative overflow-hidden p-6 sm:p-7"
         data-glow={location === LOCATIONS.ZLIN ? "zlin" : "prague"}
       >
-        {/* City-colored top rail */}
         <div className={`absolute inset-x-0 top-0 h-1 ${theme.rail}`} />
 
         <div
@@ -325,7 +324,6 @@ export function EventCard({
       className="fire-glow group relative overflow-hidden p-7 sm:p-9"
       data-glow={location === LOCATIONS.ZLIN ? "zlin" : "prague"}
     >
-      {/* City-colored top rail */}
       <div className={`absolute inset-x-0 top-0 h-1 ${theme.rail}`} />
 
       <div
@@ -355,8 +353,6 @@ export function EventCard({
         )}
 
         <p className="mb-7 leading-relaxed text-neutral-600 dark:text-neutral-300">{description}</p>
-
-        {/* Meta info with city-colored icons */}
         <div className="mb-8 space-y-3.5">
           <div className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300">
             <div
@@ -452,8 +448,6 @@ export function EventCard({
             </div>
           </div>
         )}
-
-        {/* Primary CTA */}
         <Button
           href={PAGE_ROUTES.EVENT(id)}
           variant="primary"
@@ -463,8 +457,6 @@ export function EventCard({
           {t("viewDetails")}
           <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Button>
-
-        {/* External platforms — subtle */}
         {platformLinks.length > 0 && (
           <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
             <span className="text-[10px] text-neutral-400 dark:text-neutral-500">

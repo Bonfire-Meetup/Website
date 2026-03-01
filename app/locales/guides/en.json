@@ -7,6 +7,12 @@
     "subtitle": "Clear practical walkthroughs for Bonfire members and event visitors.",
     "availableGuides": "Available guides",
     "browseAllGuides": "Explore all guides",
+    "openGuide": "Open guide",
+    "categories": {
+      "events": "Events",
+      "account": "Your account",
+      "community": "Community"
+    },
     "guides": {
       "checkIn": {
         "title": "Event check-in",
@@ -26,6 +32,16 @@
       "registration": {
         "title": "Registration and sign-in",
         "description": "Understand email codes, passkeys, and why first sign-in creates your account.",
+        "cta": "Open guide"
+      },
+      "profilePrivacy": {
+        "title": "Profile privacy",
+        "description": "Understand public profile visibility, check-in visibility, and privacy controls.",
+        "cta": "Open guide"
+      },
+      "speaking": {
+        "title": "Speaking at Bonfire",
+        "description": "How to apply as a speaker, what makes a strong proposal, and what happens next.",
         "cta": "Open guide"
       },
       "accountDeletion": {
@@ -149,6 +165,92 @@
     "cta": {
       "login": "Open login",
       "account": "Open account"
+    }
+  },
+  "profilePrivacyHowTo": {
+    "title": "Profile privacy guide | {brandName}",
+    "description": "How profile privacy works, including check-in visibility and account controls.",
+    "eyebrow": "Guides",
+    "heading": "Profile privacy guide",
+    "subtitle": "Clear visibility rules so you can control what others see.",
+    "heroLead": "You control if your profile is discoverable to others.",
+    "heroSublead": "Check-ins and engagement visibility depend on your profile privacy state.",
+    "sections": {
+      "visibility": {
+        "title": "Public vs private profile",
+        "items": {
+          "one": "Public profile means your profile can be visited and shared.",
+          "two": "Private profile reduces what others can discover from your account.",
+          "three": "You can review your current privacy state directly in Account."
+        }
+      },
+      "checkins": {
+        "title": "How check-ins are shown",
+        "items": {
+          "one": "Check-ins are displayed on profile only when your profile is public.",
+          "two": "If profile is private, check-in history is not publicly listed.",
+          "three": "Changing profile visibility updates what visitors can see."
+        }
+      },
+      "controls": {
+        "title": "Privacy controls and safety",
+        "items": {
+          "one": "Open Account settings to review profile and security options.",
+          "two": "Use passkeys for stronger sign-in security when available.",
+          "three": "If unsure, start private and move to public when ready."
+        }
+      }
+    },
+    "notes": {
+      "title": "Good to know",
+      "description": "Public visibility helps community discovery. Private visibility gives stricter control over your account presence."
+    },
+    "cta": {
+      "account": "Open account",
+      "checkInGuide": "Open check-in guide"
+    }
+  },
+  "speakingHowTo": {
+    "title": "Speaking at Bonfire guide | {brandName}",
+    "description": "How to submit a talk and what to expect from review and scheduling.",
+    "eyebrow": "Guides",
+    "heading": "Speaking at Bonfire",
+    "subtitle": "A practical path from idea to stage.",
+    "heroLead": "You do not need to be a professional speaker to apply.",
+    "heroSublead": "Clear topic, concrete value, and honest story beats polish alone.",
+    "sections": {
+      "start": {
+        "title": "How to get started",
+        "items": {
+          "one": "Open the Speak page and submit your topic proposal.",
+          "two": "Describe audience value: what people will learn, solve, or rethink.",
+          "three": "Add practical context so reviewers understand scope and level."
+        }
+      },
+      "quality": {
+        "title": "What makes a strong proposal",
+        "items": {
+          "one": "Prefer focused topics over broad themes.",
+          "two": "Include real examples, tradeoffs, or lessons learned.",
+          "three": "Keep title and abstract specific, short, and outcome-oriented."
+        }
+      },
+      "review": {
+        "title": "Review and next steps",
+        "items": {
+          "one": "Crew reviews submissions and may request clarifications.",
+          "two": "Accepted talks are coordinated with format, timing, and logistics.",
+          "three": "If not selected this round, you can refine and re-submit."
+        }
+      }
+    },
+    "notes": {
+      "title": "Community-first mindset",
+      "description": "The best talks help others move forward. Practical depth and honesty consistently resonate with the community."
+    },
+    "cta": {
+      "speak": "Open speak page",
+      "contact": "Contact speaker crew"
     }
   },
   "eventRsvpHowTo": {

@@ -132,7 +132,6 @@ function PerkCard({
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-neutral-200/60 bg-white/70 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-sm sm:p-7 dark:border-neutral-800/60 dark:bg-neutral-950/50">
-      {/* Subtle gradient wash */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-50/50 via-transparent to-neutral-100/30 dark:from-neutral-900/30 dark:to-neutral-800/20" />
 
       <div className="relative flex gap-5">
@@ -340,7 +339,7 @@ export function GuildPageContent() {
         <div className="relative mx-auto max-w-2xl">
           <article className="relative overflow-hidden rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-neutral-50/90 via-white to-neutral-50/90 px-8 py-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-10 sm:py-10 dark:border-neutral-700/40 dark:from-neutral-900/80 dark:via-neutral-900 dark:to-neutral-900/80 dark:shadow-[0_1px_0_rgba(255,255,255,0.03)_inset]">
             <div className="absolute top-0 left-0 h-full w-1 bg-gradient-to-b from-amber-400/60 via-rose-400/50 to-red-400/40 dark:from-amber-500/40 dark:via-rose-500/30 dark:to-red-500/30" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(251,191,36,0.04),transparent_60%)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(251,191,36,0.02),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(251,191,36,0.04),transparent_60%)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_at_50%_0%,rgba(251,191,36,0.02),transparent_60%)]" />
             <div className="relative pl-5 sm:pl-6">
               <p className="mb-3 text-[10px] font-semibold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
                 {t("openNoteLabel")}
@@ -390,22 +389,18 @@ export function GuildPageContent() {
 
         <div className="relative mx-auto max-w-2xl text-center">
           <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/80 px-8 py-14 shadow-[0_8px_50px_-12px_rgba(0,0,0,0.06)] backdrop-blur-2xl sm:px-14 sm:py-16 dark:border-neutral-800/60 dark:bg-neutral-950/60 dark:shadow-[0_8px_50px_-12px_rgba(0,0,0,0.4)]">
-            {/* Gradient mesh background */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-rose-500/[0.03] via-transparent to-amber-500/[0.03] dark:from-rose-500/[0.04] dark:to-amber-500/[0.04]" />
             <div className="pointer-events-none absolute -top-32 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-rose-500/10 blur-[100px] dark:bg-rose-500/8" />
             <div className="pointer-events-none absolute right-0 -bottom-24 h-48 w-48 rounded-full bg-amber-500/8 blur-[80px] dark:bg-amber-500/6" />
 
-            {/* Subtle border glow */}
             <div className="pointer-events-none absolute inset-0 rounded-3xl border border-rose-500/10 dark:border-rose-500/5" />
 
             <div className="relative">
-              {/* Floating icon - no container, just pure icon with soft glow */}
               <div className="relative mb-8 inline-flex">
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-rose-500 to-amber-500 opacity-30 blur-2xl" />
                 <GuildIcon className="relative h-12 w-12 text-neutral-900 dark:text-white" />
               </div>
 
-              {/* Title with subtle gradient */}
               <h2 className="mb-5 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
                 {t("cta.title")}
               </h2>
@@ -414,7 +409,6 @@ export function GuildPageContent() {
                 {t("cta.body")}
               </p>
 
-              {/* Minimal status indicator */}
               <div className="inline-flex items-center gap-2.5 rounded-full bg-neutral-100/80 px-4 py-2 dark:bg-neutral-800/60">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-60" />
