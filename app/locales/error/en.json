@@ -1,0 +1,21 @@
+{
+  "error": {
+    "title": "Something went wrong",
+    "message": "We encountered an unexpected error. Please try again.",
+    "tryAgain": "Try again",
+    "goHome": "Go home",
+    "browseLibrary": "Browse Library",
+    "library": {
+      "title": "Library Error",
+      "message": "Failed to load the library. Please try again."
+    },
+    "video": {
+      "title": "Video Error",
+      "message": "Failed to load the video. Please try again."
+    },
+    "api": {
+      "title": "API Error",
+      "message": "Failed to load video data. Please try again."
+    }
+  }
+}

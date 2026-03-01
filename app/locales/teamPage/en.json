@@ -1,0 +1,83 @@
+{
+  "teamPage": {
+    "eyebrow": "Team",
+    "title": "Meet the beautiful chaos crew",
+    "titlePart1": "Meet the",
+    "titleHighlight": "beautiful chaos",
+    "titlePart2": "crew",
+    "subtitle": "We run meetups, wrangle cables, and keep the vibes sharp in {prague} and {zlin}.",
+    "introEyebrow": "How it works",
+    "introLines": [
+      "No capes. Just checklists, coffee, and a stubborn love for game dev.",
+      "If something goes right, it was planned. If something goes wrong, it was still planned.",
+      "We are allergic to boring events. We bring the spark."
+    ],
+    "stats": "{people} people · {cities} cities",
+    "crewEyebrow": "Local crew",
+    "cities": [
+      {
+        "name": "{prague}",
+        "tagline": "Where it all started.",
+        "members": [
+          {
+            "name": "Jan Hrušovský",
+            "role": "moderator"
+          },
+          {
+            "name": "Michael Petr",
+            "role": "recording"
+          },
+          {
+            "name": "Jakub Hubáček",
+            "role": "photography"
+          },
+          {
+            "name": "Hedvika Jandová",
+            "role": "operations"
+          },
+          {
+            "name": "Ondřej Purchart",
+            "role": "video, audio"
+          },
+          {
+            "name": "Pavel Pilař",
+            "role": "operations, bodyguard"
+          },
+          {
+            "name": "Matouš Márai",
+            "role": "operations"
+          }
+        ]
+      },
+      {
+        "name": "{zlin}",
+        "tagline": "Moravian heart, students' pulse.",
+        "members": [
+          {
+            "name": "Michael Petr",
+            "role": "recording"
+          },
+          {
+            "name": "Pavel Novák",
+            "role": "operations"
+          },
+          {
+            "name": "Jitka Honsová",
+            "role": "operations, venue"
+          },
+          {
+            "name": "Michal Ščuglík",
+            "role": "operations"
+          }
+        ]
+      }
+    ],
+    "joinCallout": "Want to lend a hand? Reach out at",
+    "joinCalloutOr": "or use the",
+    "joinCalloutContact": "contact form",
+    "founderEyebrow": "A note from the founder",
+    "founderTitle": "Thank you",
+    "founderNote": "Bonfire exists because of **you** - the crew, the speakers, and everyone who shows up. Building a strong community, connecting people, and sharing knowledge is what this is all about. Thank **you** for being part of it.",
+    "founderSignature": "Martin Pernica"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "faqPage": {
+    "eyebrow": "FAQ",
+    "title": "Často kladené dotazy",
+    "titlePart1": "Často kladené",
+    "titleHighlight": "dotazy",
+    "subtitle": "Rychlé odpovědi na to, jak web funguje - akce, komunita i Sparks/Boosty.",
+    "openRegistrationGuide": "Otevřít návod registrace",
+    "openEngagementGuide": "Otevřít návod engagementu",
+    "openMediaPolicy": "Otevřít pravidla médií",
+    "sections": {
+      "general": "Obecné",
+      "participation": "Zapojení",
+      "community": "Obsah a komunita",
+      "technical": "Technické",
+      "engagement": "Platformové funkce"
+    },
+    "questions": {
+      "whatIsBonfire": {
+        "title": "Co je to Bonfire Events?",
+        "answer": "Bonfire je česká gamedev komunita, která dělá pravidelné meetupy v Praze a ve Zlíně. Propojujeme profíky, studenty i indie tvůrce - sdílíme know‑how, networkujeme a posouváme scénu dál."
+      },
+      "howOften": {
+        "title": "Jak často pořádáte meetupy?",
+        "answer": "Většinou jednou za čtvrtletí (cca každé 3 měsíce) v Praze i ve Zlíně. Sleduj sekci „Akce“ nebo si hoď newsletter, ať ti nic neuteče."
+      },
+      "entryFee": {
+        "title": "Platí se vstupné?",
+        "answer": "Vstup je díky partnerům zdarma. Kapacita je ale omezená - registrace (typicky přes Lu.ma) není povinná, ale hodně pomůže s plánováním místa a občerstvení."
+      },
+      "howToSpeaker": {
+        "title": "Jak se můžu stát speakerem?",
+        "answer": "Pořád hledáme nové hlasy. Ať je to deep‑dive, post‑mortem nebo krátký lightning talk - hoď nám návrh přes stránku <link>Navrhnout přednášku</link>."
+      },
+      "howToJoin": {
+        "title": "Jak se můžu přidat k týmu (Crew)?",
+        "answer": "Bonfire táhne crew dobrovolníků. Pokud chceš pomoct s organizací, focením, videem nebo čímkoliv dalším, ozvi se přes <link>kontaktní formulář</link> a jako typ dotazu zvol „Crew“."
+      },
+      "isRecorded": {
+        "title": "Jsou všechny přednášky nahrávané?",
+        "answer": "Snažíme se nahrávat a dávat do Library co nejvíc přednášek. U prvních epizod se to ale občas nestihlo, takže některé záznamy chybí."
+      },
+      "discord": {
+        "title": "Máte komunitní Discord?",
+        "answer": "Jo! Přidej se na náš <link>Discord server</link> - pokecáš s ostatními, hodíš svůj projekt a budeš mít čerstvé info o akcích."
+      },
+      "photos": {
+        "title": "Můžu použít fotky z akcí?",
+        "answer": "Fotky jsou pro komunitu. Sdílej je klidně na sítích (tag nás potěší!), ale pro komerční použití nás prosím <link>nejdřív kontaktuj</link>."
+      },
+      "howToSignIn": {
+        "title": "Jak se přihlásím?",
+        "answer": "Přihlašování je bez hesla. Zadáš e‑mail a pošleme ti 6místný kód."
+      },
+      "howToRegister": {
+        "title": "Jak se můžu zaregistrovat?",
+        "answer": "Není tu samostatný registrační formulář. Účet se vytvoří automaticky při prvním úspěšném přihlášení e‑mailem."
+      },
+      "howToDelete": {
+        "title": "Můžu svůj účet smazat?",
+        "answer": "Ano. Účet i veškerou související aktivitu můžeš kdykoliv trvale smazat na své <link>profilové stránce</link>. Jen pozor: je to <bold>nevratné</bold>."
+      },
+      "passkeyFlow": {
+        "title": "Jak u nás fungují passkeys?",
+        "answer": "Nejdřív se přihlas e‑mailem a vytvoř účet. Potom si v Účtu v sekci Zabezpečení přidej passkey."
+      }
+    },
+    "impact": {
+      "title": "Jak to ovlivňuje viditelnost"
+    },
+    "sparks": {
+      "title": "Co jsou Sparks?",
+      "body": "Sparks jsou lehké lajky a slabší engagement signál. I tak pomáhají záznamům získat momentum."
+    },
+    "boosts": {
+      "title": "Co jsou Boosty?",
+      "body": "Boosty jsou silnější hlas od přihlášených členů a mají větší dopad na viditelnost než Sparks."
+    },
+    "guild": {
+      "title": "Co je to Bonfire Guild?",
+      "body": "Bonfire Guild je program ve vývoji pro nejvíc engaged členy. Bude to o backstage přístupu, early obsahu a tom, že budeš mít hlas v tom, kam se komunita posune.",
+      "description": "Chystáme něco speciálního pro naše nejaktivnější lidi - místo, kde budeš mít exkluzivní obsah, early preview a možnost ovlivnit směr Bonfire. Guild tě dostane blíž k tomu, co děláme: backstage momenty, early dropy záznamů a další perks.",
+      "features": "Guild bude mít early access k nahrávkám, backstage obsah, member‑only Discord kanály, hlasování o budoucích tématech a speciální badge na profilu.",
+      "comingSoon": "Guild aktivně stavíme tak, aby to stálo za to. Sleduj svůj profil - až to otevřeme, uvidíš to tam jako první.",
+      "badge": "Guild",
+      "featuresTitle": "Co dostaneš",
+      "stayTunedTitle": "Již brzy"
+    }
+  }
+}

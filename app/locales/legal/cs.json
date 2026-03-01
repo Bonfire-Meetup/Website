@@ -1,0 +1,190 @@
+{
+  "legal": {
+    "title": "Právní info & Etický kodex",
+    "subtitle": "Chceme, aby Bonfire byl bezpečný a friendly prostor pro každého.",
+    "intro": "Bonfire stojí na vzájemném respektu. Chceme, aby se u nás každý cítil v pohodě a vítaný, bez ohledu na pohlaví, orientaci, vzhled, věk, rasu, národnost, etnicitu nebo náboženství. Jakékoliv obtěžování u nás nemá místo a nebude tolerováno.",
+    "scope": {
+      "title": "Platnost kodexu",
+      "content": "Tento Etický kodex platí pro všechny prostory Bonfire, včetně našich osobních setkání, online komunit (Discord, sociální sítě) a souvisejících akcí. Vztahuje se na všechny účastníky - návštěvníky, přednášející, sponzory, dobrovolníky i organizátory."
+    },
+    "community": {
+      "title": "Naše hodnoty",
+      "content": "Naše akce jsou otevřené pro každého, koho zajímá vývoj her. Snažíme se budovat přátelské prostředí, kde se mohou potkávat profíci, studenti i hobby vývojáři. Povzbuzujeme účastníky, aby předpokládali dobré úmysly, byli trpěliví k nováčkům a poskytovali konstruktivní zpětnou vazbu místo kritiky. Od všech čekáme profesionální přístup a ohleduplnost k hranicím a názorům ostatních."
+    },
+    "rules": {
+      "title": "Zakázané chování",
+      "content": "Následující chování je na všech akcích a v prostorách Bonfire přísně zakázáno:\n\n<bullet><bold>Slovní obtěžování</bold>: Urážlivé komentáře týkající se pohlaví, sexuální orientace, postižení, fyzického vzhledu, věku, rasy, etnicity, národnosti nebo náboženství. Zahrnuje nadávky, urážky a nevyžádané komentáře o identitě nebo vzhledu.</bullet>\n<bullet><bold>Fyzické obtěžování</bold>: Nevyžádaný fyzický kontakt, blokování cesty nebo narušování osobního prostoru. Před jakýmkoli fyzickým kontaktem jako je podání ruky nebo objetí se vždy zeptej.</bullet>\n<bullet><bold>Sexuální obtěžování</bold>: Nevyžádaná sexuální pozornost, nevhodné obrázky, sexualizované komentáře nebo vtipy a nevyžádané návrhy.</bullet>\n<bullet><bold>Zastrašování a pronásledování</bold>: Vyhrožování, sledování někoho bez souhlasu nebo přetrvávající nevyžádaný kontakt během i po akcích.</bullet>\n<bullet><bold>Online obtěžování</bold>: Obtěžující chování na našem Discord serveru, sociálních sítích nebo v jakékoli digitální komunikaci související s Bonfire.</bullet>\n<bullet><bold>Rušení</bold>: Soustavné rušení přednášek, prezentací nebo jiných aktivit.</bullet>\n<bullet><bold>Porušení soukromí</bold>: Nahrávání nebo fotografování jednotlivců bez souhlasu nebo sdílení soukromých rozhovorů.</bullet>"
+    },
+    "consequences": {
+      "title": "Důsledky",
+      "content": "Účastníci, kteří jsou požádáni o ukončení obtěžujícího nebo nevhodného chování, musí okamžitě poslechout. Pokud se účastník dopustí zakázaného chování, organizátoři mohou podniknout kroky, které uznají za vhodné, včetně:\n\n<bullet>Slovního varování</bullet>\n<bullet>Vyloučení z akce nebo online prostoru bez náhrady</bullet>\n<bullet>Zákazu účasti na budoucích akcích Bonfire</bullet>\n<bullet>Nahlášení příslušným orgánům, pokud je to relevantní</bullet>\n\nOrganizátoři akcí mají výhradní pravomoc rozhodnout o vhodné reakci na jakoukoli situaci."
+    },
+    "photos": {
+      "title": "Focení a záznamy",
+      "content": "Na akcích můžeme pořizovat fotografie nebo záznamy pro dokumentaci a propagaci. Pokud to vyžaduje zákon, vyžádáme si před použitím identifikovatelných záběrů tvůj souhlas. Pokud nechceš být focen/a nebo natáčen/a, dej nám vědět při příchodu nebo předem; uděláme přiměřené kroky, abychom ti vyhověli. Pokud chceš odstranit konkrétní fotku z našich platforem, kontaktuj nás a žádost bezodkladně posoudíme."
+    },
+    "contact": {
+      "title": "Podpora a hlášení",
+      "content": "Pokud zažiješ nebo uvidíš porušení tohoto kodexu, okamžitě nám to nahlás. Všechna hlášení zpracujeme diskrétně a důvěrně. Na náš tým se můžeš obrátit takto:",
+      "methods": "<bullet>Oslov přímo kteréhokoliv člena týmu Bonfire na akci (budou jasně označeni)</bullet>\n<bullet>Napiš nám e-mail (zprávy sledujeme před, během i po akcích)</bullet>",
+      "email": "hello+coc@bnf.events",
+      "orContact": "nebo použij",
+      "contactLink": "kontaktní formulář",
+      "closing": "Všechna hlášení bereme vážně a zavazujeme se je řešit bez prodlení. Nebudeš čelit odvetě za podání hlášení v dobré víře."
+    },
+    "toc": {
+      "title": "Obsah",
+      "codeOfConduct": "Etický kodex",
+      "privacyPolicy": "Zásady ochrany osobních údajů",
+      "termsOfService": "Podmínky použití"
+    },
+    "privacy": {
+      "title": "Zásady ochrany osobních údajů",
+      "lastUpdated": "Poslední aktualizace: {date}",
+      "intro": "Tyto Zásady ochrany osobních údajů vysvětlují, jak organizační tým Bonfire (vystupující pod názvem Bonfire Events) shromažďuje, používá a chrání vaše osobní údaje při používání našeho webu a služeb.",
+      "controller": {
+        "title": "Správce údajů",
+        "content": "Správcem údajů je organizační tým Bonfire (komunitní organizátoři) vystupující pod názvem Bonfire Events. Nemáme samostatnou právnickou osobu. Pokud máte dotazy k těmto zásadám ochrany osobních údajů, kontaktujte nás na hello@bnf.events."
+      },
+      "dataCollection": {
+        "title": "Jaké údaje shromažďujeme",
+        "personal": {
+          "title": "Osobní údaje",
+          "content": "Shromažďujeme následující osobní údaje:\n\n<bullet><bold>Informace o účtu</bold>: E-mailová adresa (povinná pro vytvoření účtu)</bullet>\n<bullet><bold>Odběr newsletteru</bold>: E-mailová adresa a předvolby komunikace, pokud se přihlásíte</bullet>\n<bullet><bold>Odeslané formuláře</bold>: Jméno, e-mail a obsah zprávy při odeslání kontaktních formulářů nebo návrhů přednášek</bullet>\n<bullet><bold>Autentifikační údaje</bold>: Pokusy o přihlášení, OTP výzvy a související metadata (včetně IP adresy a user agentu) používaná k zabezpečení účtů</bullet>\n<bullet><bold>Předvolby</bold>: Předvolby e-mailové komunikace</bullet>"
+        },
+        "technical": {
+          "title": "Technické údaje",
+          "content": "Automaticky shromažďujeme:\n\n<bullet><bold>IP adresy</bold>: Používáme je pro zabezpečení a omezení rychlosti; ukládáme je v hashované podobě pro lajky, newslettery a formuláře a v nezahashované podobě pro autentifikační výzvy a tokeny</bullet>\n<bullet><bold>User agent</bold>: Používáme pro zabezpečení a analýzu; u lajků a newsletteru odvozujeme podpis prohlížeče/OS/zařízení a ukládáme jeho hash se solí, u autentifikačních výzev a tokenů ukládáme user agent řetězec</bullet>\n<bullet><bold>Údaje o použití</bold>: Zobrazení stránek, interakce a metriky výkonu</bullet>\n<bullet><bold>Cookies</bold>: Základní cookies pro ochranu CSRF, předvolby jazyka a nastavení motivu</bullet>"
+        },
+        "interactions": {
+          "title": "Uživatelské interakce",
+          "content": "Ukládáme:\n\n<bullet><bold>Líbí se u videí</bold>: Na základě hashů se solí z IP adresy a podpisu user agentu (prohlížeč/OS/zařízení); účet není vyžadován</bullet>\n<bullet><bold>Boostnutí videí</bold>: Propojeno s vaším uživatelským účtem</bullet>\n<bullet><bold>Pokusy o autentifikaci</bold>: Pokusy a výsledky pro účely zabezpečení (mohou zahrnovat hashované identifikátory)</bullet>"
+        }
+      },
+      "howWeUse": {
+        "title": "Jak používáme vaše údaje",
+        "authentication": {
+          "title": "Autentifikace",
+          "content": "Používáme vaši e-mailovou adresu k odesílání jednorázových ověřovacích kódů pro bezpečné přihlášení bez hesla. Autentifikační údaje slouží k ověření vaší identity a ochraně vašeho účtu."
+        },
+        "communication": {
+          "title": "Komunikace",
+          "content": "Používáme vaši e-mailovou adresu k odpovědím na vaše dotazy, odesílání oznámení souvisejících s účtem a (s vaším souhlasem) odesílání aktualizací komunity o akcích Bonfire."
+        },
+        "analytics": {
+          "title": "Analýza a výkon",
+          "content": "Používáme agregované nebo anonymizované údaje o použití, pokud je to možné, k pochopení, jak je náš web používán, ke zlepšení výkonu a zlepšení uživatelského zážitku."
+        },
+        "security": {
+          "title": "Zabezpečení",
+          "content": "Používáme IP adresy, uživatelské agenty a údaje o pokusech o přihlášení k detekci a prevenci zneužití, spamu a neoprávněného přístupu."
+        }
+      },
+      "legalBasis": {
+        "title": "Právní základ zpracování",
+        "content": "Zpracováváme vaše osobní údaje na základě:\n\n<bullet><bold>Souhlas</bold>: Volitelná komunikace (např. komunitní novinky) a cookies, pokud je to vyžadováno</bullet>\n<bullet><bold>Oprávněný zájem</bold>: Zabezpečení, prevence zneužití a základní analýza</bullet>\n<bullet><bold>Smlouva / předsmluvní kroky</bold>: Poskytování autentifikace, účtu a vyřizování vašich požadavků</bullet>"
+      },
+      "dataSharing": {
+        "title": "Sdílení údajů a služby třetích stran",
+        "content": "Používáme následující služby třetích stran, které mohou zpracovávat vaše údaje:\n\n<bullet><bold>Vercel</bold>: Hosting, analýza a monitorování výkonu. Zásady ochrany osobních údajů: https://vercel.com/legal/privacy-policy</bullet>\n<bullet><bold>Resend</bold>: Služba doručování e-mailů pro OTP kódy a oznámení. Zásady ochrany osobních údajů: https://resend.com/legal/privacy-policy</bullet>\n<bullet><bold>Cloudflare Turnstile</bold>: Detekce botů a prevence spamu. Zásady ochrany osobních údajů: https://www.cloudflare.com/privacypolicy/</bullet>\n<bullet><bold>Neon Database</bold>: Hostování databáze pro uživatelské údaje a odeslané formuláře. Zásady ochrany osobních údajů: https://neon.tech/legal/privacy-policy</bullet>\n\nNeprodáváme vaše osobní údaje. Sdílíme údaje pouze se poskytovateli služeb nezbytnými pro provoz našeho webu a služeb."
+      },
+      "dataStorage": {
+        "title": "Ukládání a uchovávání údajů",
+        "location": "Vaše údaje jsou uloženy v databázích hostovaných společností Neon. Používáme poskytovatele služeb, kteří musí dodržovat GDPR nebo poskytovat vhodné záruky.",
+        "retention": {
+          "title": "Doba uchovávání",
+          "content": "Uchováváme vaše údaje pouze po dobu nezbytnou pro výše uvedené účely a splnění právních povinností. Doba uchovávání závisí na typu údajů a účelu. Příklady:\n\n<bullet><bold>Údaje o účtu</bold>: Po dobu trvání účtu nebo do žádosti o smazání</bullet>\n<bullet><bold>Odeslané formuláře</bold>: Po dobu potřebnou k vyřízení vašeho požadavku nebo návrhu</bullet>\n<bullet><bold>Autentifikační výzvy</bold>: Vyprší přibližně po 10 minutách a poté jsou odmítnuty</bullet>\n<bullet><bold>Líbí se u videí</bold>: Ukládáme jako hashované identifikátory pro prevenci duplicitních hlasů</bullet>\n\nNěkteré záznamy můžeme uchovávat déle, pokud to vyžaduje zákon nebo je to nutné pro uplatnění, výkon nebo obhajobu právních nároků."
+        }
+      },
+      "yourRights": {
+        "title": "Vaše práva (GDPR)",
+        "content": "V souladu s GDPR máte následující práva:\n\n<bullet><bold>Právo na přístup</bold>: Některé údaje o účtu uvidíte na stránce /me; o úplnou kopii můžete požádat</bullet>\n<bullet><bold>Právo na opravu</bold>: Některé údaje můžete upravit v nastavení účtu nebo nás požádat o opravu</bullet>\n<bullet><bold>Právo na výmaz</bold>: Účet můžete kdykoli smazat ze stránky /me</bullet>\n<bullet><bold>Právo na omezení zpracování</bold>: V určitých případech můžete požádat o omezení zpracování</bullet>\n<bullet><bold>Právo na přenositelnost údajů</bold>: Kontaktujte nás a vyžádejte si kopii svých údajů</bullet>\n<bullet><bold>Právo vznést námitku</bold>: Můžete namítat proti zpracování založenému na oprávněném zájmu; komunitní e-maily můžete kdykoli vypnout</bullet>\n<bullet><bold>Právo odvolat souhlas</bold>: Souhlas s e-mailovou komunikací můžete kdykoli odvolat</bullet>\n<bullet><bold>Právo podat stížnost</bold>: Můžete podat stížnost u Úřadu pro ochranu osobních údajů (ÚOOÚ)</bullet>\n\nPro uplatnění těchto práv nás kontaktujte na hello@bnf.events nebo použijte kontaktní formulář."
+      },
+      "cookies": {
+        "title": "Cookies a sledování",
+        "content": "Používáme následující cookies a služby:\n\n<bullet><bold>Základní cookies</bold>: bnf_csrf (ochrana CSRF), NEXT_LOCALE (předvolba jazyka), bonfire-theme (předvolba motivu)</bullet>\n<bullet><bold>Analýza</bold>: Vercel Analytics shromažďuje anonymizované údaje o použití bez cookies</bullet>\n<bullet><bold>Hlášení chyb</bold>: Rollbar shromažďuje údaje o chybách pro opravu bugů (může obsahovat URL stránky a info o prohlížeči)</bullet>\n\nCookies můžete spravovat prostřednictvím nastavení prohlížeče. Základní cookies jsou nezbytné pro správné fungování webu."
+      },
+      "security": {
+        "title": "Zabezpečení",
+        "content": "Provádíme přiměřená technická a organizační opatření k ochraně vašich údajů. Může jít zejména o:\n\n<bullet>Autentifikaci bez hesla s časově omezenými OTP kódy</bullet>\n<bullet>Minimalizaci IP adres a uživatelských agentů (např. hashování), pokud je to možné</bullet>\n<bullet>Šifrování HTTPS pro přenos dat</bullet>\n<bullet>Omezení rychlosti a prevenci zneužití</bullet>\n<bullet>Průběžnou údržbu a bezpečnostní aktualizace</bullet>"
+      },
+      "internationalTransfers": {
+        "title": "Mezinárodní přenosy údajů",
+        "content": "Vaše údaje mohou být zpracovávány poskytovateli služeb nacházejícími se mimo Evropský hospodářský prostor (EHP). Pokud je to vyžadováno, používáme vhodné záruky (např. standardní smluvní doložky) a posuzujeme přenosy tak, aby byla zajištěna odpovídající úroveň ochrany."
+      },
+      "children": {
+        "title": "Soukromí dětí",
+        "content": "Naše služby nejsou určeny osobám mladším 16 let. Vědomě neshromažďujeme osobní údaje od dětí. Pokud se domníváte, že jsme shromáždili informace od dítěte, okamžitě nás kontaktujte."
+      },
+      "changes": {
+        "title": "Změny těchto zásad ochrany osobních údajů",
+        "content": "Tyto Zásady ochrany osobních údajů můžeme čas od času aktualizovat. O významných změnách vás budeme informovat aktualizací data \"Poslední aktualizace\" v horní části těchto zásad. Pokračováním v používání našich služeb po změnách souhlasíte s aktualizovanými zásadami."
+      },
+      "contactPrivacy": {
+        "title": "Kontaktujte nás ohledně ochrany osobních údajů",
+        "content": "Pokud máte dotazy k těmto Zásadám ochrany osobních údajů nebo si přejete uplatnit svá práva, kontaktujte nás na hello@bnf.events nebo použijte náš kontaktní formulář."
+      }
+    },
+    "terms": {
+      "title": "Podmínky použití",
+      "lastUpdated": "Poslední aktualizace: {date}",
+      "intro": "Přístupem a používáním webu Bonfire a služeb provozovaných organizačním týmem Bonfire (\"tým Bonfire\") souhlasíte s těmito Podmínkami použití.",
+      "acceptance": {
+        "title": "Přijetí podmínek",
+        "content": "Vytvořením účtu, odesláním formulářů nebo používáním našeho webu potvrzujete, že jste si přečetli, porozuměli a souhlasíte s těmito Podmínkami použití a našimi Zásadami ochrany osobních údajů. Pokud nesouhlasíte, nepoužívejte prosím naše služby."
+      },
+      "service": {
+        "title": "Popis služby",
+        "content": "Tým Bonfire poskytuje platformu pro komunitní setkání vývojářů her, včetně informací o akcích, videozáznamů a komunitních funkcí. Vyhrazujeme si právo kdykoli upravit, pozastavit nebo ukončit jakýkoli aspekt služby."
+      },
+      "accounts": {
+        "title": "Registrace účtu",
+        "content": "Pro použití určitých funkcí musíte vytvořit účet:\n\n<bullet>Musíte poskytnout platnou e-mailovou adresu</bullet>\n<bullet>Jste odpovědní za udržení zabezpečení vašeho účtu</bullet>\n<bullet>Musíte být alespoň 16 let, abyste mohli vytvořit účet</bullet>\n<bullet>Souhlasíte s poskytnutím přesných a úplných informací</bullet>\n<bullet>Jste odpovědní za všechny aktivity pod vaším účtem</bullet>"
+      },
+      "userConduct": {
+        "title": "Chování uživatele",
+        "content": "Souhlasíte s:\n\n<bullet>Používáním služby pouze pro zákonné účely</bullet>\n<bullet>Nepokusem o získání neoprávněného přístupu k jakékoli části služby</bullet>\n<bullet>Nenarušováním nebo přerušením služby nebo serverů</bullet>\n<bullet>Nepoužíváním automatizovaných systémů pro přístup ke službě bez povolení</bullet>\n<bullet>Dodržováním našeho Etického kodexu</bullet>\n<bullet>Neodesíláním nepravdivého, zavádějícího nebo škodlivého obsahu</bullet>"
+      },
+      "intellectualProperty": {
+        "title": "Duševní vlastnictví",
+        "content": "Obsah webu, včetně textu, grafiky, log a softwaru, je vlastnictvím týmu Bonfire nebo jeho poskytovatelů licencí a je chráněn autorským právem a zákony o ochranných známkách. Bez povolení nesmíte reprodukovat, distribuovat nebo vytvářet odvozená díla. Pro použití loga a značky nás kontaktujte."
+      },
+      "userContent": {
+        "title": "Obsah vytvořený uživateli",
+        "content": "Odesláním obsahu (formulářů, návrhů, komentářů) udělujete týmu Bonfire nevýhradní, bezplatnou licenci k použití, úpravě a zobrazení vašeho obsahu za účelem provozu a propagace našich služeb. Prohlašujete, že k odeslanému obsahu máte potřebná práva a oprávnění."
+      },
+      "availability": {
+        "title": "Dostupnost služby",
+        "content": "Usilujeme o poskytování spolehlivé služby, ale nezaručujeme nepřerušovaný nebo bezchybný provoz. Vyhrazujeme si právo provádět údržbu, aktualizace nebo úpravy, které mohou dočasně ovlivnit dostupnost služby."
+      },
+      "liability": {
+        "title": "Omezení odpovědnosti",
+        "content": "V maximální míře povolené zákonem nebude tým Bonfire odpovědný za jakékoli nepřímé, náhodné, zvláštní, následné nebo trestní škody vyplývající z vašeho používání služby. Naše celková odpovědnost nepřesáhne částku, kterou jste nám zaplatili (pokud existuje) v posledních 12 měsících. Nic v těchto podmínkách neomezuje odpovědnost za úmysl nebo hrubou nedbalost, za újmu na životě či zdraví ani jinou odpovědnost, kterou nelze podle práva vyloučit."
+      },
+      "indemnification": {
+        "title": "Odškodnění",
+        "content": "Souhlasíte s tím, že budete odškodňovat a osvobozovat tým Bonfire od jakýchkoli nároků, škod nebo výdajů vyplývajících z vašeho používání služby, porušení těchto podmínek nebo porušení jakýchkoli práv jiné strany."
+      },
+      "termination": {
+        "title": "Ukončení",
+        "content": "Můžeme kdykoli pozastavit nebo ukončit váš účet za porušení těchto podmínek nebo našeho Etického kodexu. Účet můžete kdykoli smazat z nastavení účtu."
+      },
+      "governingLaw": {
+        "title": "Rozhodné právo",
+        "content": "Tyto Podmínky použití se řídí zákony České republiky. Pokud jste spotřebitel, nic tím není dotčeno na vašich kogentních právech na ochranu spotřebitele ani na právu uplatnit nároky u soudů v místě vašeho bydliště."
+      },
+      "disputes": {
+        "title": "Řešení sporů",
+        "content": "Pokud máte spor, nejprve nás kontaktujte na hello@bnf.events. Pokusíme se spory řešit smírným způsobem. Pokud nelze dosáhnout řešení, spory budou řešeny soudy České republiky, pokud kogentní spotřebitelská pravidla nestanoví jinak."
+      },
+      "changes": {
+        "title": "Změny podmínek",
+        "content": "Vyhrazujeme si právo kdykoli upravit tyto podmínky. O významných změnách budeme uživatele informovat. Pokračováním v používání služby po změnách souhlasíte s aktualizovanými podmínkami."
+      },
+      "contactTerms": {
+        "title": "Kontaktujte nás",
+        "content": "Pokud máte dotazy k těmto Podmínkám použití, kontaktujte nás na hello@bnf.events nebo použijte náš kontaktní formulář."
+      }
+    }
+  }
+}

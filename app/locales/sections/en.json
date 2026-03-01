@@ -1,0 +1,102 @@
+{
+  "sections": {
+    "events": {
+      "eyebrow": "Upcoming",
+      "title": "Upcoming Events",
+      "titlePart1": "Upcoming",
+      "titleHighlight": "Events",
+      "subtitle": "Join us at the next meetup! Seats are first come, first served.",
+      "noEvents": "No upcoming events scheduled. Check back soon!",
+      "filter": {
+        "label": "Episode",
+        "all": "All episodes"
+      }
+    },
+    "recordings": {
+      "title": "Trending Talks",
+      "subtitle": "The most popular recordings from our community.",
+      "viewAll": "Talk Recordings",
+      "empty": "No recordings found for this location.",
+      "filter": {
+        "all": "All",
+        "prague": "Prague",
+        "zlin": "Zlín"
+      }
+    },
+    "locations": {
+      "title": "Our Locations",
+      "subtitle": "Bonfire brings game developers together in two cities across the {country}.",
+      "country": "{country}",
+      "eventsHosted": "{count} events hosted",
+      "sponsorsTitle": "Partners",
+      "websiteLabel": "{name} website",
+      "prague": {
+        "name": "Bonfire@{prague}",
+        "description": "Our main {prague} venue in the heart of the Czech capital, with meetups featuring talks from local and international game developers."
+      },
+      "zlin": {
+        "name": "Bonfire@{zlin}",
+        "description": "Bringing the game dev community to Moravia. Regular meetups at UTB university with focus on indie development and student projects."
+      }
+    },
+    "talkBanner": {
+      "title": "Do you want to give a talk?",
+      "subtitle": "We're always looking for speakers to share their knowledge and experience.",
+      "cta": "Submit a talk proposal"
+    },
+    "newsletter": {
+      "title": "Stay in the Loop",
+      "subtitle": "Get notified about upcoming events and new recordings.",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "your@email.com",
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "successTitle": "You're subscribed!",
+      "successMessage": "Thanks for subscribing! We'll keep you updated.",
+      "error": "Something went wrong. Please try again later.",
+      "rateLimitError": "Too many requests. Please try again in a minute.",
+      "privacyNote": "By subscribing, you agree to receive occasional emails. Unsubscribe anytime.",
+      "subscribeAnother": "Subscribe another email"
+    },
+    "newsletterUnsubscribe": {
+      "title": "Unsubscribe",
+      "subtitle": "Manage your newsletter subscription preferences",
+      "confirmMessage": "Are you sure you want to unsubscribe from the Bonfire newsletter? You'll no longer receive updates about upcoming events and new recordings.",
+      "unsubscribe": "Unsubscribe",
+      "unsubscribing": "Unsubscribing...",
+      "cancel": "Keep me subscribed",
+      "backToHome": "Back to home",
+      "success": {
+        "title": "Successfully unsubscribed",
+        "message": "{email} has been removed from our newsletter mailing list. You can always resubscribe later!"
+      },
+      "error": {
+        "title": "Unable to unsubscribe"
+      },
+      "errors": {
+        "invalidToken": "Invalid unsubscribe link",
+        "notSubscribed": "You are not subscribed to our newsletter",
+        "generic": "Something went wrong. Please try again later.",
+        "missingToken": "Invalid or missing unsubscribe token"
+      }
+    },
+    "newsletterArchive": {
+      "eyebrow": "Newsletter",
+      "testBannerTitle": "Test Email",
+      "testBannerMessage": "This newsletter was sent as a test",
+      "updateLabel": "Update {number}",
+      "sentOn": "Sent {sentDate}"
+    },
+    "newsletterArchiveIndex": {
+      "eyebrow": "Newsletter",
+      "title": "Newsletter archive",
+      "subtitle": "Past Bonfire updates, all in one place.",
+      "empty": "No newsletters yet",
+      "emptyHint": "Check back soon for the first issue.",
+      "updateLabel": "Update {number}",
+      "sentLabel": "Sent {date}",
+      "testBadge": "Test",
+      "read": "Read"
+    }
+  }
+}

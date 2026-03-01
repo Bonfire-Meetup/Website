@@ -1,0 +1,9 @@
+{
+  "language": {
+    "switchTo": "Přepnout na {language}",
+    "czech": "češtinu",
+    "english": "angličtinu",
+    "csLabel": "CZ",
+    "enLabel": "EN"
+  }
+}

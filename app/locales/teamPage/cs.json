@@ -1,0 +1,83 @@
+{
+  "teamPage": {
+    "eyebrow": "Tým",
+    "title": "Poznej krásně chaotickou crew",
+    "titlePart1": "Poznej",
+    "titleHighlight": "krásně chaotickou",
+    "titlePart2": "crew",
+    "subtitle": "Děláme meetupy, krotíme kabely a držíme vibe v Praze a Zlíně.",
+    "introEyebrow": "Jak to funguje",
+    "introLines": [
+      "Žádné pláště. Jen checklisty, kafe a tvrdohlavá láska ke gamedevu.",
+      "Když se něco povede, bylo to v plánu. Když se něco nepovede, bylo to taky v plánu.",
+      "Na nudné eventy máme alergii. My přinášíme jiskru."
+    ],
+    "stats": "{people} lidí · {cities} města",
+    "crewEyebrow": "Lokální crew",
+    "cities": [
+      {
+        "name": "{prague}",
+        "tagline": "Kde to všechno začalo.",
+        "members": [
+          {
+            "name": "Jan Hrušovský",
+            "role": "moderátor"
+          },
+          {
+            "name": "Michael Petr",
+            "role": "nahrávání"
+          },
+          {
+            "name": "Jakub Hubáček",
+            "role": "fotografie"
+          },
+          {
+            "name": "Hedvika Jandová",
+            "role": "produkce"
+          },
+          {
+            "name": "Ondřej Purchart",
+            "role": "video, audio"
+          },
+          {
+            "name": "Pavel Pilař",
+            "role": "produkce, bodyguard"
+          },
+          {
+            "name": "Matouš Márai",
+            "role": "produkce"
+          }
+        ]
+      },
+      {
+        "name": "{zlin}",
+        "tagline": "Moravské srdce a studentský puls.",
+        "members": [
+          {
+            "name": "Michael Petr",
+            "role": "nahrávání"
+          },
+          {
+            "name": "Pavel Novák",
+            "role": "produkce"
+          },
+          {
+            "name": "Jitka Honsová",
+            "role": "produkce, prostor"
+          },
+          {
+            "name": "Michal Ščuglík",
+            "role": "produkce"
+          }
+        ]
+      }
+    ],
+    "joinCallout": "Chceš pomoct? Napiš na",
+    "joinCalloutOr": "nebo použij",
+    "joinCalloutContact": "kontaktní formulář",
+    "founderEyebrow": "Slovo zakladatele",
+    "founderTitle": "Díky",
+    "founderNote": "Bonfire existuje díky **vám** - crew, speakerům i každému, kdo dorazí. Budovat komunitu, propojovat lidi a sdílet know-how - o tom to celé je. **Díky**, že jste toho součástí.",
+    "founderSignature": "Martin Pernica"
+  }
+}

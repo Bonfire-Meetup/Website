@@ -1,0 +1,26 @@
+{
+  "email": {
+    "authCode": {
+      "subject": "Your {{brandName}} verification code",
+      "title": "Verify your email",
+      "subtitle": "Enter this code to complete your sign-in to {{brandName}}.",
+      "codeLabel": "Your verification code:",
+      "expires": "This code expires in {{ttl}}.",
+      "ignore": "If you didn't request this code, you can safely ignore this email.",
+      "securityTip": "Never share this code. {{brandName}} will never ask for it via phone, chat, or social media.",
+      "tagline": "{{tagline}}",
+      "footer": "{{brandName}}"
+    },
+    "accountDelete": {
+      "subject": "Important: Confirm your {{brandName}} account deletion",
+      "title": "Important: Delete your account",
+      "subtitle": "Enter this code to permanently delete your {{brandName}} account and all associated data.",
+      "codeLabel": "Your deletion code:",
+      "expires": "This code expires in {{ttl}}.",
+      "ignore": "If you have questions or need help, contact us at hello@bnf.events",
+      "securityTip": "Only enter this code if you requested account deletion. This action cannot be undone.",
+      "tagline": "{{tagline}}",
+      "footer": "{{brandName}}"
+    }
+  }
+}

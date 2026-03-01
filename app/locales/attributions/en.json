@@ -1,0 +1,35 @@
+{
+  "attributions": {
+    "giants": {
+      "headline": "We stand on the shoulders of giants",
+      "subline": "Built on best-in-class infrastructure and tools.",
+      "cloud": "Cloud",
+      "database": "Database",
+      "storage": "Object storage",
+      "emails": "Emails",
+      "bugReporting": "Bug reporting",
+      "botProtection": "Bot protection",
+      "vcs": "VCS",
+      "cicdRunners": "CI/CD Runners",
+      "thankYou": "Our heartfelt thanks to everyone behind services like these. We’re deeply grateful for everything you build, maintain, and run."
+    },
+    "title": "Attributions",
+    "subtitle": "Open source technologies and libraries used in this project",
+    "intro": "This website is built using open source technologies. We are grateful to the developers and maintainers of these projects. Below is a list of the main technologies and their licenses.",
+    "footer": "This list includes the primary dependencies. For a complete list of all packages and their licenses, please refer to the package.json file in the project repository.",
+    "categories": {
+      "framework": "Framework & Core",
+      "state": "State Management",
+      "styling": "Styling",
+      "database": "Database & ORM",
+      "i18n": "Internationalization",
+      "auth": "Authentication",
+      "utilities": "Utilities",
+      "fonts": "Fonts",
+      "build": "Build Tools",
+      "analytics": "Analytics",
+      "security": "Security",
+      "linting": "Linting & Formatting"
+    }
+  }
+}

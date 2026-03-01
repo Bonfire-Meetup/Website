@@ -1,0 +1,50 @@
+{
+  "libraryPage": {
+    "eyebrow": "Stream the sessions",
+    "title": "Talk Library",
+    "subtitle": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
+    "rows": {
+      "latest": "Latest uploads",
+      "prague": "{prague} sessions",
+      "zlin": "{zlin} sessions",
+      "topic": "Topic: {tag}",
+      "earlyAccess": "Early Access",
+      "guildVault": "Guild Vault",
+      "memberPicks": "Member Picks",
+      "hot": "Hot Right Now",
+      "hiddenGems": "Hidden Gems"
+    },
+    "view": {
+      "all": "Open shelf",
+      "allVideos": "Browse all videos",
+      "rows": "Back to picks"
+    },
+    "search": {
+      "label": "Search recordings",
+      "placeholder": "Search talks, speakers, tags..."
+    },
+    "filters": {
+      "title": "Filters",
+      "location": "Location",
+      "tag": "Topic",
+      "episode": "Episode",
+      "reset": "Reset",
+      "allLocations": "All Locations",
+      "allTags": "All Topics",
+      "allEpisodes": "All Episodes",
+      "prague": "{prague}",
+      "zlin": "{zlin}"
+    },
+    "empty": "No recordings match your filters yet.",
+    "rateLimitError": "Too many requests. Please wait a moment and try again.",
+    "notRecorded": {
+      "title": "This episode was not recorded",
+      "body": "{episode} had no video recordings.\nCheck the photo album or browse other sessions.",
+      "cta": "Browse all recordings"
+    },
+    "shelfLabel": "Shelf",
+    "clearShelfFilter": "Clear shelf filter",
+    "disclaimer": "Bonfire@{prague} #1 (The Gathering) and #2 (The Dreamweavers) were not recorded.",
+    "noteLabel": "Note:"
+  }
+}

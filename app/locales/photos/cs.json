@@ -1,0 +1,24 @@
+{
+  "photos": {
+    "eyebrow": "Fotoalba",
+    "title": "Byli jsme u toho",
+    "subtitle": "Fotografická kronika Bonfire meetupů - přednášky, backstage a komunitní momenty.",
+    "featuredTitle": "Výběr fotek",
+    "featuredSubtitle": "Náhodná ochutnávka napříč alby.",
+    "stats": {
+      "albums": "Alba",
+      "photos": "Fotky"
+    },
+    "albumsTitle": "Všechna alba",
+    "albumsSubtitle": "Procházej archiv podle epizod.",
+    "galleryTitle": "Galerie",
+    "galleryHint": "Otevři libovolnou fotku pro zobrazení na celou obrazovku.",
+    "albumPhotos": "{count} fotek",
+    "photographersBy": "Foto:",
+    "viewAlbum": "Otevřít album",
+    "openPhoto": "Otevřít fotku: {title}",
+    "download": "Stáhnout",
+    "backToAlbums": "Zpět na alba",
+    "backToTop": "Zpět nahoru"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "error": {
+    "title": "Něco se pokazilo",
+    "message": "Došlo k neočekávané chybě. Zkus to prosím znovu.",
+    "tryAgain": "Zkusit znovu",
+    "goHome": "Domů",
+    "browseLibrary": "Procházet knihovnu",
+    "library": {
+      "title": "Chyba knihovny",
+      "message": "Nepodařilo se načíst knihovnu. Zkus to prosím znovu."
+    },
+    "video": {
+      "title": "Chyba videa",
+      "message": "Nepodařilo se načíst video. Zkus to prosím znovu."
+    },
+    "api": {
+      "title": "Chyba API",
+      "message": "Nepodařilo se načíst data videa. Zkus to prosím znovu."
+    }
+  }
+}

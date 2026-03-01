@@ -1,0 +1,13 @@
+{
+  "cookieConsent": {
+    "message": "Používáme cookies pro základní funkce.",
+    "accept": "OK",
+    "close": "Zavřít",
+    "closeAria": "Zavřít upozornění",
+    "learnMore": "Více info",
+    "learnMoreAria": "Více informací o cookies",
+    "expandAria": "Zobrazit možnosti cookies",
+    "minimalLabel": "Cookies",
+    "resetBanner": "Obnovit banner cookies"
+  }
+}

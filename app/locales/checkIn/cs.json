@@ -1,0 +1,26 @@
+{
+  "checkIn": {
+    "title": "Check-in na akci | {brandName}",
+    "description": "Ukažte tento QR u vstupu pro check-in a odměny.",
+    "pageTitle": "Check-in",
+    "pageSubtitle": "Ukažte tento QR kód crew",
+    "refresh": "Obnovit",
+    "refreshing": "Obnovuji...",
+    "expiresAt": "Platí do {time}",
+    "ticket": {
+      "header": "Bonfire Events",
+      "label": "Check-in pas"
+    },
+    "tips": {
+      "title": "Tipy",
+      "brightness": "Zvyšte jas displeje pro snadnější skenování",
+      "automatic": "Váš QR kód se aktualizuje automaticky",
+      "manual": "V případě potřeby klikněte na Obnovit"
+    },
+    "error": {
+      "title": "Nepodařilo se načíst vstupenku",
+      "description": "Zkus to prosím znovu, nebo kontaktuj náš tým.",
+      "retry": "Zkusit znovu"
+    }
+  }
+}

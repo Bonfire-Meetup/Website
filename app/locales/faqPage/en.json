@@ -1,0 +1,90 @@
+{
+  "faqPage": {
+    "eyebrow": "FAQ",
+    "title": "Frequently asked questions",
+    "titlePart1": "Frequently asked",
+    "titleHighlight": "questions",
+    "subtitle": "Quick answers about how the site works - including meetups, community, and platform features.",
+    "openRegistrationGuide": "Open registration guide",
+    "openEngagementGuide": "Open engagement guide",
+    "openMediaPolicy": "Open media policy",
+    "sections": {
+      "general": "General",
+      "participation": "Participation",
+      "community": "Content & Community",
+      "technical": "Technical",
+      "engagement": "Platform Engagement"
+    },
+    "questions": {
+      "whatIsBonfire": {
+        "title": "What is Bonfire Events?",
+        "answer": "Bonfire is a Czech game developer community that organizes regular meetups in Prague and Zlín. We bring together professionals, students, and indie creators to share knowledge, network, and grow the local game dev scene."
+      },
+      "howOften": {
+        "title": "How often do you host meetups?",
+        "answer": "We host meetups quarterly (every 3 months) in both Prague and Zlín. Check our \"Upcoming\" section or sign up for our newsletter to get notified about the next episode."
+      },
+      "entryFee": {
+        "title": "Is there an entry fee?",
+        "answer": "All of our meetups are free to attend, thanks to our generous partners. While space is limited, registration (usually via Lu.ma) is not strictly required, but highly suggested to help us plan the seating and refreshments properly."
+      },
+      "howToSpeaker": {
+        "title": "How can I become a speaker?",
+        "answer": "We’re always looking for new voices! Whether it's a technical deep-dive, a post-mortem, or a short lightning talk, you can submit your idea via our <link>Propose a Talk</link> page."
+      },
+      "howToJoin": {
+        "title": "How can I join the crew?",
+        "answer": "Bonfire is powered by passionate volunteers. If you want to help with operations, photography, video, or anything else, reach out to us via the <link>contact form</link> and select \"Crew\" as the inquiry type."
+      },
+      "isRecorded": {
+        "title": "Are all sessions recorded?",
+        "answer": "We aim to record and share as many talks as possible in our Library. However, please note that some of our early episodes were not recorded."
+      },
+      "discord": {
+        "title": "Is there a community Discord?",
+        "answer": "Yes! You can join our <link>Discord server</link> to chat with other game developers, share your projects, and stay updated on events."
+      },
+      "photos": {
+        "title": "Can I use the event photos?",
+        "answer": "Our photos are shared under a community-friendly policy. You're welcome to share them on social media (we love tags!), but for commercial use, please <link>contact us first</link>."
+      },
+      "howToSignIn": {
+        "title": "How do I sign in?",
+        "answer": "We use passwordless authentication. Enter your email and we’ll send a 6-digit verification code."
+      },
+      "howToRegister": {
+        "title": "How do I register?",
+        "answer": "There is no separate registration form. Your first successful email sign-in creates your account automatically."
+      },
+      "howToDelete": {
+        "title": "Can I delete my account?",
+        "answer": "Yes, you have full control over your data. You can manually delete your account and all associated activity at any time from your <link>Account</link> page. Please note that this action is <bold>permanent and cannot be undone</bold>."
+      },
+      "passkeyFlow": {
+        "title": "How do passkeys work here?",
+        "answer": "First, sign in with email to create your account. Then add a passkey in Account > Security."
+      }
+    },
+    "impact": {
+      "title": "How it impacts visibility"
+    },
+    "sparks": {
+      "title": "What are Sparks?",
+      "body": "Sparks are lightweight likes and a softer engagement signal. They still help recordings gain momentum."
+    },
+    "boosts": {
+      "title": "What are Boosts?",
+      "body": "Boosts are stronger votes from logged-in members and carry more weight in visibility than Sparks."
+    },
+    "guild": {
+      "title": "What is Bonfire Guild?",
+      "body": "Bonfire Guild is an exclusive program currently in development that offers insiders unique behind-the-scenes access, early event content, and the opportunity to help shape the direction of our community.",
+      "description": "We're building something special for our most engaged members - a place where you can access exclusive content, get early previews, and have a voice in steering the future of Bonfire. Guild membership brings you closer to the heart of what we do, from backstage moments to early recording drops and special perks.",
+      "features": "Guild members will enjoy early access to event recordings, exclusive behind-the-scenes content, member-only Discord channels, voting rights on future talk topics, and a special badge on their profile.",
+      "comingSoon": "We're actively working on Guild to make it something truly worth the wait. Keep an eye on your account page for updates - your chance to join is coming soon!",
+      "badge": "Guild",
+      "featuresTitle": "What You Get",
+      "stayTunedTitle": "Stay Tuned"
+    }
+  }
+}

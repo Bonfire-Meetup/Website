@@ -1,0 +1,33 @@
+{
+  "hero": {
+    "eyebrow": "BONFIRE KOMUNITA",
+    "photoAlt": "Fotka komunity Bonfire",
+    "title": {
+      "part1": "Kde se",
+      "highlight": "Game Devs",
+      "part2": "Potkávají"
+    },
+    "subtitle": "Přednášky, pivo a networking. Potkej českou gamedev komunitu na meetupech v Praze a Zlíně.",
+    "cta": {
+      "events": "Doraž na další meetup",
+      "recordings": "Záznamy přednášek"
+    },
+    "stats": {
+      "locations": "Lokace",
+      "locationsValue": "2",
+      "talks": "Přednášek",
+      "talksValue": "30+",
+      "attendees": "Účastníků",
+      "attendeesValue": "500+"
+    },
+    "trending": {
+      "badge": "Doporučená přednáška",
+      "queue": "Další na řadě",
+      "seeAll": "Další žhavé přednášky",
+      "watchNow": "Pustit teď",
+      "tapHint": "Klepni pro náhled"
+    },
+    "scroll": "Scroll",
+    "scrollLabel": "Skočit na akce"
+  }
+}

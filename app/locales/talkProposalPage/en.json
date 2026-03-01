@@ -1,0 +1,60 @@
+{
+  "talkProposalPage": {
+    "eyebrow": "Call for Speakers",
+    "titlePart1": "Share Your",
+    "titleHighlight": "Knowledge",
+    "subtitle": "We're always looking for passionate speakers to share their expertise with our community. Whether you're a seasoned pro or first-time speaker, we want to hear from you.",
+    "questions": "Have questions about speaking? Email us at",
+    "whatWeLookFor": {
+      "title": "What We Look For",
+      "item1": "Game development topics: programming, art, design, audio, production, business",
+      "item2": "Practical insights and real-world experiences",
+      "item3": "Both beginner-friendly and advanced deep-dives",
+      "item4": "Passion for sharing knowledge with the community"
+    },
+    "form": {
+      "title": "Submit Your Proposal",
+      "subtitle": "Tell us about your talk idea.",
+      "speakerName": "Your Name",
+      "speakerNamePlaceholder": "John Doe",
+      "email": "Email Address",
+      "emailPlaceholder": "john@example.com",
+      "talkTitle": "Talk Title",
+      "talkTitlePlaceholder": "A catchy title for your talk",
+      "abstract": "Talk Abstract",
+      "abstractPlaceholder": "Describe what your talk is about, what attendees will learn, and why it's relevant to game developers...",
+      "abstractHint": "Minimum 50 characters. Be specific about the value for attendees.",
+      "duration": "Preferred Duration",
+      "durationPlaceholder": "Select duration",
+      "duration15": "15 minutes (Lightning talk)",
+      "duration30": "30 minutes (Standard)",
+      "duration45": "45 minutes (Deep dive)",
+      "preferredLocation": "Preferred Location",
+      "locationEither": "Either {prague} or {zlin}",
+      "locationPrague": "{prague}",
+      "locationZlin": "{zlin}",
+      "experience": "Speaker Experience",
+      "experiencePlaceholder": "Tell us about your background and any previous speaking experience...",
+      "experienceHint": "Optional. First-time speakers are welcome!",
+      "submit": "Submit Proposal",
+      "submitting": "Submitting...",
+      "successTitle": "Proposal Submitted!",
+      "successMessage": "Thanks for your submission! We'll review your proposal and get back to you within a few weeks.",
+      "submitAnother": "Submit Another Proposal",
+      "clearDraft": "Clear draft",
+      "draftNote": "Drafts are stored locally in your browser. If you don't submit, your data never reaches us.",
+      "errors": {
+        "nameRequired": "Please enter your name (at least 2 characters)",
+        "emailInvalid": "Please enter a valid email address",
+        "titleRequired": "Please enter a talk title (at least 5 characters)",
+        "abstractRequired": "Please provide an abstract (at least 50 characters)",
+        "durationRequired": "Please select a preferred duration",
+        "rateLimited": "You've submitted too many proposals. Please try again later.",
+        "captchaFailed": "Please verify that you're human.",
+        "botBlocked": "We couldn't verify this request. Please try again.",
+        "csrfInvalid": "Please refresh the page and try again.",
+        "generic": "Something went wrong. Please try again or email us directly."
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "hero": {
+    "eyebrow": "Bonfire Community",
+    "photoAlt": "Bonfire community photo",
+    "title": {
+      "part1": "Where",
+      "highlight": "Game Devs",
+      "part2": "Meet"
+    },
+    "subtitle": "Join the Czech game development community at our meetups in {prague} and {zlin} for talks and networking.",
+    "cta": {
+      "events": "Join the next meetup",
+      "recordings": "Talk Recordings"
+    },
+    "stats": {
+      "locations": "Locations",
+      "locationsValue": "2",
+      "talks": "Talks",
+      "talksValue": "30+",
+      "attendees": "Attendees",
+      "attendeesValue": "500+"
+    },
+    "trending": {
+      "badge": "Featured talk",
+      "queue": "Up next",
+      "seeAll": "More trending talks",
+      "watchNow": "Watch now",
+      "tapHint": "Tap to preview"
+    },
+    "scroll": "Scroll",
+    "scrollLabel": "Scroll to events"
+  }
+}

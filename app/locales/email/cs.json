@@ -1,0 +1,26 @@
+{
+  "email": {
+    "authCode": {
+      "subject": "Váš přihlašovací kód {{brandName}}",
+      "title": "Přihlášení do Bonfire",
+      "subtitle": "Použijte kód níže pro dokončení přihlášení do {{brandName}}.",
+      "codeLabel": "Váš přihlašovací kód:",
+      "expires": "Kód vyprší za {{ttl}}.",
+      "ignore": "Pokud jste o e-mail nežádali, můžete ho ignorovat.",
+      "securityTip": "Tento kód nikdy nesdílejte. {{brandName}} vás o něj nikdy nepožádá telefonicky, chatem ani na sociálních sítích.",
+      "tagline": "{{tagline}}",
+      "footer": "{{brandName}}"
+    },
+    "accountDelete": {
+      "subject": "Důležité: Potvrzení smazání účtu {{brandName}}",
+      "title": "Důležité: Smazání účtu",
+      "subtitle": "Použijte kód níže k trvalému smazání účtu {{brandName}}.",
+      "codeLabel": "Váš kód pro smazání:",
+      "expires": "Kód vyprší za {{ttl}}.",
+      "ignore": "Máte-li dotazy nebo potřebujete pomoc, kontaktujte nás na hello@bnf.events",
+      "securityTip": "Tento kód zadejte pouze pokud jste požádali o smazání účtu. Tuto akci nelze vrátit zpět.",
+      "tagline": "{{tagline}}",
+      "footer": "{{brandName}}"
+    }
+  }
+}

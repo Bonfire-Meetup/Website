@@ -1,0 +1,20 @@
+{
+  "footer": {
+    "tagline": "{tagline}",
+    "brandName": "{brandName}",
+    "vibes": "Casual meetups, big ideas, and good vibes. 🔥🎮",
+    "emailLabel": "Email",
+    "youtubeLabel": "YouTube",
+    "facebookLabel": "Facebook",
+    "discordLabel": "Discord",
+    "githubLabel": "GitHub",
+    "copyright": "© {year} {brandName}. Made with love for the gamedev community.",
+    "crewLabel": "Crew",
+    "timelineLabel": "Timeline",
+    "newsletterArchiveLabel": "Newsletters",
+    "faqLabel": "FAQ",
+    "pressLabel": "Press",
+    "legalLabel": "CoC & Legal",
+    "attributionsLabel": "Attributions"
+  }
+}

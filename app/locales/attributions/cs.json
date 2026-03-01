@@ -1,0 +1,35 @@
+{
+  "attributions": {
+    "giants": {
+      "headline": "Stojíme na ramenou obrů",
+      "subline": "Postaveno na špičkové infrastruktuře a nástrojích.",
+      "cloud": "Cloud",
+      "database": "Databáze",
+      "storage": "Úložiště objektů",
+      "emails": "E-maily",
+      "bugReporting": "Hlášení chyb",
+      "botProtection": "Ochrana proti botům",
+      "vcs": "VCS",
+      "cicdRunners": "CI/CD runners",
+      "thankYou": "Děkujeme všem, kdo za takovými službami stojí, vážíme si toho, co budujete a provozujete."
+    },
+    "title": "Použité technologie",
+    "subtitle": "Open source technologie a knihovny použité v tomto projektu",
+    "intro": "Tento web je postaven na open source technologiích. Děkujeme vývojářům a správcům těchto projektů. Níže je seznam hlavních technologií a jejich licencí.",
+    "footer": "Tento seznam obsahuje primární závislosti. Kompletní seznam všech balíčků a jejich licencí naleznete v souboru package.json v repozitáři projektu.",
+    "categories": {
+      "framework": "Framework a jádro",
+      "state": "Správa stavu",
+      "styling": "Styling",
+      "database": "Databáze a ORM",
+      "i18n": "Internationalizace",
+      "auth": "Autentizace",
+      "utilities": "Nástroje",
+      "fonts": "Fonty",
+      "build": "Build nástroje",
+      "analytics": "Analytika",
+      "security": "Bezpečnost",
+      "linting": "Linting a formátování"
+    }
+  }
+}

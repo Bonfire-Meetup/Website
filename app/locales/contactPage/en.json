@@ -1,0 +1,46 @@
+{
+  "contactPage": {
+    "eyebrow": "Get in Touch",
+    "titlePart1": "We'd Love to",
+    "titleHighlight": "Hear From You",
+    "subtitle": "Questions, feedback, partnership inquiries, or just want to say hi? Drop us a message and we'll get back to you.",
+    "alternativeContact": "Or email us directly at",
+    "form": {
+      "title": "Send a Message",
+      "subtitle": "Fill out the form below and we'll respond soon.",
+      "name": "Your Name",
+      "namePlaceholder": "John Doe",
+      "email": "Email Address",
+      "emailPlaceholder": "john@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "What's this about?",
+      "message": "Message",
+      "messagePlaceholder": "Tell us what's on your mind...",
+      "inquiryType": "Inquiry type",
+      "inquiryTypeGeneral": "General",
+      "inquiryTypeFeature": "Feature Request",
+      "inquiryTypeSupport": "Technical Support",
+      "inquiryTypePress": "Press",
+      "inquiryTypeCrew": "Crew",
+      "inquiryTypeConduct": "Code of Conduct",
+      "submit": "Send Message",
+      "submitting": "Sending...",
+      "successTitle": "Message Sent!",
+      "successMessage": "Thanks for reaching out. We'll get back to you as soon as possible.",
+      "sendAnother": "Send Another Message",
+      "clearDraft": "Clear draft",
+      "draftNote": "Drafts are stored locally in your browser. If you don't submit, your data never reaches us.",
+      "errors": {
+        "nameRequired": "Please enter your name (at least 2 characters)",
+        "emailInvalid": "Please enter a valid email address",
+        "subjectRequired": "Please enter a subject (at least 3 characters)",
+        "messageRequired": "Please enter a message (at least 10 characters)",
+        "rateLimited": "You've sent too many messages. Please try again later.",
+        "captchaFailed": "Please verify that you're human.",
+        "botBlocked": "We couldn't verify this request. Please try again.",
+        "csrfInvalid": "Please refresh the page and try again.",
+        "generic": "Something went wrong. Please try again or email us directly."
+      }
+    }
+  }
+}

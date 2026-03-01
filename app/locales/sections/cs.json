@@ -1,0 +1,102 @@
+{
+  "sections": {
+    "events": {
+      "eyebrow": "Akce",
+      "title": "Akce",
+      "titlePart1": "Nadcházející",
+      "titleHighlight": "Akce",
+      "subtitle": "Doraž na další meetup. Kdo dřív přijde, ten sedí.",
+      "noEvents": "Zatím nic nevisí. Mrkni sem později!",
+      "filter": {
+        "label": "Epizoda",
+        "all": "Všechny epizody"
+      }
+    },
+    "recordings": {
+      "title": "Žhavé přednášky",
+      "subtitle": "Aktuálně oblíbené přednášky z komunity.",
+      "viewAll": "Záznamy",
+      "empty": "Z téhle lokace tu zatím nic není.",
+      "filter": {
+        "all": "Vše",
+        "prague": "Praha",
+        "zlin": "Zlín"
+      }
+    },
+    "locations": {
+      "title": "Kde nás najdeš",
+      "subtitle": "Bonfire spojuje gamedev komunitu v Praze a Zlíně napříč {country}.",
+      "country": "{country}",
+      "eventsHosted": "Proběhlo {count} akcí",
+      "sponsorsTitle": "Partneři",
+      "websiteLabel": "Web {name}",
+      "prague": {
+        "name": "Bonfire@{prague}",
+        "description": "Naše hlavní pražská zastávka v srdci metropole. Přednášky od lokálních i zahraničních hostů a dobrý pokec po tom."
+      },
+      "zlin": {
+        "name": "Bonfire@{zlin}",
+        "description": "Budujeme gamedev komunitu i na Moravě. Pravidelné akce na UTB se zaměřením na indie scénu a studentské projekty."
+      }
+    },
+    "talkBanner": {
+      "title": "Chceš u nás přednášet?",
+      "subtitle": "Hledáme speakery, co se chtějí podělit o zkušenosti (tech, art, produkce… všechno bereme).",
+      "cta": "Navrhnout přednášku"
+    },
+    "newsletter": {
+      "title": "Zůstaň v obraze",
+      "subtitle": "Upozornění na další akce + nová videa rovnou do inboxu.",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "tvuj@email.cz",
+      "subscribe": "Přihlásit",
+      "subscribing": "Přihlašuji…",
+      "successTitle": "Hotovo!",
+      "successMessage": "Díky! Jakmile bude další akce nebo nové video, dáme vědět.",
+      "error": "Ups, něco se pokazilo. Zkus to prosím později.",
+      "rateLimitError": "Chvilku brzdi 🙂 Zkus to za minutku.",
+      "privacyNote": "Občas ti pošleme update. Odhlásit se můžeš kdykoliv.",
+      "subscribeAnother": "Přihlásit další e-mail"
+    },
+    "newsletterUnsubscribe": {
+      "title": "Odhlášení",
+      "subtitle": "Správa předvoleb odběru newsletteru",
+      "confirmMessage": "Jsi si jistý, že se chceš odhlásit od newsletteru Bonfire? Přijdeš o informace o nadcházejících akcích a nových záznamech.",
+      "unsubscribe": "Odhlásit se",
+      "unsubscribing": "Odhlašuji...",
+      "cancel": "Nechci se odhlásit",
+      "backToHome": "Zpět na úvod",
+      "success": {
+        "title": "Úspěšně odhlášeno",
+        "message": "{email} byl odebrán z našeho mailing listu. Kdykoliv se můžeš znovu přihlásit!"
+      },
+      "error": {
+        "title": "Odhlášení se nezdařilo"
+      },
+      "errors": {
+        "invalidToken": "Neplatný odkaz pro odhlášení",
+        "notSubscribed": "Nejsi přihlášen k odběru našeho newsletteru",
+        "generic": "Něco se pokazilo. Zkus to prosím později.",
+        "missingToken": "Neplatný nebo chybějící token pro odhlášení"
+      }
+    },
+    "newsletterArchive": {
+      "eyebrow": "Newsletter",
+      "testBannerTitle": "Testovací e-mail",
+      "testBannerMessage": "Tento newsletter byl odeslán jako test",
+      "updateLabel": "Update {number}",
+      "sentOn": "Odesláno {sentDate}"
+    },
+    "newsletterArchiveIndex": {
+      "eyebrow": "Newsletter",
+      "title": "Archiv newsletteru",
+      "subtitle": "Všechny předchozí Bonfire novinky na jednom místě.",
+      "empty": "Zatím žádné newslettery",
+      "emptyHint": "Mrkněte později na první vydání.",
+      "updateLabel": "Update {number}",
+      "sentLabel": "Odesláno {date}",
+      "testBadge": "Test",
+      "read": "Číst"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "watchLaterPage": {
+    "title": "Uložené přednášky",
+    "subtitle": "Uložené přednášky na později.",
+    "empty": "Zatím tu nic není.",
+    "emptyAction": "Projdi záznamy a ulož si, co chceš vidět.",
+    "saved": "Uloženo {count} videí",
+    "savedOne": "Uloženo 1 video",
+    "remove": "Odebrat",
+    "loading": "Načítám uložené přednášky…",
+    "error": "Nepodařilo se načíst uložené přednášky"
+  }
+}

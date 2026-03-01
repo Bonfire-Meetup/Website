@@ -1,0 +1,16 @@
+{
+  "timeline": {
+    "eyebrow": "Časová osa epizod",
+    "title": "Všechny epizody Bonfire",
+    "subtitle": "Timeline epizod s rychlými odkazy na záznamy a fotoalba.",
+    "episodeLabel": "Epizoda",
+    "videos": "videa",
+    "photos": "fotky",
+    "watchVideos": "Pustit videa",
+    "viewPhotos": "Zobrazit fotky",
+    "browsePhotos": "Projít fotky",
+    "noPhotos": "Zatím bez fotek",
+    "prague": "Praha",
+    "zlin": "Zlín"
+  }
+}

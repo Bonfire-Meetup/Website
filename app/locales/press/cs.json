@@ -1,0 +1,90 @@
+{
+  "press": {
+    "eyebrow": "Média",
+    "title": "Press kit",
+    "subtitle": "Loga, barvy a pár pravidel použití - všechno na jednom místě.",
+    "about": {
+      "title": "O Bonfire",
+      "body": "{brandName} je česká game dev komunita, která pořádá meetupy v Praze a Zlíně. Bonfire připravuje přednášky, panely a networkingové večery pro profíky, studenty i indie tvůrce. Bonfire stojí na dobrovolnících a partnerech, kteří věří ve sdílení know-how a přátelskou scénu.",
+      "copy": "Kopírovat text",
+      "copied": "Zkopírováno"
+    },
+    "stats": {
+      "title": "Rychlá čísla",
+      "subtitle": "Pro reference a články.",
+      "firstPragueLabel": "První akce v Praze",
+      "firstPragueDate": "ČTV, 9. 11. 2023",
+      "firstZlinLabel": "První akce v Zlíně",
+      "firstZlinDate": "PON, 4. 12. 2023"
+    },
+    "logos": {
+      "title": "Loga ke stažení",
+      "subtitle": "Vyber správnou variantu pro světlé/tmavé pozadí a stáhni PNG nebo SVG.",
+      "brands": {
+        "bonfire": "Bonfire",
+        "prague": "{brandName} {prague}",
+        "zlin": "{brandName} {zlin}"
+      },
+      "variants": {
+        "black": "Černé",
+        "gray": "Šedé",
+        "white": "Bílé",
+        "gradient": "Gradient"
+      },
+      "downloadPng": "PNG",
+      "downloadSvg": "SVG",
+      "preferenceNoteLabel": "Pozn.:",
+      "preferenceNote": "Když to jde, používej gradient. Když ne, sáhni po ne‑gradientní variantě.",
+      "downloadAllTitle": "Stáhnout všechna loga",
+      "downloadAllSubtitle": "Všechny varianty log v jednom zipu.",
+      "downloadAllCta": "Stáhnout {fileName}"
+    },
+    "colors": {
+      "title": "Brand barvy",
+      "subtitle": "Primární barva + ohnivé akcenty.",
+      "copy": "Kopírovat hex",
+      "copied": "Zkopírováno",
+      "bonfire": "Bonfire",
+      "bonfireViolet": "Ohnivy jantar",
+      "fireMagenta": "Ohnivá magenta",
+      "fireCoral": "Ohnivý korál"
+    },
+    "guidelines": {
+      "title": "Pravidla použití",
+      "subtitle": "Ať logo vypadá dobře všude.",
+      "doTitle": "Dělej",
+      "dontTitle": "Nedělej",
+      "do1": "Používejte celé logo s dostatečným ochranným prostorem kolem.",
+      "do2": "Na světlé pozadí použijte černé nebo šedé logo, na tmavém bílé.",
+      "do3": "Zachovejte proporce a barvy loga.",
+      "dont1": "Nenatahujte, neotáčejte, neořezávejte ani nepřidávejte efekty.",
+      "dont2": "Nedávejte logo na rušné fotky nebo pozadí s nízkým kontrastem.",
+      "dont3": "Nepřebarvujte ani nepřepisujte typografii loga."
+    },
+    "brandName": {
+      "title": "Název značky",
+      "subtitle": "Udržujte název jasný a konzistentní v redakčních textech.",
+      "doTitle": "Dělejte",
+      "dontTitle": "Nedělejte",
+      "do1": "Na první zmínku používejte „Bonfire Events“.",
+      "do2": "Po první zmínce zkracujte na „Bonfire“.",
+      "do3": "Dodržujte stejné velké a malé písmo.",
+      "dont1": "Nepoužívejte „Bonfire“ hned při první zmínce.",
+      "dont2": "Nepište „Bonfire events“ nebo „bonfire Events“.",
+      "dont3": "Nepřidávejte popisky typu „Bonfire meetup skupina“."
+    },
+    "photos": {
+      "title": "Fotky z akcí",
+      "body": "Mrkni na fotky z meetupů (a klidně nás tagni).",
+      "cta": "Otevřít alba",
+      "link": "/photos"
+    },
+    "help": {
+      "title": "Chceš něco doplnit?",
+      "body": "Napiš nám na",
+      "email": "hello+press@bnf.events",
+      "orContact": "nebo použij",
+      "contactLink": "kontaktní formulář"
+    }
+  }
+}

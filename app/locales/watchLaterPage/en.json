@@ -1,0 +1,13 @@
+{
+  "watchLaterPage": {
+    "title": "Watch Later",
+    "subtitle": "Your saved talks for later viewing.",
+    "empty": "No videos in your Watch Later list yet.",
+    "emptyAction": "Browse the library to save talks you want to watch.",
+    "saved": "{count} saved videos",
+    "savedOne": "1 saved video",
+    "remove": "Remove",
+    "loading": "Loading your watchlist...",
+    "error": "Unable to load watchlist"
+  }
+}

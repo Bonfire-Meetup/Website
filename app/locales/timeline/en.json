@@ -1,0 +1,16 @@
+{
+  "timeline": {
+    "eyebrow": "Episode Timeline",
+    "title": "Every Bonfire Episode",
+    "subtitle": "A vertical timeline of each episode with quick links to recordings and photo albums.",
+    "episodeLabel": "Episode",
+    "videos": "videos",
+    "photos": "photos",
+    "watchVideos": "Watch videos",
+    "viewPhotos": "View photos",
+    "browsePhotos": "Browse photos",
+    "noPhotos": "No photos yet",
+    "prague": "Prague",
+    "zlin": "Zlín"
+  }
+}

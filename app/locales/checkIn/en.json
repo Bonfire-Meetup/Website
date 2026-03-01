@@ -1,0 +1,26 @@
+{
+  "checkIn": {
+    "title": "Event Check-in | {brandName}",
+    "description": "Show this QR at the door to check in and collect rewards.",
+    "pageTitle": "Check-in",
+    "pageSubtitle": "Present this QR code to crew",
+    "refresh": "Refresh",
+    "refreshing": "Refreshing...",
+    "expiresAt": "Valid until {time}",
+    "ticket": {
+      "header": "Bonfire Events",
+      "label": "Check-in Pass"
+    },
+    "tips": {
+      "title": "Quick Tips",
+      "brightness": "Keep your screen brightness high for easy scanning",
+      "automatic": "Your ticket updates automatically",
+      "manual": "If needed, tap Refresh to get a new code"
+    },
+    "error": {
+      "title": "Couldn't load your ticket",
+      "description": "Please try again or contact our team if the problem continues.",
+      "retry": "Try Again"
+    }
+  }
+}

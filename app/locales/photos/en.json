@@ -1,0 +1,24 @@
+{
+  "photos": {
+    "eyebrow": "Photo Albums",
+    "title": "We Were There",
+    "subtitle": "A photo chronicle of Bonfire meetups, talks, and community moments.",
+    "featuredTitle": "Featured Shots",
+    "featuredSubtitle": "A rotating selection from across the albums.",
+    "stats": {
+      "albums": "Albums",
+      "photos": "Photos"
+    },
+    "albumsTitle": "All Albums",
+    "albumsSubtitle": "Browse the full archive by episode.",
+    "galleryTitle": "Gallery",
+    "galleryHint": "Open any photo to view it fullscreen.",
+    "albumPhotos": "{count} photos",
+    "photographersBy": "Photographs by",
+    "viewAlbum": "View album",
+    "openPhoto": "Open photo: {title}",
+    "download": "Download",
+    "backToAlbums": "Back to albums",
+    "backToTop": "Back to top"
+  }
+}

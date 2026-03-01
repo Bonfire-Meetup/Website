@@ -1,0 +1,25 @@
+{
+  "header": {
+    "home": "Home",
+    "upcoming": "Upcoming",
+    "library": "Library",
+    "watchLater": "Watch Later",
+    "crew": "Crew",
+    "photos": "Photos",
+    "faq": "FAQ",
+    "press": "Press Kit",
+    "contact": "Contact",
+    "codeOfConduct": "Code of Conduct",
+    "back": "Back",
+    "menu": "Open menu",
+    "close": "Close menu",
+    "logoAlt": "Bonfire Events logo",
+    "profile": "Profile",
+    "login": "Sign in",
+    "more": "More",
+    "moreMenuTitle": "Menu",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme"
+  }
+}

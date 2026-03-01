@@ -1,6 +1,3 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
-
 import { render } from "@react-email/render";
 import React from "react";
 
@@ -8,6 +5,7 @@ import { EmailCode } from "@/components/email/EmailCode";
 import { defaultLocale } from "@/i18n/routing";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { LOCALES, type Locale } from "@/lib/i18n/locales";
+import { loadMessages } from "@/lib/i18n/messages";
 
 const localeCache = new Map<string, Record<string, unknown>>();
 
@@ -29,9 +27,7 @@ const loadLocaleMessages = async (locale: Locale) => {
     return cached;
   }
 
-  const path = join(process.cwd(), "app", "locales", `${locale}.json`);
-  const content = await readFile(path, "utf8");
-  const json = JSON.parse(content) as Record<string, unknown>;
+  const json = (await loadMessages(locale)) as Record<string, unknown>;
   localeCache.set(locale, json);
 
   return json;

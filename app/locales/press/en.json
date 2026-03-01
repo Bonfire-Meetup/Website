@@ -1,0 +1,90 @@
+{
+  "press": {
+    "eyebrow": "Media",
+    "title": "Press Kit",
+    "subtitle": "Download logos, grab brand colors, and reference usage guidelines.",
+    "about": {
+      "title": "About Bonfire",
+      "body": "{brandName} is a Czech game dev community that runs meetups in {prague} and {zlin}. Bonfire curates talks, panels, and networking nights connecting professionals, students, and indie creators. Bonfire is powered by volunteers and partners who believe in sharing craft and building a welcoming scene.",
+      "copy": "Copy about text",
+      "copied": "Copied"
+    },
+    "stats": {
+      "title": "Key Stats",
+      "subtitle": "Snapshot numbers for quick reference.",
+      "firstPragueLabel": "First {prague} event",
+      "firstPragueDate": "THU, NOV 9, 2023",
+      "firstZlinLabel": "First {zlin} event",
+      "firstZlinDate": "MON, DEC 4, 2023"
+    },
+    "logos": {
+      "title": "Logo Downloads",
+      "subtitle": "Use the right logo for light or dark backgrounds and download in PNG or SVG.",
+      "brands": {
+        "bonfire": "Bonfire",
+        "prague": "{brandName} {prague}",
+        "zlin": "{brandName} {zlin}"
+      },
+      "variants": {
+        "black": "Black",
+        "gray": "Gray",
+        "white": "White",
+        "gradient": "Gradient"
+      },
+      "downloadPng": "PNG",
+      "downloadSvg": "SVG",
+      "preferenceNoteLabel": "Note:",
+      "preferenceNote": "We prefer the gradient versions whenever possible. If your design does not allow it, use the non-gradient logo.",
+      "downloadAllTitle": "Download All Logos",
+      "downloadAllSubtitle": "Get every logo variant in one zip.",
+      "downloadAllCta": "Download {fileName}"
+    },
+    "colors": {
+      "title": "Brand Colors",
+      "subtitle": "Primary brand and flame accents.",
+      "copy": "Copy hex",
+      "copied": "Copied",
+      "bonfire": "Bonfire",
+      "bonfireViolet": "Fire ember",
+      "fireMagenta": "Fire Magenta",
+      "fireCoral": "Fire Coral"
+    },
+    "guidelines": {
+      "title": "Usage Guidelines",
+      "subtitle": "Keep the Bonfire mark clean and consistent.",
+      "doTitle": "Do",
+      "dontTitle": "Don't",
+      "do1": "Use the full logo with generous clear space around it.",
+      "do2": "Choose black or gray logos on light backgrounds and white on dark.",
+      "do3": "Keep the logo proportions and colors intact.",
+      "dont1": "Stretch, crop, rotate, or add effects to the logo.",
+      "dont2": "Place the logo on busy photography or low-contrast backgrounds.",
+      "dont3": "Recolor or rebuild the logo with different typefaces."
+    },
+    "brandName": {
+      "title": "Brand Name",
+      "subtitle": "Keep the name clear and consistent in editorial text.",
+      "doTitle": "Do",
+      "dontTitle": "Don't",
+      "do1": "Use “Bonfire Events” on first reference.",
+      "do2": "Shorten to “Bonfire” after the first mention.",
+      "do3": "Keep capitalization as shown.",
+      "dont1": "Use just “Bonfire” as the first mention.",
+      "dont2": "Write “Bonfire events” or “bonfire Events”.",
+      "dont3": "Add extra descriptors like “Bonfire meetup group”."
+    },
+    "photos": {
+      "title": "Event Photos",
+      "body": "Browse high-energy photos from our meetups.",
+      "cta": "See the photo albums",
+      "link": "/photos"
+    },
+    "help": {
+      "title": "Need Something Else?",
+      "body": "Email us at",
+      "email": "hello+press@bnf.events",
+      "orContact": "or use the",
+      "contactLink": "contact form"
+    }
+  }
+}

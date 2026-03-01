@@ -1,0 +1,13 @@
+{
+  "cookieConsent": {
+    "message": "We use essential cookies for site functionality.",
+    "accept": "OK",
+    "close": "Close",
+    "closeAria": "Dismiss cookie notice",
+    "learnMore": "Learn more",
+    "learnMoreAria": "Learn more about cookies",
+    "expandAria": "View cookie options",
+    "minimalLabel": "Cookies",
+    "resetBanner": "Reset cookies banner"
+  }
+}

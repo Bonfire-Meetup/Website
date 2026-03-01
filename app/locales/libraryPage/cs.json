@@ -1,0 +1,50 @@
+{
+  "libraryPage": {
+    "eyebrow": "Pusť si to zpětně",
+    "title": "Library přednášek",
+    "subtitle": "Kompletní archiv Bonfire - tech, art i produkce. Plus live podcasty a rozhovory.",
+    "rows": {
+      "latest": "Nejnovější",
+      "prague": "{prague} sessions",
+      "zlin": "{zlin} sessions",
+      "topic": "Téma: {tag}",
+      "earlyAccess": "Early Access",
+      "guildVault": "Guild Vault",
+      "memberPicks": "Tipy od komunity",
+      "hot": "Právě v kurzu",
+      "hiddenGems": "Skryté perly"
+    },
+    "view": {
+      "all": "Otevřít kolekci",
+      "allVideos": "Projít všechna videa",
+      "rows": "Zpět"
+    },
+    "search": {
+      "label": "Hledat",
+      "placeholder": "Hledej přednášky, speakery, tagy…"
+    },
+    "filters": {
+      "title": "Filtry",
+      "location": "Lokace",
+      "tag": "Téma",
+      "episode": "Epizoda",
+      "reset": "Vyčistit",
+      "allLocations": "Všechny",
+      "allTags": "Všechna témata",
+      "allEpisodes": "Všechny epizody",
+      "prague": "{prague}",
+      "zlin": "{zlin}"
+    },
+    "empty": "Nic nesedí. Zkus ubrat filtry 🙂",
+    "rateLimitError": "Příliš mnoho požadavků. Chvilku počkej a zkus to znovu.",
+    "notRecorded": {
+      "title": "Tahle epizoda se nenahrávala",
+      "body": "{episode} nemá žádný videozáznam.\nMrkni na fotky nebo si pusť jiné session.",
+      "cta": "Projít všechny záznamy"
+    },
+    "shelfLabel": "Kolekce",
+    "clearShelfFilter": "Zrušit filtr kolekce",
+    "disclaimer": "Akce Bonfire@{prague} #1 (The Gathering) a #2 (The Dreamweavers) nebyly nahrávány.",
+    "noteLabel": "Pozn.:"
+  }
+}

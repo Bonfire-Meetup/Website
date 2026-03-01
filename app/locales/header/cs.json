@@ -1,0 +1,25 @@
+{
+  "header": {
+    "home": "Domů",
+    "upcoming": "Akce",
+    "library": "Záznamy",
+    "watchLater": "Watch Later",
+    "crew": "Crew",
+    "photos": "Fotky",
+    "faq": "FAQ",
+    "press": "Press kit",
+    "contact": "Kontakt",
+    "codeOfConduct": "Kodex",
+    "back": "Zpět",
+    "menu": "Otevřít menu",
+    "close": "Zavřít menu",
+    "logoAlt": "Logo Bonfire Events",
+    "profile": "Profil",
+    "login": "Přihlásit se",
+    "more": "Více",
+    "moreMenuTitle": "Menu",
+    "settings": "Nastavení",
+    "language": "Jazyk",
+    "theme": "Motiv"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "authLogin": {
+    "eyebrow": "Vítejte",
+    "brand": "{brandName}",
+    "title": "Přihlaste se",
+    "subtitle": "Bez hesla. Kód přijde na mail během 10 sekund.",
+    "secureTitle": "Bez hesla",
+    "secureBody": "Pošleme vám kód na e-mail. Rychle, jednoduše a bezpečně.",
+    "steps": {
+      "step1": "Zadejte e-mail",
+      "step2": "Pošleme kód",
+      "step3": "Vložte kód",
+      "step4": "Nemáte účet? Přihlášením ho vytvoříme automaticky.",
+      "step5": "Vítejte"
+    },
+    "codeHint": "Zadejte 6místný kód z e-mailu.",
+    "noRegistrationHint": "Nemáte účet? Přihlášením ho vytvoříme automaticky.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "lara@croft.com",
+    "codeLabel": "Kód",
+    "sendCode": "Poslat kód",
+    "sendingCode": "Posílám kód",
+    "verify": "Ověřit a přihlásit",
+    "verifying": "Ověřuji",
+    "cancel": "Zrušit",
+    "boostHint": "Boostování je pouze pro členy.",
+    "videoLockedLikeHint": "Přihlas se, pokud chceš dát like zamčenému videu.",
+    "rsvpHint": "Přihlaste se a dejte ostatním vědět, že přijdete.",
+    "sessionExpiredHint": "Platnost relace vypršela. Přihlaste se znovu.",
+    "watchLaterHint": "Přihlaste se a uložte si video na později.",
+    "termsPrefix": "Pokračováním souhlasíte s ",
+    "termsLink": "podmínkami a zpracováním osobních údajů",
+    "termsSuffix": ".",
+    "errorInvalidCode": "Neplatný kód. Zkuste to znovu.",
+    "errorExpired": "Platnost kódu vypršela. Požádejte o nový.",
+    "errorRateLimited": "Příliš mnoho pokusů. Zkuste to za chvíli.",
+    "errorTooManyAttempts": "Příliš mnoho pokusů. Požádejte o nový kód.",
+    "errorInvalidRequest": "Neplatný požadavek. Zkuste to znovu.",
+    "passkey": {
+      "title": "Přihlásit se passkey",
+      "button": "Použít passkey",
+      "authenticating": "Ověřuji",
+      "or": "nebo",
+      "note": "Passkeys fungují po prvním přihlášení e‑mailem a registraci v Účtu → Zabezpečení.",
+      "errorCancelled": "Ověření passkey bylo zrušeno.",
+      "errorNotFound": "Passkey pro toto zařízení nebyl nalezen.",
+      "errorFailed": "Ověření passkey selhalo. Zkuste to znovu."
+    }
+  }
+}

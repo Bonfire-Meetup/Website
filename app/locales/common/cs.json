@@ -1,0 +1,17 @@
+{
+  "common": {
+    "prague": "Praha",
+    "zlin": "Zlín",
+    "brandName": "Bonfire Events",
+    "country": "Česká republika",
+    "tagline": "Game Dev Meetupy v Česku",
+    "loading": "Načítám…",
+    "close": "Zavřít",
+    "previous": "Předchozí",
+    "next": "Další",
+    "scrollLeft": "Posunout vlevo",
+    "scrollRight": "Posunout vpravo",
+    "previousFeatured": "Předchozí doporučené",
+    "nextFeatured": "Další doporučené"
+  }
+}

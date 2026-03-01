@@ -1,0 +1,234 @@
+{
+  "account": {
+    "title": "Your account",
+    "subtitle": "Keep this info handy for support.",
+    "details": "Details",
+    "signOut": "Sign out",
+    "viewProfile": "View profile",
+    "watchLater": "Watch Later",
+    "checkIn": "Check-in",
+    "reader": "Reader",
+    "newsletterEditor": "Newsletter Editor",
+    "name": {
+      "label": "Name",
+      "empty": "Not set",
+      "placeholder": "Enter your name or nickname",
+      "edit": "Edit name",
+      "save": "Save",
+      "cancel": "Cancel",
+      "characterLimit": "Character limit approaching",
+      "tooLong": "Name must be 50 characters or less.",
+      "profanityError": "Name contains inappropriate language. Please choose a different name.",
+      "updateError": "Failed to update name. Please try again."
+    },
+    "loading": "Loading profile…",
+    "error": "Unable to load profile",
+    "email": "Email",
+    "userId": "User ID",
+    "created": "Created",
+    "lastLogin": "Last login",
+    "empty": "-",
+    "guild": {
+      "kicker": "Bonfire Guild",
+      "title": "Guild unlocks are coming soon.",
+      "body": "Backstage intel, early access drops, and bonus guild perks.",
+      "soon": "Soon",
+      "learnMore": "Learn more",
+      "perks": [
+        "Early access to event recordings",
+        "Exclusive behind-the-scenes content",
+        "Member-only Discord channels",
+        "Vote on future talk topics",
+        "Special badge on your profile"
+      ]
+    },
+    "preferences": {
+      "title": "Preferences"
+    },
+    "activity": {
+      "title": "Activity"
+    },
+    "security": {
+      "title": "Security"
+    },
+    "passkeys": {
+      "title": "Passkeys",
+      "addButton": "Add passkey",
+      "empty": "No passkeys registered yet.",
+      "emptyHint": "Add a passkey to sign in faster without email codes.",
+      "defaultName": "Passkey",
+      "synced": "Synced",
+      "createdAt": "Added {date}",
+      "lastUsed": "Last used {date}",
+      "deleteButton": "Remove passkey",
+      "cancelButton": "Cancel",
+      "errorLoading": "Unable to load passkeys.",
+      "errorNotAvailable": "Passkeys are not available on this device.",
+      "errorUnauthorized": "Please sign in to add a passkey.",
+      "errorRegistration": "Failed to register passkey. Please try again."
+    },
+    "boostAllocation": {
+      "title": "Boost Allocation",
+      "available": "boosts available",
+      "availableOne": "boost available",
+      "nextAllocation": "Next allocation: {date}",
+      "limitNote": "Maximum 6 boosts total. No extra boosts will be issued beyond this limit."
+    },
+    "boosted": {
+      "title": "Boosted videos",
+      "empty": "No boosted videos yet.",
+      "error": "Unable to load boosted videos.",
+      "remove": "Remove"
+    },
+    "communityEmails": {
+      "title": "Community updates",
+      "body": "Allow occasional emails about news in the Bonfire community.",
+      "enabled": "Community emails enabled",
+      "disabled": "Community emails disabled"
+    },
+    "publicProfile": {
+      "title": "Public profile",
+      "body": "Public visibility, profile boost list, and boost mentions.",
+      "enabled": "Public profile enabled",
+      "disabled": "Public profile disabled"
+    },
+    "userProfile": {
+      "title": "User Profile",
+      "memberSince": "Member since",
+      "anonymousMember": "Community Member",
+      "memberBadge": "Member",
+      "shareText": "{name}'s profile",
+      "shareTextAnonymous": "Community member profile",
+      "roles": {
+        "crew": "Crew",
+        "speaker": "Speaker",
+        "tierFallback": "Tier {tier}"
+      },
+      "activity": {
+        "title": "Activity",
+        "boostedVideos": "Boosted videos",
+        "eventsAttended": "Events attended",
+        "recentTitle": "Recent activity",
+        "lastBoosted": "Last boost: {date}",
+        "lastCheckedIn": "Last check-in: {date}",
+        "totalBoosts": "{count} {count, plural, one {boost} other {boosts}} total",
+        "totalBoostsLabel": "{count, plural, one {boost} other {boosts}} total",
+        "boostsThisMonth": "{count} {count, plural, one {boost} other {boosts}} this month",
+        "boostsThisMonthLabel": "{count, plural, one {boost} other {boosts}} this month",
+        "boostStreak": "{count} {count, plural, one {month} other {months}} streak",
+        "boostStreakLabel": "{count, plural, one {month} other {months}} streak",
+        "activeStatus": "Active this month",
+        "quietStatus": "Quiet lately",
+        "none": "not yet"
+      },
+      "boosted": {
+        "title": "Boosted videos",
+        "count": "{count} {count, plural, one {video} other {videos}} supported",
+        "badge": "Boosted",
+        "empty": "No boosted videos yet.",
+        "emptyHint": "See a video you vibe with? Drop it a boost on the detail page so more people catch it.",
+        "cta": "Browse videos"
+      },
+      "checkedIn": {
+        "title": "Events attended",
+        "count": "{count} {count, plural, one {event} other {events}} attended",
+        "empty": "No events attended yet.",
+        "emptyHint": "At the next event, hit Check-in on your account page and have the crew scan your code.",
+        "cta": "Open account",
+        "verified": "Verified {date}",
+        "tba": "TBA"
+      },
+      "goingTo": {
+        "title": "Going to",
+        "count": "{count} upcoming {count, plural, one {event} other {events}}",
+        "empty": "No upcoming events yet.",
+        "emptyHint": "Spotted an event you like? Hit \"I'll be there\" on the event page and it'll show up here.",
+        "cta": "Browse events",
+        "tba": "TBA"
+      },
+      "private": {
+        "title": "Private Profile",
+        "message": "This profile is private and not available for viewing."
+      },
+      "notFound": {
+        "title": "User Not Found"
+      },
+      "boostRewards": {
+        "titles": {
+          "spark": "Spark",
+          "ember": "Ember",
+          "flame": "Flame",
+          "blaze": "Blaze",
+          "inferno": "Inferno"
+        },
+        "milestones": {
+          "milestone1": "First Spark",
+          "milestone5": "Kindling",
+          "milestone10": "Campfire",
+          "milestone25": "Bonfire",
+          "milestone50": "Inferno"
+        },
+        "stats": {
+          "totalBoosts": "total boosts",
+          "thisMonth": "this month",
+          "streakMonths": "month streak"
+        }
+      }
+    },
+    "delete": {
+      "title": "Delete your account",
+      "body": "Immediate, non-recoverable deletion. You will confirm with a one-time code.",
+      "steps": {
+        "intent": "Initiate",
+        "send": "Send code",
+        "verify": "Verify and delete"
+      },
+      "intentLabel": "I understand this is immediate and cannot be undone.",
+      "intentRequired": "Please confirm you want to delete your account immediately.",
+      "proceed": "Proceed",
+      "sendIntro": "Click send to email your confirmation code.",
+      "completed": "Deletion completed. Redirecting you to the homepage.",
+      "dangerZone": "Danger zone",
+      "codeLabel": "Deletion code",
+      "sendCode": "Send deletion code",
+      "sendingCode": "Sending code",
+      "confirm": "Delete my account",
+      "confirming": "Deleting account",
+      "cancel": "Cancel",
+      "status": "Code sent. Check your inbox.",
+      "error": "Unable to start deletion. Please try again.",
+      "invalid": "Invalid code. Try again.",
+      "expired": "Code expired. Request a new one.",
+      "tooManyAttempts": "Too many attempts. Request a new code."
+    },
+    "attempts": {
+      "title": "Recent login attempts",
+      "empty": "No login attempts in the last 30 days.",
+      "error": "Unable to load login attempts.",
+      "outcomes": {
+        "success": "Successful login",
+        "expired": "Code expired",
+        "max_attempts": "Too many attempts",
+        "mismatch": "Invalid code",
+        "rate_limited": "Rate limited",
+        "too_many_attempts": "Too many attempts",
+        "missing": "Challenge not found",
+        "used": "Code already used",
+        "user_failed": "User creation failed",
+        "error": "Login error"
+      },
+      "methods": {
+        "email_otp": "Email",
+        "passkey": "Passkey"
+      }
+    },
+    "support": {
+      "title": "Need help?",
+      "featureRequest": "Missing a feature? Let us know!",
+      "technicalIssue": "Something not working? Report it"
+    },
+    "copySuccess": "Copied!",
+    "copyError": "Failed to copy",
+    "copyIdLabel": "Copy ID"
+  }
+}

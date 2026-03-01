@@ -1,0 +1,234 @@
+{
+  "account": {
+    "title": "Váš účet",
+    "subtitle": "Mějte tyto údaje po ruce pro podporu.",
+    "details": "Údaje",
+    "signOut": "Odhlásit se",
+    "viewProfile": "Zobrazit profil",
+    "watchLater": "Uložené přednášky",
+    "checkIn": "Check-in",
+    "reader": "Reader",
+    "newsletterEditor": "Editor newsletteru",
+    "name": {
+      "label": "Jméno",
+      "empty": "Nenastaveno",
+      "placeholder": "Zadejte své jméno nebo přezdívku",
+      "edit": "Upravit jméno",
+      "save": "Uložit",
+      "cancel": "Zrušit",
+      "characterLimit": "Blíží se limit znaků",
+      "tooLong": "Jméno musí mít maximálně 50 znaků.",
+      "profanityError": "Jméno obsahuje nevhodný jazyk. Zvolte prosím jiné jméno.",
+      "updateError": "Nepodařilo se aktualizovat jméno. Zkuste to prosím znovu."
+    },
+    "loading": "Načítání profilu…",
+    "error": "Profil se nepodařilo načíst",
+    "email": "E-mail",
+    "userId": "ID uživatele",
+    "created": "Vytvořeno",
+    "lastLogin": "Poslední přihlášení",
+    "empty": "-",
+    "guild": {
+      "kicker": "Bonfire Guild",
+      "title": "Odemčení cechu přijde brzy.",
+      "body": "Backstage informace, přednostní přístup a další cechovní výhody.",
+      "soon": "Brzy",
+      "learnMore": "Zjistit více",
+      "perks": [
+        "Předběžný přístup k nahrávkám akcí",
+        "Exkluzivní zákulisní obsah",
+        "Členské Discord kanály",
+        "Hlasování o tématech přednášek",
+        "Speciální odznak na profilu"
+      ]
+    },
+    "preferences": {
+      "title": "Předvolby"
+    },
+    "activity": {
+      "title": "Aktivita"
+    },
+    "security": {
+      "title": "Zabezpečení"
+    },
+    "passkeys": {
+      "title": "Passkeys",
+      "addButton": "Přidat passkey",
+      "empty": "Zatím žádné passkeys.",
+      "emptyHint": "Přidejte passkey pro rychlejší přihlášení bez e-mailových kódů.",
+      "defaultName": "Passkey",
+      "synced": "Synchronizováno",
+      "createdAt": "Přidáno {date}",
+      "lastUsed": "Naposledy použito {date}",
+      "deleteButton": "Odebrat passkey",
+      "cancelButton": "Zrušit",
+      "errorLoading": "Nepodařilo se načíst passkeys.",
+      "errorNotAvailable": "Passkeys nejsou na tomto zařízení k dispozici.",
+      "errorUnauthorized": "Pro přidání passkey se prosím přihlaste.",
+      "errorRegistration": "Nepodařilo se zaregistrovat passkey. Zkuste to znovu."
+    },
+    "boostAllocation": {
+      "title": "Přidělení boostů",
+      "available": "boostů k dispozici",
+      "availableOne": "boost k dispozici",
+      "nextAllocation": "Další drop: {date}",
+      "limitNote": "Maximálně 6 boostů celkem. Nad tento limit nebudou vydány žádné další boosty."
+    },
+    "boosted": {
+      "title": "Boostnutá videa",
+      "empty": "Zatím žádná boostnutá videa.",
+      "error": "Boostnutá videa se nepodařilo načíst.",
+      "remove": "Odebrat"
+    },
+    "communityEmails": {
+      "title": "Novinky z komunity",
+      "body": "Souhlasím s občasnými e-maily o novinkách v komunitě Bonfire.",
+      "enabled": "Novinky povoleny",
+      "disabled": "Novinky vypnuty"
+    },
+    "publicProfile": {
+      "title": "Veřejný profil",
+      "body": "Veřejná viditelnost, seznam boostů, zmínky u videí a další.",
+      "enabled": "Veřejný profil povolen",
+      "disabled": "Veřejný profil vypnut"
+    },
+    "userProfile": {
+      "title": "Profil uživatele",
+      "memberSince": "Člen od",
+      "anonymousMember": "Člen komunity",
+      "memberBadge": "Člen",
+      "shareText": "Profil uživatele {name}",
+      "shareTextAnonymous": "Profil člena komunity",
+      "roles": {
+        "crew": "Crew",
+        "speaker": "Speaker",
+        "tierFallback": "Úroveň {tier}"
+      },
+      "activity": {
+        "title": "Aktivita",
+        "boostedVideos": "Boostnutá videa",
+        "eventsAttended": "Navštívené akce",
+        "recentTitle": "Nedávná aktivita",
+        "lastBoosted": "Poslední boost: {date}",
+        "lastCheckedIn": "Poslední check-in: {date}",
+        "totalBoosts": "{count} {count, plural, one {boost} few {boosty} other {boostů}} celkem",
+        "totalBoostsLabel": "{count, plural, one {boost} few {boosty} other {boostů}} celkem",
+        "boostsThisMonth": "{count} {count, plural, one {boost} few {boosty} other {boostů}} tento měsíc",
+        "boostsThisMonthLabel": "{count, plural, one {boost} few {boosty} other {boostů}} tento měsíc",
+        "boostStreak": "{count} {count, plural, one {měsíc} few {měsíce} other {měsíců}} v řadě",
+        "boostStreakLabel": "{count, plural, one {měsíc} few {měsíce} other {měsíců}} v řadě",
+        "activeStatus": "Aktivní tento měsíc",
+        "quietStatus": "Teď klidněji",
+        "none": "zatím ne"
+      },
+      "boosted": {
+        "title": "Boostnutá videa",
+        "count": "{count} {count, plural, one {video} few {videa} other {videí}} podpořeno",
+        "badge": "Boostnuto",
+        "empty": "Zatím žádná boostnutá videa.",
+        "emptyHint": "Narazíš na video, co tě baví? Hoď mu na detailu boost, ať ho objeví víc lidí.",
+        "cta": "Projít videa"
+      },
+      "checkedIn": {
+        "title": "Navštívené akce",
+        "count": "{count} {count, plural, one {akce} few {akce} other {akcí}} navštíveno",
+        "empty": "Zatím žádné navštívené akce.",
+        "emptyHint": "Na příštím eventu klikni na stránce účtu na Check-in a nech crew naskenovat kód.",
+        "cta": "Otevřít účet",
+        "verified": "Ověřeno {date}",
+        "tba": "Bude upřesněno"
+      },
+      "goingTo": {
+        "title": "Chystá se na",
+        "count": "{count} {count, plural, one {nadcházející akce} few {nadcházející akce} other {nadcházejících akcí}}",
+        "empty": "Zatím žádné nadcházející akce.",
+        "emptyHint": "Zaujala tě nějaká akce? Klikni na stránce eventu na „Budu tam“ a objeví se tu.",
+        "cta": "Projít akce",
+        "tba": "Bude upřesněno"
+      },
+      "private": {
+        "title": "Soukromý profil",
+        "message": "Tento profil je soukromý a není k dispozici pro prohlížení."
+      },
+      "notFound": {
+        "title": "Uživatel nenalezen"
+      },
+      "boostRewards": {
+        "titles": {
+          "spark": "Jiskra",
+          "ember": "Žár",
+          "flame": "Plamen",
+          "blaze": "Požár",
+          "inferno": "Inferno"
+        },
+        "milestones": {
+          "milestone1": "První jiskra",
+          "milestone5": "Troud",
+          "milestone10": "Táborák",
+          "milestone25": "Oheň",
+          "milestone50": "Inferno"
+        },
+        "stats": {
+          "totalBoosts": "celkem boostů",
+          "thisMonth": "tento měsíc",
+          "streakMonths": "měsíců v řadě"
+        }
+      }
+    },
+    "delete": {
+      "title": "Smazat účet",
+      "body": "Okamžité a nevratné smazání. Potvrdíte jednorázovým kódem.",
+      "steps": {
+        "intent": "Zahájit",
+        "send": "Poslat kód",
+        "verify": "Ověřit a smazat"
+      },
+      "intentLabel": "Rozumím, že je to okamžité a nevratné.",
+      "intentRequired": "Potvrďte prosím, že chcete účet smazat okamžitě.",
+      "proceed": "Pokračovat",
+      "sendIntro": "Klikněte na odeslání a přijde vám potvrzovací kód.",
+      "completed": "Smazání dokončeno. Přesměrováváme na úvod.",
+      "dangerZone": "Nebezpečná zóna",
+      "codeLabel": "Kód pro smazání",
+      "sendCode": "Poslat kód ke smazání",
+      "sendingCode": "Posílám kód",
+      "confirm": "Smazat účet",
+      "confirming": "Mažu účet",
+      "cancel": "Zrušit",
+      "status": "Kód odeslán. Zkontrolujte e-mail.",
+      "error": "Smazání nelze spustit. Zkuste to prosím znovu.",
+      "invalid": "Neplatný kód. Zkuste to znovu.",
+      "expired": "Platnost kódu vypršela. Požádejte o nový.",
+      "tooManyAttempts": "Příliš mnoho pokusů. Požádejte o nový kód."
+    },
+    "attempts": {
+      "title": "Poslední pokusy o přihlášení",
+      "empty": "Za posledních 30 dní žádné pokusy.",
+      "error": "Pokusy o přihlášení se nepodařilo načíst.",
+      "outcomes": {
+        "success": "Úspěšné přihlášení",
+        "expired": "Kód vypršel",
+        "max_attempts": "Příliš mnoho pokusů",
+        "mismatch": "Neplatný kód",
+        "rate_limited": "Omezeno limitem",
+        "too_many_attempts": "Příliš mnoho pokusů",
+        "missing": "Výzva nenalezena",
+        "used": "Kód již použit",
+        "user_failed": "Vytvoření uživatele selhalo",
+        "error": "Chyba přihlášení"
+      },
+      "methods": {
+        "email_otp": "E-mail",
+        "passkey": "Passkey"
+      }
+    },
+    "support": {
+      "title": "Potřebujete pomoct?",
+      "featureRequest": "Chybí vám funkce? Dejte nám vědět!",
+      "technicalIssue": "Něco nefunguje? Nahlaste to"
+    },
+    "copySuccess": "Zkopírováno!",
+    "copyError": "Kopírování se nezdařilo",
+    "copyIdLabel": "Kopírovat ID"
+  }
+}
