@@ -1,0 +1,307 @@
+{
+  "howToPage": {
+    "title": "Návody | {brandName}",
+    "description": "Návody krok za krokem pro funkce Bonfire a postupy na akcích.",
+    "eyebrow": "Návody",
+    "heading": "Přehled návodů",
+    "subtitle": "Praktické postupy, které tě rychle provedou vším důležitým.",
+    "availableGuides": "Dostupné návody",
+    "browseAllGuides": "Projít všechny návody",
+    "guides": {
+      "checkIn": {
+        "title": "Check-in na akci",
+        "description": "Projdi celý check-in postup od přihlášení až po naskenování crew.",
+        "cta": "Otevřít návod"
+      },
+      "engagementSignals": {
+        "title": "Sparks a boosty",
+        "description": "Pochop engagement signály, limity a jak funguje dopad na viditelnost.",
+        "cta": "Otevřít návod"
+      },
+      "eventRsvp": {
+        "title": "RSVP na akci",
+        "description": "Jak funguje RSVP, kde najít akce, chování waitlistu a export do kalendáře.",
+        "cta": "Otevřít návod"
+      },
+      "registration": {
+        "title": "Registrace a přihlášení",
+        "description": "Jak fungují e-mailové kódy, passkeys a proč první přihlášení vytváří účet.",
+        "cta": "Otevřít návod"
+      },
+      "accountDeletion": {
+        "title": "Smazání účtu",
+        "description": "Jak funguje flow intent/confirm, jednorázový kód a nevratnost smazání.",
+        "cta": "Otevřít návod"
+      }
+    }
+  },
+  "checkInHowTo": {
+    "title": "Jak udělat check-in na akci | {brandName}",
+    "description": "Krátký návod krok za krokem pro event check-in.",
+    "eyebrow": "Návod",
+    "heading": "Jak udělat check-in na akci",
+    "subtitle": "Až dorazíš na akci, projdi tyto kroky. Zabere to méně než minutu.",
+    "heroLead": "Každý check-in pomáhá budovat silnější a propojenější Bonfire komunitu.",
+    "heroSublead": "Malý krok, velký signál. Ty dorazíš, my rosteme spolu.",
+    "stepLabel": "Krok {number}",
+    "steps": {
+      "one": {
+        "title": "Přihlas se nebo si vytvoř účet",
+        "description": "Nejdřív se přihlas. Pokud jsi nový/nová, vytvoř si účet a pokračuj.",
+        "cta": "Otevřít přihlášení"
+      },
+      "two": {
+        "title": "Otevři stránku účtu",
+        "description": "Přejdi na svůj účet, kde máš dostupné nástroje pro check-in.",
+        "cta": "Otevřít účet"
+      },
+      "three": {
+        "title": "Klikni na Check-in",
+        "description": "Otevři svůj check-in pas a zobraz osobní QR kód.",
+        "cta": "Otevřít check-in"
+      },
+      "four": {
+        "title": "Popros crew o naskenování",
+        "description": "U vstupu ukaž crew svůj QR kód a nech ho naskenovat."
+      },
+      "five": {
+        "title": "Buď součást komunity",
+        "description": "Tvé check-iny se zobrazují na profilu, pokud je veřejný."
+      }
+    },
+    "rally": {
+      "title": "Proč na tom záleží",
+      "description": "Když se lidé checkují, lépe chápeme účast, lépe plánujeme další akce a můžeme ocenit ty, kteří komunitu dlouhodobě drží pohromadě."
+    },
+    "pillars": {
+      "one": {
+        "title": "Buď vidět",
+        "description": "Tvoje účast je vidět a má hodnotu."
+      },
+      "two": {
+        "title": "Podpoř akce",
+        "description": "Check-iny nám pomáhají lépe plánovat další meetupy."
+      },
+      "three": {
+        "title": "Motivuj ostatní",
+        "description": "Pravidelná účast inspiruje celou komunitu."
+      }
+    },
+    "benefits": {
+      "title": "Co se týče benefitů",
+      "description": "Teď ještě přesně řešíme, jaké benefity check-iny přinesou. Už teď ale check-in pomáhá komunitě i plánování akcí."
+    },
+    "cta": {
+      "title": "Připravený na další check-in?",
+      "description": "Začni hned a dej své příští návštěvě váhu.",
+      "login": "Přihlásit se",
+      "checkIn": "Otevřít check-in"
+    }
+  },
+  "registrationHowTo": {
+    "title": "Návod: registrace a přihlášení | {brandName}",
+    "description": "Jak v Bonfire funguje registrace přes e-mailový kód a passkeys.",
+    "eyebrow": "Návod",
+    "heading": "Registrace a přihlášení",
+    "subtitle": "Není tu samostatný formulář registrace. Účet vzniká při prvním úspěšném přihlášení.",
+    "heroLead": "Registrace = první přihlášení.",
+    "heroSublead": "Ověříš svůj e-mail a účet se vytvoří automaticky.",
+    "sections": {
+      "emailCode": {
+        "title": "Tok e-mail + kód",
+        "items": {
+          "one": "Otevři přihlášení a zadej svůj e-mail.",
+          "two": "Projdi kontrolou, že nejsi robot, a vyžádej si jednorázový kód.",
+          "three": "V e-mailu najdi kód a zadej ho na stejné přihlašovací stránce.",
+          "four": "Kódy jsou krátce platné a jednorázové; když vyprší, vyžádej nový."
+        }
+      },
+      "registration": {
+        "title": "Kdy proběhne registrace",
+        "items": {
+          "one": "Neexistuje samostatná stránka registrace.",
+          "two": "Po potvrzení platného kódu se účet vytvoří (nebo použije existující).",
+          "three": "Pak jsi přihlášený/á a pokračuješ na stránku účtu."
+        }
+      },
+      "passkeys": {
+        "title": "Jak do toho zapadají passkeys",
+        "items": {
+          "one": "Nejdřív se aspoň jednou přihlas e-mailovým kódem.",
+          "two": "Na stránce Účet si v Zabezpečení přidej passkey.",
+          "three": "Příště můžeš na přihlášení použít tlačítko passkey pro rychlejší vstup na podporovaných zařízeních."
+        },
+        "safety": {
+          "title": "Proč jsou passkeys bezpečnější",
+          "description": "Passkeys snižují běžná rizika převzetí účtu oproti jednorázovým kódům a heslům.",
+          "items": {
+            "one": "Nezadáváš sdílené tajemství, takže phishing stránka ti nemůže ukrást heslo.",
+            "two": "Přihlášení je kryptograficky svázané se zařízením a ověřené vůči skutečné doméně.",
+            "three": "Biometrie nebo PIN zařízení přidává lokální ověření uživatele před přihlášením."
+          }
+        }
+      }
+    },
+    "notes": {
+      "title": "Dobré vědět",
+      "description": "Když přihlášení nevyjde, vyžádej nový kód. I bez passkey můžeš vždy pokračovat přes e-mailový kód."
+    },
+    "cta": {
+      "login": "Otevřít přihlášení",
+      "account": "Otevřít účet"
+    }
+  },
+  "eventRsvpHowTo": {
+    "title": "Návod: RSVP na akci | {brandName}",
+    "description": "Jak funguje RSVP na Bonfire a partnerských platformách.",
+    "eyebrow": "Návody",
+    "heading": "Návod k RSVP na akci",
+    "subtitle": "Vše důležité pro first-time návštěvníky před příchodem.",
+    "heroLead": "RSVP je jednoduché a vyplatí se ho udělat včas.",
+    "heroSublead": "Pomáhá nám to s kapacitou, sezením i organizačními updaty.",
+    "sections": {
+      "howItWorks": {
+        "title": "Jak RSVP funguje",
+        "items": {
+          "one": "Otevři detail akce v přehledu nadcházejících akcí.",
+          "two": "Použij RSVP tlačítko a dokonči registraci na zvolené platformě.",
+          "three": "Po úspěšném RSVP si nech potvrzení kvůli vstupu a případným updatům."
+        }
+      },
+      "whereToFind": {
+        "title": "Kde akce najdeš",
+        "items": {
+          "one": "Stránka Upcoming Events ukazuje aktuální i nejbližší meetupy.",
+          "two": "Sekce akcí na homepage zvýrazňuje klíčové nadcházející eventy.",
+          "three": "Detail akce obsahuje možnosti registrace i praktické informace."
+        }
+      },
+      "waitlist": {
+        "title": "Jak funguje waitlist",
+        "items": {
+          "one": "Při plné kapacitě může registrační platforma nabídnout waitlist.",
+          "two": "Potvrzení z waitlistu závisí na uvolnění míst a updatech organizátorů.",
+          "three": "Nech si zapnuté notifikace, ať nepromeškáš nabídnuté místo."
+        }
+      },
+      "calendar": {
+        "title": "Export do kalendáře",
+        "items": {
+          "one": "Na stránce akce použij Přidat do kalendáře, pokud je dostupné.",
+          "two": "Obvykle můžeš zvolit Google Calendar nebo stáhnout .ics soubor.",
+          "three": "Díky kalendáři máš připomínky i detail místa vždy po ruce."
+        }
+      }
+    },
+    "cta": {
+      "upcoming": "Otevřít nadcházející akce",
+      "homeEvents": "Otevřít sekci akcí na homepage"
+    }
+  },
+  "accountDeletionHowTo": {
+    "title": "Návod: smazání účtu | {brandName}",
+    "description": "Jak funguje smazání účtu včetně ověřovacího kódu a nevratnosti.",
+    "eyebrow": "Návody",
+    "heading": "Návod ke smazání účtu",
+    "subtitle": "Transparentní popis celého flow ještě před potvrzením.",
+    "heroLead": "Smazání je po potvrzení okamžité a nevratné.",
+    "heroSublead": "Před pokračováním si prosím projdi všechny kroky.",
+    "sections": {
+      "flow": {
+        "title": "Flow intent a potvrzení",
+        "items": {
+          "one": "V Účtu otevři danger zone.",
+          "two": "Potvrď záměr smazat účet.",
+          "three": "Vyžádej jednorázový kód pro smazání.",
+          "four": "Zadej kód a potvrď smazání."
+        }
+      },
+      "code": {
+        "title": "Detaily jednorázového kódu",
+        "items": {
+          "one": "Kód pro smazání přijde na e-mail účtu.",
+          "two": "Kód má krátkou platnost, proto ho použij co nejdřív.",
+          "three": "Když je potřeba, vyžádej nový kód a potvrzení zopakuj."
+        }
+      },
+      "warning": {
+        "title": "Upozornění na nevratnost",
+        "items": {
+          "one": "Smazání nelze vrátit zpět.",
+          "two": "Data účtu i související aktivita budou odstraněny.",
+          "three": "Po smazání jsi přesměrován/a mimo stránku účtu."
+        }
+      }
+    },
+    "cta": {
+      "account": "Otevřít účet",
+      "login": "Otevřít přihlášení"
+    }
+  },
+  "engagementSignalsHowTo": {
+    "title": "Návod: Sparks a boosty | {brandName}",
+    "description": "Jak engagement signály ovlivňují viditelnost a jaké mají limity.",
+    "eyebrow": "Návody",
+    "heading": "Návod ke Sparks a boostům",
+    "subtitle": "Pochop, co tyto signály znamenají a jak je používat efektivně.",
+    "heroLead": "Sparks jsou lehká zpětná vazba, boosty jsou silnější hlas.",
+    "heroSublead": "Společně ovlivňují objevitelnost, hlavně v trending přehledech.",
+    "labels": {
+      "spark": "Spark signál",
+      "boost": "Boost signál"
+    },
+    "sections": {
+      "sparks": {
+        "title": "Sparks",
+        "summary": "Rychlá lehká reakce, která pomáhá záznamu získat první momentum.",
+        "items": {
+          "one": "Sparks jsou lehké lajky a je snazší je udělit.",
+          "two": "Bereme je jako slabší signál než boosty.",
+          "three": "I tak pomáhají záznamům nabírat momentum."
+        },
+        "impactTitle": "Dopad",
+        "impactBody": "Sparks zvyšují trending score a pomáhají záznamům dostat se víc na oči, hlavně když je engagement čerstvý."
+      },
+      "boosts": {
+        "title": "Boosty",
+        "summary": "Silnější hlas od přihlášených členů s vyšší váhou.",
+        "items": {
+          "one": "Boosty dávají přihlášení uživatelé.",
+          "two": "Každý účet může jeden záznam boostnout jen jednou.",
+          "three": "Boosty mají silnější váhu ve viditelnosti."
+        },
+        "impactTitle": "Dopad",
+        "impactBody": "I pár boostů umí viditelnost výrazně zvednout, protože boosty mají vyšší váhu než sparks."
+      },
+      "comparison": {
+        "title": "Porovnání signálů",
+        "items": {
+          "one": "Sparks se dávají snáz a hodí se pro rychlou podporu.",
+          "two": "Boosty jsou vzácnější a signalizují silnější záměr.",
+          "three": "Nejlepší efekt obvykle dává rozumná kombinace obou signálů."
+        }
+      },
+      "limits": {
+        "title": "Limity a alokace",
+        "items": {
+          "one": "Počet boostů je měsíčně omezený.",
+          "two": "Nevyužité boosty se mohou hromadit jen do nastaveného stropu.",
+          "three": "Plánuj boosty pro záznamy, které chceš zvýraznit nejvíc."
+        },
+        "callout": "Protože boosty jsou limitované, používej je tam, kde chceš poslat opravdu silný signál."
+      },
+      "visibility": {
+        "title": "Dopad na viditelnost",
+        "items": {
+          "one": "Novější engagement obvykle ovlivňuje pořadí víc než starý.",
+          "two": "Kombinace sparks a boostů zlepšuje objevitelnost.",
+          "three": "Pravidelný komunitní engagement pomáhá kvalitním přednáškám vystoupat."
+        }
+      }
+    },
+    "cta": {
+      "library": "Otevřít knihovnu",
+      "account": "Otevřít účet"
+    }
+  }
+}

@@ -6,6 +6,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { DEFAULT_TIMEZONE } from "@/lib/config/constants";
 import { type Messages } from "@/lib/i18n/initial";
 import { DEFAULT_LOCALE, type Locale, isValidLocale } from "@/lib/i18n/locales";
+import { loadMessages } from "@/lib/i18n/messages";
 
 interface I18nContextType {
   locale: Locale;
@@ -32,11 +33,6 @@ function getLocaleFromCookie(fallback: Locale): Locale {
   return value && isValidLocale(value) ? value : fallback;
 }
 
-const messageLoaders: Record<Locale, () => Promise<{ default: Messages }>> = {
-  en: () => import("../../locales/en.json"),
-  cs: () => import("../../locales/cs.json"),
-};
-
 interface I18nClientSyncProps {
   children: React.ReactNode;
   initialLocale: Locale;
@@ -50,8 +46,8 @@ export function I18nClientSync({ children, initialLocale, initialMessages }: I18
   });
 
   const loadLocale = useCallback(async (loc: Locale) => {
-    const mod = await messageLoaders[loc]();
-    setState({ locale: loc, messages: mod.default });
+    const messages = await loadMessages(loc);
+    setState({ locale: loc, messages });
   }, []);
 
   useEffect(() => {

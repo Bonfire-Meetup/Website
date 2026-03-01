@@ -94,7 +94,7 @@
     },
     "locations": {
       "title": "Kde nás najdeš",
-      "subtitle": "Bonfire spojuje gamedev komunitu v Praze a Zlíně.",
+      "subtitle": "Bonfire spojuje gamedev komunitu v Praze a Zlíně napříč {country}.",
       "country": "{country}",
       "eventsHosted": "Proběhlo {count} akcí",
       "sponsorsTitle": "Partneři",
@@ -561,23 +561,12 @@
   },
   "meta": {
     "siteTitle": "Home | {brandName}",
-    "siteDescription": "{brandName} je gamedev komunita pořádající meetupy v {prague} a {zlin}.",
+    "siteDescription": "{brandName} je gamedev komunita pořádající meetupy v {prague} a {zlin}, {country}.",
     "homeTitle": "Home | {brandName}",
-    "homeDescription": "{brandName} je komunita herních vývojářů. Pořádáme meetupy v {prague} a {zlin}. Doraž na přednášku a pokec.",
+    "homeDescription": "{brandName} je komunita herních vývojářů. Pořádáme meetupy v {prague} a {zlin}, {country}. Doraž na přednášku a pokec.",
     "libraryTitle": "Knihovna | {brandName}",
     "libraryDescription": "Archiv Bonfire přednášek o techu, artu a produkci, včetně live podcastů.",
     "watchLaterTitle": "Watch Later | {brandName}",
-    "watchLaterPage": {
-      "title": "Watch Later",
-      "subtitle": "Uložené přednášky na později.",
-      "empty": "Zatím tu nic není.",
-      "emptyAction": "Projdi Library a ulož si, co chceš vidět.",
-      "saved": "Uloženo {count} videí",
-      "savedOne": "Uloženo 1 video",
-      "remove": "Odebrat",
-      "loading": "Načítám Watch Later…",
-      "error": "Nepodařilo se načíst Watch Later"
-    },
     "watchLaterDescription": "Uložené přednášky ke shlédnutí později.",
     "checkInTitle": "Check-in na akci | {brandName}",
     "checkInDescription": "Ukažte tento QR u vstupu pro check-in a odměny.",
@@ -594,7 +583,7 @@
     "faqTitle": "FAQ | {brandName}",
     "faqDescription": "Najděte odpovědi na otázky k našim českým gamedev meetupům, zapojení do komunity a fungování Sparks a Boostů.",
     "contactTitle": "Kontakt | {brandName}",
-    "contactDescription": "Napište nám. Otázky, zpětná vazba nebo partnerská spolupráce.",
+    "contactDescription": "Napište týmu {brandName}. Otázky, zpětná vazba nebo partnerská spolupráce.",
     "talkProposalTitle": "Navrhnout přednášku | {brandName}",
     "talkProposalDescription": "Pošlete návrh přednášky pro {brandName}. Sdílejte své znalosti s českou gamedev komunitou.",
     "communityMember": "Člen komunity",
@@ -627,6 +616,9 @@
     "titlePart1": "Často kladené",
     "titleHighlight": "dotazy",
     "subtitle": "Rychlé odpovědi na to, jak web funguje - akce, komunita i Sparks/Boosty.",
+    "openRegistrationGuide": "Otevřít návod registrace",
+    "openEngagementGuide": "Otevřít návod engagementu",
+    "openMediaPolicy": "Otevřít pravidla médií",
     "sections": {
       "general": "Obecné",
       "participation": "Zapojení",
@@ -669,11 +661,11 @@
       },
       "howToSignIn": {
         "title": "Jak se přihlásím?",
-        "answer": "Přihlašování je bez hesla. Zadáš e‑mail, pošleme ti 6místný kód a jedeš. Žádná hesla, žádný stres."
+        "answer": "Přihlašování je bez hesla. Zadáš e‑mail a pošleme ti 6místný kód."
       },
       "howToRegister": {
         "title": "Jak se můžu zaregistrovat?",
-        "answer": "Žádná extra registrace. Poprvé se přihlásíš e‑mailem a účet se ti vytvoří automaticky."
+        "answer": "Není tu samostatný registrační formulář. Účet se vytvoří automaticky při prvním úspěšném přihlášení e‑mailem."
       },
       "howToDelete": {
         "title": "Můžu svůj účet smazat?",
@@ -681,7 +673,7 @@
       },
       "passkeyFlow": {
         "title": "Jak u nás fungují passkeys?",
-        "answer": "Nejdřív se přihlas e‑mailem a tím si vytvoříš účet. Potom si v <link>Účtu</link> v sekci Zabezpečení přidej passkey. Pak můžeš na přihlašovací stránce použít tlačítko passkey pro rychlejší přihlášení na podporovaných zařízeních."
+        "answer": "Nejdřív se přihlas e‑mailem a vytvoř účet. Potom si v Účtu v sekci Zabezpečení přidej passkey."
       }
     },
     "impact": {
@@ -689,15 +681,11 @@
     },
     "sparks": {
       "title": "Co jsou Sparks?",
-      "body": "Sparks jsou lehké lajky. Ukládáme je přes hashovanou IP a user‑agent, takže na ně nepotřebuješ účet. Protože se dají snáz vytvořit, bereme je jako slabší signál.",
-      "impact": "Sparks zvedají trending score a můžou pomoct videu proklouznout do Trending Talks - hlavně když je nové."
+      "body": "Sparks jsou lehké lajky a slabší engagement signál. I tak pomáhají záznamům získat momentum."
     },
     "boosts": {
       "title": "Co jsou Boosty?",
-      "body": "Boosty jsou silnější hlas od přihlášených členů. Každý účet může Boostnout video jen jednou a je to lepší signál reálného zájmu.",
-      "impact": "Boosty mají v trending score vyšší váhu než Sparks, takže i pár Boostů umí viditelnost fakt zvednout.",
-      "limitsTitle": "Limity",
-      "limits": "Boosty dostanete 2 za měsíc, ale max. 6 jich můžete mít najednou."
+      "body": "Boosty jsou silnější hlas od přihlášených členů a mají větší dopad na viditelnost než Sparks."
     },
     "guild": {
       "title": "Co je to Bonfire Guild?",
@@ -1011,7 +999,7 @@
     "authCode": {
       "subject": "Váš přihlašovací kód {{brandName}}",
       "title": "Přihlášení do Bonfire",
-      "subtitle": "Použijte kód níže pro dokončení přihlášení.",
+      "subtitle": "Použijte kód níže pro dokončení přihlášení do {{brandName}}.",
       "codeLabel": "Váš přihlašovací kód:",
       "expires": "Kód vyprší za {{ttl}}.",
       "ignore": "Pokud jste o e-mail nežádali, můžete ho ignorovat.",
@@ -1222,7 +1210,7 @@
         "title": "Chystá se na",
         "count": "{count} {count, plural, one {nadcházející akce} few {nadcházející akce} other {nadcházejících akcí}}",
         "empty": "Zatím žádné nadcházející akce.",
-        "emptyHint": "Zaujala tě nějaká akce? Klikni na stránce eventu na \u201eBudu tam\u201c a objeví se tu.",
+        "emptyHint": "Zaujala tě nějaká akce? Klikni na stránce eventu na „Budu tam“ a objeví se tu.",
         "cta": "Projít akce",
         "tba": "Bude upřesněno"
       },
@@ -1289,11 +1277,8 @@
         "success": "Úspěšné přihlášení",
         "expired": "Kód vypršel",
         "max_attempts": "Příliš mnoho pokusů",
-        "maxAttempts": "Příliš mnoho pokusů",
         "mismatch": "Neplatný kód",
-        "invalidCode": "Neplatný kód",
         "rate_limited": "Omezeno limitem",
-        "rateLimited": "Omezeno limitem",
         "too_many_attempts": "Příliš mnoho pokusů",
         "missing": "Výzva nenalezena",
         "used": "Kód již použit",

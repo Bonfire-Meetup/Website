@@ -616,6 +616,9 @@
     "titlePart1": "Frequently asked",
     "titleHighlight": "questions",
     "subtitle": "Quick answers about how the site works - including meetups, community, and platform features.",
+    "openRegistrationGuide": "Open registration guide",
+    "openEngagementGuide": "Open engagement guide",
+    "openMediaPolicy": "Open media policy",
     "sections": {
       "general": "General",
       "participation": "Participation",
@@ -658,11 +661,11 @@
       },
       "howToSignIn": {
         "title": "How do I sign in?",
-        "answer": "We use passwordless authentication. Simply enter your email address and we'll send you a 6-digit verification code. No need to remember or manage any passwords!"
+        "answer": "We use passwordless authentication. Enter your email and we’ll send a 6-digit verification code."
       },
       "howToRegister": {
         "title": "How do I register?",
-        "answer": "There is no separate registration process. Simply sign in with your email for the first time, and we'll automatically create an account for you. It's that simple!"
+        "answer": "There is no separate registration form. Your first successful email sign-in creates your account automatically."
       },
       "howToDelete": {
         "title": "Can I delete my account?",
@@ -670,7 +673,7 @@
       },
       "passkeyFlow": {
         "title": "How do passkeys work here?",
-        "answer": "First, sign in with your email to create your account. Then add a passkey in your <link>Account</link> page under Security. After that, you can use the passkey button on the login screen for faster sign-ins on supported devices."
+        "answer": "First, sign in with email to create your account. Then add a passkey in Account > Security."
       }
     },
     "impact": {
@@ -678,15 +681,11 @@
     },
     "sparks": {
       "title": "What are Sparks?",
-      "body": "Sparks are lightweight likes. They’re stored using a hashed IP and user-agent, so you don’t need an account. Because they’re easier to generate, they’re treated as a softer signal.",
-      "impact": "Sparks increase a talk’s trending score and can help it surface in Trending Talks, especially when combined with recency."
+      "body": "Sparks are lightweight likes and a softer engagement signal. They still help recordings gain momentum."
     },
     "boosts": {
       "title": "What are Boosts?",
-      "body": "Boosts are stronger votes from logged-in members. Each account can boost a talk once, making boosts harder to game and a better signal of committed interest.",
-      "impact": "Boosts have a higher weight than Sparks in the trending score, so a few boosts can noticeably lift a talk’s visibility.",
-      "limitsTitle": "Limits",
-      "limits": "Boosts are limited to 2 per month, with a maximum of 6 available at any time. Boosts you don’t use can stack up to that cap."
+      "body": "Boosts are stronger votes from logged-in members and carry more weight in visibility than Sparks."
     },
     "guild": {
       "title": "What is Bonfire Guild?",
@@ -1278,11 +1277,8 @@
         "success": "Successful login",
         "expired": "Code expired",
         "max_attempts": "Too many attempts",
-        "maxAttempts": "Too many attempts",
         "mismatch": "Invalid code",
-        "invalidCode": "Invalid code",
         "rate_limited": "Rate limited",
-        "rateLimited": "Rate limited",
         "too_many_attempts": "Too many attempts",
         "missing": "Challenge not found",
         "used": "Code already used",

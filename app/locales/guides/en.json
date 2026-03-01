@@ -1,0 +1,307 @@
+{
+  "howToPage": {
+    "title": "How-To Guides | {brandName}",
+    "description": "Step-by-step guides for Bonfire features and event actions.",
+    "eyebrow": "How-To",
+    "heading": "Guides for getting things done",
+    "subtitle": "Clear practical walkthroughs for Bonfire members and event visitors.",
+    "availableGuides": "Available guides",
+    "browseAllGuides": "Explore all guides",
+    "guides": {
+      "checkIn": {
+        "title": "Event check-in",
+        "description": "Learn the full check-in flow from login to getting scanned by crew.",
+        "cta": "Open guide"
+      },
+      "engagementSignals": {
+        "title": "Sparks and boosts",
+        "description": "Understand engagement signals, limits, and how visibility scoring works.",
+        "cta": "Open guide"
+      },
+      "eventRsvp": {
+        "title": "Event RSVP",
+        "description": "How RSVP works, where to find events, waitlist behavior, and calendar export.",
+        "cta": "Open guide"
+      },
+      "registration": {
+        "title": "Registration and sign-in",
+        "description": "Understand email codes, passkeys, and why first sign-in creates your account.",
+        "cta": "Open guide"
+      },
+      "accountDeletion": {
+        "title": "Account deletion",
+        "description": "Understand the intent/confirm flow, one-time code, and permanent deletion warning.",
+        "cta": "Open guide"
+      }
+    }
+  },
+  "checkInHowTo": {
+    "title": "How to check in at an event | {brandName}",
+    "description": "A quick step-by-step manual for event check-in.",
+    "eyebrow": "How-To",
+    "heading": "How to check in at an event",
+    "subtitle": "Follow these steps when you arrive. It takes less than a minute.",
+    "heroLead": "Every check-in helps build a stronger, more connected Bonfire community.",
+    "heroSublead": "Small action, real signal. You show up, we grow together.",
+    "stepLabel": "Step {number}",
+    "steps": {
+      "one": {
+        "title": "Login or create account",
+        "description": "Sign in first. If you are new, create your account and continue.",
+        "cta": "Open login"
+      },
+      "two": {
+        "title": "Open account page",
+        "description": "Go to your account page where your check-in tools are available.",
+        "cta": "Open account"
+      },
+      "three": {
+        "title": "Click Check-in",
+        "description": "Open your check-in pass to display your personal QR code.",
+        "cta": "Open check-in"
+      },
+      "four": {
+        "title": "Ask crew to scan it",
+        "description": "Show the QR code to crew at the event entrance and let them scan it."
+      },
+      "five": {
+        "title": "Be part of community",
+        "description": "Your check-ins are shown on your profile when it is public."
+      }
+    },
+    "rally": {
+      "title": "Why it matters",
+      "description": "When people check in, we can better understand attendance, improve planning, and celebrate the people who consistently show up for each other."
+    },
+    "pillars": {
+      "one": {
+        "title": "Show up",
+        "description": "Your presence is visible and appreciated."
+      },
+      "two": {
+        "title": "Support events",
+        "description": "Check-ins help us plan better future meetups."
+      },
+      "three": {
+        "title": "Inspire others",
+        "description": "Consistent participation motivates the whole community."
+      }
+    },
+    "benefits": {
+      "title": "About benefits right now",
+      "description": "We are still deciding what exact benefits check-ins will unlock in the future. Checking in now already helps the community and event planning."
+    },
+    "cta": {
+      "title": "Ready for your next check-in?",
+      "description": "Start now and make your next event count.",
+      "login": "Login",
+      "checkIn": "Open check-in"
+    }
+  },
+  "registrationHowTo": {
+    "title": "Registration and sign-in guide | {brandName}",
+    "description": "How Bonfire registration works with email codes and passkeys.",
+    "eyebrow": "How-To",
+    "heading": "Registration and sign-in",
+    "subtitle": "No separate signup form. Your first successful sign-in creates your account.",
+    "heroLead": "Registration equals first sign-in.",
+    "heroSublead": "You verify ownership of your email, then your account is created automatically.",
+    "sections": {
+      "emailCode": {
+        "title": "Email + code flow",
+        "items": {
+          "one": "Open login and enter your email.",
+          "two": "Complete the human check and request a one-time code.",
+          "three": "Check your inbox and enter the code on the same login screen.",
+          "four": "Codes are short-lived and one-time; if it expires, request a new one."
+        }
+      },
+      "registration": {
+        "title": "When registration happens",
+        "items": {
+          "one": "There is no separate registration page.",
+          "two": "After a valid email code is confirmed, your account is created (or reused if it already exists).",
+          "three": "Then you are signed in and redirected to your account page."
+        }
+      },
+      "passkeys": {
+        "title": "How passkeys fit in",
+        "items": {
+          "one": "First, sign in with email code at least once.",
+          "two": "Open Account and add a passkey in Security.",
+          "three": "Next time, use the passkey button on login for faster sign-in on supported devices."
+        },
+        "safety": {
+          "title": "Why passkeys are safer",
+          "description": "Passkeys reduce common account-takeover risks compared to one-time codes and passwords.",
+          "items": {
+            "one": "No shared secret to type, so phishing pages cannot steal your password.",
+            "two": "Cryptographic login is bound to your device and verified against the real domain.",
+            "three": "Biometrics or device PIN add local user verification before sign-in."
+          }
+        }
+      }
+    },
+    "notes": {
+      "title": "Good to know",
+      "description": "If login fails, request a fresh code. You can always continue with email code even if passkey is unavailable on a device."
+    },
+    "cta": {
+      "login": "Open login",
+      "account": "Open account"
+    }
+  },
+  "eventRsvpHowTo": {
+    "title": "Event RSVP guide | {brandName}",
+    "description": "How event RSVP works on Bonfire and partner platforms.",
+    "eyebrow": "Guides",
+    "heading": "Event RSVP guide",
+    "subtitle": "Everything first-time visitors need to know before attending.",
+    "heroLead": "RSVP is simple and worth doing early.",
+    "heroSublead": "It helps us plan venue capacity, seating, and updates.",
+    "sections": {
+      "howItWorks": {
+        "title": "How RSVP works",
+        "items": {
+          "one": "Open an event detail page from Upcoming Events.",
+          "two": "Use the RSVP action and follow the selected registration platform.",
+          "three": "After a successful RSVP, keep your confirmation for entry updates."
+        }
+      },
+      "whereToFind": {
+        "title": "Where to find events",
+        "items": {
+          "one": "Upcoming Events page lists current and next meetups.",
+          "two": "Homepage events section highlights key upcoming sessions.",
+          "three": "Each event detail page includes registration options and schedule info."
+        }
+      },
+      "waitlist": {
+        "title": "Waitlist behavior",
+        "items": {
+          "one": "If capacity is full, the registration platform may offer a waitlist.",
+          "two": "Waitlist confirmation depends on seat releases and organizer updates.",
+          "three": "Stay subscribed to the event notifications so you do not miss your slot."
+        }
+      },
+      "calendar": {
+        "title": "Calendar export",
+        "items": {
+          "one": "On event pages, use Add to Calendar when available.",
+          "two": "You can usually choose Google Calendar or download an .ics file.",
+          "three": "Adding it to your calendar helps you keep reminders and location details."
+        }
+      }
+    },
+    "cta": {
+      "upcoming": "Open upcoming events",
+      "homeEvents": "Open homepage events"
+    }
+  },
+  "accountDeletionHowTo": {
+    "title": "Account deletion guide | {brandName}",
+    "description": "How account deletion works, including code verification and permanence.",
+    "eyebrow": "Guides",
+    "heading": "Account deletion guide",
+    "subtitle": "Transparent explanation of the deletion flow before you confirm.",
+    "heroLead": "Deletion is permanent and immediate after confirmation.",
+    "heroSublead": "Please review the steps carefully before proceeding.",
+    "sections": {
+      "flow": {
+        "title": "Intent and confirm flow",
+        "items": {
+          "one": "Open Account and go to the danger zone.",
+          "two": "Confirm intent to start deletion.",
+          "three": "Request the one-time deletion code.",
+          "four": "Enter the code and confirm deletion."
+        }
+      },
+      "code": {
+        "title": "One-time code details",
+        "items": {
+          "one": "The deletion code is sent to your account email.",
+          "two": "It is short-lived and can expire, so use it promptly.",
+          "three": "If needed, request a new code and retry the confirmation step."
+        }
+      },
+      "warning": {
+        "title": "Permanence warning",
+        "items": {
+          "one": "Deletion cannot be undone.",
+          "two": "Your account data and related activity are removed.",
+          "three": "After deletion, you are redirected away from the account area."
+        }
+      }
+    },
+    "cta": {
+      "account": "Open account",
+      "login": "Open login"
+    }
+  },
+  "engagementSignalsHowTo": {
+    "title": "Sparks and boosts guide | {brandName}",
+    "description": "How engagement signals affect visibility and what limits apply.",
+    "eyebrow": "Guides",
+    "heading": "Sparks and boosts guide",
+    "subtitle": "Understand what these signals mean and how to use them well.",
+    "heroLead": "Sparks are lightweight feedback, boosts are stronger votes.",
+    "heroSublead": "Together they shape discovery, especially in trending views.",
+    "labels": {
+      "spark": "Spark signal",
+      "boost": "Boost signal"
+    },
+    "sections": {
+      "sparks": {
+        "title": "Sparks",
+        "summary": "Fast, lightweight reactions that help talks gain early momentum.",
+        "items": {
+          "one": "Sparks are lightweight likes and easier to give.",
+          "two": "They are treated as a softer signal than boosts.",
+          "three": "Sparks still help recordings gain momentum."
+        },
+        "impactTitle": "Impact",
+        "impactBody": "Sparks increase trending score and can help recordings surface, especially when engagement is recent."
+      },
+      "boosts": {
+        "title": "Boosts",
+        "summary": "Higher-confidence votes from signed-in members.",
+        "items": {
+          "one": "Boosts come from signed-in accounts.",
+          "two": "Each account can boost a recording once.",
+          "three": "Boosts carry stronger weight in visibility ranking."
+        },
+        "impactTitle": "Impact",
+        "impactBody": "A few boosts can noticeably increase visibility because boosts are weighted more strongly than sparks."
+      },
+      "comparison": {
+        "title": "Signal comparison",
+        "items": {
+          "one": "Sparks are easier to create and best for quick appreciation.",
+          "two": "Boosts are scarcer and indicate stronger intent.",
+          "three": "Best results usually come from a healthy mix of both signals."
+        }
+      },
+      "limits": {
+        "title": "Limits and allocation",
+        "items": {
+          "one": "Boosts are limited monthly.",
+          "two": "Unused boosts can accumulate only up to the configured cap.",
+          "three": "Plan boosts for recordings you want to highlight most."
+        },
+        "callout": "Because boosts are limited, use them where you want to send a strong, deliberate signal."
+      },
+      "visibility": {
+        "title": "Visibility impact",
+        "items": {
+          "one": "Recent engagement generally has stronger effect than old activity.",
+          "two": "A mix of sparks and boosts can improve discoverability.",
+          "three": "Consistent community engagement helps quality talks surface."
+        }
+      }
+    },
+    "cta": {
+      "library": "Open library",
+      "account": "Open account"
+    }
+  }
+}

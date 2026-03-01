@@ -61,7 +61,7 @@ export function CodeOfConductSection({ t, tToc }: CodeOfConductSectionProps) {
           <RichText t={t} translationKey="consequences.content" />
         </div>
 
-        <div className="space-y-4">
+        <div id="media-policy" className="scroll-mt-24 space-y-4">
           <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             {t("photos.title")}
           </h3>

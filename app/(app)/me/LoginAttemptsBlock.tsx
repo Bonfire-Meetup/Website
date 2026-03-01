@@ -21,6 +21,11 @@ interface LoginAttemptsBlockProps {
 export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlockProps) {
   const t = useTranslations("account.attempts");
   const locale = useLocale();
+  const outcomeKeyMap: Record<string, string> = {
+    invalidCode: "mismatch",
+    maxAttempts: "max_attempts",
+    rateLimited: "rate_limited",
+  };
 
   const getOutcomeStyle = (outcome: string) => {
     if (outcome === "success") {
@@ -75,7 +80,7 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
               >
                 <div className="min-w-0">
                   <div className="text-sm font-medium text-neutral-900 dark:text-white">
-                    {t(`outcomes.${attempt.outcome}`) ?? attempt.outcome}
+                    {t(`outcomes.${outcomeKeyMap[attempt.outcome] ?? attempt.outcome}`)}
                     {attempt.outcome === "success" && attempt.method && (
                       <span className="ml-1 text-neutral-500 dark:text-neutral-400">
                         ({t(`methods.${attempt.method}`) ?? attempt.method})

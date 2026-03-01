@@ -3,7 +3,9 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
+import { LegalLinkButton } from "@/components/faq/LegalLinkButton";
 import { QuestionAnchor } from "@/components/faq/QuestionAnchor";
+import { HowToLinkButton } from "@/components/how-to/HowToLinkButton";
 import { BoltIcon, FireIcon, GuildIcon } from "@/components/shared/Icons";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
@@ -65,6 +67,8 @@ export function FaqPageContent() {
               <div className="grid gap-4 sm:grid-cols-1">
                 {section.questions.map((qKey) => {
                   const anchorId = qKey.replace(/[A-Z]/g, (l) => `-${l.toLowerCase()}`);
+                  const mediaPolicyHref =
+                    qKey === "photos" ? `${PAGE_ROUTES.LEGAL}#media-policy` : null;
                   return (
                     <div
                       key={qKey}
@@ -94,8 +98,11 @@ export function FaqPageContent() {
                             if (qKey === "howToDelete") {
                               href = PAGE_ROUTES.ME;
                             }
+                            if (qKey === "howToSignIn" || qKey === "howToRegister") {
+                              href = PAGE_ROUTES.GUIDES_REGISTRATION;
+                            }
                             if (qKey === "passkeyFlow") {
-                              href = PAGE_ROUTES.ME;
+                              href = PAGE_ROUTES.GUIDES_REGISTRATION;
                             }
                             if (qKey === "discord") {
                               return (
@@ -120,10 +127,24 @@ export function FaqPageContent() {
                           },
                         })}
                       </p>
+                      {mediaPolicyHref ? (
+                        <div className="mt-3">
+                          <LegalLinkButton href={mediaPolicyHref}>
+                            {t("openMediaPolicy")}
+                          </LegalLinkButton>
+                        </div>
+                      ) : null}
                     </div>
                   );
                 })}
               </div>
+              {section.key === "technical" ? (
+                <div className="px-1">
+                  <HowToLinkButton href={PAGE_ROUTES.GUIDES_REGISTRATION}>
+                    {t("openRegistrationGuide")}
+                  </HowToLinkButton>
+                </div>
+              ) : null}
             </div>
           ))}
 
@@ -150,12 +171,6 @@ export function FaqPageContent() {
                 <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                   {t("sparks.body")}
                 </p>
-                <div className="mt-6 rounded-2xl border border-neutral-200/60 bg-neutral-50/70 px-4 py-3 text-sm text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
-                  <div className="font-semibold text-neutral-900 dark:text-white">
-                    {t("impact.title")}
-                  </div>
-                  <div className="mt-1">{t("sparks.impact")}</div>
-                </div>
               </div>
 
               <div
@@ -175,20 +190,12 @@ export function FaqPageContent() {
                 <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                   {t("boosts.body")}
                 </p>
-                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-neutral-200/60 bg-neutral-50/70 px-4 py-3 text-sm text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
-                    <div className="font-semibold text-neutral-900 dark:text-white">
-                      {t("impact.title")}
-                    </div>
-                    <div className="mt-1">{t("boosts.impact")}</div>
-                  </div>
-                  <div className="rounded-2xl border border-neutral-200/60 bg-neutral-50/70 px-4 py-3 text-sm text-neutral-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
-                    <div className="font-semibold text-neutral-900 dark:text-white">
-                      {t("boosts.limitsTitle")}
-                    </div>
-                    <div className="mt-1">{t("boosts.limits")}</div>
-                  </div>
-                </div>
+              </div>
+
+              <div className="px-1">
+                <HowToLinkButton href={PAGE_ROUTES.GUIDES_ENGAGEMENT_SIGNALS}>
+                  {t("openEngagementGuide")}
+                </HowToLinkButton>
               </div>
 
               <div
