@@ -394,7 +394,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
         aria-label={t("more")}
         style={{ WebkitAppearance: "none", WebkitTapHighlightColor: "transparent" }}
       >
-        <div
+        <span
           className={`relative flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ease-out ${
             isOpen
               ? "scale-110 bg-gradient-to-br from-rose-600 via-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/40"
@@ -405,7 +405,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
           }}
         >
           <AnimatedMenuIcon className="h-5 w-5" isOpen={isOpen} />
-        </div>
+        </span>
       </button>
       {sheetContent}
     </>

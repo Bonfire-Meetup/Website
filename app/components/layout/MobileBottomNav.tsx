@@ -82,7 +82,7 @@ function MobileBottomNavInner() {
           const Icon = item.icon;
           const isSignInItem = !isAuthed && !isResolvingAuth && item.href === PAGE_ROUTES.LOGIN;
           const itemBody = (
-            <div
+            <span
               className={`relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 ease-out ${
                 active
                   ? "bg-gradient-to-br from-rose-600 via-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/40"
@@ -99,7 +99,7 @@ function MobileBottomNavInner() {
               <Icon className="h-5 w-5" />
 
               {active && (
-                <div
+                <span
                   className="absolute -inset-1 rounded-full opacity-60 blur-md"
                   style={{
                     background:
@@ -107,7 +107,7 @@ function MobileBottomNavInner() {
                   }}
                 />
               )}
-            </div>
+            </span>
           );
 
           if (item.disabled) {
