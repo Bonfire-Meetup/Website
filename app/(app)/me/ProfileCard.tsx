@@ -19,17 +19,19 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
 
   const [copyStatus, setCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [isEditingName, setIsEditingName] = useState(false);
+  const [prevProfileName, setPrevProfileName] = useState(profile.name);
   const [nameValue, setNameValue] = useState(profile.name || "");
   const [nameErrorKey, setNameErrorKey] = useState<string | null>(null);
+
+  if (prevProfileName !== profile.name) {
+    setPrevProfileName(profile.name);
+    setNameValue(profile.name || "");
+  }
 
   const updatePreferenceMutation = useUpdatePreferenceMutation();
   const updatingName = updatePreferenceMutation.isPending;
 
   const copyTimeoutRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    setNameValue(profile.name || "");
-  }, [profile.name]);
 
   useEffect(
     () => () => {
@@ -67,7 +69,9 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
     try {
       await updatePreferenceMutation.mutateAsync({ name: trimmedName });
       setIsEditingName(false);
-      onProfileUpdate?.({ ...profile, name: trimmedName });
+      if (onProfileUpdate) {
+        onProfileUpdate({ ...profile, name: trimmedName });
+      }
     } catch (err: unknown) {
       let reason: string | null = null;
 

@@ -2,7 +2,15 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
+import {
+  startTransition,
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { InfoIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
@@ -73,7 +81,9 @@ export function RecordingsCatalog({
   const locale = useLocale();
   const router = useRouter();
   const [payload, setPayload] = useState<LibraryRowsPayload>(initialPayload);
+  const [prevInitialPayload, setPrevInitialPayload] = useState(initialPayload);
   const [localSearchQuery, setLocalSearchQuery] = useState(initialPayload.searchQuery);
+  const [prevPayloadSearchQuery, setPrevPayloadSearchQuery] = useState(payload.searchQuery);
   const deferredSearchQuery = useDeferredValue(payload.searchQuery);
   const [isFiltering, setIsFiltering] = useState(false);
   const searchDebounceRef = useRef<number | null>(null);
@@ -82,17 +92,27 @@ export function RecordingsCatalog({
   const lastCommittedSearchRef = useRef(initialPayload.searchQuery);
   const [canHover, setCanHover] = useState(false);
   const [localViewMode, setLocalViewMode] = useState<"rows" | "grid">("rows");
+
+  if (prevInitialPayload !== initialPayload) {
+    setPrevInitialPayload(initialPayload);
+    setPayload(initialPayload);
+    setLocalViewMode("rows");
+    setLocalSearchQuery(initialPayload.searchQuery);
+  }
+
+  if (prevPayloadSearchQuery !== payload.searchQuery) {
+    setPrevPayloadSearchQuery(payload.searchQuery);
+    setLocalSearchQuery(payload.searchQuery);
+  }
+
+  useLayoutEffect(() => {
+    lastCommittedSearchRef.current = payload.searchQuery;
+  }, [payload.searchQuery]);
+
   const { activeLocation } = payload;
   const { activeTag } = payload;
   const { activeEpisode } = payload;
   const { recordings } = payload;
-
-  useEffect(() => {
-    setPayload(initialPayload);
-    setLocalViewMode("rows");
-    setLocalSearchQuery(initialPayload.searchQuery);
-    lastCommittedSearchRef.current = initialPayload.searchQuery;
-  }, [initialPayload]);
 
   useEffect(() => {
     const media = window.matchMedia("(hover: hover)");
@@ -107,11 +127,6 @@ export function RecordingsCatalog({
     media.addListener(handleChange);
     return () => media.removeListener(handleChange);
   }, []);
-
-  useEffect(() => {
-    setLocalSearchQuery(payload.searchQuery);
-    lastCommittedSearchRef.current = payload.searchQuery;
-  }, [payload.searchQuery]);
 
   useEffect(() => {
     router.prefetch(PAGE_ROUTES.LIBRARY_BROWSE);
@@ -130,10 +145,18 @@ export function RecordingsCatalog({
     try {
       const result = await fetchLibraryApiPayload(params, controller.signal);
       if (!result.data) {
+        if (requestId === requestIdRef.current) {
+          if (!controller.signal.aborted) {
+            setIsFiltering(false);
+          }
+        }
         return;
       }
       const data = result.data as LibraryApiPayload;
-      if (requestId !== requestIdRef.current || controller.signal.aborted) {
+      if (requestId !== requestIdRef.current) {
+        return;
+      }
+      if (controller.signal.aborted) {
         return;
       }
       setPayload((prev) => ({
@@ -154,10 +177,9 @@ export function RecordingsCatalog({
       if (!controller.signal.aborted) {
         logError("library.fetch_failed", error);
       }
-    } finally {
-      if (requestId === requestIdRef.current && !controller.signal.aborted) {
-        setIsFiltering(false);
-      }
+    }
+    if (requestId === requestIdRef.current && !controller.signal.aborted) {
+      setIsFiltering(false);
     }
   }, []);
 

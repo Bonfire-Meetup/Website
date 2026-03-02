@@ -2,7 +2,15 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { startTransition, useCallback, useDeferredValue, useEffect, useRef, useState } from "react";
+import {
+  startTransition,
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { CloseIcon, InfoIcon } from "@/components/shared/Icons";
 import { type LocationFilter, UNRECORDED_EPISODES } from "@/lib/recordings/catalog-types";
@@ -32,7 +40,9 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
   const locale = useLocale();
   const router = useRouter();
   const [payload, setPayload] = useState<LibraryBasePayload>(initialPayload);
+  const [prevInitialPayload, setPrevInitialPayload] = useState(initialPayload);
   const [localSearchQuery, setLocalSearchQuery] = useState(initialPayload.searchQuery);
+  const [prevPayloadSearchQuery, setPrevPayloadSearchQuery] = useState(payload.searchQuery);
   const deferredSearchQuery = useDeferredValue(payload.searchQuery);
   const [isFiltering, setIsFiltering] = useState(false);
   const [rateLimitError, setRateLimitError] = useState(false);
@@ -40,6 +50,22 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
   const requestIdRef = useRef(0);
   const activeRequestRef = useRef<AbortController | null>(null);
   const lastCommittedSearchRef = useRef(initialPayload.searchQuery);
+
+  if (prevInitialPayload !== initialPayload) {
+    setPrevInitialPayload(initialPayload);
+    setPayload(initialPayload);
+    setLocalSearchQuery(initialPayload.searchQuery);
+  }
+
+  if (prevPayloadSearchQuery !== payload.searchQuery) {
+    setPrevPayloadSearchQuery(payload.searchQuery);
+    setLocalSearchQuery(payload.searchQuery);
+  }
+
+  useLayoutEffect(() => {
+    lastCommittedSearchRef.current = payload.searchQuery;
+  }, [payload.searchQuery]);
+
   const { activeLocation } = payload;
   const { activeTag } = payload;
   const { activeEpisode } = payload;
@@ -58,17 +84,6 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
     };
   })();
 
-  useEffect(() => {
-    setPayload(initialPayload);
-    setLocalSearchQuery(initialPayload.searchQuery);
-    lastCommittedSearchRef.current = initialPayload.searchQuery;
-  }, [initialPayload]);
-
-  useEffect(() => {
-    setLocalSearchQuery(payload.searchQuery);
-    lastCommittedSearchRef.current = payload.searchQuery;
-  }, [payload.searchQuery]);
-
   const fetchPayload = useCallback(async (params: URLSearchParams) => {
     requestIdRef.current += 1;
     const requestId = requestIdRef.current;
@@ -83,16 +98,27 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
     try {
       const result = await fetchLibraryApiPayload(params, controller.signal);
       if (result.status === 429) {
-        if (requestId === requestIdRef.current && !controller.signal.aborted) {
-          setRateLimitError(true);
+        if (requestId === requestIdRef.current) {
+          if (!controller.signal.aborted) {
+            setRateLimitError(true);
+            setIsFiltering(false);
+          }
         }
         return;
       }
       if (!result.data) {
+        if (requestId === requestIdRef.current) {
+          if (!controller.signal.aborted) {
+            setIsFiltering(false);
+          }
+        }
         return;
       }
       const data = result.data as LibraryApiPayload;
-      if (requestId !== requestIdRef.current || controller.signal.aborted) {
+      if (requestId !== requestIdRef.current) {
+        return;
+      }
+      if (controller.signal.aborted) {
         return;
       }
       setPayload((prev) => ({
@@ -112,10 +138,9 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
       if (!controller.signal.aborted) {
         logError("library.fetch_failed", error);
       }
-    } finally {
-      if (requestId === requestIdRef.current && !controller.signal.aborted) {
-        setIsFiltering(false);
-      }
+    }
+    if (requestId === requestIdRef.current && !controller.signal.aborted) {
+      setIsFiltering(false);
     }
   }, []);
 

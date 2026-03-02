@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { ApiError } from "@/lib/api/errors";
 import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { createJsonAuthHeaders } from "@/lib/utils/http";
@@ -36,42 +35,47 @@ export function ConfirmationStep({ data, onSendComplete }: ConfirmationStepProps
     setError(null);
     setSuccess(null);
 
+    let sendError = false;
     try {
       const accessToken = await getValidAccessTokenAsync();
       if (!accessToken) {
-        throw new ApiError("Access token required", 401);
-      }
-
-      const response = await fetch(API_ROUTES.NEWSLETTER.SEND, {
-        method: "POST",
-        headers: createJsonAuthHeaders(accessToken),
-        body: JSON.stringify({
-          subject: data.subject,
-          previewText: data.previewText,
-          sections: allSections,
-          audience: data.audience,
-          testMode,
-        }),
-      });
-
-      if (response.ok) {
-        setSuccess(testMode ? t("testSendSuccess") : t("sendSuccess"));
-        if (!testMode) {
-          onSendComplete();
-        }
+        sendError = true;
       } else {
-        const errorData = await response.json().catch(() => ({ error: "unknown" }));
-        throw new ApiError("Newsletter send failed", response.status, errorData);
+        const response = await fetch(API_ROUTES.NEWSLETTER.SEND, {
+          method: "POST",
+          headers: createJsonAuthHeaders(accessToken),
+          body: JSON.stringify({
+            subject: data.subject,
+            previewText: data.previewText,
+            sections: allSections,
+            audience: data.audience,
+            testMode,
+          }),
+        });
+
+        if (response.ok) {
+          if (testMode) {
+            setSuccess(t("testSendSuccess"));
+          } else {
+            setSuccess(t("sendSuccess"));
+            onSendComplete();
+          }
+        } else {
+          sendError = true;
+        }
       }
     } catch (err) {
       logWarn("newsletter.send_failed", { error: String(err), testMode });
+      sendError = true;
+    }
+
+    if (sendError) {
       setError(t("sendError"));
-    } finally {
-      if (testMode) {
-        setIsTestSending(false);
-      } else {
-        setIsSending(false);
-      }
+    }
+    if (testMode) {
+      setIsTestSending(false);
+    } else {
+      setIsSending(false);
     }
   };
 

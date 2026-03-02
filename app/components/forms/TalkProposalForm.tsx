@@ -12,7 +12,7 @@ import {
 } from "react";
 
 import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
-import { API_ROUTES } from "@/lib/api/routes";
+import { useCsrfToken } from "@/lib/api/csrf";
 import { type TalkProposalFormState, submitTalkProposal } from "@/lib/forms/form-actions";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { logError } from "@/lib/utils/log-client";
@@ -24,6 +24,50 @@ import { LoadingSpinner } from "../ui/LoadingSpinner";
 import { TurnstileWidget, type TurnstileWidgetHandle } from "./TurnstileWidget";
 
 const initialState: TalkProposalFormState = { success: false };
+
+function isTalkDraftUnchanged(
+  parsed: {
+    speakerName?: string;
+    email?: string;
+    talkTitle?: string;
+    abstract?: string;
+    experience?: string;
+    duration?: string;
+    preferredLocation?: string;
+  },
+  draft: {
+    speakerName: string;
+    email: string;
+    talkTitle: string;
+    abstract: string;
+    experience: string;
+    duration: string;
+    preferredLocation: string;
+  },
+): boolean {
+  if (parsed.speakerName !== draft.speakerName) {
+    return false;
+  }
+  if (parsed.email !== draft.email) {
+    return false;
+  }
+  if (parsed.talkTitle !== draft.talkTitle) {
+    return false;
+  }
+  if (parsed.abstract !== draft.abstract) {
+    return false;
+  }
+  if (parsed.experience !== draft.experience) {
+    return false;
+  }
+  if (parsed.duration !== draft.duration) {
+    return false;
+  }
+  if (parsed.preferredLocation !== draft.preferredLocation) {
+    return false;
+  }
+  return true;
+}
 
 interface TalkProposalFormInnerProps {
   onReset: () => void;
@@ -58,7 +102,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
   const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [turnstileExecuting, setTurnstileExecuting] = useState(false);
-  const [csrfToken, setCsrfToken] = useState("");
+  const csrfToken = useCsrfToken();
   const [mounted, setMounted] = useState(false);
 
   const [speakerName, setSpeakerName] = useState("");
@@ -150,15 +194,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
       const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
       if (existingDraft) {
         const parsed = JSON.parse(existingDraft);
-        const isUnchanged =
-          parsed.speakerName === draft.speakerName &&
-          parsed.email === draft.email &&
-          parsed.talkTitle === draft.talkTitle &&
-          parsed.abstract === draft.abstract &&
-          parsed.experience === draft.experience &&
-          parsed.duration === draft.duration &&
-          parsed.preferredLocation === draft.preferredLocation;
-        if (isUnchanged) {
+        if (isTalkDraftUnchanged(parsed, draft)) {
           return;
         }
       }
@@ -204,33 +240,20 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
     return () => window.removeEventListener("beforeunload", saveDraft);
   }, [saveDraft]);
 
-  useEffect(() => {
-    let isActive = true;
-    fetch(API_ROUTES.CSRF)
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data) => {
-        if (isActive && data?.token) {
-          setCsrfToken(data.token);
-        }
-      })
-      .catch(() => {
-        if (isActive) {
-          setCsrfToken("");
-        }
-      });
-    return () => {
-      isActive = false;
-    };
-  }, []);
-
-  useEffect(() => {
+  const [prevState, setPrevState] = useState(state);
+  if (prevState !== state) {
+    setPrevState(state);
     if (state.message === "captchaFailed") {
       setTurnstileResetKey((prev) => prev + 1);
       setTurnstileExecuting(false);
-    } else if (state.success || state.errors || state.message) {
+    } else if (state.success) {
+      setTurnstileExecuting(false);
+    } else if (state.errors) {
+      setTurnstileExecuting(false);
+    } else if (state.message) {
       setTurnstileExecuting(false);
     }
-  }, [state.message, state.success, state.errors]);
+  }
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { memo, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { memo, useLayoutEffect, useRef, useState } from "react";
 
 import { LOCATIONS } from "@/lib/config/constants";
 import type { LocationFilter } from "@/lib/recordings/catalog-types";
@@ -56,12 +56,14 @@ export const GridFiltersBar = memo(function GridFiltersBar({
   const tSearch = useTranslations("libraryPage.search");
   const tView = useTranslations("libraryPage.view");
   const inputRef = useRef<HTMLInputElement>(null);
+  const [prevSearchQuery, setPrevSearchQuery] = useState(searchQuery);
   const [localValue, setLocalValue] = useState(searchQuery ?? "");
   const wasFocusedRef = useRef(false);
 
-  useEffect(() => {
+  if (prevSearchQuery !== searchQuery) {
+    setPrevSearchQuery(searchQuery);
     setLocalValue(searchQuery ?? "");
-  }, [searchQuery]);
+  }
 
   useLayoutEffect(() => {
     if (wasFocusedRef.current && inputRef.current && document.activeElement !== inputRef.current) {

@@ -19,6 +19,18 @@ import { extractTokenFromUrl, parseCheckInToken } from "@/lib/utils/check-in-tok
 import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
 import { formatTimeUTC } from "@/lib/utils/locale";
 
+function isCameraPermissionError(err: Error): boolean {
+  return err.name === "NotAllowedError" || err.message.includes("permission");
+}
+
+function isCameraNotFoundError(err: Error): boolean {
+  return err.name === "NotFoundError" || err.message.includes("not found");
+}
+
+function isCameraNotReadableError(err: Error): boolean {
+  return err.name === "NotReadableError" || err.message.includes("not readable");
+}
+
 interface ScanResult {
   valid: boolean;
   publicId?: string;
@@ -186,10 +198,18 @@ export function ReaderClient() {
           errorMessage = t("errors.signatureInvalid");
         } else if (result.error === "Token expired") {
           errorMessage = t("errors.tokenExpired");
-        } else if (result.error?.includes("format") || result.error?.includes("version")) {
-          errorMessage = t("errors.contentInvalid");
         } else if (result.error) {
-          errorMessage = result.error;
+          let isContentError = false;
+          if (result.error.includes("format")) {
+            isContentError = true;
+          } else if (result.error.includes("version")) {
+            isContentError = true;
+          }
+          if (isContentError) {
+            errorMessage = t("errors.contentInvalid");
+          } else {
+            errorMessage = result.error;
+          }
         }
         setScanResult({
           valid: false,
@@ -258,10 +278,9 @@ export function ReaderClient() {
       return;
     }
 
-    try {
-      const isIOS =
-        typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isIOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
+    try {
       const scanner = new Html5Qrcode("qr-reader-container", {
         useBarCodeDetectorIfSupported: !isIOS,
         formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
@@ -291,26 +310,17 @@ export function ReaderClient() {
       } catch (cameraError) {
         console.error("Camera error:", cameraError);
         if (cameraError instanceof Error) {
-          if (
-            cameraError.name === "NotAllowedError" ||
-            cameraError.message.includes("permission")
-          ) {
+          if (isCameraPermissionError(cameraError)) {
             setError(t("errors.cameraPermissionDenied"));
             setIsScanning(false);
             scannerRef.current = null;
             return;
-          } else if (
-            cameraError.name === "NotFoundError" ||
-            cameraError.message.includes("not found")
-          ) {
+          } else if (isCameraNotFoundError(cameraError)) {
             setError(t("errors.cameraNotFound"));
             setIsScanning(false);
             scannerRef.current = null;
             return;
-          } else if (
-            cameraError.name === "NotReadableError" ||
-            cameraError.message.includes("not readable")
-          ) {
+          } else if (isCameraNotReadableError(cameraError)) {
             setError(t("errors.cameraNotReadable"));
             setIsScanning(false);
             scannerRef.current = null;
@@ -393,18 +403,20 @@ export function ReaderClient() {
           ...scanResult,
           alreadyCheckedIn: true,
         });
+      } else if (result.error) {
+        setError(result.error);
       } else {
-        setError(result.error ?? t("errors.checkInFailed"));
+        setError(t("errors.checkInFailed"));
       }
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
+        setIsCheckingIn(false);
         router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
         return;
       }
       setError(t("errors.checkInFailed"));
-    } finally {
-      setIsCheckingIn(false);
     }
+    setIsCheckingIn(false);
   };
 
   return (

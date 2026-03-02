@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 
 import { usePrefersReducedMotion } from "@/lib/utils/prefers-reduced-motion";
 
@@ -64,6 +64,22 @@ function reducer(state: State, action: Action): State {
   }
 }
 
+function Loader({ hidden }: { hidden: boolean }) {
+  return (
+    <div
+      className={`absolute inset-0 z-20 flex items-center justify-center transition-opacity ${
+        hidden ? "opacity-0" : "opacity-100"
+      }`}
+    >
+      <div className="flex items-end gap-2">
+        <span className="h-2.5 w-2.5 animate-bounce rounded-full bg-orange-500 shadow-[0_0_12px_var(--color-fire-mid-glow-45)] motion-reduce:animate-none dark:bg-orange-400" />
+        <span className="h-3 w-3 animate-bounce rounded-full bg-orange-500 shadow-[0_0_14px_var(--color-fire-mid-glow-strong)] [animation-delay:150ms] motion-reduce:animate-none dark:bg-orange-400" />
+        <span className="h-2.5 w-2.5 animate-bounce rounded-full bg-orange-500 shadow-[0_0_12px_var(--color-fire-mid-glow-45)] [animation-delay:300ms] motion-reduce:animate-none dark:bg-orange-400" />
+      </div>
+    </div>
+  );
+}
+
 export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) {
   const [state, dispatch] = useReducer(reducer, {
     currentDirection: 1,
@@ -86,7 +102,9 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
   const transitionDueRef = useRef(false);
 
   const currentIndexRef = useRef(state.currentIndex);
-  currentIndexRef.current = state.currentIndex;
+  useLayoutEffect(() => {
+    currentIndexRef.current = state.currentIndex;
+  }, [state.currentIndex]);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
@@ -209,19 +227,6 @@ export function HeroSlideshow({ images, interval = 10000 }: HeroSlideshowProps) 
       }, 2000);
     },
     [state.isTransitioning],
-  );
-  const Loader = ({ hidden }: { hidden: boolean }) => (
-    <div
-      className={`absolute inset-0 z-20 flex items-center justify-center transition-opacity ${
-        hidden ? "opacity-0" : "opacity-100"
-      }`}
-    >
-      <div className="flex items-end gap-2">
-        <span className="h-2.5 w-2.5 animate-bounce rounded-full bg-orange-500 shadow-[0_0_12px_var(--color-fire-mid-glow-45)] motion-reduce:animate-none dark:bg-orange-400" />
-        <span className="h-3 w-3 animate-bounce rounded-full bg-orange-500 shadow-[0_0_14px_var(--color-fire-mid-glow-strong)] [animation-delay:150ms] motion-reduce:animate-none dark:bg-orange-400" />
-        <span className="h-2.5 w-2.5 animate-bounce rounded-full bg-orange-500 shadow-[0_0_12px_var(--color-fire-mid-glow-45)] [animation-delay:300ms] motion-reduce:animate-none dark:bg-orange-400" />
-      </div>
-    </div>
   );
   useEffect(() => {
     if (!state.ready || images.length <= 1 || state.prefersReducedMotion) {

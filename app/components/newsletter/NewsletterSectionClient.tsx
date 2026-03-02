@@ -66,8 +66,18 @@ export function NewsletterSectionClient() {
         });
 
         if (!response.ok) {
-          const data = await response.json().catch(() => ({}));
-          const errorMessage = data.error || t("error");
+          let data: Record<string, unknown> = {};
+          try {
+            data = await response.json();
+          } catch {
+            // Ignore
+          }
+          let errorMessage: string;
+          if (data.error) {
+            errorMessage = data.error as string;
+          } else {
+            errorMessage = t("error");
+          }
 
           if (response.status === 429) {
             setError(t("rateLimitError"));

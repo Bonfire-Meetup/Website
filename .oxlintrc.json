@@ -10,6 +10,7 @@
     "restriction": "off"
   },
   "rules": {
+    "typescript/no-deprecated": "error",
     "typescript/no-explicit-any": "error",
     "typescript/no-unsafe-assignment": "error",
     "typescript/no-unsafe-call": "error",
@@ -43,7 +44,7 @@
     "react/react-in-jsx-scope": "off",
     "react/jsx-max-depth": "off",
     "react/no-children-prop": "error",
-    "react/no-deprecated": "warn",
+    "react/no-deprecated": "error",
     "react/no-direct-mutation-state": "error",
     "react/no-unknown-property": "error",
     "react/self-closing-comp": "warn",

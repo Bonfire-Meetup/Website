@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { CheckIcon, CloseIcon, KeyIcon, PlusIcon, TrashIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
@@ -31,13 +31,12 @@ export function PasskeyBlock() {
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
-  const [webAuthnSupported, setWebAuthnSupported] = useState<boolean | null>(null);
-
-  useEffect(() => {
+  const [webAuthnSupported] = useState<boolean | null>(() => {
     if (typeof window !== "undefined") {
-      setWebAuthnSupported(isWebAuthnSupported());
+      return isWebAuthnSupported();
     }
-  }, []);
+    return null;
+  });
 
   const handleRegister = async () => {
     setIsRegistering(true);
@@ -76,9 +75,10 @@ export function PasskeyBlock() {
     setConfirmingId(null);
     try {
       await deletePasskeyMutation.mutateAsync(passkeyId);
-    } finally {
-      setDeletingId(null);
+    } catch {
+      // Errors handled by mutation state
     }
+    setDeletingId(null);
   };
 
   const passkeys = passkeysQuery.data?.items ?? [];

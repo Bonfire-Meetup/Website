@@ -13,7 +13,7 @@ import {
 } from "react";
 
 import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
-import { API_ROUTES } from "@/lib/api/routes";
+import { useCsrfToken } from "@/lib/api/csrf";
 import { type ContactFormState, submitContactForm } from "@/lib/forms/form-actions";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { logError } from "@/lib/utils/log-client";
@@ -44,6 +44,34 @@ function getStoredDraft(): {
   }
 }
 
+function isDraftUnchanged(
+  parsed: {
+    name?: string;
+    email?: string;
+    subject?: string;
+    message?: string;
+    inquiryType?: string;
+  },
+  draft: { name: string; email: string; subject: string; message: string; inquiryType: string },
+): boolean {
+  if (parsed.name !== draft.name) {
+    return false;
+  }
+  if (parsed.email !== draft.email) {
+    return false;
+  }
+  if (parsed.subject !== draft.subject) {
+    return false;
+  }
+  if (parsed.message !== draft.message) {
+    return false;
+  }
+  if (parsed.inquiryType !== draft.inquiryType) {
+    return false;
+  }
+  return true;
+}
+
 interface ContactFormInnerProps {
   onReset: () => void;
 }
@@ -57,7 +85,7 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
   const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [turnstileExecuting, setTurnstileExecuting] = useState(false);
-  const [csrfToken, setCsrfToken] = useState("");
+  const csrfToken = useCsrfToken();
   const [mounted, setMounted] = useState(false);
 
   const [name, setName] = useState("");
@@ -135,13 +163,7 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
       const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
       if (existingDraft) {
         const parsed = JSON.parse(existingDraft);
-        const isUnchanged =
-          parsed.name === draft.name &&
-          parsed.email === draft.email &&
-          parsed.subject === draft.subject &&
-          parsed.message === draft.message &&
-          parsed.inquiryType === draft.inquiryType;
-        if (isUnchanged) {
+        if (isDraftUnchanged(parsed, draft)) {
           return;
         }
       }
@@ -168,33 +190,20 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
     return () => window.removeEventListener("beforeunload", saveDraft);
   }, [saveDraft]);
 
-  useEffect(() => {
-    let isActive = true;
-    fetch(API_ROUTES.CSRF)
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data) => {
-        if (isActive && data?.token) {
-          setCsrfToken(data.token);
-        }
-      })
-      .catch(() => {
-        if (isActive) {
-          setCsrfToken("");
-        }
-      });
-    return () => {
-      isActive = false;
-    };
-  }, []);
-
-  useEffect(() => {
+  const [prevState, setPrevState] = useState(state);
+  if (prevState !== state) {
+    setPrevState(state);
     if (state.message === "captchaFailed") {
       setTurnstileResetKey((prev) => prev + 1);
       setTurnstileExecuting(false);
-    } else if (state.success || state.errors || state.message) {
+    } else if (state.success) {
+      setTurnstileExecuting(false);
+    } else if (state.errors) {
+      setTurnstileExecuting(false);
+    } else if (state.message) {
       setTurnstileExecuting(false);
     }
-  }, [state.message, state.success, state.errors]);
+  }
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {

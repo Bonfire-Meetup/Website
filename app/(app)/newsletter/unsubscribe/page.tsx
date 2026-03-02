@@ -42,9 +42,13 @@ export default function UnsubscribePage() {
         setUnsubscribedEmail(data.email);
       } else {
         setStatus("error");
-        setErrorMessage(
-          data.error === "not_subscribed" ? t("errors.notSubscribed") : t("errors.generic"),
-        );
+        let msg: string;
+        if (data.error === "not_subscribed") {
+          msg = t("errors.notSubscribed");
+        } else {
+          msg = t("errors.generic");
+        }
+        setErrorMessage(msg);
       }
     } catch {
       setStatus("error");

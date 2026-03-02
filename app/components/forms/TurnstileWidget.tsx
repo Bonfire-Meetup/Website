@@ -66,6 +66,14 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function
 
   const [token, setToken] = useState<string>("");
 
+  const [prevResetKey, setPrevResetKey] = useState(resetKey);
+  if (prevResetKey !== resetKey) {
+    setPrevResetKey(resetKey);
+    if (resetKey !== undefined && scriptLoaded) {
+      setToken("");
+    }
+  }
+
   const pendingExecuteResolveRef = useRef<((value: string | null) => void) | null>(null);
   const pendingExecuteTimeoutRef = useRef<number | null>(null);
 
@@ -220,7 +228,9 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function
       }, 15_000);
 
       try {
-        ts.execute?.(widgetId);
+        if (ts.execute) {
+          ts.execute(widgetId);
+        }
       } catch (error) {
         logWarn("turnstileWidget.execute_failed", { error: String(error) });
         resolve(null);
@@ -240,9 +250,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function
   );
 
   useEffect(() => {
-    setToken("");
     clearPendingExecute();
-    setScriptError(false);
   }, [clearPendingExecute]);
 
   useEffect(() => {
@@ -269,8 +277,17 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function
     if (!widgetIdRef.current) {
       return;
     }
-    reset();
-  }, [resetKey, scriptLoaded, reset]);
+    const ts = window.turnstile;
+    if (!ts) {
+      return;
+    }
+    clearPendingExecute();
+    try {
+      ts.reset(widgetIdRef.current);
+    } catch (err) {
+      logWarn("turnstileWidget.reset_failed", { error: String(err) });
+    }
+  }, [resetKey, scriptLoaded, clearPendingExecute]);
 
   useEffect(() => {
     if (!scriptLoaded || scriptError) {

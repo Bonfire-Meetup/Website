@@ -25,7 +25,7 @@ export function CheckInClient() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const tokenQuery = useCheckInToken(auth.hydrated && auth.isAuthenticated);
-  const [lastActivityTime, setLastActivityTime] = useState(Date.now());
+  const [lastActivityTime, setLastActivityTime] = useState(() => Date.now());
 
   useEffect(() => {
     if (tokenQuery.error instanceof ApiError && tokenQuery.error.status === 401) {
@@ -34,6 +34,14 @@ export function CheckInClient() {
   }, [tokenQuery.error, router]);
 
   const tokenValue = tokenQuery.data?.token ?? null;
+
+  const [prevTokenValue, setPrevTokenValue] = useState(tokenValue);
+  if (prevTokenValue !== tokenValue) {
+    setPrevTokenValue(tokenValue);
+    if (!tokenValue) {
+      setQrDataUrl(null);
+    }
+  }
 
   useEffect(() => {
     let timeoutId: number | null = null;
@@ -88,7 +96,6 @@ export function CheckInClient() {
 
   useEffect(() => {
     if (!tokenValue) {
-      setQrDataUrl(null);
       return;
     }
 
@@ -116,20 +123,22 @@ export function CheckInClient() {
     };
   }, [tokenValue]);
 
+  const expiresAt = tokenQuery.data?.expiresAt;
   const expiresLabel = useMemo(() => {
-    if (!tokenQuery.data?.expiresAt) {
+    if (!expiresAt) {
       return null;
     }
-    return formatTimeUTC(tokenQuery.data.expiresAt, locale);
-  }, [locale, tokenQuery.data?.expiresAt]);
+    return formatTimeUTC(expiresAt, locale);
+  }, [locale, expiresAt]);
 
   const handleManualRefresh = async () => {
     setRefreshing(true);
     try {
       await tokenQuery.refetch();
-    } finally {
-      setRefreshing(false);
+    } catch {
+      // Errors handled by query state
     }
+    setRefreshing(false);
   };
 
   if (tokenQuery.isError) {
