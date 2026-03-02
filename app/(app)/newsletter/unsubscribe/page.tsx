@@ -11,49 +11,54 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { API_ROUTES } from "@/lib/api/routes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
+type PageState =
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "success"; email: string; unsubscribedFrom: "newsletter" | "account" | "both" }
+  | { status: "error"; message: string };
+
 export default function UnsubscribePage() {
   const t = useTranslations("sections.newsletterUnsubscribe");
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [unsubscribedEmail, setUnsubscribedEmail] = useState("");
+  const token = useSearchParams().get("token");
+
+  const [state, setState] = useState<PageState>(() =>
+    token ? { status: "idle" } : { status: "error", message: t("errors.missingToken") },
+  );
 
   const handleUnsubscribe = async () => {
-    if (!token) {
-      setStatus("error");
-      setErrorMessage(t("errors.invalidToken"));
-      return;
-    }
-
-    setStatus("loading");
-
+    setState({ status: "loading" });
     try {
       const response = await fetch(API_ROUTES.NEWSLETTER.UNSUBSCRIBE, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        setStatus("success");
-        setUnsubscribedEmail(data.email);
+        setState({
+          status: "success",
+          email: data.email,
+          unsubscribedFrom: data.unsubscribedFrom ?? "newsletter",
+        });
       } else {
-        setStatus("error");
-        let msg: string;
-        if (data.error === "not_subscribed") {
-          msg = t("errors.notSubscribed");
-        } else {
-          msg = t("errors.generic");
-        }
-        setErrorMessage(msg);
+        const errorMessages: Record<string, string> = {
+          not_subscribed: t("errors.notSubscribed"),
+          invalid_token: t("errors.invalidToken"),
+        };
+        setState({ status: "error", message: errorMessages[data.error] ?? t("errors.generic") });
       }
     } catch {
-      setStatus("error");
-      setErrorMessage(t("errors.generic"));
+      setState({ status: "error", message: t("errors.generic") });
     }
+  };
+
+  const getSuccessMessage = (email: string, from: "newsletter" | "account" | "both") => {
+    const keys = {
+      newsletter: "success.messageNewsletter",
+      account: "success.messageAccount",
+      both: "success.messageBoth",
+    } as const;
+    return t(keys[from], { email });
   };
 
   return (
@@ -76,7 +81,7 @@ export default function UnsubscribePage() {
           </p>
         </div>
 
-        {status === "success" ? (
+        {state.status === "success" ? (
           <div className="glass-card no-hover-pop p-8 text-center sm:p-12">
             <div className="form-success-icon">
               <CheckIcon className="h-8 w-8 text-white" />
@@ -85,7 +90,7 @@ export default function UnsubscribePage() {
               {t("success.title")}
             </h2>
             <p className="mx-auto max-w-md text-neutral-600 dark:text-neutral-400">
-              {t("success.message", { email: unsubscribedEmail })}
+              {getSuccessMessage(state.email, state.unsubscribedFrom)}
             </p>
             <div className="mt-8">
               <Button href={PAGE_ROUTES.HOME} variant="glass-secondary">
@@ -93,7 +98,7 @@ export default function UnsubscribePage() {
               </Button>
             </div>
           </div>
-        ) : status === "error" ? (
+        ) : state.status === "error" ? (
           <div className="glass-card no-hover-pop p-8 text-center sm:p-12">
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-rose-400 to-red-500 shadow-lg shadow-rose-500/30">
               <CloseIcon className="h-8 w-8 text-white" />
@@ -102,7 +107,7 @@ export default function UnsubscribePage() {
               {t("error.title")}
             </h2>
             <p className="mx-auto max-w-md text-neutral-600 dark:text-neutral-400">
-              {errorMessage}
+              {state.message}
             </p>
             <div className="mt-8">
               <Button href={PAGE_ROUTES.HOME} variant="glass-secondary">
@@ -117,19 +122,17 @@ export default function UnsubscribePage() {
                 <MailIcon className="h-6 w-6 text-white" />
               </div>
             </div>
-
             <p className="mb-8 text-center text-lg text-neutral-600 dark:text-neutral-400">
               {t("confirmMessage")}
             </p>
-
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
               <Button
                 onClick={handleUnsubscribe}
-                disabled={!token || status === "loading"}
+                disabled={state.status === "loading"}
                 variant="glass"
                 className="w-full sm:w-auto"
               >
-                {status === "loading" ? (
+                {state.status === "loading" ? (
                   <>
                     <LoadingSpinner className="mr-2 h-4 w-4" />
                     {t("unsubscribing")}
@@ -138,7 +141,6 @@ export default function UnsubscribePage() {
                   t("unsubscribe")
                 )}
               </Button>
-
               <Button
                 href={PAGE_ROUTES.HOME}
                 variant="glass-secondary"
@@ -147,10 +149,6 @@ export default function UnsubscribePage() {
                 {t("cancel")}
               </Button>
             </div>
-
-            {!token && (
-              <p className="form-error-text mt-4 text-center">{t("errors.missingToken")}</p>
-            )}
           </div>
         )}
       </div>

@@ -68,7 +68,9 @@
       "backToHome": "Back to home",
       "success": {
         "title": "Successfully unsubscribed",
-        "message": "{email} has been removed from our newsletter mailing list. You can always resubscribe later!"
+        "messageNewsletter": "{email} has been removed from our mailing list. You can always resubscribe later!",
+        "messageAccount": "Email updates have been turned off for {email}. You can update your notification preferences anytime in your account settings.",
+        "messageBoth": "{email} has been removed from our mailing list and email updates have been turned off in your account. You can update your preferences in account settings."
       },
       "error": {
         "title": "Unable to unsubscribe"

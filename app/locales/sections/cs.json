@@ -68,7 +68,9 @@
       "backToHome": "Zpět na úvod",
       "success": {
         "title": "Úspěšně odhlášeno",
-        "message": "{email} byl odebrán z našeho mailing listu. Kdykoliv se můžeš znovu přihlásit!"
+        "messageNewsletter": "{email} byl odhlášen z mailing listu. Kdykoliv se můžeš znovu přihlásit!",
+        "messageAccount": "E-mailové novinky pro {email} byly vypnuty. Nastavení oznámení můžeš kdykoliv změnit v nastavení účtu.",
+        "messageBoth": "{email} byl odhlášen z mailing listu a e-mailové novinky byly vypnuty v účtu. Nastavení můžeš kdykoliv změnit v nastavení účtu."
       },
       "error": {
         "title": "Odhlášení se nezdařilo"
