@@ -15,53 +15,56 @@ import { createJsonAuthHeaders } from "@/lib/utils/http";
 import { formatLongDateUTC } from "@/lib/utils/locale";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
-const ACCENT = "bg-gradient-to-b from-rose-600 via-orange-500 to-red-600";
-
 interface NewsletterArchiveClientProps {
   items: ArchiveListItem[];
 }
 
-function IssueCard({ item, label }: { item: ArchiveListItem; label: string }) {
+function IssueRow({ item, issueNumber }: { item: ArchiveListItem; issueNumber?: number }) {
   const locale = useLocale();
   const t = useTranslations("sections.newsletterArchiveIndex");
 
   return (
-    <article className="glass-card no-hover-pop group flex overflow-hidden">
-      <div className={`w-1 shrink-0 ${ACCENT}`} />
-      <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
-        <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
-          <span>{label}</span>
+    <Link
+      href={`/newsletter/${compressUuid(item.id)}`}
+      className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-neutral-50 sm:gap-5 sm:px-6 sm:py-5 dark:hover:bg-white/[0.03]"
+    >
+      <span className="w-7 shrink-0 font-mono text-xs font-bold text-neutral-300 tabular-nums dark:text-neutral-600">
+        {issueNumber !== undefined ? String(issueNumber).padStart(2, "0") : "—"}
+      </span>
+
+      <div className="min-w-0 flex-1">
+        <p className="mb-1 text-[11px] font-semibold tracking-[0.15em] text-neutral-400 uppercase dark:text-neutral-500">
+          {formatLongDateUTC(item.sentAt, locale)}
           {item.testSend && (
-            <span className="rounded-full bg-amber-100 px-2 py-0.5 font-bold tracking-widest text-amber-700 dark:bg-amber-500/20 dark:text-amber-400">
+            <span className="ml-2 rounded-full bg-amber-100 px-1.5 py-px text-[10px] font-bold tracking-normal text-amber-700 normal-case dark:bg-amber-500/20 dark:text-amber-400">
               {t("testBadge")}
             </span>
           )}
-          <span className="mx-0.5 opacity-40">·</span>
-          <span className="font-normal tracking-normal text-neutral-400 normal-case dark:text-neutral-500">
-            {formatLongDateUTC(item.sentAt, locale)}
-          </span>
-        </div>
-
-        <div className="min-w-0">
-          <h2 className="text-base font-bold tracking-tight text-neutral-900 sm:text-lg dark:text-white">
-            {item.subject}
-          </h2>
-          {item.previewText && (
-            <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-              {item.previewText}
-            </p>
-          )}
-        </div>
-
-        <Link
-          href={`/newsletter/${compressUuid(item.id)}`}
-          className="flex w-fit items-center gap-1.5 text-sm font-semibold text-rose-600 transition-colors hover:text-rose-500 dark:text-rose-400 dark:hover:text-rose-300"
-        >
-          {t("read")}
-          <ArrowRightIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-        </Link>
+        </p>
+        <h2 className="truncate text-sm font-bold tracking-tight text-neutral-900 transition-colors group-hover:text-rose-600 sm:text-base dark:text-white dark:group-hover:text-rose-400">
+          {item.subject}
+        </h2>
+        {item.previewText && (
+          <p className="mt-0.5 truncate text-xs text-neutral-500 sm:text-sm dark:text-neutral-400">
+            {item.previewText}
+          </p>
+        )}
       </div>
-    </article>
+
+      <ArrowRightIcon className="h-4 w-4 shrink-0 text-neutral-300 transition-all group-hover:translate-x-0.5 group-hover:text-rose-500 dark:text-neutral-600 dark:group-hover:text-rose-400" />
+    </Link>
+  );
+}
+
+function IssueList({ items, total }: { items: ArchiveListItem[]; total: number }) {
+  return (
+    <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-neutral-200 dark:bg-neutral-900 dark:ring-neutral-800">
+      <div className="divide-y divide-neutral-100 dark:divide-neutral-800">
+        {items.map((item, index) => (
+          <IssueRow key={item.id} item={item} issueNumber={total - index} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -70,7 +73,6 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
   const tNewsletter = useTranslations("sections.newsletter");
   const isEditor = useIsRole(USER_ROLES.EDITOR);
   const [testItems, setTestItems] = useState<ArchiveListItem[]>([]);
-  const [hideTestSends, setHideTestSends] = useState(false);
 
   useEffect(() => {
     if (!isEditor) {
@@ -103,25 +105,18 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
       </div>
 
       {/* Hero */}
-      <section className="relative flex min-h-[44vh] items-center justify-center overflow-hidden px-4 pt-32 pb-12 sm:min-h-[50vh] sm:pb-16">
-        <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none">
-          <span className="text-outline block text-[22vw] leading-none font-black opacity-[0.03] sm:text-[16vw] dark:opacity-[0.02]">
-            NEWS
-          </span>
-        </div>
-        <div className="relative z-10 mx-auto max-w-2xl text-center">
-          <p className="mb-4 flex items-center justify-center gap-3 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:text-sm sm:tracking-[0.5em] dark:text-rose-400">
-            <span className="h-px w-8 bg-gradient-to-r from-transparent to-rose-400 sm:w-12" />
-            {t("eyebrow")}
-            <span className="h-px w-8 bg-gradient-to-l from-transparent to-rose-400 sm:w-12" />
-          </p>
-          <h1 className="text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
-            {t("title")}
-          </h1>
-          <p className="mx-auto mt-4 max-w-lg text-neutral-500 dark:text-neutral-400">
-            {t("subtitle")}
-          </p>
-        </div>
+      <section className="relative px-4 pt-32 pb-14 text-center sm:pt-36 sm:pb-16">
+        <p className="mb-4 flex items-center justify-center gap-3 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:text-sm sm:tracking-[0.5em] dark:text-rose-400">
+          <span className="h-px w-8 bg-gradient-to-r from-transparent to-rose-400 sm:w-12" />
+          {t("eyebrow")}
+          <span className="h-px w-8 bg-gradient-to-l from-transparent to-rose-400 sm:w-12" />
+        </p>
+        <h1 className="text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
+          {t("title")}
+        </h1>
+        <p className="mx-auto mt-4 max-w-lg text-neutral-500 dark:text-neutral-400">
+          {t("subtitle")}
+        </p>
       </section>
 
       {/* Content */}
@@ -132,51 +127,32 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
             <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">{t("emptyHint")}</p>
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
-            {items.map((item, index) => (
-              <IssueCard
-                key={item.id}
-                item={item}
-                label={t("updateLabel", { number: (items.length - index).toString() })}
-              />
-            ))}
-          </div>
+          <IssueList items={items} total={items.length} />
         )}
 
+        {/* Test sends — editor only */}
         {isEditor && testItems.length > 0 && (
-          <div className="mt-10 space-y-4">
-            <div className="flex items-center justify-between gap-4">
-              <p className="text-[10px] font-bold tracking-[0.25em] text-neutral-400 uppercase dark:text-neutral-500">
+          <div className="mt-8">
+            <div className="mb-3 flex items-center gap-3">
+              <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold tracking-widest text-amber-700 uppercase dark:bg-amber-500/20 dark:text-amber-400">
                 {t("testSendsLabel")}
-              </p>
-              <label className="flex cursor-pointer items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
-                <input
-                  type="checkbox"
-                  checked={hideTestSends}
-                  onChange={(e) => setHideTestSends(e.target.checked)}
-                  className="h-3.5 w-3.5 rounded border-neutral-300 accent-rose-600 dark:border-neutral-600 dark:accent-rose-500"
-                />
-                {t("hideTestSends")}
-              </label>
+              </span>
+              <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />
             </div>
-            {!hideTestSends && (
-              <div className="flex flex-col gap-3">
-                {testItems.map((item, index) => (
-                  <IssueCard
-                    key={item.id}
-                    item={item}
-                    label={t("updateLabel", { number: (testItems.length - index).toString() })}
-                  />
+            <div className="overflow-hidden rounded-2xl ring-1 ring-amber-200 dark:ring-amber-500/20">
+              <div className="divide-y divide-neutral-100 dark:divide-amber-500/10">
+                {testItems.map((item) => (
+                  <IssueRow key={item.id} item={item} />
                 ))}
               </div>
-            )}
+            </div>
           </div>
         )}
 
         {/* Subscribe CTA */}
         <div className="mt-16">
           <div className="glass-card no-hover-pop overflow-hidden">
-            <div className={`h-1 w-full ${ACCENT}`} />
+            <div className="h-1 w-full bg-gradient-to-r from-rose-600 via-orange-500 to-red-600" />
             <div className="p-8 text-center sm:p-10">
               <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
                 {tNewsletter("title")}

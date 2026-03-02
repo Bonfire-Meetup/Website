@@ -1,12 +1,11 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { NewsletterSectionCard } from "@/components/newsletter/NewsletterSectionCard";
-import { AccentBar } from "@/components/ui/AccentBar";
-import { Button } from "@/components/ui/Button";
+import { ArrowLeftIcon, ArrowRightIcon, TrashIcon } from "@/components/shared/Icons";
 import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { USER_ROLES } from "@/lib/config/roles";
@@ -16,6 +15,7 @@ import type { NewsletterSection } from "@/lib/types/newsletter";
 import { createJsonAuthHeaders } from "@/lib/utils/http";
 import { formatLongDateUTC } from "@/lib/utils/locale";
 import { logWarn } from "@/lib/utils/log-client";
+import { renderMarkdownToHtml } from "@/lib/utils/newsletter-markdown";
 
 export type { NewsletterSection };
 
@@ -32,20 +32,23 @@ interface NewsletterArchiveContentProps {
   slug: string;
 }
 
-function DeleteButton({ slug }: { slug: string }) {
+export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchiveContentProps) {
   const t = useTranslations("sections.newsletterArchive");
+  const locale = useLocale();
   const router = useRouter();
-  const [confirming, setConfirming] = useState(false);
+  const isEditor = useIsRole(USER_ROLES.EDITOR);
+
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleDelete = async () => {
     setDeleting(true);
-    setError(null);
+    setDeleteError(null);
     try {
       const token = await getValidAccessTokenAsync();
       if (!token) {
-        setError(t("deleteError"));
+        setDeleteError(t("deleteError"));
         setDeleting(false);
         return;
       }
@@ -56,126 +59,177 @@ function DeleteButton({ slug }: { slug: string }) {
       if (res.ok) {
         router.push(PAGE_ROUTES.NEWSLETTER_ARCHIVE);
       } else {
-        setError(t("deleteError"));
+        setDeleteError(t("deleteError"));
         setDeleting(false);
       }
     } catch (err) {
       logWarn("newsletter.delete_failed", { error: String(err) });
-      setError(t("deleteError"));
+      setDeleteError(t("deleteError"));
       setDeleting(false);
     }
   };
 
-  if (confirming) {
-    return (
-      <div className="rounded-2xl border-2 border-rose-400 bg-rose-50 p-6 dark:border-rose-600 dark:bg-rose-950/30">
-        <p className="font-semibold text-rose-800 dark:text-rose-200">{t("deleteConfirmTitle")}</p>
-        <p className="mt-1 text-sm text-rose-700 dark:text-rose-300">{t("deleteConfirmMessage")}</p>
-        {error && (
-          <p className="mt-2 text-sm font-medium text-rose-600 dark:text-rose-400">{error}</p>
-        )}
-        <div className="mt-4 flex gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setConfirming(false)}
-            disabled={deleting}
-          >
-            {t("deleteCancel")}
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handleDelete}
-            disabled={deleting}
-            className="bg-rose-700 hover:bg-rose-800"
-          >
-            {deleting ? t("deleting") : t("deleteConfirm")}
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex justify-end">
-      <Button variant="glass-secondary" size="sm" onClick={() => setConfirming(true)}>
-        {t("delete")}
-      </Button>
-    </div>
-  );
-}
-
-export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchiveContentProps) {
-  const t = useTranslations("sections.newsletterArchive");
-  const locale = useLocale();
   const sentDate = formatLongDateUTC(newsletter.sentAt, locale);
-  const isEditor = useIsRole(USER_ROLES.EDITOR);
 
   return (
-    <main className="gradient-bg-static relative min-h-screen overflow-hidden px-4 pt-32 pb-24">
+    <main className="relative min-h-screen overflow-hidden bg-neutral-50 px-4 pt-32 pb-24 dark:bg-neutral-950">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-9),transparent_62%)]" />
-        <div className="absolute top-1/2 left-1/4 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,var(--color-fire-glow-light-mid),transparent_62%)] opacity-30 blur-3xl" />
+        <div className="absolute -top-24 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-1),transparent_60%)]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-3xl">
-        {newsletter.testSend && (
-          <div className="mb-8 rounded-2xl border-2 border-amber-400 bg-amber-50 p-6 text-center dark:border-amber-600 dark:bg-amber-950/30">
-            <p className="font-semibold text-amber-800 dark:text-amber-200">
-              {t("testBannerTitle")}
+      <div className="relative z-10 mx-auto max-w-2xl">
+        {/* Top bar */}
+        {confirmingDelete ? (
+          <div className="mb-10 rounded-xl bg-rose-50 p-4 ring-1 ring-rose-200 dark:bg-rose-950/30 dark:ring-rose-800">
+            <p className="text-sm font-semibold text-rose-800 dark:text-rose-200">
+              {t("deleteConfirmTitle")}
             </p>
-            <p className="mt-1 text-sm text-amber-700 dark:text-amber-300">
-              {t("testBannerMessage")}
+            <p className="mt-1 text-xs text-rose-600/80 dark:text-rose-400">
+              {t("deleteConfirmMessage")}
             </p>
+            {deleteError && (
+              <p className="mt-2 text-xs font-medium text-rose-600 dark:text-rose-400">
+                {deleteError}
+              </p>
+            )}
+            <div className="mt-3 flex items-center gap-3">
+              <button
+                onClick={() => {
+                  setConfirmingDelete(false);
+                  setDeleteError(null);
+                }}
+                disabled={deleting}
+                className="text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900 disabled:opacity-50 dark:text-neutral-400 dark:hover:text-neutral-200"
+              >
+                {t("deleteCancel")}
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="rounded-lg bg-rose-600 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-rose-700 disabled:opacity-50"
+              >
+                {deleting ? t("deleting") : t("deleteConfirm")}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="mb-10 flex items-center justify-between gap-4">
+            <Link
+              href={PAGE_ROUTES.NEWSLETTER_ARCHIVE}
+              className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
+            >
+              <ArrowLeftIcon className="h-4 w-4" />
+              {t("backToArchive")}
+            </Link>
+            {isEditor && (
+              <button
+                onClick={() => setConfirmingDelete(true)}
+                className="flex items-center gap-1.5 text-sm text-neutral-400 transition-colors hover:text-rose-600 dark:text-neutral-500 dark:hover:text-rose-400"
+              >
+                <TrashIcon className="h-3.5 w-3.5" />
+                {t("delete")}
+              </button>
+            )}
           </div>
         )}
 
-        {isEditor && (
-          <div className="mb-8">
-            <DeleteButton slug={slug} />
-          </div>
-        )}
+        {/* Header */}
+        <header className="mb-12">
+          {newsletter.testSend && (
+            <div className="mb-5 flex justify-center">
+              <span className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-4 py-1.5 text-xs font-bold text-amber-700 dark:bg-amber-500/20 dark:text-amber-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500 dark:bg-amber-400" />
+                {t("testBannerTitle")}
+              </span>
+            </div>
+          )}
 
-        <div className="mb-12 text-center">
-          <p className="text-brand-600 dark:text-brand-300 mb-6 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em]">
-            <span className="to-brand-400 h-px w-8 bg-gradient-to-r from-transparent sm:w-12" />
+          <p className="mb-4 flex items-center gap-2 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-rose-400">
+            <span className="h-px w-6 bg-gradient-to-r from-transparent to-rose-400 sm:w-10" />
             {t("eyebrow")}
-            <span className="to-brand-400 h-px w-8 bg-gradient-to-l from-transparent sm:w-12" />
+            <span className="h-px w-6 bg-gradient-to-l from-transparent to-rose-400 sm:w-10" />
           </p>
-          <div className="mb-4 flex items-center justify-center gap-4">
-            <AccentBar />
-            <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
-              {newsletter.subject}
-            </h1>
-          </div>
+
+          <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
+            {newsletter.subject}
+          </h1>
+
           {newsletter.previewText && (
-            <p className="mx-auto max-w-xl text-neutral-600 dark:text-neutral-400">
+            <p className="mt-3 text-lg leading-relaxed text-neutral-500 dark:text-neutral-400">
               {newsletter.previewText}
             </p>
           )}
-        </div>
 
-        <div className="space-y-8">
-          {newsletter.sections.map((section, index) => (
-            <NewsletterSectionCard
-              key={section.id}
-              section={section}
-              secondaryLabel={
-                index > 0 ? t("updateLabel", { number: String(index).padStart(2, "0") }) : undefined
-              }
-              variant="display"
-            />
-          ))}
-        </div>
-
-        <div className="mt-16 flex flex-col items-center gap-4 text-center">
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="mt-4 text-sm text-neutral-400 dark:text-neutral-500">
             {t("sentOn", { sentDate })}
           </p>
-          <Button href={PAGE_ROUTES.NEWSLETTER_ARCHIVE} variant="glass-secondary" size="sm">
+        </header>
+
+        {/* Article body */}
+        <article>
+          {newsletter.sections.map((section, index) => (
+            <section
+              key={section.id}
+              className={
+                index > 0
+                  ? "mt-12 border-t border-neutral-200 pt-12 dark:border-neutral-800"
+                  : undefined
+              }
+            >
+              {section.imageUrl && (
+                <img
+                  src={section.imageUrl}
+                  alt={section.title}
+                  className="mb-8 w-full rounded-2xl"
+                />
+              )}
+
+              {index > 0 && (
+                <p className="mb-2 text-[11px] font-bold tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
+                  {t("updateLabel", { number: String(index).padStart(2, "0") })}
+                </p>
+              )}
+
+              <h2
+                className={
+                  index === 0
+                    ? "mb-5 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white"
+                    : "mb-4 text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white"
+                }
+              >
+                {section.title}
+              </h2>
+
+              <div
+                className="text-base leading-relaxed text-neutral-600 dark:text-neutral-300 [&_a]:!text-rose-600 [&_a]:underline [&_a]:transition-colors [&_a]:hover:!text-rose-500 dark:[&_a]:!text-rose-400 [&_p]:mb-4 [&_p:last-child]:mb-0"
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(section.text) }}
+              />
+
+              {section.ctaHref && section.ctaLabel && (
+                <div className="mt-6">
+                  <a
+                    href={section.ctaHref}
+                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 via-orange-500 to-rose-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-rose-500/20 transition-opacity hover:opacity-90"
+                  >
+                    {section.ctaLabel}
+                    <ArrowRightIcon className="h-4 w-4" />
+                  </a>
+                </div>
+              )}
+            </section>
+          ))}
+        </article>
+
+        {/* Bottom nav */}
+        <div className="mt-16 border-t border-neutral-200 pt-8 dark:border-neutral-800">
+          <Link
+            href={PAGE_ROUTES.NEWSLETTER_ARCHIVE}
+            className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
+          >
+            <ArrowLeftIcon className="h-4 w-4" />
             {t("backToArchive")}
-          </Button>
+          </Link>
         </div>
       </div>
     </main>
