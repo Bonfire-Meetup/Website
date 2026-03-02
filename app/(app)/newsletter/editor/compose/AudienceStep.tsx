@@ -6,17 +6,15 @@ import { useState } from "react";
 import { PlusIcon, XIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 
-import type { NewsletterWizardData } from "./types";
+import type { AudienceCounts, NewsletterWizardData } from "./types";
 
 interface AudienceStepProps {
   data: NewsletterWizardData["audience"];
   onUpdate: (audience: NewsletterWizardData["audience"]) => void;
+  counts: AudienceCounts | null;
 }
 
-const inputBaseClass = "form-input-base";
-const inputNormalClass = "form-input";
-
-export function AudienceStep({ data, onUpdate }: AudienceStepProps) {
+export function AudienceStep({ data, onUpdate, counts }: AudienceStepProps) {
   const t = useTranslations("newsletterEditor");
   const [newEmail, setNewEmail] = useState("");
 
@@ -60,20 +58,34 @@ export function AudienceStep({ data, onUpdate }: AudienceStepProps) {
       </div>
 
       <div className="space-y-4">
-        {[
-          { value: "all", label: t("audienceAll"), desc: t("audienceAllDesc") },
-          {
-            value: "subscribers",
-            label: t("audienceSubscribers"),
-            desc: t("audienceSubscribersDesc"),
-          },
-          {
-            value: "registered",
-            label: t("audienceRegistered"),
-            desc: t("audienceRegisteredDesc"),
-          },
-          { value: "manual", label: t("audienceManual"), desc: t("audienceManualDesc") },
-        ].map((option) => (
+        {(
+          [
+            {
+              value: "all",
+              label: t("audienceAll"),
+              desc: t("audienceAllDesc"),
+              count: counts?.all,
+            },
+            {
+              value: "subscribers",
+              label: t("audienceSubscribers"),
+              desc: t("audienceSubscribersDesc"),
+              count: counts?.subscribers,
+            },
+            {
+              value: "registered",
+              label: t("audienceRegistered"),
+              desc: t("audienceRegisteredDesc"),
+              count: counts?.registered,
+            },
+            {
+              value: "manual",
+              label: t("audienceManual"),
+              desc: t("audienceManualDesc"),
+              count: data.manualEmails.length || undefined,
+            },
+          ] as const
+        ).map((option) => (
           <label
             key={option.value}
             className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors ${
@@ -93,7 +105,24 @@ export function AudienceStep({ data, onUpdate }: AudienceStepProps) {
               className="mt-1 h-4 w-4 cursor-pointer text-rose-600 accent-rose-600"
             />
             <div className="flex-1">
-              <span className="font-semibold text-neutral-900 dark:text-white">{option.label}</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-neutral-900 dark:text-white">
+                  {option.label}
+                </span>
+                {option.value !== "manual" && counts === null ? (
+                  <span className="h-4 w-8 animate-pulse rounded-full bg-neutral-200 dark:bg-white/10" />
+                ) : option.count !== undefined ? (
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums ${
+                      data.type === option.value
+                        ? "bg-rose-200 text-rose-800 dark:bg-rose-500/30 dark:text-rose-200"
+                        : "bg-neutral-200 text-neutral-600 dark:bg-white/10 dark:text-neutral-400"
+                    }`}
+                  >
+                    {option.count.toLocaleString()}
+                  </span>
+                ) : null}
+              </div>
               <p className="text-sm text-neutral-500 dark:text-neutral-400">{option.desc}</p>
             </div>
           </label>
@@ -111,7 +140,7 @@ export function AudienceStep({ data, onUpdate }: AudienceStepProps) {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewEmail(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={t("emailPlaceholder")}
-            className={`${inputBaseClass} ${inputNormalClass} flex-1`}
+            className="form-input-base form-input flex-1"
           />
           <Button onClick={handleAddEmail} variant="secondary" size="sm" className="gap-2">
             <PlusIcon className="h-4 w-4" />

@@ -1,3 +1,5 @@
+import "server-only";
+
 import { and, count, eq, sql } from "drizzle-orm";
 
 import { db } from "@/lib/data/db";

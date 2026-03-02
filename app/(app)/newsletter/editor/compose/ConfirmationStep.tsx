@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { NewsletterSectionCard } from "@/components/newsletter/NewsletterSectionCard";
 import { Button } from "@/components/ui/Button";
 import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
@@ -13,10 +14,11 @@ import type { NewsletterWizardData } from "./types";
 
 interface ConfirmationStepProps {
   data: NewsletterWizardData;
+  recipientCount: number | null;
   onSendComplete: () => void;
 }
 
-export function ConfirmationStep({ data, onSendComplete }: ConfirmationStepProps) {
+export function ConfirmationStep({ data, recipientCount, onSendComplete }: ConfirmationStepProps) {
   const t = useTranslations("newsletterEditor");
   const [isSending, setIsSending] = useState(false);
   const [isTestSending, setIsTestSending] = useState(false);
@@ -116,53 +118,29 @@ export function ConfirmationStep({ data, onSendComplete }: ConfirmationStepProps
       )}
 
       <div className="mx-auto max-w-[600px] overflow-hidden rounded-2xl border border-neutral-200/90 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:border-white/10 dark:bg-neutral-900 dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]">
-        <div className="border-b border-neutral-200/80 px-5 py-4 dark:border-white/10">
-          <p className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-            {t("previewSubject")}
-          </p>
-          <p className="mt-1 font-semibold text-neutral-900 dark:text-white">{data.subject}</p>
-          {data.previewText && (
-            <p className="mt-1.5 line-clamp-2 text-sm text-neutral-500 dark:text-neutral-400">
-              {data.previewText}
+        <div className="max-h-[560px] overflow-y-auto">
+          <div className="border-b border-neutral-200/80 px-5 py-4 dark:border-white/10">
+            <p className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
+              {t("previewSubject")}
             </p>
-          )}
-        </div>
+            <p className="mt-1 font-semibold text-neutral-900 dark:text-white">{data.subject}</p>
+            {data.previewText && (
+              <p className="mt-1.5 text-sm text-neutral-500 dark:text-neutral-400">
+                {data.previewText}
+              </p>
+            )}
+          </div>
 
-        <div className="divide-y divide-neutral-100 dark:divide-white/5">
-          {allSections.map((section, index) => (
-            <div key={section.id} className="bg-white dark:bg-neutral-900">
-              <div className="h-1 w-full shrink-0 bg-gradient-to-r from-rose-700 via-orange-500 to-red-600" />
-
-              {section.imageUrl && (
-                <div className="relative h-40 w-full bg-neutral-100 dark:bg-neutral-800">
-                  <img
-                    src={section.imageUrl}
-                    alt=""
-                    className="h-full w-full object-cover object-center"
-                  />
-                </div>
-              )}
-
-              <div className="px-5 py-4">
-                {!section.imageUrl && index > 0 && (
-                  <p className="mb-2 text-[10px] font-bold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
-                    {t("secondaryLabel", { number: index })}
-                  </p>
-                )}
-                <h3 className="font-semibold text-neutral-900 dark:text-white">{section.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed whitespace-pre-wrap text-neutral-600 dark:text-neutral-400">
-                  {section.text.length > 280 ? `${section.text.slice(0, 280)}…` : section.text}
-                </p>
-                {section.ctaLabel && section.ctaHref && (
-                  <p className="mt-3">
-                    <span className="inline-flex rounded-lg bg-gradient-to-r from-rose-700 via-orange-500 to-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm">
-                      {section.ctaLabel}
-                    </span>
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
+          <div className="divide-y divide-neutral-100 dark:divide-white/5">
+            {allSections.map((section, index) => (
+              <NewsletterSectionCard
+                key={section.id}
+                section={section}
+                secondaryLabel={index > 0 ? t("secondaryLabel", { number: index }) : undefined}
+                variant="preview"
+              />
+            ))}
+          </div>
         </div>
 
         <div className="border-t border-neutral-200/80 px-5 py-3 dark:border-white/10">
@@ -210,7 +188,11 @@ export function ConfirmationStep({ data, onSendComplete }: ConfirmationStepProps
           size="sm"
           className="flex-1"
         >
-          {isSending ? t("sending") : t("send")}
+          {isSending
+            ? t("sending")
+            : recipientCount !== null
+              ? `Send to ${recipientCount.toLocaleString()} recipients`
+              : t("send")}
         </Button>
       </div>
     </div>

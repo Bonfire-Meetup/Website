@@ -1,19 +1,23 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
+import { NewsletterSectionCard } from "@/components/newsletter/NewsletterSectionCard";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
+import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
+import { API_ROUTES } from "@/lib/api/routes";
+import { USER_ROLES } from "@/lib/config/roles";
+import { useIsRole } from "@/lib/redux/hooks/useIsRole";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
+import type { NewsletterSection } from "@/lib/types/newsletter";
+import { createJsonAuthHeaders } from "@/lib/utils/http";
 import { formatLongDateUTC } from "@/lib/utils/locale";
+import { logWarn } from "@/lib/utils/log-client";
 
-export interface NewsletterSection {
-  id: string;
-  title: string;
-  text: string;
-  imageUrl?: string;
-  ctaLabel?: string;
-  ctaHref?: string;
-}
+export type { NewsletterSection };
 
 export interface NewsletterArchiveData {
   subject: string;
@@ -25,12 +29,88 @@ export interface NewsletterArchiveData {
 
 interface NewsletterArchiveContentProps {
   newsletter: NewsletterArchiveData;
+  slug: string;
 }
 
-export function NewsletterArchiveContent({ newsletter }: NewsletterArchiveContentProps) {
+function DeleteButton({ slug }: { slug: string }) {
+  const t = useTranslations("sections.newsletterArchive");
+  const router = useRouter();
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    setError(null);
+    try {
+      const token = await getValidAccessTokenAsync();
+      if (!token) {
+        setError(t("deleteError"));
+        setDeleting(false);
+        return;
+      }
+      const res = await fetch(API_ROUTES.NEWSLETTER.ARCHIVE_ITEM(slug), {
+        method: "DELETE",
+        headers: createJsonAuthHeaders(token),
+      });
+      if (res.ok) {
+        router.push(PAGE_ROUTES.NEWSLETTER_ARCHIVE);
+      } else {
+        setError(t("deleteError"));
+        setDeleting(false);
+      }
+    } catch (err) {
+      logWarn("newsletter.delete_failed", { error: String(err) });
+      setError(t("deleteError"));
+      setDeleting(false);
+    }
+  };
+
+  if (confirming) {
+    return (
+      <div className="rounded-2xl border-2 border-rose-400 bg-rose-50 p-6 dark:border-rose-600 dark:bg-rose-950/30">
+        <p className="font-semibold text-rose-800 dark:text-rose-200">{t("deleteConfirmTitle")}</p>
+        <p className="mt-1 text-sm text-rose-700 dark:text-rose-300">{t("deleteConfirmMessage")}</p>
+        {error && (
+          <p className="mt-2 text-sm font-medium text-rose-600 dark:text-rose-400">{error}</p>
+        )}
+        <div className="mt-4 flex gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setConfirming(false)}
+            disabled={deleting}
+          >
+            {t("deleteCancel")}
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={handleDelete}
+            disabled={deleting}
+            className="bg-rose-700 hover:bg-rose-800"
+          >
+            {deleting ? t("deleting") : t("deleteConfirm")}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex justify-end">
+      <Button variant="glass-secondary" size="sm" onClick={() => setConfirming(true)}>
+        {t("delete")}
+      </Button>
+    </div>
+  );
+}
+
+export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchiveContentProps) {
   const t = useTranslations("sections.newsletterArchive");
   const locale = useLocale();
   const sentDate = formatLongDateUTC(newsletter.sentAt, locale);
+  const isEditor = useIsRole(USER_ROLES.EDITOR);
 
   return (
     <main className="gradient-bg-static relative min-h-screen overflow-hidden px-4 pt-32 pb-24">
@@ -48,6 +128,12 @@ export function NewsletterArchiveContent({ newsletter }: NewsletterArchiveConten
             <p className="mt-1 text-sm text-amber-700 dark:text-amber-300">
               {t("testBannerMessage")}
             </p>
+          </div>
+        )}
+
+        {isEditor && (
+          <div className="mb-8">
+            <DeleteButton slug={slug} />
           </div>
         )}
 
@@ -72,55 +158,24 @@ export function NewsletterArchiveContent({ newsletter }: NewsletterArchiveConten
 
         <div className="space-y-8">
           {newsletter.sections.map((section, index) => (
-            <article
+            <NewsletterSectionCard
               key={section.id}
-              className="glass-card no-hover-pop overflow-hidden rounded-[24px]"
-            >
-              <div className="h-1.5 w-full shrink-0 bg-gradient-to-r from-rose-700 via-orange-500 to-red-600" />
-
-              {section.imageUrl && (
-                <div className="relative h-64 w-full overflow-hidden">
-                  <img
-                    src={section.imageUrl}
-                    alt={section.title}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              )}
-
-              <div className="p-8 sm:p-10">
-                {!section.imageUrl && index > 0 && (
-                  <p className="mb-3 text-[11px] font-bold tracking-[0.15em] text-neutral-400 uppercase dark:text-neutral-500">
-                    {t("updateLabel", { number: String(index).padStart(2, "0") })}
-                  </p>
-                )}
-
-                <h2 className="mb-4 text-2xl font-bold tracking-tight text-neutral-900 dark:text-white">
-                  {section.title}
-                </h2>
-
-                <div className="prose prose-neutral dark:prose-invert max-w-none">
-                  <p className="leading-relaxed whitespace-pre-wrap text-neutral-600 dark:text-neutral-300">
-                    {section.text}
-                  </p>
-                </div>
-
-                {section.ctaHref && section.ctaLabel && (
-                  <div className="mt-6">
-                    <Button href={section.ctaHref} variant="primary" size="md">
-                      {section.ctaLabel}
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </article>
+              section={section}
+              secondaryLabel={
+                index > 0 ? t("updateLabel", { number: String(index).padStart(2, "0") }) : undefined
+              }
+              variant="display"
+            />
           ))}
         </div>
 
-        <div className="mt-16 text-center">
+        <div className="mt-16 flex flex-col items-center gap-4 text-center">
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             {t("sentOn", { sentDate })}
           </p>
+          <Button href={PAGE_ROUTES.NEWSLETTER_ARCHIVE} variant="glass-secondary" size="sm">
+            {t("backToArchive")}
+          </Button>
         </div>
       </div>
     </main>

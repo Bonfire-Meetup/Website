@@ -85,7 +85,15 @@
       "testBannerTitle": "Testovací e-mail",
       "testBannerMessage": "Tento newsletter byl odeslán jako test",
       "updateLabel": "Update {number}",
-      "sentOn": "Odesláno {sentDate}"
+      "sentOn": "Odesláno {sentDate}",
+      "delete": "Smazat newsletter",
+      "deleteConfirmTitle": "Smazat tento newsletter?",
+      "deleteConfirmMessage": "Tím trvale odstraníte archivní stránku. Jakékoli odkazy odeslané v původním e-mailu přestanou pro příjemce fungovat.",
+      "deleteConfirm": "Ano, smazat trvale",
+      "deleteCancel": "Zrušit",
+      "deleting": "Mazání...",
+      "deleteError": "Smazání se nezdařilo. Zkuste to znovu.",
+      "backToArchive": "Zpět na archiv newsletteru"
     },
     "newsletterArchiveIndex": {
       "eyebrow": "Newsletter",
@@ -96,6 +104,8 @@
       "updateLabel": "Update {number}",
       "sentLabel": "Odesláno {date}",
       "testBadge": "Test",
+      "testSendsLabel": "Testovací odeslání",
+      "hideTestSends": "Skrýt testovací e-maily",
       "read": "Číst"
     }
   }

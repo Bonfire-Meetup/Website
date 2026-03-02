@@ -6,15 +6,28 @@ import { useEffect, useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { logWarn } from "@/lib/utils/log-client";
+import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
+import { API_ROUTES } from "@/lib/api/routes";
+import { createJsonAuthHeaders } from "@/lib/utils/http";
+import { readLocalStorage, writeLocalStorage } from "@/lib/utils/local-storage";
 
 import { AudienceStep } from "./AudienceStep";
 import { ConfirmationStep } from "./ConfirmationStep";
+import { DraftSelector } from "./DraftSelector";
 import { EditorStep } from "./EditorStep";
-import type { NewsletterSection, NewsletterWizardData, WizardStep } from "./types";
+import type {
+  AudienceCounts,
+  NewsletterDraft,
+  NewsletterSection,
+  NewsletterWizardData,
+  WizardStep,
+} from "./types";
 import { WizardProgress } from "./WizardProgress";
 
-const STORAGE_KEY = "newsletter-draft";
+const DRAFTS_KEY = "newsletter-drafts";
+const ACTIVE_DRAFT_KEY = "newsletter-draft-active";
+const LEGACY_KEY = "newsletter-draft";
+
 const STEPS: WizardStep[] = ["editor", "audience", "confirmation"];
 
 function getInitialData(): NewsletterWizardData {
@@ -34,45 +47,53 @@ function getInitialData(): NewsletterWizardData {
   };
 }
 
-function loadDraft(): NewsletterWizardData | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
+function createDraft(data?: NewsletterWizardData): NewsletterDraft {
+  const now = Date.now();
+  return {
+    id: crypto.randomUUID(),
+    createdAt: now,
+    updatedAt: now,
+    data: data ?? getInitialData(),
+  };
+}
 
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      return JSON.parse(saved) as NewsletterWizardData;
+function loadDraftsFromStorage(): NewsletterDraft[] {
+  return readLocalStorage<NewsletterDraft[]>(DRAFTS_KEY) ?? [];
+}
+
+function saveDraftsToStorage(drafts: NewsletterDraft[]): void {
+  writeLocalStorage(DRAFTS_KEY, drafts);
+}
+
+function saveActiveIdToStorage(id: string): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+  localStorage.setItem(ACTIVE_DRAFT_KEY, id);
+}
+
+function initializeDrafts(): { drafts: NewsletterDraft[]; activeDraftId: string } {
+  let drafts = loadDraftsFromStorage();
+
+  if (drafts.length === 0) {
+    const legacyData = readLocalStorage<NewsletterWizardData>(LEGACY_KEY);
+    if (legacyData) {
+      drafts = [createDraft(legacyData)];
+      localStorage.removeItem(LEGACY_KEY);
+      saveDraftsToStorage(drafts);
     }
-  } catch (error) {
-    logWarn("newsletter.load_draft_failed", { error: String(error) });
   }
 
-  return null;
-}
-
-function saveDraft(data: NewsletterWizardData): void {
-  if (typeof window === "undefined") {
-    return;
+  if (drafts.length === 0) {
+    const empty = createDraft();
+    drafts = [empty];
+    saveDraftsToStorage(drafts);
   }
 
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch (error) {
-    logWarn("newsletter.save_draft_failed", { error: String(error) });
-  }
-}
+  const savedActiveId = localStorage.getItem(ACTIVE_DRAFT_KEY) ?? "";
+  const activeDraftId = drafts.find((d) => d.id === savedActiveId)?.id ?? drafts[0].id;
 
-function clearDraft(): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch (error) {
-    logWarn("newsletter.clear_draft_failed", { error: String(error) });
-  }
+  return { drafts, activeDraftId };
 }
 
 interface NewsletterWizardProps {
@@ -83,21 +104,54 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
   const t = useTranslations("newsletterEditor");
   const [currentStep, setCurrentStep] = useState<WizardStep>("editor");
   const [data, setData] = useState<NewsletterWizardData>(getInitialData);
+  const [drafts, setDrafts] = useState<NewsletterDraft[]>([]);
+  const [activeDraftId, setActiveDraftId] = useState<string>("");
   const [mounted, setMounted] = useState(false);
+  const [audienceCounts, setAudienceCounts] = useState<AudienceCounts | null>(null);
 
   useEffect(() => {
-    setMounted(true);
-    const draft = loadDraft();
-    if (draft) {
-      setData(draft);
+    const { drafts: initialDrafts, activeDraftId: initialActiveId } = initializeDrafts();
+    const activeDraft = initialDrafts.find((d) => d.id === initialActiveId);
+    setDrafts(initialDrafts);
+    setActiveDraftId(initialActiveId);
+    if (activeDraft) {
+      setData(activeDraft.data);
     }
+    setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (mounted) {
-      saveDraft(data);
+    const fetchCounts = async () => {
+      const token = await getValidAccessTokenAsync();
+      if (!token) {
+        return;
+      }
+      try {
+        const res = await fetch(API_ROUTES.NEWSLETTER.AUDIENCE_COUNTS, {
+          headers: createJsonAuthHeaders(token),
+        });
+        if (res.ok) {
+          setAudienceCounts((await res.json()) as AudienceCounts);
+        }
+      } catch {
+        // Ignore
+      }
+    };
+    fetchCounts();
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || !activeDraftId) {
+      return;
     }
-  }, [data, mounted]);
+    setDrafts((prev) => {
+      const updated = prev.map((d) =>
+        d.id === activeDraftId ? { ...d, data, updatedAt: Date.now() } : d,
+      );
+      saveDraftsToStorage(updated);
+      return updated;
+    });
+  }, [data, mounted, activeDraftId]);
 
   const currentStepIndex = STEPS.indexOf(currentStep);
 
@@ -112,6 +166,43 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
     const prevIndex = currentStepIndex - 1;
     if (prevIndex >= 0) {
       setCurrentStep(STEPS[prevIndex]);
+    }
+  };
+
+  const handleSelectDraft = (id: string) => {
+    const draft = drafts.find((d) => d.id === id);
+    if (!draft) {
+      return;
+    }
+    setActiveDraftId(id);
+    saveActiveIdToStorage(id);
+    setData(draft.data);
+    setCurrentStep("editor");
+  };
+
+  const handleNewDraft = () => {
+    const newDraft = createDraft();
+    const updated = [...drafts, newDraft];
+    saveDraftsToStorage(updated);
+    setDrafts(updated);
+    setActiveDraftId(newDraft.id);
+    saveActiveIdToStorage(newDraft.id);
+    setData(getInitialData());
+    setCurrentStep("editor");
+  };
+
+  const handleDeleteDraft = (id: string) => {
+    const remaining = drafts.filter((d) => d.id !== id);
+    const final = remaining.length > 0 ? remaining : [createDraft()];
+    saveDraftsToStorage(final);
+    setDrafts(final);
+
+    if (id === activeDraftId) {
+      const next = final[0];
+      setActiveDraftId(next.id);
+      saveActiveIdToStorage(next.id);
+      setData(next.data);
+      setCurrentStep("editor");
     }
   };
 
@@ -150,6 +241,22 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
     }));
   };
 
+  const handleMoveSecondaryNews = (id: string, direction: "up" | "down") => {
+    setData((prev) => {
+      const idx = prev.secondaryNews.findIndex((s) => s.id === id);
+      if (idx === -1) {
+        return prev;
+      }
+      const newIdx = direction === "up" ? idx - 1 : idx + 1;
+      if (newIdx < 0 || newIdx >= prev.secondaryNews.length) {
+        return prev;
+      }
+      const updated = [...prev.secondaryNews];
+      [updated[idx], updated[newIdx]] = [updated[newIdx], updated[idx]];
+      return { ...prev, secondaryNews: updated };
+    });
+  };
+
   const handleUpdateSubject = (subject: string) => {
     setData((prev) => ({ ...prev, subject }));
   };
@@ -163,7 +270,10 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
   };
 
   const handleSendComplete = () => {
-    clearDraft();
+    const remaining = drafts.filter((d) => d.id !== activeDraftId);
+    const final = remaining.length > 0 ? remaining : [createDraft()];
+    saveDraftsToStorage(final);
+    setDrafts(final);
     onComplete?.();
   };
 
@@ -189,6 +299,11 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
 
   const canProceed = isStepValid(currentStep);
 
+  const recipientCount =
+    data.audience.type === "manual"
+      ? data.audience.manualEmails.length
+      : (audienceCounts?.[data.audience.type] ?? null);
+
   if (!mounted) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -198,8 +313,17 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
   }
 
   return (
-    <div className="space-y-8">
-      <WizardProgress currentStep={currentStep} steps={STEPS} />
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-4">
+        <WizardProgress currentStep={currentStep} steps={STEPS} />
+        <DraftSelector
+          drafts={drafts}
+          activeDraftId={activeDraftId}
+          onSelect={handleSelectDraft}
+          onNew={handleNewDraft}
+          onDelete={handleDeleteDraft}
+        />
+      </div>
 
       <div className="glass-card no-hover-pop overflow-hidden rounded-[24px] p-6 sm:p-8">
         {currentStep === "editor" && (
@@ -209,17 +333,26 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
             onAddSecondaryNews={handleAddSecondaryNews}
             onUpdateSecondaryNews={handleUpdateSecondaryNews}
             onRemoveSecondaryNews={handleRemoveSecondaryNews}
+            onMoveSecondaryNews={handleMoveSecondaryNews}
             onUpdateSubject={handleUpdateSubject}
             onUpdatePreviewText={handleUpdatePreviewText}
           />
         )}
 
         {currentStep === "audience" && (
-          <AudienceStep data={data.audience} onUpdate={handleUpdateAudience} />
+          <AudienceStep
+            data={data.audience}
+            onUpdate={handleUpdateAudience}
+            counts={audienceCounts}
+          />
         )}
 
         {currentStep === "confirmation" && (
-          <ConfirmationStep data={data} onSendComplete={handleSendComplete} />
+          <ConfirmationStep
+            data={data}
+            recipientCount={recipientCount}
+            onSendComplete={handleSendComplete}
+          />
         )}
       </div>
 

@@ -1,3 +1,5 @@
+import "server-only";
+
 import crypto from "crypto";
 import { AsyncLocalStorage } from "node:async_hooks";
 

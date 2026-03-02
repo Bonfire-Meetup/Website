@@ -23,6 +23,17 @@ export interface RenderNewsletterInput {
   viewUrlSlug?: string;
 }
 
+function appendUtmParams(url: string): string {
+  try {
+    const parsed = new URL(url);
+    parsed.searchParams.set("utm_source", "newsletter");
+    parsed.searchParams.set("utm_medium", "email");
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
+
 export const renderNewsletterTemplate = async ({
   subject,
   previewText,
@@ -33,13 +44,18 @@ export const renderNewsletterTemplate = async ({
 }: RenderNewsletterInput): Promise<{ html: string; text: string }> => {
   const appName = "Bonfire";
 
+  const sectionsWithUtm = sections.map((section) => ({
+    ...section,
+    ctaHref: section.ctaHref ? appendUtmParams(section.ctaHref) : undefined,
+  }));
+
   const props: NewsletterProps = {
     appName,
     baseUrl: BASE_URL,
     lang,
     logoUrl: LOGO_URL,
     previewText,
-    sections,
+    sections: sectionsWithUtm,
     subject,
     unsubscribeUrl,
     viewUrlSlug,
@@ -52,7 +68,7 @@ export const renderNewsletterTemplate = async ({
     "",
     previewText,
     "",
-    ...sections.flatMap((section) => [
+    ...sectionsWithUtm.flatMap((section) => [
       section.title,
       "",
       section.text,

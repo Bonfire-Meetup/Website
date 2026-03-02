@@ -85,7 +85,15 @@
       "testBannerTitle": "Test Email",
       "testBannerMessage": "This newsletter was sent as a test",
       "updateLabel": "Update {number}",
-      "sentOn": "Sent {sentDate}"
+      "sentOn": "Sent {sentDate}",
+      "delete": "Delete Newsletter",
+      "deleteConfirmTitle": "Delete this newsletter?",
+      "deleteConfirmMessage": "This will permanently remove the archive page. Any links sent in the original email will stop working for recipients.",
+      "deleteConfirm": "Yes, delete permanently",
+      "deleteCancel": "Cancel",
+      "deleting": "Deleting...",
+      "deleteError": "Failed to delete. Please try again.",
+      "backToArchive": "Back to Newsletter Archive"
     },
     "newsletterArchiveIndex": {
       "eyebrow": "Newsletter",
@@ -96,6 +104,8 @@
       "updateLabel": "Update {number}",
       "sentLabel": "Sent {date}",
       "testBadge": "Test",
+      "testSendsLabel": "Test Sends",
+      "hideTestSends": "Hide test emails",
       "read": "Read"
     }
   }

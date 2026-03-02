@@ -1,3 +1,5 @@
+import "server-only";
+
 import Rollbar from "rollbar";
 
 const token = process.env.BNF_ROLLBAR_SERVER_TOKEN;

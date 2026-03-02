@@ -1,3 +1,5 @@
+import "server-only";
+
 import { z } from "zod";
 
 const serverSchema = z.object({
@@ -31,10 +33,6 @@ const serverSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).optional(),
 });
 
-const clientSchema = z.object({
-  NEXT_PUBLIC_BNF_TURNSTILE_SITE_KEY: z.string().min(1).optional(),
-});
-
 const isServer = typeof window === "undefined";
 
 export const serverEnv = isServer
@@ -61,7 +59,3 @@ export const serverEnv = isServer
       NODE_ENV: process.env.NODE_ENV,
     })
   : ({} as z.infer<typeof serverSchema>);
-
-export const clientEnv = clientSchema.parse({
-  NEXT_PUBLIC_BNF_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_BNF_TURNSTILE_SITE_KEY,
-});

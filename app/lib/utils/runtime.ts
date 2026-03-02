@@ -1,3 +1,5 @@
+import "server-only";
+
 import { PHASE_PRODUCTION_BUILD } from "next/constants";
 
 import { serverEnv } from "@/lib/config/env";

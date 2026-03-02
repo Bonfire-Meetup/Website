@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 
-import { PlusIcon, TrashIcon } from "@/components/shared/Icons";
+import { RichTextArea } from "@/components/newsletter/RichTextArea";
+import { ChevronDownIcon, PlusIcon, TrashIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 
 import type { NewsletterSection, NewsletterWizardData } from "./types";
@@ -13,12 +14,12 @@ interface EditorStepProps {
   onAddSecondaryNews: () => void;
   onUpdateSecondaryNews: (id: string, updates: Partial<NewsletterSection>) => void;
   onRemoveSecondaryNews: (id: string) => void;
+  onMoveSecondaryNews: (id: string, direction: "up" | "down") => void;
   onUpdateSubject: (subject: string) => void;
   onUpdatePreviewText: (previewText: string) => void;
 }
 
-const inputBaseClass = "form-input-base";
-const inputNormalClass = "form-input";
+const INPUT_CLASS = "form-input-base form-input";
 
 export function EditorStep({
   data,
@@ -26,6 +27,7 @@ export function EditorStep({
   onAddSecondaryNews,
   onUpdateSecondaryNews,
   onRemoveSecondaryNews,
+  onMoveSecondaryNews,
   onUpdateSubject,
   onUpdatePreviewText,
 }: EditorStepProps) {
@@ -45,7 +47,7 @@ export function EditorStep({
             value={data.subject}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onUpdateSubject(e.target.value)}
             placeholder={t("subjectPlaceholder")}
-            className={`${inputBaseClass} ${inputNormalClass}`}
+            className={INPUT_CLASS}
           />
         </div>
         <div className="space-y-2">
@@ -60,7 +62,7 @@ export function EditorStep({
               onUpdatePreviewText(e.target.value)
             }
             placeholder={t("previewTextPlaceholder")}
-            className={`${inputBaseClass} ${inputNormalClass}`}
+            className={INPUT_CLASS}
           />
           <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("previewTextHint")}</p>
         </div>
@@ -85,7 +87,7 @@ export function EditorStep({
                 onUpdatePrimaryNews({ title: e.target.value })
               }
               placeholder={t("titlePlaceholder")}
-              className={`${inputBaseClass} ${inputNormalClass}`}
+              className={INPUT_CLASS}
             />
           </div>
 
@@ -93,15 +95,12 @@ export function EditorStep({
             <label htmlFor="primary-text" className="form-label">
               {t("newsText")} *
             </label>
-            <textarea
+            <RichTextArea
               id="primary-text"
               value={data.primaryNews.text}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                onUpdatePrimaryNews({ text: e.target.value })
-              }
+              onChange={(text) => onUpdatePrimaryNews({ text })}
               placeholder={t("textPlaceholder")}
-              rows={5}
-              className={`${inputBaseClass} ${inputNormalClass} resize-y`}
+              rows={14}
             />
           </div>
 
@@ -117,7 +116,7 @@ export function EditorStep({
                 onUpdatePrimaryNews({ imageUrl: e.target.value })
               }
               placeholder={t("imageUrlPlaceholder")}
-              className={`${inputBaseClass} ${inputNormalClass}`}
+              className={INPUT_CLASS}
             />
           </div>
 
@@ -134,7 +133,7 @@ export function EditorStep({
                   onUpdatePrimaryNews({ ctaLabel: e.target.value })
                 }
                 placeholder={t("ctaLabelPlaceholder")}
-                className={`${inputBaseClass} ${inputNormalClass}`}
+                className={INPUT_CLASS}
               />
             </div>
             <div className="space-y-2">
@@ -149,7 +148,7 @@ export function EditorStep({
                   onUpdatePrimaryNews({ ctaHref: e.target.value })
                 }
                 placeholder={t("ctaLinkPlaceholder")}
-                className={`${inputBaseClass} ${inputNormalClass}`}
+                className={INPUT_CLASS}
               />
             </div>
           </div>
@@ -183,14 +182,34 @@ export function EditorStep({
               <h3 className="font-semibold text-neutral-900 dark:text-white">
                 {t("newsNumber", { number: index + 1 })}
               </h3>
-              <button
-                onClick={() => onRemoveSecondaryNews(section.id)}
-                type="button"
-                className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-rose-500 transition hover:bg-rose-100/60 hover:text-rose-700 dark:text-rose-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-300"
-                aria-label={t("removeNews")}
-              >
-                <TrashIcon className="h-4 w-4" />
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => onMoveSecondaryNews(section.id, "up")}
+                  disabled={index === 0}
+                  className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-700 disabled:cursor-not-allowed disabled:opacity-30 dark:text-neutral-500 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                  aria-label="Move up"
+                >
+                  <ChevronDownIcon className="h-4 w-4 rotate-180" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onMoveSecondaryNews(section.id, "down")}
+                  disabled={index === data.secondaryNews.length - 1}
+                  className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-700 disabled:cursor-not-allowed disabled:opacity-30 dark:text-neutral-500 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                  aria-label="Move down"
+                >
+                  <ChevronDownIcon className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => onRemoveSecondaryNews(section.id)}
+                  type="button"
+                  className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-rose-500 transition hover:bg-rose-100/60 hover:text-rose-700 dark:text-rose-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-300"
+                  aria-label={t("removeNews")}
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </button>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -205,7 +224,7 @@ export function EditorStep({
                   onUpdateSecondaryNews(section.id, { title: e.target.value })
                 }
                 placeholder={t("titlePlaceholder")}
-                className={`${inputBaseClass} ${inputNormalClass}`}
+                className={INPUT_CLASS}
               />
             </div>
 
@@ -213,15 +232,12 @@ export function EditorStep({
               <label htmlFor={`${section.id}-text`} className="form-label">
                 {t("newsText")} *
               </label>
-              <textarea
+              <RichTextArea
                 id={`${section.id}-text`}
                 value={section.text}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                  onUpdateSecondaryNews(section.id, { text: e.target.value })
-                }
+                onChange={(text) => onUpdateSecondaryNews(section.id, { text })}
                 placeholder={t("textPlaceholder")}
-                rows={4}
-                className={`${inputBaseClass} ${inputNormalClass} resize-y`}
+                rows={12}
               />
             </div>
 
@@ -237,7 +253,7 @@ export function EditorStep({
                   onUpdateSecondaryNews(section.id, { imageUrl: e.target.value })
                 }
                 placeholder={t("imageUrlPlaceholder")}
-                className={`${inputBaseClass} ${inputNormalClass}`}
+                className={INPUT_CLASS}
               />
             </div>
 
@@ -254,7 +270,7 @@ export function EditorStep({
                     onUpdateSecondaryNews(section.id, { ctaLabel: e.target.value })
                   }
                   placeholder={t("ctaLabelPlaceholder")}
-                  className={`${inputBaseClass} ${inputNormalClass}`}
+                  className={INPUT_CLASS}
                 />
               </div>
               <div className="space-y-2">
@@ -269,7 +285,7 @@ export function EditorStep({
                     onUpdateSecondaryNews(section.id, { ctaHref: e.target.value })
                   }
                   placeholder={t("ctaLinkPlaceholder")}
-                  className={`${inputBaseClass} ${inputNormalClass}`}
+                  className={INPUT_CLASS}
                 />
               </div>
             </div>

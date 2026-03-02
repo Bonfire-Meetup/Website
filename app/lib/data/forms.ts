@@ -1,3 +1,5 @@
+import "server-only";
+
 import { db } from "@/lib/data/db";
 import { contactSubmissions, talkProposals } from "@/lib/data/schema";
 import { logError } from "@/lib/utils/log";

@@ -38,7 +38,7 @@ export default function NewsletterEditorPage() {
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-24 left-1/2 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-9),transparent_62%)]" />
         </div>
-        <div className="relative z-10 mx-auto max-w-3xl">
+        <div className="relative z-10 mx-auto max-w-5xl">
           <div className="flex min-h-[400px] items-center justify-center">
             <LoadingSpinner size="lg" className="text-rose-600 dark:text-rose-400" />
           </div>
@@ -58,7 +58,7 @@ export default function NewsletterEditorPage() {
         <div className="absolute top-1/2 left-1/4 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,var(--color-fire-mid-glow),transparent_62%)] opacity-40 blur-3xl" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-3xl">
+      <div className="relative z-10 mx-auto max-w-5xl">
         <div className="mb-10 text-center sm:mb-12">
           <p className="text-brand-600 dark:text-brand-300 mb-6 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em]">
             <span className="to-brand-400 h-px w-8 bg-gradient-to-r from-transparent sm:w-12" />

@@ -31,6 +31,9 @@ export const API_ROUTES = {
     SUBSCRIBE: "/api/v1/newsletter/subscribe",
     SEND: "/api/v1/newsletter/send",
     UNSUBSCRIBE: "/api/v1/newsletter/unsubscribe",
+    AUDIENCE_COUNTS: "/api/v1/newsletter/audience/counts",
+    ARCHIVE: "/api/v1/newsletter/archive",
+    ARCHIVE_ITEM: (slug: string) => `/api/v1/newsletter/${slug}`,
   },
   VIDEO: {
     BOOSTS: (id: string) => `/api/v1/video/${id}/boosts`,

@@ -3,17 +3,9 @@ import { notFound } from "next/navigation";
 
 import { getNewsletterArchiveBySlug } from "@/lib/data/newsletter-archive";
 import { getBrandName } from "@/lib/metadata";
+import type { NewsletterSection } from "@/lib/types/newsletter";
 
 import { type NewsletterArchiveData, NewsletterArchiveContent } from "./NewsletterArchiveContent";
-
-interface Section {
-  id: string;
-  title: string;
-  text: string;
-  imageUrl?: string;
-  ctaLabel?: string;
-  ctaHref?: string;
-}
 
 interface NewsletterPageProps {
   params: Promise<{ slug: string }>;
@@ -24,7 +16,7 @@ function serializeNewsletter(
   previewText: string | null,
   testSend: boolean,
   sentAt: Date,
-  sections: Section[],
+  sections: NewsletterSection[],
 ): NewsletterArchiveData {
   return {
     subject,
@@ -46,7 +38,7 @@ export default async function NewsletterPage({ params }: NewsletterPageProps) {
   const data = newsletter.data as { sections?: unknown[] } | undefined;
   const rawSections = Array.isArray(data?.sections) ? data.sections : [];
   const sections = rawSections.filter(
-    (s): s is Section =>
+    (s): s is NewsletterSection =>
       typeof s === "object" && s !== null && "id" in s && "title" in s && "text" in s,
   );
 
@@ -58,7 +50,7 @@ export default async function NewsletterPage({ params }: NewsletterPageProps) {
     sections,
   );
 
-  return <NewsletterArchiveContent newsletter={newsletterData} />;
+  return <NewsletterArchiveContent newsletter={newsletterData} slug={slug} />;
 }
 
 export async function generateMetadata({ params }: NewsletterPageProps): Promise<Metadata> {

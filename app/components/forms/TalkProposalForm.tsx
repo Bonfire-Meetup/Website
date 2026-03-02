@@ -15,7 +15,11 @@ import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropd
 import { useCsrfToken } from "@/lib/api/csrf";
 import { type TalkProposalFormState, submitTalkProposal } from "@/lib/forms/form-actions";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
-import { logError } from "@/lib/utils/log-client";
+import {
+  readLocalStorage,
+  removeFromLocalStorage,
+  writeLocalStorage,
+} from "@/lib/utils/local-storage";
 
 import { CheckIcon, CloseIcon, MicIcon } from "../shared/Icons";
 import { Button } from "../ui/Button";
@@ -82,15 +86,7 @@ function getStoredDraft(): {
   duration?: string;
   preferredLocation?: string;
 } | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
-  try {
-    const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
-    return draft ? JSON.parse(draft) : null;
-  } catch {
-    return null;
-  }
+  return readLocalStorage(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
 }
 
 function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
@@ -164,12 +160,8 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
   }, []);
 
   const saveDraft = useCallback(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
     if (state.success) {
-      localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+      removeFromLocalStorage(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
       return;
     }
 
@@ -186,23 +178,16 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
     const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
 
     if (!hasContent) {
-      localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
+      removeFromLocalStorage(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
       return;
     }
 
-    try {
-      const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
-      if (existingDraft) {
-        const parsed = JSON.parse(existingDraft);
-        if (isTalkDraftUnchanged(parsed, draft)) {
-          return;
-        }
-      }
-    } catch (error) {
-      logError("talkProposalForm.draft_parse_failed", error);
+    const existing = getStoredDraft();
+    if (existing && isTalkDraftUnchanged(existing, draft)) {
+      return;
     }
 
-    localStorage.setItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL, JSON.stringify(draft));
+    writeLocalStorage(STORAGE_KEYS.DRAFT_TALK_PROPOSAL, draft);
   }, [
     speakerName,
     email,
@@ -215,9 +200,6 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
   ]);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
     const timeoutId = setTimeout(saveDraft, 1500);
     return () => clearTimeout(timeoutId);
   }, [
@@ -233,9 +215,6 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
   ]);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
     window.addEventListener("beforeunload", saveDraft);
     return () => window.removeEventListener("beforeunload", saveDraft);
   }, [saveDraft]);
@@ -300,9 +279,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
     setExperience("");
     setDuration("");
     setPreferredLocation("either");
-    if (typeof window !== "undefined") {
-      localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
-    }
+    removeFromLocalStorage(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
   };
 
   const hasSpeakerName = Boolean(speakerName);
@@ -595,9 +572,7 @@ export function TalkProposalForm() {
   const [instanceKey, setInstanceKey] = useState(0);
 
   const handleReset = useCallback(() => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
-    }
+    removeFromLocalStorage(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
     setInstanceKey((prev) => prev + 1);
   }, []);
 

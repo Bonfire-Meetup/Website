@@ -1,3 +1,5 @@
+import "server-only";
+
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { serverEnv } from "@/lib/config/env";
 

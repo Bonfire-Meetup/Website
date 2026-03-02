@@ -1,3 +1,5 @@
+import "server-only";
+
 import { count, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 

@@ -1,3 +1,5 @@
+import "server-only";
+
 import { generateChallengeToken, generateOtpCode, hashOtpCode } from "@/lib/auth/otp";
 import { insertAuthChallenge } from "@/lib/data/auth";
 import {

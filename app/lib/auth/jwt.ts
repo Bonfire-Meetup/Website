@@ -1,3 +1,5 @@
+import "server-only";
+
 import crypto from "crypto";
 
 import { SignJWT, importPKCS8, importSPKI, jwtVerify } from "jose";

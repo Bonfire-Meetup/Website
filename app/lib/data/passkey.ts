@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { AuthenticatorTransportFuture } from "@simplewebauthn/server";
 import { and, count, eq, gt, isNull, lt, sql } from "drizzle-orm";
 

@@ -16,7 +16,11 @@ import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropd
 import { useCsrfToken } from "@/lib/api/csrf";
 import { type ContactFormState, submitContactForm } from "@/lib/forms/form-actions";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
-import { logError } from "@/lib/utils/log-client";
+import {
+  readLocalStorage,
+  removeFromLocalStorage,
+  writeLocalStorage,
+} from "@/lib/utils/local-storage";
 
 import { CheckIcon, CloseIcon, MailIcon } from "../shared/Icons";
 import { Button } from "../ui/Button";
@@ -33,15 +37,7 @@ function getStoredDraft(): {
   message?: string;
   inquiryType?: string;
 } | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
-  try {
-    const draft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
-    return draft ? JSON.parse(draft) : null;
-  } catch {
-    return null;
-  }
+  return readLocalStorage(STORAGE_KEYS.DRAFT_CONTACT_FORM);
 }
 
 function isDraftUnchanged(
@@ -142,12 +138,8 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
   }, [inquiryOptions, searchParams]);
 
   const saveDraft = useCallback(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
     if (state.success) {
-      localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+      removeFromLocalStorage(STORAGE_KEYS.DRAFT_CONTACT_FORM);
       return;
     }
 
@@ -155,37 +147,24 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
     const hasContent = Object.values(draft).some((value) => value && value.trim().length > 0);
 
     if (!hasContent) {
-      localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
+      removeFromLocalStorage(STORAGE_KEYS.DRAFT_CONTACT_FORM);
       return;
     }
 
-    try {
-      const existingDraft = localStorage.getItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
-      if (existingDraft) {
-        const parsed = JSON.parse(existingDraft);
-        if (isDraftUnchanged(parsed, draft)) {
-          return;
-        }
-      }
-    } catch (error) {
-      logError("contactForm.draft_parse_failed", error);
+    const existing = getStoredDraft();
+    if (existing && isDraftUnchanged(existing, draft)) {
+      return;
     }
 
-    localStorage.setItem(STORAGE_KEYS.DRAFT_CONTACT_FORM, JSON.stringify(draft));
+    writeLocalStorage(STORAGE_KEYS.DRAFT_CONTACT_FORM, draft);
   }, [name, email, subject, message, inquiryType, state.success]);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
     const timeoutId = setTimeout(saveDraft, 1500);
     return () => clearTimeout(timeoutId);
   }, [name, email, subject, message, inquiryType, state.success, saveDraft]);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
     window.addEventListener("beforeunload", saveDraft);
     return () => window.removeEventListener("beforeunload", saveDraft);
   }, [saveDraft]);
@@ -248,9 +227,7 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
     setSubject("");
     setMessage("");
     setInquiryType("general");
-    if (typeof window !== "undefined") {
-      localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
-    }
+    removeFromLocalStorage(STORAGE_KEYS.DRAFT_CONTACT_FORM);
   };
 
   const hasName = Boolean(name);
@@ -467,9 +444,7 @@ export function ContactForm() {
   const [instanceKey, setInstanceKey] = useState(0);
 
   const handleReset = useCallback(() => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem(STORAGE_KEYS.DRAFT_CONTACT_FORM);
-    }
+    removeFromLocalStorage(STORAGE_KEYS.DRAFT_CONTACT_FORM);
     setInstanceKey((prev) => prev + 1);
   }, []);
 

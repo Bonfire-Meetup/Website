@@ -15,9 +15,9 @@ import {
   Tailwind,
   Text,
 } from "@react-email/components";
-import { Fragment } from "react";
 
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { parseInlineMarkdown } from "@/lib/utils/newsletter-markdown";
 
 import { BRAND, FIRE_GRADIENT, FIRE_GRADIENT_DIAGONAL } from "./brand";
 
@@ -63,14 +63,17 @@ export function Newsletter({
       </Head>
       <Preview>{previewText}</Preview>
       <Tailwind>
-        <Body className="m-0 bg-neutral-50 p-0 font-sans antialiased">
+        <Body
+          className="m-0 bg-neutral-50 p-0 font-sans antialiased"
+          style={{ width: "100%", WebkitTextSizeAdjust: "100%" }}
+        >
           <Container
             className="max-w-[600px] px-4 py-10"
             style={{ width: "100%", maxWidth: "600px" }}
           >
             <Section className="pb-8" style={{ paddingBottom: "32px" }}>
               <Row>
-                <Column width={320} className="align-middle">
+                <Column className="align-middle">
                   <Link href={baseUrl} style={{ textDecoration: "none" }}>
                     <Img src={logoUrl} alt={appName} width={100} height={52} className="block" />
                   </Link>
@@ -156,26 +159,27 @@ export function Newsletter({
                     {section.title}
                   </Heading>
 
-                  {section.text.split("\n\n").map((paragraph, _pIndex, paragraphs) => (
-                    <Text
-                      key={`${section.id}-p-${paragraph.slice(0, 24)}-${paragraph.length}`}
-                      className="m-0"
-                      style={{
-                        color: "#525252",
-                        fontSize: index === 0 ? "16px" : "15px",
-                        lineHeight: "1.7",
-                        margin: 0,
-                        marginBottom: paragraph === paragraphs.at(-1) ? "24px" : "16px",
-                      }}
-                    >
-                      {paragraph.split("\n").map((line, lineIndex, lines) => (
-                        <Fragment key={line}>
-                          {line}
-                          {lineIndex < lines.length - 1 && <br />}
-                        </Fragment>
-                      ))}
-                    </Text>
-                  ))}
+                  {section.text.split("\n\n").map((paragraph, _pIndex, paragraphs) => {
+                    const html = paragraph
+                      .split("\n")
+                      .map((line) => parseInlineMarkdown(line))
+                      .join("<br />");
+                    return (
+                      <Text
+                        key={`${section.id}-p-${paragraph.slice(0, 24)}-${paragraph.length}`}
+                        className="m-0"
+                        style={{
+                          color: "#525252",
+                          fontSize: index === 0 ? "16px" : "15px",
+                          lineHeight: "1.7",
+                          margin: 0,
+                          marginBottom: paragraph === paragraphs.at(-1) ? "24px" : "16px",
+                        }}
+                        // eslint-disable-next-line react/no-danger
+                        dangerouslySetInnerHTML={{ __html: html }}
+                      />
+                    );
+                  })}
 
                   {section.ctaHref && section.ctaLabel && (
                     <Button

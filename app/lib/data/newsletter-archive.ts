@@ -1,3 +1,5 @@
+import "server-only";
+
 import { desc, eq } from "drizzle-orm";
 
 import { db } from "@/lib/data/db";
@@ -24,6 +26,24 @@ export interface ArchiveRecord {
   sentBy: string | null;
   sentAt: Date;
   testSend: boolean;
+}
+
+export interface ArchiveListItem {
+  id: string;
+  subject: string;
+  previewText: string | null;
+  sentAt: string;
+  testSend: boolean;
+}
+
+export function toArchiveListItem(record: ArchiveRecord): ArchiveListItem {
+  return {
+    id: record.id,
+    subject: record.subject,
+    previewText: record.previewText,
+    sentAt: String(record.sentAt),
+    testSend: record.testSend,
+  };
 }
 
 export const saveNewsletterToArchive = async (
@@ -82,4 +102,20 @@ export const getNewsletterArchiveList = async (limit = 20, offset = 0) => {
   });
 
   return records;
+};
+
+export const deleteNewsletterBySlug = async (slug: string): Promise<boolean> => {
+  const database = db();
+  const id = decompressUuid(slug);
+
+  if (!id) {
+    return false;
+  }
+
+  const [deleted] = await database
+    .delete(newsletterArchive)
+    .where(eq(newsletterArchive.id, id))
+    .returning({ id: newsletterArchive.id });
+
+  return Boolean(deleted);
 };

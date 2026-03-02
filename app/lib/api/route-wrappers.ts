@@ -1,3 +1,5 @@
+import "server-only";
+
 import { NextResponse, type NextRequest } from "next/server";
 
 import { getAuthUserId, requireAuth, requireRole, resolveUserId } from "@/lib/api/auth";

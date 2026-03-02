@@ -11,7 +11,7 @@ import React, {
 } from "react";
 
 import { WEBSITE_URLS } from "@/lib/config/constants";
-import { clientEnv } from "@/lib/config/env";
+import { clientEnv } from "@/lib/config/env.public";
 import { logWarn } from "@/lib/utils/log-client";
 
 declare global {
