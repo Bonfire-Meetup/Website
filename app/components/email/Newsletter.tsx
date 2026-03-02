@@ -60,6 +60,12 @@ export function Newsletter({
         <meta name="color-scheme" content="light" />
         <meta name="supported-color-schemes" content="light" />
         <title>{subject}</title>
+        <style>{`
+          @media only screen and (max-width: 600px) {
+            .card-padding { padding: 24px 20px !important; }
+            .card-padding-featured { padding: 28px 20px 24px !important; }
+          }
+        `}</style>
       </Head>
       <Preview>{previewText}</Preview>
       <Tailwind>
@@ -68,8 +74,8 @@ export function Newsletter({
           style={{ width: "100%", WebkitTextSizeAdjust: "100%" }}
         >
           <Container
-            className="max-w-[600px] px-4 py-10"
-            style={{ width: "100%", maxWidth: "600px" }}
+            className="max-w-[600px] py-10"
+            style={{ width: "100%", maxWidth: "600px", padding: "40px 12px" }}
           >
             <Section className="pb-8" style={{ paddingBottom: "32px" }}>
               <Row>
@@ -109,6 +115,7 @@ export function Newsletter({
                 <Section
                   className="h-1.5"
                   style={{
+                    backgroundColor: BRAND.bonfire,
                     background: FIRE_GRADIENT,
                     height: "6px",
                   }}
@@ -121,12 +128,12 @@ export function Newsletter({
                     height="240"
                     alt={section.title}
                     className="block w-full"
-                    style={{ display: "block" }}
+                    style={{ display: "block", width: "100%", height: "auto" }}
                   />
                 )}
 
                 <Section
-                  className="px-8 pt-8 pb-8"
+                  className={index === 0 ? "card-padding-featured" : "card-padding"}
                   style={{ padding: index === 0 ? "36px 32px 32px" : "32px" }}
                 >
                   {!section.imageUrl && index === 0 && (
