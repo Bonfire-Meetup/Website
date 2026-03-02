@@ -75,7 +75,12 @@ export function Newsletter({
                     href={
                       viewUrlSlug ? `${baseUrl}/newsletter/${viewUrlSlug}` : `${baseUrl}/newsletter`
                     }
-                    style={{ color: "#a3a3a3", fontSize: "12px", textDecoration: "none" }}
+                    style={{
+                      color: "#a3a3a3",
+                      fontSize: "12px",
+                      textDecoration: "none",
+                      whiteSpace: "nowrap",
+                    }}
                   >
                     View online →
                   </Link>
@@ -167,8 +172,10 @@ export function Newsletter({
                       href={section.ctaHref}
                       className="inline-block text-[14px] font-semibold text-white"
                       style={{
+                        backgroundColor: BRAND.bonfire,
                         background: FIRE_GRADIENT_DIAGONAL,
                         borderRadius: "10px",
+                        color: "#ffffff",
                         padding: "12px 24px",
                         textDecoration: "none",
                         boxShadow: "0 2px 8px rgba(255,85,85,0.35), 0 1px 2px rgba(0,0,0,0.06)",
