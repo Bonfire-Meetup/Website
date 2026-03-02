@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { CheckIcon, ChevronDownIcon, PlusIcon, XIcon } from "@/components/shared/Icons";
+import { CheckIcon, ChevronDownIcon, CloseIcon, PlusIcon } from "@/components/shared/Icons";
 
 import type { NewsletterDraft } from "./types";
 
@@ -132,7 +132,7 @@ export function DraftSelector({
                       aria-label="Delete draft"
                       className="invisible rounded p-0.5 text-neutral-400 group-hover:visible hover:bg-neutral-200 hover:text-neutral-700 dark:hover:bg-white/10 dark:hover:text-neutral-200"
                     >
-                      <XIcon className="h-3 w-3" />
+                      <CloseIcon className="h-3 w-3" />
                     </button>
                   )}
                 </div>
