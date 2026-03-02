@@ -19,6 +19,27 @@ import { renderMarkdownToHtml } from "@/lib/utils/newsletter-markdown";
 
 export type { NewsletterSection };
 
+function titleSizeClass(subject: string): string {
+  const len = subject.length;
+  if (len <= 22) {
+    return "text-4xl sm:text-5xl";
+  }
+  if (len <= 33) {
+    return "text-3xl sm:text-4xl";
+  }
+  return "text-2xl sm:text-3xl";
+}
+
+function SectionDivider() {
+  return (
+    <div className="my-16 flex items-center justify-center gap-3">
+      <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+      <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+      <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+    </div>
+  );
+}
+
 export interface NewsletterArchiveData {
   subject: string;
   previewText: string | null;
@@ -134,7 +155,7 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
         )}
 
         {/* Header */}
-        <header className="mb-12">
+        <header className="mb-16 text-center">
           {newsletter.testSend && (
             <div className="mb-5 flex justify-center">
               <span className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-4 py-1.5 text-xs font-bold text-amber-700 dark:bg-amber-500/20 dark:text-amber-400">
@@ -144,23 +165,25 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
             </div>
           )}
 
-          <p className="mb-4 flex items-center gap-2 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-rose-400">
+          <p className="mb-5 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-rose-400">
             <span className="h-px w-6 bg-gradient-to-r from-transparent to-rose-400 sm:w-10" />
             {t("eyebrow")}
             <span className="h-px w-6 bg-gradient-to-l from-transparent to-rose-400 sm:w-10" />
           </p>
 
-          <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl lg:text-5xl dark:text-white">
+          <h1
+            className={`font-black tracking-tighter text-balance text-neutral-900 dark:text-white ${titleSizeClass(newsletter.subject)}`}
+          >
             {newsletter.subject}
           </h1>
 
           {newsletter.previewText && (
-            <p className="mt-3 text-lg leading-relaxed text-neutral-500 dark:text-neutral-400">
+            <p className="mx-auto mt-4 max-w-lg text-lg leading-relaxed text-neutral-500 dark:text-neutral-400">
               {newsletter.previewText}
             </p>
           )}
 
-          <p className="mt-4 text-sm text-neutral-400 dark:text-neutral-500">
+          <p className="mt-5 text-sm text-neutral-400 dark:text-neutral-500">
             {t("sentOn", { sentDate })}
           </p>
         </header>
@@ -168,61 +191,58 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
         {/* Article body */}
         <article>
           {newsletter.sections.map((section, index) => (
-            <section
-              key={section.id}
-              className={
-                index > 0
-                  ? "mt-12 border-t border-neutral-200 pt-12 dark:border-neutral-800"
-                  : undefined
-              }
-            >
-              {section.imageUrl && (
-                <img
-                  src={section.imageUrl}
-                  alt={section.title}
-                  className="mb-8 w-full rounded-2xl"
+            <div key={section.id}>
+              {index > 0 && <SectionDivider />}
+
+              <section>
+                {section.imageUrl && (
+                  <img
+                    src={section.imageUrl}
+                    alt={section.title}
+                    className="mb-10 w-full rounded-2xl shadow-md shadow-neutral-900/10 dark:shadow-neutral-950/40"
+                  />
+                )}
+
+                {index > 0 && (
+                  <p className="mb-3 text-[11px] font-bold tracking-[0.25em] text-rose-500/60 uppercase dark:text-rose-400/50">
+                    {t("updateLabel", { number: String(index).padStart(2, "0") })}
+                  </p>
+                )}
+
+                <h2
+                  className={
+                    index === 0
+                      ? "mb-6 text-2xl font-black tracking-tighter text-neutral-900 sm:text-3xl dark:text-white"
+                      : "mb-5 text-xl font-black tracking-tighter text-neutral-900 sm:text-2xl dark:text-white"
+                  }
+                >
+                  {section.title}
+                </h2>
+
+                <div
+                  className="text-[17px] leading-[1.8] text-pretty text-neutral-700 sm:text-lg dark:text-neutral-200 [&_a]:!text-rose-600 [&_a]:underline [&_a]:underline-offset-2 [&_a]:transition-colors [&_a]:hover:!text-rose-500 dark:[&_a]:!text-rose-400 [&_p]:!mb-5 [&_p:last-child]:!mb-0 [&_strong]:font-semibold [&_strong]:!text-neutral-900 dark:[&_strong]:!text-white"
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(section.text) }}
                 />
-              )}
 
-              {index > 0 && (
-                <p className="mb-2 text-[11px] font-bold tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500">
-                  {t("updateLabel", { number: String(index).padStart(2, "0") })}
-                </p>
-              )}
-
-              <h2
-                className={
-                  index === 0
-                    ? "mb-5 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white"
-                    : "mb-4 text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white"
-                }
-              >
-                {section.title}
-              </h2>
-
-              <div
-                className="text-base leading-relaxed text-neutral-600 dark:text-neutral-300 [&_a]:!text-rose-600 [&_a]:underline [&_a]:transition-colors [&_a]:hover:!text-rose-500 dark:[&_a]:!text-rose-400 [&_p]:mb-4 [&_p:last-child]:mb-0"
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(section.text) }}
-              />
-
-              {section.ctaHref && section.ctaLabel && (
-                <div className="mt-6">
-                  <a
-                    href={section.ctaHref}
-                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 via-orange-500 to-rose-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-rose-500/20 transition-opacity hover:opacity-90"
-                  >
-                    {section.ctaLabel}
-                    <ArrowRightIcon className="h-4 w-4" />
-                  </a>
-                </div>
-              )}
-            </section>
+                {section.ctaHref && section.ctaLabel && (
+                  <div className="mt-8">
+                    <a
+                      href={section.ctaHref}
+                      className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 via-orange-500 to-rose-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-rose-500/25 transition-opacity hover:opacity-90"
+                    >
+                      {section.ctaLabel}
+                      <ArrowRightIcon className="h-4 w-4" />
+                    </a>
+                  </div>
+                )}
+              </section>
+            </div>
           ))}
         </article>
 
         {/* Bottom nav */}
-        <div className="mt-16 border-t border-neutral-200 pt-8 dark:border-neutral-800">
+        <div className="mt-20 border-t border-neutral-200 pt-8 dark:border-neutral-800">
           <Link
             href={PAGE_ROUTES.NEWSLETTER_ARCHIVE}
             className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
