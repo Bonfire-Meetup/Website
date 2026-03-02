@@ -127,8 +127,8 @@ export function Newsletter({
                     width="600"
                     height="240"
                     alt={section.title}
-                    className="block w-full"
-                    style={{ display: "block", width: "100%", height: "auto" }}
+                    className="block"
+                    style={{ display: "block", maxWidth: "100%" }}
                   />
                 )}
 
