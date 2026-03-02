@@ -15,6 +15,7 @@ import {
   Tailwind,
   Text,
 } from "@react-email/components";
+import { Fragment } from "react";
 
 import { WEBSITE_URLS } from "@/lib/config/constants";
 
@@ -55,6 +56,7 @@ export function Newsletter({
       <Head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="x-apple-disable-message-reformatting" />
         <meta name="color-scheme" content="light" />
         <meta name="supported-color-schemes" content="light" />
         <title>{subject}</title>
@@ -62,7 +64,10 @@ export function Newsletter({
       <Preview>{previewText}</Preview>
       <Tailwind>
         <Body className="m-0 bg-neutral-50 p-0 font-sans antialiased">
-          <Container className="max-w-[600px] px-4 py-10">
+          <Container
+            className="max-w-[600px] px-4 py-10"
+            style={{ width: "100%", maxWidth: "600px" }}
+          >
             <Section className="pb-8" style={{ paddingBottom: "32px" }}>
               <Row>
                 <Column width={320} className="align-middle">
@@ -163,7 +168,12 @@ export function Newsletter({
                         marginBottom: paragraph === paragraphs.at(-1) ? "24px" : "16px",
                       }}
                     >
-                      {paragraph}
+                      {paragraph.split("\n").map((line, lineIndex, lines) => (
+                        <Fragment key={line}>
+                          {line}
+                          {lineIndex < lines.length - 1 && <br />}
+                        </Fragment>
+                      ))}
                     </Text>
                   ))}
 
