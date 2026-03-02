@@ -113,8 +113,6 @@ export const isValidRefreshTokenFormat = (token: string): boolean => {
   return /^[A-Za-z0-9_-]+$/.test(token);
 };
 
-const unsubscribeTokenTtlSeconds = 30 * 24 * 60 * 60;
-
 export const signUnsubscribeToken = async (email: string) => {
   const privateKey = await importPKCS8(getJwtPrivateKey(), "EdDSA");
 
@@ -124,7 +122,6 @@ export const signUnsubscribeToken = async (email: string) => {
     .setAudience(getJwtAudience())
     .setSubject("newsletter-unsubscribe")
     .setIssuedAt()
-    .setExpirationTime(`${unsubscribeTokenTtlSeconds}s`)
     .setJti(crypto.randomUUID())
     .sign(privateKey);
 };
