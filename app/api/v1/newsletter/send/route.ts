@@ -9,7 +9,12 @@ import { USER_ROLES } from "@/lib/config/roles";
 import { db } from "@/lib/data/db";
 import { getNewsletterArchiveBySlug, saveNewsletterToArchive } from "@/lib/data/newsletter-archive";
 import { appUser, newsletterSubscription } from "@/lib/data/schema";
-import { getNewsletterFrom, sendEmail } from "@/lib/email/email";
+import {
+  type SendEmailInput,
+  EmailSendError,
+  getNewsletterFrom,
+  sendEmail,
+} from "@/lib/email/email";
 import { renderNewsletterTemplate } from "@/lib/email/newsletter-template";
 import { logError, logInfo } from "@/lib/utils/log";
 import { compressUuid } from "@/lib/utils/uuid-compress";
@@ -161,8 +166,9 @@ export const POST = withRequestContext(
       return respond({ error: "send_failed" }, { status: 500 });
     }
 
-    // Resend allows 2 requests/second. We budget 550 ms per send so we stay safely under the limit.
-    const RESEND_DELAY_MS = 550;
+    // Resend allows 2 requests/second. 700 ms between calls gives comfortable headroom
+    // Even when concurrent auth emails share the same API key quota.
+    const RESEND_DELAY_MS = 700;
     const total = recipientEmails.length;
     const BASE_URL = process.env.PROD_URL ?? WEBSITE_URLS.BASE;
     const encoder = new TextEncoder();
@@ -170,16 +176,37 @@ export const POST = withRequestContext(
       controller.enqueue(encoder.encode(`${JSON.stringify(data)}\n`));
     };
 
+    // Retry on 429 with exponential backoff (2 s, 4 s). All other errors propagate immediately.
+    const sendWithRetry = async (input: SendEmailInput): Promise<void> => {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          await sendEmail(input);
+          return;
+        } catch (err) {
+          if (err instanceof EmailSendError && err.status === 429 && attempt < 2) {
+            // eslint-disable-next-line no-await-in-loop
+            await new Promise<void>((resolve) => {
+              setTimeout(resolve, 2000 * (attempt + 1));
+            });
+          } else {
+            throw err;
+          }
+        }
+      }
+    };
+
     const stream = new ReadableStream({
       async start(controller) {
         let sentCount = 0;
         let errorCount = 0;
+        // Tracks when the last Resend API call was initiated so we can enforce the gap
+        // Regardless of how long rendering takes.
+        let lastSendAt = 0;
 
-        for (let i = 0; i < recipientEmails.length; i++) {
-          const email = recipientEmails[i];
-          const sendStart = Date.now();
-
+        for (const email of recipientEmails) {
           try {
+            // Render phase — does not consume Resend quota.
             // eslint-disable-next-line no-await-in-loop
             const token = await signUnsubscribeToken(email);
             const unsubscribeUrl = `${BASE_URL}/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
@@ -194,8 +221,22 @@ export const POST = withRequestContext(
               viewUrlSlug: slug,
             });
 
+            // Rate-limit: ensure at least RESEND_DELAY_MS has elapsed since the last API call.
+            // Measuring after rendering means render time counts toward the gap.
+            if (lastSendAt > 0) {
+              const gap = Date.now() - lastSendAt;
+              if (gap < RESEND_DELAY_MS) {
+                // eslint-disable-next-line no-await-in-loop
+                await new Promise<void>((resolve) => {
+                  setTimeout(resolve, RESEND_DELAY_MS - gap);
+                });
+              }
+            }
+
+            lastSendAt = Date.now();
+
             // eslint-disable-next-line no-await-in-loop
-            await sendEmail({
+            await sendWithRetry({
               from: getNewsletterFrom(),
               to: email,
               subject,
@@ -211,18 +252,6 @@ export const POST = withRequestContext(
           }
 
           enqueue(controller, { sent: sentCount + errorCount, total });
-
-          // Rate-limit: wait out the remainder of the 550 ms budget before the next send.
-          if (i < recipientEmails.length - 1) {
-            const elapsed = Date.now() - sendStart;
-            const remaining = RESEND_DELAY_MS - elapsed;
-            if (remaining > 0) {
-              // eslint-disable-next-line no-await-in-loop
-              await new Promise<void>((resolve) => {
-                setTimeout(resolve, remaining);
-              });
-            }
-          }
         }
 
         logInfo("newsletter.sent", {

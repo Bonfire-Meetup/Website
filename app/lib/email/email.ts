@@ -32,6 +32,16 @@ interface ResendErrorResponse {
   name?: string;
 }
 
+export class EmailSendError extends Error {
+  public readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "EmailSendError";
+    this.status = status;
+  }
+}
+
 const resendEndpoint = WEBSITE_URLS.SERVICES.RESEND_EMAILS_API;
 
 const getResendApiKey = () => serverEnv.BNF_RESEND_API_KEY;
@@ -96,7 +106,7 @@ export const sendEmail = async (input: SendEmailInput): Promise<ResendSuccessRes
   if (!response.ok) {
     const message = "message" in data && data.message ? data.message : "Resend request failed";
     logError("email.send_failed", new Error(message), emailFingerprint ?? undefined);
-    throw new Error(message);
+    throw new EmailSendError(message, response.status);
   }
 
   logInfo("email.sent", emailFingerprint ?? undefined);

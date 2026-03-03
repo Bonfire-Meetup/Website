@@ -134,7 +134,7 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
             </div>
           </div>
         ) : (
-          <div className="mb-10 flex items-center justify-between gap-4">
+          <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <Link
               href={PAGE_ROUTES.NEWSLETTER_ARCHIVE}
               className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
