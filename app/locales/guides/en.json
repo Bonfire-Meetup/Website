@@ -140,6 +140,10 @@
           "three": "Then you are signed in and redirected to your account page."
         }
       },
+      "privacy": {
+        "title": "We value your privacy",
+        "description": "Out of the gate, you're opted out of comms and your profile stays private. No rush, you can change both whenever you're ready."
+      },
       "passkeys": {
         "title": "How passkeys fit in",
         "items": {

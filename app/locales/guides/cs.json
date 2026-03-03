@@ -140,6 +140,10 @@
           "three": "Pak jsi přihlášený/á a pokračuješ na stránku účtu."
         }
       },
+      "privacy": {
+        "title": "Vaše soukromí je pro nás důležité",
+        "description": "Hned od začátku jste mimo e-maily a váš profil zůstává soukromý. Nemusíte spěchat, obojí můžete kdykoli změnit, až budete chtít."
+      },
       "passkeys": {
         "title": "Jak do toho zapadají passkeys",
         "items": {

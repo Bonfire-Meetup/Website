@@ -7,7 +7,13 @@ import { GuidePageShell } from "@/components/guides/GuidePageShell";
 import { GuideSection } from "@/components/guides/GuideSection";
 import { GuideSectionCard } from "@/components/guides/GuideSectionCard";
 import { GuideStepList } from "@/components/guides/GuideStepList";
-import { FingerprintIcon, MailIcon, ShieldIcon, UserIcon } from "@/components/shared/Icons";
+import {
+  FingerprintIcon,
+  LockClosedIcon,
+  MailIcon,
+  ShieldIcon,
+  UserIcon,
+} from "@/components/shared/Icons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export function RegistrationContent() {
@@ -46,6 +52,12 @@ export function RegistrationContent() {
               t("sections.registration.items.three"),
             ]}
           />
+        </GuideSection>
+
+        <GuideSection title={t("sections.privacy.title")} icon={LockClosedIcon}>
+          <p className="text-neutral-700 dark:text-neutral-300">
+            {t("sections.privacy.description")}
+          </p>
         </GuideSection>
 
         <GuideSection title={t("sections.passkeys.title")} icon={FingerprintIcon}>
