@@ -9,13 +9,20 @@ interface ShareEventButtonProps {
   sectionTitle: string;
   copyLabel: string;
   copiedLabel: string;
+  shortPath?: string;
 }
 
-export function ShareEventButton({ sectionTitle, copyLabel, copiedLabel }: ShareEventButtonProps) {
+export function ShareEventButton({
+  sectionTitle,
+  copyLabel,
+  copiedLabel,
+  shortPath,
+}: ShareEventButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleClick = () => {
-    navigator.clipboard.writeText(window.location.href);
+    const url = shortPath ? `${window.location.origin}${shortPath}` : window.location.href;
+    navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

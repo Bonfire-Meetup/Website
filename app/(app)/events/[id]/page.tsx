@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { upcomingEvents } from "@/data/upcoming-events";
 import { buildNotFoundTitleMetadata, getMetaTitleSuffix } from "@/lib/metadata";
+import { getShortPath } from "@/lib/routes/short-links";
 
 import { EventDetailContent } from "./EventDetailContent";
 
@@ -49,6 +50,8 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
     notFound();
   }
 
+  const shortPath = getShortPath(`/events/${id}`);
+
   return (
     <div className="flex-1 bg-neutral-50 dark:bg-neutral-950">
       <EventDetailContent
@@ -62,6 +65,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
         description={event.description}
         speakers={event.speakers}
         links={event.links}
+        shortPath={shortPath}
       />
     </div>
   );

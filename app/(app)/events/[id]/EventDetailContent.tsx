@@ -97,6 +97,7 @@ interface EventDetailContentProps {
   description: string;
   speakers: Speaker[];
   links?: EventLinks;
+  shortPath?: string;
 }
 
 const DEFAULT_EVENT_DURATION_MINUTES = 120;
@@ -309,6 +310,7 @@ export function EventDetailContent({
   description,
   speakers,
   links,
+  shortPath,
 }: EventDetailContentProps) {
   const t = useTranslations("events");
   const locale = useLocale();
@@ -829,6 +831,7 @@ export function EventDetailContent({
                   sectionTitle={t("shareEvent")}
                   copyLabel={t("copyLink")}
                   copiedLabel={t("copied")}
+                  shortPath={shortPath}
                 />
               </div>
             </div>

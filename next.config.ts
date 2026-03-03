@@ -14,7 +14,7 @@ const nextConfig = {
   },
   redirects: () => [
     { source: "/newsletter/unsubscribe", destination: "/newsletters/unsubscribe", permanent: true },
-    { source: "/newsletter/:slug", destination: "/newsletters/:slug", permanent: true },
+    { source: "/newsletter/:slug([\\w-]+)", destination: "/newsletters/:slug", permanent: true },
     { source: "/newsletter", destination: "/newsletters", permanent: true },
   ],
   headers: () => [
