@@ -72,9 +72,62 @@ export const POST = withRequestContext(
   }),
 );
 
+type SubscribedAs = "newsletter" | "account" | "both";
+
+function toSubscribedAs(newsletter: boolean, account: boolean): SubscribedAs {
+  return newsletter && account ? "both" : newsletter ? "newsletter" : "account";
+}
+
+async function getSubscriptionStatus(email: string) {
+  const database = db();
+  const newsletterSub = await database.query.newsletterSubscription.findFirst({
+    where: eq(newsletterSubscription.email, email),
+  });
+  const user = await database.query.appUser.findFirst({
+    where: eq(appUser.email, email),
+  });
+  const prefs = user?.preferences as { allowCommunityEmails?: boolean } | null;
+  const newsletter = Boolean(newsletterSub);
+  const account = Boolean(prefs?.allowCommunityEmails);
+  return { newsletter, account, user };
+}
+
 const unsubscribeSchema = z.object({
   token: z.string().min(1),
 });
+
+export const GET = (request: Request) =>
+  runWithRequestContext(request, async () => {
+    const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
+
+    const url = new URL(request.url);
+    const token = url.searchParams.get("token");
+
+    if (!token) {
+      return respond({ error: "invalid_request" }, { status: 400 });
+    }
+
+    let email: string;
+    try {
+      email = await verifyUnsubscribeToken(token);
+    } catch {
+      return respond({ error: "invalid_token" }, { status: 400 });
+    }
+
+    try {
+      const { newsletter, account } = await getSubscriptionStatus(email);
+
+      if (!newsletter && !account) {
+        return respond({ subscribedAs: null, error: "not_subscribed" }, { status: 400 });
+      }
+
+      return respond({ subscribedAs: toSubscribedAs(newsletter, account) });
+    } catch (error) {
+      logError("newsletter.check_subscription_failed", error, { email });
+
+      return respond({ error: "check_failed" }, { status: 500 });
+    }
+  });
 
 export const DELETE = (request: Request) =>
   runWithRequestContext(request, async () => {
@@ -103,51 +156,33 @@ export const DELETE = (request: Request) =>
 
     try {
       const database = db();
-      const results = { newsletter: false, account: false };
+      const { newsletter, account, user } = await getSubscriptionStatus(email);
 
-      const newsletterSub = await database.query.newsletterSubscription.findFirst({
-        where: eq(newsletterSubscription.email, email),
-      });
-
-      if (newsletterSub) {
+      if (newsletter) {
         await database
           .delete(newsletterSubscription)
           .where(eq(newsletterSubscription.email, email));
-        results.newsletter = true;
       }
 
-      const user = await database.query.appUser.findFirst({
-        where: eq(appUser.email, email),
-      });
-
-      if (user) {
-        const prefs = user.preferences as { allowCommunityEmails?: boolean } | null;
-        if (prefs?.allowCommunityEmails) {
-          await database
-            .update(appUser)
-            .set({
-              preferences: sql`jsonb_set(coalesce(${appUser.preferences}, '{}'::jsonb), '{allowCommunityEmails}', 'false'::jsonb)`,
-            })
-            .where(eq(appUser.id, user.id));
-          results.account = true;
-        }
+      if (account && user) {
+        await database
+          .update(appUser)
+          .set({
+            preferences: sql`jsonb_set(coalesce(${appUser.preferences}, '{}'::jsonb), '{allowCommunityEmails}', 'false'::jsonb)`,
+          })
+          .where(eq(appUser.id, user.id));
       }
 
-      if (!results.newsletter && !results.account) {
+      if (!newsletter && !account) {
         return respond({ error: "not_subscribed" }, { status: 400 });
       }
 
-      logInfo("newsletter.unsubscribed", { email, results });
+      logInfo("newsletter.unsubscribed", { email, results: { newsletter, account } });
 
       return respond({
         ok: true,
         email,
-        unsubscribedFrom:
-          results.newsletter && results.account
-            ? "both"
-            : results.newsletter
-              ? "newsletter"
-              : "account",
+        unsubscribedFrom: toSubscribedAs(newsletter, account),
       });
     } catch (error) {
       logError("newsletter.unsubscribe_failed", error, { email });

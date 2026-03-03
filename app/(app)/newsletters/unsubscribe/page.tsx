@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { CheckIcon, CloseIcon, MailIcon } from "@/components/shared/Icons";
 import { AccentBar } from "@/components/ui/AccentBar";
@@ -11,22 +11,91 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { API_ROUTES } from "@/lib/api/routes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
+type SubscribedAs = "newsletter" | "account" | "both";
+
+type ErrorCode = "invalid_token" | "missing_token" | "not_subscribed" | "generic";
+
 type PageState =
   | { status: "idle" }
-  | { status: "loading" }
-  | { status: "success"; email: string; unsubscribedFrom: "newsletter" | "account" | "both" }
-  | { status: "error"; message: string };
+  | { status: "checking" }
+  | { status: "ready"; subscribedAs: SubscribedAs }
+  | { status: "loading"; subscribedAs: SubscribedAs }
+  | { status: "success"; email: string; unsubscribedFrom: SubscribedAs }
+  | { status: "error"; message: string; errorCode?: ErrorCode };
+
+const API_ERROR_KEYS: Record<string, ErrorCode> = {
+  not_subscribed: "not_subscribed",
+  invalid_token: "invalid_token",
+};
+
+const ERROR_MESSAGE_KEYS: Record<ErrorCode, string> = {
+  invalid_token: "invalidToken",
+  missing_token: "missingToken",
+  not_subscribed: "notSubscribed",
+  generic: "generic",
+};
+
+function InfoCard({ label, content }: { label: string; content: string }) {
+  return (
+    <div className="rounded-xl bg-neutral-100/80 p-4 dark:bg-neutral-800/50">
+      <p className="mb-1 text-sm font-medium text-neutral-500 dark:text-neutral-400">{label}</p>
+      <p className="text-neutral-700 dark:text-neutral-300">{content}</p>
+    </div>
+  );
+}
 
 export default function UnsubscribePage() {
   const t = useTranslations("sections.newsletterUnsubscribe");
   const token = useSearchParams().get("token");
 
   const [state, setState] = useState<PageState>(() =>
-    token ? { status: "idle" } : { status: "error", message: t("errors.missingToken") },
+    token
+      ? { status: "idle" }
+      : { status: "error", message: t("errors.missingToken"), errorCode: "missing_token" },
   );
 
+  const resolveError = useCallback(
+    (error?: string): { message: string; errorCode: ErrorCode } => {
+      const code: ErrorCode = error && error in API_ERROR_KEYS ? API_ERROR_KEYS[error] : "generic";
+      return { message: t(`errors.${ERROR_MESSAGE_KEYS[code]}`), errorCode: code };
+    },
+    [t],
+  );
+
+  useEffect(() => {
+    if (!token || state.status !== "idle") {
+      return;
+    }
+
+    const checkSubscription = async () => {
+      setState({ status: "checking" });
+      try {
+        const response = await fetch(
+          `${API_ROUTES.NEWSLETTER.SUBSCRIPTIONS}?token=${encodeURIComponent(token)}`,
+        );
+        const data = await response.json();
+
+        if (response.ok && data.subscribedAs) {
+          setState({ status: "ready", subscribedAs: data.subscribedAs });
+        } else {
+          const { message, errorCode } = resolveError(data.error);
+          setState({ status: "error", message, errorCode });
+        }
+      } catch {
+        setState({ status: "error", message: t("errors.generic"), errorCode: "generic" });
+      }
+    };
+
+    checkSubscription();
+  }, [token, state.status, resolveError, t]);
+
   const handleUnsubscribe = async () => {
-    setState({ status: "loading" });
+    setState((prev) => {
+      if (prev.status !== "ready") {
+        return prev;
+      }
+      return { status: "loading", subscribedAs: prev.subscribedAs };
+    });
     try {
       const response = await fetch(API_ROUTES.NEWSLETTER.SUBSCRIPTIONS, {
         method: "DELETE",
@@ -41,23 +110,20 @@ export default function UnsubscribePage() {
           unsubscribedFrom: data.unsubscribedFrom ?? "newsletter",
         });
       } else {
-        const errorMessages: Record<string, string> = {
-          not_subscribed: t("errors.notSubscribed"),
-          invalid_token: t("errors.invalidToken"),
-        };
-        setState({ status: "error", message: errorMessages[data.error] ?? t("errors.generic") });
+        const { message, errorCode } = resolveError(data.error);
+        setState({ status: "error", message, errorCode });
       }
     } catch {
-      setState({ status: "error", message: t("errors.generic") });
+      setState({ status: "error", message: t("errors.generic"), errorCode: "generic" });
     }
   };
 
-  const getSuccessMessage = (email: string, from: "newsletter" | "account" | "both") => {
-    const keys = {
+  const getSuccessMessage = (email: string, from: SubscribedAs) => {
+    const keys: Record<SubscribedAs, string> = {
       newsletter: "success.messageNewsletter",
       account: "success.messageAccount",
       both: "success.messageBoth",
-    } as const;
+    };
     return t(keys[from], { email });
   };
 
@@ -99,20 +165,36 @@ export default function UnsubscribePage() {
             </div>
           </div>
         ) : state.status === "error" ? (
-          <div className="glass-card no-hover-pop p-8 text-center sm:p-12">
+          <div className="glass-card no-hover-pop p-8 sm:p-12">
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-rose-400 to-red-500 shadow-lg shadow-rose-500/30">
               <CloseIcon className="h-8 w-8 text-white" />
             </div>
-            <h2 className="mb-3 text-2xl font-bold text-neutral-900 dark:text-white">
+            <h2 className="mb-3 text-center text-2xl font-bold text-neutral-900 dark:text-white">
               {t("error.title")}
             </h2>
-            <p className="mx-auto max-w-md text-neutral-600 dark:text-neutral-400">
+            <p className="mx-auto mb-4 max-w-md text-center text-neutral-600 dark:text-neutral-400">
               {state.message}
             </p>
-            <div className="mt-8">
+            {(state.errorCode === "invalid_token" || state.errorCode === "missing_token") && (
+              <div className="mx-auto mb-8 max-w-md rounded-xl bg-neutral-100/80 p-4 text-left dark:bg-neutral-800/50">
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  {state.errorCode === "invalid_token"
+                    ? t("errors.invalidTokenDetails")
+                    : t("errors.missingTokenDetails")}
+                </p>
+              </div>
+            )}
+            <div className="flex justify-center">
               <Button href={PAGE_ROUTES.HOME} variant="glass-secondary">
                 {t("backToHome")}
               </Button>
+            </div>
+          </div>
+        ) : state.status === "checking" ? (
+          <div className="glass-card no-hover-pop p-8 sm:p-12">
+            <div className="flex flex-col items-center justify-center gap-6 py-12">
+              <LoadingSpinner className="h-10 w-10" />
+              <p className="text-neutral-600 dark:text-neutral-400">{t("checking")}</p>
             </div>
           </div>
         ) : (
@@ -122,13 +204,27 @@ export default function UnsubscribePage() {
                 <MailIcon className="h-6 w-6 text-white" />
               </div>
             </div>
+
+            {(state.status === "ready" || state.status === "loading") && (
+              <div className="mb-8 space-y-6">
+                <InfoCard
+                  label={t("whySubscribedLabel")}
+                  content={t(`whySubscribed.${state.subscribedAs}` as const)}
+                />
+                <InfoCard
+                  label={t("whatUnsubscribeDoesLabel")}
+                  content={t(`whatUnsubscribeDoes.${state.subscribedAs}` as const)}
+                />
+              </div>
+            )}
+
             <p className="mb-8 text-center text-lg text-neutral-600 dark:text-neutral-400">
               {t("confirmMessage")}
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
               <Button
                 onClick={handleUnsubscribe}
-                disabled={state.status === "loading"}
+                disabled={state.status !== "ready"}
                 variant="glass"
                 className="w-full sm:w-auto"
               >

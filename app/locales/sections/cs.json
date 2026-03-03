@@ -61,7 +61,20 @@
     "newsletterUnsubscribe": {
       "title": "Odhlášení",
       "subtitle": "Správa předvoleb odběru newsletteru",
-      "confirmMessage": "Jsi si jistý, že se chceš odhlásit od newsletteru Bonfire? Přijdeš o informace o nadcházejících akcích a nových záznamech.",
+      "whySubscribed": {
+        "newsletter": "Jsi na našem mailing listu, protože ses přihlásil k odběru newsletteru.",
+        "account": "Dostáváš emaily, protože sis v nastavení účtu povolil novinky komunity.",
+        "both": "Dostáváš emaily jak z mailing listu (přihlášení k newsletteru), tak z nastavení oznámení v účtu."
+      },
+      "whatUnsubscribeDoes": {
+        "newsletter": "Odebere tvůj e-mail z mailing listu. Další emaily od newsletteru dostaneš až po novém přihlášení.",
+        "account": "Vypne e-mailová oznámení v předvolbách účtu. Můžeš je kdykoliv znovu zapnout v nastavení.",
+        "both": "Odebere tvůj e-mail z mailing listu a vypne e-mailová oznámení v účtu. Pro opětovné přijímání emailů se znovu přihlas k newsletteru nebo zapni oznámení v nastavení účtu."
+      },
+      "checking": "Kontroluji odběr…",
+      "whySubscribedLabel": "Proč jsi přihlášen",
+      "whatUnsubscribeDoesLabel": "Co udělá tlačítko Odhlásit se",
+      "confirmMessage": "Opravdu se chceš odhlásit?",
       "unsubscribe": "Odhlásit se",
       "unsubscribing": "Odhlašuji...",
       "cancel": "Nechci se odhlásit",
@@ -76,10 +89,12 @@
         "title": "Odhlášení se nezdařilo"
       },
       "errors": {
-        "invalidToken": "Neplatný odkaz pro odhlášení",
+        "invalidToken": "Tento odkaz pro odhlášení je neplatný nebo vypršel.",
+        "invalidTokenDetails": "Odkazy v emailech mohou časem vypršet. Použij prosím ten z posledního newsletteru, nebo nám napiš a pomůžeme ti.",
+        "missingToken": "Nebyl nalezen platný odkaz pro odhlášení.",
+        "missingTokenDetails": "Použij prosím odkaz pro odhlášení z jednoho z našich newsletterových emailů. Každý odkaz je jedinečný a svázaný s tvou e-mailovou adresou. Pokud máš problém, napiš nám a pomůžeme ti s odhlášením.",
         "notSubscribed": "Nejsi přihlášen k odběru našeho newsletteru",
-        "generic": "Něco se pokazilo. Zkus to prosím později.",
-        "missingToken": "Neplatný nebo chybějící token pro odhlášení"
+        "generic": "Něco se pokazilo. Zkus to prosím později."
       }
     },
     "newsletterArchive": {

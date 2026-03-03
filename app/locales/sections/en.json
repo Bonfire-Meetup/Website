@@ -61,7 +61,20 @@
     "newsletterUnsubscribe": {
       "title": "Unsubscribe",
       "subtitle": "Manage your newsletter subscription preferences",
-      "confirmMessage": "Are you sure you want to unsubscribe from the Bonfire newsletter? You'll no longer receive updates about upcoming events and new recordings.",
+      "whySubscribed": {
+        "newsletter": "You're on our mailing list because you signed up for the newsletter.",
+        "account": "You receive emails because you opted in to community updates in your account settings.",
+        "both": "You receive emails from both our mailing list (newsletter signup) and your account's notification preferences."
+      },
+      "whatUnsubscribeDoes": {
+        "newsletter": "Removes your email from our mailing list. You won't receive any newsletter emails until you sign up again.",
+        "account": "Turns off email notifications in your account preferences. You can re-enable them anytime in account settings.",
+        "both": "Removes your email from the mailing list and turns off account email notifications. To receive emails again, sign up for the newsletter or enable notifications in account settings."
+      },
+      "checking": "Checking your subscription…",
+      "whySubscribedLabel": "Why you're subscribed",
+      "whatUnsubscribeDoesLabel": "What Unsubscribe does",
+      "confirmMessage": "Are you sure you want to unsubscribe?",
       "unsubscribe": "Unsubscribe",
       "unsubscribing": "Unsubscribing...",
       "cancel": "Keep me subscribed",
@@ -76,10 +89,12 @@
         "title": "Unable to unsubscribe"
       },
       "errors": {
-        "invalidToken": "Invalid unsubscribe link",
+        "invalidToken": "This unsubscribe link is invalid or has expired.",
+        "invalidTokenDetails": "Links in our emails may expire after a while. Grab the unsubscribe link from your most recent newsletter, or drop us a line and we'll sort it out.",
+        "missingToken": "No valid unsubscribe link was found.",
+        "missingTokenDetails": "Please use the unsubscribe link from one of our newsletter emails. Each link is unique and tied to your email address. If you're having trouble, contact us and we'll help you unsubscribe.",
         "notSubscribed": "You are not subscribed to our newsletter",
-        "generic": "Something went wrong. Please try again later.",
-        "missingToken": "Invalid or missing unsubscribe token"
+        "generic": "Something went wrong. Please try again later."
       }
     },
     "newsletterArchive": {
