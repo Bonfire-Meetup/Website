@@ -127,7 +127,9 @@
         "badge": "Boosted",
         "empty": "No boosted videos yet.",
         "emptyHint": "See a video you vibe with? Drop it a boost on the detail page so more people catch it.",
-        "cta": "Browse videos"
+        "cta": "Browse videos",
+        "showMore": "Show {count} more",
+        "showFewer": "Show fewer"
       },
       "checkedIn": {
         "title": "Events attended",

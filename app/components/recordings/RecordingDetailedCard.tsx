@@ -44,7 +44,12 @@ interface RecordingDetailedCardProps {
   locale?: string;
   likeCount?: number;
   boostCount?: number;
-  badge?: { icon: ReactNode; count: number; gradient: string };
+  badge?: {
+    icon: ReactNode;
+    count?: number;
+    label?: string;
+    gradient: string;
+  };
   disableShadow?: boolean;
 }
 
@@ -245,12 +250,12 @@ export function RecordingDetailedCard({
         </div>
       }
     >
-      {badge && badge.count > 0 && (
+      {badge && ((badge.count !== undefined && badge.count > 0) || badge.label) && (
         <div
           className={`pointer-events-none absolute right-3 bottom-3 z-30 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-white shadow-lg ${badge.gradient}`}
         >
           {badge.icon}
-          {badge.count}
+          {badge.label ?? badge.count}
         </div>
       )}
       {isGrid ? (

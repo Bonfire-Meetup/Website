@@ -43,7 +43,7 @@ export function CookieBanner() {
       {!isExpanded ? (
         <button
           onClick={toggleExpand}
-          className="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2.5 shadow-lg shadow-black/10 backdrop-blur-xl transition-all hover:scale-105 active:scale-95 dark:bg-neutral-900/90 dark:shadow-black/20"
+          className="flex cursor-pointer items-center gap-2 rounded-full bg-white/90 px-4 py-2.5 shadow-lg shadow-black/10 backdrop-blur-xl transition-all hover:scale-105 active:scale-95 dark:bg-neutral-900/90 dark:shadow-black/20"
           aria-label={t("expandAria")}
         >
           <CookieIcon className="h-5 w-5 text-neutral-600 dark:text-neutral-400" />
@@ -66,14 +66,14 @@ export function CookieBanner() {
               </button>
               <a
                 href="/legal#cookies"
-                className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 sm:rounded-md sm:p-1 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 sm:rounded-md sm:p-1 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
                 aria-label={t("learnMoreAria")}
               >
                 <InfoIcon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
               </a>
               <button
                 onClick={handleClose}
-                className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 sm:rounded-md sm:p-1 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 sm:rounded-md sm:p-1 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
                 aria-label={t("closeAria")}
               >
                 <CloseIcon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />

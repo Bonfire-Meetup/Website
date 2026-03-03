@@ -54,11 +54,11 @@ export default function UserProfileLoading() {
               </div>
               <div className="p-4 sm:p-6">
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {Array.from(
-                    { length: 2 },
-                    (_, skeletonIndex) => `boosted-skeleton-${skeletonIndex}`,
-                  ).map((skeletonId) => (
-                    <div key={skeletonId} className="overflow-hidden rounded-xl bg-neutral-800/50">
+                  {Array.from({ length: 6 }, (_, i) => (
+                    <div
+                      key={`boosted-skeleton-${i}`}
+                      className="overflow-hidden rounded-xl bg-neutral-800/50"
+                    >
                       <Skeleton className="aspect-video w-full !rounded-none" />
                       <div className="space-y-3 p-4">
                         <Skeleton className="h-4 w-full" />
