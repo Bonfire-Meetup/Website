@@ -54,7 +54,7 @@ function NewsletterEditorInner() {
         return;
       }
 
-      const res = await fetch(API_ROUTES.NEWSLETTER.ARCHIVE_ITEM(resendSlug), {
+      const res = await fetch(API_ROUTES.NEWSLETTER.ITEM(resendSlug), {
         headers: createJsonAuthHeaders(token),
       });
 

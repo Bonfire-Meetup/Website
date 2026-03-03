@@ -1,18 +1,82 @@
+import { checkBotId } from "botid/server";
 import { eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { getClientHashes, isOriginAllowed } from "@/lib/api/rate-limit";
+import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
+import {
+  newsletterSubscribeRequestSchema,
+  newsletterSubscribeResponseSchema,
+} from "@/lib/api/schemas";
 import { verifyUnsubscribeToken } from "@/lib/auth/jwt";
 import { db } from "@/lib/data/db";
+import { subscribeToNewsletter } from "@/lib/data/newsletter";
 import { appUser, newsletterSubscription } from "@/lib/data/schema";
-import { logError, logInfo } from "@/lib/utils/log";
-import { runWithRequestContext } from "@/lib/utils/request-context";
+import { logError, logInfo, logWarn } from "@/lib/utils/log";
+import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context";
+
+const RATE_LIMIT_STORE = "newsletter";
+const MAX_REQUESTS_PER_MINUTE = 3;
+
+export const POST = withRequestContext(
+  withRateLimit({
+    maxHits: MAX_REQUESTS_PER_MINUTE,
+    onLimit: ({ ipHash }) => {
+      logWarn("newsletter.rate_limited", {
+        ipHash,
+        maxHits: MAX_REQUESTS_PER_MINUTE,
+        requestId: getRequestId(),
+        storeKey: RATE_LIMIT_STORE,
+      });
+
+      return NextResponse.json({ error: "Rate limited" }, { status: 429 });
+    },
+    storeKey: RATE_LIMIT_STORE,
+  })(async (request: Request) => {
+    const originAllowed = await isOriginAllowed();
+
+    if (!originAllowed) {
+      logWarn("newsletter.invalid_origin", { requestId: getRequestId() });
+
+      return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+    }
+
+    const verification = await checkBotId();
+
+    if (verification.isBot) {
+      logWarn("newsletter.bot_blocked", { requestId: getRequestId() });
+
+      return NextResponse.json({ error: "Bot traffic blocked" }, { status: 403 });
+    }
+
+    const { ipHash, uaHash } = await getClientHashes();
+
+    try {
+      const body = await request.json();
+      const { email } = newsletterSubscribeRequestSchema.parse(body);
+
+      const result = await subscribeToNewsletter(email, ipHash, uaHash);
+      const validated = newsletterSubscribeResponseSchema.parse({ subscribed: result.subscribed });
+
+      return NextResponse.json(validated);
+    } catch (error) {
+      if (error && typeof error === "object" && "issues" in error) {
+        return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+      }
+
+      logError("newsletter.subscribe_failed", error);
+
+      return NextResponse.json({ error: "Failed to subscribe" }, { status: 500 });
+    }
+  }),
+);
 
 const unsubscribeSchema = z.object({
   token: z.string().min(1),
 });
 
-export const POST = (request: Request) =>
+export const DELETE = (request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
 

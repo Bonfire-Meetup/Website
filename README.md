@@ -52,9 +52,9 @@ Schema: see `db/video-likes-schema.sql`
 
 ### Likes
 
-- `GET /api/v1/video/:id/likes` -> `{ count, hasLiked }`
-- `POST /api/v1/video/:id/likes` -> `{ count, added }`
-- `DELETE /api/v1/video/:id/likes` -> `{ count, removed }`
+- `GET /api/v1/videos/:id/likes` -> `{ count, hasLiked }`
+- `POST /api/v1/videos/:id/likes` -> `{ count, added }`
+- `DELETE /api/v1/videos/:id/likes` -> `{ count, removed }`
 
 User identification: SHA256 hash of IP + User-Agent (no auth required).
 
@@ -79,7 +79,7 @@ Short-lived, signed QR tokens for event check-in. Tokens are valid for 9 minutes
 
 Endpoint:
 
-- `GET /api/v1/users/me/check-in` -> `{ token, expiresAt }` (requires valid access token)
+- `GET /api/v1/users/me/check-ins` -> `{ token, expiresAt }` (requires valid access token)
 
 Token format: `v1.{base64-payload}.{signature}` where payload contains `{ iat, exp, sub (user_id) }`
 

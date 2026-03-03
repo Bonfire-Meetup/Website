@@ -84,7 +84,7 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
         return;
       }
       try {
-        const res = await fetch(`${API_ROUTES.NEWSLETTER.ARCHIVE}?testSend=true`, {
+        const res = await fetch(`${API_ROUTES.NEWSLETTER.LIST}?testSend=true`, {
           headers: createJsonAuthHeaders(token),
         });
         if (res.ok) {

@@ -76,7 +76,7 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
         fail();
         return;
       }
-      const res = await fetch(API_ROUTES.NEWSLETTER.ARCHIVE_ITEM(slug), {
+      const res = await fetch(API_ROUTES.NEWSLETTER.ITEM(slug), {
         method: "DELETE",
         headers: createJsonAuthHeaders(token),
       });

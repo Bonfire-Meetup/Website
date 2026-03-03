@@ -77,17 +77,22 @@ export function ConfirmationStep({
       if (!accessToken) {
         sendError = true;
       } else {
-        const response = await fetch(API_ROUTES.NEWSLETTER.SEND, {
+        const url = resendSlug
+          ? API_ROUTES.NEWSLETTER.SENDS(resendSlug)
+          : API_ROUTES.NEWSLETTER.LIST;
+        const body = resendSlug
+          ? JSON.stringify({ audience: data.audience, testMode })
+          : JSON.stringify({
+              subject: data.subject,
+              previewText: data.previewText,
+              sections: allSections,
+              audience: data.audience,
+              testMode,
+            });
+        const response = await fetch(url, {
           method: "POST",
           headers: createJsonAuthHeaders(accessToken),
-          body: JSON.stringify({
-            subject: data.subject,
-            previewText: data.previewText,
-            sections: allSections,
-            audience: data.audience,
-            testMode,
-            ...(resendSlug ? { resendSlug } : {}),
-          }),
+          body,
         });
 
         if (!response.ok || !response.body) {

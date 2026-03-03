@@ -11,13 +11,13 @@ import { logError } from "@/lib/utils/log";
 import { runWithRequestContext } from "@/lib/utils/request-context";
 import { decompressUuid } from "@/lib/utils/uuid-compress";
 
-export const GET = async (request: Request, { params }: { params: Promise<{ id: string }> }) =>
+export const GET = async (request: Request, { params }: { params: Promise<{ userId: string }> }) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
 
     try {
-      const { id } = await params;
-      const userId = decompressUuid(id);
+      const { userId: publicId } = await params;
+      const userId = decompressUuid(publicId);
 
       if (!userId) {
         return respond({ error: "invalid_id" }, { status: 400 });
@@ -105,7 +105,7 @@ export const GET = async (request: Request, { params }: { params: Promise<{ id: 
           count: events.length,
           items: events,
         },
-        publicId: id,
+        publicId,
         createdAt: user.createdAt,
         name: user.name,
         roles: userRoles,

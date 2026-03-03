@@ -28,8 +28,8 @@ export default function UnsubscribePage() {
   const handleUnsubscribe = async () => {
     setState({ status: "loading" });
     try {
-      const response = await fetch(API_ROUTES.NEWSLETTER.UNSUBSCRIBE, {
-        method: "POST",
+      const response = await fetch(API_ROUTES.NEWSLETTER.SUBSCRIPTIONS, {
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
       });

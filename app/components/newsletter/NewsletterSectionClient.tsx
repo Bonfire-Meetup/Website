@@ -57,7 +57,7 @@ export function NewsletterSectionClient() {
       }
 
       try {
-        const response = await fetch(API_ROUTES.NEWSLETTER.SUBSCRIBE, {
+        const response = await fetch(API_ROUTES.NEWSLETTER.SUBSCRIPTIONS, {
           body: JSON.stringify({ email, turnstileToken: token }),
           headers: {
             "Content-Type": "application/json",

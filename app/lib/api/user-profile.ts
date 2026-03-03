@@ -171,7 +171,7 @@ export function useDeleteAccountChallengeMutation() {
         throw new ApiError("Access token required", 401);
       }
 
-      const response = await fetch(API_ROUTES.ME.DELETE_CHALLENGE, {
+      const response = await fetch(API_ROUTES.ME.DELETION_CHALLENGES, {
         headers: createAuthHeaders(accessToken),
         method: "POST",
       });
@@ -202,10 +202,10 @@ export function useDeleteAccountMutation() {
         throw new ApiError("Access token required", 401);
       }
 
-      const response = await fetch(API_ROUTES.ME.DELETE, {
+      const response = await fetch(API_ROUTES.ME.BASE, {
         body: JSON.stringify({ challenge_token: challengeToken, code }),
         headers: createJsonAuthHeaders(accessToken),
-        method: "POST",
+        method: "DELETE",
       });
 
       if (!response.ok) {
