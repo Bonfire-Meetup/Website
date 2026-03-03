@@ -52,6 +52,7 @@ export const PAGE_ROUTES = {
   WATCH: (slug: string, shortId: string) => `/watch/${slug}-${shortId}`,
   WATCH_LATER: "/me/watch-later",
   NEWSLETTER_ARCHIVE: "/newsletter",
+  NEWSLETTER: (slug: string) => `/newsletter/${slug}`,
   NEWSLETTER_EDITOR: "/newsletter/editor/compose",
 } as const;
 

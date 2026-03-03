@@ -2,6 +2,9 @@
   "newsletterEditor": {
     "eyebrow": "Editor",
     "title": "Newsletter Editor",
+    "resendTitle": "Resend Newsletter",
+    "resendLoadError": "Failed to load newsletter data. It may have been deleted.",
+    "resendLoadErrorBack": "Back to newsletter",
     "step_editor": "Content",
     "step_audience": "Audience",
     "step_confirmation": "Confirm",
@@ -43,7 +46,7 @@
     "audienceManual": "Manual Entry Only",
     "audienceManualDesc": "Send only to manually entered email addresses",
     "manualEmailsTitle": "Additional Email Addresses",
-    "manualEmailsHint": "Add extra recipients (optional for audience types, required for manual only)",
+    "manualEmailsHint": "Add extra recipients. Paste multiple at once — one per line or separated by commas/semicolons. Invalid addresses are discarded.",
     "emailPlaceholder": "email@example.com",
     "addEmail": "Add",
     "confirmationTitle": "Review & Send",
@@ -64,6 +67,13 @@
     "sending": "Sending...",
     "testSendSuccess": "Test email sent successfully!",
     "sendSuccess": "Newsletter sent successfully!",
-    "sendError": "Failed to send newsletter. Please try again."
+    "sendError": "Failed to send newsletter. Please try again.",
+    "sendingProgress": "Sending {sent} of {total}...",
+    "sendResultTitle": "Newsletter Sent!",
+    "sendResultSent": "Delivered",
+    "sendResultErrors": "Failed",
+    "sendResultDuration": "Duration",
+    "sendAnother": "Send New Newsletter",
+    "backToHomepage": "Back to Homepage"
   }
 }

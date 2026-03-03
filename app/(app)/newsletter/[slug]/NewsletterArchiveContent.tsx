@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { ArrowLeftIcon, ArrowRightIcon, TrashIcon } from "@/components/shared/Icons";
+import { ArrowLeftIcon, ArrowRightIcon, MailIcon, TrashIcon } from "@/components/shared/Icons";
 import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { USER_ROLES } from "@/lib/config/roles";
@@ -66,11 +66,14 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
   const handleDelete = async () => {
     setDeleting(true);
     setDeleteError(null);
+    const fail = () => {
+      setDeleteError(t("deleteError"));
+      setDeleting(false);
+    };
     try {
       const token = await getValidAccessTokenAsync();
       if (!token) {
-        setDeleteError(t("deleteError"));
-        setDeleting(false);
+        fail();
         return;
       }
       const res = await fetch(API_ROUTES.NEWSLETTER.ARCHIVE_ITEM(slug), {
@@ -80,13 +83,11 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
       if (res.ok) {
         router.push(PAGE_ROUTES.NEWSLETTER_ARCHIVE);
       } else {
-        setDeleteError(t("deleteError"));
-        setDeleting(false);
+        fail();
       }
     } catch (err) {
       logWarn("newsletter.delete_failed", { error: String(err) });
-      setDeleteError(t("deleteError"));
-      setDeleting(false);
+      fail();
     }
   };
 
@@ -99,7 +100,6 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
       </div>
 
       <div className="relative z-10 mx-auto max-w-2xl">
-        {/* Top bar */}
         {confirmingDelete ? (
           <div className="mb-10 rounded-xl bg-rose-50 p-4 ring-1 ring-rose-200 dark:bg-rose-950/30 dark:ring-rose-800">
             <p className="text-sm font-semibold text-rose-800 dark:text-rose-200">
@@ -143,18 +143,26 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
               {t("backToArchive")}
             </Link>
             {isEditor && (
-              <button
-                onClick={() => setConfirmingDelete(true)}
-                className="flex items-center gap-1.5 text-sm text-neutral-400 transition-colors hover:text-rose-600 dark:text-neutral-500 dark:hover:text-rose-400"
-              >
-                <TrashIcon className="h-3.5 w-3.5" />
-                {t("delete")}
-              </button>
+              <div className="flex items-center gap-4">
+                <Link
+                  href={`${PAGE_ROUTES.NEWSLETTER_EDITOR}?resend=${encodeURIComponent(slug)}`}
+                  className="flex items-center gap-1.5 text-sm text-neutral-400 transition-colors hover:text-rose-600 dark:text-neutral-500 dark:hover:text-rose-400"
+                >
+                  <MailIcon className="h-3.5 w-3.5" />
+                  {t("resend")}
+                </Link>
+                <button
+                  onClick={() => setConfirmingDelete(true)}
+                  className="flex items-center gap-1.5 text-sm text-neutral-400 transition-colors hover:text-rose-600 dark:text-neutral-500 dark:hover:text-rose-400"
+                >
+                  <TrashIcon className="h-3.5 w-3.5" />
+                  {t("delete")}
+                </button>
+              </div>
             )}
           </div>
         )}
 
-        {/* Header */}
         <header className="mb-16 text-center">
           {newsletter.testSend && (
             <div className="mb-5 flex justify-center">
@@ -188,7 +196,6 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
           </p>
         </header>
 
-        {/* Article body */}
         <article>
           {newsletter.sections.map((section, index) => (
             <div key={section.id}>
@@ -241,7 +248,6 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
           ))}
         </article>
 
-        {/* Bottom nav */}
         <div className="mt-20 border-t border-neutral-200 pt-8 dark:border-neutral-800">
           <Link
             href={PAGE_ROUTES.NEWSLETTER_ARCHIVE}

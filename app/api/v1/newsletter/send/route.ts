@@ -7,7 +7,7 @@ import { signUnsubscribeToken } from "@/lib/auth/jwt";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { USER_ROLES } from "@/lib/config/roles";
 import { db } from "@/lib/data/db";
-import { saveNewsletterToArchive } from "@/lib/data/newsletter-archive";
+import { getNewsletterArchiveBySlug, saveNewsletterToArchive } from "@/lib/data/newsletter-archive";
 import { appUser, newsletterSubscription } from "@/lib/data/schema";
 import { getNewsletterFrom, sendEmail } from "@/lib/email/email";
 import { renderNewsletterTemplate } from "@/lib/email/newsletter-template";
@@ -32,6 +32,8 @@ const sendSchema = z.object({
     manualEmails: z.array(z.string().email()).default([]),
   }),
   testMode: z.boolean().default(false),
+  // When resending an existing newsletter, pass its slug to reuse the same archive record/URL.
+  resendSlug: z.string().optional(),
 });
 
 export const POST = withRequestContext(
@@ -53,19 +55,43 @@ export const POST = withRequestContext(
       return respond({ error: "invalid_request" }, { status: 400 });
     }
 
-    const { subject, previewText = "", sections, audience, testMode } = result.data;
+    const { audience, testMode, resendSlug } = result.data;
+    // Content may be overridden from the archive DB when resending.
+    let { subject } = result.data;
+    let previewText = result.data.previewText ?? "";
+    let { sections } = result.data;
+
+    let recipientEmails: string[] = [];
+    let slug: string;
 
     try {
       const database = db();
-      let recipientEmails: string[] = [];
+
+      // In resend mode, load the original content from the archive so the email is
+      // Identical to the original — the client-supplied content is ignored.
+      if (resendSlug) {
+        const original = await getNewsletterArchiveBySlug(resendSlug);
+        if (!original) {
+          return respond({ error: "not_found" }, { status: 404 });
+        }
+        const rawData = original.data as { sections?: unknown[] } | null;
+        const parsed = z.array(sectionSchema).safeParse(rawData?.sections ?? []);
+        if (!parsed.success || parsed.data.length === 0) {
+          return respond({ error: "invalid_archive" }, { status: 422 });
+        }
+        ({ subject } = original);
+        previewText = original.previewText ?? "";
+        sections = parsed.data;
+      }
 
       if (testMode) {
         const user = await database.query.appUser.findFirst({
           where: (users, { eq }) => eq(users.id, auth.userId),
         });
-        if (user) {
-          recipientEmails = [user.email];
+        if (!user) {
+          return respond({ error: "user_not_found" }, { status: 400 });
         }
+        recipientEmails = [user.email];
       } else {
         switch (audience.type) {
           case "all": {
@@ -112,66 +138,20 @@ export const POST = withRequestContext(
         return respond({ error: "no_recipients" }, { status: 400 });
       }
 
-      const BASE_URL = process.env.PROD_URL ?? WEBSITE_URLS.BASE;
-
-      const archiveRecord = await saveNewsletterToArchive({
-        subject,
-        previewText,
-        data: { sections },
-        audienceType: audience.type,
-        recipientCount: recipientEmails.length,
-        sentBy: auth.userId,
-        testSend: testMode,
-      });
-
-      const slug = compressUuid(archiveRecord.id);
-      let sentCount = 0;
-
-      for (const email of recipientEmails) {
-        try {
-          // eslint-disable-next-line no-await-in-loop
-          const token = await signUnsubscribeToken(email);
-          const unsubscribeUrl = `${BASE_URL}/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
-
-          // eslint-disable-next-line no-await-in-loop
-          const { html, text } = await renderNewsletterTemplate({
-            subject,
-            previewText,
-            sections,
-            lang: "en",
-            unsubscribeUrl,
-            viewUrlSlug: slug,
-          });
-
-          // eslint-disable-next-line no-await-in-loop
-          await sendEmail({
-            from: getNewsletterFrom(),
-            to: email,
-            subject,
-            html,
-            text,
-            tags: [{ name: "type", value: testMode ? "newsletter_test" : "newsletter" }],
-          });
-          sentCount += 1;
-        } catch (error) {
-          logError("newsletter.send_single_failed", error, { email });
-        }
+      if (resendSlug) {
+        slug = resendSlug;
+      } else {
+        const archiveRecord = await saveNewsletterToArchive({
+          subject,
+          previewText,
+          data: { sections },
+          audienceType: audience.type,
+          recipientCount: recipientEmails.length,
+          sentBy: auth.userId,
+          testSend: testMode,
+        });
+        slug = compressUuid(archiveRecord.id);
       }
-
-      logInfo("newsletter.sent", {
-        recipientCount: sentCount,
-        audienceType: audience.type,
-        testMode,
-        sentBy: auth.userId,
-        slug,
-      });
-
-      return respond({
-        ok: true,
-        recipientCount: sentCount,
-        testMode,
-        slug,
-      });
     } catch (error) {
       logError("newsletter.send_failed", error, {
         userId: auth.userId,
@@ -180,5 +160,86 @@ export const POST = withRequestContext(
 
       return respond({ error: "send_failed" }, { status: 500 });
     }
+
+    // Resend allows 2 requests/second. We budget 550 ms per send so we stay safely under the limit.
+    const RESEND_DELAY_MS = 550;
+    const total = recipientEmails.length;
+    const BASE_URL = process.env.PROD_URL ?? WEBSITE_URLS.BASE;
+    const encoder = new TextEncoder();
+    const enqueue = (controller: ReadableStreamDefaultController, data: object) => {
+      controller.enqueue(encoder.encode(`${JSON.stringify(data)}\n`));
+    };
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        let sentCount = 0;
+        let errorCount = 0;
+
+        for (let i = 0; i < recipientEmails.length; i++) {
+          const email = recipientEmails[i];
+          const sendStart = Date.now();
+
+          try {
+            // eslint-disable-next-line no-await-in-loop
+            const token = await signUnsubscribeToken(email);
+            const unsubscribeUrl = `${BASE_URL}/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
+
+            // eslint-disable-next-line no-await-in-loop
+            const { html, text } = await renderNewsletterTemplate({
+              subject,
+              previewText,
+              sections,
+              lang: "en",
+              unsubscribeUrl,
+              viewUrlSlug: slug,
+            });
+
+            // eslint-disable-next-line no-await-in-loop
+            await sendEmail({
+              from: getNewsletterFrom(),
+              to: email,
+              subject,
+              html,
+              text,
+              tags: [{ name: "type", value: testMode ? "newsletter_test" : "newsletter" }],
+            });
+
+            sentCount += 1;
+          } catch (error) {
+            logError("newsletter.send_single_failed", error, { email });
+            errorCount += 1;
+          }
+
+          enqueue(controller, { sent: sentCount + errorCount, total });
+
+          // Rate-limit: wait out the remainder of the 550 ms budget before the next send.
+          if (i < recipientEmails.length - 1) {
+            const elapsed = Date.now() - sendStart;
+            const remaining = RESEND_DELAY_MS - elapsed;
+            if (remaining > 0) {
+              // eslint-disable-next-line no-await-in-loop
+              await new Promise<void>((resolve) => {
+                setTimeout(resolve, remaining);
+              });
+            }
+          }
+        }
+
+        logInfo("newsletter.sent", {
+          recipientCount: sentCount,
+          audienceType: audience.type,
+          testMode,
+          sentBy: auth.userId,
+          slug,
+        });
+
+        enqueue(controller, { done: true, sentCount, errorCount, testMode, slug });
+        controller.close();
+      },
+    });
+
+    return new Response(stream, {
+      headers: { "Content-Type": "application/x-ndjson" },
+    });
   }),
 );

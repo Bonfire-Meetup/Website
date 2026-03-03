@@ -29,6 +29,7 @@ const ACTIVE_DRAFT_KEY = "newsletter-draft-active";
 const LEGACY_KEY = "newsletter-draft";
 
 const STEPS: WizardStep[] = ["editor", "audience", "confirmation"];
+const RESEND_STEPS: WizardStep[] = ["audience", "confirmation"];
 
 function getInitialData(): NewsletterWizardData {
   return {
@@ -97,19 +98,28 @@ function initializeDrafts(): { drafts: NewsletterDraft[]; activeDraftId: string 
 }
 
 interface NewsletterWizardProps {
-  onComplete?: () => void;
+  /** When set, the wizard enters resend mode: content is immutable, only audience is editable. */
+  resendSlug?: string;
+  resendData?: NewsletterWizardData;
 }
 
-export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
+export function NewsletterWizard({ resendSlug, resendData }: NewsletterWizardProps) {
   const t = useTranslations("newsletterEditor");
-  const [currentStep, setCurrentStep] = useState<WizardStep>("editor");
-  const [data, setData] = useState<NewsletterWizardData>(getInitialData);
+  const isResend = Boolean(resendSlug);
+  const steps = isResend ? RESEND_STEPS : STEPS;
+
+  const [currentStep, setCurrentStep] = useState<WizardStep>(isResend ? "audience" : "editor");
+  const [data, setData] = useState<NewsletterWizardData>(resendData ?? getInitialData);
   const [drafts, setDrafts] = useState<NewsletterDraft[]>([]);
   const [activeDraftId, setActiveDraftId] = useState<string>("");
   const [mounted, setMounted] = useState(false);
   const [audienceCounts, setAudienceCounts] = useState<AudienceCounts | null>(null);
 
   useEffect(() => {
+    if (isResend) {
+      setMounted(true);
+      return;
+    }
     const { drafts: initialDrafts, activeDraftId: initialActiveId } = initializeDrafts();
     const activeDraft = initialDrafts.find((d) => d.id === initialActiveId);
     setDrafts(initialDrafts);
@@ -118,7 +128,7 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
       setData(activeDraft.data);
     }
     setMounted(true);
-  }, []);
+  }, [isResend]);
 
   useEffect(() => {
     const fetchCounts = async () => {
@@ -134,14 +144,14 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
           setAudienceCounts((await res.json()) as AudienceCounts);
         }
       } catch {
-        // Ignore
+        // Counts are optional; silently skip on failure
       }
     };
     fetchCounts();
   }, []);
 
   useEffect(() => {
-    if (!mounted || !activeDraftId) {
+    if (isResend || !mounted || !activeDraftId) {
       return;
     }
     setDrafts((prev) => {
@@ -151,21 +161,21 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
       saveDraftsToStorage(updated);
       return updated;
     });
-  }, [data, mounted, activeDraftId]);
+  }, [data, mounted, activeDraftId, isResend]);
 
-  const currentStepIndex = STEPS.indexOf(currentStep);
+  const currentStepIndex = steps.indexOf(currentStep);
 
   const handleNext = () => {
     const nextIndex = currentStepIndex + 1;
-    if (nextIndex < STEPS.length) {
-      setCurrentStep(STEPS[nextIndex]);
+    if (nextIndex < steps.length) {
+      setCurrentStep(steps[nextIndex]);
     }
   };
 
   const handleBack = () => {
     const prevIndex = currentStepIndex - 1;
     if (prevIndex >= 0) {
-      setCurrentStep(STEPS[prevIndex]);
+      setCurrentStep(steps[prevIndex]);
     }
   };
 
@@ -269,14 +279,6 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
     setData((prev) => ({ ...prev, audience }));
   };
 
-  const handleSendComplete = () => {
-    const remaining = drafts.filter((d) => d.id !== activeDraftId);
-    const final = remaining.length > 0 ? remaining : [createDraft()];
-    saveDraftsToStorage(final);
-    setDrafts(final);
-    onComplete?.();
-  };
-
   const isStepValid = (step: WizardStep): boolean => {
     switch (step) {
       case "editor":
@@ -315,18 +317,20 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
-        <WizardProgress currentStep={currentStep} steps={STEPS} />
-        <DraftSelector
-          drafts={drafts}
-          activeDraftId={activeDraftId}
-          onSelect={handleSelectDraft}
-          onNew={handleNewDraft}
-          onDelete={handleDeleteDraft}
-        />
+        <WizardProgress currentStep={currentStep} steps={steps} />
+        {!isResend && (
+          <DraftSelector
+            drafts={drafts}
+            activeDraftId={activeDraftId}
+            onSelect={handleSelectDraft}
+            onNew={handleNewDraft}
+            onDelete={handleDeleteDraft}
+          />
+        )}
       </div>
 
       <div className="glass-card no-hover-pop overflow-hidden rounded-[24px] p-6 sm:p-8">
-        {currentStep === "editor" && (
+        {currentStep === "editor" && !isResend && (
           <EditorStep
             data={data}
             onUpdatePrimaryNews={handleUpdatePrimaryNews}
@@ -351,7 +355,8 @@ export function NewsletterWizard({ onComplete }: NewsletterWizardProps) {
           <ConfirmationStep
             data={data}
             recipientCount={recipientCount}
-            onSendComplete={handleSendComplete}
+            onSendAnother={!isResend ? handleNewDraft : undefined}
+            resendSlug={resendSlug}
           />
         )}
       </div>

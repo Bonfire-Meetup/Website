@@ -88,6 +88,7 @@
       "testBannerMessage": "This newsletter was sent as a test",
       "updateLabel": "Update {number}",
       "sentOn": "Sent {sentDate}",
+      "resend": "Resend",
       "delete": "Delete Newsletter",
       "deleteConfirmTitle": "Delete this newsletter?",
       "deleteConfirmMessage": "This will permanently remove the archive page. Any links sent in the original email will stop working for recipients.",

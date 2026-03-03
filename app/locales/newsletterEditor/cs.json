@@ -2,6 +2,9 @@
   "newsletterEditor": {
     "eyebrow": "Editor",
     "title": "Editor newsletteru",
+    "resendTitle": "Znovu odeslat newsletter",
+    "resendLoadError": "Nepodařilo se načíst data newsletteru. Možná byl smazán.",
+    "resendLoadErrorBack": "Zpět na newsletter",
     "step_editor": "Obsah",
     "step_audience": "Publikum",
     "step_confirmation": "Potvrdit",
@@ -43,7 +46,7 @@
     "audienceManual": "Pouze ruční zadání",
     "audienceManualDesc": "Odeslat pouze na ručně zadané emailové adresy",
     "manualEmailsTitle": "Další emailové adresy",
-    "manualEmailsHint": "Přidejte další příjemce (volitelné pro typy publika, povinné pro ruční zadání)",
+    "manualEmailsHint": "Přidejte další příjemce. Vložte více najednou — každý na nový řádek nebo oddělené čárkami/středníky. Neplatné adresy jsou zahozeny.",
     "emailPlaceholder": "email@example.com",
     "addEmail": "Přidat",
     "confirmationTitle": "Kontrola a odeslání",
@@ -64,6 +67,13 @@
     "sending": "Odesílání...",
     "testSendSuccess": "Testovací email úspěšně odeslán!",
     "sendSuccess": "Newsletter úspěšně odeslán!",
-    "sendError": "Nepodařilo se odeslat newsletter. Zkuste to znovu."
+    "sendError": "Nepodařilo se odeslat newsletter. Zkuste to znovu.",
+    "sendingProgress": "Odesílání {sent} z {total}...",
+    "sendResultTitle": "Newsletter odeslán!",
+    "sendResultSent": "Doručeno",
+    "sendResultErrors": "Selhalo",
+    "sendResultDuration": "Čas odeslání",
+    "sendAnother": "Odeslat nový newsletter",
+    "backToHomepage": "Zpět na hlavní stránku"
   }
 }

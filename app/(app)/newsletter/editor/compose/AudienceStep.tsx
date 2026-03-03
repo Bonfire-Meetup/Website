@@ -3,10 +3,24 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { PlusIcon, XIcon } from "@/components/shared/Icons";
+import { CloseIcon, PlusIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 
 import type { AudienceCounts, NewsletterWizardData } from "./types";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Split raw text on newlines, commas, and semicolons; return only valid, lowercase emails. */
+function parseEmails(raw: string): string[] {
+  return [
+    ...new Set(
+      raw
+        .split(/[\n,;]+/)
+        .map((s) => s.trim().toLowerCase())
+        .filter((s) => EMAIL_RE.test(s)),
+    ),
+  ];
+}
 
 interface AudienceStepProps {
   data: NewsletterWizardData["audience"];
@@ -25,15 +39,25 @@ export function AudienceStep({ data, onUpdate, counts }: AudienceStepProps) {
     });
   };
 
-  const handleAddEmail = () => {
-    const email = newEmail.trim().toLowerCase();
-    if (email && !data.manualEmails.includes(email)) {
-      onUpdate({
-        ...data,
-        manualEmails: [...data.manualEmails, email],
-      });
-      setNewEmail("");
+  const addParsedEmails = (raw: string) => {
+    const candidates = parseEmails(raw);
+    if (candidates.length === 0) {
+      return;
     }
+    const existing = new Set(data.manualEmails);
+    const toAdd = candidates.filter((e) => !existing.has(e));
+    if (toAdd.length > 0) {
+      onUpdate({ ...data, manualEmails: [...data.manualEmails, ...toAdd] });
+    }
+  };
+
+  const handleAddEmail = () => {
+    // Keep the input if nothing was valid so the user can see the bad input.
+    if (parseEmails(newEmail).length === 0) {
+      return;
+    }
+    addParsedEmails(newEmail);
+    setNewEmail("");
   };
 
   const handleRemoveEmail = (email: string) => {
@@ -47,6 +71,16 @@ export function AudienceStep({ data, onUpdate, counts }: AudienceStepProps) {
     if (e.key === "Enter") {
       e.preventDefault();
       handleAddEmail();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pasted = e.clipboardData.getData("text");
+    // Only intercept pastes that contain delimiters; single-email paste lands in the input normally.
+    if (/[\n,;]/.test(pasted)) {
+      e.preventDefault();
+      addParsedEmails(pasted);
+      setNewEmail("");
     }
   };
 
@@ -135,10 +169,11 @@ export function AudienceStep({ data, onUpdate, counts }: AudienceStepProps) {
 
         <div className="flex gap-2">
           <input
-            type="email"
+            type="text"
             value={newEmail}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewEmail(e.target.value)}
             onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
             placeholder={t("emailPlaceholder")}
             className="form-input-base form-input flex-1"
           />
@@ -161,7 +196,7 @@ export function AudienceStep({ data, onUpdate, counts }: AudienceStepProps) {
                   className="ml-1 rounded-full p-0.5 hover:bg-rose-200 dark:hover:bg-rose-500/30"
                   type="button"
                 >
-                  <XIcon className="h-3 w-3" />
+                  <CloseIcon className="h-3 w-3" />
                 </button>
               </div>
             ))}
