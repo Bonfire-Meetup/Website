@@ -833,133 +833,164 @@ export function EventDetailContent({
               </div>
             </div>
 
-            <div className="glass self-start rounded-3xl p-5 sm:p-6 lg:col-span-2">
-              <div
-                className="mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5"
-                style={{ background: `${loc.color}12` }}
-              >
-                <div className="h-2 w-2 rounded-full" style={{ background: loc.color }} />
-                <span
-                  className="text-xs font-bold tracking-wide uppercase"
-                  style={{ color: loc.color }}
-                >
-                  {location}
-                </span>
-              </div>
-
-              <h3 className="mb-4 text-lg font-bold text-neutral-900 dark:text-white">
-                {t("venueTitle")}
-              </h3>
-
-              <a
-                href={getMapUrl(venue)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-start gap-3"
-              >
+            <div className="lg:sticky lg:top-24 lg:col-span-2">
+              <div className="glass self-start rounded-3xl p-5 sm:p-6">
                 <div
-                  className="flex h-10 w-10 flex-none items-center justify-center rounded-xl"
+                  className="mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5"
                   style={{ background: `${loc.color}12` }}
                 >
-                  <MapPinIcon className="h-5 w-5" style={{ color: loc.color }} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p
-                    className={`text-sm font-semibold text-neutral-900 transition-colors ${isPrague ? "group-hover:text-red-600" : "group-hover:text-blue-600"} dark:text-white`}
+                  <div className="h-2 w-2 rounded-full" style={{ background: loc.color }} />
+                  <span
+                    className="text-xs font-bold tracking-wide uppercase"
+                    style={{ color: loc.color }}
                   >
-                    {venue}
-                  </p>
-                  <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
-                    {t("openInMaps")}
-                  </p>
+                    {location}
+                  </span>
                 </div>
-              </a>
 
-              <div className="mt-5 grid grid-cols-2 gap-2 border-t border-neutral-200/50 pt-5 dark:border-neutral-700/50">
-                <div className="rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
-                  <div className="mb-1 flex items-center gap-1.5">
-                    <CalendarIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
-                    <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-                      {t("dateLabel")}
-                    </span>
-                  </div>
-                  <p className="text-sm font-semibold text-neutral-900 dark:text-white">
-                    {formattedDate}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
-                  <div className="mb-1 flex items-center gap-1.5">
-                    <ClockIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
-                    <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-                      {t("timeLabel")}
-                    </span>
-                  </div>
-                  <p className="text-sm font-semibold text-neutral-900 dark:text-white">{time}</p>
-                </div>
-              </div>
+                <h3 className="mb-4 text-lg font-bold text-neutral-900 dark:text-white">
+                  {t("venueTitle")}
+                </h3>
 
-              {confirmedSpeakers.length > 0 && (
-                <div className="mt-2 rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <MicIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
+                <a
+                  href={getMapUrl(venue)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-start gap-3"
+                >
+                  <div
+                    className="flex h-10 w-10 flex-none items-center justify-center rounded-xl"
+                    style={{ background: `${loc.color}12` }}
+                  >
+                    <MapPinIcon className="h-5 w-5" style={{ color: loc.color }} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className={`text-sm font-semibold text-neutral-900 transition-colors ${isPrague ? "group-hover:text-red-600" : "group-hover:text-blue-600"} dark:text-white`}
+                    >
+                      {venue}
+                    </p>
+                    <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+                      {t("openInMaps")}
+                    </p>
+                  </div>
+                </a>
+
+                <div className="mt-5 grid grid-cols-2 gap-2 border-t border-neutral-200/50 pt-5 dark:border-neutral-700/50">
+                  <div className="rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
+                    <div className="mb-1 flex items-center gap-1.5">
+                      <CalendarIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
                       <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-                        {t("speakers")}
+                        {t("dateLabel")}
                       </span>
                     </div>
-                    <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-                      {confirmedSpeakers.length} {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {episode && (
-                <div className="mt-2 rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-                      {t("episodeLabel")}
-                    </span>
-                    <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-                      {episode}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {(() => {
-                const partners = getLocationPartners(location);
-                if (partners.length === 0) {
-                  return null;
-                }
-                return (
-                  <div className="mt-5 border-t border-neutral-200/50 pt-5 dark:border-neutral-700/50">
-                    <p className="mb-2.5 text-[9px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
-                      {t("partners")}
+                    <p className="text-sm font-semibold text-neutral-900 dark:text-white">
+                      {formattedDate}
                     </p>
-                    <div className="flex flex-wrap gap-2">
-                      {partners.map((partner) => (
-                        <a
-                          key={partner.name}
-                          href={partner.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center rounded-lg bg-neutral-900/85 px-2.5 py-1.5 ring-1 ring-black/20 transition-opacity hover:opacity-80 dark:bg-white/5 dark:ring-white/10"
-                          aria-label={partner.name}
-                        >
-                          <Image
-                            src={partner.logo}
-                            alt={partner.name}
-                            width={100}
-                            height={32}
-                            className={`h-4 w-auto object-contain opacity-90 ${partner.logoClassName ?? ""}`}
-                          />
-                        </a>
-                      ))}
+                  </div>
+                  <div className="rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
+                    <div className="mb-1 flex items-center gap-1.5">
+                      <ClockIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
+                      <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                        {t("timeLabel")}
+                      </span>
+                    </div>
+                    <p className="text-sm font-semibold text-neutral-900 dark:text-white">{time}</p>
+                  </div>
+                </div>
+
+                {confirmedSpeakers.length > 0 && (
+                  <div className="mt-2 rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <MicIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
+                        <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                          {t("speakers")}
+                        </span>
+                      </div>
+                      <span className="text-sm font-semibold text-neutral-900 dark:text-white">
+                        {confirmedSpeakers.length}{" "}
+                        {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
+                      </span>
                     </div>
                   </div>
-                );
-              })()}
+                )}
+
+                {episode && (
+                  <div className="mt-2 rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                        {t("episodeLabel")}
+                      </span>
+                      <span className="text-sm font-semibold text-neutral-900 dark:text-white">
+                        {episode}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                <div
+                  className="mt-5 overflow-hidden rounded-xl border p-4"
+                  style={{
+                    borderColor: `${loc.color}40`,
+                    background: `linear-gradient(135deg, ${loc.color}10 0%, ${loc.color}06 100%)`,
+                  }}
+                >
+                  <p className="mb-3 text-sm font-bold tracking-wide" style={{ color: loc.color }}>
+                    {t("goodToKnow")}
+                  </p>
+                  <ul className="space-y-2.5 text-sm text-neutral-700 dark:text-neutral-300">
+                    <li className="flex gap-2.5">
+                      <span
+                        className="mt-1.5 h-2 w-2 flex-none rounded-full"
+                        style={{ background: loc.color }}
+                      />
+                      <span>{t("noteFreeEntry")}</span>
+                    </li>
+                    <li className="flex gap-2.5">
+                      <span
+                        className="mt-1.5 h-2 w-2 flex-none rounded-full"
+                        style={{ background: loc.color }}
+                      />
+                      <span>{t("noteFlexibleTimeline")}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {(() => {
+                  const partners = getLocationPartners(location);
+                  if (partners.length === 0) {
+                    return null;
+                  }
+                  return (
+                    <div className="mt-5 border-t border-neutral-200/50 pt-5 dark:border-neutral-700/50">
+                      <p className="mb-2.5 text-[9px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                        {t("partners")}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {partners.map((partner) => (
+                          <a
+                            key={partner.name}
+                            href={partner.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center rounded-lg bg-neutral-900/85 px-2.5 py-1.5 ring-1 ring-black/20 transition-opacity hover:opacity-80 dark:bg-white/5 dark:ring-white/10"
+                            aria-label={partner.name}
+                          >
+                            <Image
+                              src={partner.logo}
+                              alt={partner.name}
+                              width={100}
+                              height={32}
+                              className={`h-4 w-auto object-contain opacity-90 ${partner.logoClassName ?? ""}`}
+                            />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
             </div>
           </div>
         </div>

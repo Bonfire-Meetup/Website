@@ -47,6 +47,9 @@
     "speakerPreview": "You can hear inspiring speakers like {names}.",
     "orRegisterVia": "Or register via:",
     "onePrivateRsvp": "1 private",
-    "multiplePrivateRsvps": "{count} private"
+    "multiplePrivateRsvps": "{count} private",
+    "goodToKnow": "Good to know",
+    "noteFreeEntry": "Entry is free. Just show up and grab a seat. We appreciate an RSVP so we can prepare.",
+    "noteFlexibleTimeline": "We keep things loose. No strict schedule. We go with the flow."
   }
 }

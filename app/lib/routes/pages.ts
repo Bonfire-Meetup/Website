@@ -39,7 +39,7 @@ export const PAGE_ROUTES = {
     `/login?reason-hint=${reason}${returnPath ? `&returnPath=${encodeURIComponent(returnPath)}` : ""}`,
   ME: "/me",
   EVENT: (id: string) => `/events/${id}`,
-  EVENT_CHECK_IN: "/events/check-in",
+  EVENT_CHECK_IN: "/events/check-ins",
   EVENT_READER: "/events/reader",
   EVENT_UPCOMING: "/events/upcoming",
   PHOTOS: "/photos",
@@ -51,9 +51,9 @@ export const PAGE_ROUTES = {
   USER: (publicId: string) => `/users/${publicId}`,
   WATCH: (slug: string, shortId: string) => `/watch/${slug}-${shortId}`,
   WATCH_LATER: "/me/watch-later",
-  NEWSLETTER_ARCHIVE: "/newsletter",
-  NEWSLETTER: (slug: string) => `/newsletter/${slug}`,
-  NEWSLETTER_EDITOR: "/newsletter/editor/compose",
+  NEWSLETTER_ARCHIVE: "/newsletters",
+  NEWSLETTER: (slug: string) => `/newsletters/${slug}`,
+  NEWSLETTER_EDITOR: "/newsletters/editor/compose",
 } as const;
 
 export const DYNAMIC_ROUTE_PREFIXES = [

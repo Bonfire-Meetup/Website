@@ -47,6 +47,9 @@
     "speakerPreview": "Můžeš si poslechnout inspirativní speakery jako {names}.",
     "orRegisterVia": "Nebo se registruj přes:",
     "onePrivateRsvp": "1 soukromý",
-    "multiplePrivateRsvps": "{count} soukromých"
+    "multiplePrivateRsvps": "{count} soukromých",
+    "goodToKnow": "Je dobré vědět",
+    "noteFreeEntry": "Vstup je zdarma. Stačí přijít a sednout si. RSVP oceníme, abychom se mohli připravit.",
+    "noteFlexibleTimeline": "Držíme to v pohodě. Žádný pevný program. Jdeme s proudem."
   }
 }
