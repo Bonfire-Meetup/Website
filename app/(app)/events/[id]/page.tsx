@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { upcomingEvents } from "@/data/upcoming-events";
+import { allEvents, getEventById } from "@/data/events-calendar";
 import { buildNotFoundTitleMetadata, getMetaTitleSuffix } from "@/lib/metadata";
 import { getShortPath } from "@/lib/routes/short-links";
 
 import { EventDetailContent } from "./EventDetailContent";
 
 export function generateStaticParams() {
-  return upcomingEvents.map((event) => ({
+  return allEvents.map((event) => ({
     id: event.id,
   }));
 }
@@ -19,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const event = upcomingEvents.find((e) => e.id === id);
+  const event = getEventById(id);
 
   if (!event) {
     return buildNotFoundTitleMetadata("eventNotFound");
@@ -44,7 +44,7 @@ export async function generateMetadata({
 
 export default async function EventPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const event = upcomingEvents.find((e) => e.id === id);
+  const event = getEventById(id);
 
   if (!event) {
     notFound();

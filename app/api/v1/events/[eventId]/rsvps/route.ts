@@ -1,6 +1,7 @@
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
+import { getEventById, isEventPast } from "@/data/events-calendar";
 import { getAuthUserId } from "@/lib/api/auth";
 import {
   type AuthContext,
@@ -51,6 +52,11 @@ export const POST = withRequestContext(
       storeKey: RATE_LIMIT_STORE_KEY,
     })(async (request: Request, { params, auth }) => {
       const { eventId } = await params;
+      const event = getEventById(eventId);
+
+      if (!event || isEventPast(event, new Date())) {
+        return NextResponse.json({ error: "rsvp_closed" }, { status: 400 });
+      }
 
       try {
         const result = await createRsvp(auth.userId, eventId);
@@ -90,6 +96,11 @@ export const DELETE = withRequestContext(
       storeKey: RATE_LIMIT_STORE_KEY,
     })(async (request: Request, { params, auth }) => {
       const { eventId } = await params;
+      const event = getEventById(eventId);
+
+      if (!event || isEventPast(event, new Date())) {
+        return NextResponse.json({ error: "rsvp_closed" }, { status: 400 });
+      }
 
       try {
         const success = await deleteRsvp(auth.userId, eventId);

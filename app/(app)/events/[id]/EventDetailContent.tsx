@@ -17,6 +17,7 @@ import {
   SparklesIcon,
 } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
+import { isEventPast, parseEventDateTimeParts } from "@/data/events-calendar";
 import { getLocationPartners } from "@/data/location-partners";
 import {
   DEFAULT_TIMEZONE,
@@ -221,19 +222,6 @@ function getSpeakerInitials(name: string) {
   return `${parts[0].charAt(0)}${parts[1].charAt(0)}`.toUpperCase();
 }
 
-function parseEventDateTime(date: string, time: string) {
-  const [year, month, day] = date.split("-").map((part) => Number(part));
-  if (!year || !month || !day) {
-    return null;
-  }
-  const [hour, minute] = time.split(":").map((part) => Number(part));
-  if (Number.isNaN(hour) || Number.isNaN(minute)) {
-    return null;
-  }
-
-  return { year, month, day, hour, minute };
-}
-
 function formatCalendarDate({
   year,
   month,
@@ -315,9 +303,10 @@ export function EventDetailContent({
   const t = useTranslations("events");
   const locale = useLocale();
   const isTba = date.trim().toUpperCase() === "TBA";
+  const isPastEvent = isEventPast({ date, time }, new Date());
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
 
-  const calendarDateTime = !isTba ? parseEventDateTime(date, time) : null;
+  const calendarDateTime = !isTba ? parseEventDateTimeParts(date, time) : null;
   const calendarStart = calendarDateTime ? formatCalendarDate(calendarDateTime) : null;
   const calendarEnd = calendarDateTime
     ? formatCalendarDate(addMinutes(calendarDateTime, DEFAULT_EVENT_DURATION_MINUTES))
@@ -505,6 +494,49 @@ export function EventDetailContent({
             <p className="mx-auto max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
               {description}
             </p>
+
+            {isPastEvent && (
+              <div className="mx-auto mt-8 max-w-3xl">
+                <div
+                  className="relative overflow-hidden rounded-3xl border p-6 text-left sm:p-8"
+                  style={{
+                    borderColor: `${loc.color}40`,
+                    background: `linear-gradient(135deg, ${loc.color}16 0%, ${loc.color}06 45%, rgba(255,255,255,0.9) 100%)`,
+                  }}
+                >
+                  <div
+                    className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full blur-3xl"
+                    style={{ background: `${loc.color}33` }}
+                  />
+                  <div
+                    className="pointer-events-none absolute -bottom-14 -left-14 h-36 w-36 rounded-full blur-3xl"
+                    style={{ background: `${loc.color}20` }}
+                  />
+                  <div
+                    className="pointer-events-none absolute inset-0 rounded-3xl ring-1"
+                    style={{ boxShadow: `inset 0 0 0 1px ${loc.color}25` }}
+                  />
+
+                  <div className="relative">
+                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-neutral-700 uppercase ring-1 ring-black/5 dark:bg-black/20 dark:text-neutral-200 dark:ring-white/10">
+                      <SparklesIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
+                      {t("wrapUpEyebrow")}
+                    </div>
+                    <h2 className="text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
+                      {t("wrapUpTitle")}
+                    </h2>
+                    <p className="mt-2 max-w-2xl text-neutral-700 dark:text-neutral-200">
+                      {t("wrapUpDescription")}
+                    </p>
+                    <div className="mt-5">
+                      <Button href={PAGE_ROUTES.CONTACT} variant="secondary" size="sm">
+                        {t("wrapUpCta")}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-3">
               <div className="glass flex items-center gap-2.5 rounded-2xl px-4 py-2.5">
                 <CalendarIcon className="h-[18px] w-[18px]" style={{ color: loc.color }} />
@@ -757,7 +789,18 @@ export function EventDetailContent({
                   </p>
 
                   <div className="mt-8">
-                    <RsvpSection eventId={id} />
+                    {isPastEvent ? (
+                      <div className="rounded-2xl border border-neutral-200/70 bg-neutral-100/70 px-4 py-4 dark:border-white/10 dark:bg-white/5">
+                        <p className="text-sm font-semibold text-neutral-900 dark:text-white">
+                          {t("rsvpClosedTitle")}
+                        </p>
+                        <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-300">
+                          {t("rsvpClosedDescription")}
+                        </p>
+                      </div>
+                    ) : (
+                      <RsvpSection eventId={id} />
+                    )}
                   </div>
 
                   {platformLinks.length > 0 && (

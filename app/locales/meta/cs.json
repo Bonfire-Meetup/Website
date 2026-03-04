@@ -14,6 +14,8 @@
     "crewDescription": "Poznej crew Bonfire v {prague} a {zlin}.",
     "upcomingEventsTitle": "Akce | {brandName}",
     "upcomingEventsDescription": "Objevte nadcházející gamedev meetupy a akce pořádané {brandName} v {prague} a {zlin}.",
+    "pastEventsTitle": "Proběhlé akce | {brandName}",
+    "pastEventsDescription": "Projděte si předchozí Bonfire meetupy, přednášky a komunitní setkání v {prague} a {zlin}.",
     "pressTitle": "Press kit | {brandName}",
     "pressDescription": "Stáhněte loga, brand barvy a pravidla použití pro {brandName}.",
     "photosTitle": "Fotky | {brandName}",

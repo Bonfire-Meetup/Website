@@ -7,6 +7,14 @@
       "titleHighlight": "Events",
       "subtitle": "Join us at the next meetup! Seats are first come, first served.",
       "noEvents": "No upcoming events scheduled. Check back soon!",
+      "pastSectionEyebrow": "Archive",
+      "pastSectionTitle": "Recently past events",
+      "pastSectionCta": "View all past events",
+      "pastPageTitle": "Past Events",
+      "pastPageSubtitle": "Browse previous meetups and talks.",
+      "pastPageViewDetails": "Open event detail",
+      "pastPageEmpty": "No past events yet.",
+      "backToUpcoming": "Back to upcoming events",
       "filter": {
         "label": "Episode",
         "all": "All episodes"

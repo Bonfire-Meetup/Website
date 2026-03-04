@@ -15,6 +15,7 @@ import { UpcomingEventCompactCard } from "./UpcomingEventCompactCard";
 
 export interface EventItem {
   id: string;
+  isPlaceholder?: boolean;
   title: string;
   episode?: string;
   location: LocationValue;
@@ -135,6 +136,7 @@ export function EventsSectionClient({
                 speakers={event.speakers}
                 locale={locale}
                 t={tEvents}
+                isPlaceholder={event.isPlaceholder}
               />
             ) : (
               <EventCard
@@ -152,6 +154,7 @@ export function EventsSectionClient({
                 links={event.links}
                 locale={locale}
                 t={tEvents}
+                isPlaceholder={event.isPlaceholder}
               />
             ),
           )}

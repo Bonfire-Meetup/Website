@@ -39,6 +39,7 @@ type TranslationFn = (key: string, values?: Record<string, string>) => string;
 
 interface UpcomingEventCompactCardProps {
   id: string;
+  isPlaceholder?: boolean;
   title: string;
   episode?: string;
   location: LocationValue;
@@ -60,6 +61,7 @@ interface UpcomingEventCompactCardProps {
 
 export function UpcomingEventCompactCard({
   id,
+  isPlaceholder = false,
   title,
   episode,
   location,
@@ -173,15 +175,21 @@ export function UpcomingEventCompactCard({
           </div>
         )}
 
-        <Button
-          href={PAGE_ROUTES.EVENT(id)}
-          variant="primary"
-          size="sm"
-          className="group w-full justify-center gap-2"
-        >
-          {t("viewDetails")}
-          <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </Button>
+        {isPlaceholder ? (
+          <Button variant="secondary" size="sm" className="w-full justify-center">
+            {t("tba")}
+          </Button>
+        ) : (
+          <Button
+            href={PAGE_ROUTES.EVENT(id)}
+            variant="primary"
+            size="sm"
+            className="group w-full justify-center gap-2"
+          >
+            {t("viewDetails")}
+            <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+        )}
       </div>
     </Card>
   );

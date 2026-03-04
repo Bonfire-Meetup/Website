@@ -40,6 +40,7 @@ export const PAGE_ROUTES = {
   ME: "/me",
   EVENT: (id: string) => `/events/${id}`,
   EVENT_CHECK_IN: "/events/check-ins",
+  EVENT_PAST: "/events/past",
   EVENT_READER: "/events/reader",
   EVENT_UPCOMING: "/events/upcoming",
   PHOTOS: "/photos",

@@ -1,10 +1,9 @@
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { CalendarIcon, MapPinIcon, SparklesIcon, TicketIcon } from "@/components/shared/Icons";
-import { upcomingEvents } from "@/data/upcoming-events";
 import { Link } from "@/i18n/navigation";
 import { getAuthUserById } from "@/lib/data/auth";
-import { getUserRsvps } from "@/lib/data/rsvps";
+import { getUpcomingRsvpEvents, type UpcomingRsvpEvent } from "@/lib/data/profile-events";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { OwnerOnlyAction } from "./OwnerOnlyAction";
@@ -14,19 +13,11 @@ interface UpcomingRsvpsProps {
   profileUserId: string;
 }
 
-interface RsvpEvent {
-  id: string;
-  title: string;
-  location: string;
-  date: string | null;
-  rsvpedAt?: string;
-}
-
 export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProps) {
   const t = await getTranslations("account.userProfile");
   const locale = await getLocale();
 
-  let events: RsvpEvent[] = [];
+  let events: UpcomingRsvpEvent[] = [];
 
   try {
     const user = await getAuthUserById(userId);
@@ -34,40 +25,11 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
       return null;
     }
 
-    const rsvps = await getUserRsvps(userId);
-    const rsvpEventIds = new Set(rsvps.map((r) => r.eventId));
-    const now = new Date();
-
-    for (const eventId of rsvpEventIds) {
-      const upcomingEvent = upcomingEvents.find((e) => e.id === eventId);
-      if (upcomingEvent) {
-        const isFuture =
-          upcomingEvent.date.trim().toUpperCase() === "TBA" || new Date(upcomingEvent.date) >= now;
-
-        if (isFuture) {
-          events.push({
-            id: upcomingEvent.id,
-            title: upcomingEvent.title,
-            location: upcomingEvent.location,
-            date: upcomingEvent.date,
-            rsvpedAt: rsvps.find((r) => r.eventId === eventId)?.createdAt,
-          });
-        }
-      }
-    }
-
-    events.sort((a, b) => {
-      const dateA =
-        a.date && a.date !== "TBA" ? new Date(a.date).getTime() : Number.MAX_SAFE_INTEGER;
-      const dateB =
-        b.date && b.date !== "TBA" ? new Date(b.date).getTime() : Number.MAX_SAFE_INTEGER;
-      return dateA - dateB;
-    });
+    events = await getUpcomingRsvpEvents(userId, new Date());
   } catch {
     events = [];
   }
 
-  // When empty, only the profile owner sees the empty-state nudge
   if (events.length === 0) {
     return (
       <OwnerOnlyAction profileUserId={profileUserId}>
@@ -129,7 +91,6 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
     );
   }
 
-  // When populated, everyone can see which events the user is going to
   return (
     <section
       className="relative h-full"

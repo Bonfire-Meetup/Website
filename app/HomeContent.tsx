@@ -8,7 +8,7 @@ import { LocationsSection } from "./components/locations/LocationsSection";
 import { NewsletterSection } from "./components/newsletter/NewsletterSection";
 import { RecordingsSection } from "./components/recordings/RecordingsSection";
 import { TalkBanner } from "./components/shared/TalkBanner";
-import { upcomingEvents } from "./data/upcoming-events";
+import { getUpcomingEventsWithFallback } from "./data/events-calendar";
 import type { Recording } from "./lib/recordings/recordings";
 import type { TrendingRecording } from "./lib/recordings/trending";
 
@@ -35,6 +35,7 @@ export function HomeContent({
     ...img,
     alt: photoAlt,
   }));
+  const upcomingEvents = getUpcomingEventsWithFallback(new Date());
 
   return (
     <main id="top" className="relative">

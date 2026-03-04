@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { QrCodeIcon, CheckIcon, CloseIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { UserAvatar } from "@/components/user/UserAvatar";
-import { upcomingEvents } from "@/data/upcoming-events";
+import { getUpcomingEvents } from "@/data/events-calendar";
 import { ApiError } from "@/lib/api/errors";
 import { authFetch } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
@@ -54,7 +54,7 @@ export function ReaderClient() {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const isProcessingRef = useRef<boolean>(false);
 
-  const events = upcomingEvents;
+  const events = getUpcomingEvents(new Date());
   const userRoles = auth.user?.decodedToken?.rol ?? [];
   const isCrew = userRoles.includes(USER_ROLES.CREW);
 

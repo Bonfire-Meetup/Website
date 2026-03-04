@@ -1,11 +1,9 @@
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { CalendarIcon, CheckCircleIcon, CheckIcon, MapPinIcon } from "@/components/shared/Icons";
-import { upcomingEvents } from "@/data/upcoming-events";
 import { Link } from "@/i18n/navigation";
 import { getAuthUserById } from "@/lib/data/auth";
-import { getUserCheckIns } from "@/lib/data/check-in";
-import { getEpisodeById } from "@/lib/recordings/episodes";
+import { getAttendedEvents, type AttendedEvent } from "@/lib/data/profile-events";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { OwnerOnlyAction } from "./OwnerOnlyAction";
@@ -15,20 +13,11 @@ interface CheckedInEventsProps {
   profileUserId: string;
 }
 
-interface CheckInEvent {
-  id: string;
-  title: string;
-  location: string;
-  date: string | null;
-  type: "upcoming" | "episode";
-  checkedInAt?: string;
-}
-
 export async function CheckedInEvents({ userId, profileUserId }: CheckedInEventsProps) {
   const t = await getTranslations("account.userProfile");
   const locale = await getLocale();
 
-  let events: CheckInEvent[] = [];
+  let events: AttendedEvent[] = [];
 
   try {
     const user = await getAuthUserById(userId);
@@ -36,40 +25,7 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
       return null;
     }
 
-    const checkIns = await getUserCheckIns(userId);
-    const checkInEventIds = new Set(checkIns.map((ci) => ci.eventId));
-
-    for (const eventId of checkInEventIds) {
-      const upcomingEvent = upcomingEvents.find((e) => e.id === eventId);
-      if (upcomingEvent) {
-        events.push({
-          id: upcomingEvent.id,
-          title: upcomingEvent.title,
-          location: upcomingEvent.location,
-          date: upcomingEvent.date,
-          type: "upcoming",
-          checkedInAt: checkIns.find((ci) => ci.eventId === eventId)?.createdAt,
-        });
-      } else {
-        const episode = getEpisodeById(eventId);
-        if (episode) {
-          events.push({
-            id: episode.id,
-            title: `Bonfire@${episode.city === "prague" ? "Prague" : "Zlin"} #${episode.number} - ${episode.title}`,
-            location: episode.city === "prague" ? "Prague" : "Zlin",
-            date: episode.date,
-            type: "episode",
-            checkedInAt: checkIns.find((ci) => ci.eventId === eventId)?.createdAt,
-          });
-        }
-      }
-    }
-
-    events.sort((a, b) => {
-      const dateA = a.date ? new Date(a.date).getTime() : 0;
-      const dateB = b.date ? new Date(b.date).getTime() : 0;
-      return dateB - dateA;
-    });
+    events = await getAttendedEvents(userId, new Date());
   } catch {
     events = [];
   }
@@ -131,6 +87,18 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
                       year: "numeric",
                     }).format(new Date(event.checkedInAt))
                   : null;
+                const formattedRsvpedAt = event.rsvpedAt
+                  ? new Intl.DateTimeFormat(locale, {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    }).format(new Date(event.rsvpedAt))
+                  : null;
+                const statusLabel = event.hasCheckIn
+                  ? event.hasRsvp
+                    ? t("checkedIn.statusBoth")
+                    : t("checkedIn.checkedInOn", { date: formattedCheckedInAt ?? "" })
+                  : t("checkedIn.rsvpOn", { date: formattedRsvpedAt ?? "" });
 
                 return (
                   <div
@@ -155,12 +123,22 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
                             </span>
                           )}
                         </div>
-                        {formattedCheckedInAt && (
+                        <div className="flex flex-wrap items-center gap-1.5">
                           <div className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 px-1.5 py-0.5 text-[11px] font-medium text-blue-600 dark:text-blue-400">
                             <CheckCircleIcon className="h-3 w-3" />
-                            {t("checkedIn.verified", { date: formattedCheckedInAt })}
+                            {statusLabel}
                           </div>
-                        )}
+                          {event.hasRsvp && formattedCheckedInAt && (
+                            <div className="inline-flex items-center gap-1 rounded-md bg-neutral-200/60 px-1.5 py-0.5 text-[11px] font-medium text-neutral-700 dark:bg-white/10 dark:text-neutral-300">
+                              {t("checkedIn.checkedInOn", { date: formattedCheckedInAt })}
+                            </div>
+                          )}
+                          {event.hasCheckIn && formattedRsvpedAt && (
+                            <div className="inline-flex items-center gap-1 rounded-md bg-neutral-200/60 px-1.5 py-0.5 text-[11px] font-medium text-neutral-700 dark:bg-white/10 dark:text-neutral-300">
+                              {t("checkedIn.rsvpOn", { date: formattedRsvpedAt })}
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-400/20 to-indigo-500/20 ring-1 ring-blue-500/20">
                         <CheckIcon

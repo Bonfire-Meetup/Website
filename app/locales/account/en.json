@@ -138,6 +138,11 @@
         "emptyHint": "At the next event, hit Check-in on your account page and have the crew scan your code.",
         "cta": "Open account",
         "verified": "Verified {date}",
+        "statusRsvp": "RSVP only",
+        "statusCheckedIn": "Checked in",
+        "statusBoth": "RSVP + checked in",
+        "rsvpOn": "RSVP {date}",
+        "checkedInOn": "Checked in {date}",
         "tba": "TBA"
       },
       "goingTo": {

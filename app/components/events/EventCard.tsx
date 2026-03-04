@@ -107,6 +107,7 @@ type TranslationFn = (key: string, values?: Record<string, string>) => string;
 
 interface EventCardProps {
   id: string;
+  isPlaceholder?: boolean;
   title: string;
   episode?: string;
   location: LocationValue;
@@ -130,6 +131,7 @@ interface EventCardProps {
 
 export function EventCard({
   id,
+  isPlaceholder = false,
   title,
   episode,
   location,
@@ -304,15 +306,21 @@ export function EventCard({
             )}
           </div>
 
-          <Button
-            href={PAGE_ROUTES.EVENT(id)}
-            variant="primary"
-            size="sm"
-            className="group w-full gap-2"
-          >
-            {t("viewDetails")}
-            <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
+          {isPlaceholder ? (
+            <Button variant="secondary" size="sm" className="w-full">
+              {t("tba")}
+            </Button>
+          ) : (
+            <Button
+              href={PAGE_ROUTES.EVENT(id)}
+              variant="primary"
+              size="sm"
+              className="group w-full gap-2"
+            >
+              {t("viewDetails")}
+              <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          )}
         </div>
       </Card>
     );
@@ -388,7 +396,6 @@ export function EventCard({
           </a>
         </div>
 
-        {/* Speakers — talk-first layout */}
         {hasSpeakers && (
           <div className="mb-6">
             <p className="section-label-spaced">{t("speakers")}</p>
@@ -448,15 +455,21 @@ export function EventCard({
             </div>
           </div>
         )}
-        <Button
-          href={PAGE_ROUTES.EVENT(id)}
-          variant="primary"
-          size="sm"
-          className="group w-full justify-center gap-2"
-        >
-          {t("viewDetails")}
-          <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </Button>
+        {isPlaceholder ? (
+          <Button variant="secondary" size="sm" className="w-full justify-center">
+            {t("tba")}
+          </Button>
+        ) : (
+          <Button
+            href={PAGE_ROUTES.EVENT(id)}
+            variant="primary"
+            size="sm"
+            className="group w-full justify-center gap-2"
+          >
+            {t("viewDetails")}
+            <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+        )}
         {platformLinks.length > 0 && (
           <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
             <span className="text-[10px] text-neutral-400 dark:text-neutral-500">

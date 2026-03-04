@@ -138,6 +138,11 @@
         "emptyHint": "Na příštím eventu klikni na stránce účtu na Check-in a nech crew naskenovat kód.",
         "cta": "Otevřít účet",
         "verified": "Ověřeno {date}",
+        "statusRsvp": "Pouze RSVP",
+        "statusCheckedIn": "Check-in",
+        "statusBoth": "RSVP + check-in",
+        "rsvpOn": "RSVP {date}",
+        "checkedInOn": "Check-in {date}",
         "tba": "Bude upřesněno"
       },
       "goingTo": {

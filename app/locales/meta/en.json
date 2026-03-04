@@ -14,6 +14,8 @@
     "crewDescription": "Meet the crew behind Bonfire events in {prague} and {zlin}.",
     "upcomingEventsTitle": "Upcoming Events | {brandName}",
     "upcomingEventsDescription": "Discover upcoming game development meetups and events hosted by {brandName} in {prague} and {zlin}.",
+    "pastEventsTitle": "Past Events | {brandName}",
+    "pastEventsDescription": "Browse previous Bonfire meetups, talks, and community gatherings in {prague} and {zlin}.",
     "pressTitle": "Press Kit | {brandName}",
     "pressDescription": "Download logos, brand colors, and usage guidelines for {brandName}.",
     "photosTitle": "Photos | {brandName}",

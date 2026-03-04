@@ -15,6 +15,7 @@ export type MetaPageKey =
   | "press"
   | "timeline"
   | "upcomingEvents"
+  | "pastEvents"
   | "library"
   | "photos"
   | "watchLater";

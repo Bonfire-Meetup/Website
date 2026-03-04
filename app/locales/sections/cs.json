@@ -7,6 +7,14 @@
       "titleHighlight": "Akce",
       "subtitle": "Doraž na další meetup. Kdo dřív přijde, ten sedí.",
       "noEvents": "Zatím nic nevisí. Mrkni sem později!",
+      "pastSectionEyebrow": "Archiv",
+      "pastSectionTitle": "Nedávno proběhlé akce",
+      "pastSectionCta": "Zobrazit všechny proběhlé akce",
+      "pastPageTitle": "Proběhlé akce",
+      "pastPageSubtitle": "Projděte si předchozí meetupy a přednášky.",
+      "pastPageViewDetails": "Otevřít detail akce",
+      "pastPageEmpty": "Zatím nemáme žádné proběhlé akce.",
+      "backToUpcoming": "Zpět na nadcházející akce",
       "filter": {
         "label": "Epizoda",
         "all": "Všechny epizody"
