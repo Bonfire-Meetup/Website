@@ -13,7 +13,13 @@ import { formatDate } from "@/lib/utils/locale";
 
 import { SpeakerList } from "../ui/SpeakerList";
 
-import { CARD_TILT_CLASS, CARD_TILT_STYLE, createCardTiltHandlers } from "./card-tilt";
+import {
+  CARD_MEDIA_PARALLAX_BASE_CLASS,
+  CARD_MEDIA_PARALLAX_HOVER_CLASS,
+  CARD_TILT_CLASS,
+  CARD_TILT_STYLE,
+  createCardTiltHandlers,
+} from "./card-tilt";
 import { RecordingAccessPill } from "./RecordingAccessPill";
 import { RecordingCardShell } from "./RecordingCardShell";
 import { RecordingEpisodePill } from "./RecordingEpisodePill";
@@ -155,9 +161,6 @@ export function RecordingDetailedCard({
 
   const isGrid = variant === "grid";
   const tiltHandlers = createCardTiltHandlers();
-  const handleMouseEnter = tiltHandlers.onMouseEnter;
-  const handleMouseMove = tiltHandlers.onMouseMove;
-  const handleMouseLeave = tiltHandlers.onMouseLeave;
   const shadowClass = disableShadow
     ? "shadow-none hover:shadow-none"
     : "shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] hover:shadow-[0_24px_40px_-20px_rgba(17,24,39,0.45)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:hover:shadow-[0_30px_52px_-20px_rgba(0,0,0,0.95)]";
@@ -174,9 +177,7 @@ export function RecordingDetailedCard({
       ariaLabel={title}
       className={`${outerClassName} ${CARD_TILT_CLASS}`}
       style={CARD_TILT_STYLE}
-      onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      {...tiltHandlers}
       overlayContent={
         <Link href={watchHref} prefetch={false} className="absolute inset-0 z-0" aria-label={title}>
           <span className="sr-only">{title}</span>
@@ -191,7 +192,7 @@ export function RecordingDetailedCard({
             src={thumbnail}
             alt={title}
             aspectClassName="aspect-video"
-            imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.02)] duration-100 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
+            imgClassName={`duration-200 ease-out ${CARD_MEDIA_PARALLAX_BASE_CLASS} ${CARD_MEDIA_PARALLAX_HOVER_CLASS}`}
             sizes={
               isGrid
                 ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

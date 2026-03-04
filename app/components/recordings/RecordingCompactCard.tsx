@@ -3,7 +3,13 @@ import type { AnimationEvent, ReactNode } from "react";
 import { type RecordingAccessPolicy } from "@/lib/recordings/early-access";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-import { CARD_TILT_CLASS, CARD_TILT_STYLE, createCardTiltHandlers } from "./card-tilt";
+import {
+  CARD_MEDIA_PARALLAX_BASE_CLASS,
+  CARD_MEDIA_PARALLAX_HOVER_CLASS,
+  CARD_TILT_CLASS,
+  CARD_TILT_STYLE,
+  createCardTiltHandlers,
+} from "./card-tilt";
 import { RecordingAccessPill } from "./RecordingAccessPill";
 import { RecordingCardShell } from "./RecordingCardShell";
 import { RecordingImage } from "./RecordingImage";
@@ -43,9 +49,6 @@ export function RecordingCompactCard({
   const staggerClass = typeof staggerIndex === "number" ? `stagger-${(staggerIndex % 8) + 1}` : "";
   const isSmall = size === "sm";
   const tiltHandlers = createCardTiltHandlers();
-  const handleMouseEnter = tiltHandlers.onMouseEnter;
-  const handleMouseMove = tiltHandlers.onMouseMove;
-  const handleMouseLeave = tiltHandlers.onMouseLeave;
   const handleAnimationEnd = (event: AnimationEvent<HTMLElement>) => {
     const card = event.currentTarget;
     card.classList.remove("recording-card-enter");
@@ -61,9 +64,7 @@ export function RecordingCompactCard({
       prefetch={prefetch}
       ariaLabel={title}
       style={CARD_TILT_STYLE}
-      onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      {...tiltHandlers}
       onAnimationEnd={handleAnimationEnd}
       className={
         className ??
@@ -79,7 +80,7 @@ export function RecordingCompactCard({
           <RecordingImage
             src={thumbnail}
             alt={title}
-            imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.02)] duration-100 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]"
+            imgClassName={`duration-200 ease-out ${CARD_MEDIA_PARALLAX_BASE_CLASS} ${CARD_MEDIA_PARALLAX_HOVER_CLASS}`}
             sizes={imageSizes}
             loading="lazy"
             fetchPriority="low"

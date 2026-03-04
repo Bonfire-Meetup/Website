@@ -10,7 +10,13 @@ import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { prefersReducedMotion } from "@/lib/utils/prefers-reduced-motion";
 
-import { CARD_TILT_CLASS, CARD_TILT_STYLE, createCardTiltHandlers } from "../recordings/card-tilt";
+import {
+  CARD_MEDIA_PARALLAX_BASE_CLASS,
+  CARD_MEDIA_PARALLAX_HERO_HOVER_CLASS,
+  CARD_TILT_CLASS,
+  CARD_TILT_STYLE,
+  createCardTiltHandlers,
+} from "../recordings/card-tilt";
 import { RecordingImage } from "../recordings/RecordingImage";
 import { ShareMenu } from "../recordings/ShareMenu";
 import { WatchLaterButton } from "../recordings/WatchLaterButton";
@@ -101,9 +107,6 @@ function EngagementChips({ recording }: { recording: HeroRecording }) {
 
 function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: TrendingText }) {
   const tiltHandlers = createCardTiltHandlers();
-  const handleMouseEnter = tiltHandlers.onMouseEnter;
-  const handleMouseMove = tiltHandlers.onMouseMove;
-  const handleMouseLeave = tiltHandlers.onMouseLeave;
   const watchPath = PAGE_ROUTES.WATCH(recording.slug, recording.shortId);
   const primarySpeaker = recording.speaker[0] ?? "";
   const actionIconButtonClass =
@@ -111,11 +114,9 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
 
   return (
     <div
-      className={`group relative block w-full overflow-hidden rounded-[24px] border border-black/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.54)_100%)] shadow-[0_28px_52px_-30px_rgba(17,24,39,0.6)] transition-[border-color,box-shadow,transform] duration-500 hover:border-black/22 hover:shadow-[0_38px_64px_-30px_rgba(17,24,39,0.72)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(18,18,20,0.9)_0%,rgba(10,10,11,0.9)_100%)] dark:shadow-[0_30px_56px_-24px_rgba(0,0,0,0.96)] dark:hover:border-white/18 ${CARD_TILT_CLASS}`}
+      className={`group relative block w-full overflow-hidden rounded-[24px] border border-black/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.54)_100%)] shadow-[0_28px_52px_-30px_rgba(17,24,39,0.6)] transition-[border-color,box-shadow] duration-500 hover:border-black/22 hover:shadow-[0_38px_64px_-30px_rgba(17,24,39,0.72)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(18,18,20,0.9)_0%,rgba(10,10,11,0.9)_100%)] dark:shadow-[0_30px_56px_-24px_rgba(0,0,0,0.96)] dark:hover:border-white/18 ${CARD_TILT_CLASS}`}
       style={CARD_TILT_STYLE}
-      onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      {...tiltHandlers}
     >
       <Link href={watchPath} prefetch={false} className="group block">
         <div className="video-overlay relative overflow-hidden">
@@ -123,7 +124,7 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
             src={recording.thumbnail}
             alt={recording.title}
             className="aspect-[16/9]"
-            imgClassName="object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.02)] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.06)]"
+            imgClassName={`duration-250 ease-out ${CARD_MEDIA_PARALLAX_BASE_CLASS} ${CARD_MEDIA_PARALLAX_HERO_HOVER_CLASS}`}
             sizes="(max-width: 768px) 96vw, (max-width: 1280px) 56vw, 760px"
             loading="eager"
             fetchPriority="high"

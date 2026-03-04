@@ -1,5 +1,11 @@
 import Link from "next/link";
-import type { AnimationEventHandler, CSSProperties, MouseEventHandler, ReactNode } from "react";
+import type {
+  AnimationEventHandler,
+  CSSProperties,
+  MouseEventHandler,
+  PointerEventHandler,
+  ReactNode,
+} from "react";
 
 interface RecordingCardShellProps {
   className: string;
@@ -16,6 +22,10 @@ interface RecordingCardShellProps {
   onMouseEnter?: MouseEventHandler<HTMLElement>;
   onMouseMove?: MouseEventHandler<HTMLElement>;
   onMouseLeave?: MouseEventHandler<HTMLElement>;
+  onPointerEnter?: PointerEventHandler<HTMLElement>;
+  onPointerMove?: PointerEventHandler<HTMLElement>;
+  onPointerLeave?: PointerEventHandler<HTMLElement>;
+  onPointerCancel?: PointerEventHandler<HTMLElement>;
   onAnimationEnd?: AnimationEventHandler<HTMLElement>;
 }
 
@@ -34,6 +44,10 @@ export function RecordingCardShell({
   onMouseEnter,
   onMouseMove,
   onMouseLeave,
+  onPointerEnter,
+  onPointerMove,
+  onPointerLeave,
+  onPointerCancel,
   onAnimationEnd,
 }: RecordingCardShellProps) {
   const content = (
@@ -56,6 +70,10 @@ export function RecordingCardShell({
         onMouseEnter={onMouseEnter}
         onMouseMove={onMouseMove}
         onMouseLeave={onMouseLeave}
+        onPointerEnter={onPointerEnter}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
+        onPointerCancel={onPointerCancel}
         onAnimationEnd={onAnimationEnd}
       >
         {content}
@@ -70,6 +88,10 @@ export function RecordingCardShell({
       onMouseEnter={onMouseEnter}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
+      onPointerEnter={onPointerEnter}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+      onPointerCancel={onPointerCancel}
       onAnimationEnd={onAnimationEnd}
     >
       {content}

@@ -1,4 +1,4 @@
-import type { CSSProperties, MouseEvent } from "react";
+import type { CSSProperties, MouseEvent, PointerEvent } from "react";
 
 import { getPrefersReducedMotionMediaQuery } from "@/lib/utils/prefers-reduced-motion";
 
@@ -49,12 +49,12 @@ function setTiltVars(
     mediaY: number;
   },
 ) {
-  el.style.setProperty("--card-tilt-x", `${values.rotateXDeg.toFixed(2)}deg`);
-  el.style.setProperty("--card-tilt-y", `${values.rotateYDeg.toFixed(2)}deg`);
-  el.style.setProperty("--card-tilt-scale", values.scale.toFixed(3));
+  el.style.setProperty("--card-tilt-x", `${values.rotateXDeg}deg`);
+  el.style.setProperty("--card-tilt-y", `${values.rotateYDeg}deg`);
+  el.style.setProperty("--card-tilt-scale", `${values.scale}`);
   el.style.setProperty("--card-tilt-lift", `${values.liftPx}px`);
-  el.style.setProperty("--card-media-x", `${values.mediaX.toFixed(2)}px`);
-  el.style.setProperty("--card-media-y", `${values.mediaY.toFixed(2)}px`);
+  el.style.setProperty("--card-media-x", `${values.mediaX}px`);
+  el.style.setProperty("--card-media-y", `${values.mediaY}px`);
 }
 
 function resetTilt(el: HTMLElement) {
@@ -71,10 +71,17 @@ export const CARD_TILT_STYLE = {
 } as CSSProperties;
 
 export const CARD_TILT_CLASS =
-  "[transform:perspective(1100px)_rotateX(var(--card-tilt-x,0deg))_rotateY(var(--card-tilt-y,0deg))_translateY(var(--card-tilt-lift,0px))_scale(var(--card-tilt-scale,1))] will-change-transform";
+  "[transform:perspective(1100px)_rotateX(var(--card-tilt-x,0deg))_rotateY(var(--card-tilt-y,0deg))_translateY(var(--card-tilt-lift,0px))_scale(var(--card-tilt-scale,1))] motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out data-[card-tilt-active=true]:!duration-0 data-[card-tilt-active=true]:!ease-linear will-change-transform";
+export const CARD_MEDIA_PARALLAX_BASE_CLASS =
+  "object-[80%_30%] [transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.02)] group-data-[card-tilt-active=true]:!duration-0 group-data-[card-tilt-active=true]:!ease-linear";
+export const CARD_MEDIA_PARALLAX_HOVER_CLASS =
+  "group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.08)]";
+export const CARD_MEDIA_PARALLAX_HERO_HOVER_CLASS =
+  "group-hover:[transform:translate3d(var(--card-media-x,0px),var(--card-media-y,0px),0)_scale(1.06)]";
 
 export function createCardTiltHandlers() {
   let isActive = false;
+  let viewportListenersAttached = false;
   let rafId = 0;
   let currentEl: HTMLElement | null = null;
   let currentRect: DOMRect | null = null;
@@ -115,45 +122,103 @@ export function createCardTiltHandlers() {
     rafId = window.requestAnimationFrame(applyPointerTilt);
   };
 
-  return {
-    onMouseEnter: (event: MouseEvent<HTMLElement>) => {
-      if (!supportsTilt() || typeof window === "undefined") {
-        return;
-      }
+  const handleViewportChange = () => {
+    if (!isActive || !currentEl) {
+      return;
+    }
 
+    currentRect = currentEl.getBoundingClientRect();
+    schedulePointerTilt();
+  };
+
+  const attachViewportListeners = () => {
+    if (viewportListenersAttached || typeof window === "undefined") {
+      return;
+    }
+
+    window.addEventListener("resize", handleViewportChange, { passive: true });
+    window.addEventListener("scroll", handleViewportChange, { capture: true, passive: true });
+    viewportListenersAttached = true;
+  };
+
+  const detachViewportListeners = () => {
+    if (!viewportListenersAttached || typeof window === "undefined") {
+      return;
+    }
+
+    window.removeEventListener("resize", handleViewportChange);
+    window.removeEventListener("scroll", handleViewportChange, true);
+    viewportListenersAttached = false;
+  };
+
+  const handleEnter = (currentTarget: HTMLElement, clientX: number, clientY: number) => {
+    if (!supportsTilt() || typeof window === "undefined") {
+      return;
+    }
+
+    isActive = true;
+    currentEl = currentTarget;
+    currentRect = currentEl.getBoundingClientRect();
+    pointerX = clientX;
+    pointerY = clientY;
+    attachViewportListeners();
+    schedulePointerTilt();
+  };
+
+  const handleLeave = (currentTarget: HTMLElement) => {
+    isActive = false;
+    currentRect = null;
+    currentEl = null;
+
+    if (rafId !== 0) {
+      window.cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+
+    detachViewportListeners();
+    currentTarget.removeAttribute("data-card-tilt-active");
+    resetTilt(currentTarget);
+  };
+
+  const handleMove = (currentTarget: HTMLElement, clientX: number, clientY: number) => {
+    if (!supportsTilt() || typeof window === "undefined") {
+      return;
+    }
+
+    if (!isActive || currentEl !== currentTarget) {
       isActive = true;
-      currentEl = event.currentTarget;
+      currentEl = currentTarget;
       currentRect = currentEl.getBoundingClientRect();
-      pointerX = event.clientX;
-      pointerY = event.clientY;
-      schedulePointerTilt();
+      attachViewportListeners();
+    }
+
+    currentTarget.dataset.cardTiltActive = "true";
+    pointerX = clientX;
+    pointerY = clientY;
+    schedulePointerTilt();
+  };
+
+  return {
+    onPointerEnter: (event: PointerEvent<HTMLElement>) => {
+      handleEnter(event.currentTarget, event.clientX, event.clientY);
+    },
+    onPointerLeave: (event: PointerEvent<HTMLElement>) => {
+      handleLeave(event.currentTarget);
+    },
+    onPointerCancel: (event: PointerEvent<HTMLElement>) => {
+      handleLeave(event.currentTarget);
+    },
+    onPointerMove: (event: PointerEvent<HTMLElement>) => {
+      handleMove(event.currentTarget, event.clientX, event.clientY);
+    },
+    onMouseEnter: (event: MouseEvent<HTMLElement>) => {
+      handleEnter(event.currentTarget, event.clientX, event.clientY);
     },
     onMouseLeave: (event: MouseEvent<HTMLElement>) => {
-      isActive = false;
-      currentRect = null;
-      currentEl = null;
-
-      if (rafId !== 0) {
-        window.cancelAnimationFrame(rafId);
-        rafId = 0;
-      }
-
-      resetTilt(event.currentTarget);
+      handleLeave(event.currentTarget);
     },
     onMouseMove: (event: MouseEvent<HTMLElement>) => {
-      if (!supportsTilt() || typeof window === "undefined") {
-        return;
-      }
-
-      if (!isActive || currentEl !== event.currentTarget) {
-        isActive = true;
-        currentEl = event.currentTarget;
-        currentRect = currentEl.getBoundingClientRect();
-      }
-
-      pointerX = event.clientX;
-      pointerY = event.clientY;
-      schedulePointerTilt();
+      handleMove(event.currentTarget, event.clientX, event.clientY);
     },
   };
 }
