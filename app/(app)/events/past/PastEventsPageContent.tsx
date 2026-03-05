@@ -4,7 +4,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
 import { EventsPageHero } from "@/components/events/EventsPageHero";
-import { ArrowLeftIcon, ArrowRightIcon } from "@/components/shared/Icons";
+import { ArrowRightIcon } from "@/components/shared/Icons";
+import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
 import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
@@ -330,13 +331,7 @@ export function PastEventsPageContent() {
         )}
 
         <div className="mt-10 flex justify-center">
-          <Link
-            href={PAGE_ROUTES.EVENT_UPCOMING}
-            className="inline-flex items-center gap-2 rounded-full border border-neutral-300/90 bg-white/70 px-4 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-white hover:text-neutral-900 dark:border-white/15 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white"
-          >
-            <ArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
-            {t("backToUpcoming")}
-          </Link>
+          <BackLink href={PAGE_ROUTES.EVENT_UPCOMING}>{t("backToUpcoming")}</BackLink>
         </div>
       </section>
     </main>

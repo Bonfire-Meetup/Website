@@ -143,7 +143,7 @@ export function CheckInClient() {
 
   if (tokenQuery.isError) {
     return (
-      <div className="mx-auto max-w-md pt-4">
+      <div className="mx-auto max-w-md">
         <div className="overflow-hidden rounded-3xl border border-red-200/70 bg-gradient-to-b from-red-50 to-red-100/50 p-8 shadow-lg dark:border-red-500/30 dark:from-red-950/30 dark:to-red-900/20">
           <div className="mb-6 flex justify-center">
             <div className="rounded-full bg-red-100 p-4 dark:bg-red-900/50">
@@ -162,7 +162,7 @@ export function CheckInClient() {
   }
 
   return (
-    <div className="mx-auto max-w-md pt-4">
+    <div className="mx-auto max-w-md">
       <div className="overflow-hidden rounded-3xl shadow-2xl">
         <div className="relative h-32 bg-gradient-to-br from-orange-500 via-pink-600 to-red-600">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIwLjUiIG9wYWNpdHk9IjAuMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30" />

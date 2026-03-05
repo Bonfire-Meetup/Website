@@ -3,25 +3,162 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { AuthNavButton } from "../auth/AuthNavButton";
+import { FilmIcon } from "../shared/Icons";
 import { LanguageToggle } from "../theme/LanguageToggle";
 import { ThemeToggle } from "../theme/ThemeToggle";
 import { Button } from "../ui/Button";
 
+interface MobileSectionMarker {
+  dotClassName: string;
+  label: string;
+}
+
+function getMobileSectionMarker(
+  pathname: string,
+  t: ReturnType<typeof useTranslations<"header">>,
+): MobileSectionMarker {
+  if (pathname === PAGE_ROUTES.HOME) {
+    return {
+      dotClassName: "bg-rose-500/80 dark:bg-rose-400/85",
+      label: t("home"),
+    };
+  }
+
+  if (pathname.startsWith("/watch") || pathname.startsWith(PAGE_ROUTES.LIBRARY)) {
+    return {
+      dotClassName: "bg-orange-500/80 dark:bg-orange-400/85",
+      label: t("library"),
+    };
+  }
+
+  if (pathname.startsWith("/me/watch-later")) {
+    return {
+      dotClassName: "bg-pink-500/80 dark:bg-pink-400/85",
+      label: t("watchLater"),
+    };
+  }
+
+  if (pathname.startsWith("/me") || pathname.startsWith("/users")) {
+    return {
+      dotClassName: "bg-slate-500/80 dark:bg-slate-400/85",
+      label: t("profile"),
+    };
+  }
+
+  if (pathname.startsWith("/events")) {
+    return {
+      dotClassName: "bg-amber-500/80 dark:bg-amber-400/85",
+      label: t("events"),
+    };
+  }
+
+  if (pathname.startsWith("/photos")) {
+    return {
+      dotClassName: "bg-sky-500/80 dark:bg-sky-400/85",
+      label: t("photos"),
+    };
+  }
+
+  if (pathname.startsWith("/crew")) {
+    return {
+      dotClassName: "bg-blue-500/80 dark:bg-blue-400/85",
+      label: t("crew"),
+    };
+  }
+
+  if (pathname.startsWith("/guides")) {
+    return {
+      dotClassName: "bg-rose-500/80 dark:bg-rose-400/85",
+      label: t("guides"),
+    };
+  }
+
+  if (pathname.startsWith("/newsletters")) {
+    return {
+      dotClassName: "bg-pink-500/80 dark:bg-pink-400/85",
+      label: t("newsletters"),
+    };
+  }
+
+  if (pathname.startsWith("/legal")) {
+    return {
+      dotClassName: "bg-neutral-500/80 dark:bg-neutral-400/85",
+      label: t("legal"),
+    };
+  }
+
+  if (pathname.startsWith("/timeline")) {
+    return {
+      dotClassName: "bg-fuchsia-500/80 dark:bg-fuchsia-400/85",
+      label: t("timeline"),
+    };
+  }
+
+  if (pathname.startsWith("/speak")) {
+    return {
+      dotClassName: "bg-orange-500/80 dark:bg-orange-400/85",
+      label: t("speak"),
+    };
+  }
+
+  if (pathname.startsWith("/guild")) {
+    return {
+      dotClassName: "bg-emerald-500/80 dark:bg-emerald-400/85",
+      label: t("guild"),
+    };
+  }
+
+  if (pathname.startsWith("/press")) {
+    return {
+      dotClassName: "bg-blue-500/80 dark:bg-blue-400/85",
+      label: t("press"),
+    };
+  }
+
+  if (pathname.startsWith("/faq")) {
+    return {
+      dotClassName: "bg-violet-500/80 dark:bg-violet-400/85",
+      label: t("faq"),
+    };
+  }
+
+  if (pathname.startsWith("/contact")) {
+    return {
+      dotClassName: "bg-cyan-500/80 dark:bg-cyan-400/85",
+      label: t("contact"),
+    };
+  }
+
+  return {
+    dotClassName: "bg-rose-500/80 dark:bg-rose-400/85",
+    label: t("home"),
+  };
+}
+
 function HeaderInner() {
   const t = useTranslations("header");
+  const pathname = usePathname();
+  const mobileSectionMarker = getMobileSectionMarker(pathname, t);
+  const isLibraryContext =
+    pathname.startsWith("/watch") || pathname.startsWith(PAGE_ROUTES.LIBRARY);
 
   return (
-    <header className="glass fixed top-0 right-0 left-0 z-50">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-3 sm:px-6 md:grid md:h-18 md:grid-cols-[1fr_auto_1fr] md:gap-4 lg:px-8">
-        <div className="flex items-center gap-3 md:justify-self-start">
+    <header
+      className="glass mobile-nav-glass fixed top-0 right-0 left-0 z-50 border-b border-white/45 transition-[box-shadow] duration-300 dark:border-white/8"
+      style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+    >
+      <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-3 sm:px-6 md:grid md:h-18 md:grid-cols-[1fr_auto_1fr] md:gap-4 lg:px-8">
+        <div className="relative z-10 flex items-center gap-3 md:justify-self-start">
           <Link
             href={PAGE_ROUTES.HOME}
             className="flex items-center gap-3 transition-opacity hover:opacity-80"
+            aria-label={t("home")}
           >
             <Image
               src="/assets/brand/RGB_PNG_01_bonfire_black_gradient.png"
@@ -40,6 +177,15 @@ function HeaderInner() {
               priority
             />
           </Link>
+        </div>
+
+        <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 w-[calc(100%-10.5rem)] max-w-[11.5rem] min-w-0 -translate-x-1/2 -translate-y-1/2 md:hidden">
+          <div className="flex h-9 w-full items-center justify-center gap-2 px-2">
+            <span className="min-w-0 truncate text-[12px] font-medium tracking-[0.03em] text-neutral-600 dark:text-neutral-300">
+              {mobileSectionMarker.label}
+            </span>
+            <span className={`h-1.5 w-1.5 rounded-full ${mobileSectionMarker.dotClassName}`} />
+          </div>
         </div>
 
         <nav className="hidden items-center gap-2 md:flex md:justify-self-center">
@@ -63,7 +209,7 @@ function HeaderInner() {
           </Button>
         </nav>
 
-        <div className="flex items-center gap-2 md:justify-self-end">
+        <div className="relative z-10 flex items-center gap-2 md:justify-self-end">
           <div className="hidden md:flex md:items-center md:gap-2">
             <LanguageToggle />
             <ThemeToggle />
@@ -75,9 +221,14 @@ function HeaderInner() {
             href={PAGE_ROUTES.LIBRARY}
             variant="primary"
             size="sm"
-            className="md:size-[default]"
+            className={`rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition-all duration-200 md:size-[default] md:rounded-xl md:px-3.5 md:py-2 md:text-sm ${
+              isLibraryContext
+                ? "shadow-md ring-1 shadow-orange-500/20 ring-white/60 dark:ring-white/25"
+                : "shadow-sm shadow-orange-500/15"
+            }`}
           >
-            {t("library")}
+            <FilmIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            <span>{t("watchNow")}</span>
           </Button>
         </div>
       </div>

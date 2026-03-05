@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { StaticPageHero } from "@/components/layout/StaticPageHero";
-import { ArrowLeftIcon, ArrowRightIcon, MailIcon, TrashIcon } from "@/components/shared/Icons";
+import { ArrowRightIcon, MailIcon, TrashIcon } from "@/components/shared/Icons";
+import { BackLink } from "@/components/ui/BackLink";
 import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { USER_ROLES } from "@/lib/config/roles";
@@ -135,14 +136,8 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
             </div>
           </div>
         ) : (
-          <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-            <Link
-              href={PAGE_ROUTES.NEWSLETTER_ARCHIVE}
-              className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
-            >
-              <ArrowLeftIcon className="h-4 w-4" />
-              {t("backToArchive")}
-            </Link>
+          <div className="mb-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <BackLink href={PAGE_ROUTES.NEWSLETTER_ARCHIVE}>{t("backToArchive")}</BackLink>
             {isEditor && (
               <div className="flex items-center gap-4">
                 <Link
@@ -253,16 +248,6 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
             </div>
           ))}
         </article>
-
-        <div className="mt-20 border-t border-neutral-200 pt-8 dark:border-neutral-800">
-          <Link
-            href={PAGE_ROUTES.NEWSLETTER_ARCHIVE}
-            className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
-          >
-            <ArrowLeftIcon className="h-4 w-4" />
-            {t("backToArchive")}
-          </Link>
-        </div>
       </div>
     </main>
   );

@@ -1,11 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 import { NewsletterSectionCard } from "@/components/newsletter/NewsletterSectionCard";
 import { CheckCircleIcon, MailIcon } from "@/components/shared/Icons";
+import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
@@ -49,7 +49,6 @@ export function ConfirmationStep({
   resendSlug,
 }: ConfirmationStepProps) {
   const t = useTranslations("newsletterEditor");
-  const router = useRouter();
   const [sendPhase, setSendPhase] = useState<SendPhase>("idle");
   const [isTestSending, setIsTestSending] = useState(false);
   const [sendConfirmed, setSendConfirmed] = useState(false);
@@ -263,14 +262,9 @@ export function ConfirmationStep({
               {t("sendAnother")}
             </Button>
           )}
-          <Button
-            onClick={() => router.push(PAGE_ROUTES.HOME)}
-            variant="glass-secondary"
-            size="sm"
-            className="w-full"
-          >
+          <BackLink href={PAGE_ROUTES.HOME} className="w-full justify-center">
             {t("backToHomepage")}
-          </Button>
+          </BackLink>
         </div>
       </div>
     );

@@ -1,12 +1,12 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { useGlobalPlayer } from "@/components/shared/GlobalPlayerProvider";
-import { ArrowLeftIcon, CinemaIcon } from "@/components/shared/Icons";
+import { CinemaIcon } from "@/components/shared/Icons";
+import { BackLink } from "@/components/ui/BackLink";
 import { type BoostedByData } from "@/lib/api/video-engagement";
 import { MEMBERSHIP_TIER_LABELS } from "@/lib/config/membership";
 import { canAccessRecording, getRecordingAccessState } from "@/lib/recordings/early-access";
@@ -247,14 +247,13 @@ export function RecordingPlayer({
           <div className="min-w-0 space-y-8">
             <div className="relative overflow-hidden rounded-[2rem] border border-black/10 bg-white/80 shadow-[0_28px_70px_-34px_rgba(17,24,39,0.45)] ring-1 ring-white/50 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/85 dark:shadow-[0_34px_84px_-34px_rgba(0,0,0,0.8)] dark:ring-white/10">
               <div className="hidden items-center justify-between border-b border-neutral-200/40 px-5 py-4 lg:flex dark:border-neutral-700/30">
-                <Link
+                <BackLink
                   href={PAGE_ROUTES.LIBRARY}
-                  className="group hover:bg-brand-100/60 hover:text-brand-700 dark:hover:bg-brand-500/10 dark:hover:text-brand-400 inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-neutral-600 transition dark:text-neutral-300"
+                  className="hover:bg-brand-100/60 hover:text-brand-700 dark:hover:bg-brand-500/10 dark:hover:text-brand-400"
                   prefetch={false}
                 >
-                  <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-                  <span>{t("backToLibrary")}</span>
-                </Link>
+                  {t("backToLibrary")}
+                </BackLink>
                 {hasPlaybackAccess && <AccessStatusPill status={accessStatus} />}
               </div>
 

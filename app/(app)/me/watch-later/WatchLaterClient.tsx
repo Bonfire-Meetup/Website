@@ -8,13 +8,13 @@ import { RecordingDetailedCard } from "@/components/recordings/RecordingDetailed
 import { WatchLaterLoadingSkeleton } from "@/components/recordings/RecordingLoadingSkeletons";
 import { WatchLaterButton } from "@/components/recordings/WatchLaterButton";
 import {
-  ArrowLeftIcon,
   ArrowRightIcon,
   BookmarkIcon,
   CalendarIcon,
   ClockIcon,
   PlayIcon,
 } from "@/components/shared/Icons";
+import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { ApiError } from "@/lib/api/errors";
@@ -28,9 +28,6 @@ import { formatDateTimeUTC, formatLongDateUTC } from "@/lib/utils/locale";
 
 const HERO_PANEL_CLASS =
   "rounded-[28px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,248,240,0.72)_0%,rgba(255,244,232,0.56)_100%)] shadow-[0_28px_60px_-36px_rgba(15,23,42,0.34)] ring-1 ring-white/35 backdrop-blur-xl backdrop-saturate-150 dark:border-white/20 dark:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:shadow-[0_20px_48px_-32px_rgba(0,0,0,0.7)] dark:ring-white/10";
-
-const HERO_OVERLAY_BUTTON_CLASS =
-  "h-9 rounded-full border border-white/75 bg-white/44 px-3 text-xs text-neutral-950 shadow-[0_18px_34px_-24px_rgba(15,23,42,0.28)] backdrop-blur-md backdrop-saturate-150 hover:bg-white/58 sm:h-10 sm:px-4 sm:text-sm dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/16";
 
 const HERO_WATCHLATER_BUTTON_CLASS =
   "rounded-xl border border-white/75 bg-white/52 px-3 py-2 text-sm text-neutral-950 shadow-[0_18px_34px_-24px_rgba(15,23,42,0.28)] hover:bg-white/68 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/16";
@@ -98,12 +95,12 @@ export function WatchLaterClient() {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button href={PAGE_ROUTES.ME} variant="glass-secondary" className="min-w-[11rem]">
+            <BackLink href={PAGE_ROUTES.ME} className="min-w-[11rem] justify-center">
               {t("backToAccount")}
-            </Button>
-            <Button href={PAGE_ROUTES.LIBRARY} variant="glass" className="min-w-[11rem]">
+            </BackLink>
+            <BackLink href={PAGE_ROUTES.LIBRARY} className="min-w-[11rem] justify-center">
               {tRecordings("backToLibrary")}
-            </Button>
+            </BackLink>
           </div>
         </div>
       </section>
@@ -167,13 +164,12 @@ export function WatchLaterClient() {
               {t("emptyAction")}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button href={PAGE_ROUTES.LIBRARY} variant="glass" className="min-w-[12rem]">
-                <PlayIcon className="h-4 w-4" />
+              <BackLink href={PAGE_ROUTES.LIBRARY} className="min-w-[12rem] justify-center">
                 {tRecordings("backToLibrary")}
-              </Button>
-              <Button href={PAGE_ROUTES.ME} variant="glass-secondary" className="min-w-[12rem]">
+              </BackLink>
+              <BackLink href={PAGE_ROUTES.ME} className="min-w-[12rem] justify-center">
                 {t("backToAccount")}
-              </Button>
+              </BackLink>
             </div>
           </div>
 
@@ -208,15 +204,12 @@ export function WatchLaterClient() {
         ) : null}
 
         <div className="relative z-10 flex min-h-[430px] flex-col px-4 py-4 sm:min-h-[520px] sm:px-8 sm:py-8 lg:px-10 lg:py-9">
-          <Button
+          <BackLink
             href={PAGE_ROUTES.ME}
-            variant="plain"
-            size="sm"
-            className={`mb-4 w-fit sm:mb-0 ${HERO_OVERLAY_BUTTON_CLASS}`}
+            className="mb-4 w-fit border-white/75 bg-white/44 text-neutral-950 shadow-[0_18px_34px_-24px_rgba(15,23,42,0.28)] backdrop-blur-md backdrop-saturate-150 hover:bg-white/58 sm:mb-0 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/16"
           >
-            <ArrowLeftIcon className="h-4 w-4" />
             {t("backToAccount")}
-          </Button>
+          </BackLink>
 
           <div className="mt-auto grid gap-4 sm:gap-6 xl:grid-cols-[minmax(0,1fr)_23rem] xl:items-end">
             <div className={`${HERO_PANEL_CLASS} min-w-0 p-5 sm:p-7`}>

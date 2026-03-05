@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { FireIcon } from "@/components/shared/Icons";
+import { ArrowRightIcon, FireIcon } from "@/components/shared/Icons";
+import { BackLink } from "@/components/ui/BackLink";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export default function NotFound() {
@@ -24,11 +25,15 @@ export default function NotFound() {
         </p>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <Link href={PAGE_ROUTES.HOME} className="glass-button px-8 py-3">
+          <BackLink href={PAGE_ROUTES.HOME} className="px-8 py-3">
             Back to Home
-          </Link>
-          <Link href={PAGE_ROUTES.LIBRARY} className="glass-button-secondary px-8 py-3">
+          </BackLink>
+          <Link
+            href={PAGE_ROUTES.LIBRARY}
+            className="inline-flex items-center gap-2 rounded-full border border-neutral-300/90 bg-white/70 px-8 py-3 text-sm font-semibold text-neutral-700 transition-colors hover:bg-white hover:text-neutral-900 dark:border-white/15 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white"
+          >
             Browse Library
+            <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
       </div>

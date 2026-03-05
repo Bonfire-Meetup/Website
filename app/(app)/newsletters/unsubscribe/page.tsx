@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { CheckIcon, CloseIcon, MailIcon } from "@/components/shared/Icons";
 import { AccentBar } from "@/components/ui/AccentBar";
+import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { API_ROUTES } from "@/lib/api/routes";
@@ -159,9 +160,9 @@ export default function UnsubscribePage() {
               {getSuccessMessage(state.email, state.unsubscribedFrom)}
             </p>
             <div className="mt-8">
-              <Button href={PAGE_ROUTES.HOME} variant="glass-secondary">
+              <BackLink href={PAGE_ROUTES.HOME} className="justify-center">
                 {t("backToHome")}
-              </Button>
+              </BackLink>
             </div>
           </div>
         ) : state.status === "error" ? (
@@ -185,9 +186,9 @@ export default function UnsubscribePage() {
               </div>
             )}
             <div className="flex justify-center">
-              <Button href={PAGE_ROUTES.HOME} variant="glass-secondary">
+              <BackLink href={PAGE_ROUTES.HOME} className="justify-center">
                 {t("backToHome")}
-              </Button>
+              </BackLink>
             </div>
           </div>
         ) : state.status === "checking" ? (
