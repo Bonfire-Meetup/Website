@@ -5,6 +5,7 @@ import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 import { DEFAULT_ENGAGEMENT_WINDOW_DAYS, fetchWindowedEngagementCounts } from "../data/trending";
 
 import { type Recording, getAllRecordings } from "./recordings";
+import { createFeaturedBackfill, fillUniqueByShortId } from "./selection-utils";
 
 function calculateTrendingScore(
   recording: Recording,
@@ -112,27 +113,15 @@ export async function getTrendingRecordings(limit = 6): Promise<TrendingRecordin
     }
   }
 
-  if (selected.length < limit) {
-    for (const recording of scored) {
-      if (selected.length >= limit) {
-        break;
-      }
-
-      if (!selected.some((r) => r.shortId === recording.shortId)) {
-        selected.push(recording);
-      }
-    }
-  }
-
-  return selected;
+  return fillUniqueByShortId(selected, scored, limit);
 }
 
 const createTrendingBackfill = (allRecordings: Recording[], limit: number): TrendingRecording[] =>
-  allRecordings
-    .filter((r) => r.featureHeroThumbnail)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, limit)
-    .map((r) => ({ ...r, boostCount: 0, likeCount: 0, trendingScore: 0 }));
+  createFeaturedBackfill(allRecordings, limit, {
+    boostCount: 0,
+    likeCount: 0,
+    trendingScore: 0,
+  });
 
 export async function getTrendingRecordingsSafe(limit = 6): Promise<TrendingRecording[]> {
   try {

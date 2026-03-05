@@ -8,6 +8,9 @@ export const LOGIN_REASON = {
 
 export type LoginReason = (typeof LOGIN_REASON)[keyof typeof LOGIN_REASON];
 
+const withOptionalReturnPath = (basePath: string, returnPath?: string) =>
+  returnPath ? `${basePath}&returnPath=${encodeURIComponent(returnPath)}` : basePath;
+
 export const PAGE_ROUTES = {
   ANCHOR: {
     EVENTS: "/#events",
@@ -34,9 +37,9 @@ export const PAGE_ROUTES = {
   LOGIN_WITH_CHALLENGE: (token: string) => `/login?challenge=${token}`,
   LOGIN_WITH_REASON: (reason: LoginReason) => `/login?reason-hint=${reason}`,
   LOGIN_WITH_CHALLENGE_AND_RETURN: (token: string, returnPath?: string) =>
-    `/login?challenge=${token}${returnPath ? `&returnPath=${encodeURIComponent(returnPath)}` : ""}`,
+    withOptionalReturnPath(`/login?challenge=${token}`, returnPath),
   LOGIN_WITH_REASON_AND_RETURN: (reason: LoginReason, returnPath?: string) =>
-    `/login?reason-hint=${reason}${returnPath ? `&returnPath=${encodeURIComponent(returnPath)}` : ""}`,
+    withOptionalReturnPath(`/login?reason-hint=${reason}`, returnPath),
   ME: "/me",
   EVENT: (id: string) => `/events/${id}`,
   EVENT_CHECK_IN: "/events/check-ins",

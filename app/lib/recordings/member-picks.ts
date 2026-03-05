@@ -11,6 +11,7 @@ import { withRetry } from "@/lib/utils/retry";
 import { shouldDisableDbDuringBuild } from "@/lib/utils/runtime";
 
 import { type Recording, getAllRecordings } from "./recordings";
+import { createFeaturedBackfill, createRecentBackfill } from "./selection-utils";
 
 export type MemberPickRecording = Recording & {
   boostCount: number;
@@ -109,11 +110,12 @@ export async function getMemberPicks(limit = 6): Promise<MemberPickRecording[]> 
   const usedIds = new Set(boostedRecordings.map((r) => r.shortId));
   const backfillCount = limit - boostedRecordings.length;
 
-  const newestFeaturedBackfill = allRecordings
-    .filter((r) => !usedIds.has(r.shortId) && r.featureHeroThumbnail)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, backfillCount)
-    .map((r) => ({ ...r, boostCount: 0 }));
+  const newestFeaturedBackfill = createFeaturedBackfill(
+    allRecordings,
+    backfillCount,
+    { boostCount: 0 },
+    usedIds,
+  );
 
   if (boostedRecordings.length + newestFeaturedBackfill.length >= limit) {
     const picks = [...boostedRecordings, ...newestFeaturedBackfill];
@@ -128,11 +130,12 @@ export async function getMemberPicks(limit = 6): Promise<MemberPickRecording[]> 
   const stillNeeded = limit - boostedRecordings.length - newestFeaturedBackfill.length;
   const allUsedIds = new Set([...usedIds, ...newestFeaturedBackfill.map((r) => r.shortId)]);
 
-  const newestRemainingBackfill = allRecordings
-    .filter((r) => !allUsedIds.has(r.shortId))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, stillNeeded)
-    .map((r) => ({ ...r, boostCount: 0 }));
+  const newestRemainingBackfill = createRecentBackfill(
+    allRecordings,
+    stillNeeded,
+    { boostCount: 0 },
+    allUsedIds,
+  );
 
   const picks = [...boostedRecordings, ...newestFeaturedBackfill, ...newestRemainingBackfill];
 
@@ -146,12 +149,7 @@ export async function getMemberPicks(limit = 6): Promise<MemberPickRecording[]> 
 const createMemberPicksBackfill = (
   allRecordings: Recording[],
   limit: number,
-): MemberPickRecording[] =>
-  allRecordings
-    .filter((r) => r.featureHeroThumbnail)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, limit)
-    .map((r) => ({ ...r, boostCount: 0 }));
+): MemberPickRecording[] => createFeaturedBackfill(allRecordings, limit, { boostCount: 0 });
 
 export async function getMemberPicksSafe(limit = 6): Promise<MemberPickRecording[]> {
   if (shouldDisableDbDuringBuild()) {

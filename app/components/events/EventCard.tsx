@@ -1,4 +1,14 @@
-import { LOCATIONS, WEBSITE_URLS, type LocationValue } from "@/lib/config/constants";
+import { isTbaDate } from "@/data/events-calendar";
+import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { getGoogleMapsSearchUrl } from "@/lib/events/links";
+import { parseEventTitle } from "@/lib/events/presentation";
+import {
+  formatSpeakerNameWithCompany,
+  formatSpeakerNames,
+  primarySpeakerName,
+  resolveSpeakerLinks,
+  withCompany,
+} from "@/lib/events/speakers";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
@@ -17,52 +27,6 @@ import {
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Pill } from "../ui/Pill";
-
-function formatSpeakerName(name: string | string[]): string {
-  return Array.isArray(name) ? name.join(" & ") : name;
-}
-
-function withCompany(name: string, company?: string): string {
-  return company ? `${name} (${company})` : name;
-}
-
-function formatSpeakerNameWithCompany(
-  name: string | string[],
-  company?: string | string[],
-): string {
-  const names = Array.isArray(name) ? name : [name];
-  const companies = toStringArray(company);
-  return names.map((speakerName, i) => withCompany(speakerName, companies[i])).join(" & ");
-}
-
-function primarySpeakerName(name: string | string[]): string {
-  return Array.isArray(name) ? name[0] : name;
-}
-
-function toStringArray(value: string | string[] | undefined): string[] {
-  if (!value) {
-    return [];
-  }
-  return Array.isArray(value) ? value : [value];
-}
-
-function resolveSpeakerLinks(speaker: {
-  name: string | string[];
-  company?: string | string[];
-  profileId?: string | string[];
-  url?: string | string[];
-}) {
-  const names = Array.isArray(speaker.name) ? speaker.name : [speaker.name];
-  const companies = toStringArray(speaker.company);
-  const profileIds = toStringArray(speaker.profileId);
-  const urls = toStringArray(speaker.url);
-  return names.map((name, i) => ({
-    name,
-    company: companies[i] as string | undefined,
-    profileId: profileIds[i] as string | undefined,
-    url: urls[i] as string | undefined,
-  }));
-}
 
 function getLocationTheme(location: LocationValue) {
   const isPrague = location === LOCATIONS.PRAGUE;
@@ -87,14 +51,6 @@ function getLocationTheme(location: LocationValue) {
         titleGradient:
           "from-blue-600 via-indigo-500 to-violet-500 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400",
       };
-}
-
-function parseTitle(title: string) {
-  const match = title.match(/^(.+?)\s*[-–—:]\s*(.+)$/);
-  if (match) {
-    return { prefix: match[1], subtitle: match[2] };
-  }
-  return null;
 }
 
 interface EventLinks {
@@ -145,7 +101,7 @@ export function EventCard({
   locale,
   t,
 }: EventCardProps) {
-  const isTba = date.trim().toUpperCase() === "TBA";
+  const isTba = isTbaDate(date);
   const hasSpeakers = speakers.some(
     (speaker) => primarySpeakerName(speaker.name).trim().length > 0,
   );
@@ -156,12 +112,7 @@ export function EventCard({
 
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : "";
   const theme = getLocationTheme(location);
-  const parsed = parseTitle(title);
-
-  const getMapUrl = (address: string) => {
-    const encodedAddress = encodeURIComponent(address);
-    return `${WEBSITE_URLS.GOOGLE.MAPS_SEARCH}?api=1&query=${encodedAddress}`;
-  };
+  const parsed = parseEventTitle(title);
 
   const platformLinks = [
     {
@@ -258,7 +209,7 @@ export function EventCard({
               <span>{time}</span>
             </div>
             <a
-              href={getMapUrl(venue)}
+              href={getGoogleMapsSearchUrl(venue)}
               target="_blank"
               rel="noopener noreferrer"
               className="venue-link"
@@ -281,7 +232,7 @@ export function EventCard({
               <div className="space-y-2">
                 {confirmedSpeakers.map((speaker) => (
                   <div
-                    key={`${formatSpeakerName(speaker.name)}-${speaker.topic}`}
+                    key={`${formatSpeakerNames(speaker.name)}-${speaker.topic}`}
                     className="speaker-card"
                   >
                     <div
@@ -379,7 +330,7 @@ export function EventCard({
             <span className="font-medium">{time}</span>
           </div>
           <a
-            href={getMapUrl(venue)}
+            href={getGoogleMapsSearchUrl(venue)}
             target="_blank"
             rel="noopener noreferrer"
             className="venue-link"
@@ -404,7 +355,7 @@ export function EventCard({
                 const resolved = resolveSpeakerLinks(speaker);
                 return (
                   <div
-                    key={`${formatSpeakerName(speaker.name)}-${speaker.topic}`}
+                    key={`${formatSpeakerNames(speaker.name)}-${speaker.topic}`}
                     className="flex items-start gap-3 rounded-2xl bg-white/60 p-3.5 shadow-sm shadow-black/5 dark:bg-white/5"
                   >
                     <div

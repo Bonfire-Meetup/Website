@@ -1,4 +1,7 @@
-import { LOCATIONS, WEBSITE_URLS, type LocationValue } from "@/lib/config/constants";
+import { isTbaDate } from "@/data/events-calendar";
+import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { getGoogleMapsSearchUrl } from "@/lib/events/links";
+import { parseEventTitle } from "@/lib/events/presentation";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
@@ -7,14 +10,6 @@ import { ArrowRightIcon, CalendarIcon, ClockIcon, MapPinIcon, MicIcon } from "..
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Pill } from "../ui/Pill";
-
-function parseTitle(title: string) {
-  const match = title.match(/^(.+?)\s*[-–—:]\s*(.+)$/);
-  if (match) {
-    return { prefix: match[1], subtitle: match[2] };
-  }
-  return null;
-}
 
 function getLocationTheme(location: LocationValue) {
   const isPrague = location === LOCATIONS.PRAGUE;
@@ -73,16 +68,16 @@ export function UpcomingEventCompactCard({
   locale,
   t,
 }: UpcomingEventCompactCardProps) {
-  const isTba = date.trim().toUpperCase() === "TBA";
+  const isTba = isTbaDate(date);
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
   const theme = getLocationTheme(location);
-  const parsedTitle = parseTitle(title);
+  const parsedTitle = parseEventTitle(title);
   const confirmedSpeakerNames = speakers
     .flatMap((speaker) => (Array.isArray(speaker.name) ? speaker.name : [speaker.name]))
     .map((speakerName) => speakerName.trim())
     .filter((speakerName) => speakerName.length > 0 && speakerName !== "TBA");
   const speakerSummary = confirmedSpeakerNames.join(", ");
-  const mapUrl = `${WEBSITE_URLS.GOOGLE.MAPS_SEARCH}?api=1&query=${encodeURIComponent(venue)}`;
+  const mapUrl = getGoogleMapsSearchUrl(venue);
 
   return (
     <Card

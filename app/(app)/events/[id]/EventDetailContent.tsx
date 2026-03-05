@@ -17,7 +17,7 @@ import {
   SparklesIcon,
 } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
-import { isEventPast, parseEventDateTimeParts } from "@/data/events-calendar";
+import { isEventPast, isTbaDate, parseEventDateTimeParts } from "@/data/events-calendar";
 import { getLocationPartners } from "@/data/location-partners";
 import {
   DEFAULT_TIMEZONE,
@@ -25,6 +25,13 @@ import {
   WEBSITE_URLS,
   type LocationValue,
 } from "@/lib/config/constants";
+import { getGoogleMapsSearchUrl } from "@/lib/events/links";
+import {
+  formatSpeakerNameWithCompany,
+  formatSpeakerNames,
+  primarySpeakerName,
+  resolveSpeakerLinks,
+} from "@/lib/events/speakers";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
@@ -35,50 +42,6 @@ interface Speaker {
   startTime?: string;
   profileId?: string | string[];
   url?: string | string[];
-}
-
-function getSpeakerNames(name: string | string[]): string[] {
-  return Array.isArray(name) ? name : [name];
-}
-
-function formatSpeakerNames(name: string | string[]): string {
-  const names = getSpeakerNames(name);
-  return names.join(" & ");
-}
-
-function formatSpeakerNameWithCompany(name: string, company?: string): string {
-  return company ? `${name} (${company})` : name;
-}
-
-function primarySpeakerName(name: string | string[]): string {
-  return Array.isArray(name) ? name[0] : name;
-}
-
-function toStringArray(value: string | string[] | undefined): string[] {
-  if (!value) {
-    return [];
-  }
-  return Array.isArray(value) ? value : [value];
-}
-
-interface ResolvedSpeakerLink {
-  name: string;
-  company?: string;
-  profileId?: string;
-  url?: string;
-}
-
-function resolveSpeakerLinks(speaker: Speaker): ResolvedSpeakerLink[] {
-  const names = getSpeakerNames(speaker.name);
-  const companies = toStringArray(speaker.company);
-  const profileIds = toStringArray(speaker.profileId);
-  const urls = toStringArray(speaker.url);
-  return names.map((name, i) => ({
-    name,
-    company: companies[i],
-    profileId: profileIds[i],
-    url: urls[i],
-  }));
 }
 
 interface EventLinks {
@@ -167,10 +130,6 @@ const SPEAKER_ICON_DIRECTIONS = [
   "bg-gradient-to-r",
 ] as const;
 const SPEAKER_ICON_SHAPES = ["rounded-xl", "rounded-2xl", "rounded-[14px]"] as const;
-function getMapUrl(address: string) {
-  const encodedAddress = encodeURIComponent(address);
-  return `${WEBSITE_URLS.GOOGLE.MAPS_SEARCH}?api=1&query=${encodedAddress}`;
-}
 
 function hashSpeakerSeed(value: string) {
   let hash = 2166136261;
@@ -302,7 +261,7 @@ export function EventDetailContent({
 }: EventDetailContentProps) {
   const t = useTranslations("events");
   const locale = useLocale();
-  const isTba = date.trim().toUpperCase() === "TBA";
+  const isTba = isTbaDate(date);
   const isPastEvent = isEventPast({ date, time }, new Date());
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
 
@@ -551,7 +510,7 @@ export function EventDetailContent({
                 </span>
               </div>
               <a
-                href={getMapUrl(venue)}
+                href={getGoogleMapsSearchUrl(venue)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="glass group flex items-center gap-2.5 rounded-2xl px-4 py-2.5 transition-colors"
@@ -899,7 +858,7 @@ export function EventDetailContent({
                 </h3>
 
                 <a
-                  href={getMapUrl(venue)}
+                  href={getGoogleMapsSearchUrl(venue)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex items-start gap-3"

@@ -190,6 +190,7 @@ export function RecordingsCatalog({
       episode: string,
       search = "",
       viewOverride?: "rows" | "grid",
+      navigationMode: "push" | "replace" = "push",
     ) => {
       const trimmedSearch = search.trim();
       const hasFilters =
@@ -204,6 +205,11 @@ export function RecordingsCatalog({
           ? `${PAGE_ROUTES.LIBRARY_BROWSE}?${params.toString()}`
           : PAGE_ROUTES.LIBRARY_BROWSE;
         startTransition(() => {
+          if (navigationMode === "replace") {
+            router.replace(nextUrl, { scroll: false });
+            return;
+          }
+
           router.push(nextUrl);
         });
         return;
@@ -237,7 +243,7 @@ export function RecordingsCatalog({
     }
 
     searchDebounceRef.current = window.setTimeout(() => {
-      updateFilters(activeLocation, activeTag, activeEpisode, trimmed);
+      updateFilters(activeLocation, activeTag, activeEpisode, trimmed, undefined, "replace");
     }, 350);
 
     return () => {

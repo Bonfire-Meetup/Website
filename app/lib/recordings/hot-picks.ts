@@ -5,6 +5,11 @@ import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 import { fetchEngagementCounts } from "../data/trending";
 
 import { type Recording, getAllRecordings } from "./recordings";
+import {
+  createFeaturedBackfill,
+  createRecentBackfill,
+  fillUniqueByShortId,
+} from "./selection-utils";
 
 export type HotRecording = Recording & {
   likeCount: number;
@@ -78,43 +83,30 @@ export async function getHotRecordings(limit = 6): Promise<HotRecording[]> {
     }
   }
 
-  if (selected.length < limit) {
-    for (const recording of withLikes) {
-      if (selected.length >= limit) {
-        break;
-      }
+  const filledSelection = fillUniqueByShortId(selected, withLikes, limit);
 
-      if (!selected.some((r) => r.shortId === recording.shortId)) {
-        selected.push(recording);
-      }
-    }
-  }
+  if (filledSelection.length < limit) {
+    const usedIds = new Set(filledSelection.map((r) => r.shortId));
 
-  if (selected.length < limit) {
-    const usedIds = new Set(selected.map((r) => r.shortId));
+    const recentBackfill = createRecentBackfill(
+      allRecordings,
+      limit - filledSelection.length,
+      { hotScore: 0, likeCount: 0 },
+      usedIds,
+    );
 
-    const recentBackfill = allRecordings
-      .filter((r) => !usedIds.has(r.shortId))
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, limit - selected.length)
-      .map((r) => ({ ...r, hotScore: 0, likeCount: 0 }));
-
-    selected.push(...recentBackfill);
+    filledSelection.push(...recentBackfill);
   }
 
   if (withLikes.length > 0) {
-    lastHotRecordings = selected;
+    lastHotRecordings = filledSelection;
   }
 
-  return selected;
+  return filledSelection;
 }
 
 const createHotBackfill = (allRecordings: Recording[], limit: number): HotRecording[] =>
-  allRecordings
-    .filter((r) => r.featureHeroThumbnail)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, limit)
-    .map((r) => ({ ...r, hotScore: 0, likeCount: 0 }));
+  createFeaturedBackfill(allRecordings, limit, { hotScore: 0, likeCount: 0 });
 
 export async function getHotRecordingsSafe(limit = 6): Promise<HotRecording[]> {
   try {

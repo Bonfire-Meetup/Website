@@ -1,7 +1,5 @@
 "use server";
 
-import crypto from "crypto";
-
 import { checkBotId } from "botid/server";
 import { cookies, headers } from "next/headers";
 import { z } from "zod";
@@ -9,6 +7,7 @@ import { z } from "zod";
 import { WEBSITE_URLS } from "../config/constants";
 import { serverEnv } from "../config/env";
 import { insertContactSubmission, insertTalkProposal } from "../data/forms";
+import { sha256WithSalt } from "../utils/hash";
 import { logError, logInfo, logWarn } from "../utils/log";
 
 const RATE_LIMIT_WINDOW_MS = 3600_000;
@@ -22,7 +21,7 @@ const rateLimitStore = new Map<string, number[]>();
 const hashValue = (value: string) => {
   const salt = serverEnv.BNF_HEARTS_SALT;
 
-  return crypto.createHash("sha256").update(`${value}:${salt}`).digest("hex");
+  return sha256WithSalt(value, salt);
 };
 
 const getClientIpHash = async () => {

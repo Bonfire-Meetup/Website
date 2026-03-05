@@ -1,12 +1,17 @@
 import "server-only";
 
-import { getEventById, isEventPast, parseEventDateTimeParts } from "@/data/events-calendar";
+import {
+  getEventById,
+  isEventPast,
+  isTbaDate,
+  parseEventDateTimeParts,
+} from "@/data/events-calendar";
 import { getUserCheckIns } from "@/lib/data/check-in";
 import { getUserRsvps } from "@/lib/data/rsvps";
 import { getEpisodeById } from "@/lib/recordings/episodes";
 
 function getDateValue(date: string | null): number {
-  if (!date || date.trim().toUpperCase() === "TBA") {
+  if (!date || isTbaDate(date)) {
     return Number.NEGATIVE_INFINITY;
   }
 
@@ -20,14 +25,8 @@ function getDateValue(date: string | null): number {
 
 function sortByDateAsc<T extends { date: string | null }>(events: T[]): T[] {
   return [...events].sort((a, b) => {
-    const dateA =
-      a.date && a.date.trim().toUpperCase() !== "TBA"
-        ? getDateValue(a.date)
-        : Number.MAX_SAFE_INTEGER;
-    const dateB =
-      b.date && b.date.trim().toUpperCase() !== "TBA"
-        ? getDateValue(b.date)
-        : Number.MAX_SAFE_INTEGER;
+    const dateA = a.date && !isTbaDate(a.date) ? getDateValue(a.date) : Number.MAX_SAFE_INTEGER;
+    const dateB = b.date && !isTbaDate(b.date) ? getDateValue(b.date) : Number.MAX_SAFE_INTEGER;
     return dateA - dateB;
   });
 }

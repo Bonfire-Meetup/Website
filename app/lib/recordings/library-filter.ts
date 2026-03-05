@@ -75,6 +75,15 @@ export interface LibraryApiPayload {
   >;
 }
 
+interface SearchableCatalogRecording extends CatalogRecording {
+  normalizedDescription: string;
+  normalizedEpisode: string;
+  normalizedLocation: string;
+  normalizedSpeaker: string[];
+  normalizedTags: string[];
+  normalizedTitle: string;
+}
+
 async function buildLibraryPayload({
   searchParams,
   tCommon,
@@ -106,7 +115,7 @@ async function buildLibraryPayload({
   const searchQuery = searchParams.get("q") ?? "";
   const normalizedSearchQuery = normalizeText(searchQuery.trim());
 
-  const recordings = getAllRecordings().map((recording) => ({
+  const recordings: SearchableCatalogRecording[] = getAllRecordings().map((recording) => ({
     date: recording.date,
     description: recording.description,
     access: recording.access,
@@ -115,6 +124,12 @@ async function buildLibraryPayload({
     episodeNumber: recording.episodeNumber,
     featureHeroThumbnail: recording.featureHeroThumbnail,
     location: recording.location,
+    normalizedDescription: normalizeText(recording.description ?? ""),
+    normalizedEpisode: normalizeText(recording.episode ?? ""),
+    normalizedLocation: normalizeText(recording.location),
+    normalizedSpeaker: recording.speaker.map((name) => normalizeText(name)),
+    normalizedTags: recording.tags.map((tag) => normalizeText(tag)),
+    normalizedTitle: normalizeText(recording.title),
     shortId: recording.shortId,
     slug: recording.slug,
     speaker: recording.speaker,
@@ -125,7 +140,7 @@ async function buildLibraryPayload({
   const memberPickIdSet = memberPickOrder ? new Set(memberPickOrder) : null;
   const hotIdSet = hotOrder ? new Set(hotOrder) : null;
   const hiddenGemIdSet = hiddenGemOrder ? new Set(hiddenGemOrder) : null;
-  const matchesShelf = (recording: CatalogRecording): boolean => {
+  const matchesShelf = (recording: SearchableCatalogRecording): boolean => {
     if (activeShelf === LIBRARY_SHELVES.ALL) {
       return true;
     }
@@ -265,24 +280,20 @@ async function buildLibraryPayload({
     const isEpisodeMatch = activeEpisode === "all" || recording.episodeId === activeEpisode;
 
     const isSearchEmpty = normalizedSearchQuery.length === 0;
-    const isTitleMatch = normalizeText(recording.title).includes(normalizedSearchQuery);
-    const isSpeakerMatch = recording.speaker.some((name) =>
-      normalizeText(name).includes(normalizedSearchQuery),
+    const isTitleMatch = recording.normalizedTitle.includes(normalizedSearchQuery);
+    const isSpeakerMatch = recording.normalizedSpeaker.some((name) =>
+      name.includes(normalizedSearchQuery),
     );
-    const isTagInSearch = recording.tags.some((tag) =>
-      normalizeText(tag).includes(normalizedSearchQuery),
+    const isTagInSearch = recording.normalizedTags.some((tag) =>
+      tag.includes(normalizedSearchQuery),
     );
-    const isLocationInSearch = normalizeText(recording.location).includes(normalizedSearchQuery);
+    const isLocationInSearch = recording.normalizedLocation.includes(normalizedSearchQuery);
     const hasEpisode = Boolean(recording.episode);
     const isEpisodeInSearch =
-      hasEpisode && recording.episode
-        ? normalizeText(recording.episode).includes(normalizedSearchQuery)
-        : false;
+      hasEpisode && recording.normalizedEpisode.includes(normalizedSearchQuery);
     const hasDescription = Boolean(recording.description);
     const isDescriptionMatch =
-      hasDescription && recording.description
-        ? normalizeText(recording.description).includes(normalizedSearchQuery)
-        : false;
+      hasDescription && recording.normalizedDescription.includes(normalizedSearchQuery);
 
     const isSearchMatch =
       isSearchEmpty ||
@@ -404,7 +415,17 @@ async function buildLibraryPayload({
     : [];
 
   const basePayload: LibraryBasePayload = {
-    recordings: filteredRecordings,
+    recordings: filteredRecordings.map(
+      ({
+        normalizedDescription: _normalizedDescription,
+        normalizedEpisode: _normalizedEpisode,
+        normalizedLocation: _normalizedLocation,
+        normalizedSpeaker: _normalizedSpeaker,
+        normalizedTags: _normalizedTags,
+        normalizedTitle: _normalizedTitle,
+        ...recording
+      }) => recording,
+    ),
     featuredShortIdOrder,
     activeLocation,
     activeTag,

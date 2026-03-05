@@ -1,12 +1,11 @@
 import "server-only";
 
-import crypto from "crypto";
-
 import { checkBotId } from "botid/server";
 import { headers } from "next/headers";
 import { UAParser } from "ua-parser-js";
 
 import { serverEnv } from "@/lib/config/env";
+import { sha256WithSalt } from "@/lib/utils/hash";
 import { logWarn } from "@/lib/utils/log";
 import { getRequestId } from "@/lib/utils/request-context";
 
@@ -17,7 +16,7 @@ const rateLimitStores = new Map<string, Map<string, number[]>>();
 const hashValue = (value: string) => {
   const salt = serverEnv.BNF_HEARTS_SALT;
 
-  return crypto.createHash("sha256").update(`${value}:${salt}`).digest("hex");
+  return sha256WithSalt(value, salt);
 };
 
 export const getClientHashes = async () => {

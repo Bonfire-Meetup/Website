@@ -1,190 +1,92 @@
 # Bonfire Events Homepage
 
-Welcome to the official Bonfire Events homepage. It burns bright, loads fast (mostly), and occasionally refuses to cooperate on mobile. You're in good company.
+Bonfire VOD + events portal built with Next.js App Router.
 
 ## Stack
 
-- Next.js 16 (App Router)
+- Next.js 16
 - React 19 + TypeScript
 - Tailwind CSS 4
 - Redux Toolkit + TanStack React Query
-- next-intl (i18n)
+- `next-intl`
 - Neon Postgres
 - Bun
-- oxlint + oxfmt
 
-## SSR & i18n
+## Important Runtime Note
 
-- Server output is English only. This keeps most pages static and hosting cheaper.
-- Localization happens on the client during hydration, so users pay the CPU cost and may see a brief language flash.
-- Search indexing is English only, which is acceptable for now.
-- The code is structured to switch to server-side i18n later (dynamic rendering on Vercel), but we accept this trade-off today for cost and simplicity.
-- Q: Why not use `/lang/` URL prefixes? A: We could, but we prefer clean, unified URLs regardless of language or theme.
+- Pages are pre-rendered in English at build time.
+- Non-English localization is applied on the client after hydration.
 
-### Switching to SSR i18n (quick path)
-
-- Update `app/lib/i18n/initial.ts` to read locale from cookies/headers instead of `DEFAULT_LOCALE`.
-- Ensure server-only `getTranslations` calls use `getInitialLocale()` (already done).
-- Keep `NextIntlClientProvider` in `app/AppProviders.tsx`; the server will pass the right messages.
-- Remove or simplify client-only locale swapping in `app/components/providers/I18nClientSync.tsx` once SSR locale is authoritative.
-
-## Local dev
+## Quick Start
 
 ```bash
 bun install
 bun run dev
 ```
 
-## Neon (likes)
+Open `http://localhost:3000`.
 
-This project uses Neon Postgres for the video likes ("Spark") system.
+## Scripts
 
-Required env vars:
+- `bun run dev` - Start local dev server
+- `bun run build` - Production build
+- `bun run start` - Run production build
+- `bun run typecheck` - TypeScript only
+- `bun run check` - Lint + format check + typecheck
+- `bun run fix` - Auto-fix lint + format
 
-- `BNF_NEON_DATABASE_URL` (Neon connection string)
-- `BNF_HEARTS_SALT` (long random string for hashing IP/UA)
+## Environment Variables
 
-Generate a salt: `openssl rand -hex 32`
+Copy from `.env.example` and fill required values.
 
-Schema: see `db/video-likes-schema.sql`
+Core:
 
-## API
+- `BNF_NEON_DATABASE_URL`
+- `BNF_HEARTS_SALT`
 
-### Likes
+Auth:
 
-- `GET /api/v1/videos/:id/likes` -> `{ count, hasLiked }`
-- `POST /api/v1/videos/:id/likes` -> `{ count, added }`
-- `DELETE /api/v1/videos/:id/likes` -> `{ count, removed }`
+- `BNF_OTP_SECRET`
+- `BNF_JWT_PRIVATE_KEY`
+- `BNF_JWT_PUBLIC_KEY`
+- `BNF_JWT_ISSUER`
+- `BNF_JWT_AUDIENCE`
 
-User identification: SHA256 hash of IP + User-Agent (no auth required).
-
-### CSRF
-
-- `GET /api/v1/csrf` -> `{ token }`
-
-Sets `bnf_csrf` httpOnly cookie used by server actions for form submissions.
-
-## Forms
-
-Contact + speaker proposal forms use server actions, Turnstile, and CSRF.
-
-Required env vars:
+Forms / bot protection:
 
 - `BNF_TURNSTILE_SECRET_KEY`
 - `NEXT_PUBLIC_BNF_TURNSTILE_SITE_KEY`
 
-## Check-in (Event QR codes)
+Check-ins:
 
-Short-lived, signed QR tokens for event check-in. Tokens are valid for 9 minutes and signed with HMAC-SHA256.
+- `BNF_CHECKIN_SECRET`
 
-Endpoint:
+Email:
 
-- `GET /api/v1/users/me/check-ins` -> `{ token, expiresAt }` (requires valid access token)
+- `BNF_RESEND_API_KEY`
+- `BNF_RESEND_FROM`
 
-Token format: `v1.{base64-payload}.{signature}` where payload contains `{ iat, exp, sub (user_id) }`
-
-Required env vars:
-
-- `BNF_CHECKIN_SECRET` (long random string for HMAC signing)
-
-Generate secret: `openssl rand -hex 32`
-
-## Auth (email OTP)
-
-Passwordless email login with numeric OTP codes and JWT Bearer tokens. OAuth2 compliant.
-
-Endpoints:
-
-- `POST /api/v1/auth/challenges` -> `{ ok: true, challenge_token }`
-- `POST /api/v1/auth/token` with `grant_type=urn:bonfire:grant-type:email-otp` -> `{ access_token, token_type, expires_in }`
-- `POST /api/v1/auth/token` with `grant_type=refresh_token` -> `{ access_token, token_type, expires_in }`
-- `POST /api/v1/auth/revoke` -> logout/session revocation
-- `GET /.well-known/jwks.json` -> JWKS public keys
-- `GET /.well-known/openid-configuration` -> OIDC Discovery
-
-Security note: OTP verification includes a fixed failure delay and a dummy hash comparison on missing/expired challenges to reduce timing differences between valid and invalid attempts.
-
-Required env vars:
-
-- `BNF_OTP_SECRET`
-- `BNF_JWT_PRIVATE_KEY` (Ed25519 PKCS8)
-- `BNF_JWT_PUBLIC_KEY` (Ed25519 SPKI)
-- `BNF_JWT_ISSUER`
-- `BNF_JWT_AUDIENCE`
-
-Generate secrets:
-
-- `BNF_OTP_SECRET`: `openssl rand -hex 32`
-- `BNF_JWT_PRIVATE_KEY`: `openssl genpkey -algorithm ED25519 -outform PEM | openssl pkcs8 -topk8 -nocrypt -outform PEM`
-- `BNF_JWT_PUBLIC_KEY`: `openssl pkey -pubout -in <(echo "$BNF_JWT_PRIVATE_KEY")`
-- `BNF_LOG_SALT`: `openssl rand -hex 32`
-
-Schema: see `db/auth-schema.sql`
-
-## Logging
-
-Structured JSON logs are emitted for auth flows with privacy-friendly fingerprints.
-
-Optional env vars:
+Optional:
 
 - `BNF_LOG_SALT`
 
-## Email (Resend)
+## Key API Areas
 
-Email sending uses Resend via a small library wrapper for future integrations.
+- Auth: `/api/v1/auth/*`
+- Library/filtering: `/api/v1/library`
+- Video engagement: `/api/v1/videos/[id]/likes`, `/api/v1/videos/[id]/boosts`
+- Event RSVPs: `/api/v1/events/[eventId]/rsvps`
+- CSRF: `/api/v1/csrf`
 
-Required env vars:
+## Project Layout
 
-- `BNF_RESEND_API_KEY`
-- `BNF_RESEND_FROM` (verified sender)
+- `app/` - App Router pages, API routes, UI, business logic
+- `db/` - SQL schema and drizzle migrations
+- `public/` - Static assets
 
-## Trending
+## Security Notes
 
-Homepage "Trending" section uses ISR (revalidate: 1 hour).
-
-Scoring algorithm:
-
-- Sparks (likes): `count × 3`
-- Boosts: `count × 5`
-- Recency: +10 (≤120d), +7 (≤240d), +4 (≤365d), +2 (≤540d)
-- Featured: +3
-
-Boosts are weighted higher than sparks because they require authentication, making them harder to game while providing a signal of committed member engagement.
-
-Selection constraints:
-
-- Location cap: no more than `ceil(limit / 2)` per location
-- Quarter cap: no more than `ceil(limit / 3)` per quarter
-- Backfill from remaining records if caps prevent filling the limit
-
-DB calls: ~24/day (1 per revalidation), cached at edge.
-
-## Related talks
-
-Used on the watch page sidebar. Goal: return up to 4 recordings with a strong "next up" plus diversity, and always fill the list if possible.
-
-Inputs:
-
-- Current recording
-- All recordings
-- Limit (default 4)
-
-Scoring factors (higher is better):
-
-- Same episode: +6
-- Same location: +2
-- Shared tags: +3 each (cap 3)
-- Shared speakers: +4 each (cap 2)
-- Recency: +2 (≤90d), +1 (≤180d)
-
-Selection flow:
-
-- Build candidate list excluding the current recording.
-- Determine the first pool with any matches in this order: tags, speakers, episode, location, else all.
-- Pick "next up" as the best candidate by shared tags, shared speakers, same episode, score, recency, then title.
-- Fill remaining slots from the same pool, penalizing overlap with already selected items to keep variety.
-- If still short, widen to the next pools in order, then finally allow any remaining items (including same episode) to reach the limit.
-
-## Contributing
-
-PRs welcome - especially for performance fixes, layout tweaks, and “why is this pixel doing that” mysteries. If you spot a bug, send a PR (or at least a good meme with the issue).
+- JWT auth (Ed25519)
+- CSRF protection for forms
+- Cloudflare Turnstile + botid
+- Rate limiting on sensitive endpoints

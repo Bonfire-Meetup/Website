@@ -33,6 +33,14 @@ interface CalendarEventJson {
 
 const PAST_GRACE_PERIOD_MS = 24 * 60 * 60 * 1000;
 
+export function isTbaDate(date: string | null | undefined): boolean {
+  if (!date) {
+    return false;
+  }
+
+  return date.trim().toUpperCase() === "TBA";
+}
+
 function validateEvent(event: CalendarEventJson): EventItem {
   return {
     date: event.date,
@@ -56,7 +64,7 @@ function validateEvent(event: CalendarEventJson): EventItem {
 }
 
 export function parseEventDateTimeParts(date: string, time: string) {
-  if (date.trim().toUpperCase() === "TBA") {
+  if (isTbaDate(date)) {
     return null;
   }
   const [year, month, day] = date.split("-").map((part) => Number(part));

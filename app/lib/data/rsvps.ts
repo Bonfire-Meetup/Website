@@ -20,16 +20,17 @@ const normalizeEventId = (eventId: string): string => eventId.trim().toLowerCase
 export const createRsvp = async (userId: string, eventId: string): Promise<RsvpResult> => {
   const normalized = normalizeEventId(eventId);
   try {
-    const existing = await db()
-      .select({ id: eventRsvp.id })
-      .from(eventRsvp)
-      .where(and(eq(eventRsvp.userId, userId), eq(eventRsvp.eventId, normalized)));
+    const result = await db()
+      .insert(eventRsvp)
+      .values({ userId, eventId: normalized })
+      .onConflictDoNothing({
+        target: [eventRsvp.userId, eventRsvp.eventId],
+      })
+      .returning({ id: eventRsvp.id });
 
-    if (existing.length > 0) {
+    if (result.length === 0) {
       return { success: false, alreadyRsvped: true };
     }
-
-    await db().insert(eventRsvp).values({ userId, eventId: normalized });
 
     return { success: true, alreadyRsvped: false };
   } catch (error) {
@@ -93,7 +94,7 @@ const getEventRsvpsBase = async (eventId: string, limit = 12): Promise<EventRsvp
     const countResult = await db()
       .select({ count: sql<number>`count(*)::int` })
       .from(eventRsvp)
-      .where(sql`LOWER(${eventRsvp.eventId}) = ${normalizedEventId}`);
+      .where(eq(eventRsvp.eventId, normalizedEventId));
 
     const totalCount = countResult[0]?.count ?? 0;
 
@@ -105,7 +106,7 @@ const getEventRsvpsBase = async (eventId: string, limit = 12): Promise<EventRsvp
       })
       .from(eventRsvp)
       .innerJoin(appUser, eq(eventRsvp.userId, appUser.id))
-      .where(sql`LOWER(${eventRsvp.eventId}) = ${normalizedEventId}`)
+      .where(eq(eventRsvp.eventId, normalizedEventId))
       .orderBy(sql`${eventRsvp.createdAt} DESC`)
       .limit(limit);
 
@@ -175,12 +176,7 @@ export const getEventRsvps = async (
       const userRsvpCheck = await db()
         .select({ id: eventRsvp.id })
         .from(eventRsvp)
-        .where(
-          and(
-            eq(eventRsvp.userId, userId),
-            sql`LOWER(${eventRsvp.eventId}) = ${normalizedEventId}`,
-          ),
-        )
+        .where(and(eq(eventRsvp.userId, userId), eq(eventRsvp.eventId, normalizedEventId)))
         .limit(1);
       hasRsvped = userRsvpCheck.length > 0;
     } catch (error) {
