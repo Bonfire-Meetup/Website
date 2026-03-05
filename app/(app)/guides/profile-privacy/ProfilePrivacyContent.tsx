@@ -23,7 +23,7 @@ export function ProfilePrivacyContent() {
       heroLead={t("heroLead")}
       heroSublead={t("heroSublead")}
       heroWord="PRIVACY"
-      heroWordClassName="text-[16vw] sm:text-[12vw]"
+      heroWordSize="lg"
       subtitle={t("subtitle")}
       contentClassName="max-w-4xl"
     >

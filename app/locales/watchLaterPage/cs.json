@@ -1,13 +1,30 @@
 {
   "watchLaterPage": {
+    "eyebrow": "Uložená fronta",
     "title": "Uložené přednášky",
-    "subtitle": "Uložené přednášky na později.",
+    "subtitle": "Osobní polička pro přednášky, ke kterým se chceš vrátit, dokoukat je nebo si je teprve pustit.",
     "empty": "Zatím tu nic není.",
+    "emptyTitle": "Začni si skládat vlastní frontu na sledování.",
     "emptyAction": "Projdi záznamy a ulož si, co chceš vidět.",
+    "emptyHint": "Cokoliv si uložíš v knihovně, objeví se automaticky tady.",
     "saved": "Uloženo {count} videí",
     "savedOne": "Uloženo 1 video",
     "remove": "Odebrat",
     "loading": "Načítám uložené přednášky…",
-    "error": "Nepodařilo se načíst uložené přednášky"
+    "error": "Uložené přednášky se teď nepodařilo načíst. Zkus to za chvíli znovu nebo se vrať do knihovny.",
+    "errorTitle": "Tvoje uložená fronta je dočasně nedostupná.",
+    "stateLabel": "Uložené přednášky",
+    "backToAccount": "Zpět na účet",
+    "browseMore": "Projít další přednášky",
+    "featuredLabel": "Další na řadě",
+    "watchNow": "Pustit teď",
+    "savedAt": "Uloženo {date}",
+    "savedRecently": "Uloženo nedávno",
+    "queueLabel": "Tvoje fronta",
+    "filters": {
+      "recent": "Nejnovější",
+      "oldest": "Nejstarší",
+      "title": "Název"
+    }
   }
 }

@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
+import { StaticPageHero } from "@/components/layout/StaticPageHero";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -118,18 +119,22 @@ export function PressPageContent() {
   ];
 
   return (
-    <main className="gradient-bg min-h-screen pt-28 pb-24">
-      <div className="mx-auto max-w-6xl space-y-20 px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <p className="text-brand-600 dark:text-brand-400 text-sm font-semibold tracking-[0.3em] uppercase">
-            {t("eyebrow")}
-          </p>
+    <main className="gradient-bg min-h-screen pb-24">
+      <StaticPageHero
+        backgroundVariant="brand"
+        eyebrow={t("eyebrow")}
+        heroWord="PRESS"
+        heroWordSize="sm"
+        subtitle={t("subtitle")}
+        subtitleClassName="mx-auto max-w-2xl text-lg text-neutral-600 dark:text-neutral-400"
+        title={
           <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
             {t("title")}
           </h1>
-          <p className="mt-4 text-lg text-neutral-600 dark:text-neutral-400">{t("subtitle")}</p>
-        </div>
+        }
+      />
 
+      <div className="mx-auto max-w-6xl space-y-20 px-4 sm:px-6 lg:px-8">
         <section className="glass-card no-hover-pop p-8 sm:p-12">
           <div className="flex flex-col gap-4">
             <div className="space-y-4">

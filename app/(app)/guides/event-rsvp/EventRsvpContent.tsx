@@ -23,7 +23,7 @@ export function EventRsvpContent() {
       heroLead={t("heroLead")}
       heroSublead={t("heroSublead")}
       heroWord="RSVP"
-      heroWordClassName="text-[22vw] sm:text-[15vw]"
+      heroWordSize="xl"
       subtitle={t("subtitle")}
       contentClassName="max-w-4xl"
     >

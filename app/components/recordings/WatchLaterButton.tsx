@@ -22,6 +22,7 @@ interface WatchLaterButtonProps {
   variant?: "icon" | "full";
   size?: "sm" | "md";
   showLabel?: boolean;
+  showLabelOnMobile?: boolean;
   iconButtonClassName?: string;
 }
 
@@ -30,6 +31,7 @@ export function WatchLaterButton({
   variant = "full",
   size = "md",
   showLabel = true,
+  showLabelOnMobile = false,
   iconButtonClassName = "",
 }: WatchLaterButtonProps) {
   const t = useTranslations("recordings");
@@ -124,7 +126,11 @@ export function WatchLaterButton({
           <BookmarkIcon className="h-3.5 w-3.5" />
         )}
         {showLabel ? (
-          <span className="hidden sm:inline sm:translate-y-[1px]">
+          <span
+            className={
+              showLabelOnMobile ? "translate-y-[1px]" : "hidden sm:inline sm:translate-y-[1px]"
+            }
+          >
             {inWatchlist ? t("inWatchlist") : t("watchLater")}
           </span>
         ) : null}

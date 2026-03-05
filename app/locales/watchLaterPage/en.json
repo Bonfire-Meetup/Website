@@ -1,13 +1,30 @@
 {
   "watchLaterPage": {
+    "eyebrow": "Saved queue",
     "title": "Watch Later",
-    "subtitle": "Your saved talks for later viewing.",
+    "subtitle": "A personal shelf for the talks you want to come back to, finish, or finally start.",
     "empty": "No videos in your Watch Later list yet.",
+    "emptyTitle": "Start building your next watch run.",
     "emptyAction": "Browse the library to save talks you want to watch.",
+    "emptyHint": "Save anything interesting from the library and it will land here automatically.",
     "saved": "{count} saved videos",
     "savedOne": "1 saved video",
     "remove": "Remove",
     "loading": "Loading your watchlist...",
-    "error": "Unable to load watchlist"
+    "error": "Unable to load your watchlist right now. Try again in a moment or jump back to the library.",
+    "errorTitle": "Your saved queue is temporarily unavailable.",
+    "stateLabel": "Watch later",
+    "backToAccount": "Back to account",
+    "browseMore": "Browse more talks",
+    "featuredLabel": "Next up",
+    "watchNow": "Watch now",
+    "savedAt": "Saved on {date}",
+    "savedRecently": "Saved recently",
+    "queueLabel": "Your queue",
+    "filters": {
+      "recent": "Recent first",
+      "oldest": "Oldest first",
+      "title": "Title"
+    }
   }
 }

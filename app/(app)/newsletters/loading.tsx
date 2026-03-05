@@ -1,3 +1,4 @@
+import { StaticPageHeroSkeleton } from "@/components/layout/StaticPageHeroSkeleton";
 import { Skeleton } from "@/components/shared/Skeletons";
 
 function IssueRowSkeleton() {
@@ -17,18 +18,12 @@ function IssueRowSkeleton() {
 export default function NewsletterArchiveLoading() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
-      {/* Hero */}
-      <section className="px-4 pt-32 pb-14 text-center sm:pt-36 sm:pb-16">
-        <div className="mb-4 flex items-center justify-center gap-3">
-          <Skeleton className="h-px w-10 rounded-full" />
-          <Skeleton className="h-3 w-20 rounded-full" />
-          <Skeleton className="h-px w-10 rounded-full" />
-        </div>
-        <Skeleton className="mx-auto mb-3 h-10 w-3/4 max-w-sm rounded-xl sm:h-12" />
-        <Skeleton className="mx-auto h-5 w-2/3 max-w-xs rounded-full" />
-      </section>
+      <StaticPageHeroSkeleton
+        sectionPreset="compact"
+        titleClassName="mx-auto mb-3 h-10 w-3/4 max-w-sm rounded-xl sm:h-12"
+        subtitleClassName="mx-auto h-5 w-2/3 max-w-xs rounded-full"
+      />
 
-      {/* Issue list panel */}
       <section className="relative mx-auto max-w-2xl px-4 pb-24 sm:px-6">
         <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-neutral-200 dark:bg-neutral-900 dark:ring-neutral-800">
           <div className="divide-y divide-neutral-100 dark:divide-neutral-800">
@@ -38,7 +33,6 @@ export default function NewsletterArchiveLoading() {
           </div>
         </div>
 
-        {/* Subscribe CTA */}
         <div className="mt-16">
           <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-neutral-200 dark:bg-neutral-900 dark:ring-neutral-800">
             <Skeleton className="h-1 w-full rounded-none" />

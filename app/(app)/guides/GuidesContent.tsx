@@ -99,8 +99,7 @@ export function GuidesContent() {
       eyebrow={t("eyebrow")}
       heading={t("heading")}
       heroWord="GUIDES"
-      heroWordClassName="text-[18vw] sm:text-[13vw]"
-      heroWrapperClassName="min-h-[56vh] sm:min-h-[60vh]"
+      heroWordSize="lg"
       subtitle={t("subtitle")}
       contentClassName="max-w-5xl"
     >

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { StaticPageHero } from "@/components/layout/StaticPageHero";
 import { ArrowLeftIcon, ArrowRightIcon, MailIcon, TrashIcon } from "@/components/shared/Icons";
 import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
@@ -94,7 +95,7 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
   const sentDate = formatLongDateUTC(newsletter.sentAt, locale);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-50 px-4 pt-32 pb-24 dark:bg-neutral-950">
+    <main className="relative min-h-screen overflow-hidden bg-neutral-50 px-4 pt-28 pb-24 sm:pt-32 dark:bg-neutral-950">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-24 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-1),transparent_60%)]" />
       </div>
@@ -163,38 +164,43 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
           </div>
         )}
 
-        <header className="mb-16 text-center">
-          {newsletter.testSend && (
-            <div className="mb-5 flex justify-center">
-              <span className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-4 py-1.5 text-xs font-bold text-amber-700 dark:bg-amber-500/20 dark:text-amber-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-500 dark:bg-amber-400" />
-                {t("testBannerTitle")}
-              </span>
-            </div>
-          )}
+        {newsletter.testSend && (
+          <div className="mb-5 flex justify-center">
+            <span className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-4 py-1.5 text-xs font-bold text-amber-700 dark:bg-amber-500/20 dark:text-amber-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 dark:bg-amber-400" />
+              {t("testBannerTitle")}
+            </span>
+          </div>
+        )}
 
-          <p className="mb-5 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-rose-400">
-            <span className="h-px w-6 bg-gradient-to-r from-transparent to-rose-400 sm:w-10" />
-            {t("eyebrow")}
-            <span className="h-px w-6 bg-gradient-to-l from-transparent to-rose-400 sm:w-10" />
-          </p>
-
-          <h1
-            className={`font-black tracking-tighter text-balance text-neutral-900 dark:text-white ${titleSizeClass(newsletter.subject)}`}
-          >
-            {newsletter.subject}
-          </h1>
-
-          {newsletter.previewText && (
-            <p className="mx-auto mt-4 max-w-lg text-lg leading-relaxed text-neutral-500 dark:text-neutral-400">
-              {newsletter.previewText}
-            </p>
-          )}
-
-          <p className="mt-5 text-sm text-neutral-400 dark:text-neutral-500">
-            {t("sentOn", { sentDate })}
-          </p>
-        </header>
+        <StaticPageHero
+          backgroundVariant="none"
+          containerClassName="mx-auto max-w-2xl text-center"
+          eyebrow={t("eyebrow")}
+          eyebrowClassName="mb-5 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-rose-400"
+          eyebrowLineClassName="to-rose-400"
+          sectionPreset="detail"
+          subtitle={
+            <>
+              {newsletter.previewText ? (
+                <p className="mx-auto mt-4 max-w-lg text-lg leading-relaxed text-neutral-500 dark:text-neutral-400">
+                  {newsletter.previewText}
+                </p>
+              ) : null}
+              <p className="mt-5 text-sm text-neutral-400 dark:text-neutral-500">
+                {t("sentOn", { sentDate })}
+              </p>
+            </>
+          }
+          subtitleClassName=""
+          title={
+            <h1
+              className={`font-black tracking-tighter text-balance text-neutral-900 dark:text-white ${titleSizeClass(newsletter.subject)}`}
+            >
+              {newsletter.subject}
+            </h1>
+          }
+        />
 
         <article>
           {newsletter.sections.map((section, index) => (

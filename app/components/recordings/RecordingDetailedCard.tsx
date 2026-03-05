@@ -163,12 +163,12 @@ export function RecordingDetailedCard({
   const tiltHandlers = createCardTiltHandlers();
   const shadowClass = disableShadow
     ? "shadow-none hover:shadow-none"
-    : "shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] hover:shadow-[0_24px_40px_-20px_rgba(17,24,39,0.45)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:hover:shadow-[0_30px_52px_-20px_rgba(0,0,0,0.95)]";
+    : "shadow-[0_20px_38px_-24px_rgba(17,24,39,0.24),0_14px_34px_-26px_rgba(249,115,22,0.3)] hover:shadow-[0_30px_54px_-26px_rgba(17,24,39,0.3),0_18px_40px_-26px_rgba(249,115,22,0.38)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:hover:shadow-[0_30px_52px_-20px_rgba(0,0,0,0.95)]";
   const outerClassName =
     className ??
     (isGrid
-      ? `group relative flex cursor-pointer flex-col overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] text-white ring-1 ring-black/10 transition-[box-shadow,ring-color,filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:ring-black/20 hover:saturate-110 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12 dark:hover:ring-white/20 ${shadowClass}`
-      : `group relative z-0 flex w-[calc(100%-2.25rem)] shrink-0 snap-start flex-col overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] text-white ring-1 ring-black/10 transition-[box-shadow,ring-color,filter,z-index] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:z-20 hover:ring-black/20 hover:saturate-110 sm:w-[70vw] lg:w-[calc((100%-3rem-1px)/3)] xl:w-[calc((100%-3rem-1px)/3)] dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12 dark:hover:ring-white/20 ${shadowClass}`);
+      ? `group relative flex cursor-pointer flex-col overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(255,253,249,0.99)_0%,rgba(252,244,236,0.992)_52%,rgba(244,232,220,0.995)_100%)] text-white ring-1 ring-black/6 transition-[box-shadow,ring-color,filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,transparent_24%,transparent_100%)] before:opacity-100 hover:ring-black/12 hover:saturate-110 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12 dark:before:hidden dark:hover:ring-white/20 ${shadowClass}`
+      : `group relative z-0 flex w-[calc(100%-2.25rem)] shrink-0 snap-start flex-col overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(255,253,249,0.99)_0%,rgba(252,244,236,0.992)_52%,rgba(244,232,220,0.995)_100%)] text-white ring-1 ring-black/6 transition-[box-shadow,ring-color,filter,z-index] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] before:pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,transparent_24%,transparent_100%)] before:opacity-100 hover:z-20 hover:ring-black/12 hover:saturate-110 sm:w-[70vw] lg:w-[calc((100%-3rem-1px)/3)] xl:w-[calc((100%-3rem-1px)/3)] dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12 dark:before:hidden dark:hover:ring-white/20 ${shadowClass}`);
 
   return (
     <RecordingCardShell
@@ -192,7 +192,7 @@ export function RecordingDetailedCard({
             src={thumbnail}
             alt={title}
             aspectClassName="aspect-video"
-            imgClassName={`duration-200 ease-out ${CARD_MEDIA_PARALLAX_BASE_CLASS} ${CARD_MEDIA_PARALLAX_HOVER_CLASS}`}
+            imgClassName={`duration-200 ease-out saturate-[1.04] ${CARD_MEDIA_PARALLAX_BASE_CLASS} ${CARD_MEDIA_PARALLAX_HOVER_CLASS} dark:saturate-100`}
             sizes={
               isGrid
                 ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -201,9 +201,9 @@ export function RecordingDetailedCard({
             loading={isFirst ? "eager" : "lazy"}
             fetchPriority={isFirst ? "high" : "low"}
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-white/12 via-transparent to-transparent dark:from-black/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/52 via-black/20 via-62% to-transparent transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:from-black/40 dark:from-black/70 dark:via-black/34 dark:group-hover:from-black/56" />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-white/18 to-transparent dark:from-white/6" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-white/22 via-transparent to-transparent dark:from-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/36 via-black/10 via-62% to-transparent transition-opacity duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:from-black/26 dark:from-black/70 dark:via-black/34 dark:group-hover:from-black/56" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/34 via-white/12 to-transparent dark:from-white/6 dark:via-transparent" />
         </>
       }
       bodyClassName={

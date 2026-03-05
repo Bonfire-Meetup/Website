@@ -1,6 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import {
+  HERO_SECTION_CLASS,
+  HERO_WORD_SIZE_CLASS,
+  type HeroWordSize,
+} from "@/components/layout/hero-presets";
 import { ArrowLeftIcon } from "@/components/shared/Icons";
 
 interface GuidePageShellProps {
@@ -15,6 +20,7 @@ interface GuidePageShellProps {
   heroSublead?: string;
   heroWord: string;
   heroWordClassName?: string;
+  heroWordSize?: HeroWordSize;
   heroWrapperClassName?: string;
   subtitle: string;
 }
@@ -31,9 +37,12 @@ export function GuidePageShell({
   heroSublead,
   heroWord,
   heroWordClassName,
+  heroWordSize = "lg",
   heroWrapperClassName,
   subtitle,
 }: GuidePageShellProps) {
+  const resolvedHeroWordClassName = heroWordClassName ?? HERO_WORD_SIZE_CLASS[heroWordSize];
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
       <div className="pointer-events-none absolute inset-0">
@@ -42,16 +51,10 @@ export function GuidePageShell({
         <div className="absolute right-0 bottom-0 h-96 w-96 rounded-full bg-[radial-gradient(circle_at_center,var(--color-rose-glow),transparent_60%)]" />
       </div>
 
-      <section
-        className={`relative flex items-center justify-center overflow-hidden px-4 pt-32 pb-14 sm:pb-16 ${
-          heroWrapperClassName ?? "min-h-[58vh] sm:min-h-[62vh]"
-        }`}
-      >
+      <section className={`${HERO_SECTION_CLASS.default} ${heroWrapperClassName ?? ""}`}>
         <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap select-none">
           <span
-            className={`text-outline block leading-none font-black opacity-[0.03] dark:opacity-[0.02] ${
-              heroWordClassName ?? "text-[18vw] sm:text-[14vw]"
-            }`}
+            className={`text-outline block leading-none font-black opacity-[0.03] dark:opacity-[0.02] ${resolvedHeroWordClassName}`}
           >
             {heroWord}
           </span>

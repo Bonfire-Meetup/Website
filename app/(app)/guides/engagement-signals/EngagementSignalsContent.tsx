@@ -23,7 +23,7 @@ export function EngagementSignalsContent() {
       heroLead={t("heroLead")}
       heroSublead={t("heroSublead")}
       heroWord="SIGNALS"
-      heroWordClassName="text-[17vw] sm:text-[13vw]"
+      heroWordSize="lg"
       subtitle={t("subtitle")}
       contentClassName="max-w-4xl"
     >

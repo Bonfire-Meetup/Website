@@ -20,11 +20,14 @@ export function RecordingFeaturedContent({
   hasFeaturedHero,
   showAccessPill = false,
 }: RecordingFeaturedContentProps) {
+  const featuredHeroPanelClass =
+    "bg-black/60 text-white ring-1 ring-white/10 sm:border sm:border-white/55 sm:bg-[linear-gradient(180deg,rgba(255,248,240,0.76)_0%,rgba(255,244,232,0.6)_100%)] sm:text-neutral-950 sm:ring-white/35 sm:shadow-[0_28px_60px_-36px_rgba(15,23,42,0.34)] sm:backdrop-blur-xl sm:backdrop-saturate-150 dark:sm:border-white/16 dark:sm:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:sm:text-white dark:sm:ring-white/10 dark:sm:shadow-[0_20px_48px_-32px_rgba(0,0,0,0.7)]";
+
   return (
     <div
       className={`flex max-w-2xl flex-col gap-2 rounded-3xl px-4 py-4 sm:px-5 sm:py-4 ${
         hasFeaturedHero
-          ? "bg-black/60 text-white ring-1 ring-white/10 sm:bg-white/90 sm:text-neutral-900 sm:ring-black/5 dark:sm:bg-black/60 dark:sm:text-white dark:sm:ring-white/10"
+          ? featuredHeroPanelClass
           : "bg-white/85 text-neutral-900 ring-1 ring-black/5 dark:bg-black/60 dark:text-white dark:ring-white/10"
       }`}
     >
@@ -46,7 +49,7 @@ export function RecordingFeaturedContent({
         locationSize="xs"
         locationClassName={`${
           hasFeaturedHero
-            ? "bg-white/15 text-white/90 sm:bg-black/5 sm:text-neutral-700 dark:sm:bg-white/10 dark:sm:text-white/80"
+            ? "bg-white/15 text-white/90 sm:bg-white/45 sm:text-neutral-700 sm:ring-1 sm:ring-white/35 dark:sm:bg-white/10 dark:sm:text-white/80 dark:sm:ring-white/10"
             : "bg-black/5 text-neutral-700 dark:bg-white/10 dark:text-white/80"
         }`}
       />
@@ -70,7 +73,7 @@ export function RecordingFeaturedContent({
       <p
         className={`text-xs sm:text-base ${
           hasFeaturedHero
-            ? "text-white/70 sm:text-neutral-600 dark:sm:text-white/70"
+            ? "text-white/70 sm:text-neutral-700 dark:sm:text-white/70"
             : "text-neutral-600 dark:text-white/70"
         }`}
       >
@@ -85,7 +88,7 @@ export function RecordingFeaturedContent({
             size="xxs"
             className={`${
               hasFeaturedHero
-                ? "sm:bg-brand-50 sm:text-brand-700 dark:sm:bg-brand-500/12 dark:sm:text-brand-200 bg-white/20 text-white/85"
+                ? "sm:text-brand-700 dark:sm:bg-brand-500/12 dark:sm:text-brand-200 bg-white/20 text-white/85 sm:bg-white/55 sm:ring-1 sm:ring-white/35 dark:sm:ring-white/10"
                 : ""
             }`}
           />

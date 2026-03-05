@@ -6,8 +6,8 @@ import { WatchLaterClient } from "./WatchLaterClient";
 
 export default function WatchLaterPage() {
   return (
-    <main className="gradient-bg-static min-h-screen px-4 pt-32 pb-20">
-      <div className="mx-auto max-w-6xl">
+    <main className="gradient-bg-static relative min-h-screen overflow-hidden px-4 pt-32 pb-20">
+      <div className="mx-auto max-w-7xl">
         <WatchLaterClient />
       </div>
     </main>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
+import { StaticPageHero } from "@/components/layout/StaticPageHero";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
@@ -139,19 +140,20 @@ function NewsletterEditorInner() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-5xl">
-        <div className="mb-10 text-center sm:mb-12">
-          <p className="text-brand-600 dark:text-brand-300 mb-6 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em]">
-            <span className="to-brand-400 h-px w-8 bg-gradient-to-r from-transparent sm:w-12" />
-            {t("eyebrow")}
-            <span className="to-brand-400 h-px w-8 bg-gradient-to-l from-transparent sm:w-12" />
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <AccentBar />
-            <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
-              {resendSlug ? t("resendTitle") : t("title")}
-            </h1>
-          </div>
-        </div>
+        <StaticPageHero
+          backgroundVariant="none"
+          containerClassName="mx-auto max-w-5xl text-center"
+          eyebrow={t("eyebrow")}
+          sectionPreset="inline"
+          title={
+            <div className="flex items-center justify-center gap-4">
+              <AccentBar />
+              <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
+                {resendSlug ? t("resendTitle") : t("title")}
+              </h1>
+            </div>
+          }
+        />
 
         <NewsletterWizard resendSlug={resendSlug} resendData={resendData ?? undefined} />
       </div>

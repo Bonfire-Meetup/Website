@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
+import { StaticPageHero } from "@/components/layout/StaticPageHero";
 import { AlbumImage } from "@/components/shared/AlbumImage";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
@@ -62,7 +63,21 @@ export function TimelinePageContent() {
   const entries = getEpisodeEntries();
 
   return (
-    <main className="gradient-bg min-h-screen pt-28 pb-24">
+    <main className="gradient-bg min-h-screen pb-24">
+      <StaticPageHero
+        backgroundVariant="events"
+        eyebrow={t("eyebrow")}
+        heroWord="TIMELINE"
+        heroWordSize="xs"
+        subtitle={t("subtitle")}
+        subtitleClassName="mx-auto max-w-3xl text-neutral-600 dark:text-neutral-400"
+        title={
+          <h1 className="mb-5 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
+            {t("title")}
+          </h1>
+        }
+      />
+
       <section className="px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="section-divider mx-auto mb-16 max-w-4xl" />

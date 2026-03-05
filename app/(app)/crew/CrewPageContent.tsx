@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
+import { StaticPageHero } from "@/components/layout/StaticPageHero";
 import {
   BoltIcon,
   BuildingIcon,
@@ -210,47 +211,43 @@ export function CrewPageContent() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
-      <section className="relative flex min-h-[60vh] items-center justify-center overflow-hidden px-4 pt-32 pb-14 sm:min-h-[65vh] sm:pb-16">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-24 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-1),transparent_60%)]" />
-          <div className="absolute top-1/3 left-0 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-2),transparent_60%)]" />
-          <div className="absolute right-0 bottom-0 h-96 w-96 rounded-full bg-[radial-gradient(circle_at_center,var(--color-prague-glow-2),transparent_60%)]" />
-        </div>
-        <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap select-none">
-          <span className="text-outline block text-[20vw] leading-none font-black opacity-[0.03] sm:text-[18vw] dark:opacity-[0.02]">
-            THE CREW
-          </span>
-        </div>
-        <div className="relative z-10 mx-auto max-w-4xl text-center">
-          <p className="text-brand-600 dark:text-brand-300 mb-6 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em]">
-            <span className="to-brand-400 h-px w-8 bg-gradient-to-r from-transparent sm:w-12" />
-            {t("eyebrow")}
-            <span className="to-brand-400 h-px w-8 bg-gradient-to-l from-transparent sm:w-12" />
-          </p>
+      <StaticPageHero
+        brandAccentClassName="bg-[radial-gradient(circle_at_center,var(--color-prague-glow-2),transparent_60%)]"
+        containerClassName="mx-auto max-w-4xl text-center"
+        eyebrow={t("eyebrow")}
+        heroWord="THE CREW"
+        heroWordSize="xxl"
+        subtitle={
+          <>
+            <p className="mb-4 text-base text-neutral-600 sm:text-lg dark:text-neutral-400">
+              {t("subtitle", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
+            </p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              {t("stats", {
+                prague: tCommon("prague"),
+                zlin: tCommon("zlin"),
+                people: uniquePeopleCount,
+                cities: cityCount,
+              })}
+            </p>
+          </>
+        }
+        subtitleClassName=""
+        title={
           <h1 className="mb-4 text-4xl font-black tracking-tight text-neutral-900 sm:text-6xl lg:text-7xl dark:text-white">
             <span className="block">{t("titlePart1")}</span>
             <span className="text-gradient block">{t("titleHighlight")}</span>
             <span className="block">{t("titlePart2")}</span>
           </h1>
-          <p className="mb-4 text-base text-neutral-600 sm:text-lg dark:text-neutral-400">
-            {t("subtitle", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
-          </p>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            {t("stats", {
-              prague: tCommon("prague"),
-              zlin: tCommon("zlin"),
-              people: uniquePeopleCount,
-              cities: cityCount,
-            })}
-          </p>
-        </div>
+        }
+      >
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
           <div className="hidden flex-col items-center gap-2 text-neutral-500 sm:flex">
             <span className="text-xs tracking-widest uppercase">scroll</span>
             <div className="from-brand-500 h-8 w-px bg-gradient-to-b to-transparent" />
           </div>
         </div>
-      </section>
+      </StaticPageHero>
 
       <div className="relative mx-auto max-w-6xl space-y-24 px-4 pb-24">
         {cities[0] && (

@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { StaticPageHero } from "@/components/layout/StaticPageHero";
 import { NewsletterSectionClient } from "@/components/newsletter/NewsletterSectionClient";
 import { ArrowRightIcon } from "@/components/shared/Icons";
 import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
@@ -104,22 +105,22 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
         <div className="absolute top-1/3 right-0 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,var(--color-rose-glow),transparent_60%)]" />
       </div>
 
-      {/* Hero */}
-      <section className="relative px-4 pt-32 pb-14 text-center sm:pt-36 sm:pb-16">
-        <p className="mb-4 flex items-center justify-center gap-3 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:text-sm sm:tracking-[0.5em] dark:text-rose-400">
-          <span className="h-px w-8 bg-gradient-to-r from-transparent to-rose-400 sm:w-12" />
-          {t("eyebrow")}
-          <span className="h-px w-8 bg-gradient-to-l from-transparent to-rose-400 sm:w-12" />
-        </p>
-        <h1 className="text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
-          {t("title")}
-        </h1>
-        <p className="mx-auto mt-4 max-w-lg text-neutral-500 dark:text-neutral-400">
-          {t("subtitle")}
-        </p>
-      </section>
+      <StaticPageHero
+        backgroundVariant="none"
+        eyebrow={t("eyebrow")}
+        eyebrowClassName="mb-4 flex items-center justify-center gap-3 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:text-sm sm:tracking-[0.5em] dark:text-rose-400"
+        eyebrowLineClassName="to-rose-400"
+        containerClassName="mx-auto max-w-3xl text-center"
+        sectionPreset="compact"
+        subtitle={t("subtitle")}
+        subtitleClassName="mx-auto mt-4 max-w-lg text-neutral-500 dark:text-neutral-400"
+        title={
+          <h1 className="text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
+            {t("title")}
+          </h1>
+        }
+      />
 
-      {/* Content */}
       <section className="relative mx-auto max-w-2xl px-4 pb-24 sm:px-6">
         {items.length === 0 ? (
           <div className="glass-card no-hover-pop p-10 text-center">
@@ -130,7 +131,6 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
           <IssueList items={items} total={items.length} />
         )}
 
-        {/* Test sends — editor only */}
         {isEditor && testItems.length > 0 && (
           <div className="mt-8">
             <div className="mb-3 flex items-center gap-3">
@@ -149,7 +149,6 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
           </div>
         )}
 
-        {/* Subscribe CTA */}
         <div className="mt-16">
           <div className="glass-card no-hover-pop overflow-hidden">
             <div className="h-1 w-full bg-gradient-to-r from-rose-600 via-orange-500 to-red-600" />

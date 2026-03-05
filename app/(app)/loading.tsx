@@ -1,3 +1,4 @@
+import { StaticPageHeroSkeleton } from "@/components/layout/StaticPageHeroSkeleton";
 import { Skeleton } from "@/components/shared/Skeletons";
 
 function GenericSectionSkeleton({ className = "" }: { className?: string }) {
@@ -29,13 +30,10 @@ function GenericSectionSkeleton({ className = "" }: { className?: string }) {
 export default function AppSegmentLoading() {
   return (
     <main className="relative">
-      <section className="relative px-4 pt-24 pb-10 sm:px-6 sm:pt-28 lg:px-8 lg:pt-32">
-        <div className="mx-auto max-w-5xl text-center">
-          <Skeleton className="mx-auto mb-4 h-3 w-36" />
-          <Skeleton className="mx-auto mb-3 h-12 w-64 sm:h-14 sm:w-80" />
-          <Skeleton className="mx-auto h-5 w-full max-w-2xl" />
-        </div>
-      </section>
+      <StaticPageHeroSkeleton
+        containerClassName="mx-auto max-w-5xl text-center"
+        titleClassName="mx-auto mb-3 h-12 w-64 sm:h-14 sm:w-80"
+      />
 
       <div className="section-divider mx-auto max-w-4xl" />
       <GenericSectionSkeleton />
