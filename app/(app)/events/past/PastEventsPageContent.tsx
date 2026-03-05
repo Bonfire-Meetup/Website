@@ -123,14 +123,14 @@ export function PastEventsPageContent() {
                     return (
                       <article
                         key={event.id}
-                        className="group relative grid gap-4 overflow-hidden rounded-3xl border border-neutral-200/80 bg-white/75 p-4 transition-colors hover:bg-white sm:grid-cols-[88px_1fr] sm:p-5 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+                        className="group relative grid grid-cols-[78px_1fr] gap-3 overflow-hidden rounded-3xl border border-neutral-200/80 bg-white/75 p-4 transition-colors hover:bg-white sm:grid-cols-[88px_1fr] sm:gap-4 sm:p-5 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
                       >
                         <div
                           className={`pointer-events-none absolute inset-y-0 left-0 w-1 opacity-65 ${theme.rail}`}
                         />
 
-                        <div className="relative flex items-center sm:items-start">
-                          <div className="relative flex w-full flex-row items-center gap-2.5 rounded-2xl border border-neutral-200/80 bg-white/55 px-3 py-2 text-center backdrop-blur-sm sm:w-auto sm:flex-col sm:items-center sm:gap-0.5 sm:px-2.5 sm:py-3 dark:border-white/10 dark:bg-white/5">
+                        <div className="relative flex items-start">
+                          <div className="relative flex w-full flex-col items-center gap-0.5 rounded-2xl border border-neutral-200/80 bg-white/55 px-2 py-2.5 text-center backdrop-blur-sm sm:px-2.5 sm:py-3 dark:border-white/10 dark:bg-white/5">
                             <span
                               className="pointer-events-none absolute inset-x-2 top-0 h-px rounded-full opacity-50"
                               style={{ backgroundColor: theme.color }}
@@ -164,14 +164,18 @@ export function PastEventsPageContent() {
                           )}
 
                           <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                            <span className="inline-flex items-center gap-1.5 align-middle">
+                            <span className="flex min-w-0 items-center gap-1.5 align-middle">
                               <span
-                                className="h-1.5 w-1.5 rounded-full"
+                                className="h-1.5 w-1.5 flex-none rounded-full"
                                 style={{ backgroundColor: theme.color }}
                               />
-                              <span>{event.location}</span>
-                              <span className="text-neutral-400 dark:text-neutral-500">·</span>
-                              <span>{event.venue}</span>
+                              <span className="flex-none">{event.location}</span>
+                              <span className="flex-none text-neutral-400 dark:text-neutral-500">
+                                ·
+                              </span>
+                              <span className="min-w-0 truncate" title={event.venue}>
+                                {event.venue}
+                              </span>
                             </span>
                           </p>
                           <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
