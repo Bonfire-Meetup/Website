@@ -12,6 +12,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { addToWatchlist, removeFromWatchlist } from "@/lib/redux/slices/profileSlice";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
+import { useHaptics } from "@/lib/utils/haptics";
 import { logError } from "@/lib/utils/log-client";
 
 import { BookmarkIcon, BookmarkFilledIcon } from "../shared/Icons";
@@ -38,6 +39,7 @@ export function WatchLaterButton({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const haptics = useHaptics();
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
   const watchlistFromRedux = useAppSelector((state) => state.profile.watchlist);
@@ -66,10 +68,12 @@ export function WatchLaterButton({
 
   const handleClick = async () => {
     if (isResolvingAuth) {
+      haptics.neutral();
       return;
     }
 
     if (!isAuthed) {
+      haptics.neutral();
       const query = searchParams.toString();
       const returnPath = `${pathname}${query ? `?${query}` : ""}`;
       router.push(PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(LOGIN_REASON.WATCH_LATER, returnPath));
@@ -80,9 +84,11 @@ export function WatchLaterButton({
       if (inWatchlist) {
         dispatch(removeFromWatchlist(shortId));
         await removeMutation.mutateAsync(shortId);
+        haptics.neutral();
       } else {
         dispatch(addToWatchlist(shortId));
         await addMutation.mutateAsync(shortId);
+        haptics.success();
       }
     } catch (error) {
       if (inWatchlist) {
@@ -90,6 +96,7 @@ export function WatchLaterButton({
       } else {
         dispatch(removeFromWatchlist(shortId));
       }
+      haptics.error();
       logError("watchlist_update_failed", error, { shortId, wasInWatchlist: inWatchlist });
     }
   };

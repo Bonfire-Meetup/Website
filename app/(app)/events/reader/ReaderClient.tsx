@@ -16,6 +16,7 @@ import { USER_ROLES } from "@/lib/config/roles";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { extractTokenFromUrl, parseCheckInToken } from "@/lib/utils/check-in-token";
+import { useHaptics } from "@/lib/utils/haptics";
 import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
 import { formatTimeUTC } from "@/lib/utils/locale";
 
@@ -44,6 +45,7 @@ interface ScanResult {
 export function ReaderClient() {
   const t = useTranslations("reader");
   const router = useRouter();
+  const haptics = useHaptics();
   const auth = useAppSelector((state) => state.auth);
   const [selectedEvent, setSelectedEvent] = useState<string>("");
   const [isScanning, setIsScanning] = useState(false);
@@ -140,6 +142,7 @@ export function ReaderClient() {
     if (!token) {
       clearTimeout(timeoutId);
       setIsVerifying(false);
+      haptics.error();
       setScanResult({
         valid: false,
         error: t("errors.contentInvalid"),
@@ -154,6 +157,7 @@ export function ReaderClient() {
     if (!parsed.valid) {
       clearTimeout(timeoutId);
       setIsVerifying(false);
+      haptics.error();
       let errorMessage = t("errors.contentInvalid");
       if (parsed.error === "Token expired") {
         errorMessage = t("errors.tokenExpired");
@@ -181,6 +185,7 @@ export function ReaderClient() {
 
       if (result.valid) {
         clearTimeout(timeoutId);
+        haptics.success();
         setScanResult({
           valid: true,
           publicId: result.publicId,
@@ -192,6 +197,7 @@ export function ReaderClient() {
         isProcessingRef.current = false;
       } else {
         clearTimeout(timeoutId);
+        haptics.error();
         let errorMessage = t("errors.verificationFailed");
         const isInvalidSignature = result.error === "Invalid signature";
         if (isInvalidSignature) {
@@ -228,6 +234,7 @@ export function ReaderClient() {
         router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
         return;
       }
+      haptics.error();
       setScanResult({
         valid: false,
         error: t("errors.verificationFailed"),
@@ -239,6 +246,7 @@ export function ReaderClient() {
 
   const handleStartReader = async () => {
     if (!selectedEvent) {
+      haptics.neutral();
       setError(t("errors.noEventSelected"));
       return;
     }
@@ -273,6 +281,7 @@ export function ReaderClient() {
     const containerElement = await waitForContainer();
 
     if (!containerElement) {
+      haptics.error();
       setError(t("errors.scannerContainerNotFound"));
       setIsScanning(false);
       return;
@@ -311,16 +320,19 @@ export function ReaderClient() {
         console.error("Camera error:", cameraError);
         if (cameraError instanceof Error) {
           if (isCameraPermissionError(cameraError)) {
+            haptics.error();
             setError(t("errors.cameraPermissionDenied"));
             setIsScanning(false);
             scannerRef.current = null;
             return;
           } else if (isCameraNotFoundError(cameraError)) {
+            haptics.error();
             setError(t("errors.cameraNotFound"));
             setIsScanning(false);
             scannerRef.current = null;
             return;
           } else if (isCameraNotReadableError(cameraError)) {
+            haptics.error();
             setError(t("errors.cameraNotReadable"));
             setIsScanning(false);
             scannerRef.current = null;
@@ -354,6 +366,7 @@ export function ReaderClient() {
               );
             } catch (fallbackError) {
               console.error("Fallback error:", fallbackError);
+              haptics.error();
               setError(t("errors.cameraAccessFailed"));
               setIsScanning(false);
               scannerRef.current = null;
@@ -361,12 +374,14 @@ export function ReaderClient() {
           }
         } else {
           console.error("Unknown camera error:", cameraError);
+          haptics.error();
           setError(t("errors.cameraAccessFailed"));
           setIsScanning(false);
           scannerRef.current = null;
         }
       }
     } catch {
+      haptics.error();
       setError(t("errors.cameraAccessFailed"));
       setIsScanning(false);
       scannerRef.current = null;
@@ -394,18 +409,22 @@ export function ReaderClient() {
       const result = await response.json();
 
       if (result.success) {
+        haptics.success();
         setScanResult({
           ...scanResult,
           checkedIn: true,
         });
       } else if (result.alreadyCheckedIn) {
+        haptics.neutral();
         setScanResult({
           ...scanResult,
           alreadyCheckedIn: true,
         });
       } else if (result.error) {
+        haptics.error();
         setError(result.error);
       } else {
+        haptics.error();
         setError(t("errors.checkInFailed"));
       }
     } catch (err) {
@@ -414,6 +433,7 @@ export function ReaderClient() {
         router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
         return;
       }
+      haptics.error();
       setError(t("errors.checkInFailed"));
     }
     setIsCheckingIn(false);

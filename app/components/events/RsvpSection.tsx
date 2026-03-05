@@ -10,6 +10,7 @@ import { useCreateRsvpMutation, useDeleteRsvpMutation, useEventRsvps } from "@/l
 import { useUserProfile } from "@/lib/api/user-profile";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
+import { useHaptics } from "@/lib/utils/haptics";
 
 interface RsvpSectionProps {
   eventId: string;
@@ -18,6 +19,7 @@ interface RsvpSectionProps {
 export function RsvpSection({ eventId }: RsvpSectionProps) {
   const t = useTranslations("events");
   const router = useRouter();
+  const haptics = useHaptics();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const { data: rsvps, isLoading: rsvpsLoading } = useEventRsvps(eventId);
   const { data: userProfile } = useUserProfile(isAuthenticated);
@@ -34,6 +36,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
     setError(null);
 
     if (!isAuthenticated) {
+      haptics.neutral();
       const returnPath = PAGE_ROUTES.EVENT(eventId);
       router.push(PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(LOGIN_REASON.EVENT_RSVP, returnPath));
       return;
@@ -44,6 +47,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
     const isPublic = userProfile?.profile.publicProfile ?? false;
 
     if (!userId) {
+      haptics.error();
       setError("Unable to RSVP. Please refresh the page.");
       return;
     }
@@ -52,13 +56,21 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
 
     if (isRsvped) {
       deleteMutation.mutate(userInfo, {
+        onSuccess: () => {
+          haptics.neutral();
+        },
         onError: (err) => {
+          haptics.error();
           setError(err.message || "Failed to cancel RSVP. Please try again.");
         },
       });
     } else {
       createMutation.mutate(userInfo, {
+        onSuccess: () => {
+          haptics.success();
+        },
         onError: (err) => {
+          haptics.error();
           if (err.status === 429) {
             setError("Too many attempts. Please wait a moment.");
           } else if (err.status === 409) {
@@ -69,7 +81,16 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
         },
       });
     }
-  }, [isAuthenticated, isRsvped, eventId, router, userProfile, createMutation, deleteMutation]);
+  }, [
+    isAuthenticated,
+    isRsvped,
+    eventId,
+    router,
+    userProfile,
+    createMutation,
+    deleteMutation,
+    haptics,
+  ]);
 
   return (
     <div className="space-y-3">

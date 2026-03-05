@@ -16,6 +16,7 @@ import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropd
 import { useCsrfToken } from "@/lib/api/csrf";
 import { type ContactFormState, submitContactForm } from "@/lib/forms/form-actions";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
+import { useHaptics } from "@/lib/utils/haptics";
 import {
   readLocalStorage,
   removeFromLocalStorage,
@@ -79,6 +80,7 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
   const turnstileRef = useRef<TurnstileWidgetHandle>(null);
+  const haptics = useHaptics();
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [turnstileExecuting, setTurnstileExecuting] = useState(false);
   const csrfToken = useCsrfToken();
@@ -169,20 +171,27 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
     return () => window.removeEventListener("beforeunload", saveDraft);
   }, [saveDraft]);
 
-  const [prevState, setPrevState] = useState(state);
-  if (prevState !== state) {
-    setPrevState(state);
+  const previousStateRef = useRef(state);
+  useEffect(() => {
+    if (previousStateRef.current === state) {
+      return;
+    }
+    previousStateRef.current = state;
     if (state.message === "captchaFailed") {
+      haptics.error();
       setTurnstileResetKey((prev) => prev + 1);
       setTurnstileExecuting(false);
     } else if (state.success) {
+      haptics.success();
       setTurnstileExecuting(false);
     } else if (state.errors) {
+      haptics.error();
       setTurnstileExecuting(false);
     } else if (state.message) {
+      haptics.error();
       setTurnstileExecuting(false);
     }
-  }
+  }, [haptics, state]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -198,6 +207,7 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
         const token = await turnstileRef.current.execute();
 
         if (!token) {
+          haptics.error();
           setTurnstileResetKey((prev) => prev + 1);
           setTurnstileExecuting(false);
           return;
@@ -215,10 +225,11 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
           formAction(formData);
         });
       } catch {
+        haptics.error();
         setTurnstileExecuting(false);
       }
     },
-    [formAction, startTransition],
+    [formAction, haptics, startTransition],
   );
 
   const clearDraft = () => {

@@ -16,6 +16,7 @@ import { getHasValidToken } from "@/lib/auth/client";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { useVideoEngagementRedux } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
+import { useHaptics } from "@/lib/utils/haptics";
 
 import { BoltIcon, FireIcon, FrownIcon } from "../shared/Icons";
 
@@ -38,6 +39,7 @@ export function LikeBoostButtons({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const haptics = useHaptics();
   const { engagement, setLikes, setBoosts } = useVideoEngagementRedux(shortId);
 
   const [likePulse, setLikePulse] = useState(false);
@@ -170,6 +172,7 @@ export function LikeBoostButtons({
 
   const handleLike = async () => {
     if (!hasInteractionAccess) {
+      haptics.neutral();
       if (gatedLikeActionHref) {
         router.push(gatedLikeActionHref);
       }
@@ -177,6 +180,7 @@ export function LikeBoostButtons({
     }
 
     if (!shortId || isLiking || likeCount === null) {
+      haptics.neutral();
       return;
     }
 
@@ -185,8 +189,14 @@ export function LikeBoostButtons({
 
     try {
       await likeMutation.mutateAsync(adding);
+      if (adding) {
+        haptics.success();
+      } else {
+        haptics.neutral();
+      }
     } catch (err: unknown) {
       if (err instanceof ApiError && err.status === 429) {
+        haptics.error();
         handleRateLimitError(setLikeRateLimitError, likeErrorTimeoutRef);
       }
     }
@@ -197,6 +207,7 @@ export function LikeBoostButtons({
     const returnPath = `${pathname}${query ? `?${query}` : ""}`;
 
     if (!hasInteractionAccess) {
+      haptics.neutral();
       if (gatedBoostActionHref) {
         router.push(gatedBoostActionHref);
       }
@@ -204,15 +215,18 @@ export function LikeBoostButtons({
     }
 
     if (!getHasValidToken()) {
+      haptics.neutral();
       router.push(PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(LOGIN_REASON.VIDEO_BOOST, returnPath));
       return;
     }
 
     if (!shortId || isBoosting || boostCount === null) {
+      haptics.neutral();
       return;
     }
 
     if (availableBoosts !== null && availableBoosts === 0 && !hasBoosted) {
+      haptics.error();
       return;
     }
 
@@ -221,8 +235,14 @@ export function LikeBoostButtons({
 
     try {
       await boostMutation.mutateAsync(adding);
+      if (adding) {
+        haptics.success();
+      } else {
+        haptics.neutral();
+      }
     } catch (err: unknown) {
       if (err instanceof ApiError && err.status === 401) {
+        haptics.neutral();
         router.push(PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(LOGIN_REASON.VIDEO_BOOST, returnPath));
         return;
       }
@@ -232,6 +252,7 @@ export function LikeBoostButtons({
       }
 
       if (err instanceof ApiError && err.status === 429) {
+        haptics.error();
         handleRateLimitError(setBoostRateLimitError, boostErrorTimeoutRef);
       }
     }

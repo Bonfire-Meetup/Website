@@ -8,6 +8,7 @@ import { Suspense, useEffect, useState } from "react";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { useHaptics } from "@/lib/utils/haptics";
 
 import { CalendarIcon, FilmIcon, HomeIcon, LogInIcon, UserIcon } from "../shared/Icons";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
@@ -32,6 +33,7 @@ function MobileBottomNavInner() {
   const auth = useAppSelector((state) => state.auth);
   const [mounted, setMounted] = useState(false);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const haptics = useHaptics();
 
   useEffect(() => {
     setMounted(true);
@@ -128,6 +130,13 @@ function MobileBottomNavInner() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => {
+                if (active) {
+                  haptics.neutral();
+                  return;
+                }
+                haptics.success();
+              }}
               className="group relative flex items-center justify-center"
               aria-label={item.label}
             >

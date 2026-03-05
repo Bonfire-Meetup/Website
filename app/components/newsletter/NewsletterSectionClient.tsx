@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { API_ROUTES } from "@/lib/api/routes";
+import { useHaptics } from "@/lib/utils/haptics";
 
 import { TurnstileWidget, type TurnstileWidgetHandle } from "../forms/TurnstileWidget";
 import { CheckIcon } from "../shared/Icons";
@@ -14,6 +15,7 @@ type Status = "idle" | "loading" | "success" | "error";
 
 export function NewsletterSectionClient() {
   const t = useTranslations("sections.newsletter");
+  const haptics = useHaptics();
   const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
@@ -43,6 +45,7 @@ export function NewsletterSectionClient() {
       setError("");
 
       if (!turnstileRef.current) {
+        haptics.error();
         setError(t("error"));
         setStatus("error");
         return;
@@ -51,6 +54,7 @@ export function NewsletterSectionClient() {
       const token = await turnstileRef.current.execute();
 
       if (!token) {
+        haptics.error();
         setError(t("error"));
         setStatus("error");
         return;
@@ -85,18 +89,21 @@ export function NewsletterSectionClient() {
             setError(errorMessage);
           }
 
+          haptics.error();
           setStatus("error");
           return;
         }
 
+        haptics.success();
         setStatus("success");
         setEmail("");
       } catch {
+        haptics.error();
         setError(t("error"));
         setStatus("error");
       }
     },
-    [email, t],
+    [email, haptics, t],
   );
 
   const inputBaseClass = "form-input-base";

@@ -9,6 +9,7 @@ import { createPortal } from "react-dom";
 import { useBodyScrollLock } from "@/components/shared/useBodyScrollLock";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { COOKIE_KEYS, getCookie, setCookie } from "@/lib/storage/keys";
+import { useHaptics } from "@/lib/utils/haptics";
 
 import { useI18n } from "../providers/I18nClientSync";
 import {
@@ -49,6 +50,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
   const pathname = usePathname();
   const { locale, setLocale } = useI18n();
   const { theme, setTheme } = useTheme();
+  const haptics = useHaptics();
   const [isOpen, setIsOpen] = useState(false);
   const [isRendered, setIsRendered] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -129,6 +131,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
     if (isOpen) {
       return;
     }
+    haptics.neutral();
     setIsRendered(true);
     requestAnimationFrame(() => setIsOpen(true));
   };
@@ -137,20 +140,24 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
     if (!isOpen) {
       return;
     }
+    haptics.neutral();
     setIsOpen(false);
   };
 
   const handleAcceptCookies = () => {
+    haptics.success();
     setCookie(COOKIE_KEYS.CONSENT, "essential", 365);
     setHasConsent(true);
   };
 
   const handleDismissCookies = () => {
+    haptics.neutral();
     setCookie(COOKIE_KEYS.CONSENT, "dismissed", 365);
     setHasConsent(true);
   };
 
   const toggleLocale = () => {
+    haptics.neutral();
     setLocale(locale === "en" ? "cs" : "en");
   };
 
@@ -158,6 +165,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
     const themes: ("light" | "dark" | "system")[] = ["light", "dark", "system"];
     const currentIndex = themes.indexOf(theme);
     const nextIndex = (currentIndex + 1) % themes.length;
+    haptics.neutral();
     setTheme(themes[nextIndex]);
   };
 
@@ -258,7 +266,10 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                       <Link
                         key={item.href}
                         href={item.href}
-                        onClick={closeMenu}
+                        onClick={() => {
+                          haptics.success();
+                          closeMenu();
+                        }}
                         className="group flex flex-col items-center justify-center gap-2 rounded-2xl p-3 transition active:scale-95"
                         style={{
                           transform: isOpen
@@ -365,7 +376,10 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                     <Link
                       href="/legal#cookies"
                       className="flex items-center justify-center gap-2 bg-white/70 px-4 py-3 transition hover:bg-white/80 active:scale-95 dark:bg-neutral-900/60 dark:hover:bg-neutral-800/70"
-                      onClick={closeMenu}
+                      onClick={() => {
+                        haptics.success();
+                        closeMenu();
+                      }}
                     >
                       <CookieIcon className="h-4 w-4 text-neutral-500 dark:text-neutral-400" />
                       <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">

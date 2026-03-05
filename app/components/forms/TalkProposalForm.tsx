@@ -15,6 +15,7 @@ import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropd
 import { useCsrfToken } from "@/lib/api/csrf";
 import { type TalkProposalFormState, submitTalkProposal } from "@/lib/forms/form-actions";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
+import { useHaptics } from "@/lib/utils/haptics";
 import {
   readLocalStorage,
   removeFromLocalStorage,
@@ -96,6 +97,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
   const [isTransitionPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
   const turnstileRef = useRef<TurnstileWidgetHandle>(null);
+  const haptics = useHaptics();
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [turnstileExecuting, setTurnstileExecuting] = useState(false);
   const csrfToken = useCsrfToken();
@@ -219,20 +221,27 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
     return () => window.removeEventListener("beforeunload", saveDraft);
   }, [saveDraft]);
 
-  const [prevState, setPrevState] = useState(state);
-  if (prevState !== state) {
-    setPrevState(state);
+  const previousStateRef = useRef(state);
+  useEffect(() => {
+    if (previousStateRef.current === state) {
+      return;
+    }
+    previousStateRef.current = state;
     if (state.message === "captchaFailed") {
+      haptics.error();
       setTurnstileResetKey((prev) => prev + 1);
       setTurnstileExecuting(false);
     } else if (state.success) {
+      haptics.success();
       setTurnstileExecuting(false);
     } else if (state.errors) {
+      haptics.error();
       setTurnstileExecuting(false);
     } else if (state.message) {
+      haptics.error();
       setTurnstileExecuting(false);
     }
-  }
+  }, [haptics, state]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -248,6 +257,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
         const token = await turnstileRef.current.execute();
 
         if (!token) {
+          haptics.error();
           setTurnstileResetKey((prev) => prev + 1);
           setTurnstileExecuting(false);
           return;
@@ -265,10 +275,11 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
           formAction(formData);
         });
       } catch {
+        haptics.error();
         setTurnstileExecuting(false);
       }
     },
-    [formAction, startTransition],
+    [formAction, haptics, startTransition],
   );
 
   const clearDraft = () => {
