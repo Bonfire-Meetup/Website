@@ -1,13 +1,9 @@
 import "server-only";
 
-import {
-  getEventById,
-  isEventPast,
-  isTbaDate,
-  parseEventDateTimeParts,
-} from "@/data/events-calendar";
+import { getEventById, isEventPast } from "@/data/events-calendar";
 import { getUserCheckIns } from "@/lib/data/check-in";
 import { getUserRsvps } from "@/lib/data/rsvps";
+import { isTbaDate, parseEventDateTimeMs } from "@/lib/events/datetime";
 import { getEpisodeById } from "@/lib/recordings/episodes";
 
 function getDateValue(date: string | null): number {
@@ -15,12 +11,7 @@ function getDateValue(date: string | null): number {
     return Number.NEGATIVE_INFINITY;
   }
 
-  const parsed = parseEventDateTimeParts(date, "00:00");
-  if (!parsed) {
-    return Number.NEGATIVE_INFINITY;
-  }
-
-  return Date.UTC(parsed.year, parsed.month - 1, parsed.day, parsed.hour, parsed.minute);
+  return parseEventDateTimeMs(date, "00:00") ?? Number.NEGATIVE_INFINITY;
 }
 
 function sortByDateAsc<T extends { date: string | null }>(events: T[]): T[] {

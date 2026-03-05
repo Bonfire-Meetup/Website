@@ -1,6 +1,302 @@
 {
   "events": [
     {
+      "id": "zlin-1",
+      "title": "Bonfire@Zlin #1 - The Pioneers",
+      "episode": "Bonfire@Zlin #1",
+      "location": "Zlin",
+      "date": "2023-12-04",
+      "time": "17:00",
+      "venue": "Studentsky klub U7, Štefánikova 150, 760 01 Zlín",
+      "description": "Talks on indie visual style, finding a game design path, and choosing technology for long-term development.",
+      "speakers": [
+        {
+          "name": "Pavel Novák",
+          "topic": "Vývoj vizuálního stylu indie hry",
+          "recordingId": "68tciu"
+        },
+        {
+          "name": "Marek Zeman",
+          "topic": "Hledání vlastní cesty game designéra",
+          "recordingId": "unzjf4"
+        },
+        {
+          "name": "Martin Pernica",
+          "topic": "Jak výběr technologie může ovlivnit vaši vývojářskou cestu",
+          "recordingId": "jwbqs1"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "zlin-2",
+      "title": "Bonfire@Zlin #2 - The Horizon Seekers",
+      "episode": "Bonfire@Zlin #2",
+      "location": "Zlin",
+      "date": "2024-04-22",
+      "time": "17:00",
+      "venue": "Studentsky klub U7, Štefánikova 150, 760 01 Zlín",
+      "description": "Practical Fortnite editor tips, concept art workflow insights, and a candid Chill Chat with Michael Petr.",
+      "speakers": [
+        {
+          "name": "Jakub Hubáček",
+          "topic": "Fortnite Editor for Non Fornite Folks",
+          "recordingId": "7u0fa0"
+        },
+        {
+          "name": "Jakub Javora",
+          "topic": "Digital painting & concept art",
+          "recordingId": "yvdlg0"
+        },
+        {
+          "name": "Michael Petr",
+          "topic": "Chill Chat #1 - Michael Petr (VisionGame.cz)",
+          "recordingId": "k6mn44"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "prague-3",
+      "title": "Bonfire@Prague #3 - The Convergence",
+      "episode": "Bonfire@Prague #3",
+      "location": "Prague",
+      "date": "2024-06-25",
+      "time": "18:00",
+      "venue": "Klub FAMU, Smetanovo nábř. 2, 110 00 Staré Město",
+      "description": "UE5 decision trees made practical, unconventional survival design ideas, and a Warhorse studio Chill Chat.",
+      "speakers": [
+        {
+          "name": "Tadeáš Anděl",
+          "topic": "UE5: Rozhodovací stromy jednoduše",
+          "recordingId": "n4sqca"
+        },
+        {
+          "name": "Tomáš Rampas",
+          "topic": "Survival jinak",
+          "recordingId": "qj0nhu"
+        },
+        {
+          "name": ["Tobias Stolz-Zwilling", "Jan Hrušovský"],
+          "topic": "Chill Chat #2 - Tobias Stolz-Zwilling (Warhorse Studios)",
+          "recordingId": "zft3yy"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "prague-4",
+      "title": "Bonfire@Prague #4 - The Mystic Voyagers",
+      "episode": "Bonfire@Prague #4",
+      "location": "Prague",
+      "date": "2024-10-29",
+      "time": "18:00",
+      "venue": "Klub FAMU, Smetanovo nábř. 2, 110 00 Staré Město",
+      "description": "Pragmatic coding mindset, Witcher 3 narrative craft, and a lively panel on recurring game design frustrations.",
+      "speakers": [
+        {
+          "name": "Pavel Pilař",
+          "topic": "Umění bastlit (váš kód nemusí být za každou cenu perfektní)",
+          "recordingId": "vm5pvy"
+        },
+        {
+          "name": "Tomislav Čečka",
+          "topic": "Witcher 3 – narativní rozbor začátku herní legendy",
+          "recordingId": "acpk44"
+        },
+        {
+          "name": ["Jaromír Möwald", "Šárka Tmějová", "Lukáš Grygar"],
+          "topic": "Zmatek v inventáři i nepřeskočitelné cutscény. Čím nás videohry rozčilují pořád dokola?",
+          "recordingId": "f8tz6q"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "zlin-3",
+      "title": "Bonfire@Zlin #3 - The Infinite Wanderers",
+      "episode": "Bonfire@Zlin #3",
+      "location": "Zlin",
+      "date": "2024-11-11",
+      "time": "17:00",
+      "venue": "Studentsky klub U7, Štefánikova 150, 760 01 Zlín",
+      "description": "Practical AI usage, niche market research for train games, and honest lessons from building Just Two.",
+      "speakers": [
+        {
+          "name": "Kristýna Böhmová",
+          "topic": "ChatGPT, vytvoř mi hru (Využití AI pro vývoj her)",
+          "recordingId": "ych3zm"
+        },
+        {
+          "name": "Kryštof Klestil",
+          "topic": "Průzkum trhu na vlakovou hru která není simulátor",
+          "recordingId": "r4kzn8"
+        },
+        {
+          "name": "Jiří Dočkal",
+          "topic": "Just Two, příběh jednoho studia, aneb jak to (ne)dělat",
+          "recordingId": "qr8xvy"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "prague-5",
+      "title": "Bonfire@Prague #5 - Knights of the Digital Age",
+      "episode": "Bonfire@Prague #5",
+      "location": "Prague",
+      "date": "2025-03-11",
+      "time": "18:00",
+      "venue": "Klub FAMU, Smetanovo nábř. 2, 110 00 Staré Město",
+      "description": "Deep dives into CPU parallelism in Unity, game lighting principles, and a KCD2 design discussion.",
+      "speakers": [
+        {
+          "name": "Tomáš Bubeníček",
+          "topic": "CPU, paralelní výpočty a Unity: Úvod pro všechny",
+          "recordingId": "vh4bqq"
+        },
+        {
+          "name": "Kateřina Šumová",
+          "topic": "Budiž světlo: Principy herního osvětlování",
+          "recordingId": "6ydkio"
+        },
+        {
+          "name": ["Jan Modrák", "Viktor Bocan"],
+          "topic": "Modrák & Friends Live - Design Kingdom Come: Deliverance II s Viktorem Bocanem",
+          "recordingId": "9zhkg4"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "zlin-6",
+      "title": "Bonfire@Zlin #6",
+      "location": "Zlin",
+      "date": "2026-03-30",
+      "time": "17:00",
+      "venue": "Studentsky klub U7, Štefánikova 150, 760 01 Zlín",
+      "description": "Game dev meetup in Zlin with talks and community discussion.",
+      "speakers": [
+        {
+          "name": "TBA",
+          "topic": "To be announced"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "zlin-4",
+      "title": "Bonfire@Zlin #4 - The Boundless Expedition",
+      "episode": "Bonfire@Zlin #4",
+      "location": "Zlin",
+      "date": "2025-04-28",
+      "time": "17:00",
+      "venue": "Studentsky klub U7, Štefánikova 150, 760 01 Zlín",
+      "description": "Why teams choose Godot, Unity WebGL build workflows, and historical research behind Last Train Home.",
+      "speakers": [
+        {
+          "name": "Jan Mesarč",
+          "topic": "Proč Godot? Alternativa, která mění pravidla hry",
+          "recordingId": "ff5qyg"
+        },
+        {
+          "name": "Michal Ščuglík",
+          "topic": "Unity WebGL build-rest-repeat",
+          "recordingId": "hkpns0"
+        },
+        {
+          "name": "Petr Kolář",
+          "topic": "Historická spolupráce na Last Train Home",
+          "recordingId": "xdhrj4"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "prague-6",
+      "title": "Bonfire@Prague #6 - The Shape of Echoes",
+      "episode": "Bonfire@Prague #6",
+      "location": "Prague",
+      "date": "2025-07-08",
+      "time": "18:00",
+      "venue": "Klub FAMU, Smetanovo nábř. 2, 110 00 Staré Město",
+      "description": "Image stylization techniques, game music technology themes, and a Geewa-focused Chill Chat.",
+      "speakers": [
+        {
+          "name": "Matěj Gargula",
+          "topic": "Image Stylization with Image Processing",
+          "recordingId": "p0dnxy"
+        },
+        {
+          "name": "David Wurczel",
+          "topic": "Témata a Technologie Herní Hudby",
+          "recordingId": "kk9s5a"
+        },
+        {
+          "name": ["David Vávra", "Jan Hrušovský"],
+          "topic": "Chill Chat #3 - David Vávra (Geewa)",
+          "recordingId": "kj9via"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "prague-7",
+      "title": "Bonfire@Prague #7 - Whispers of the Void",
+      "episode": "Bonfire@Prague #7",
+      "location": "Prague",
+      "date": "2025-11-11",
+      "time": "18:00",
+      "venue": "Space Break, Rytířská 406/10, 110 00 Staré Město",
+      "description": "Mafia worldbuilding, music-driven storytelling for Kingdom Come, and a Top 5 Czech games discussion.",
+      "speakers": [
+        {
+          "name": "Dominik Regec",
+          "topic": "Světy a Biomy Mafia: The Old Country",
+          "recordingId": "czv1aj"
+        },
+        {
+          "name": "Jan Valta",
+          "topic": "Vyprávění hudbou v Kingdom Come: Deliverance",
+          "recordingId": "y8bwzq"
+        },
+        {
+          "name": ["Jaromír Möwald", "Šárka Tmějová"],
+          "topic": "Top 5 CZ her Šárky a Jaromíra",
+          "recordingId": "x7q4b1"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "zlin-5",
+      "title": "Bonfire@Zlin #5 - Beyond the Frame",
+      "episode": "Bonfire@Zlin #5",
+      "location": "Zlin",
+      "date": "2025-11-24",
+      "time": "17:00",
+      "venue": "Studentsky klub U7, Štefánikova 150, 760 01 Zlín",
+      "description": "Photogrammetry pipelines, modern pixel art rendering, and color-driven art direction in Barvy Smrti.",
+      "speakers": [
+        {
+          "name": "Tadeáš Kříbek",
+          "topic": "Fotogrammetrie: z pixelů do polygonů",
+          "recordingId": "qk5pzk"
+        },
+        {
+          "name": "Matěj Gargula",
+          "topic": "Pixel Art 2.0: Rendering a Shadery",
+          "recordingId": "zhwojo"
+        },
+        {
+          "name": "Petr Kolář",
+          "topic": "Barvy Smrti - od inspirace k dílu",
+          "recordingId": "nyb4xq"
+        }
+      ],
+      "links": {}
+    },
+    {
       "id": "prague-8",
       "title": "Bonfire@Prague #8 - Forge of Possibility",
       "location": "Prague",
@@ -36,22 +332,6 @@
         "facebook": "https://fb.me/e/4pBE30Jlu",
         "eventbrite": "https://www.eventbrite.com/e/bonfireprague-8-forge-of-possibility-tickets-1984180998780"
       }
-    },
-    {
-      "id": "zlin-6",
-      "title": "Bonfire@Zlin #6",
-      "location": "Zlin",
-      "date": "2026-03-30",
-      "time": "17:00",
-      "venue": "Studentsky klub U7, Štefánikova 150, 760 01 Zlín",
-      "description": "Game dev meetup in Zlin with talks and community discussion.",
-      "speakers": [
-        {
-          "name": "TBA",
-          "topic": "To be announced"
-        }
-      ],
-      "links": {}
     }
   ]
 }

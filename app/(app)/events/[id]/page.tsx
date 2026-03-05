@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 
 import { allEvents, getEventById } from "@/data/events-calendar";
 import { buildNotFoundTitleMetadata, getMetaTitleSuffix } from "@/lib/metadata";
+import { getAllRecordings } from "@/lib/recordings/recordings";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { getShortPath } from "@/lib/routes/short-links";
 
 import { EventDetailContent } from "./EventDetailContent";
@@ -51,6 +53,16 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
   }
 
   const shortPath = getShortPath(`/events/${id}`);
+  const recordingsById = new Map(
+    getAllRecordings().map((recording) => [
+      recording.shortId,
+      PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
+    ]),
+  );
+  const speakers = event.speakers.map((speaker) => ({
+    ...speaker,
+    recordingHref: speaker.recordingId ? recordingsById.get(speaker.recordingId) : undefined,
+  }));
 
   return (
     <div className="flex-1 bg-neutral-50 dark:bg-neutral-950">
@@ -63,7 +75,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
         time={event.time}
         venue={event.venue}
         description={event.description}
-        speakers={event.speakers}
+        speakers={speakers}
         links={event.links}
         shortPath={shortPath}
       />

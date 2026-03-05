@@ -14,6 +14,7 @@ import {
   LumaIcon,
   MapPinIcon,
   MicIcon,
+  PlayIcon,
   SparklesIcon,
 } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
@@ -42,6 +43,8 @@ interface Speaker {
   startTime?: string;
   profileId?: string | string[];
   url?: string | string[];
+  recordingId?: string;
+  recordingHref?: string;
 }
 
 interface EventLinks {
@@ -582,16 +585,27 @@ export function EventDetailContent({
                         >
                           {displayIndex.toString().padStart(2, "0")}
                         </div>
-
-                        <div className="relative mb-4 flex flex-wrap items-center gap-2">
-                          <span className="inline-flex items-center rounded-lg bg-black/5 px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] text-neutral-700 uppercase dark:bg-white/10 dark:text-neutral-200">
-                            #{displayIndex.toString().padStart(2, "0")}
-                          </span>
-                          {slotTime.length > 0 && (
-                            <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/70 px-2.5 py-1 text-[10px] font-semibold text-neutral-700 dark:bg-black/25 dark:text-neutral-200">
-                              <ClockIcon className="h-2.5 w-2.5" />
-                              {slotTime}
+                        <div className="relative mb-4 flex flex-wrap items-center justify-between gap-2.5">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center rounded-lg bg-black/5 px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] text-neutral-700 uppercase dark:bg-white/10 dark:text-neutral-200">
+                              #{displayIndex.toString().padStart(2, "0")}
                             </span>
+                            {slotTime.length > 0 && (
+                              <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/70 px-2.5 py-1 text-[10px] font-semibold text-neutral-700 dark:bg-black/25 dark:text-neutral-200">
+                                <ClockIcon className="h-2.5 w-2.5" />
+                                {slotTime}
+                              </span>
+                            )}
+                          </div>
+                          {isPastEvent && speaker.recordingHref && (
+                            <a
+                              href={speaker.recordingHref}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300/70 bg-white/70 px-2.5 py-1 text-[10px] font-semibold tracking-[0.06em] text-neutral-700 transition-all hover:border-neutral-400 hover:bg-white hover:text-neutral-900 dark:border-white/15 dark:bg-white/10 dark:text-neutral-200 dark:hover:border-white/25 dark:hover:bg-white/15 dark:hover:text-white"
+                              style={{ boxShadow: `0 0 0 1px ${loc.color}22 inset` }}
+                            >
+                              <PlayIcon className="h-3 w-3" style={{ color: loc.color }} />
+                              <span>{t("watchNow")}</span>
+                            </a>
                           )}
                         </div>
 

@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
-import { type LocationValue } from "@/lib/config/constants";
+import { type EventItem } from "@/lib/events/types";
 
 import { Button } from "../ui/Button";
 import { EmptyState } from "../ui/EmptyState";
@@ -13,31 +13,7 @@ import { SectionHeader } from "../ui/SectionHeader";
 import { EventCard } from "./EventCard";
 import { UpcomingEventCompactCard } from "./UpcomingEventCompactCard";
 
-export interface EventItem {
-  id: string;
-  isPlaceholder?: boolean;
-  title: string;
-  episode?: string;
-  location: LocationValue;
-  date: string;
-  time: string;
-  venue: string;
-  description: string;
-  registrationUrl?: string;
-  speakers: {
-    name: string | string[];
-    company?: string | string[];
-    topic: string;
-    startTime?: string;
-    profileId?: string | string[];
-    url?: string | string[];
-  }[];
-  links?: {
-    luma?: string;
-    facebook?: string;
-    eventbrite?: string;
-  };
-}
+export type { EventItem };
 
 export function EventsSectionClient({
   events,

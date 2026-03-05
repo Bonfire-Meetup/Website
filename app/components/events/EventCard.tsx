@@ -1,7 +1,6 @@
 import { isTbaDate } from "@/data/events-calendar";
-import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { LOCATIONS } from "@/lib/config/constants";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
-import { parseEventTitle } from "@/lib/events/presentation";
 import {
   formatSpeakerNameWithCompany,
   formatSpeakerNames,
@@ -9,6 +8,8 @@ import {
   resolveSpeakerLinks,
   withCompany,
 } from "@/lib/events/speakers";
+import { getEventLocationTheme } from "@/lib/events/theme";
+import { type EventItem, type EventLinks } from "@/lib/events/types";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
@@ -28,58 +29,23 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Pill } from "../ui/Pill";
 
-function getLocationTheme(location: LocationValue) {
-  const isPrague = location === LOCATIONS.PRAGUE;
-  return isPrague
-    ? {
-        color: "#dc2626",
-        orb: "bg-gradient-to-br from-red-400/25 to-rose-500/15",
-        rail: "bg-gradient-to-r from-rose-500 via-orange-500 to-red-500",
-        iconTint: "text-red-600 dark:text-red-400",
-        speakerDot: "bg-red-500 dark:bg-red-400",
-        metaIcon: "bg-red-100/80 dark:bg-red-500/10",
-        titleGradient:
-          "from-rose-600 via-red-500 to-orange-500 dark:from-rose-400 dark:via-red-400 dark:to-orange-400",
-      }
-    : {
-        color: "#2563eb",
-        orb: "bg-gradient-to-br from-blue-400/25 to-indigo-500/15",
-        rail: "bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600",
-        iconTint: "text-blue-600 dark:text-blue-400",
-        speakerDot: "bg-blue-500 dark:bg-blue-400",
-        metaIcon: "bg-blue-100/80 dark:bg-blue-500/10",
-        titleGradient:
-          "from-blue-600 via-indigo-500 to-violet-500 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400",
-      };
-}
-
-interface EventLinks {
-  luma?: string;
-  facebook?: string;
-  eventbrite?: string;
-}
+import { EventMetaRow } from "./EventMetaRow";
+import { EventTitleBlock } from "./EventTitleBlock";
 
 type TranslationFn = (key: string, values?: Record<string, string>) => string;
 
 interface EventCardProps {
-  id: string;
+  id: EventItem["id"];
   isPlaceholder?: boolean;
-  title: string;
-  episode?: string;
-  location: LocationValue;
-  date: string;
-  time: string;
-  venue: string;
-  description: string;
+  title: EventItem["title"];
+  episode?: EventItem["episode"];
+  location: EventItem["location"];
+  date: EventItem["date"];
+  time: EventItem["time"];
+  venue: EventItem["venue"];
+  description: EventItem["description"];
   registrationUrl: string;
-  speakers: {
-    name: string | string[];
-    company?: string | string[];
-    topic: string;
-    startTime?: string;
-    profileId?: string | string[];
-    url?: string | string[];
-  }[];
+  speakers: EventItem["speakers"];
   links?: EventLinks;
   locale: string;
   t: TranslationFn;
@@ -111,8 +77,7 @@ export function EventCard({
   });
 
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : "";
-  const theme = getLocationTheme(location);
-  const parsed = parseEventTitle(title);
+  const theme = getEventLocationTheme(location);
 
   const platformLinks = [
     {
@@ -135,23 +100,6 @@ export function EventCard({
     },
   ].filter((link) => link.url && link.url.length > 0);
 
-  const titleBlock = parsed ? (
-    <>
-      <span className="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500">
-        {parsed.prefix}
-      </span>
-      <span
-        className={`block bg-gradient-to-r bg-clip-text text-xl font-extrabold tracking-tight text-transparent sm:text-2xl ${theme.titleGradient}`}
-      >
-        {parsed.subtitle}
-      </span>
-    </>
-  ) : (
-    <span className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
-      {title}
-    </span>
-  );
-
   if (isTba) {
     return (
       <Card
@@ -165,7 +113,7 @@ export function EventCard({
           className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full opacity-50 blur-3xl ${theme.orb}`}
         />
 
-        <div className="relative">
+        <div className="relative flex h-full flex-col">
           <div className="mb-4 flex items-start justify-between">
             <LocationPill
               location={location}
@@ -180,7 +128,15 @@ export function EventCard({
             </Pill>
           </div>
 
-          <h3 className="mb-3">{titleBlock}</h3>
+          <h3 className="mb-3">
+            <EventTitleBlock
+              title={title}
+              titleGradientClassName={theme.titleGradient}
+              titleClassName="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white"
+              subtitleClassName="block bg-gradient-to-r bg-clip-text text-xl font-extrabold tracking-tight text-transparent sm:text-2xl"
+              prefixClassName="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500"
+            />
+          </h3>
           {episode && (
             <p className="mb-2.5 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
               {t("episodeLabel")}: {episode}
@@ -192,38 +148,32 @@ export function EventCard({
           </p>
 
           <div className="mb-6 space-y-2.5">
-            <div className="flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
-              <div
-                className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
-              >
-                <CalendarIcon className={`h-5 w-5 ${theme.iconTint}`} />
-              </div>
-              <span>{t("tba")}</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
-              <div
-                className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
-              >
-                <ClockIcon className={`h-5 w-5 ${theme.iconTint}`} />
-              </div>
-              <span>{time}</span>
-            </div>
-            <a
-              href={getGoogleMapsSearchUrl(venue)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="venue-link"
+            <EventMetaRow
+              icon={<CalendarIcon className={`h-5 w-5 ${theme.iconTint}`} />}
+              className="flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400"
+              iconContainerClassName={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
             >
-              <div
-                className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
-              >
-                <MapPinIcon className={`h-5 w-5 ${theme.iconTint}`} />
-              </div>
-              <span className="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline">
+              {t("tba")}
+            </EventMetaRow>
+            <EventMetaRow
+              icon={<ClockIcon className={`h-5 w-5 ${theme.iconTint}`} />}
+              className="flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400"
+              iconContainerClassName={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+            >
+              {time}
+            </EventMetaRow>
+            <EventMetaRow
+              icon={<MapPinIcon className={`h-5 w-5 ${theme.iconTint}`} />}
+              href={getGoogleMapsSearchUrl(venue)}
+              className="venue-link"
+              iconContainerClassName={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+              textClassName="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline"
+            >
+              <>
                 {venue}
                 <ExternalLinkIcon className="h-3.5 w-3.5 shrink-0 opacity-60" />
-              </span>
-            </a>
+              </>
+            </EventMetaRow>
           </div>
 
           <div className="mb-5">
@@ -258,9 +208,12 @@ export function EventCard({
           </div>
 
           {isPlaceholder ? (
-            <Button variant="secondary" size="sm" className="w-full">
+            <div
+              className="mt-auto flex w-full items-center justify-center rounded-xl border border-neutral-200/80 bg-neutral-100/70 px-4 py-2.5 text-sm font-semibold text-neutral-600 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300"
+              aria-live="polite"
+            >
               {t("tba")}
-            </Button>
+            </div>
           ) : (
             <Button
               href={PAGE_ROUTES.EVENT(id)}
@@ -304,7 +257,15 @@ export function EventCard({
           )}
         </div>
 
-        <h3 className="mb-3">{titleBlock}</h3>
+        <h3 className="mb-3">
+          <EventTitleBlock
+            title={title}
+            titleGradientClassName={theme.titleGradient}
+            titleClassName="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white"
+            subtitleClassName="block bg-gradient-to-r bg-clip-text text-xl font-extrabold tracking-tight text-transparent sm:text-2xl"
+            prefixClassName="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500"
+          />
+        </h3>
         {episode && (
           <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
             {t("episodeLabel")}: {episode}
@@ -313,38 +274,34 @@ export function EventCard({
 
         <p className="mb-7 leading-relaxed text-neutral-600 dark:text-neutral-300">{description}</p>
         <div className="mb-8 space-y-3.5">
-          <div className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300">
-            <div
-              className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
-            >
-              <CalendarIcon className={`h-5 w-5 ${theme.iconTint}`} />
-            </div>
-            <span className="font-medium">{formattedDate}</span>
-          </div>
-          <div className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300">
-            <div
-              className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
-            >
-              <ClockIcon className={`h-5 w-5 ${theme.iconTint}`} />
-            </div>
-            <span className="font-medium">{time}</span>
-          </div>
-          <a
-            href={getGoogleMapsSearchUrl(venue)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="venue-link"
+          <EventMetaRow
+            icon={<CalendarIcon className={`h-5 w-5 ${theme.iconTint}`} />}
+            className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300"
+            iconContainerClassName={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+            textClassName="font-medium"
           >
-            <div
-              className={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
-            >
-              <MapPinIcon className={`h-5 w-5 ${theme.iconTint}`} />
-            </div>
-            <span className="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline">
+            {formattedDate}
+          </EventMetaRow>
+          <EventMetaRow
+            icon={<ClockIcon className={`h-5 w-5 ${theme.iconTint}`} />}
+            className="flex items-center gap-3 text-sm text-neutral-700 dark:text-neutral-300"
+            iconContainerClassName={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+            textClassName="font-medium"
+          >
+            {time}
+          </EventMetaRow>
+          <EventMetaRow
+            icon={<MapPinIcon className={`h-5 w-5 ${theme.iconTint}`} />}
+            href={getGoogleMapsSearchUrl(venue)}
+            className="venue-link"
+            iconContainerClassName={`flex h-9 w-9 items-center justify-center rounded-xl ${theme.metaIcon}`}
+            textClassName="flex items-center gap-1.5 font-medium underline-offset-2 hover:underline"
+          >
+            <>
               {venue}
               <ExternalLinkIcon className="h-3.5 w-3.5 shrink-0 opacity-60" />
-            </span>
-          </a>
+            </>
+          </EventMetaRow>
         </div>
 
         {hasSpeakers && (

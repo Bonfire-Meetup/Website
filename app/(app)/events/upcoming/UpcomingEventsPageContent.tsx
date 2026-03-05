@@ -14,7 +14,8 @@ export function UpcomingEventsPageContent() {
   const locale = useLocale();
   const now = new Date();
   const upcomingEvents = getUpcomingEventsWithFallback(now);
-  const recentPastEvents = getPastEvents(now).slice(0, 4);
+  const pastEvents = getPastEvents(now);
+  const recentPastEvents = pastEvents.slice(0, 4);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
@@ -40,8 +41,13 @@ export function UpcomingEventsPageContent() {
         />
 
         {recentPastEvents.length > 0 && (
-          <div className="mx-auto mt-14 max-w-4xl rounded-2xl border border-neutral-200/70 bg-white/60 p-4 backdrop-blur-sm dark:border-white/10 dark:bg-white/5">
-            <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="relative mx-auto mt-14 max-w-4xl overflow-hidden rounded-3xl border border-white/45 bg-white/50 p-4 shadow-[0_24px_70px_-44px_rgba(15,23,42,0.45)] backdrop-blur-xl sm:p-5 dark:border-white/12 dark:bg-white/6 dark:shadow-[0_26px_72px_-42px_rgba(0,0,0,0.55)]">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute -top-16 right-8 h-36 w-36 rounded-full bg-gradient-to-br from-rose-300/35 to-orange-300/20 blur-2xl dark:from-rose-500/20 dark:to-orange-500/10" />
+              <div className="absolute -bottom-16 left-10 h-32 w-32 rounded-full bg-gradient-to-br from-sky-300/30 to-indigo-300/20 blur-2xl dark:from-sky-500/18 dark:to-indigo-500/10" />
+            </div>
+
+            <div className="relative mb-4 flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] font-semibold tracking-[0.18em] text-neutral-500 uppercase dark:text-neutral-400">
                   {t("pastSectionEyebrow")}
@@ -52,27 +58,38 @@ export function UpcomingEventsPageContent() {
               </div>
               <Link
                 href={PAGE_ROUTES.EVENT_PAST}
-                className="rounded-full border border-neutral-200/80 bg-white/80 px-3 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white"
+                className="rounded-full border border-neutral-300/75 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-neutral-700 transition-all hover:-translate-y-0.5 hover:border-neutral-400 hover:bg-white hover:text-neutral-900 dark:border-white/14 dark:bg-white/10 dark:text-neutral-200 dark:hover:border-white/25 dark:hover:bg-white/15 dark:hover:text-white"
               >
                 {t("pastSectionCta")}
               </Link>
             </div>
 
-            <div className="space-y-2">
+            <div className="relative space-y-2.5">
               {recentPastEvents.map((event) => (
                 <Link
                   key={event.id}
                   href={PAGE_ROUTES.EVENT(event.id)}
-                  className="group flex flex-wrap items-center justify-between gap-2 rounded-lg border border-neutral-200/70 bg-neutral-100/50 px-3 py-2 text-sm transition-all duration-200 hover:border-neutral-300/80 hover:bg-neutral-100 dark:border-white/10 dark:bg-white/5 dark:hover:border-white/20 dark:hover:bg-white/10"
+                  className="group flex flex-wrap items-center justify-between gap-2 rounded-xl border border-neutral-200/70 bg-white/72 px-3.5 py-2.5 text-sm shadow-[0_8px_24px_-20px_rgba(15,23,42,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:border-neutral-300/80 hover:bg-white dark:border-white/12 dark:bg-white/8 dark:shadow-none dark:hover:border-white/22 dark:hover:bg-white/12"
                 >
                   <span className="font-medium text-neutral-800 transition-colors group-hover:text-neutral-900 dark:text-neutral-200 dark:group-hover:text-white">
                     {event.title}
                   </span>
-                  <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                  <span className="rounded-full bg-neutral-900/5 px-2 py-0.5 text-xs text-neutral-500 dark:bg-white/10 dark:text-neutral-400">
                     {isTbaDate(event.date) ? event.date : formatEventDateUTC(event.date, locale)}
                   </span>
                 </Link>
               ))}
+
+              {pastEvents.length > recentPastEvents.length && (
+                <div
+                  aria-hidden="true"
+                  className="flex items-center justify-center gap-1.5 pt-1 text-neutral-400 dark:text-neutral-500"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-current opacity-85" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+                </div>
+              )}
             </div>
           </div>
         )}

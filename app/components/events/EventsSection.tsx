@@ -1,6 +1,8 @@
-import { type EventItem, EventsSectionClient } from "./EventsSectionClient";
+import { type EventItem } from "@/lib/events/types";
 
-export type { EventItem };
+import { EventsSectionClient } from "./EventsSectionClient";
+
+export type { EventItem } from "@/lib/events/types";
 
 export function EventsSection({
   events,

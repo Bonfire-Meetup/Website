@@ -13,6 +13,8 @@
       "pastPageTitle": "Past Events",
       "pastPageSubtitle": "Browse previous meetups and talks.",
       "pastPageViewDetails": "Open event detail",
+      "pastMonthEventSingle": "event",
+      "pastMonthEventPlural": "events",
       "pastPageEmpty": "No past events yet.",
       "backToUpcoming": "Back to upcoming events",
       "filter": {

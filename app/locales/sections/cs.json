@@ -13,6 +13,8 @@
       "pastPageTitle": "Proběhlé akce",
       "pastPageSubtitle": "Projděte si předchozí meetupy a přednášky.",
       "pastPageViewDetails": "Otevřít detail akce",
+      "pastMonthEventSingle": "akce",
+      "pastMonthEventPlural": "akcí",
       "pastPageEmpty": "Zatím nemáme žádné proběhlé akce.",
       "backToUpcoming": "Zpět na nadcházející akce",
       "filter": {

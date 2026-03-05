@@ -1,7 +1,8 @@
 import { isTbaDate } from "@/data/events-calendar";
-import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { LOCATIONS } from "@/lib/config/constants";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
-import { parseEventTitle } from "@/lib/events/presentation";
+import { getEventLocationTheme } from "@/lib/events/theme";
+import { type EventItem } from "@/lib/events/types";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
@@ -11,45 +12,22 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Pill } from "../ui/Pill";
 
-function getLocationTheme(location: LocationValue) {
-  const isPrague = location === LOCATIONS.PRAGUE;
-  return isPrague
-    ? {
-        rail: "bg-gradient-to-r from-rose-500 via-orange-500 to-red-500",
-        iconTint: "text-red-600 dark:text-red-400",
-        metaIcon: "bg-red-100/80 dark:bg-red-500/10",
-        titleGradient:
-          "from-rose-600 via-red-500 to-orange-500 dark:from-rose-400 dark:via-red-400 dark:to-orange-400",
-      }
-    : {
-        rail: "bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600",
-        iconTint: "text-blue-600 dark:text-blue-400",
-        metaIcon: "bg-blue-100/80 dark:bg-blue-500/10",
-        titleGradient:
-          "from-blue-600 via-indigo-500 to-violet-500 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400",
-      };
-}
+import { EventMetaRow } from "./EventMetaRow";
+import { EventTitleBlock } from "./EventTitleBlock";
 
 type TranslationFn = (key: string, values?: Record<string, string>) => string;
 
 interface UpcomingEventCompactCardProps {
-  id: string;
+  id: EventItem["id"];
   isPlaceholder?: boolean;
-  title: string;
-  episode?: string;
-  location: LocationValue;
-  date: string;
-  time: string;
-  venue: string;
-  description: string;
-  speakers: {
-    name: string | string[];
-    company?: string | string[];
-    topic: string;
-    startTime?: string;
-    profileId?: string | string[];
-    url?: string | string[];
-  }[];
+  title: EventItem["title"];
+  episode?: EventItem["episode"];
+  location: EventItem["location"];
+  date: EventItem["date"];
+  time: EventItem["time"];
+  venue: EventItem["venue"];
+  description: EventItem["description"];
+  speakers: EventItem["speakers"];
   locale: string;
   t: TranslationFn;
 }
@@ -70,8 +48,7 @@ export function UpcomingEventCompactCard({
 }: UpcomingEventCompactCardProps) {
   const isTba = isTbaDate(date);
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
-  const theme = getLocationTheme(location);
-  const parsedTitle = parseEventTitle(title);
+  const theme = getEventLocationTheme(location);
   const confirmedSpeakerNames = speakers
     .flatMap((speaker) => (Array.isArray(speaker.name) ? speaker.name : [speaker.name]))
     .map((speakerName) => speakerName.trim())
@@ -87,7 +64,7 @@ export function UpcomingEventCompactCard({
     >
       <div className={`absolute inset-x-0 top-0 h-1 ${theme.rail}`} />
 
-      <div className="relative">
+      <div className="relative flex h-full flex-col">
         <div className="mb-4 flex items-start justify-between gap-3">
           <LocationPill
             location={location}
@@ -105,22 +82,13 @@ export function UpcomingEventCompactCard({
         </div>
 
         <h3 className="mb-3">
-          {parsedTitle ? (
-            <>
-              <span className="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500">
-                {parsedTitle.prefix}
-              </span>
-              <span
-                className={`block bg-gradient-to-r bg-clip-text text-lg font-extrabold tracking-tight text-transparent sm:text-xl ${theme.titleGradient}`}
-              >
-                {parsedTitle.subtitle}
-              </span>
-            </>
-          ) : (
-            <span className="text-lg font-bold tracking-tight text-neutral-900 sm:text-xl dark:text-white">
-              {title}
-            </span>
-          )}
+          <EventTitleBlock
+            title={title}
+            titleGradientClassName={theme.titleGradient}
+            titleClassName="text-lg font-bold tracking-tight text-neutral-900 sm:text-xl dark:text-white"
+            subtitleClassName="block bg-gradient-to-r bg-clip-text text-lg font-extrabold tracking-tight text-transparent sm:text-xl"
+            prefixClassName="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500"
+          />
         </h3>
 
         <p className="mb-5 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
@@ -128,37 +96,31 @@ export function UpcomingEventCompactCard({
         </p>
 
         <div className="mb-5 space-y-2.5">
-          <div className="flex items-center gap-2.5 text-sm text-neutral-700 dark:text-neutral-300">
-            <div
-              className={`flex h-8 w-8 items-center justify-center rounded-lg ${theme.metaIcon}`}
-            >
-              <CalendarIcon className={`h-4 w-4 ${theme.iconTint}`} />
-            </div>
-            <span className="font-medium">{formattedDate}</span>
-          </div>
-          <div className="flex items-center gap-2.5 text-sm text-neutral-700 dark:text-neutral-300">
-            <div
-              className={`flex h-8 w-8 items-center justify-center rounded-lg ${theme.metaIcon}`}
-            >
-              <ClockIcon className={`h-4 w-4 ${theme.iconTint}`} />
-            </div>
-            <span className="font-medium">{time}</span>
-          </div>
-          <a
-            href={mapUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2.5 text-sm text-neutral-700 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+          <EventMetaRow
+            icon={<CalendarIcon className={`h-4 w-4 ${theme.iconTint}`} />}
+            className="flex items-center gap-2.5 text-sm text-neutral-700 dark:text-neutral-300"
+            iconContainerClassName={`flex h-8 w-8 items-center justify-center rounded-lg ${theme.metaIcon}`}
+            textClassName="font-medium"
           >
-            <div
-              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${theme.metaIcon}`}
-            >
-              <MapPinIcon className={`h-4 w-4 ${theme.iconTint}`} />
-            </div>
-            <span className="font-medium underline decoration-neutral-300 underline-offset-2 dark:decoration-neutral-600">
-              {venue}
-            </span>
-          </a>
+            {formattedDate}
+          </EventMetaRow>
+          <EventMetaRow
+            icon={<ClockIcon className={`h-4 w-4 ${theme.iconTint}`} />}
+            className="flex items-center gap-2.5 text-sm text-neutral-700 dark:text-neutral-300"
+            iconContainerClassName={`flex h-8 w-8 items-center justify-center rounded-lg ${theme.metaIcon}`}
+            textClassName="font-medium"
+          >
+            {time}
+          </EventMetaRow>
+          <EventMetaRow
+            icon={<MapPinIcon className={`h-4 w-4 ${theme.iconTint}`} />}
+            href={mapUrl}
+            className="flex items-center gap-2.5 text-sm text-neutral-700 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
+            iconContainerClassName={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${theme.metaIcon}`}
+            textClassName="font-medium underline decoration-neutral-300 underline-offset-2 dark:decoration-neutral-600"
+          >
+            {venue}
+          </EventMetaRow>
         </div>
 
         {confirmedSpeakerNames.length > 0 && (
@@ -171,9 +133,12 @@ export function UpcomingEventCompactCard({
         )}
 
         {isPlaceholder ? (
-          <Button variant="secondary" size="sm" className="w-full justify-center">
+          <div
+            className="mt-auto flex w-full items-center justify-center rounded-xl border border-neutral-200/80 bg-neutral-100/70 px-4 py-2.5 text-sm font-semibold text-neutral-600 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300"
+            aria-live="polite"
+          >
             {t("tba")}
-          </Button>
+          </div>
         ) : (
           <Button
             href={PAGE_ROUTES.EVENT(id)}
