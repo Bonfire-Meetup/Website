@@ -139,7 +139,10 @@ html.smooth-scroll {
 @media (max-width: 767px) {
   .mobile-nav-glass {
     background: rgba(255, 255, 255, 0.92);
-    border-color: rgba(255, 255, 255, 0.5);
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     box-shadow:
@@ -150,7 +153,10 @@ html.smooth-scroll {
 
   .dark .mobile-nav-glass {
     background: rgba(23, 23, 27, 0.9);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.25),
       0 1px 2px rgba(0, 0, 0, 0.2),
