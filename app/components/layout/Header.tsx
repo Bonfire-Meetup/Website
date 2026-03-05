@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { useHaptics } from "@/lib/utils/haptics";
 
 import { AuthNavButton } from "../auth/AuthNavButton";
 import { FilmIcon } from "../shared/Icons";
@@ -144,6 +145,7 @@ function getMobileSectionMarker(
 function HeaderInner() {
   const t = useTranslations("header");
   const pathname = usePathname();
+  const haptics = useHaptics();
   const mobileSectionMarker = getMobileSectionMarker(pathname, t);
   const isLibraryContext =
     pathname.startsWith("/watch") || pathname.startsWith(PAGE_ROUTES.LIBRARY);
@@ -219,6 +221,9 @@ function HeaderInner() {
           </div>
           <Button
             href={PAGE_ROUTES.LIBRARY}
+            onClick={() => {
+              haptics.success();
+            }}
             variant="primary"
             size="sm"
             className={`rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition-all duration-200 md:size-[default] md:rounded-xl md:px-3.5 md:py-2 md:text-sm ${

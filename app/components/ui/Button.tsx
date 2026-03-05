@@ -70,7 +70,14 @@ export function Button({
 
     if (isExternal) {
       return (
-        <a href={href} className={classes} aria-label={ariaLabel} target={target} rel={rel}>
+        <a
+          href={href}
+          onClick={onClick}
+          className={classes}
+          aria-label={ariaLabel}
+          target={target}
+          rel={rel}
+        >
           {children}
         </a>
       );
@@ -81,7 +88,13 @@ export function Button({
     const shouldPrefetch = prefetch ?? !isDynamicRoute;
 
     return (
-      <Link href={href} prefetch={shouldPrefetch} className={classes} aria-label={ariaLabel}>
+      <Link
+        href={href}
+        prefetch={shouldPrefetch}
+        onClick={onClick}
+        className={classes}
+        aria-label={ariaLabel}
+      >
         {children}
       </Link>
     );

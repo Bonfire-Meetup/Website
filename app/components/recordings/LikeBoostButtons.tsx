@@ -186,18 +186,20 @@ export function LikeBoostButtons({
 
     const adding = !hasLiked;
     pulse("like", adding);
+    if (adding) {
+      haptics.success();
+    } else {
+      haptics.neutral();
+    }
 
     try {
       await likeMutation.mutateAsync(adding);
-      if (adding) {
-        haptics.success();
-      } else {
-        haptics.neutral();
-      }
     } catch (err: unknown) {
       if (err instanceof ApiError && err.status === 429) {
         haptics.error();
         handleRateLimitError(setLikeRateLimitError, likeErrorTimeoutRef);
+      } else {
+        haptics.error();
       }
     }
   };
@@ -232,14 +234,14 @@ export function LikeBoostButtons({
 
     const adding = !hasBoosted;
     pulse("boost", adding);
+    if (adding) {
+      haptics.success();
+    } else {
+      haptics.neutral();
+    }
 
     try {
       await boostMutation.mutateAsync(adding);
-      if (adding) {
-        haptics.success();
-      } else {
-        haptics.neutral();
-      }
     } catch (err: unknown) {
       if (err instanceof ApiError && err.status === 401) {
         haptics.neutral();
@@ -254,6 +256,8 @@ export function LikeBoostButtons({
       if (err instanceof ApiError && err.status === 429) {
         haptics.error();
         handleRateLimitError(setBoostRateLimitError, boostErrorTimeoutRef);
+      } else {
+        haptics.error();
       }
     }
   };
