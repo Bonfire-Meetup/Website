@@ -460,12 +460,21 @@ export function EventDetailContent({
             {isPastEvent && (
               <div className="mx-auto mt-8 max-w-3xl">
                 <div
-                  className="relative overflow-hidden rounded-3xl border p-6 text-left sm:p-8"
-                  style={{
-                    borderColor: `${loc.color}40`,
-                    background: `linear-gradient(135deg, ${loc.color}16 0%, ${loc.color}06 45%, rgba(255,255,255,0.9) 100%)`,
-                  }}
+                  className="relative overflow-hidden rounded-3xl border bg-white/75 p-6 text-left backdrop-blur-sm sm:p-8 dark:bg-neutral-900/40"
+                  style={{ borderColor: `${loc.color}40` }}
                 >
+                  <div
+                    className="pointer-events-none absolute inset-0 dark:hidden"
+                    style={{
+                      background: `linear-gradient(135deg, ${loc.color}16 0%, ${loc.color}08 45%, transparent 100%)`,
+                    }}
+                  />
+                  <div
+                    className="pointer-events-none absolute inset-0 hidden dark:block"
+                    style={{
+                      background: `linear-gradient(135deg, ${loc.color}24 0%, ${loc.color}12 45%, rgba(10,10,12,0.55) 100%)`,
+                    }}
+                  />
                   <div
                     className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full blur-3xl"
                     style={{ background: `${loc.color}33` }}
