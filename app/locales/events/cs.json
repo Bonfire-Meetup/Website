@@ -31,6 +31,9 @@
     "addToCalendar": "Přidat do kalendáře",
     "googleCalendar": "Google Calendar",
     "downloadIcs": "Stáhnout .ics",
+    "countdownToday": "Dnes",
+    "countdownTomorrow": "Zítra",
+    "countdownDays": "Za {count} dní",
     "watchNow": "Přehrát záznam",
     "viewDetails": "Zobrazit detail",
     "platforms": {

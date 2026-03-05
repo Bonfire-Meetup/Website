@@ -41,10 +41,10 @@ export function UpcomingEventsPageContent() {
         />
 
         {recentPastEvents.length > 0 && (
-          <div className="relative mx-auto mt-14 max-w-4xl overflow-hidden rounded-3xl border border-white/45 bg-white/50 p-4 shadow-[0_24px_70px_-44px_rgba(15,23,42,0.45)] backdrop-blur-xl sm:p-5 dark:border-white/12 dark:bg-white/6 dark:shadow-[0_26px_72px_-42px_rgba(0,0,0,0.55)]">
+          <div className="relative mx-auto mt-14 max-w-4xl overflow-hidden rounded-3xl border border-white/45 bg-white/50 p-4 shadow-[0_24px_70px_-44px_rgba(15,23,42,0.45)] backdrop-blur-xl sm:p-5 dark:border-white/10 dark:bg-neutral-900/60 dark:shadow-[0_26px_72px_-42px_rgba(0,0,0,0.55)]">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute -top-16 right-8 h-36 w-36 rounded-full bg-gradient-to-br from-rose-300/35 to-orange-300/20 blur-2xl dark:from-rose-500/20 dark:to-orange-500/10" />
-              <div className="absolute -bottom-16 left-10 h-32 w-32 rounded-full bg-gradient-to-br from-sky-300/30 to-indigo-300/20 blur-2xl dark:from-sky-500/18 dark:to-indigo-500/10" />
+              <div className="absolute -bottom-16 left-10 h-32 w-32 rounded-full bg-gradient-to-br from-sky-300/30 to-indigo-300/20 blur-2xl dark:from-sky-500/12 dark:to-indigo-500/8" />
             </div>
 
             <div className="relative mb-4 flex items-center justify-between gap-3">
@@ -52,13 +52,13 @@ export function UpcomingEventsPageContent() {
                 <p className="text-[11px] font-semibold tracking-[0.18em] text-neutral-500 uppercase dark:text-neutral-400">
                   {t("pastSectionEyebrow")}
                 </p>
-                <h2 className="mt-0.5 text-base font-bold text-neutral-900 dark:text-white">
+                <h2 className="mt-0.5 text-base font-bold whitespace-nowrap text-neutral-900 dark:text-white">
                   {t("pastSectionTitle")}
                 </h2>
               </div>
               <Link
                 href={PAGE_ROUTES.EVENT_PAST}
-                className="rounded-full border border-neutral-300/75 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-neutral-700 transition-all hover:-translate-y-0.5 hover:border-neutral-400 hover:bg-white hover:text-neutral-900 dark:border-white/14 dark:bg-white/10 dark:text-neutral-200 dark:hover:border-white/25 dark:hover:bg-white/15 dark:hover:text-white"
+                className="rounded-full border border-neutral-300/75 bg-white/80 px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap text-neutral-700 transition-all hover:-translate-y-0.5 hover:border-neutral-400 hover:bg-white hover:text-neutral-900 dark:border-white/14 dark:bg-neutral-800/70 dark:text-neutral-200 dark:hover:border-white/25 dark:hover:bg-neutral-800/85 dark:hover:text-white"
               >
                 {t("pastSectionCta")}
               </Link>
@@ -69,12 +69,12 @@ export function UpcomingEventsPageContent() {
                 <Link
                   key={event.id}
                   href={PAGE_ROUTES.EVENT(event.id)}
-                  className="group flex flex-wrap items-center justify-between gap-2 rounded-xl border border-neutral-200/70 bg-white/72 px-3.5 py-2.5 text-sm shadow-[0_8px_24px_-20px_rgba(15,23,42,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:border-neutral-300/80 hover:bg-white dark:border-white/12 dark:bg-white/8 dark:shadow-none dark:hover:border-white/22 dark:hover:bg-white/12"
+                  className="group flex flex-wrap items-center justify-between gap-2 rounded-xl border border-neutral-200/70 bg-white/72 px-3.5 py-2.5 text-sm shadow-[0_8px_24px_-20px_rgba(15,23,42,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:border-neutral-300/80 hover:bg-white dark:border-white/12 dark:bg-neutral-800/65 dark:shadow-none dark:hover:border-white/22 dark:hover:bg-neutral-800/80"
                 >
                   <span className="font-medium text-neutral-800 transition-colors group-hover:text-neutral-900 dark:text-neutral-200 dark:group-hover:text-white">
                     {event.title}
                   </span>
-                  <span className="rounded-full bg-neutral-900/5 px-2 py-0.5 text-xs text-neutral-500 dark:bg-white/10 dark:text-neutral-400">
+                  <span className="rounded-full bg-neutral-900/5 px-2 py-0.5 text-xs text-neutral-500 dark:bg-black/25 dark:text-neutral-400">
                     {isTbaDate(event.date) ? event.date : formatEventDateUTC(event.date, locale)}
                   </span>
                 </Link>

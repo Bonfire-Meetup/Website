@@ -1,12 +1,16 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { EventsPageHero } from "@/components/events/EventsPageHero";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/components/shared/Icons";
+import { Button } from "@/components/ui/Button";
+import { Pill } from "@/components/ui/Pill";
+import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
 import { getPastEvents, isTbaDate } from "@/data/events-calendar";
 import { Link } from "@/i18n/navigation";
+import { LOCATIONS } from "@/lib/config/constants";
 import { parseEventTitle } from "@/lib/events/presentation";
 import { getEventLocationTheme } from "@/lib/events/theme";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -17,10 +21,14 @@ interface CalendarGroupItem {
   events: ReturnType<typeof getPastEvents>;
 }
 
+type PastLocationFilter = "all" | typeof LOCATIONS.PRAGUE | typeof LOCATIONS.ZLIN;
+
 export function PastEventsPageContent() {
   const t = useTranslations("sections.events");
   const locale = useLocale();
   const pastEvents = getPastEvents(new Date());
+  const [activeLocation, setActiveLocation] = useState<PastLocationFilter>("all");
+  const [activeYear, setActiveYear] = useState<string>("all");
   const monthFormatter = useMemo(
     () =>
       new Intl.DateTimeFormat(locale, {
@@ -47,10 +55,76 @@ export function PastEventsPageContent() {
       }),
     [locale],
   );
+  const years = useMemo(() => {
+    const values = new Set<number>();
+    for (const event of pastEvents) {
+      if (!isTbaDate(event.date)) {
+        const [year] = event.date.split("-").map((part) => Number(part));
+        if (year) {
+          values.add(year);
+        }
+      }
+    }
+    return Array.from(values).sort((a, b) => b - a);
+  }, [pastEvents]);
+  const yearDropdownOptions = useMemo<DropdownOption[]>(
+    () => [
+      { label: t("pastFilterAllYears"), value: "all" },
+      ...years.map((year) => ({ label: year.toString(), value: year.toString() })),
+    ],
+    [t, years],
+  );
+  const filteredEvents = useMemo(
+    () =>
+      pastEvents.filter((event) => {
+        if (activeLocation !== "all" && event.location !== activeLocation) {
+          return false;
+        }
+        if (activeYear !== "all") {
+          return event.date.startsWith(`${activeYear}-`);
+        }
+        return true;
+      }),
+    [activeLocation, activeYear, pastEvents],
+  );
+  const locationOptions = useMemo<
+    { label: string; value: PastLocationFilter; activeClassName?: string }[]
+  >(
+    () => [
+      { label: t("pastFilterAllLocations"), value: "all" },
+      {
+        label: LOCATIONS.PRAGUE,
+        value: LOCATIONS.PRAGUE,
+        activeClassName:
+          "border-red-500/75 bg-red-500 text-white dark:border-red-400/70 dark:bg-red-500/85 dark:text-white",
+      },
+      {
+        label: LOCATIONS.ZLIN,
+        value: LOCATIONS.ZLIN,
+        activeClassName:
+          "border-blue-500/75 bg-blue-500 text-white dark:border-blue-400/70 dark:bg-blue-500/85 dark:text-white",
+      },
+    ],
+    [t],
+  );
+  const defaultFilterButtonActiveClass =
+    "border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900";
+  const yearSelectToneClass =
+    activeYear !== "all"
+      ? "text-brand-600 dark:text-brand-300"
+      : "text-neutral-600 dark:text-neutral-300";
+  const yearSelectBaseClass =
+    "h-8 min-w-[122px] rounded-full border border-neutral-200/80 bg-white/80 px-3 text-xs font-semibold shadow-sm ring-1 ring-black/5 transition focus:ring-2 focus:outline-none focus:ring-brand-500/50 dark:border-white/12 dark:bg-white/8 dark:ring-white/10 dark:focus:ring-brand-400/50";
+  const filterButtonClass = (isActive: boolean, activeClassName = defaultFilterButtonActiveClass) =>
+    `rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+      isActive
+        ? activeClassName
+        : "border-neutral-200/80 bg-white/75 text-neutral-600 hover:border-neutral-300 hover:bg-white dark:border-white/12 dark:bg-white/8 dark:text-neutral-300 dark:hover:border-white/22 dark:hover:bg-white/15"
+    }`;
   const groups = useMemo(() => {
     const mapped = new Map<string, CalendarGroupItem>();
 
-    for (const event of pastEvents) {
+    for (const event of filteredEvents) {
       if (isTbaDate(event.date)) {
         const tbaGroup = mapped.get("tba");
         if (tbaGroup) {
@@ -74,7 +148,7 @@ export function PastEventsPageContent() {
     }
 
     return Array.from(mapped.values());
-  }, [monthFormatter, pastEvents]);
+  }, [filteredEvents, monthFormatter]);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
@@ -89,6 +163,56 @@ export function PastEventsPageContent() {
       />
 
       <section className="relative mx-auto max-w-7xl px-4 pb-24">
+        <div className="mb-6 rounded-2xl border border-neutral-200/80 bg-white/70 p-3 backdrop-blur-sm sm:p-3.5 dark:border-white/10 dark:bg-white/5">
+          <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="hidden items-center gap-2 lg:flex">
+              <Pill
+                size="sm"
+                className="bg-neutral-100 px-2 py-0.5 text-[10px] font-semibold tracking-[0.14em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-300"
+              >
+                {t("pastFiltersLabel")}
+              </Pill>
+            </div>
+
+            <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] font-semibold tracking-[0.12em] text-neutral-500 uppercase dark:text-neutral-400">
+                  {t("pastFilterLocation")}
+                </span>
+                {locationOptions.map((option) => (
+                  <Button
+                    key={option.value}
+                    onClick={() => setActiveLocation(option.value)}
+                    variant="plain"
+                    size="xs"
+                    className={filterButtonClass(
+                      activeLocation === option.value,
+                      option.activeClassName,
+                    )}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-semibold tracking-[0.12em] text-neutral-500 uppercase dark:text-neutral-400">
+                  {t("pastFilterYear")}
+                </span>
+                <SelectDropdown
+                  id="past-events-year-filter"
+                  value={activeYear}
+                  options={yearDropdownOptions}
+                  nativeOnMobile
+                  onChange={setActiveYear}
+                  buttonClassName={`${yearSelectBaseClass} ${yearSelectToneClass}`}
+                  nativeClassName={`${yearSelectBaseClass} pr-8 ${yearSelectToneClass}`}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
         {groups.length > 0 ? (
           <div className="space-y-10">
             {groups.map((group) => (

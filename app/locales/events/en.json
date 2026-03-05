@@ -31,6 +31,9 @@
     "addToCalendar": "Add to calendar",
     "googleCalendar": "Google Calendar",
     "downloadIcs": "Download .ics",
+    "countdownToday": "Today",
+    "countdownTomorrow": "Tomorrow",
+    "countdownDays": "In {count} days",
     "watchNow": "Watch now",
     "viewDetails": "View Details",
     "platforms": {

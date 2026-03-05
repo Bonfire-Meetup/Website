@@ -1,5 +1,6 @@
 import { isTbaDate } from "@/data/events-calendar";
 import { LOCATIONS } from "@/lib/config/constants";
+import { getDaysUntilEventDate } from "@/lib/events/datetime";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
 import {
   formatSpeakerNameWithCompany,
@@ -77,7 +78,18 @@ export function EventCard({
   });
 
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : "";
+  const daysUntil = getDaysUntilEventDate(date);
+  const countdownLabel =
+    daysUntil === null
+      ? null
+      : daysUntil === 0
+        ? t("countdownToday")
+        : daysUntil === 1
+          ? t("countdownTomorrow")
+          : t("countdownDays", { count: daysUntil.toString() });
   const theme = getEventLocationTheme(location);
+  const topMetaPillClass =
+    "inline-flex items-center gap-1 bg-neutral-100/90 font-semibold tracking-[0.14em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-200";
 
   const platformLinks = [
     {
@@ -104,7 +116,7 @@ export function EventCard({
     return (
       <Card
         as="article"
-        className="fire-glow group relative overflow-hidden p-6 sm:p-7"
+        className="fire-glow group relative h-full overflow-hidden p-6 sm:p-7"
         data-glow={location === LOCATIONS.ZLIN ? "zlin" : "prague"}
       >
         <div className={`absolute inset-x-0 top-0 h-1 ${theme.rail}`} />
@@ -233,7 +245,7 @@ export function EventCard({
   return (
     <Card
       as="article"
-      className="fire-glow group relative overflow-hidden p-7 sm:p-9"
+      className="fire-glow group relative h-full overflow-hidden p-7 sm:p-9"
       data-glow={location === LOCATIONS.ZLIN ? "zlin" : "prague"}
     >
       <div className={`absolute inset-x-0 top-0 h-1 ${theme.rail}`} />
@@ -242,19 +254,27 @@ export function EventCard({
         className={`pointer-events-none absolute top-0 right-0 h-48 w-48 translate-x-12 -translate-y-12 rounded-full blur-3xl ${theme.orb}`}
       />
 
-      <div className="relative">
+      <div className="relative flex h-full flex-col">
         <div className="mb-5 flex items-start justify-between">
           <LocationPill
             location={location}
             ariaLabel={t("locationLabel", { location })}
             icon={<MapPinIcon className="h-4 w-4" />}
           />
-          {confirmedSpeakers.length > 0 && (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200/70 bg-white/70 px-2.5 py-1 text-[10px] font-semibold text-neutral-600 dark:border-white/10 dark:bg-white/10 dark:text-neutral-300">
-              <MicIcon className="h-3 w-3" style={{ color: theme.color }} />
-              {confirmedSpeakers.length} {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
-            </span>
-          )}
+          <div className="flex items-center gap-1.5">
+            {countdownLabel && (
+              <Pill size="sm" className={topMetaPillClass}>
+                <CalendarIcon className="h-3 w-3" />
+                {countdownLabel}
+              </Pill>
+            )}
+            {confirmedSpeakers.length > 0 && (
+              <Pill size="sm" className={topMetaPillClass}>
+                <MicIcon className="h-3 w-3" />
+                {confirmedSpeakers.length} {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
+              </Pill>
+            )}
+          </div>
         </div>
 
         <h3 className="mb-3">
@@ -307,96 +327,105 @@ export function EventCard({
         {hasSpeakers && (
           <div className="mb-6">
             <p className="section-label-spaced">{t("speakers")}</p>
-            <div className="space-y-2.5">
-              {confirmedSpeakers.map((speaker, index) => {
-                const resolved = resolveSpeakerLinks(speaker);
-                return (
-                  <div
-                    key={`${formatSpeakerNames(speaker.name)}-${speaker.topic}`}
-                    className="flex items-start gap-3 rounded-2xl bg-white/60 p-3.5 shadow-sm shadow-black/5 dark:bg-white/5"
-                  >
+            {confirmedSpeakers.length > 0 ? (
+              <div className="space-y-2.5">
+                {confirmedSpeakers.map((speaker, index) => {
+                  const resolved = resolveSpeakerLinks(speaker);
+                  return (
                     <div
-                      className="mt-1 flex h-7 w-7 flex-none items-center justify-center rounded-lg text-[9px] font-black text-white"
-                      style={{ background: theme.color }}
+                      key={`${formatSpeakerNames(speaker.name)}-${speaker.topic}`}
+                      className="flex items-start gap-3 rounded-2xl bg-white/60 p-3.5 shadow-sm shadow-black/5 dark:bg-white/5"
                     >
-                      {(index + 1).toString().padStart(2, "0")}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-sm font-bold text-neutral-900 dark:text-white">
-                        {speaker.topic}
-                      </p>
-                      <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                        {resolved.map((r, i) => {
-                          const profileHref = r.profileId
-                            ? PAGE_ROUTES.USER(r.profileId)
-                            : undefined;
-                          const linkHref = profileHref || r.url;
-                          return (
-                            <span
-                              key={r.name}
-                              className="inline-flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400"
-                            >
-                              {i > 0 && (
-                                <span className="text-neutral-300 dark:text-neutral-600">&</span>
-                              )}
-                              {linkHref ? (
-                                <a
-                                  href={linkHref}
-                                  {...(!profileHref && r.url
-                                    ? { target: "_blank", rel: "noopener noreferrer" }
-                                    : {})}
-                                  className="underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-700 hover:decoration-neutral-500 dark:decoration-neutral-600 dark:hover:text-neutral-200 dark:hover:decoration-neutral-400"
-                                >
-                                  {withCompany(r.name, r.company)}
-                                </a>
-                              ) : (
-                                <span>{withCompany(r.name, r.company)}</span>
-                              )}
-                            </span>
-                          );
-                        })}
+                      <div
+                        className="mt-1 flex h-7 w-7 flex-none items-center justify-center rounded-lg text-[9px] font-black text-white"
+                        style={{ background: theme.color }}
+                      >
+                        {(index + 1).toString().padStart(2, "0")}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-neutral-900 dark:text-white">
+                          {speaker.topic}
+                        </p>
+                        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                          {resolved.map((r, i) => {
+                            const profileHref = r.profileId
+                              ? PAGE_ROUTES.USER(r.profileId)
+                              : undefined;
+                            const linkHref = profileHref || r.url;
+                            return (
+                              <span
+                                key={r.name}
+                                className="inline-flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400"
+                              >
+                                {i > 0 && (
+                                  <span className="text-neutral-300 dark:text-neutral-600">&</span>
+                                )}
+                                {linkHref ? (
+                                  <a
+                                    href={linkHref}
+                                    {...(!profileHref && r.url
+                                      ? { target: "_blank", rel: "noopener noreferrer" }
+                                      : {})}
+                                    className="underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-700 hover:decoration-neutral-500 dark:decoration-neutral-600 dark:hover:text-neutral-200 dark:hover:decoration-neutral-400"
+                                  >
+                                    {withCompany(r.name, r.company)}
+                                  </a>
+                                ) : (
+                                  <span>{withCompany(r.name, r.company)}</span>
+                                )}
+                              </span>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex min-h-[120px] items-center gap-3 rounded-2xl border border-dashed border-neutral-200/70 bg-white/45 p-4 dark:border-neutral-700/50 dark:bg-white/5">
+                <MicIcon className="h-4 w-4 shrink-0 text-neutral-300 dark:text-neutral-600" />
+                <p className="text-sm text-neutral-400 dark:text-neutral-500">{t("speakersTba")}</p>
+              </div>
+            )}
+          </div>
+        )}
+        <div className="mt-auto">
+          {isPlaceholder ? (
+            <Button variant="secondary" size="sm" className="w-full justify-center">
+              {t("tba")}
+            </Button>
+          ) : (
+            <Button
+              href={PAGE_ROUTES.EVENT(id)}
+              variant="primary"
+              size="sm"
+              className="group w-full justify-center gap-2"
+            >
+              {t("viewDetails")}
+              <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          )}
+          {platformLinks.length > 0 && (
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+              <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
+                {t("orRegisterVia")}
+              </span>
+              {platformLinks.map((platform) => (
+                <a
+                  key={platform.key}
+                  href={platform.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+                >
+                  <platform.icon className="h-3 w-3" />
+                  {platform.label}
+                </a>
+              ))}
             </div>
-          </div>
-        )}
-        {isPlaceholder ? (
-          <Button variant="secondary" size="sm" className="w-full justify-center">
-            {t("tba")}
-          </Button>
-        ) : (
-          <Button
-            href={PAGE_ROUTES.EVENT(id)}
-            variant="primary"
-            size="sm"
-            className="group w-full justify-center gap-2"
-          >
-            {t("viewDetails")}
-            <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
-        )}
-        {platformLinks.length > 0 && (
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-            <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
-              {t("orRegisterVia")}
-            </span>
-            {platformLinks.map((platform) => (
-              <a
-                key={platform.key}
-                href={platform.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[11px] text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
-              >
-                <platform.icon className="h-3 w-3" />
-                {platform.label}
-              </a>
-            ))}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </Card>
   );

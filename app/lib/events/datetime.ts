@@ -32,3 +32,21 @@ export function parseEventDateTimeMs(date: string, time: string): number | null 
 
   return Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute);
 }
+
+export function getDaysUntilEventDate(date: string, now: Date = new Date()): number | null {
+  if (isTbaDate(date)) {
+    return null;
+  }
+
+  const [year, month, day] = date.split("-").map((part) => Number(part));
+  if (!year || !month || !day) {
+    return null;
+  }
+
+  const eventDayStartMs = Date.UTC(year, month - 1, day);
+  const nowDayStartMs = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const dayMs = 24 * 60 * 60 * 1000;
+  const diffDays = Math.floor((eventDayStartMs - nowDayStartMs) / dayMs);
+
+  return diffDays >= 0 ? diffDays : null;
+}

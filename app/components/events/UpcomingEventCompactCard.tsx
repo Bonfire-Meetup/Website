@@ -1,5 +1,6 @@
 import { isTbaDate } from "@/data/events-calendar";
 import { LOCATIONS } from "@/lib/config/constants";
+import { getDaysUntilEventDate } from "@/lib/events/datetime";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
 import { getEventLocationTheme } from "@/lib/events/theme";
 import { type EventItem } from "@/lib/events/types";
@@ -48,6 +49,15 @@ export function UpcomingEventCompactCard({
 }: UpcomingEventCompactCardProps) {
   const isTba = isTbaDate(date);
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
+  const daysUntil = getDaysUntilEventDate(date);
+  const countdownLabel =
+    daysUntil === null
+      ? null
+      : daysUntil === 0
+        ? t("countdownToday")
+        : daysUntil === 1
+          ? t("countdownTomorrow")
+          : t("countdownDays", { count: daysUntil.toString() });
   const theme = getEventLocationTheme(location);
   const confirmedSpeakerNames = speakers
     .flatMap((speaker) => (Array.isArray(speaker.name) ? speaker.name : [speaker.name]))
@@ -71,14 +81,25 @@ export function UpcomingEventCompactCard({
             ariaLabel={t("locationLabel", { location })}
             icon={<MapPinIcon className="h-4 w-4" />}
           />
-          {episode && (
-            <Pill
-              size="sm"
-              className="bg-neutral-100 font-semibold tracking-[0.2em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-300"
-            >
-              {episode}
-            </Pill>
-          )}
+          <div className="flex flex-col items-end gap-1.5">
+            {countdownLabel && (
+              <Pill
+                size="sm"
+                className="inline-flex items-center gap-1 bg-neutral-100/90 font-semibold tracking-[0.14em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-200"
+              >
+                <CalendarIcon className="h-3 w-3" />
+                {countdownLabel}
+              </Pill>
+            )}
+            {episode && (
+              <Pill
+                size="sm"
+                className="bg-neutral-100 font-semibold tracking-[0.2em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-300"
+              >
+                {episode}
+              </Pill>
+            )}
+          </div>
         </div>
 
         <h3 className="mb-3">
@@ -144,7 +165,7 @@ export function UpcomingEventCompactCard({
             href={PAGE_ROUTES.EVENT(id)}
             variant="primary"
             size="sm"
-            className="group w-full justify-center gap-2"
+            className="group mt-auto w-full justify-center gap-2"
           >
             {t("viewDetails")}
             <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
