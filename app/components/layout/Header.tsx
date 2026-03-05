@@ -152,10 +152,10 @@ function HeaderInner() {
 
   return (
     <header
-      className="glass mobile-nav-glass fixed top-0 right-0 left-0 z-50 border-b border-white/45 transition-[box-shadow] duration-300 dark:border-white/8"
+      className="glass mobile-nav-glass fixed top-0 right-0 left-0 z-50 border-b border-black/3 shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.06)] transition-[box-shadow] duration-300 dark:border-white/4 dark:shadow-[0_1px_3px_rgba(0,0,0,0.25),0_1px_2px_rgba(0,0,0,0.2)]"
       style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
     >
-      <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-3 sm:px-6 md:grid md:h-18 md:grid-cols-[1fr_auto_1fr] md:gap-4 lg:px-8">
+      <div className="relative mx-auto flex h-14 max-w-7xl items-center justify-between px-2.5 sm:px-6 md:grid md:h-18 md:grid-cols-[1fr_auto_1fr] md:gap-4 lg:px-8">
         <div className="relative z-10 flex items-center gap-3 md:justify-self-start">
           <Link
             href={PAGE_ROUTES.HOME}
@@ -167,7 +167,7 @@ function HeaderInner() {
               alt={t("logoAlt")}
               width={140}
               height={40}
-              className="h-8 w-auto md:h-9 dark:hidden"
+              className="h-7 w-auto md:h-9 dark:hidden"
               priority
             />
             <Image
@@ -175,14 +175,14 @@ function HeaderInner() {
               alt={t("logoAlt")}
               width={140}
               height={40}
-              className="hidden h-8 w-auto md:h-9 dark:block"
+              className="hidden h-7 w-auto md:h-9 dark:block"
               priority
             />
           </Link>
         </div>
 
-        <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 w-[calc(100%-10.5rem)] max-w-[11.5rem] min-w-0 -translate-x-1/2 -translate-y-1/2 md:hidden">
-          <div className="flex h-9 w-full items-center justify-center gap-2 px-2">
+        <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 w-[calc(100%-9.75rem)] max-w-[11rem] min-w-0 -translate-x-1/2 -translate-y-1/2 md:hidden">
+          <div className="flex h-8 w-full items-center justify-center gap-1.5 px-1.5">
             <span className="min-w-0 truncate text-[12px] font-medium tracking-[0.03em] text-neutral-600 dark:text-neutral-300">
               {mobileSectionMarker.label}
             </span>
@@ -226,13 +226,13 @@ function HeaderInner() {
             }}
             variant="primary"
             size="sm"
-            className={`rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition-all duration-200 md:size-[default] md:rounded-xl md:px-3.5 md:py-2 md:text-sm ${
+            className={`rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-200 md:size-[default] md:rounded-xl md:px-3.5 md:py-2 md:text-sm ${
               isLibraryContext
                 ? "shadow-md ring-1 shadow-orange-500/20 ring-white/60 dark:ring-white/25"
                 : "shadow-sm shadow-orange-500/15"
             }`}
           >
-            <FilmIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            <FilmIcon className="h-3 w-3 md:h-4 md:w-4" />
             <span>{t("watchNow")}</span>
           </Button>
         </div>
