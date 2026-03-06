@@ -5,7 +5,11 @@ import Image from "next/image";
 
 import { RsvpSection } from "@/components/events/RsvpSection";
 import { ShareEventButton } from "@/components/events/ShareEventButton";
-import { CommunityQuestionsPanel } from "@/components/questions/CommunityQuestionsPanel";
+import {
+  CommunityQuestionsPanel,
+  DEFAULT_PANEL_THEME,
+  PANEL_THEMES,
+} from "@/components/questions/CommunityQuestionsPanel";
 import {
   CalendarIcon,
   ClockIcon,
@@ -740,7 +744,11 @@ export function EventDetailContent({
 
         {!isTba && (
           <div className="mx-auto max-w-5xl px-4 pb-10">
-            <CommunityQuestionsPanel eventId={id} talkOptions={talkOptions} />
+            <CommunityQuestionsPanel
+              eventId={id}
+              theme={PANEL_THEMES[location] ?? DEFAULT_PANEL_THEME}
+              talkOptions={talkOptions}
+            />
           </div>
         )}
 

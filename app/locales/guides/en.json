@@ -21,7 +21,7 @@
       },
       "engagementSignals": {
         "title": "Sparks and boosts",
-        "description": "Understand engagement signals, limits, and how visibility scoring works.",
+        "description": "Understand engagement signals, limits, visibility scoring, and how boosts also push live event questions.",
         "cta": "Open guide"
       },
       "eventRsvp": {
@@ -373,11 +373,11 @@
         "summary": "Higher-confidence votes from signed-in members.",
         "items": {
           "one": "Boosts come from signed-in accounts.",
-          "two": "Each account can boost a recording once.",
-          "three": "Boosts carry stronger weight in visibility ranking."
+          "two": "Each account can boost a recording once, and can also spend boosts on live event questions during the open Q&A window.",
+          "three": "Boosts carry stronger weight in visibility ranking and help push the most relevant live questions upward."
         },
         "impactTitle": "Impact",
-        "impactBody": "A few boosts can noticeably increase visibility because boosts are weighted more strongly than sparks."
+        "impactBody": "A few boosts can noticeably increase visibility because boosts are weighted more strongly than sparks. The same idea applies to live event Q&A, where boosts help speakers notice the questions the room cares about most."
       },
       "comparison": {
         "title": "Signal comparison",
@@ -392,7 +392,7 @@
         "items": {
           "one": "Boosts are limited monthly.",
           "two": "Unused boosts can accumulate only up to the configured cap.",
-          "three": "Plan boosts for recordings you want to highlight most."
+          "three": "Plan boosts for recordings and live event questions you want to highlight most."
         },
         "callout": "Because boosts are limited, use them where you want to send a strong, deliberate signal."
       },

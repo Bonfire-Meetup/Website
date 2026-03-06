@@ -20,7 +20,7 @@ function formatBubbleTime(iso: string | null, locale: string): string {
 
 function GuildRing({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-full bg-gradient-to-br from-amber-400 via-orange-400 to-rose-500 p-[3px] shadow-md shadow-orange-400/50 dark:shadow-orange-500/40">
+    <div className="rounded-full bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 p-[4px] shadow-[0_0_14px_3px_rgba(251,146,60,0.55)] dark:shadow-[0_0_16px_4px_rgba(251,146,60,0.45)]">
       {children}
     </div>
   );
@@ -35,7 +35,7 @@ function QuestionAuthorAvatar({ question }: { question: QuestionItem }) {
         avatarSeed={makeAvatarSeedFromPublicId(question.authorPublicId)}
         name={question.authorName}
         size={30}
-        className="ring-[1.5px] ring-white dark:ring-neutral-900"
+        className="ring-2 ring-white dark:ring-neutral-900"
       />
     );
 
@@ -60,12 +60,14 @@ interface QuestionRowProps {
   deleteQuestionPending: boolean;
   deleteLabel: string;
   deleteCancelLabel: string;
+  isLiveView: boolean;
   isReplayMode: boolean;
   isWindowOpen: boolean;
   locale: string;
   onConfirmDelete: (questionId: string) => void;
   onRequestDelete: (questionId: string) => void;
   onToggleBoost: (questionId: string, hasBoosted: boolean) => void;
+  ownBubbleGradient: string;
   privateOnlyLabel: string;
   question: QuestionItem;
   selfLabel: string;
@@ -81,12 +83,14 @@ export function QuestionRow({
   deleteQuestionPending,
   deleteLabel,
   deleteCancelLabel,
+  isLiveView,
   isReplayMode,
   isWindowOpen,
   locale,
   onConfirmDelete,
   onRequestDelete,
   onToggleBoost,
+  ownBubbleGradient,
   privateOnlyLabel,
   question,
   selfLabel,
@@ -98,6 +102,7 @@ export function QuestionRow({
     typeof question.talkIndex === "number" ? talkOptions[question.talkIndex]?.topic : null;
   const isConfirmingDelete = confirmDeleteId === question.id;
   const { isOwn } = question;
+  const useThemedBubble = isOwn || isLiveView;
 
   return (
     <div className={`group flex items-end gap-2 py-2 ${isOwn ? "flex-row-reverse" : "flex-row"}`}>
@@ -111,7 +116,7 @@ export function QuestionRow({
         {talkTopic && (
           <span
             className={`inline-block max-w-[90%] truncate rounded-full px-2 py-0.5 text-[10px] font-medium ${
-              isOwn
+              useThemedBubble
                 ? "bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
                 : "bg-neutral-100 text-neutral-500 dark:bg-white/10 dark:text-neutral-400"
             }`}
@@ -122,8 +127,8 @@ export function QuestionRow({
 
         <div
           className={`px-3.5 py-2.5 text-sm leading-relaxed ${
-            isOwn
-              ? "rounded-[18px] rounded-br-[5px] bg-gradient-to-br from-rose-500 via-orange-500 to-red-500 text-white shadow-md shadow-orange-400/25 dark:shadow-orange-500/20"
+            useThemedBubble
+              ? `rounded-[18px] ${isOwn ? "rounded-br-[5px]" : "rounded-bl-[5px]"} bg-gradient-to-br text-white shadow-md ${ownBubbleGradient}`
               : "rounded-[18px] rounded-bl-[5px] border border-neutral-200/90 bg-white text-neutral-900 shadow-sm dark:border-white/10 dark:bg-white/8 dark:text-neutral-100"
           }`}
         >

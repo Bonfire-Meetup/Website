@@ -21,7 +21,7 @@
       },
       "engagementSignals": {
         "title": "Sparks a boosty",
-        "description": "Pochop engagement signály, limity a jak funguje dopad na viditelnost.",
+        "description": "Pochop engagement signály, limity, dopad na viditelnost i to, jak boosty posouvají otázky v live event Q&A.",
         "cta": "Otevřít návod"
       },
       "eventRsvp": {
@@ -373,11 +373,11 @@
         "summary": "Silnější hlas od přihlášených členů s vyšší váhou.",
         "items": {
           "one": "Boosty dávají přihlášení uživatelé.",
-          "two": "Každý účet může jeden záznam boostnout jen jednou.",
-          "three": "Boosty mají silnější váhu ve viditelnosti."
+          "two": "Každý účet může jeden záznam boostnout jen jednou a během otevřeného Q&A okna může boosty použít i na live otázky.",
+          "three": "Boosty mají silnější váhu ve viditelnosti a pomáhají posouvat nahoru i nejrelevantnější live otázky."
         },
         "impactTitle": "Dopad",
-        "impactBody": "I pár boostů umí viditelnost výrazně zvednout, protože boosty mají vyšší váhu než sparks."
+        "impactBody": "I pár boostů umí viditelnost výrazně zvednout, protože boosty mají vyšší váhu než sparks. Stejný princip platí i v live event Q&A, kde boosty pomáhají speakerům rychleji vidět otázky, které lidi zajímají nejvíc."
       },
       "comparison": {
         "title": "Porovnání signálů",
@@ -392,7 +392,7 @@
         "items": {
           "one": "Počet boostů je měsíčně omezený.",
           "two": "Nevyužité boosty se mohou hromadit jen do nastaveného stropu.",
-          "three": "Plánuj boosty pro záznamy, které chceš zvýraznit nejvíc."
+          "three": "Plánuj boosty pro záznamy i live otázky, které chceš zvýraznit nejvíc."
         },
         "callout": "Protože boosty jsou limitované, používej je tam, kde chceš poslat opravdu silný signál."
       },

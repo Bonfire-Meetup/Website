@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { StaticPageHero } from "@/components/layout/StaticPageHero";
 import { CommunityQuestionsPanel } from "@/components/questions/CommunityQuestionsPanel";
+import { DEFAULT_PANEL_THEME, PANEL_THEMES } from "@/components/questions/panel-themes";
 import { BackLink } from "@/components/ui/BackLink";
 import { allEvents, getEventById } from "@/data/events-calendar";
 import { buildNotFoundTitleMetadata, getMetaTitleSuffix } from "@/lib/metadata";
@@ -84,6 +85,7 @@ export default async function EventQuestionsPage({ params }: { params: Promise<{
       <section className="relative mx-auto max-w-5xl px-4 pb-10 sm:px-6 sm:pb-12">
         <CommunityQuestionsPanel
           eventId={event.id}
+          theme={PANEL_THEMES[event.location] ?? DEFAULT_PANEL_THEME}
           talkOptions={talkOptions}
           showAutoRefreshToggle
           defaultAutoRefresh

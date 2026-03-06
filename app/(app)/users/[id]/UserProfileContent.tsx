@@ -8,11 +8,12 @@ import {
   CalendarIcon,
   CheckIcon,
   FireIcon,
+  GuildIcon,
   HashIcon,
   LockClosedIcon,
-  StarFilledIcon,
 } from "@/components/shared/Icons";
 import { UserAvatar } from "@/components/user/UserAvatar";
+import { MEMBERSHIP_TIER_LABELS, type MembershipTier } from "@/lib/config/membership";
 import type { QuestionActivityLevel } from "@/lib/config/question-activity";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { copyToClipboard } from "@/lib/utils/clipboard";
@@ -82,6 +83,11 @@ export function UserProfileContent({
     stats.lastCheckedInAt !== null &&
     now - new Date(stats.lastCheckedInAt).getTime() <= recentWindowMs;
   const isRecentlyActive = hasRecentBoost || hasRecentCheckIn;
+  const membershipLabel =
+    user.isMember && user.membershipTier
+      ? (MEMBERSHIP_TIER_LABELS[user.membershipTier as MembershipTier] ??
+        t("roles.tierFallback", { tier: user.membershipTier }))
+      : null;
 
   const handleCopyId = async () => {
     await copyToClipboard(user.publicId);
@@ -130,13 +136,28 @@ export function UserProfileContent({
                     }`}
                   />
                 </div>
-                {user.isMember && (
+                {membershipLabel && (
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
-                    <div className="relative">
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 blur-md" />
-                      <div className="relative flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 px-4 py-1.5 text-xs font-black tracking-widest text-neutral-950 uppercase shadow-2xl">
-                        <StarFilledIcon className="h-3.5 w-3.5" />
-                        <span>{t("memberBadge")}</span>
+                    <div className="group relative">
+                      <div
+                        className="absolute -inset-2 animate-pulse rounded-full opacity-40 blur-xl"
+                        style={{
+                          background:
+                            "radial-gradient(circle, rgba(251, 146, 60, 0.5) 0%, rgba(244, 63, 94, 0.3) 50%, transparent 70%)",
+                        }}
+                      />
+                      <div
+                        className="absolute -inset-1 rounded-full opacity-70 blur-md transition-opacity duration-300 group-hover:opacity-100"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, rgba(251, 146, 60, 0.6), rgba(244, 63, 94, 0.4), rgba(251, 146, 60, 0.5))",
+                        }}
+                      />
+                      <div className="relative flex items-center gap-2 rounded-full border border-amber-400/30 bg-white/90 px-4 py-2 shadow-lg shadow-amber-500/15 backdrop-blur-sm dark:border-amber-400/40 dark:bg-neutral-900/90 dark:shadow-amber-500/20">
+                        <GuildIcon className="h-4 w-4 text-amber-500 dark:text-amber-400" />
+                        <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-xs font-black tracking-wide text-transparent uppercase dark:from-amber-300 dark:via-orange-300 dark:to-rose-300">
+                          {membershipLabel}
+                        </span>
                       </div>
                     </div>
                   </div>

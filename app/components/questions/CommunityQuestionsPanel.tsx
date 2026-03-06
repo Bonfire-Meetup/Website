@@ -18,8 +18,14 @@ import {
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { formatDateTimeUTC } from "@/lib/utils/locale";
 
+import { DEFAULT_PANEL_THEME, PANEL_THEMES, type PanelTheme } from "./panel-themes";
+
+export type { PanelTheme };
+export { DEFAULT_PANEL_THEME, PANEL_THEMES };
+
 interface CommunityQuestionsPanelProps {
   eventId: string;
+  theme?: PanelTheme;
   talkOptions: { key: string; topic: string }[];
   defaultAutoRefresh?: boolean;
   mode?: "default" | "live";
@@ -75,11 +81,23 @@ function getCountdownParts(milliseconds: number): {
   };
 }
 
-function CountdownBlock({ value, label }: { value: number; label: string }) {
+function CountdownBlock({
+  value,
+  label,
+  theme,
+}: {
+  value: number;
+  label: string;
+  theme: PanelTheme;
+}) {
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <div className="flex min-w-[52px] items-center justify-center rounded-xl border border-orange-200/60 bg-white px-2 py-3 shadow-sm sm:min-w-[60px] dark:border-white/10 dark:bg-white/[0.07]">
-        <span className="bg-gradient-to-b from-orange-500 to-rose-500 bg-clip-text text-2xl font-black tracking-tight text-transparent tabular-nums sm:text-3xl dark:from-orange-300 dark:to-rose-400">
+      <div
+        className={`flex min-w-[52px] items-center justify-center rounded-xl border ${theme.blockBorder} bg-white px-2 py-3 shadow-sm sm:min-w-[60px] dark:bg-white/[0.07]`}
+      >
+        <span
+          className={`bg-gradient-to-b ${theme.digitGradient} bg-clip-text text-2xl font-black tracking-tight text-transparent tabular-nums sm:text-3xl`}
+        >
           {String(value).padStart(2, "0")}
         </span>
       </div>
@@ -90,11 +108,12 @@ function CountdownBlock({ value, label }: { value: number; label: string }) {
   );
 }
 
-const PILL_SELECT_CLASS =
-  "w-auto rounded-full border border-neutral-200/70 bg-neutral-50 py-1 pl-2.5 pr-6 text-[11px] font-medium text-neutral-600 outline-none transition-colors focus:border-orange-300 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:focus:border-orange-400/50";
+const PILL_SELECT_BASE =
+  "w-auto rounded-full border border-neutral-200/70 bg-neutral-50 py-1 pl-2.5 pr-6 text-[11px] font-medium text-neutral-600 outline-none transition-colors dark:border-white/10 dark:bg-white/5 dark:text-neutral-300";
 
 export function CommunityQuestionsPanel({
   eventId,
+  theme = DEFAULT_PANEL_THEME,
   talkOptions,
   defaultAutoRefresh = false,
   mode = "default",
@@ -221,7 +240,7 @@ export function CommunityQuestionsPanel({
                 <button
                   type="button"
                   onClick={panel.handleAuthRedirect}
-                  className={`inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-opacity hover:opacity-95 ${ENGAGEMENT_BRANDING.access.classes.signInPill}`}
+                  className={`inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${ENGAGEMENT_BRANDING.access.classes.signInNav}`}
                 >
                   <QuestionMarkCircleIcon className="h-3.5 w-3.5" />
                   <span>{panel.t("questions.signInPrompt")}</span>
@@ -241,14 +260,14 @@ export function CommunityQuestionsPanel({
               placeholder={panel.t("questions.placeholder")}
               maxLength={600}
               rows={2}
-              className="min-h-[52px] flex-1 resize-none rounded-xl border border-neutral-200/80 bg-neutral-50/80 px-3 py-2.5 text-sm text-neutral-900 transition-colors outline-none placeholder:text-neutral-400 focus:border-orange-300 focus:bg-white dark:border-white/10 dark:bg-white/5 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-orange-400/50 dark:focus:bg-white/8"
+              className={`min-h-[52px] flex-1 resize-none rounded-xl border border-neutral-200/80 bg-neutral-50/80 px-3 py-2.5 text-sm text-neutral-900 transition-colors outline-none placeholder:text-neutral-400 focus:bg-white dark:border-white/10 dark:bg-white/5 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:bg-white/8 ${theme.focusBorder}`}
             />
             <button
               type="button"
               onClick={panel.handleSubmit}
               disabled={!canSubmitQuestion}
               aria-label={panel.t("questions.askButton")}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-rose-500 to-orange-500 text-white shadow-sm shadow-orange-400/25 transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 sm:hover:scale-105"
+              className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-white shadow-sm transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 sm:hover:scale-105 ${theme.sendButton}`}
             >
               <SendIcon className="h-4 w-4 translate-x-px" />
             </button>
@@ -258,7 +277,7 @@ export function CommunityQuestionsPanel({
             <select
               value={panel.selectedTalkIndex}
               onChange={(event) => panel.setSelectedTalkIndex(event.target.value)}
-              className={PILL_SELECT_CLASS}
+              className={`${PILL_SELECT_BASE} ${theme.focusBorder}`}
             >
               <option value="none">{panel.t("questions.generalTalk")}</option>
               {talkOptions.map((option, index) => (
@@ -278,15 +297,17 @@ export function CommunityQuestionsPanel({
       )}
 
       {isUpcomingMode && (
-        <div className="rounded-2xl border border-orange-200/80 bg-gradient-to-br from-amber-50/90 via-orange-50/60 to-white px-4 py-5 shadow-[0_16px_48px_-20px_rgba(249,115,22,0.5)] dark:border-orange-400/20 dark:from-orange-500/12 dark:via-amber-500/8 dark:to-white/[0.02]">
+        <div className={`rounded-2xl border px-4 py-5 ${theme.card}`}>
           {countdownParts ? (
             <div className="flex items-start gap-2 sm:gap-3">
-              {countdownParts.days > 0 && <CountdownBlock value={countdownParts.days} label="d" />}
-              {(countdownParts.days > 0 || countdownParts.hours > 0) && (
-                <CountdownBlock value={countdownParts.hours} label="h" />
+              {countdownParts.days > 0 && (
+                <CountdownBlock value={countdownParts.days} label="d" theme={theme} />
               )}
-              <CountdownBlock value={countdownParts.minutes} label="m" />
-              <CountdownBlock value={countdownParts.seconds} label="s" />
+              {(countdownParts.days > 0 || countdownParts.hours > 0) && (
+                <CountdownBlock value={countdownParts.hours} label="h" theme={theme} />
+              )}
+              <CountdownBlock value={countdownParts.minutes} label="m" theme={theme} />
+              <CountdownBlock value={countdownParts.seconds} label="s" theme={theme} />
             </div>
           ) : (
             <div className="text-2xl font-black text-neutral-900 dark:text-white">
@@ -295,7 +316,7 @@ export function CommunityQuestionsPanel({
           )}
           {panel.opensAt && (
             <p className="mt-3 flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
-              <ClockIcon className="h-3.5 w-3.5 shrink-0 text-orange-500/70 dark:text-orange-400/70" />
+              <ClockIcon className={`h-3.5 w-3.5 shrink-0 ${theme.icon}`} />
               {panel.opensAtFormatted}
             </p>
           )}
@@ -315,7 +336,7 @@ export function CommunityQuestionsPanel({
               <select
                 value={panel.activeTalkFilter}
                 onChange={(event) => panel.setActiveTalkFilter(event.target.value as TalkFilter)}
-                className={PILL_SELECT_CLASS}
+                className={`${PILL_SELECT_BASE} ${theme.focusBorder}`}
               >
                 <option value="all">{panel.t("questions.filters.allTalks")}</option>
                 <option value="general">{panel.t("questions.filters.generalOnly")}</option>
@@ -329,7 +350,7 @@ export function CommunityQuestionsPanel({
               <select
                 value={panel.sortMode}
                 onChange={(event) => panel.setSortMode(event.target.value as SortMode)}
-                className={PILL_SELECT_CLASS}
+                className={`${PILL_SELECT_BASE} ${theme.focusBorder}`}
               >
                 <option value="boosts">{panel.t("questions.filters.sortBoosts")}</option>
                 <option value="date">{panel.t("questions.filters.sortDate")}</option>
@@ -376,12 +397,14 @@ export function CommunityQuestionsPanel({
                 deleteQuestionPending={panel.deleteQuestion.isPending}
                 deleteLabel={panel.t("questions.delete")}
                 deleteCancelLabel={panel.t("questions.deleteCancel")}
+                isLiveView={isLiveView}
                 isReplayMode={panel.isReplayMode}
                 isWindowOpen={panel.isWindowOpen}
                 locale={panel.locale}
                 onConfirmDelete={panel.handleConfirmDelete}
                 onRequestDelete={(id) => panel.setConfirmDeleteId(id)}
                 onToggleBoost={panel.handleToggleBoost}
+                ownBubbleGradient={theme.ownBubble}
                 privateOnlyLabel={panel.t("privateOnly")}
                 question={question}
                 selfLabel={panel.t("questions.selfLabel")}
