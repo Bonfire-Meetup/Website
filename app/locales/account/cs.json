@@ -104,6 +104,11 @@
         "speaker": "Speaker",
         "tierFallback": "Úroveň {tier}"
       },
+      "questionActivity": {
+        "curious": "Zvídavý",
+        "engaged": "Zapojený",
+        "catalyst": "Hybatel"
+      },
       "activity": {
         "title": "Aktivita",
         "boostedVideos": "Boostnutá videa",

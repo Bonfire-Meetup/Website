@@ -9,8 +9,9 @@ import {
   getAuthUserById,
   markAuthChallengeUsed,
 } from "@/lib/data/auth";
-import { getUserBoostAllocation, getUserBoosts } from "@/lib/data/boosts";
-import { runTransaction } from "@/lib/data/db";
+import { getUserBoostAllocation, getUserBoosts, refundBoost } from "@/lib/data/boosts";
+import { db } from "@/lib/data/db";
+import { deleteAllEventQuestionsByUser } from "@/lib/data/event-questions";
 import {
   appUser,
   authAttempt,
@@ -193,19 +194,22 @@ export const DELETE = withRequestContext(
     await markAuthChallengeUsed(verification.id);
 
     try {
-      await runTransaction(async (tx) => {
-        await tx.delete(authToken).where(eq(authToken.userId, auth.userId));
-        await tx.delete(authRefreshToken).where(eq(authRefreshToken.userId, auth.userId));
-        await tx.delete(authChallenge).where(eq(authChallenge.email, email));
-        await tx.delete(authAttempt).where(eq(authAttempt.userId, auth.userId));
-        await tx.delete(userWatchlist).where(eq(userWatchlist.userId, auth.userId));
-        await tx.delete(userBoostAllocation).where(eq(userBoostAllocation.userId, auth.userId));
-        await tx.delete(videoBoosts).where(eq(videoBoosts.userId, auth.userId));
-        await tx.delete(newsletterSubscription).where(eq(newsletterSubscription.email, email));
-        await tx.delete(contactSubmissions).where(eq(contactSubmissions.email, email));
-        await tx.delete(talkProposals).where(eq(talkProposals.email, email));
-        await tx.delete(appUser).where(eq(appUser.id, auth.userId));
-      });
+      const { boostUserIds } = await deleteAllEventQuestionsByUser(auth.userId);
+      const refundUserIds = boostUserIds.filter((userId) => userId !== auth.userId);
+
+      await Promise.all(refundUserIds.map((userId) => refundBoost(userId)));
+
+      await db().delete(authToken).where(eq(authToken.userId, auth.userId));
+      await db().delete(authRefreshToken).where(eq(authRefreshToken.userId, auth.userId));
+      await db().delete(authChallenge).where(eq(authChallenge.email, email));
+      await db().delete(authAttempt).where(eq(authAttempt.userId, auth.userId));
+      await db().delete(userWatchlist).where(eq(userWatchlist.userId, auth.userId));
+      await db().delete(userBoostAllocation).where(eq(userBoostAllocation.userId, auth.userId));
+      await db().delete(videoBoosts).where(eq(videoBoosts.userId, auth.userId));
+      await db().delete(newsletterSubscription).where(eq(newsletterSubscription.email, email));
+      await db().delete(contactSubmissions).where(eq(contactSubmissions.email, email));
+      await db().delete(talkProposals).where(eq(talkProposals.email, email));
+      await db().delete(appUser).where(eq(appUser.id, auth.userId));
     } catch (error) {
       logError("account.delete.failed", error, {
         ...emailFingerprint,

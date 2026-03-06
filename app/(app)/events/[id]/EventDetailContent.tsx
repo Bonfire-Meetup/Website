@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import { RsvpSection } from "@/components/events/RsvpSection";
 import { ShareEventButton } from "@/components/events/ShareEventButton";
+import { CommunityQuestionsPanel } from "@/components/questions/CommunityQuestionsPanel";
 import {
   CalendarIcon,
   ClockIcon,
@@ -360,6 +361,12 @@ export function EventDetailContent({
     const primary = primarySpeakerName(speaker.name).trim();
     return primary.length > 0 && primary !== "TBA";
   });
+  const talkOptions = speakers
+    .map((speaker, index) => ({
+      key: speaker.recordingId ?? `${primarySpeakerName(speaker.name)}-${index}`,
+      topic: speaker.topic.trim(),
+    }))
+    .filter((item) => item.topic.length > 0);
 
   const handleDownloadCalendar = () => {
     if (!calendarDateTime || !calendarStart || !calendarEnd) {
@@ -730,6 +737,12 @@ export function EventDetailContent({
             </div>
           )}
         </div>
+
+        {!isTba && (
+          <div className="mx-auto max-w-5xl px-4 pb-10">
+            <CommunityQuestionsPanel eventId={id} talkOptions={talkOptions} />
+          </div>
+        )}
 
         <div className="mx-auto max-w-5xl px-4 pb-8">
           <div className="h-px bg-gradient-to-r from-transparent via-neutral-300/50 to-transparent dark:via-neutral-600/30" />

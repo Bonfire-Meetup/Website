@@ -13,6 +13,7 @@ import {
   StarFilledIcon,
 } from "@/components/shared/Icons";
 import { UserAvatar } from "@/components/user/UserAvatar";
+import type { QuestionActivityLevel } from "@/lib/config/question-activity";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { copyToClipboard } from "@/lib/utils/clipboard";
 import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
@@ -29,6 +30,7 @@ interface UserData {
   roles: string[];
   membershipTier: number | null;
   isMember: boolean;
+  questionActivityLevel: QuestionActivityLevel | null;
   boostCount: number;
   boostsThisMonth: number;
   boostStreak: number;
@@ -174,6 +176,7 @@ export function UserProfileContent({
                   <RoleBadges
                     roles={user.roles}
                     membershipTier={user.isMember ? user.membershipTier : null}
+                    questionActivityLevel={user.questionActivityLevel}
                   />
                   <BoostTitleBadge boostCount={user.boostCount} boostStreak={user.boostStreak} />
                 </div>

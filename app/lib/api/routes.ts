@@ -56,5 +56,13 @@ export const API_ROUTES = {
   EVENTS: {
     RSVPS: (eventId: string) => `/api/v1/events/${eventId}/rsvps`,
     RSVPS_PATTERN: "/api/v1/events/*/rsvps",
+    QUESTIONS: (eventId: string) => `/api/v1/events/${eventId}/questions`,
+    QUESTIONS_PATTERN: "/api/v1/events/*/questions",
+    QUESTION: (eventId: string, questionId: string) =>
+      `/api/v1/events/${eventId}/questions/${questionId}`,
+    QUESTION_PATTERN: "/api/v1/events/*/questions/*",
+    QUESTION_BOOSTS: (eventId: string, questionId: string) =>
+      `/api/v1/events/${eventId}/questions/${questionId}/boosts`,
+    QUESTION_BOOSTS_PATTERN: "/api/v1/events/*/questions/*/boosts",
   },
 } as const;

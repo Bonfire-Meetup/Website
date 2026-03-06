@@ -74,6 +74,56 @@
     "multiplePrivateRsvps": "{count} private",
     "goodToKnow": "Good to know",
     "noteFreeEntry": "Entry is free. Just show up and grab a seat. We appreciate an RSVP so we can prepare.",
-    "noteFlexibleTimeline": "We keep things loose. No strict schedule. We go with the flow."
+    "noteFlexibleTimeline": "We keep things loose. No strict schedule. We go with the flow.",
+    "questionsPage": {
+      "backToEvent": "Back to event",
+      "description": "Live event Q&A feed for speakers and attendees.",
+      "eyebrow": "Live Q&A",
+      "title": "Questions feed"
+    },
+    "questions": {
+      "eyebrow": "Q&A",
+      "title": "Questions for speakers",
+      "placeholder": "Ask a question for the speakers...",
+      "generalTalk": "General / Event-wide",
+      "askButton": "Submit question",
+      "loading": "Loading questions...",
+      "empty": "No questions yet. Break the ice and ask the first one.",
+      "replayEmpty": "No questions were submitted for this event.",
+      "windowOpenUntil": "Question window is open until {date}.",
+      "windowReplay": "Q&A replay mode",
+      "windowOpensSoon": "Questions open on",
+      "windowOpensAt": "Questions open at {date}.",
+      "windowUnavailable": "Question window is unavailable for this event.",
+      "windowClosedInfo": "Questions can be posted starting two days before the event.",
+      "replayInfo": "Q&A replay: posting and boosting are closed. You can still browse all questions.",
+      "signInPrompt": "Sign in to ask questions",
+      "selfLabel": "You",
+      "boostsLeft": "{count} boosts left",
+      "lastRefresh": "Last refresh: {date}",
+      "autoRefresh": "Auto refresh",
+      "refresh": "Refresh",
+      "refreshing": "Refreshing...",
+      "delete": "Delete question",
+      "deleteConfirm": "Confirm delete",
+      "deleteCancel": "Cancel delete",
+      "filters": {
+        "title": "Filters",
+        "allTalks": "All talks",
+        "generalOnly": "General / Event-wide",
+        "sortBoosts": "Sort: Boosts",
+        "sortDate": "Sort: Date"
+      },
+      "errors": {
+        "tooShort": "Question is too short.",
+        "profanity": "Please keep questions respectful and profanity-free.",
+        "windowClosed": "Question window is currently closed.",
+        "createFailed": "Failed to submit question.",
+        "noBoosts": "No boosts available right now.",
+        "boostFailed": "Failed to update boost.",
+        "deleteForbidden": "You can only delete your own question.",
+        "deleteFailed": "Failed to delete question."
+      }
+    }
   }
 }

@@ -1,7 +1,6 @@
 const enBadWords = new Set([
   "fuck",
   "shit",
-  "damn",
   "bitch",
   "asshole",
   "bastard",
@@ -15,9 +14,6 @@ const enBadWords = new Set([
   "faggot",
   "nigger",
   "retard",
-  "idiot",
-  "moron",
-  "stupid",
 ]);
 
 const csBadWords = new Set([
@@ -27,7 +23,6 @@ const csBadWords = new Set([
   "zmrd",
   "srac",
   "debil",
-  "idiot",
   "blbec",
   "pitomec",
   "hovno",
@@ -37,6 +32,18 @@ const csBadWords = new Set([
 ]);
 
 const csEndings = ["i", "e", "y", "ové", "ci", "ky", "ku", "ka", "kem", "ovi", "ech", "ích"];
+
+const LEET_MAP: Record<string, string> = {
+  "0": "o",
+  "1": "i",
+  "3": "e",
+  "4": "a",
+  "5": "s",
+  "7": "t",
+  "@": "a",
+  $: "s",
+  "!": "i",
+};
 
 function removeDiacritics(text: string): string {
   const diacritics: Record<string, string> = {
@@ -78,7 +85,7 @@ function removeDiacritics(text: string): string {
 function normalizeWord(word: string): string {
   return removeDiacritics(word)
     .toLowerCase()
-    .replace(/[^a-z]/g, "")
+    .replace(/[^a-z]/g, (char) => LEET_MAP[char] ?? "")
     .trim();
 }
 
@@ -98,7 +105,7 @@ function containsBadWord(text: string, badWords: Set<string>, locale: "en" | "cs
     return false;
   }
 
-  const wordMatches = text.match(/[\p{L}]+/gu);
+  const wordMatches = text.match(/[\p{L}\d@$!]+/gu);
   if (!wordMatches || wordMatches.length === 0) {
     return false;
   }
@@ -115,7 +122,7 @@ function containsBadWord(text: string, badWords: Set<string>, locale: "en" | "cs
         }
 
         for (const badWord of badWords) {
-          if (variant.includes(badWord) || badWord.includes(variant)) {
+          if (variant.includes(badWord)) {
             return true;
           }
         }

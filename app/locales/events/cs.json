@@ -74,6 +74,56 @@
     "multiplePrivateRsvps": "{count} soukromých",
     "goodToKnow": "Je dobré vědět",
     "noteFreeEntry": "Vstup je zdarma. Stačí přijít a sednout si. RSVP oceníme, abychom se mohli připravit.",
-    "noteFlexibleTimeline": "Držíme to v pohodě. Žádný pevný program. Jdeme s proudem."
+    "noteFlexibleTimeline": "Držíme to v pohodě. Žádný pevný program. Jdeme s proudem.",
+    "questionsPage": {
+      "backToEvent": "Zpět na akci",
+      "description": "Live přehled otázek pro speakery a návštěvníky.",
+      "eyebrow": "Live Q&A",
+      "title": "Přehled otázek"
+    },
+    "questions": {
+      "eyebrow": "Q&A",
+      "title": "Otázky pro speakery",
+      "placeholder": "Napiš otázku pro speakery...",
+      "generalTalk": "Obecná / pro celou akci",
+      "askButton": "Odeslat otázku",
+      "loading": "Načítám otázky...",
+      "empty": "Zatím žádné otázky. Prolom ledy a polož první.",
+      "replayEmpty": "Pro tuto akci nebyly položeny žádné otázky.",
+      "windowOpenUntil": "Okno pro otázky je otevřené do {date}.",
+      "windowReplay": "Q&A replay režim",
+      "windowOpensSoon": "Otázky se otevřou",
+      "windowOpensAt": "Otázky se otevřou {date}.",
+      "windowUnavailable": "Pro tuto akci není okno pro otázky dostupné.",
+      "windowClosedInfo": "Otázky je možné pokládat od dvou dnů před akcí.",
+      "replayInfo": "Q&A replay: přidávání otázek i boostování je zavřené. Stále můžeš procházet všechny otázky.",
+      "signInPrompt": "Přihlas se pro otázky",
+      "selfLabel": "Ty",
+      "boostsLeft": "zbývá boostů: {count}",
+      "lastRefresh": "Poslední obnovení: {date}",
+      "autoRefresh": "Auto refresh",
+      "refresh": "Obnovit",
+      "refreshing": "Obnovuji...",
+      "delete": "Smazat otázku",
+      "deleteConfirm": "Potvrdit smazání",
+      "deleteCancel": "Zrušit smazání",
+      "filters": {
+        "title": "Filtry",
+        "allTalks": "Všechny přednášky",
+        "generalOnly": "Obecné / pro celou akci",
+        "sortBoosts": "Řazení: Boosty",
+        "sortDate": "Řazení: Datum"
+      },
+      "errors": {
+        "tooShort": "Otázka je příliš krátká.",
+        "profanity": "Prosím bez vulgarit.",
+        "windowClosed": "Okno pro otázky je momentálně zavřené.",
+        "createFailed": "Otázku se nepodařilo odeslat.",
+        "noBoosts": "Momentálně nemáš žádné boosty.",
+        "boostFailed": "Boost se nepodařilo upravit.",
+        "deleteForbidden": "Můžeš smazat jen vlastní otázku.",
+        "deleteFailed": "Otázku se nepodařilo smazat."
+      }
+    }
   }
 }

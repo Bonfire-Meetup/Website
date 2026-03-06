@@ -3,16 +3,19 @@
 import { useTranslations } from "next-intl";
 
 import { GuildIcon, MicIcon, UsersIcon } from "@/components/shared/Icons";
+import { QuestionActivityBadge } from "@/components/user/QuestionActivityBadge";
 import {
   hasMembership,
   MEMBERSHIP_TIER_LABELS,
   type MembershipTier,
 } from "@/lib/config/membership";
+import type { QuestionActivityLevel } from "@/lib/config/question-activity";
 import { USER_ROLES } from "@/lib/config/roles";
 
 interface RoleBadgesProps {
   roles: string[];
   membershipTier?: number | null;
+  questionActivityLevel?: QuestionActivityLevel | null;
 }
 
 const roleConfig = {
@@ -34,12 +37,16 @@ const roleConfig = {
   },
 } as const;
 
-export function RoleBadges({ roles, membershipTier }: RoleBadgesProps) {
+export function RoleBadges({
+  roles,
+  membershipTier,
+  questionActivityLevel = null,
+}: RoleBadgesProps) {
   const t = useTranslations("account.userProfile.roles");
   const displayRoles = roles.filter((role) => role in roleConfig);
   const hasGuild = hasMembership(membershipTier);
 
-  if (displayRoles.length === 0 && !hasGuild) {
+  if (displayRoles.length === 0 && !hasGuild && questionActivityLevel === null) {
     return null;
   }
 
@@ -89,6 +96,7 @@ export function RoleBadges({ roles, membershipTier }: RoleBadgesProps) {
           </div>
         </div>
       )}
+      <QuestionActivityBadge level={questionActivityLevel} />
     </div>
   );
 }

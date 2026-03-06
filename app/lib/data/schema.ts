@@ -490,3 +490,69 @@ export const eventRsvp = pgTable(
     }).onDelete("cascade"),
   ],
 );
+
+export const eventQuestion = pgTable(
+  "event_question",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").notNull(),
+    eventId: text("event_id").notNull(),
+    talkIndex: integer("talk_index"),
+    text: text("text").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("event_question_event_id_idx").using(
+      "btree",
+      table.eventId.asc().nullsLast().op("text_ops"),
+    ),
+    index("event_question_user_id_idx").using(
+      "btree",
+      table.userId.asc().nullsLast().op("uuid_ops"),
+    ),
+    index("event_question_created_at_idx").using(
+      "btree",
+      table.createdAt.desc().nullsFirst().op("timestamptz_ops"),
+    ),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "event_question_user_id_app_user_id_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const eventQuestionBoost = pgTable(
+  "event_question_boost",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    questionId: uuid("question_id").notNull(),
+    userId: uuid("user_id").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("event_question_boost_question_id_idx").using(
+      "btree",
+      table.questionId.asc().nullsLast().op("uuid_ops"),
+    ),
+    index("event_question_boost_user_id_idx").using(
+      "btree",
+      table.userId.asc().nullsLast().op("uuid_ops"),
+    ),
+    uniqueIndex("event_question_boost_unique_idx").using(
+      "btree",
+      table.questionId.asc().nullsLast().op("uuid_ops"),
+      table.userId.asc().nullsLast().op("uuid_ops"),
+    ),
+    foreignKey({
+      columns: [table.questionId],
+      foreignColumns: [eventQuestion.id],
+      name: "event_question_boost_question_id_event_question_id_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "event_question_boost_user_id_app_user_id_fk",
+    }).onDelete("cascade"),
+  ],
+);

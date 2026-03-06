@@ -12,6 +12,7 @@ import {
   getUserBoostStreak,
 } from "@/lib/data/boosts";
 import { getUserCheckIns } from "@/lib/data/check-in";
+import { getUserQuestionActivityLevel } from "@/lib/data/event-questions";
 import { decompressUuid, compressUuid } from "@/lib/utils/uuid-compress";
 
 import { BoostedVideos } from "./BoostedVideos";
@@ -104,13 +105,15 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
     year: "numeric",
   }).format(new Date(user.createdAt));
   const isMember = hasMembership(user.membershipTier);
-  const [boosts, checkIns, boostCount, boostsThisMonth, boostStreak] = await Promise.all([
-    getUserBoosts(userId),
-    getUserCheckIns(userId),
-    getUserBoostCount(userId),
-    getUserBoostsThisMonth(userId),
-    getUserBoostStreak(userId),
-  ]);
+  const [boosts, checkIns, boostCount, boostsThisMonth, boostStreak, questionActivityLevel] =
+    await Promise.all([
+      getUserBoosts(userId),
+      getUserCheckIns(userId),
+      getUserBoostCount(userId),
+      getUserBoostsThisMonth(userId),
+      getUserBoostStreak(userId),
+      getUserQuestionActivityLevel(userId),
+    ]);
 
   return (
     <UserProfileContent
@@ -121,6 +124,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
         roles: user.roles,
         membershipTier: user.membershipTier,
         isMember,
+        questionActivityLevel,
         boostCount,
         boostsThisMonth,
         boostStreak,

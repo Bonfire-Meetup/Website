@@ -104,6 +104,11 @@
         "speaker": "Speaker",
         "tierFallback": "Tier {tier}"
       },
+      "questionActivity": {
+        "curious": "Curious",
+        "engaged": "Engaged",
+        "catalyst": "Catalyst"
+      },
       "activity": {
         "title": "Activity",
         "boostedVideos": "Boosted videos",

@@ -50,3 +50,9 @@ export const newsletterSubscribeRequestSchema = z.object({
 export const newsletterSubscribeResponseSchema = z.object({
   subscribed: z.boolean(),
 });
+
+export const eventQuestionCreateSchema = z.object({
+  locale: z.enum(["en", "cs"]).optional(),
+  talkIndex: z.number().int().min(0).nullable().optional(),
+  text: z.string().min(3).max(600),
+});

@@ -42,6 +42,7 @@ export const PAGE_ROUTES = {
     withOptionalReturnPath(`/login?reason-hint=${reason}`, returnPath),
   ME: "/me",
   EVENT: (id: string) => `/events/${id}`,
+  EVENT_QUESTIONS: (id: string) => `/events/${id}/questions`,
   EVENT_CHECK_IN: "/events/check-ins",
   EVENT_PAST: "/events/past",
   EVENT_READER: "/events/reader",

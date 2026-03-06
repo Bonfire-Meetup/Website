@@ -1009,6 +1009,45 @@ export function CloseIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function RefreshIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.8}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M16.023 8.977A6.75 6.75 0 1 0 18.75 14h-2.25m-.477-5.023H19.5V5.5"
+      />
+    </svg>
+  );
+}
+
+export function SendIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.8}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3.75 11.25 18.5 4.75c1.14-.5 2.3.66 1.8 1.8l-6.5 14.75c-.54 1.22-2.34 1.12-2.74-.15l-1.55-4.93a1.5 1.5 0 0 0-.95-.95l-4.93-1.55c-1.27-.4-1.37-2.2-.15-2.74Z"
+      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.2 14.8 20 6" />
+    </svg>
+  );
+}
+
 export function DownloadIcon({ className, ...props }: IconProps) {
   return (
     <svg

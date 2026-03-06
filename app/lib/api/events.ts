@@ -21,10 +21,40 @@ interface EventRsvpsData {
   hasRsvped: boolean;
 }
 
+interface EventQuestionItem {
+  authorName: string | null;
+  authorPublicId: string | null;
+  authorIsPublic: boolean;
+  authorMembershipTier: number | null;
+  id: string;
+  text: string;
+  talkIndex: number | null;
+  createdAt: string;
+  boostCount: number;
+  hasBoosted: boolean;
+  isOwn: boolean;
+}
+
+interface EventQuestionsData {
+  items: EventQuestionItem[];
+  isWindowOpen: boolean;
+  opensAt: string | null;
+  closesAt: string | null;
+  isAuthenticated: boolean;
+  canParticipate: boolean;
+  availableBoosts: number | null;
+}
+
 interface OptimisticUserInfo {
   userId: string;
   name: string | null;
   isPublic: boolean;
+}
+
+interface EventQuestionCreateInput {
+  text: string;
+  talkIndex: number | null;
+  locale: "en" | "cs";
 }
 
 async function fetchEventRsvps(
@@ -42,6 +72,21 @@ async function fetchEventRsvps(
   return response.json() as Promise<EventRsvpsData>;
 }
 
+async function fetchEventQuestions(
+  eventId: string,
+  accessToken: string | null,
+): Promise<EventQuestionsData> {
+  const response = await fetch(API_ROUTES.EVENTS.QUESTIONS(eventId), {
+    headers: createAuthHeaders(accessToken),
+  });
+
+  if (!response.ok) {
+    throw new ApiError("Event questions fetch failed", response.status);
+  }
+
+  return response.json() as Promise<EventQuestionsData>;
+}
+
 export function useEventRsvps(eventId: string) {
   const canFetch = Boolean(eventId);
   const hasToken = Boolean(readAccessToken());
@@ -55,6 +100,22 @@ export function useEventRsvps(eventId: string) {
     },
     queryKey: ["event-rsvps", eventId, hasToken ? "auth" : "anon"],
     staleTime: 60000,
+  });
+}
+
+export function useEventQuestions(eventId: string) {
+  const canFetch = Boolean(eventId);
+  const hasToken = Boolean(readAccessToken());
+
+  return useQuery({
+    enabled: canFetch,
+    queryFn: () => {
+      const token = readAccessToken();
+      const isValid = token ? isAccessTokenValid(token) : false;
+      return fetchEventQuestions(eventId, isValid ? token : null);
+    },
+    queryKey: ["event-questions", eventId, hasToken ? "auth" : "anon"],
+    staleTime: 15000,
   });
 }
 
@@ -234,4 +295,171 @@ export function useDeleteRsvpMutation(eventId: string) {
   });
 }
 
-export type { EventRsvpsData, EventRsvpUser, OptimisticUserInfo };
+export function useCreateEventQuestionMutation(eventId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ success: boolean }, ApiError, EventQuestionCreateInput>({
+    mutationFn: async (payload) => {
+      if (!eventId) {
+        throw new ApiError("Missing eventId", 400);
+      }
+
+      const token = readAccessToken();
+      const isValid = token ? isAccessTokenValid(token) : false;
+
+      if (!isValid) {
+        throw new ApiError("Authentication required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.EVENTS.QUESTIONS(eventId), {
+        body: JSON.stringify(payload),
+        headers: {
+          ...createAuthHeaders(token),
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const errorData = (await response.json().catch(() => ({}))) as { error?: string };
+        throw new ApiError("Event question create failed", response.status, errorData);
+      }
+
+      return response.json() as Promise<{ success: boolean }>;
+    },
+    onError: (error) => {
+      logError("events.questions.create_mutation_failed", error, { eventId });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["event-questions", eventId] });
+    },
+    retry: shouldRetryMutation,
+  });
+}
+
+export function useBoostEventQuestionMutation(eventId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    { count: number; added?: boolean; availableBoosts?: number },
+    ApiError,
+    { questionId: string }
+  >({
+    mutationFn: async ({ questionId }) => {
+      const token = readAccessToken();
+      const isValid = token ? isAccessTokenValid(token) : false;
+
+      if (!isValid) {
+        throw new ApiError("Authentication required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.EVENTS.QUESTION_BOOSTS(eventId, questionId), {
+        headers: createAuthHeaders(token),
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const errorData = (await response.json().catch(() => ({}))) as { error?: string };
+        throw new ApiError("Question boost failed", response.status, errorData);
+      }
+
+      return response.json() as Promise<{
+        count: number;
+        added?: boolean;
+        availableBoosts?: number;
+      }>;
+    },
+    onError: (error) => {
+      logError("events.questions.boost_mutation_failed", error, { eventId });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["event-questions", eventId] });
+    },
+    retry: shouldRetryMutation,
+  });
+}
+
+export function useUnboostEventQuestionMutation(eventId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    { count: number; removed?: boolean; availableBoosts?: number },
+    ApiError,
+    { questionId: string }
+  >({
+    mutationFn: async ({ questionId }) => {
+      const token = readAccessToken();
+      const isValid = token ? isAccessTokenValid(token) : false;
+
+      if (!isValid) {
+        throw new ApiError("Authentication required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.EVENTS.QUESTION_BOOSTS(eventId, questionId), {
+        headers: createAuthHeaders(token),
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = (await response.json().catch(() => ({}))) as { error?: string };
+        throw new ApiError("Question unboost failed", response.status, errorData);
+      }
+
+      return response.json() as Promise<{
+        count: number;
+        removed?: boolean;
+        availableBoosts?: number;
+      }>;
+    },
+    onError: (error) => {
+      logError("events.questions.unboost_mutation_failed", error, { eventId });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["event-questions", eventId] });
+    },
+    retry: shouldRetryMutation,
+  });
+}
+
+export function useDeleteEventQuestionMutation(eventId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ success: boolean }, ApiError, { questionId: string }>({
+    mutationFn: async ({ questionId }) => {
+      const token = readAccessToken();
+      const isValid = token ? isAccessTokenValid(token) : false;
+
+      if (!isValid) {
+        throw new ApiError("Authentication required", 401);
+      }
+
+      const response = await fetch(API_ROUTES.EVENTS.QUESTION(eventId, questionId), {
+        headers: createAuthHeaders(token),
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = (await response.json().catch(() => ({}))) as { error?: string };
+        throw new ApiError("Question delete failed", response.status, errorData);
+      }
+
+      return response.json() as Promise<{ success: boolean }>;
+    },
+    onError: (error) => {
+      logError("events.questions.delete_mutation_failed", error, { eventId });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["event-questions", eventId] });
+    },
+    retry: shouldRetryMutation,
+  });
+}
+
+export type {
+  EventQuestionCreateInput,
+  EventQuestionItem,
+  EventQuestionsData,
+  EventRsvpsData,
+  EventRsvpUser,
+  OptimisticUserInfo,
+};
