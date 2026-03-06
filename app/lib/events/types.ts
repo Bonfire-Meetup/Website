@@ -16,7 +16,11 @@ export interface EventLinks {
   eventbrite?: string;
 }
 
+export type EventAnnouncementStatus = "draft" | "partial" | "full";
+
 export interface EventItem {
+  announcementStatus?: EventAnnouncementStatus;
+  announcedAt?: string;
   id: string;
   isPlaceholder?: boolean;
   title: string;

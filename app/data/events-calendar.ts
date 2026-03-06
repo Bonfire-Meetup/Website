@@ -1,5 +1,5 @@
 import { isTbaDate, parseEventDateTimeMs, parseEventDateTimeParts } from "@/lib/events/datetime";
-import type { EventItem, EventSpeaker } from "@/lib/events/types";
+import type { EventAnnouncementStatus, EventItem, EventSpeaker } from "@/lib/events/types";
 
 import eventsCalendarData from "./events-calendar.json";
 
@@ -10,6 +10,8 @@ interface EventCalendarJson {
 }
 
 interface CalendarEventJson {
+  announcementStatus?: EventAnnouncementStatus;
+  announcedAt?: string;
   id: string;
   title: string;
   episode?: string;
@@ -40,6 +42,8 @@ function validateEvent(event: CalendarEventJson): EventItem {
   }));
 
   return {
+    announcedAt: event.announcedAt,
+    announcementStatus: event.announcementStatus,
     date: event.date,
     description: event.description,
     episode: event.episode,

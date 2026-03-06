@@ -38,7 +38,6 @@ interface EventQuestionItem {
 interface EventQuestionsData {
   items: EventQuestionItem[];
   isWindowOpen: boolean;
-  opensAt: string | null;
   closesAt: string | null;
   isAuthenticated: boolean;
   canParticipate: boolean;

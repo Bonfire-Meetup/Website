@@ -64,7 +64,6 @@ export const GET = withRequestContext(
         isAuthenticated: false,
         isWindowOpen: false,
         items: [],
-        opensAt: null,
       });
     }
 
@@ -86,7 +85,6 @@ export const GET = withRequestContext(
         isAuthenticated: Boolean(userId),
         isWindowOpen: window.isOpen,
         items,
-        opensAt: window.opensAt,
       });
     } catch (error) {
       logError("events.questions.get_failed", error, { eventId, userId });

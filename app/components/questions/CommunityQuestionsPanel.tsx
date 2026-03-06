@@ -66,48 +66,6 @@ function CommunityQuestionsPanelSkeleton() {
   );
 }
 
-function getCountdownParts(milliseconds: number): {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-} {
-  const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
-  return {
-    days: Math.floor(totalSeconds / 86400),
-    hours: Math.floor((totalSeconds % 86400) / 3600),
-    minutes: Math.floor((totalSeconds % 3600) / 60),
-    seconds: totalSeconds % 60,
-  };
-}
-
-function CountdownBlock({
-  value,
-  label,
-  theme,
-}: {
-  value: number;
-  label: string;
-  theme: PanelTheme;
-}) {
-  return (
-    <div className="flex flex-col items-center gap-1.5">
-      <div
-        className={`flex min-w-[52px] items-center justify-center rounded-xl border ${theme.blockBorder} bg-white px-2 py-3 shadow-sm sm:min-w-[60px] dark:bg-white/[0.07]`}
-      >
-        <span
-          className={`bg-gradient-to-b ${theme.digitGradient} bg-clip-text text-2xl font-black tracking-tight text-transparent tabular-nums sm:text-3xl`}
-        >
-          {String(value).padStart(2, "0")}
-        </span>
-      </div>
-      <span className="text-[10px] font-bold tracking-widest text-neutral-400 uppercase dark:text-neutral-500">
-        {label}
-      </span>
-    </div>
-  );
-}
-
 const PILL_SELECT_BASE =
   "w-auto rounded-full border border-neutral-200/70 bg-neutral-50 py-1 pl-2.5 pr-6 text-[11px] font-medium text-neutral-600 outline-none transition-colors dark:border-white/10 dark:bg-white/5 dark:text-neutral-300";
 
@@ -125,11 +83,7 @@ export function CommunityQuestionsPanel({
   const canSubmitQuestion =
     panel.canParticipate && panel.text.trim().length >= 3 && !panel.createQuestion.isPending;
   const isUpcomingMode = !panel.isWindowOpen && !panel.isReplayMode;
-  const [now, setNow] = useState(() => Date.now());
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(defaultAutoRefresh);
-  const opensAtTimestamp = panel.opensAt ? new Date(panel.opensAt).getTime() : Number.NaN;
-  const countdownMs = Number.isFinite(opensAtTimestamp) ? opensAtTimestamp - now : Number.NaN;
-  const countdownParts = Number.isFinite(countdownMs) ? getCountdownParts(countdownMs) : null;
   const lastRefreshLabel =
     panel.dataUpdatedAt > 0
       ? formatDateTimeUTC(new Date(panel.dataUpdatedAt).toISOString(), panel.locale)
@@ -140,26 +94,6 @@ export function CommunityQuestionsPanel({
     : isUpcomingMode
       ? panel.t("questions.windowOpensSoon")
       : panel.t("questions.title");
-
-  useEffect(() => {
-    if (!isUpcomingMode || !Number.isFinite(opensAtTimestamp)) {
-      return;
-    }
-
-    const tick = window.setInterval(() => {
-      const nextNow = Date.now();
-      setNow(nextNow);
-
-      if (nextNow >= opensAtTimestamp) {
-        window.clearInterval(tick);
-        window.location.reload();
-      }
-    }, 1000);
-
-    return () => {
-      window.clearInterval(tick);
-    };
-  }, [isUpcomingMode, opensAtTimestamp]);
 
   useEffect(() => {
     if (!showAutoRefreshToggle || !autoRefreshEnabled || !panel.isWindowOpen) {
@@ -298,28 +232,21 @@ export function CommunityQuestionsPanel({
 
       {isUpcomingMode && (
         <div className={`rounded-2xl border px-4 py-5 ${theme.card}`}>
-          {countdownParts ? (
-            <div className="flex items-start gap-2 sm:gap-3">
-              {countdownParts.days > 0 && (
-                <CountdownBlock value={countdownParts.days} label="d" theme={theme} />
-              )}
-              {(countdownParts.days > 0 || countdownParts.hours > 0) && (
-                <CountdownBlock value={countdownParts.hours} label="h" theme={theme} />
-              )}
-              <CountdownBlock value={countdownParts.minutes} label="m" theme={theme} />
-              <CountdownBlock value={countdownParts.seconds} label="s" theme={theme} />
+          <div className="flex items-start gap-3">
+            <div
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${theme.blockBorder} bg-white shadow-sm dark:bg-white/[0.07]`}
+            >
+              <ClockIcon className={`h-4 w-4 ${theme.icon}`} />
             </div>
-          ) : (
-            <div className="text-2xl font-black text-neutral-900 dark:text-white">
-              {panel.opensAtFormatted}
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-neutral-900 dark:text-white">
+                {panel.t("questions.windowClosedInfo")}
+              </p>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                {panel.t("questions.windowClosedHint")}
+              </p>
             </div>
-          )}
-          {panel.opensAt && (
-            <p className="mt-3 flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
-              <ClockIcon className={`h-3.5 w-3.5 shrink-0 ${theme.icon}`} />
-              {panel.opensAtFormatted}
-            </p>
-          )}
+          </div>
         </div>
       )}
 

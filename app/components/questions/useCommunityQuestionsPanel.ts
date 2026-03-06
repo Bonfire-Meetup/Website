@@ -19,20 +19,6 @@ export type QuestionItem = EventQuestionsData["items"][number];
 export type SortMode = "boosts" | "date";
 export type TalkFilter = "all" | "general" | `${number}`;
 
-function formatWindowDateTime(iso: string | null, locale: string): string {
-  if (!iso) {
-    return "—";
-  }
-
-  return new Intl.DateTimeFormat(locale, {
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    month: "short",
-    timeZone: "UTC",
-  }).format(new Date(iso));
-}
-
 function getMutationErrorCode(error: unknown): string | undefined {
   return (error as { data?: { error?: string } } | undefined)?.data?.error;
 }
@@ -139,7 +125,6 @@ export function useCommunityQuestionsPanel(eventId: string) {
   const canParticipate = data?.canParticipate ?? false;
   const isReplayMode = isReplayWindow(isWindowOpen, data?.closesAt);
   const availableBoosts = data?.availableBoosts ?? null;
-  const opensAtFormatted = formatWindowDateTime(data?.opensAt ?? null, locale);
 
   const visibleQuestions = useMemo(
     () => filterAndSortQuestions(data?.items ?? [], activeTalkFilter, sortMode),
@@ -255,8 +240,6 @@ export function useCommunityQuestionsPanel(eventId: string) {
     isReplayMode,
     isWindowOpen,
     locale,
-    opensAt: data?.opensAt ?? null,
-    opensAtFormatted,
     selectedTalkIndex,
     setActiveTalkFilter,
     setConfirmDeleteId,
