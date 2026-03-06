@@ -8,6 +8,7 @@ import { ShareEventButton } from "@/components/events/ShareEventButton";
 import {
   CalendarIcon,
   ClockIcon,
+  CurrencyDollarIcon,
   EventbriteIcon,
   ExternalLinkIcon,
   FacebookIcon,
@@ -26,6 +27,7 @@ import {
   WEBSITE_URLS,
   type LocationValue,
 } from "@/lib/config/constants";
+import { getDaysUntilEventDate } from "@/lib/events/datetime";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
 import {
   formatSpeakerNameWithCompany,
@@ -267,6 +269,15 @@ export function EventDetailContent({
   const isTba = isTbaDate(date);
   const isPastEvent = isEventPast({ date, time }, new Date());
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
+  const daysUntil = getDaysUntilEventDate(date);
+  const countdownLabel =
+    daysUntil === null
+      ? null
+      : daysUntil === 0
+        ? t("countdownToday")
+        : daysUntil === 1
+          ? t("countdownTomorrow")
+          : t("countdownDays", { count: daysUntil.toString() });
 
   const calendarDateTime = !isTba ? parseEventDateTimeParts(date, time) : null;
   const calendarStart = calendarDateTime ? formatCalendarDate(calendarDateTime) : null;
@@ -508,24 +519,30 @@ export function EventDetailContent({
                 </div>
               </div>
             )}
-            <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-3">
-              <div className="glass flex items-center gap-2.5 rounded-2xl px-4 py-2.5">
+            <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-2.5">
+              <div className="glass flex items-center gap-2 rounded-2xl px-3.5 py-2">
                 <CalendarIcon className="h-[18px] w-[18px]" style={{ color: loc.color }} />
                 <span className="text-sm font-semibold text-neutral-900 dark:text-white">
                   {formattedDate}
                 </span>
               </div>
-              <div className="glass flex items-center gap-2.5 rounded-2xl px-4 py-2.5">
+              <div className="glass flex items-center gap-2 rounded-2xl px-3.5 py-2">
                 <ClockIcon className="h-[18px] w-[18px]" style={{ color: loc.color }} />
                 <span className="text-sm font-semibold text-neutral-900 dark:text-white">
                   {time}
+                </span>
+              </div>
+              <div className="glass flex items-center gap-2 rounded-2xl px-3.5 py-2">
+                <CurrencyDollarIcon className="h-[18px] w-[18px]" style={{ color: loc.color }} />
+                <span className="text-sm font-semibold text-neutral-900 dark:text-white">
+                  {t("freeEntryShort")}
                 </span>
               </div>
               <a
                 href={getGoogleMapsSearchUrl(venue)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass group flex items-center gap-2.5 rounded-2xl px-4 py-2.5 transition-colors"
+                className="glass group flex items-center gap-2 rounded-2xl px-3.5 py-2 transition-colors"
               >
                 <MapPinIcon className="h-[18px] w-[18px]" style={{ color: loc.color }} />
                 <span
@@ -555,7 +572,7 @@ export function EventDetailContent({
                   </div>
                   <div>
                     <p className="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
-                      Event Flow
+                      {t("eventFlow")}
                     </p>
                     <h2 className="text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
                       {t("speakers")}
@@ -563,7 +580,7 @@ export function EventDetailContent({
                   </div>
                 </div>
                 <span className="inline-flex items-center rounded-full border border-neutral-200/70 bg-white/70 px-3.5 py-1.5 text-xs font-semibold text-neutral-700 dark:border-white/10 dark:bg-white/10 dark:text-neutral-200">
-                  {confirmedSpeakers.length} {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
+                  {t("talkCount", { count: confirmedSpeakers.length })}
                 </span>
               </div>
 
@@ -770,6 +787,13 @@ export function EventDetailContent({
                     {isTba ? t("tbaDescription") : t("registerDescription", { location })}
                   </p>
 
+                  {!isTba && !isPastEvent && countdownLabel && (
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-neutral-200/80 bg-white/80 px-3 py-1.5 text-xs font-semibold text-neutral-700 dark:border-white/10 dark:bg-white/10 dark:text-neutral-200">
+                      <ClockIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
+                      <span>{countdownLabel}</span>
+                    </div>
+                  )}
+
                   <div className="mt-8">
                     {isPastEvent ? (
                       <div className="rounded-2xl border border-neutral-200/70 bg-neutral-100/70 px-4 py-4 dark:border-white/10 dark:bg-white/5">
@@ -854,8 +878,13 @@ export function EventDetailContent({
               <div className="mt-4">
                 <ShareEventButton
                   sectionTitle={t("shareEvent")}
+                  title={title}
                   copyLabel={t("copyLink")}
                   copiedLabel={t("copied")}
+                  shareLabel={t("shareNow")}
+                  shareXLabel={t("shareOnX")}
+                  shareLinkedInLabel={t("shareOnLinkedIn")}
+                  shareMessage={t("shareMessage", { title })}
                   shortPath={shortPath}
                 />
               </div>
@@ -863,22 +892,23 @@ export function EventDetailContent({
 
             <div className="lg:sticky lg:top-24 lg:col-span-2">
               <div className="glass self-start rounded-3xl p-5 sm:p-6">
-                <div
-                  className="mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5"
-                  style={{ background: `${loc.color}12` }}
-                >
-                  <div className="h-2 w-2 rounded-full" style={{ background: loc.color }} />
-                  <span
-                    className="text-xs font-bold tracking-wide uppercase"
-                    style={{ color: loc.color }}
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h3 className="text-lg font-bold text-neutral-900 dark:text-white">
+                    {t("venueTitle")}
+                  </h3>
+                  <div
+                    className="inline-flex items-center gap-2 rounded-full px-3 py-1.5"
+                    style={{ background: `${loc.color}12` }}
                   >
-                    {location}
-                  </span>
+                    <div className="h-2 w-2 rounded-full" style={{ background: loc.color }} />
+                    <span
+                      className="text-xs font-bold tracking-wide uppercase"
+                      style={{ color: loc.color }}
+                    >
+                      {location}
+                    </span>
+                  </div>
                 </div>
-
-                <h3 className="mb-4 text-lg font-bold text-neutral-900 dark:text-white">
-                  {t("venueTitle")}
-                </h3>
 
                 <a
                   href={getGoogleMapsSearchUrl(venue)}
@@ -937,8 +967,7 @@ export function EventDetailContent({
                         </span>
                       </div>
                       <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-                        {confirmedSpeakers.length}{" "}
-                        {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
+                        {t("talkCount", { count: confirmedSpeakers.length })}
                       </span>
                     </div>
                   </div>

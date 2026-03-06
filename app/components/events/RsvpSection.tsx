@@ -48,7 +48,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
 
     if (!userId) {
       haptics.error();
-      setError("Unable to RSVP. Please refresh the page.");
+      setError(t("rsvpErrors.unableToRsvp"));
       return;
     }
 
@@ -61,7 +61,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
         },
         onError: (err) => {
           haptics.error();
-          setError(err.message || "Failed to cancel RSVP. Please try again.");
+          setError(err.message || t("rsvpErrors.cancelFailed"));
         },
       });
     } else {
@@ -72,11 +72,11 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
         onError: (err) => {
           haptics.error();
           if (err.status === 429) {
-            setError("Too many attempts. Please wait a moment.");
+            setError(t("rsvpErrors.tooManyAttempts"));
           } else if (err.status === 409) {
-            setError("You've already RSVPed for this event.");
+            setError(t("rsvpErrors.alreadyRsvped"));
           } else {
-            setError(err.message || "Failed to RSVP. Please try again.");
+            setError(err.message || t("rsvpErrors.createFailed"));
           }
         },
       });
@@ -90,6 +90,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
     createMutation,
     deleteMutation,
     haptics,
+    t,
   ]);
 
   return (
@@ -128,14 +129,12 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
 
       {error && <p className="text-sm font-medium text-red-600 dark:text-red-400">{error}</p>}
 
-      {(rsvpsLoading || totalCount > 0) && (
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-2 text-xs text-neutral-500 dark:text-neutral-400">
-          <span className="font-semibold text-neutral-700 dark:text-neutral-200">
-            {t("attendingLabel")}
-          </span>
-          <RsvpAvatarList eventId={eventId} />
-        </div>
-      )}
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-2 text-xs text-neutral-500 dark:text-neutral-400">
+        <span className="font-semibold text-neutral-700 dark:text-neutral-200">
+          {totalCount > 0 ? t("attendingCount", { count: totalCount }) : t("beFirst")}
+        </span>
+        {(rsvpsLoading || totalCount > 0) && <RsvpAvatarList eventId={eventId} />}
+      </div>
     </div>
   );
 }

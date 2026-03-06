@@ -136,11 +136,13 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
     requestAnimationFrame(() => setIsOpen(true));
   };
 
-  const closeMenu = () => {
+  const closeMenu = ({ withHaptic = true }: { withHaptic?: boolean } = {}) => {
     if (!isOpen) {
       return;
     }
-    haptics.neutral();
+    if (withHaptic) {
+      haptics.neutral();
+    }
     setIsOpen(false);
   };
 
@@ -226,7 +228,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                 transition:
                   "opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 400ms cubic-bezier(0.4, 0, 0.2, 1)",
               }}
-              onClick={closeMenu}
+              onClick={() => closeMenu()}
             />
 
             <div
@@ -249,7 +251,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                   <button
                     ref={closeButtonRef}
                     type="button"
-                    onClick={closeMenu}
+                    onClick={() => closeMenu()}
                     className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
                     aria-label={t("close")}
                   >
@@ -267,8 +269,12 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                         key={item.href}
                         href={item.href}
                         onClick={() => {
-                          haptics.success();
-                          closeMenu();
+                          if (active) {
+                            haptics.neutral();
+                          } else {
+                            haptics.success();
+                          }
+                          closeMenu({ withHaptic: false });
                         }}
                         className="group flex flex-col items-center justify-center gap-2 rounded-2xl p-3 transition active:scale-95"
                         style={{
@@ -378,7 +384,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                       className="flex items-center justify-center gap-2 bg-white/70 px-4 py-3 transition hover:bg-white/80 active:scale-95 dark:bg-neutral-900/60 dark:hover:bg-neutral-800/70"
                       onClick={() => {
                         haptics.success();
-                        closeMenu();
+                        closeMenu({ withHaptic: false });
                       }}
                     >
                       <CookieIcon className="h-4 w-4 text-neutral-500 dark:text-neutral-400" />

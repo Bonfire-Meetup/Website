@@ -222,6 +222,10 @@ function HeaderInner() {
           <Button
             href={PAGE_ROUTES.LIBRARY}
             onClick={() => {
+              if (isLibraryContext) {
+                haptics.neutral();
+                return;
+              }
               haptics.success();
             }}
             variant="primary"

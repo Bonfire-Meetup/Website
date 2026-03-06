@@ -8,7 +8,7 @@ const HAPTIC_PATTERNS = {
   error: "error",
   neutral: "nudge",
   success: "success",
-  warning: "buzz",
+  warning: "warning",
 } as const;
 
 export function useHaptics() {

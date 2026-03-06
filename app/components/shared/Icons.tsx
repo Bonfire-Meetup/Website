@@ -330,6 +330,25 @@ export function ClockIcon({ className, ...props }: IconProps) {
   );
 }
 
+export function CurrencyDollarIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 6v12m3-10.5H10.875a2.625 2.625 0 1 0 0 5.25h2.25a2.625 2.625 0 1 1 0 5.25H9"
+      />
+    </svg>
+  );
+}
+
 export function DiscordIcon({ className, ...props }: IconProps) {
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" {...props}>
