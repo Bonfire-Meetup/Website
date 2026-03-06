@@ -4,19 +4,10 @@ import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 
 import { fetchEngagementCounts } from "../data/trending";
 
+import { getDailySeed, hashWithDailySeed, isHiddenGemCandidate } from "./engagement-scoring";
 import { type Recording, getAllRecordings } from "./recordings";
 
 export type HiddenGemRecording = Recording;
-
-function hashShortId(shortId: string, seed: number): number {
-  let hash = seed;
-
-  for (let i = 0; i < shortId.length; i++) {
-    hash = (hash * 31 + shortId.charCodeAt(i)) | 0;
-  }
-
-  return hash >>> 0;
-}
 
 export async function getHiddenGems(limit = 6): Promise<HiddenGemRecording[]> {
   "use cache";
@@ -29,7 +20,6 @@ export async function getHiddenGems(limit = 6): Promise<HiddenGemRecording[]> {
   ]);
 
   const now = Date.now();
-  const sixMonthsAgo = now - 180 * 24 * 60 * 60 * 1000;
 
   const hiddenGems = allRecordings
     .map((recording) => {
@@ -46,12 +36,14 @@ export async function getHiddenGems(limit = 6): Promise<HiddenGemRecording[]> {
         recordingDate,
       };
     })
-    .filter((r) => {
-      const isOldEnough = r.recordingDate < sixMonthsAgo;
-      const hasLowEngagement = r.likeCount <= 2 && r.boostCount === 0;
-
-      return isOldEnough && hasLowEngagement;
-    })
+    .filter((r) =>
+      isHiddenGemCandidate({
+        likeCount: r.likeCount,
+        boostCount: r.boostCount,
+        recordingDateMs: r.recordingDate,
+        now,
+      }),
+    )
     .sort((a, b) => {
       const aHasFeatured = Boolean(a.featureHeroThumbnail);
       const bHasFeatured = Boolean(b.featureHeroThumbnail);
@@ -68,10 +60,10 @@ export async function getHiddenGems(limit = 6): Promise<HiddenGemRecording[]> {
   }
 
   const today = new Date();
-  const seed = today.getFullYear() * 10000 + today.getMonth() * 100 + today.getDate();
+  const seed = getDailySeed(today);
   const shuffled = [...hiddenGems].sort((a, b) => {
-    const hashA = hashShortId(a.shortId, seed);
-    const hashB = hashShortId(b.shortId, seed);
+    const hashA = hashWithDailySeed(a.shortId, seed);
+    const hashB = hashWithDailySeed(b.shortId, seed);
 
     return hashA - hashB;
   });

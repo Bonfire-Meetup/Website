@@ -10,6 +10,11 @@ import {
   normalizeRecordingAccessPolicy,
 } from "./early-access";
 import { getEpisodeById } from "./episodes";
+import {
+  calculateRelatedBaseScore,
+  calculateRelatedDiversityPenalty,
+  calculateRelatedExplorePenalty,
+} from "./recommendation-scoring";
 
 export interface Recording {
   youtubeId: string;
@@ -88,41 +93,6 @@ export function getRelatedRecordings(
   const countSharedSpeakers = (speakers: string[]) =>
     speakers.map((name) => name.toLowerCase()).filter((name) => recordingSpeakers.has(name)).length;
 
-  const getRecencyScore = (dateMs: number) => {
-    const daysDiff = Math.floor(Math.abs(recordingDate - dateMs) / (1000 * 60 * 60 * 24));
-
-    if (daysDiff <= 365) {
-      return 2;
-    }
-
-    if (daysDiff <= 730) {
-      return 1;
-    }
-
-    return 0;
-  };
-
-  const getScore = (r: Recording, dateMs: number) => {
-    let score = 0;
-    const sharedTags = Math.min(countSharedTags(r.tags), 3);
-    const sharedSpeakers = Math.min(countSharedSpeakers(r.speaker), 2);
-    const sameEpisode = Boolean(r.episode && recording.episode && r.episode === recording.episode);
-
-    if (sameEpisode) {
-      score += 6;
-    }
-
-    if (r.location === recording.location) {
-      score += 2;
-    }
-
-    score += sharedTags * 3;
-    score += sharedSpeakers * 4;
-    score += getRecencyScore(dateMs);
-
-    return score;
-  };
-
   const candidates = allRecordings
     .filter((r) => r.youtubeId !== recording.youtubeId)
     .map((r) => {
@@ -140,7 +110,14 @@ export function getRelatedRecordings(
         recording: r,
         sameEpisode,
         sameLocation,
-        score: getScore(r, dateMs),
+        score: calculateRelatedBaseScore({
+          sourceDateMs: recordingDate,
+          candidateDateMs: dateMs,
+          sharedTagCount: sharedTags,
+          sharedSpeakerCount: sharedSpeakers,
+          sameEpisode,
+          sameLocation,
+        }),
         sharedSpeakers,
         sharedTags,
         speakersLower: r.speaker.map((name) => name.toLowerCase()),
@@ -230,10 +207,14 @@ export function getRelatedRecordings(
           const sharedWithSelectedSpeakers = candidate.speakersLower.filter((name) =>
             usedSpeakers.has(name),
           ).length;
-          const episodePenalty =
-            candidate.recording.episode && usedEpisodes.has(candidate.recording.episode) ? 3 : 0;
-          const diversityPenalty =
-            Number(sharedWithSelectedTags) + sharedWithSelectedSpeakers * 4 + episodePenalty;
+          const selectedAlreadyHasEpisode = candidate.recording.episode
+            ? usedEpisodes.has(candidate.recording.episode)
+            : false;
+          const diversityPenalty = calculateRelatedDiversityPenalty({
+            sharedWithSelectedTags,
+            sharedWithSelectedSpeakers,
+            selectedAlreadyHasEpisode,
+          });
           const rankedScore =
             candidate.score - (options.applyDiversityPenalty ? diversityPenalty : 0);
 
@@ -292,14 +273,15 @@ export function getRelatedRecordings(
         const sharedWithSelectedSpeakers = candidate.speakersLower.filter((name) =>
           usedSpeakers.has(name),
         ).length;
-        const episodePenalty =
-          candidate.recording.episode && usedEpisodes.has(candidate.recording.episode) ? 4 : 0;
-        const locationPenalty = candidate.sameLocation ? 1 : 0;
-        const overlapPenalty =
-          sharedWithSelectedTags * 2 +
-          sharedWithSelectedSpeakers * 3 +
-          episodePenalty +
-          locationPenalty;
+        const selectedAlreadyHasEpisode = candidate.recording.episode
+          ? usedEpisodes.has(candidate.recording.episode)
+          : false;
+        const overlapPenalty = calculateRelatedExplorePenalty({
+          sharedWithSelectedTags,
+          sharedWithSelectedSpeakers,
+          selectedAlreadyHasEpisode,
+          sameLocation: candidate.sameLocation,
+        });
         const rankedScore = candidate.score - overlapPenalty;
 
         if (rankedScore > bestScore) {

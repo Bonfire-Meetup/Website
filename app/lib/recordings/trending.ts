@@ -4,43 +4,9 @@ import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 
 import { DEFAULT_ENGAGEMENT_WINDOW_DAYS, fetchWindowedEngagementCounts } from "../data/trending";
 
+import { calculateTrendingScore } from "./engagement-scoring";
 import { type Recording, getAllRecordings } from "./recordings";
 import { createFeaturedBackfill, fillUniqueByShortId } from "./selection-utils";
-
-function calculateTrendingScore(
-  recording: Recording,
-  recentLikeCount: number,
-  recentBoostCount: number,
-  totalLikeCount: number,
-  totalBoostCount: number,
-  now: number,
-): number {
-  let score = 0;
-
-  score += recentLikeCount * 3;
-  score += recentBoostCount * 6;
-  score += Math.sqrt(totalLikeCount) * 1.5;
-  score += Math.sqrt(totalBoostCount) * 3;
-
-  const recordingDate = new Date(recording.date).getTime();
-  const daysSince = Math.floor((now - recordingDate) / (1000 * 60 * 60 * 24));
-
-  if (daysSince <= 120) {
-    score += 6;
-  } else if (daysSince <= 240) {
-    score += 4;
-  } else if (daysSince <= 365) {
-    score += 2;
-  } else if (daysSince <= 540) {
-    score += 1;
-  }
-
-  if (recording.featureHeroThumbnail) {
-    score += 3;
-  }
-
-  return score;
-}
 
 export type TrendingRecording = Recording & {
   likeCount: number;
@@ -65,14 +31,15 @@ export async function getTrendingRecordings(limit = 6): Promise<TrendingRecordin
     const recentBoostCount = engagement.recent.boosts[recording.shortId] ?? 0;
     const totalLikeCount = engagement.total.likes[recording.shortId] ?? 0;
     const totalBoostCount = engagement.total.boosts[recording.shortId] ?? 0;
-    const trendingScore = calculateTrendingScore(
-      recording,
+    const trendingScore = calculateTrendingScore({
       recentLikeCount,
       recentBoostCount,
       totalLikeCount,
       totalBoostCount,
+      recordingDateMs: new Date(recording.date).getTime(),
+      hasFeatureHeroThumbnail: Boolean(recording.featureHeroThumbnail),
       now,
-    );
+    });
 
     return {
       ...recording,

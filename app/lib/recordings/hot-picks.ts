@@ -4,6 +4,7 @@ import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 
 import { fetchEngagementCounts } from "../data/trending";
 
+import { calculateHotScore } from "./engagement-scoring";
 import { type Recording, getAllRecordings } from "./recordings";
 import {
   createFeaturedBackfill,
@@ -17,22 +18,6 @@ export type HotRecording = Recording & {
 };
 
 let lastHotRecordings: HotRecording[] | null = null;
-
-function calculateHotScore(likeCount: number, recordingDate: Date, now: number): number {
-  let score = likeCount * 10;
-
-  const daysSince = Math.floor((now - recordingDate.getTime()) / (1000 * 60 * 60 * 24));
-
-  if (daysSince <= 90) {
-    score += 3;
-  } else if (daysSince <= 180) {
-    score += 2;
-  } else if (daysSince <= 365) {
-    score += 1;
-  }
-
-  return score;
-}
 
 export async function getHotRecordings(limit = 6): Promise<HotRecording[]> {
   "use cache";
@@ -49,7 +34,11 @@ export async function getHotRecordings(limit = 6): Promise<HotRecording[]> {
   const withLikes = allRecordings
     .map((recording) => {
       const likeCount = engagement.likes[recording.shortId] ?? 0;
-      const hotScore = calculateHotScore(likeCount, new Date(recording.date), now);
+      const hotScore = calculateHotScore({
+        likeCount,
+        recordingDateMs: new Date(recording.date).getTime(),
+        now,
+      });
 
       return { ...recording, hotScore, likeCount };
     })

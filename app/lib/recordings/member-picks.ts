@@ -10,6 +10,7 @@ import { logError, logWarn } from "@/lib/utils/log";
 import { withRetry } from "@/lib/utils/retry";
 import { shouldDisableDbDuringBuild } from "@/lib/utils/runtime";
 
+import { compareByBoostCountDesc } from "./engagement-scoring";
 import { type Recording, getAllRecordings } from "./recordings";
 import { createFeaturedBackfill, createRecentBackfill } from "./selection-utils";
 
@@ -99,7 +100,7 @@ export async function getMemberPicks(limit = 6): Promise<MemberPickRecording[]> 
       ...r,
       boostCount: boostMap.get(r.shortId) ?? 0,
     }))
-    .sort((a, b) => b.boostCount - a.boostCount)
+    .sort(compareByBoostCountDesc)
     .slice(0, limit);
 
   if (boostedRecordings.length >= limit) {
