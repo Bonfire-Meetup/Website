@@ -56,6 +56,49 @@ interface EventQuestionCreateInput {
   locale: "en" | "cs";
 }
 
+interface OptimisticQuestionAuthor {
+  userId: string;
+  name: string | null;
+  isPublic: boolean;
+}
+
+function buildOptimisticQuestion(
+  payload: EventQuestionCreateInput,
+  optimisticAuthor?: OptimisticQuestionAuthor,
+): EventQuestionItem {
+  return {
+    authorIsPublic: optimisticAuthor?.isPublic ?? false,
+    authorMembershipTier: null,
+    authorName: optimisticAuthor?.isPublic ? optimisticAuthor.name : null,
+    authorPublicId:
+      optimisticAuthor?.isPublic && optimisticAuthor.userId
+        ? compressUuid(optimisticAuthor.userId)
+        : null,
+    boostCount: 0,
+    createdAt: new Date().toISOString(),
+    hasBoosted: false,
+    id: `optimistic-${crypto.randomUUID()}`,
+    isOwn: true,
+    talkIndex: payload.talkIndex,
+    text: payload.text,
+  };
+}
+
+function prependOptimisticQuestion(
+  currentData: EventQuestionsData | undefined,
+  payload: EventQuestionCreateInput,
+  optimisticAuthor?: OptimisticQuestionAuthor,
+) {
+  if (!currentData) {
+    return currentData;
+  }
+
+  return {
+    ...currentData,
+    items: [buildOptimisticQuestion(payload, optimisticAuthor), ...currentData.items],
+  } satisfies EventQuestionsData;
+}
+
 async function fetchEventRsvps(
   eventId: string,
   accessToken: string | null,
@@ -297,8 +340,13 @@ export function useDeleteRsvpMutation(eventId: string) {
 export function useCreateEventQuestionMutation(eventId: string) {
   const queryClient = useQueryClient();
 
-  return useMutation<{ success: boolean }, ApiError, EventQuestionCreateInput>({
-    mutationFn: async (payload) => {
+  return useMutation<
+    { success: boolean },
+    ApiError,
+    EventQuestionCreateInput & { optimisticAuthor?: OptimisticQuestionAuthor },
+    { previousAuthData?: EventQuestionsData; previousAnonData?: EventQuestionsData }
+  >({
+    mutationFn: async ({ optimisticAuthor: _optimisticAuthor, ...payload }) => {
       if (!eventId) {
         throw new ApiError("Missing eventId", 400);
       }
@@ -326,10 +374,43 @@ export function useCreateEventQuestionMutation(eventId: string) {
 
       return response.json() as Promise<{ success: boolean }>;
     },
-    onError: (error) => {
-      logError("events.questions.create_mutation_failed", error, { eventId });
+    onMutate: async ({ optimisticAuthor, ...payload }) => {
+      await queryClient.cancelQueries({ queryKey: ["event-questions", eventId] });
+
+      const authKey = ["event-questions", eventId, "auth"] as const;
+      const anonKey = ["event-questions", eventId, "anon"] as const;
+      const previousAuthData = queryClient.getQueryData<EventQuestionsData>(authKey);
+      const previousAnonData = queryClient.getQueryData<EventQuestionsData>(anonKey);
+
+      queryClient.setQueryData<EventQuestionsData>(
+        authKey,
+        prependOptimisticQuestion(previousAuthData, payload, optimisticAuthor),
+      );
+      queryClient.setQueryData<EventQuestionsData>(
+        anonKey,
+        prependOptimisticQuestion(previousAnonData, payload, optimisticAuthor),
+      );
+
+      return { previousAuthData, previousAnonData };
     },
-    onSuccess: () => {
+    onError: (error, _vars, context) => {
+      logError("events.questions.create_mutation_failed", error, { eventId });
+
+      if (context?.previousAuthData) {
+        queryClient.setQueryData<EventQuestionsData>(
+          ["event-questions", eventId, "auth"],
+          context.previousAuthData,
+        );
+      }
+
+      if (context?.previousAnonData) {
+        queryClient.setQueryData<EventQuestionsData>(
+          ["event-questions", eventId, "anon"],
+          context.previousAnonData,
+        );
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["event-questions", eventId] });
     },
     retry: shouldRetryMutation,

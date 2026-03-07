@@ -99,6 +99,8 @@
       "windowClosedHint": "As soon as the full lineup is out, you can ask your question ahead of time so speakers can come prepared.",
       "replayInfo": "Q&A replay: posting and boosting are closed. You can still browse all questions.",
       "signInPrompt": "Sign in to ask questions",
+      "askButtonMobile": "Ask question",
+      "submittedToast": "Question submitted",
       "selfLabel": "You",
       "boostsLeft": "{count} boosts left",
       "lastRefresh": "Last refresh: {date}",

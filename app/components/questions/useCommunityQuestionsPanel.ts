@@ -109,6 +109,7 @@ export function useCommunityQuestionsPanel(eventId: string) {
   const router = useRouter();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const isAuthHydrated = useAppSelector((state) => state.auth.hydrated);
+  const userProfile = useAppSelector((state) => state.profile.profile);
   const { data, dataUpdatedAt, isFetching, isLoading, refetch } = useEventQuestions(eventId);
   const createQuestion = useCreateEventQuestionMutation(eventId);
   const boostQuestion = useBoostEventQuestionMutation(eventId);
@@ -120,6 +121,7 @@ export function useCommunityQuestionsPanel(eventId: string) {
   const [sortMode, setSortMode] = useState<SortMode>("boosts");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [submissionCount, setSubmissionCount] = useState(0);
 
   const isWindowOpen = data?.isWindowOpen ?? false;
   const canParticipate = data?.canParticipate ?? false;
@@ -166,6 +168,13 @@ export function useCommunityQuestionsPanel(eventId: string) {
     createQuestion.mutate(
       {
         locale: locale === "cs" ? "cs" : "en",
+        optimisticAuthor: userProfile
+          ? {
+              isPublic: userProfile.publicProfile ?? false,
+              name: userProfile.name,
+              userId: userProfile.id,
+            }
+          : undefined,
         talkIndex: selectedTalkIndex === "none" ? null : Number(selectedTalkIndex),
         text: trimmedText,
       },
@@ -176,6 +185,7 @@ export function useCommunityQuestionsPanel(eventId: string) {
         onSuccess: () => {
           setText("");
           setSelectedTalkIndex("none");
+          setSubmissionCount((count) => count + 1);
         },
       },
     );
@@ -247,6 +257,7 @@ export function useCommunityQuestionsPanel(eventId: string) {
     setSortMode,
     setText,
     sortMode,
+    submissionCount,
     t,
     text,
     toggleBoostPending: boostQuestion.isPending || unboostQuestion.isPending,

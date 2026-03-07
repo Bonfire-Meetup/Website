@@ -99,6 +99,8 @@
       "windowClosedHint": "Jakmile bude kompletní lineup venku, můžeš položit otázku předem, aby se na ni speakeři stihli připravit.",
       "replayInfo": "Q&A replay: přidávání otázek i boostování je zavřené. Stále můžeš procházet všechny otázky.",
       "signInPrompt": "Přihlas se pro otázky",
+      "askButtonMobile": "Položit dotaz",
+      "submittedToast": "Dotaz odeslán",
       "selfLabel": "Ty",
       "boostsLeft": "zbývá boostů: {count}",
       "lastRefresh": "Poslední obnovení: {date}",
