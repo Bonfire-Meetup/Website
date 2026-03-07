@@ -46,8 +46,7 @@ const MOBILE_DOCK_BUTTON_INACTIVE =
   "border-neutral-200/80 bg-neutral-50 dark:border-white/12 dark:bg-white/8";
 const MOBILE_DOCK_BUTTON_ACTIVE =
   "border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900";
-const MOBILE_SHEET_WRAPPER =
-  "fixed inset-x-0 bottom-20 z-40 px-3 md:hidden";
+const MOBILE_SHEET_WRAPPER = "fixed inset-x-0 bottom-20 z-40 px-3 md:hidden";
 const MOBILE_SHEET_PANEL =
   "rounded-[1.6rem] border border-neutral-200/80 bg-white/96 p-3 shadow-[0_28px_80px_-30px_rgba(15,23,42,0.55)] backdrop-blur dark:border-white/12 dark:bg-neutral-950/94";
 
@@ -67,7 +66,7 @@ function CommunityQuestionsPanelSkeleton() {
         </div>
       </div>
 
-      <div className="hidden rounded-2xl border border-neutral-200/70 bg-white/70 p-3 dark:border-white/10 dark:bg-white/5 md:block">
+      <div className="hidden rounded-2xl border border-neutral-200/70 bg-white/70 p-3 md:block dark:border-white/10 dark:bg-white/5">
         <div className="flex items-end gap-2">
           <div className="h-[52px] flex-1 rounded-xl bg-neutral-200 dark:bg-white/10" />
           <div className="h-10 w-10 rounded-full bg-neutral-200 dark:bg-white/10" />
@@ -344,6 +343,7 @@ export function CommunityQuestionsPanel({
   showAutoRefreshToggle = false,
 }: CommunityQuestionsPanelProps) {
   const panel = useCommunityQuestionsPanel(eventId);
+  const { handleRefresh, isWindowOpen } = panel;
   const isLiveView = mode === "live";
   const canSubmitQuestion =
     panel.canParticipate && panel.text.trim().length >= 3 && !panel.createQuestion.isPending;
@@ -364,27 +364,31 @@ export function CommunityQuestionsPanel({
   const showQuestionComposer = !isLiveView && panel.isWindowOpen && panel.isAuthenticated;
   const showQuestionFilters = !isUpcomingMode && (!panel.isReplayMode || hasAnyQuestions);
   const showMobileDock =
-    panel.isWindowOpen && (!isLiveView || showQuestionFilters || panel.isAuthenticated);
+    isWindowOpen && (!isLiveView || showQuestionFilters || panel.isAuthenticated);
+  const handleComposerTextChange = (value: string) => panel.setText(value);
+  const handleComposerTalkChange = (value: string) => panel.setSelectedTalkIndex(value);
+  const handleFilterTalkChange = (value: TalkFilter) => panel.setActiveTalkFilter(value);
+  const handleFilterSortChange = (value: SortMode) => panel.setSortMode(value);
 
   useEffect(() => {
-    if (!showAutoRefreshToggle || !autoRefreshEnabled || !panel.isWindowOpen) {
+    if (!showAutoRefreshToggle || !autoRefreshEnabled || !isWindowOpen) {
       return;
     }
 
     const tick = window.setInterval(() => {
       if (!document.hidden) {
-        panel.handleRefresh();
+        handleRefresh();
       }
     }, 15000);
 
     return () => window.clearInterval(tick);
-  }, [autoRefreshEnabled, panel.handleRefresh, panel.isWindowOpen, showAutoRefreshToggle]);
+  }, [autoRefreshEnabled, handleRefresh, isWindowOpen, showAutoRefreshToggle]);
 
   useEffect(() => {
-    if (!panel.isWindowOpen || isLiveView || !panel.isAuthenticated) {
+    if (!isWindowOpen || isLiveView || !panel.isAuthenticated) {
       setMobilePanel(null);
     }
-  }, [isLiveView, panel.isAuthenticated, panel.isWindowOpen]);
+  }, [isLiveView, isWindowOpen, panel.isAuthenticated]);
 
   useEffect(() => {
     if (isUpcomingMode && mobilePanel === "filters") {
@@ -419,14 +423,14 @@ export function CommunityQuestionsPanel({
           <h4 className="mt-1 text-lg font-bold text-neutral-900 sm:text-xl dark:text-white">
             {panelTitle}
           </h4>
-          {panel.isWindowOpen && lastRefreshLabel && (
+          {isWindowOpen && lastRefreshLabel && (
             <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400">
               {panel.t("questions.lastRefresh", { date: lastRefreshLabel })}
             </p>
           )}
         </div>
 
-        {panel.isWindowOpen && (
+        {isWindowOpen && (
           <div className="hidden w-full flex-col gap-2 md:flex md:w-auto md:items-end">
             <div className="flex flex-wrap items-center gap-2 md:justify-end">
               {showAutoRefreshToggle && (
@@ -445,7 +449,7 @@ export function CommunityQuestionsPanel({
                 isFetching={panel.isFetching}
                 idleLabel={panel.t("questions.refresh")}
                 loadingLabel={panel.t("questions.refreshing")}
-                onRefresh={panel.handleRefresh}
+                onRefresh={handleRefresh}
                 className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-neutral-200/80 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/15 dark:bg-white/8 dark:text-neutral-200 dark:hover:bg-white/15"
                 iconClassName="relative -top-px h-3.5 w-3.5"
               />
@@ -475,15 +479,15 @@ export function CommunityQuestionsPanel({
       </div>
 
       {showQuestionComposer && (
-        <div className="hidden rounded-2xl border border-neutral-200/70 bg-white/70 p-3 dark:border-white/10 dark:bg-white/[0.04] md:block">
+        <div className="hidden rounded-2xl border border-neutral-200/70 bg-white/70 p-3 md:block dark:border-white/10 dark:bg-white/[0.04]">
           <QuestionComposerFields
             canSubmit={canSubmitQuestion}
             focusBorderClassName={theme.focusBorder}
             generalTalkLabel={panel.t("questions.generalTalk")}
             isSubmitting={panel.createQuestion.isPending}
             onSubmit={panel.handleSubmit}
-            onTalkChange={panel.setSelectedTalkIndex}
-            onTextChange={panel.setText}
+            onTalkChange={handleComposerTalkChange}
+            onTextChange={handleComposerTextChange}
             placeholder={panel.t("questions.placeholder")}
             rows={2}
             selectedTalkIndex={panel.selectedTalkIndex}
@@ -530,8 +534,8 @@ export function CommunityQuestionsPanel({
                 allTalksLabel={panel.t("questions.filters.allTalks")}
                 focusBorderClassName={theme.focusBorder}
                 generalOnlyLabel={panel.t("questions.filters.generalOnly")}
-                onSortModeChange={panel.setSortMode}
-                onTalkFilterChange={panel.setActiveTalkFilter}
+                onSortModeChange={handleFilterSortChange}
+                onTalkFilterChange={handleFilterTalkChange}
                 sortBoostsLabel={panel.t("questions.filters.sortBoosts")}
                 sortDateLabel={panel.t("questions.filters.sortDate")}
                 sortMode={panel.sortMode}
@@ -619,8 +623,8 @@ export function CommunityQuestionsPanel({
             generalTalkLabel={panel.t("questions.generalTalk")}
             isSubmitting={panel.createQuestion.isPending}
             onSubmit={panel.handleSubmit}
-            onTalkChange={panel.setSelectedTalkIndex}
-            onTextChange={panel.setText}
+            onTalkChange={handleComposerTalkChange}
+            onTextChange={handleComposerTextChange}
             placeholder={panel.t("questions.placeholder")}
             rows={3}
             selectedTalkIndex={panel.selectedTalkIndex}
@@ -644,8 +648,8 @@ export function CommunityQuestionsPanel({
               allTalksLabel={panel.t("questions.filters.allTalks")}
               focusBorderClassName={theme.focusBorder}
               generalOnlyLabel={panel.t("questions.filters.generalOnly")}
-              onSortModeChange={panel.setSortMode}
-              onTalkFilterChange={panel.setActiveTalkFilter}
+              onSortModeChange={handleFilterSortChange}
+              onTalkFilterChange={handleFilterTalkChange}
               sortBoostsLabel={panel.t("questions.filters.sortBoosts")}
               sortDateLabel={panel.t("questions.filters.sortDate")}
               sortMode={panel.sortMode}
@@ -690,7 +694,7 @@ export function CommunityQuestionsPanel({
                     <span className="truncate">{panel.t("questions.askButtonMobile")}</span>
                     {panel.availableBoosts !== null && (
                       <span
-                        className={`inline-flex shrink-0 min-w-6 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                        className={`inline-flex min-w-6 shrink-0 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
                           mobilePanel === "composer"
                             ? "bg-white/15 text-white dark:bg-black/10 dark:text-neutral-900"
                             : `${ENGAGEMENT_BRANDING.boost.classes.activeGradient} ${ENGAGEMENT_BRANDING.boost.classes.activeText} shadow-md shadow-emerald-500/25`
@@ -722,7 +726,7 @@ export function CommunityQuestionsPanel({
               isFetching={panel.isFetching}
               idleLabel={panel.t("questions.refresh")}
               loadingLabel={panel.t("questions.refreshing")}
-              onRefresh={panel.handleRefresh}
+              onRefresh={handleRefresh}
               className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-neutral-200/80 bg-gradient-to-b from-white to-neutral-100 text-neutral-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition-colors hover:from-white hover:to-neutral-50 disabled:opacity-60 dark:border-white/12 dark:bg-gradient-to-b dark:from-white/12 dark:to-white/6 dark:text-neutral-200 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] dark:hover:from-white/14 dark:hover:to-white/8"
             />
           </div>
