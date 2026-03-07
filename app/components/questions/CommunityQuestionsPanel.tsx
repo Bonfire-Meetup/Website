@@ -41,7 +41,7 @@ type MobilePanel = "composer" | "filters" | null;
 const PILL_SELECT_BASE =
   "min-w-0 max-w-full rounded-full border border-neutral-200/70 bg-neutral-50 py-1 pl-2.5 pr-6 text-[11px] font-medium text-neutral-600 outline-none transition-colors dark:border-white/10 dark:bg-white/5 dark:text-neutral-300";
 const MOBILE_DOCK_BUTTON_BASE =
-  "inline-flex h-11 items-center justify-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold whitespace-nowrap transition-colors";
+  "inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold whitespace-nowrap transition-colors";
 const MOBILE_DOCK_BUTTON_INACTIVE =
   "border-neutral-200/80 bg-neutral-50 dark:border-white/12 dark:bg-white/8";
 const MOBILE_DOCK_BUTTON_ACTIVE =
@@ -670,7 +670,7 @@ export function CommunityQuestionsPanel({
             </div>
           )}
 
-          <div className="flex items-center gap-2 rounded-[1.4rem] border border-neutral-200/80 bg-white/92 p-2 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.45)] backdrop-blur dark:border-white/12 dark:bg-neutral-950/88">
+          <div className="flex items-center gap-1.5 rounded-[1.4rem] border border-neutral-200/80 bg-white/92 p-1.5 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.45)] backdrop-blur dark:border-white/12 dark:bg-neutral-950/88">
             {!isLiveView && panel.isAuthHydrated && !panel.isAuthenticated ? (
               <button
                 type="button"
@@ -691,7 +691,7 @@ export function CommunityQuestionsPanel({
                     }
                   >
                     <SendIcon className="h-4 w-4" />
-                    <span className="truncate">{panel.t("questions.askButtonMobile")}</span>
+                    <span className="min-w-0 truncate">{panel.t("questions.askButtonMobile")}</span>
                     {panel.availableBoosts !== null && (
                       <span
                         className={`inline-flex min-w-6 shrink-0 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
@@ -710,7 +710,7 @@ export function CommunityQuestionsPanel({
                 {showQuestionFilters && (
                   <MobileDockButton
                     active={mobilePanel === "filters"}
-                    className="text-neutral-700 dark:text-neutral-200"
+                    className="shrink-0 text-neutral-700 dark:text-neutral-200"
                     onClick={() =>
                       setMobilePanel((current) => (current === "filters" ? null : "filters"))
                     }

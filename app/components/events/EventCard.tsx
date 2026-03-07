@@ -89,7 +89,7 @@ export function EventCard({
           : t("countdownDays", { count: daysUntil.toString() });
   const theme = getEventLocationTheme(location);
   const topMetaPillClass =
-    "inline-flex min-h-8 shrink-0 items-center justify-center gap-1 whitespace-nowrap bg-neutral-100/90 font-semibold tracking-[0.14em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-200";
+    "inline-flex min-h-8 shrink-0 items-center justify-center gap-1 whitespace-nowrap bg-neutral-100/90 px-2.5 py-1 text-[11px] font-semibold tracking-[0.14em] text-neutral-600 uppercase sm:px-3 sm:py-1.5 sm:text-xs dark:bg-white/10 dark:text-neutral-200";
 
   const platformLinks = [
     {
@@ -255,14 +255,14 @@ export function EventCard({
       />
 
       <div className="relative flex h-full flex-col">
-        <div className="mb-5 flex flex-wrap items-start gap-2 sm:justify-between">
+        <div className="mb-5 flex items-center justify-between gap-1.5 sm:gap-2">
           <LocationPill
             location={location}
             ariaLabel={t("locationLabel", { location })}
             icon={<MapPinIcon className="h-4 w-4" />}
-            className="min-h-8 shrink-0 whitespace-nowrap"
+            className="min-h-8 shrink-0 px-2.5 py-1 text-[11px] whitespace-nowrap sm:px-3 sm:py-1.5 sm:text-xs"
           />
-          <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <div className="flex shrink-0 items-center gap-1.5 sm:justify-end sm:gap-2">
             {countdownLabel && (
               <Pill size="sm" className={topMetaPillClass}>
                 <CalendarIcon className="h-3 w-3" />
