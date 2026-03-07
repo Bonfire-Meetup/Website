@@ -18,7 +18,7 @@ import {
   SendIcon,
 } from "@/components/shared/Icons";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
-import { formatDateTimeUTC } from "@/lib/utils/locale";
+import { formatDateTimeLocal } from "@/lib/utils/locale";
 
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 
@@ -353,7 +353,7 @@ export function CommunityQuestionsPanel({
   const [mobileSuccessVisible, setMobileSuccessVisible] = useState(false);
   const lastRefreshLabel =
     panel.dataUpdatedAt > 0
-      ? formatDateTimeUTC(new Date(panel.dataUpdatedAt).toISOString(), panel.locale)
+      ? formatDateTimeLocal(new Date(panel.dataUpdatedAt).toISOString(), panel.locale)
       : null;
   const hasAnyQuestions = (panel.data?.items.length ?? 0) > 0;
   const panelTitle = panel.isReplayMode

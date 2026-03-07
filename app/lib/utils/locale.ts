@@ -161,3 +161,13 @@ const DATE_TIME_OPTIONS: Intl.DateTimeFormatOptions = {
 export function formatDateTimeUTC(isoDateString: string, locale: string): string {
   return new Intl.DateTimeFormat(locale, DATE_TIME_OPTIONS).format(new Date(isoDateString));
 }
+
+export function formatDateTimeLocal(isoDateString: string, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(isoDateString));
+}
