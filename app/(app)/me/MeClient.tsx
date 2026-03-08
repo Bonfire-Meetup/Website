@@ -25,7 +25,7 @@ import {
   useUserProfile,
   useWatchlist,
 } from "@/lib/api/user-profile";
-import { revokeSession } from "@/lib/auth/client";
+import { revokeSession, setLoggingOut as setGlobalLoggingOut } from "@/lib/auth/client";
 import { resetClientAuthState } from "@/lib/auth/client-session";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
@@ -199,9 +199,11 @@ export function MeClient() {
 
   const handleSignOut = async () => {
     setLoggingOut(true);
+    setGlobalLoggingOut(true);
 
     await revokeSession();
     resetClientAuthState({ dispatch, queryClient });
+    setGlobalLoggingOut(false);
 
     router.replace(PAGE_ROUTES.HOME);
   };
