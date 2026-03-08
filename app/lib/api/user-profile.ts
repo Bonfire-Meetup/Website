@@ -32,6 +32,7 @@ interface BoostLedgerItem {
   resourceLabel: string | null;
   contextLabel: string | null;
   isBackfill: boolean;
+  resourceType: string | null;
 }
 
 interface LoginAttempt {

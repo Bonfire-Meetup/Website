@@ -72,6 +72,8 @@
       "available": "boostů k dispozici",
       "availableOne": "boost k dispozici",
       "nextAllocation": "Další drop: {date}",
+      "roomLeft": "Do limitu zbývá {count}",
+      "atCap": "Na limitu",
       "limitNote": "Maximálně 8 boostů celkem. Nad tento limit nebudou vydány žádné další boosty."
     },
     "ledger": {

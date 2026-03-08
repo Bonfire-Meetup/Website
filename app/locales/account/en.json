@@ -72,6 +72,8 @@
       "available": "boosts available",
       "availableOne": "boost available",
       "nextAllocation": "Next allocation: {date}",
+      "roomLeft": "{count} to cap",
+      "atCap": "At cap",
       "limitNote": "Maximum 8 boosts total. No extra boosts will be issued beyond this limit."
     },
     "ledger": {

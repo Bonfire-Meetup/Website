@@ -307,6 +307,9 @@ export function MeClient() {
   const boostLedgerError = profileQuery.isError ? t("ledger.error") : null;
   const attemptsLoading = loading || !isHydrated;
   const attemptsError = profileQuery.isError ? t("attempts.error") : null;
+  const boostCapacityLeft = boostAllocation
+    ? Math.max(BOOST_CONFIG.MAX_BOOSTS - boostAllocation.availableBoosts, 0)
+    : 0;
 
   return (
     <div className="flex flex-col gap-10">
@@ -478,7 +481,9 @@ export function MeClient() {
                           </span>
                         </div>
                         <div className="self-start rounded-full border border-emerald-200/80 bg-white/70 px-2.5 py-1 text-[11px] font-semibold tracking-[0.16em] text-emerald-700 uppercase shadow-sm shadow-emerald-100/70 dark:border-emerald-500/20 dark:bg-white/8 dark:text-emerald-300 dark:shadow-none">
-                          {t("boostAllocation.title")}
+                          {boostCapacityLeft === 0
+                            ? t("boostAllocation.atCap")
+                            : t("boostAllocation.roomLeft", { count: boostCapacityLeft })}
                         </div>
                       </div>
                       <div className="mt-3 rounded-xl border border-emerald-200/70 bg-white/55 px-3 py-2 dark:border-emerald-500/15 dark:bg-white/[0.04]">

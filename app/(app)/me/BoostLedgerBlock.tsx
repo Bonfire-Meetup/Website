@@ -2,11 +2,17 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
-import { RefreshIcon, SparklesIcon } from "@/components/shared/Icons";
+import {
+  BoltIcon,
+  QuestionMarkCircleIcon,
+  RefreshIcon,
+  SparklesIcon,
+  VideoIcon,
+} from "@/components/shared/Icons";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Link } from "@/i18n/navigation";
 import type { BoostLedgerItem } from "@/lib/api/user-profile";
-import { getBoostLedgerKindLabel } from "@/lib/boost-ledger";
+import { BOOST_LEDGER_RESOURCE, getBoostLedgerKindLabel } from "@/lib/boost-ledger";
 import { formatDateTimeUTC } from "@/lib/utils/locale";
 
 import { AccountPanel, AccountPanelRow, AccountPanelScrollArea } from "./AccountPanel";
@@ -29,6 +35,29 @@ function getDeltaTone(delta: number) {
   }
 
   return "border border-rose-200/70 bg-rose-50/90 text-rose-700 shadow-sm shadow-rose-100/80 dark:border-rose-500/20 dark:bg-rose-500/12 dark:text-rose-300 dark:shadow-none";
+}
+
+function getResourceIcon(resourceType: string | null) {
+  switch (resourceType) {
+    case BOOST_LEDGER_RESOURCE.VIDEO:
+      return {
+        className:
+          "border border-sky-200/80 bg-sky-50 text-sky-600 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300",
+        icon: VideoIcon,
+      };
+    case BOOST_LEDGER_RESOURCE.EVENT_QUESTION:
+      return {
+        className:
+          "border border-amber-200/80 bg-amber-50 text-amber-600 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300",
+        icon: QuestionMarkCircleIcon,
+      };
+    default:
+      return {
+        className:
+          "border border-neutral-200/80 bg-white/90 text-neutral-500 dark:border-white/10 dark:bg-white/10 dark:text-neutral-300",
+        icon: BoltIcon,
+      };
+  }
 }
 
 export function BoostLedgerBlock({
@@ -94,6 +123,8 @@ export function BoostLedgerBlock({
             {items.map((entry, index) => {
               const showBackfillDivider = entry.isBackfill && !items[index - 1]?.isBackfill;
               const title = getBoostLedgerKindLabel(entry.kind, t);
+              const resourceIcon = getResourceIcon(entry.resourceType);
+              const ResourceIcon = resourceIcon.icon;
               const resource =
                 entry.resourceLabel && entry.href ? (
                   <Link
@@ -135,12 +166,17 @@ export function BoostLedgerBlock({
                     </div>
                   )}
                   <AccountPanelRow
-                    className={`items-start gap-2.5 py-2 ${
+                    className={`items-start gap-2 py-2 ${
                       entry.isBackfill
                         ? "border-neutral-200/50 bg-neutral-50/75 opacity-80 dark:border-white/6 dark:bg-white/5 dark:opacity-75"
                         : "hover:-translate-y-px hover:border-neutral-300/80 hover:shadow-neutral-200/50 dark:hover:border-white/12"
                     }`}
                   >
+                    <span
+                      className={`mt-0.5 inline-flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-full ${resourceIcon.className}`}
+                    >
+                      <ResourceIcon className="h-3 w-3" />
+                    </span>
                     <div className="min-w-0 flex-1">
                       <div
                         className={`text-sm font-medium ${
