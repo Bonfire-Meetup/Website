@@ -229,9 +229,9 @@ export function EventCard({
           ) : (
             <Button
               href={PAGE_ROUTES.EVENT(id)}
-              variant="primary"
+              variant="plain"
               size="sm"
-              className="group w-full gap-2"
+              className={`group w-full gap-2 ${theme.ctaButton}`}
             >
               {t("viewDetails")}
               <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -399,9 +399,9 @@ export function EventCard({
           ) : (
             <Button
               href={PAGE_ROUTES.EVENT(id)}
-              variant="primary"
+              variant="plain"
               size="sm"
-              className="group w-full justify-center gap-2"
+              className={`group w-full justify-center gap-2 ${theme.ctaButton}`}
             >
               {t("viewDetails")}
               <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />

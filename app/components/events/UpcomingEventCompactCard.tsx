@@ -163,9 +163,9 @@ export function UpcomingEventCompactCard({
         ) : (
           <Button
             href={PAGE_ROUTES.EVENT(id)}
-            variant="primary"
+            variant="plain"
             size="sm"
-            className="group mt-auto w-full justify-center gap-2"
+            className={`group mt-auto w-full justify-center gap-2 ${theme.ctaButton}`}
           >
             {t("viewDetails")}
             <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
