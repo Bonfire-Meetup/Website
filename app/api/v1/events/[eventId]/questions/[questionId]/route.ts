@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getEventById } from "@/data/events-calendar";
 import { withAuth, withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
-import { refundBoost } from "@/lib/data/boosts";
+import { refundEventQuestionBoosts } from "@/lib/data/boost-operations";
 import { deleteOwnEventQuestion, getEventQuestionById } from "@/lib/data/event-questions";
 import { getEventQuestionWindow } from "@/lib/events/questions";
 import { logError } from "@/lib/utils/log";
@@ -54,7 +54,13 @@ export const DELETE = withRequestContext(
           return NextResponse.json({ error: "forbidden" }, { status: 403 });
         }
 
-        await Promise.all(boostUserIds.map((userId) => refundBoost(userId)));
+        await refundEventQuestionBoosts(
+          boostUserIds.map((userId) => ({
+            eventId,
+            questionId,
+            userId,
+          })),
+        );
 
         return NextResponse.json({ success: true });
       } catch (error) {

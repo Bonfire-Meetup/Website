@@ -3,13 +3,11 @@ import { NextResponse } from "next/server";
 import { getEventById } from "@/data/events-calendar";
 import { withAuth, withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
 import { videoBoostMutationSchema } from "@/lib/api/schemas";
-import { consumeBoost, getUserBoostAllocation, refundBoost } from "@/lib/data/boosts";
 import {
-  addEventQuestionBoost,
-  getEventQuestionBoostStats,
-  getEventQuestionById,
-  removeEventQuestionBoost,
-} from "@/lib/data/event-questions";
+  createEventQuestionBoostOperation,
+  removeEventQuestionBoostOperation,
+} from "@/lib/data/boost-operations";
+import { getEventQuestionById } from "@/lib/data/event-questions";
 import { getEventQuestionWindow } from "@/lib/events/questions";
 import { logError } from "@/lib/utils/log";
 
@@ -23,7 +21,13 @@ interface RouteParams {
 const validateRequestContext = async (
   eventId: string,
   questionId: string,
-): Promise<{ ok: true } | { ok: false; response: NextResponse }> => {
+): Promise<
+  | {
+      ok: true;
+      question: NonNullable<Awaited<ReturnType<typeof getEventQuestionById>>>;
+    }
+  | { ok: false; response: NextResponse }
+> => {
   const event = getEventById(eventId);
 
   if (!event) {
@@ -49,7 +53,7 @@ const validateRequestContext = async (
     };
   }
 
-  return { ok: true };
+  return { ok: true, question };
 };
 
 export const POST = withRequestContext(
@@ -71,41 +75,20 @@ export const POST = withRequestContext(
       }
 
       try {
-        const existingStats = await getEventQuestionBoostStats(questionId, auth.userId);
-        if (existingStats.hasBoosted) {
-          const allocation = await getUserBoostAllocation(auth.userId);
+        const result = await createEventQuestionBoostOperation(auth.userId, {
+          eventId,
+          questionId,
+        });
+        if (result.error === "no_boosts_available") {
           return NextResponse.json(
             {
-              added: false,
-              availableBoosts: allocation.availableBoosts,
-              count: existingStats.count,
-            },
-            { status: 409 },
-          );
-        }
-
-        const consumed = await consumeBoost(auth.userId);
-        if (!consumed.success) {
-          return NextResponse.json(
-            {
-              availableBoosts: consumed.availableBoosts,
+              availableBoosts: result.availableBoosts,
               error: "no_boosts_available",
             },
             { status: 403 },
           );
         }
-
-        const result = await addEventQuestionBoost(questionId, auth.userId);
-        let { availableBoosts } = consumed;
-
-        if (!result.added) {
-          availableBoosts = await refundBoost(auth.userId);
-        }
-
-        const validated = videoBoostMutationSchema.parse({
-          ...result,
-          availableBoosts,
-        });
+        const validated = videoBoostMutationSchema.parse(result);
 
         return NextResponse.json(validated);
       } catch (error) {
@@ -139,15 +122,11 @@ export const DELETE = withRequestContext(
       }
 
       try {
-        const result = await removeEventQuestionBoost(questionId, auth.userId);
-        const availableBoosts = result.removed
-          ? await refundBoost(auth.userId)
-          : (await getUserBoostAllocation(auth.userId)).availableBoosts;
-
-        const validated = videoBoostMutationSchema.parse({
-          ...result,
-          availableBoosts,
+        const result = await removeEventQuestionBoostOperation(auth.userId, {
+          eventId,
+          questionId,
         });
+        const validated = videoBoostMutationSchema.parse(result);
 
         return NextResponse.json(validated);
       } catch (error) {

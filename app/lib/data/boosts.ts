@@ -2,7 +2,13 @@ import "server-only";
 
 import { and, count, eq, sql } from "drizzle-orm";
 
+import {
+  BOOST_LEDGER_KIND,
+  BOOST_LEDGER_RESOURCE,
+  type BoostLedgerMetadata,
+} from "@/lib/boost-ledger";
 import { BOOST_CONFIG } from "@/lib/config/constants";
+import { createBoostLedgerEntry } from "@/lib/data/boost-ledger";
 import { db } from "@/lib/data/db";
 import { appUser, userBoostAllocation, videoBoosts } from "@/lib/data/schema";
 import { logError } from "@/lib/utils/log";
@@ -184,6 +190,13 @@ interface BoostAllocation {
   lastAllocationDate: string;
 }
 
+interface BoostLedgerContext {
+  kind: string;
+  metadata?: BoostLedgerMetadata;
+  resourceId?: string | null;
+  resourceType?: string | null;
+}
+
 const formatDateString = (date: Date): string => date.toISOString();
 
 export const getUserBoostAllocation = async (userId: string): Promise<BoostAllocation> => {
@@ -206,6 +219,14 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
         userId,
         availableBoosts: BOOST_CONFIG.BOOSTS_PER_MONTH,
         lastAllocationDate: currentDateStr,
+      });
+
+      await createBoostLedgerEntry({
+        balanceAfter: BOOST_CONFIG.BOOSTS_PER_MONTH,
+        delta: BOOST_CONFIG.BOOSTS_PER_MONTH,
+        kind: BOOST_LEDGER_KIND.MONTHLY_ALLOCATION,
+        resourceType: BOOST_LEDGER_RESOURCE.SYSTEM,
+        userId,
       });
 
       return {
@@ -231,6 +252,14 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
         })
         .where(eq(userBoostAllocation.userId, userId));
 
+      await createBoostLedgerEntry({
+        balanceAfter: BOOST_CONFIG.MAX_BOOSTS,
+        delta: BOOST_CONFIG.MAX_BOOSTS - allocation.availableBoosts,
+        kind: BOOST_LEDGER_KIND.CAP_ADJUSTMENT,
+        resourceType: BOOST_LEDGER_RESOURCE.SYSTEM,
+        userId,
+      });
+
       return {
         availableBoosts: BOOST_CONFIG.MAX_BOOSTS,
         lastAllocationDate: allocation.lastAllocationDate,
@@ -252,6 +281,17 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
         })
         .where(eq(userBoostAllocation.userId, userId));
 
+      const delta = newAvailableBoosts - allocation.availableBoosts;
+      if (delta > 0) {
+        await createBoostLedgerEntry({
+          balanceAfter: newAvailableBoosts,
+          delta,
+          kind: BOOST_LEDGER_KIND.MONTHLY_ALLOCATION,
+          resourceType: BOOST_LEDGER_RESOURCE.SYSTEM,
+          userId,
+        });
+      }
+
       return {
         availableBoosts: newAvailableBoosts,
         lastAllocationDate: currentDateStr,
@@ -270,6 +310,7 @@ export const getUserBoostAllocation = async (userId: string): Promise<BoostAlloc
 
 export const consumeBoost = async (
   userId: string,
+  context: BoostLedgerContext,
 ): Promise<{ success: boolean; availableBoosts: number | null }> => {
   try {
     await getUserBoostAllocation(userId);
@@ -289,6 +330,16 @@ export const consumeBoost = async (
       .returning({ availableBoosts: userBoostAllocation.availableBoosts });
 
     if (result.length > 0) {
+      await createBoostLedgerEntry({
+        balanceAfter: result[0].availableBoosts,
+        delta: -1,
+        kind: context.kind,
+        metadata: context.metadata,
+        resourceId: context.resourceId,
+        resourceType: context.resourceType,
+        userId,
+      });
+
       return { success: true, availableBoosts: result[0].availableBoosts };
     }
 
@@ -302,10 +353,17 @@ export const consumeBoost = async (
 
 export const refundBoost = async (userId: string): Promise<number> => {
   try {
+    const allocation = await getUserBoostAllocation(userId);
+    const nextAvailableBoosts = Math.min(allocation.availableBoosts + 1, BOOST_CONFIG.MAX_BOOSTS);
+
+    if (nextAvailableBoosts === allocation.availableBoosts) {
+      return allocation.availableBoosts;
+    }
+
     const result = await db()
       .update(userBoostAllocation)
       .set({
-        availableBoosts: sql`LEAST(${userBoostAllocation.availableBoosts} + 1, ${BOOST_CONFIG.MAX_BOOSTS})`,
+        availableBoosts: nextAvailableBoosts,
         updatedAt: new Date().toISOString(),
       })
       .where(eq(userBoostAllocation.userId, userId))
@@ -314,6 +372,38 @@ export const refundBoost = async (userId: string): Promise<number> => {
     return result[0]?.availableBoosts ?? 0;
   } catch (error) {
     logError("data.boosts.refund_failed", error, { userId });
+    throw error;
+  }
+};
+
+export const refundBoostWithLedger = async (
+  userId: string,
+  context: BoostLedgerContext,
+): Promise<number> => {
+  try {
+    const before = await getUserBoostAllocation(userId);
+    const availableBoosts = await refundBoost(userId);
+
+    if (availableBoosts > before.availableBoosts) {
+      await createBoostLedgerEntry({
+        balanceAfter: availableBoosts,
+        delta: availableBoosts - before.availableBoosts,
+        kind: context.kind,
+        metadata: context.metadata,
+        resourceId: context.resourceId,
+        resourceType: context.resourceType,
+        userId,
+      });
+    }
+
+    return availableBoosts;
+  } catch (error) {
+    logError("data.boosts.refund_with_ledger_failed", error, {
+      kind: context.kind,
+      resourceId: context.resourceId,
+      resourceType: context.resourceType,
+      userId,
+    });
     throw error;
   }
 };

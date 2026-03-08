@@ -98,7 +98,7 @@ export const userBoostAllocation = pgTable(
   "user_boost_allocation",
   {
     userId: uuid("user_id").notNull(),
-    availableBoosts: integer("available_boosts").default(3).notNull(),
+    availableBoosts: integer("available_boosts").default(2).notNull(),
     lastAllocationDate: date("last_allocation_date")
       .default(sql`CURRENT_DATE`)
       .notNull(),
@@ -118,6 +118,34 @@ export const userBoostAllocation = pgTable(
       columns: [table.userId],
       foreignColumns: [appUser.id],
       name: "user_boost_allocation_user_id_fkey",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const boostLedger = pgTable(
+  "boost_ledger",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").notNull(),
+    kind: text("kind").notNull(),
+    delta: integer("delta").notNull(),
+    balanceAfter: integer("balance_after").notNull(),
+    resourceType: text("resource_type"),
+    resourceId: text("resource_id"),
+    metadata: jsonb("metadata").default({}).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("boost_ledger_user_created_idx").using(
+      "btree",
+      table.userId.asc().nullsLast().op("uuid_ops"),
+      table.createdAt.desc().nullsFirst().op("timestamptz_ops"),
+    ),
+    index("boost_ledger_kind_idx").using("btree", table.kind.asc().nullsLast().op("text_ops")),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "boost_ledger_user_id_app_user_id_fk",
     }).onDelete("cascade"),
   ],
 );

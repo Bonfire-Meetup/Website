@@ -20,7 +20,6 @@ import { ApiError } from "@/lib/api/errors";
 import {
   useDeleteAccountChallengeMutation,
   useDeleteAccountMutation,
-  useRemoveBoostMutation,
   useUpdatePreferenceMutation,
   useUserProfile,
   useWatchlist,
@@ -30,10 +29,9 @@ import { resetClientAuthState } from "@/lib/auth/client-session";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
-  removeBoost as removeBoostAction,
   setAttempts,
   setBoostAllocation,
-  setBoosts,
+  setBoostLedger,
   setProfile,
   setWatchlist,
   updatePreferences,
@@ -52,7 +50,7 @@ import { formatDayMonthUTC } from "@/lib/utils/locale";
 import { logWarn } from "@/lib/utils/log-client";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
-import { BoostedVideosBlock } from "./BoostedVideosBlock";
+import { BoostLedgerBlock } from "./BoostLedgerBlock";
 import { DangerZoneBlock } from "./DangerZoneBlock";
 import { GuildCard } from "./GuildCard";
 import { LoginAttemptsBlock } from "./LoginAttemptsBlock";
@@ -117,7 +115,6 @@ export function MeClient() {
   const profileQuery = useUserProfile(auth.hydrated && auth.isAuthenticated);
   const watchlistQuery = useWatchlist(auth.hydrated && auth.isAuthenticated);
   const updatePreferenceMutation = useUpdatePreferenceMutation();
-  const removeBoostMutation = useRemoveBoostMutation();
   const deleteChallengeMutation = useDeleteAccountChallengeMutation();
   const deleteAccountMutation = useDeleteAccountMutation();
 
@@ -127,7 +124,7 @@ export function MeClient() {
     }
 
     dispatch(setProfile(profileQuery.data.profile));
-    dispatch(setBoosts(profileQuery.data.boosts.items));
+    dispatch(setBoostLedger(profileQuery.data.boostLedger.items));
     dispatch(setAttempts(profileQuery.data.attempts.items));
     dispatch(setBoostAllocation(profileQuery.data.boostAllocation ?? null));
   }, [profileQuery.data, dispatch]);
@@ -174,10 +171,10 @@ export function MeClient() {
   const userRoles = auth.user?.decodedToken?.rol ?? [];
   const isCrew = userRoles.includes(USER_ROLES.CREW);
   const isEditor = userRoles.includes(USER_ROLES.EDITOR);
-  const boosts = isHydrated
-    ? profileState.boosts.length
-      ? profileState.boosts
-      : (profileQuery.data?.boosts.items ?? [])
+  const boostLedger = isHydrated
+    ? profileState.boostLedger.length
+      ? profileState.boostLedger
+      : (profileQuery.data?.boostLedger.items ?? [])
     : [];
   const attempts = isHydrated
     ? profileState.attempts.length
@@ -295,15 +292,6 @@ export function MeClient() {
     dispatch(setDeleteStep("confirm"));
   };
 
-  const handleRemoveBoost = async (shortId: string) => {
-    try {
-      await removeBoostMutation.mutateAsync(shortId);
-      dispatch(removeBoostAction(shortId));
-    } catch (mutationError) {
-      logWarn("profile.remove_boost_failed", { error: String(mutationError), shortId });
-    }
-  };
-
   const deleteError =
     deleteChallengeMutation.isError || deleteAccountMutation.isError ? tDelete("error") : null;
 
@@ -314,8 +302,8 @@ export function MeClient() {
         ? tDelete("completed")
         : null;
 
-  const boostsLoading = loading || !isHydrated;
-  const boostsError = profileQuery.isError ? t("boosted.error") : null;
+  const boostLedgerLoading = loading || !isHydrated;
+  const boostLedgerError = profileQuery.isError ? t("ledger.error") : null;
   const attemptsLoading = loading || !isHydrated;
   const attemptsError = profileQuery.isError ? t("attempts.error") : null;
 
@@ -496,11 +484,12 @@ export function MeClient() {
               </div>
 
               <div className="min-w-0">
-                <BoostedVideosBlock
-                  loading={boostsLoading}
-                  error={boostsError}
-                  items={boosts}
-                  onRemove={handleRemoveBoost}
+                <BoostLedgerBlock
+                  loading={boostLedgerLoading}
+                  error={boostLedgerError}
+                  items={boostLedger}
+                  onRefresh={() => profileQuery.refetch()}
+                  refreshing={profileQuery.isFetching}
                 />
               </div>
             </div>

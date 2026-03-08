@@ -33,6 +33,12 @@ export interface EventQuestionBoostMutationResult {
   removed?: boolean;
 }
 
+export interface EventQuestionBoostRefund {
+  eventId: string;
+  questionId: string;
+  userId: string;
+}
+
 const normalizeEventId = (eventId: string): string => eventId.trim().toLowerCase();
 
 const getRecentCompletedEventIds = () => {
@@ -299,18 +305,22 @@ export const deleteOwnEventQuestion = async ({
 
 export const deleteAllEventQuestionsByUser = async (
   userId: string,
-): Promise<{ boostUserIds: string[] }> => {
+): Promise<{ boostRefunds: EventQuestionBoostRefund[] }> => {
   try {
     const result = await db().execute(sql`
       WITH target_questions AS (
-        SELECT ${eventQuestion.id} AS id
+        SELECT
+          ${eventQuestion.id} AS id,
+          ${eventQuestion.eventId} AS event_id
         FROM ${eventQuestion}
         WHERE ${eventQuestion.userId} = ${userId}
       ),
       removed_boosts AS (
         DELETE FROM ${eventQuestionBoost}
         WHERE ${eventQuestionBoost.questionId} IN (SELECT id FROM target_questions)
-        RETURNING ${eventQuestionBoost.userId} AS user_id
+        RETURNING
+          ${eventQuestionBoost.questionId} AS question_id,
+          ${eventQuestionBoost.userId} AS user_id
       ),
       deleted_questions AS (
         DELETE FROM ${eventQuestion}
@@ -318,19 +328,28 @@ export const deleteAllEventQuestionsByUser = async (
         RETURNING ${eventQuestion.id} AS id
       )
       SELECT
-        COALESCE(
-          array_agg(DISTINCT removed_boosts.user_id) FILTER (
-            WHERE removed_boosts.user_id IS NOT NULL
-          ),
-          ARRAY[]::uuid[]
-        ) AS boost_user_ids
+        removed_boosts.user_id,
+        target_questions.id AS question_id,
+        target_questions.event_id
       FROM removed_boosts
+      INNER JOIN target_questions
+        ON target_questions.id = removed_boosts.question_id
     `);
 
-    const row = result.rows[0] as { boost_user_ids?: string[] | string | null } | undefined;
-
     return {
-      boostUserIds: parseUuidArray(row?.boost_user_ids),
+      boostRefunds: result.rows
+        .map((row) => row as Record<string, unknown>)
+        .filter(
+          (row) =>
+            typeof row.user_id === "string" &&
+            typeof row.question_id === "string" &&
+            typeof row.event_id === "string",
+        )
+        .map((row) => ({
+          eventId: row.event_id as string,
+          questionId: row.question_id as string,
+          userId: row.user_id as string,
+        })),
     };
   } catch (error) {
     logError("data.event_questions.delete_all_by_user_failed", error, { userId });
@@ -340,12 +359,13 @@ export const deleteAllEventQuestionsByUser = async (
 
 export const getEventQuestionById = async (
   questionId: string,
-): Promise<{ eventId: string; id: string } | null> => {
+): Promise<{ eventId: string; id: string; text: string } | null> => {
   try {
     const rows = await db()
       .select({
         eventId: eventQuestion.eventId,
         id: eventQuestion.id,
+        text: eventQuestion.text,
       })
       .from(eventQuestion)
       .where(eq(eventQuestion.id, questionId))

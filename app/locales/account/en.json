@@ -74,11 +74,26 @@
       "nextAllocation": "Next allocation: {date}",
       "limitNote": "Maximum 8 boosts total. No extra boosts will be issued beyond this limit."
     },
-    "boosted": {
-      "title": "Boosted videos",
-      "empty": "No boosted videos yet.",
-      "error": "Unable to load boosted videos.",
-      "remove": "Remove"
+    "ledger": {
+      "title": "Boost history",
+      "empty": "No boost activity yet.",
+      "error": "Unable to load boost history.",
+      "refresh": "Refresh boost history",
+      "refreshing": "Refreshing boost history",
+      "balanceAfter": "{count} left",
+      "backfillDivider": "Before ledger",
+      "kinds": {
+        "monthlyAllocation": "Monthly allocation",
+        "capAdjustment": "Balance adjusted to cap",
+        "videoBoostAdded": "Boosted a video",
+        "videoBoostRemoved": "Removed video boost",
+        "videoBoostReverted": "Video boost reverted",
+        "eventQuestionBoostAdded": "Boosted an event question",
+        "eventQuestionBoostRemoved": "Removed question boost",
+        "eventQuestionBoostReverted": "Question boost reverted",
+        "eventQuestionRefund": "Question boost refunded",
+        "generic": "Boost update"
+      }
     },
     "communityEmails": {
       "title": "Community updates",

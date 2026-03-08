@@ -2,14 +2,14 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import type {
   BoostAllocation,
-  BoostedRecording,
+  BoostLedgerItem,
   LoginAttempt,
   Profile,
 } from "@/lib/api/user-profile";
 
 export interface ProfileState {
   profile: Profile | null;
-  boosts: BoostedRecording[];
+  boostLedger: BoostLedgerItem[];
   attempts: LoginAttempt[];
   boostAllocation: BoostAllocation | null;
   watchlist: string[];
@@ -25,7 +25,7 @@ export interface ProfileState {
 
 const initialState: ProfileState = {
   profile: null,
-  boosts: [],
+  boostLedger: [],
   attempts: [],
   boostAllocation: null,
   watchlist: [],
@@ -47,11 +47,8 @@ const profileSlice = createSlice({
       state.profile = action.payload;
       state.error = null;
     },
-    setBoosts: (state, action: PayloadAction<BoostedRecording[]>) => {
-      state.boosts = action.payload;
-    },
-    removeBoost: (state, action: PayloadAction<string>) => {
-      state.boosts = state.boosts.filter((b) => b.shortId !== action.payload);
+    setBoostLedger: (state, action: PayloadAction<BoostLedgerItem[]>) => {
+      state.boostLedger = action.payload;
     },
     setAttempts: (state, action: PayloadAction<LoginAttempt[]>) => {
       state.attempts = action.payload;
@@ -111,7 +108,7 @@ const profileSlice = createSlice({
     },
     clearProfile: (state) => {
       state.profile = null;
-      state.boosts = [];
+      state.boostLedger = [];
       state.attempts = [];
       state.boostAllocation = null;
       state.watchlist = [];
@@ -127,8 +124,7 @@ const profileSlice = createSlice({
 
 export const {
   setProfile,
-  setBoosts,
-  removeBoost,
+  setBoostLedger,
   setAttempts,
   setBoostAllocation,
   setWatchlist,

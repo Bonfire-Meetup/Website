@@ -72,13 +72,28 @@
       "available": "boostů k dispozici",
       "availableOne": "boost k dispozici",
       "nextAllocation": "Další drop: {date}",
-      "limitNote": "Maximálně 6 boostů celkem. Nad tento limit nebudou vydány žádné další boosty."
+      "limitNote": "Maximálně 8 boostů celkem. Nad tento limit nebudou vydány žádné další boosty."
     },
-    "boosted": {
-      "title": "Boostnutá videa",
-      "empty": "Zatím žádná boostnutá videa.",
-      "error": "Boostnutá videa se nepodařilo načíst.",
-      "remove": "Odebrat"
+    "ledger": {
+      "title": "Historie boostů",
+      "empty": "Zatím žádná boost aktivita.",
+      "error": "Historii boostů se nepodařilo načíst.",
+      "refresh": "Obnovit historii boostů",
+      "refreshing": "Obnovuji historii boostů",
+      "balanceAfter": "zbývá {count}",
+      "backfillDivider": "Před ledgerem",
+      "kinds": {
+        "monthlyAllocation": "Měsíční příděl",
+        "capAdjustment": "Zůstatek upraven na limit",
+        "videoBoostAdded": "Boost videa",
+        "videoBoostRemoved": "Odebrání boostu z videa",
+        "videoBoostReverted": "Vrácení boostu videa",
+        "eventQuestionBoostAdded": "Boost otázky na akci",
+        "eventQuestionBoostRemoved": "Odebrání boostu z otázky",
+        "eventQuestionBoostReverted": "Vrácení boostu otázky",
+        "eventQuestionRefund": "Vrácený boost za otázku",
+        "generic": "Změna boostů"
+      }
     },
     "communityEmails": {
       "title": "Novinky z komunity",

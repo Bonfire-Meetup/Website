@@ -22,13 +22,16 @@ interface Profile {
   name: string | null;
 }
 
-interface BoostedRecording {
-  boostedAt: string;
-  shortId: string;
-  title: string;
-  speaker: string[];
-  date: string;
-  slug: string;
+interface BoostLedgerItem {
+  id: string;
+  kind: string;
+  delta: number;
+  balanceAfter: number;
+  createdAt: string;
+  href: string | null;
+  resourceLabel: string | null;
+  contextLabel: string | null;
+  isBackfill: boolean;
 }
 
 interface LoginAttempt {
@@ -46,14 +49,12 @@ interface BoostAllocation {
 
 interface UserProfileData {
   profile: Profile;
-  boosts: { items: BoostedRecording[] };
+  boostLedger: { items: BoostLedgerItem[] };
   attempts: { items: LoginAttempt[] };
   boostAllocation?: BoostAllocation;
 }
 
 const USER_PROFILE_QUERY_KEY = ["user-profile"] as const;
-const VIDEO_BOOSTS_QUERY_KEY = (shortId?: string) =>
-  shortId ? (["video-boosts", shortId] as const) : (["video-boosts"] as const);
 const WATCHLIST_QUERY_KEY = ["watchlist"] as const;
 const VIDEO_WATCHLIST_QUERY_KEY = (shortId: string) => ["video-watchlist", shortId] as const;
 
@@ -118,46 +119,6 @@ export function useUpdatePreferenceMutation() {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY });
-    },
-    retry: shouldRetryMutation,
-  });
-}
-
-export function useRemoveBoostMutation() {
-  const queryClient = useQueryClient();
-
-  return useMutation<{ availableBoosts?: number }, ApiError, string>({
-    mutationFn: async (shortId) => {
-      const accessToken = await getValidAccessTokenAsync();
-      if (!accessToken) {
-        throw new ApiError("Access token required", 401);
-      }
-      if (!shortId) {
-        throw new ApiError("shortId required", 400);
-      }
-
-      const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
-        headers: createAuthHeaders(accessToken),
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          handleUnauthorizedClientState();
-        }
-        throw new ApiError("Failed to remove boost", response.status);
-      }
-
-      return ((await response.json()) as { availableBoosts?: number }) ?? {};
-    },
-    onError: (error, shortId) => {
-      logError("user.boost.remove_failed", error, { shortId });
-    },
-    onSuccess: async (_data, shortId) => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: USER_PROFILE_QUERY_KEY }),
-        queryClient.invalidateQueries({ queryKey: VIDEO_BOOSTS_QUERY_KEY(shortId) }),
-      ]);
     },
     retry: shouldRetryMutation,
   });
@@ -478,4 +439,4 @@ export function invalidatePasskeysQuery(queryClient: ReturnType<typeof useQueryC
   return queryClient.invalidateQueries({ queryKey: PASSKEYS_QUERY_KEY });
 }
 
-export type { BoostAllocation, BoostedRecording, LoginAttempt, Passkey, Profile, UserProfileData };
+export type { BoostAllocation, BoostLedgerItem, LoginAttempt, Passkey, Profile, UserProfileData };

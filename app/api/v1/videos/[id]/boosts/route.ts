@@ -1,18 +1,14 @@
-import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { getAuthUserId } from "@/lib/api/auth";
 import { validateVideoApiRequest } from "@/lib/api/rate-limit";
 import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
 import { videoBoostMutationSchema, videoBoostStatsSchema } from "@/lib/api/schemas";
+import { createVideoBoost, removeVideoBoostOperation } from "@/lib/data/boost-operations";
 import {
-  addVideoBoost,
-  consumeBoost,
   getVideoBoostStats,
   getVideoBoostedUsers,
   getUserBoostAllocation,
-  refundBoost,
-  removeVideoBoost,
 } from "@/lib/data/boosts";
 import { logError, logWarn } from "@/lib/utils/log";
 
@@ -125,9 +121,9 @@ export const POST = withRequestContext(
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
 
-      const boostResult = await consumeBoost(userId);
+      const boostResult = await createVideoBoost(videoId, userId);
 
-      if (!boostResult.success) {
+      if (boostResult.error === "no_boosts_available") {
         logWarn("video.boosts.no_boosts_available", { userId, videoId });
 
         return NextResponse.json(
@@ -136,17 +132,7 @@ export const POST = withRequestContext(
         );
       }
 
-      const result = await addVideoBoost(videoId, userId);
-
-      revalidateTag("engagement-counts", "max");
-      revalidateTag("member-picks", "max");
-      revalidateTag("hidden-gems", "max");
-
-      const response = {
-        ...result,
-        availableBoosts: boostResult.availableBoosts,
-      };
-      const validated = videoBoostMutationSchema.parse(response);
+      const validated = videoBoostMutationSchema.parse(boostResult);
 
       return NextResponse.json(validated);
     } catch (error) {
@@ -186,23 +172,10 @@ export const DELETE = withRequestContext(
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
 
-      const result = await removeVideoBoost(videoId, userId);
-
-      let availableBoosts: number;
-      if (result.removed) {
-        availableBoosts = await refundBoost(userId);
-      } else {
-        const allocation = await getUserBoostAllocation(userId);
-        ({ availableBoosts } = allocation);
-      }
-
-      revalidateTag("engagement-counts", "max");
-      revalidateTag("member-picks", "max");
-      revalidateTag("hidden-gems", "max");
-
+      const result = await removeVideoBoostOperation(videoId, userId);
       const validated = videoBoostMutationSchema.parse(result);
 
-      return NextResponse.json({ ...validated, availableBoosts });
+      return NextResponse.json(validated);
     } catch (error) {
       logError("video.boosts.delete_failed", error, { operation: "delete", videoId });
 

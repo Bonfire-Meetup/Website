@@ -29,6 +29,13 @@
       "when": 1772813273968,
       "tag": "0003_add_event_questions",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1772980532208,
+      "tag": "0004_add_boost_ledger",
+      "breakpoints": true
     }
   ]
 }

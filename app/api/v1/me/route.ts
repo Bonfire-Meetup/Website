@@ -9,7 +9,9 @@ import {
   getAuthUserById,
   markAuthChallengeUsed,
 } from "@/lib/data/auth";
-import { getUserBoostAllocation, getUserBoosts, refundBoost } from "@/lib/data/boosts";
+import { getUserBoostLedgerItems } from "@/lib/data/boost-ledger";
+import { refundEventQuestionBoosts } from "@/lib/data/boost-operations";
+import { getUserBoostAllocation } from "@/lib/data/boosts";
 import { db } from "@/lib/data/db";
 import { deleteAllEventQuestionsByUser } from "@/lib/data/event-questions";
 import {
@@ -25,7 +27,6 @@ import {
   userWatchlist,
   videoBoosts,
 } from "@/lib/data/schema";
-import { getAllRecordings } from "@/lib/recordings/recordings";
 import {
   getClientFingerprint,
   getEmailFingerprint,
@@ -33,9 +34,6 @@ import {
   logInfo,
   logWarn,
 } from "@/lib/utils/log";
-
-const getWatchSlug = (recording: { slug: string; shortId: string }) =>
-  `${recording.slug}-${recording.shortId}`;
 
 export const GET = withRequestContext(
   withAuth("account.me")(async (_request: Request, { auth }) => {
@@ -51,8 +49,8 @@ export const GET = withRequestContext(
       const fingerprint = getEmailFingerprint(user.email);
       const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-      const [boosts, attempts, boostAllocation] = await Promise.all([
-        getUserBoosts(auth.userId),
+      const [boostLedgerItems, attempts, boostAllocation] = await Promise.all([
+        getUserBoostLedgerItems(auth.userId),
         fingerprint.emailHash
           ? getAuthAttemptsByEmailHash({
               accountCreatedAt: user.createdAt,
@@ -64,28 +62,6 @@ export const GET = withRequestContext(
           : Promise.resolve([]),
         getUserBoostAllocation(auth.userId),
       ]);
-
-      const recordings = getAllRecordings();
-      const recordingMap = new Map(recordings.map((recording) => [recording.shortId, recording]));
-
-      const boostItems = boosts
-        .map((boost) => {
-          const recording = recordingMap.get(boost.videoId);
-
-          if (!recording) {
-            return null;
-          }
-
-          return {
-            boostedAt: new Date(boost.createdAt).toISOString(),
-            date: recording.date,
-            shortId: recording.shortId,
-            slug: getWatchSlug(recording),
-            speaker: recording.speaker,
-            title: recording.title,
-          };
-        })
-        .filter((item) => item !== null);
 
       const attemptItems = attempts.map((attempt) => ({
         createdAt: new Date(attempt.createdAt).toISOString(),
@@ -108,7 +84,7 @@ export const GET = withRequestContext(
           availableBoosts: boostAllocation.availableBoosts,
           nextAllocationDate: nextMonth.toISOString(),
         },
-        boosts: { items: boostItems },
+        boostLedger: { items: boostLedgerItems },
         profile: {
           allowCommunityEmails: user.preferences.allowCommunityEmails ?? false,
           createdAt: new Date(user.createdAt).toISOString(),
@@ -194,10 +170,10 @@ export const DELETE = withRequestContext(
     await markAuthChallengeUsed(verification.id);
 
     try {
-      const { boostUserIds } = await deleteAllEventQuestionsByUser(auth.userId);
-      const refundUserIds = boostUserIds.filter((userId) => userId !== auth.userId);
+      const { boostRefunds } = await deleteAllEventQuestionsByUser(auth.userId);
+      const refundEntries = boostRefunds.filter((entry) => entry.userId !== auth.userId);
 
-      await Promise.all(refundUserIds.map((userId) => refundBoost(userId)));
+      await refundEventQuestionBoosts(refundEntries);
 
       await db().delete(authToken).where(eq(authToken.userId, auth.userId));
       await db().delete(authRefreshToken).where(eq(authRefreshToken.userId, auth.userId));
