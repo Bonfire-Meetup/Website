@@ -402,14 +402,14 @@ html.smooth-scroll {
 }
 
 .dark .dark-gradient-button {
-  filter: saturate(0.78) brightness(0.82);
+  filter: saturate(0.86) brightness(0.89);
   box-shadow:
-    0 10px 24px -18px rgba(249, 115, 22, 0.16),
-    0 4px 14px -14px rgba(244, 63, 94, 0.14);
+    0 11px 26px -18px rgba(249, 115, 22, 0.2),
+    0 5px 16px -14px rgba(244, 63, 94, 0.17);
 }
 
 .dark .dark-gradient-button:hover {
-  filter: saturate(0.84) brightness(0.88);
+  filter: saturate(0.92) brightness(0.94);
 }
 
 .gradient-bg {
