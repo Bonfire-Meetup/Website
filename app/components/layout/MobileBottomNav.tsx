@@ -66,85 +66,92 @@ function MobileBottomNavInner() {
 
   return (
     <nav
-      className="fixed bottom-3 left-1/2 z-50 transition-[opacity,transform] duration-300 ease-out md:hidden"
+      className="fixed left-1/2 z-50 -translate-x-1/2 md:hidden"
       style={{
-        transform: isMoreMenuOpen
-          ? "translateX(-50%) translateY(10px) translateZ(0)"
-          : "translateX(-50%) translateY(0) translateZ(0)",
-        WebkitTransform: isMoreMenuOpen
-          ? "translateX(-50%) translateY(10px) translateZ(0)"
-          : "translateX(-50%) translateY(0) translateZ(0)",
-        opacity: isMoreMenuOpen ? 0 : 1,
-        pointerEvents: isMoreMenuOpen ? "none" : "auto",
+        bottom: "calc(env(safe-area-inset-bottom, 0px) + 0.75rem)",
       }}
     >
-      <div className="nav-pill flex items-center gap-1 rounded-full bg-white/60 px-2 py-2 backdrop-blur-xl dark:bg-neutral-900/55">
-        {navItems.map((item) => {
-          const active = isActive(item);
-          const Icon = item.icon;
-          const isSignInItem = !isAuthed && !isResolvingAuth && item.href === PAGE_ROUTES.LOGIN;
-          const itemBody = (
-            <span
-              className={`relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 ease-out ${
-                active
-                  ? "bg-gradient-to-br from-rose-600 via-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/40"
-                  : item.disabled
-                    ? "cursor-not-allowed text-neutral-400 opacity-70 dark:text-neutral-500"
-                    : isSignInItem
-                      ? ENGAGEMENT_BRANDING.access.classes.signInNav
-                      : "text-neutral-500 hover:bg-neutral-100/50 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-neutral-200"
-              }`}
-              style={{
-                transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-              }}
-            >
-              <Icon className="h-5 w-5" />
+      <div
+        className="transition-[opacity,transform] duration-300 ease-out"
+        style={{
+          transform: isMoreMenuOpen
+            ? "translateY(10px) translateZ(0)"
+            : "translateY(0) translateZ(0)",
+          WebkitTransform: isMoreMenuOpen
+            ? "translateY(10px) translateZ(0)"
+            : "translateY(0) translateZ(0)",
+          opacity: isMoreMenuOpen ? 0 : 1,
+          pointerEvents: isMoreMenuOpen ? "none" : "auto",
+        }}
+      >
+        <div className="nav-pill flex items-center gap-1 rounded-full bg-white/60 px-2 py-2 backdrop-blur-xl dark:bg-neutral-900/55">
+          {navItems.map((item) => {
+            const active = isActive(item);
+            const Icon = item.icon;
+            const isSignInItem = !isAuthed && !isResolvingAuth && item.href === PAGE_ROUTES.LOGIN;
+            const itemBody = (
+              <span
+                className={`relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 ease-out ${
+                  active
+                    ? "bg-gradient-to-br from-rose-600 via-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/40"
+                    : item.disabled
+                      ? "cursor-not-allowed text-neutral-400 opacity-70 dark:text-neutral-500"
+                      : isSignInItem
+                        ? ENGAGEMENT_BRANDING.access.classes.signInNav
+                        : "text-neutral-500 hover:bg-neutral-100/50 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-neutral-200"
+                }`}
+                style={{
+                  transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                }}
+              >
+                <Icon className="h-5 w-5" />
 
-              {active && (
-                <span
-                  className="absolute -inset-1 rounded-full opacity-60 blur-md"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, rgba(192, 38, 211, 0.4), rgba(249, 115, 22, 0.4), rgba(220, 38, 38, 0.4))",
-                  }}
-                />
-              )}
-            </span>
-          );
+                {active && (
+                  <span
+                    className="absolute -inset-1 rounded-full opacity-60 blur-md"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, rgba(192, 38, 211, 0.4), rgba(249, 115, 22, 0.4), rgba(220, 38, 38, 0.4))",
+                    }}
+                  />
+                )}
+              </span>
+            );
 
-          if (item.disabled) {
+            if (item.disabled) {
+              return (
+                <button
+                  key={item.href}
+                  type="button"
+                  disabled
+                  aria-label={item.label}
+                  className="group relative flex items-center justify-center"
+                >
+                  {itemBody}
+                </button>
+              );
+            }
+
             return (
-              <button
+              <Link
                 key={item.href}
-                type="button"
-                disabled
-                aria-label={item.label}
+                href={item.href}
+                onClick={() => {
+                  if (active) {
+                    haptics.neutral();
+                    return;
+                  }
+                  haptics.success();
+                }}
                 className="group relative flex items-center justify-center"
+                aria-label={item.label}
               >
                 {itemBody}
-              </button>
+              </Link>
             );
-          }
-
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => {
-                if (active) {
-                  haptics.neutral();
-                  return;
-                }
-                haptics.success();
-              }}
-              className="group relative flex items-center justify-center"
-              aria-label={item.label}
-            >
-              {itemBody}
-            </Link>
-          );
-        })}
-        <MobileMoreMenu onOpenChange={setIsMoreMenuOpen} />
+          })}
+          <MobileMoreMenu onOpenChange={setIsMoreMenuOpen} />
+        </div>
       </div>
     </nav>
   );
