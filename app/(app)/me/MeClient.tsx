@@ -26,6 +26,7 @@ import {
 } from "@/lib/api/user-profile";
 import { revokeSession, setLoggingOut as setGlobalLoggingOut } from "@/lib/auth/client";
 import { resetClientAuthState } from "@/lib/auth/client-session";
+import { BOOST_CONFIG } from "@/lib/config/constants";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
@@ -445,39 +446,60 @@ export function MeClient() {
             <div className="grid min-w-0 gap-6 lg:grid-cols-2">
               <div className="min-w-0 space-y-4">
                 {boostAllocation && (
-                  <div className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/70 to-teal-50/70 dark:border-emerald-500/30 dark:from-emerald-500/10 dark:to-teal-500/10">
-                    <div className="border-b border-emerald-100 px-4 py-3 dark:border-emerald-500/20">
-                      <div className="flex items-center justify-between gap-3">
-                        <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-900 dark:text-emerald-200">
+                  <div className="overflow-hidden rounded-2xl border border-emerald-200/70 bg-linear-to-br from-white via-emerald-50/90 to-teal-50/80 shadow-[0_16px_40px_-28px_rgba(5,150,105,0.35)] dark:border-emerald-500/25 dark:from-emerald-500/12 dark:via-emerald-500/10 dark:to-teal-500/10 dark:shadow-none">
+                    <div className="flex min-h-14 flex-col items-start gap-1 border-b border-emerald-200/70 bg-white/55 px-4 py-3 backdrop-blur-sm sm:flex-row sm:items-center sm:gap-3 dark:border-emerald-500/20 dark:bg-white/[0.03]">
+                      <div className="flex items-center gap-3">
+                        <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-950 dark:text-emerald-200">
                           <BoltIcon
                             className="h-4 w-4 shrink-0 text-emerald-700/80 dark:text-emerald-300/80"
                             aria-hidden="true"
                           />
                           {t("boostAllocation.title")}
                         </h3>
-                        <div className="text-right text-[11px] font-normal text-emerald-700/80 sm:shrink-0 dark:text-emerald-300/80">
-                          {t("boostAllocation.nextAllocation", {
-                            date: formatDayMonthUTC(boostAllocation.nextAllocationDate, locale),
-                          })}
-                        </div>
+                      </div>
+                      <div className="text-[11px] font-medium text-emerald-700/80 sm:ml-auto sm:text-right dark:text-emerald-300/80">
+                        {t("boostAllocation.nextAllocation", {
+                          date: formatDayMonthUTC(boostAllocation.nextAllocationDate, locale),
+                        })}
                       </div>
                     </div>
                     <div className="p-4">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-emerald-600 dark:text-emerald-300">
-                          {boostAllocation.availableBoosts}
-                        </span>
-                        <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-                          {boostAllocation.availableBoosts === 1
-                            ? t("boostAllocation.availableOne")
-                            : t("boostAllocation.available", {
-                                count: boostAllocation.availableBoosts,
-                              })}
-                        </span>
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                          <span className="text-3xl font-black text-emerald-700 dark:text-emerald-300">
+                            {boostAllocation.availableBoosts}
+                          </span>
+                          <span className="text-sm font-medium text-emerald-800 dark:text-emerald-300">
+                            {boostAllocation.availableBoosts === 1
+                              ? t("boostAllocation.availableOne")
+                              : t("boostAllocation.available", {
+                                  count: boostAllocation.availableBoosts,
+                                })}
+                          </span>
+                        </div>
+                        <div className="self-start rounded-full border border-emerald-200/80 bg-white/70 px-2.5 py-1 text-[11px] font-semibold tracking-[0.16em] text-emerald-700 uppercase shadow-sm shadow-emerald-100/70 dark:border-emerald-500/20 dark:bg-white/8 dark:text-emerald-300 dark:shadow-none">
+                          {t("boostAllocation.title")}
+                        </div>
                       </div>
-                      <p className="mt-2 text-xs text-emerald-600/70 dark:text-emerald-300/70">
-                        {t("boostAllocation.limitNote")}
-                      </p>
+                      <div className="mt-3 rounded-xl border border-emerald-200/70 bg-white/55 px-3 py-2 dark:border-emerald-500/15 dark:bg-white/[0.04]">
+                        <p className="text-xs leading-5 text-emerald-700/80 dark:text-emerald-300/75">
+                          {t("boostAllocation.limitNote")}
+                        </p>
+                      </div>
+                      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-emerald-100/90 dark:bg-emerald-500/15">
+                        <div
+                          className="h-full rounded-full bg-linear-to-r from-emerald-500 via-emerald-400 to-teal-400 dark:from-emerald-400 dark:via-emerald-300 dark:to-teal-300"
+                          style={{
+                            width: `${Math.min(
+                              (boostAllocation.availableBoosts / BOOST_CONFIG.MAX_BOOSTS) * 100,
+                              100,
+                            )}%`,
+                          }}
+                        />
+                      </div>
+                      <div className="mt-1 text-[11px] text-emerald-600/75 dark:text-emerald-300/70">
+                        {boostAllocation.availableBoosts}/{BOOST_CONFIG.MAX_BOOSTS}
+                      </div>
                     </div>
                   </div>
                 )}
