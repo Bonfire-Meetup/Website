@@ -12,6 +12,7 @@ import { MEMBERSHIP_TIER_LABELS } from "@/lib/config/membership";
 import { canAccessRecording, getRecordingAccessState } from "@/lib/recordings/early-access";
 import type { Recording } from "@/lib/recordings/recordings";
 import { useAppSelector } from "@/lib/redux/hooks";
+import { selectAuthMembershipTier } from "@/lib/redux/selectors/authSelectors";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDate } from "@/lib/utils/locale";
 
@@ -56,6 +57,7 @@ export function RecordingPlayer({
   const locale = useLocale();
   const router = useRouter();
   const auth = useAppSelector((state) => state.auth);
+  const viewerMembershipTier = useAppSelector(selectAuthMembershipTier);
   const [nowMs, setNowMs] = useState(() => Date.now());
   const refreshTriggeredRef = useRef(false);
 
@@ -72,14 +74,13 @@ export function RecordingPlayer({
     (hasResolvedAuth &&
       canAccessRecording({
         isAuthenticated: auth.isAuthenticated,
-        membershipTier: auth.user?.decodedToken?.mbt,
+        membershipTier: viewerMembershipTier,
         now: new Date(nowMs),
         policy: recording.access,
       }));
   const isAccessCheckPending = isRestricted && !hasResolvedAuth;
   const countdownMs =
     isEarlyAccess && earlyAccessEndsAtMs ? Math.max(earlyAccessEndsAtMs - nowMs, 0) : 0;
-  const viewerMembershipTier = auth.user?.decodedToken?.mbt ?? 0;
   const requiredGuildLevelName = getGuildLevelName(requiredMembershipTier) ?? "";
   const currentGuildLevelName = getGuildLevelName(viewerMembershipTier);
   const isGuildTierLockedForMember = Boolean(

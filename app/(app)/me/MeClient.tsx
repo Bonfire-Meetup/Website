@@ -29,6 +29,7 @@ import { resetClientAuthState } from "@/lib/auth/client-session";
 import { BOOST_CONFIG } from "@/lib/config/constants";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { selectAuthRoles } from "@/lib/redux/selectors/authSelectors";
 import {
   setAttempts,
   setBoostAllocation,
@@ -87,6 +88,7 @@ export function MeClient() {
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth) as RootState["auth"];
+  const userRoles = useAppSelector(selectAuthRoles);
   const profileState = useAppSelector((state) => state.profile) as ProfileState;
   const [mounted, setMounted] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -178,7 +180,6 @@ export function MeClient() {
   const isHydrated = mounted && auth.hydrated;
 
   const profile = isHydrated ? (profileState.profile ?? profileQuery.data?.profile ?? null) : null;
-  const userRoles = auth.user?.decodedToken?.rol ?? [];
   const isCrew = userRoles.includes(USER_ROLES.CREW);
   const isEditor = userRoles.includes(USER_ROLES.EDITOR);
   const boostLedger = isHydrated

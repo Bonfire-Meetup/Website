@@ -14,6 +14,7 @@ import { authFetch } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppSelector } from "@/lib/redux/hooks";
+import { selectAuthRoles } from "@/lib/redux/selectors/authSelectors";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { extractTokenFromUrl, parseCheckInToken } from "@/lib/utils/check-in-token";
 import { useHaptics } from "@/lib/utils/haptics";
@@ -47,6 +48,7 @@ export function ReaderClient() {
   const router = useRouter();
   const haptics = useHaptics();
   const auth = useAppSelector((state) => state.auth);
+  const userRoles = useAppSelector(selectAuthRoles);
   const [selectedEvent, setSelectedEvent] = useState<string>("");
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
@@ -57,7 +59,6 @@ export function ReaderClient() {
   const isProcessingRef = useRef<boolean>(false);
 
   const events = getUpcomingEvents(new Date());
-  const userRoles = auth.user?.decodedToken?.rol ?? [];
   const isCrew = userRoles.includes(USER_ROLES.CREW);
 
   useEffect(() => {

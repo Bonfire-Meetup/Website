@@ -9,6 +9,7 @@ import { CheckCircleIcon, CheckIcon } from "@/components/shared/Icons";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useCreateRsvpMutation, useDeleteRsvpMutation, useEventRsvps } from "@/lib/api/events";
 import { useAppSelector, useAuthStatus } from "@/lib/redux/hooks";
+import { selectAuthViewer } from "@/lib/redux/selectors/authSelectors";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { useHaptics } from "@/lib/utils/haptics";
 
@@ -22,7 +23,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
   const haptics = useHaptics();
   const { isMounted, isPending: isAuthPending, queryScope } = useAuthStatus();
   const isAuthenticated = queryScope === "auth";
-  const authUser = useAppSelector((state) => state.auth.user);
+  const authViewer = useAppSelector(selectAuthViewer);
   const { data: rsvps, isAuthTransitioning, isLoading: rsvpsLoading } = useEventRsvps(eventId);
   const createMutation = useCreateRsvpMutation(eventId);
   const deleteMutation = useDeleteRsvpMutation(eventId);
@@ -53,9 +54,9 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
       return;
     }
 
-    const userId = authUser?.id;
-    const userName = authUser?.name;
-    const isPublic = authUser?.publicProfile ?? false;
+    const userId = authViewer.id;
+    const userName = authViewer.name;
+    const isPublic = authViewer.publicProfile;
 
     if (!userId) {
       haptics.error();
@@ -98,7 +99,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
     isRsvped,
     eventId,
     router,
-    authUser,
+    authViewer,
     createMutation,
     deleteMutation,
     haptics,

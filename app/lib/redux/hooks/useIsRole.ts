@@ -3,15 +3,16 @@
 import { useEffect, useState } from "react";
 
 import { useAppSelector } from "@/lib/redux/hooks";
-import type { RootState } from "@/lib/redux/store";
+import { selectAuthRoles } from "@/lib/redux/selectors/authSelectors";
 
 export function useIsRole(role: string): boolean {
-  const auth = useAppSelector((state) => state.auth) as RootState["auth"];
+  const hydrated = useAppSelector((state) => state.auth.hydrated);
+  const roles = useAppSelector(selectAuthRoles);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  return mounted && auth.hydrated && (auth.user?.decodedToken?.rol ?? []).includes(role);
+  return mounted && hydrated && roles.includes(role);
 }

@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect, useState } from "react";
 
 import { useAppSelector } from "@/lib/redux/hooks";
+import { selectAuthUserId } from "@/lib/redux/selectors/authSelectors";
 
 interface OwnerOnlyActionProps {
   profileUserId: string;
@@ -11,8 +12,9 @@ interface OwnerOnlyActionProps {
 
 export function OwnerOnlyAction({ profileUserId, children }: OwnerOnlyActionProps) {
   const auth = useAppSelector((state) => state.auth);
+  const authUserId = useAppSelector(selectAuthUserId);
   const [mounted, setMounted] = useState(false);
-  const isOwner = auth.user?.id === profileUserId;
+  const isOwner = authUserId === profileUserId;
 
   useEffect(() => {
     setMounted(true);

@@ -4,23 +4,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
-import {
-  generateRefreshToken,
-  getAccessTokenTtlSeconds,
-  getRefreshTokenCookieOptions,
-  getRefreshTokenTtlSeconds,
-  hashRefreshToken,
-  REFRESH_TOKEN_COOKIE_NAME,
-  signAccessToken,
-  signIdToken,
-} from "@/lib/auth/jwt";
+import { issueAuthTokens } from "@/lib/auth/issue-auth-tokens";
 import { verifyAuthentication } from "@/lib/auth/webauthn";
-import {
-  getAuthUserById,
-  insertAuthAttempt,
-  insertAuthToken,
-  insertRefreshToken,
-} from "@/lib/data/auth";
+import { getAuthUserById, insertAuthAttempt } from "@/lib/data/auth";
 import {
   getPasskeyByCredentialId,
   getPasskeyChallenge,
@@ -62,68 +48,6 @@ const getClientIp = (headers: Headers): string | null => {
   const ip = headers.get("x-real-ip") || forwarded?.split(",")[0]?.trim() || null;
 
   return ip === "0.0.0.0" ? null : ip;
-};
-
-const issueTokens = async (
-  userId: string,
-  tokenFamilyId: string,
-  ip: string | null,
-  userAgent: string | null,
-) => {
-  const user = await getAuthUserById(userId);
-  const roles = user?.roles ?? [];
-  const membershipTier = user?.membershipTier ?? null;
-  const publicProfile = user?.preferences.publicProfile ?? false;
-  const userEmail = user?.email ?? "";
-  const userName = user?.name ?? null;
-
-  const accessTokenJti = crypto.randomUUID();
-  const accessToken = await signAccessToken(userId, accessTokenJti, roles, membershipTier);
-  const idToken = await signIdToken({
-    email: userEmail,
-    jti: crypto.randomUUID(),
-    membershipTier,
-    name: userName,
-    publicProfile,
-    roles,
-    userId,
-  });
-  const accessExpiresIn = getAccessTokenTtlSeconds();
-  const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000).toISOString();
-
-  await insertAuthToken({
-    expiresAt: accessExpiresAt,
-    ip,
-    jti: accessTokenJti,
-    userAgent,
-    userId,
-  });
-
-  const refreshToken = generateRefreshToken();
-  const refreshTokenHash = hashRefreshToken(refreshToken);
-  const refreshExpiresIn = getRefreshTokenTtlSeconds();
-  const refreshExpiresAt = new Date(Date.now() + refreshExpiresIn * 1000).toISOString();
-
-  await insertRefreshToken({
-    expiresAt: refreshExpiresAt,
-    ip,
-    tokenHash: refreshTokenHash,
-    parentId: null,
-    tokenFamilyId,
-    userAgent,
-    userId,
-  });
-
-  const cookieOptions = getRefreshTokenCookieOptions(refreshExpiresIn);
-  const cookieValue = `${REFRESH_TOKEN_COOKIE_NAME}=${refreshToken}; HttpOnly; ${cookieOptions.secure ? "Secure; " : ""}SameSite=${cookieOptions.sameSite}; Path=${cookieOptions.path}; Max-Age=${cookieOptions.maxAge}`;
-
-  return {
-    accessToken,
-    accessExpiresIn,
-    accessTokenJti,
-    cookieValue,
-    idToken,
-  };
 };
 
 export const POST = withRequestContext(
@@ -210,7 +134,13 @@ export const POST = withRequestContext(
 
       const tokenFamilyId = crypto.randomUUID();
       const { accessToken, accessExpiresIn, accessTokenJti, cookieValue, idToken } =
-        await issueTokens(passkey.userId, tokenFamilyId, ip, userAgent);
+        await issueAuthTokens({
+          ip,
+          parentId: null,
+          tokenFamilyId,
+          userAgent,
+          userId: passkey.userId,
+        });
 
       const emailFingerprint = getEmailFingerprint(user.email);
       const requestId = getRequestId();

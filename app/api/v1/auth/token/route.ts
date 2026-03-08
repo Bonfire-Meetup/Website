@@ -6,24 +6,16 @@ import { z } from "zod";
 
 import { API_ROUTES } from "@/lib/api/routes";
 import { timingGuardHash, verifyOtpChallenge } from "@/lib/auth/challenge";
+import { issueAuthTokens } from "@/lib/auth/issue-auth-tokens";
 import {
-  generateRefreshToken,
-  getAccessTokenTtlSeconds,
-  getRefreshTokenCookieOptions,
   getRefreshTokenReuseWindowSeconds,
-  getRefreshTokenTtlSeconds,
   hashRefreshToken,
   isValidRefreshTokenFormat,
   REFRESH_TOKEN_COOKIE_NAME,
-  signAccessToken,
-  signIdToken,
 } from "@/lib/auth/jwt";
 import {
-  getAuthUserById,
   getRefreshTokenByHash,
   insertAuthAttempt,
-  insertAuthToken,
-  insertRefreshToken,
   markAuthChallengeUsed,
   markRefreshTokenUsed,
   revokeRefreshTokenFamily,
@@ -84,69 +76,6 @@ const isRateLimited = (key: string, maxHits: number, windowMs: number = rateLimi
   rateLimitStore.set(key, hits);
 
   return false;
-};
-
-const issueTokens = async (
-  userId: string,
-  tokenFamilyId: string,
-  parentId: string | null,
-  ip: string | null,
-  userAgent: string | null,
-) => {
-  const user = await getAuthUserById(userId);
-  const roles = user?.roles ?? [];
-  const membershipTier = user?.membershipTier ?? null;
-  const publicProfile = user?.preferences.publicProfile ?? false;
-  const userEmail = user?.email ?? "";
-  const userName = user?.name ?? null;
-
-  const accessTokenJti = crypto.randomUUID();
-  const accessToken = await signAccessToken(userId, accessTokenJti, roles, membershipTier);
-  const idToken = await signIdToken({
-    email: userEmail,
-    jti: crypto.randomUUID(),
-    membershipTier,
-    name: userName,
-    publicProfile,
-    roles,
-    userId,
-  });
-  const accessExpiresIn = getAccessTokenTtlSeconds();
-  const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000).toISOString();
-
-  await insertAuthToken({
-    expiresAt: accessExpiresAt,
-    ip,
-    jti: accessTokenJti,
-    userAgent,
-    userId,
-  });
-
-  const refreshToken = generateRefreshToken();
-  const refreshTokenHash = hashRefreshToken(refreshToken);
-  const refreshExpiresIn = getRefreshTokenTtlSeconds();
-  const refreshExpiresAt = new Date(Date.now() + refreshExpiresIn * 1000).toISOString();
-
-  await insertRefreshToken({
-    expiresAt: refreshExpiresAt,
-    ip,
-    tokenHash: refreshTokenHash,
-    parentId,
-    tokenFamilyId,
-    userAgent,
-    userId,
-  });
-
-  const cookieOptions = getRefreshTokenCookieOptions(refreshExpiresIn);
-  const cookieValue = `${REFRESH_TOKEN_COOKIE_NAME}=${refreshToken}; HttpOnly; ${cookieOptions.secure ? "Secure; " : ""}SameSite=${cookieOptions.sameSite}; Path=${cookieOptions.path}; Max-Age=${cookieOptions.maxAge}`;
-
-  return {
-    accessToken,
-    accessExpiresIn,
-    accessTokenJti,
-    cookieValue,
-    idToken,
-  };
 };
 
 const handleRefreshTokenGrant = async (
@@ -238,13 +167,14 @@ const handleRefreshTokenGrant = async (
 
   await markRefreshTokenUsed(tokenHash);
 
-  const { accessToken, accessExpiresIn, accessTokenJti, cookieValue, idToken } = await issueTokens(
-    refreshToken.userId,
-    refreshToken.tokenFamilyId,
-    refreshToken.id,
-    ip,
-    userAgent,
-  );
+  const { accessToken, accessExpiresIn, accessTokenJti, cookieValue, idToken } =
+    await issueAuthTokens({
+      ip,
+      parentId: refreshToken.id,
+      tokenFamilyId: refreshToken.tokenFamilyId,
+      userAgent,
+      userId: refreshToken.userId,
+    });
 
   logInfo("auth.token.refresh.success", {
     ...clientFingerprint,
@@ -370,13 +300,14 @@ const handleEmailOtpGrant = async (
 
   const tokenFamilyId = crypto.randomUUID();
 
-  const { accessToken, accessExpiresIn, accessTokenJti, cookieValue, idToken } = await issueTokens(
-    userId,
-    tokenFamilyId,
-    null,
-    ip,
-    userAgent,
-  );
+  const { accessToken, accessExpiresIn, accessTokenJti, cookieValue, idToken } =
+    await issueAuthTokens({
+      ip,
+      parentId: null,
+      tokenFamilyId,
+      userAgent,
+      userId,
+    });
 
   await recordAttempt("success", userId);
   logInfo("auth.token.issued", {

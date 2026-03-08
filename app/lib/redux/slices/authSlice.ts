@@ -5,14 +5,8 @@ import type { AccessTokenPayload, IdTokenPayload } from "@/lib/auth/token";
 interface AuthState {
   token: string | null;
   idToken: string | null;
-  user: {
-    id?: string;
-    email?: string;
-    name?: string | null;
-    publicProfile?: boolean;
-    decodedToken?: AccessTokenPayload | null;
-    decodedIdToken?: IdTokenPayload | null;
-  } | null;
+  decodedToken: AccessTokenPayload | null;
+  decodedIdToken: IdTokenPayload | null;
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
@@ -22,7 +16,8 @@ interface AuthState {
 const initialState: AuthState = {
   token: null,
   idToken: null,
-  user: null,
+  decodedToken: null,
+  decodedIdToken: null,
   isAuthenticated: false,
   loading: false,
   error: null,
@@ -44,25 +39,17 @@ const authSlice = createSlice({
     ) => {
       state.token = action.payload.token;
       state.idToken = action.payload.idToken ?? null;
+      state.decodedToken = action.payload.decoded ?? null;
+      state.decodedIdToken = action.payload.decodedIdToken ?? null;
       state.isAuthenticated = true;
       state.hydrated = true;
-      if (action.payload.decoded || action.payload.decodedIdToken) {
-        state.user = {
-          ...state.user,
-          id: action.payload.decoded?.sub ?? action.payload.decodedIdToken?.sub,
-          email: action.payload.decodedIdToken?.email,
-          name: action.payload.decodedIdToken?.name,
-          publicProfile: action.payload.decodedIdToken?.publicProfile,
-          decodedToken: action.payload.decoded,
-          decodedIdToken: action.payload.decodedIdToken,
-        };
-      }
       state.error = null;
     },
     clearAuth: (state) => {
       state.token = null;
       state.idToken = null;
-      state.user = null;
+      state.decodedToken = null;
+      state.decodedIdToken = null;
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;

@@ -13,6 +13,7 @@ import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppSelector } from "@/lib/redux/hooks";
+import { selectAuthRoles } from "@/lib/redux/selectors/authSelectors";
 import type { RootState } from "@/lib/redux/store";
 import { newsletterEditorQueryParsers } from "@/lib/routes/app-search-params-client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -28,6 +29,7 @@ export function NewsletterEditorPageClient() {
   const resendSlug = resend ?? undefined;
 
   const auth = useAppSelector((state) => state.auth) as RootState["auth"];
+  const userRoles = useAppSelector(selectAuthRoles);
   const [mounted, setMounted] = useState(false);
   const [resendData, setResendData] = useState<NewsletterWizardData | null>(null);
   const [resendError, setResendError] = useState(false);
@@ -36,7 +38,6 @@ export function NewsletterEditorPageClient() {
     setMounted(true);
   }, []);
 
-  const userRoles = auth.user?.decodedToken?.rol ?? [];
   const isEditor = userRoles.includes(USER_ROLES.EDITOR);
 
   useEffect(() => {
