@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ApiError } from "@/lib/api/errors";
 import { ensureFreshToken, shouldRetryMutation } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
+import { useAuthScopedQuery } from "@/lib/api/useAuthScopedQuery";
 import { useAuthStatus } from "@/lib/redux/hooks";
 import { createAuthHeaders } from "@/lib/utils/http";
 import { logError } from "@/lib/utils/log-client";
@@ -66,27 +67,13 @@ export function useVideoLikes(shortId: string) {
 }
 
 export function useVideoBoosts(shortId: string, enabled = true) {
-  const { queryScope } = useAuthStatus();
-  const canFetch = Boolean(shortId) && enabled && queryScope !== "pending";
-  const query = useQuery({
-    enabled: canFetch,
-    queryFn: async () => {
-      const accessToken = queryScope === "auth" ? await ensureFreshToken() : null;
-
-      if (queryScope === "auth" && !accessToken) {
-        throw new ApiError("Authentication required", 401);
-      }
-
-      return fetchVideoBoosts(shortId, accessToken);
-    },
-    queryKey: ["video-boosts", shortId, queryScope],
+  return useAuthScopedQuery<VideoBoostsData>({
+    baseQueryKey: ["video-boosts", shortId],
+    enabled: Boolean(shortId) && enabled,
+    keepAnonymousPlaceholderOnAuth: true,
+    queryFn: ({ accessToken }) => fetchVideoBoosts(shortId, accessToken),
     staleTime: 5000,
   });
-
-  return {
-    ...query,
-    isLoading: query.isLoading || queryScope === "pending",
-  };
 }
 
 export function useVideoLikeMutation(shortId: string) {

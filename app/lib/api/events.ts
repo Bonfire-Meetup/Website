@@ -1,11 +1,11 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/lib/api/errors";
 import { ensureFreshToken, shouldRetryMutation } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
-import { useAuthStatus } from "@/lib/redux/hooks";
+import { useAuthScopedQuery } from "@/lib/api/useAuthScopedQuery";
 import { createAuthHeaders } from "@/lib/utils/http";
 import { logError } from "@/lib/utils/log-client";
 import { compressUuid } from "@/lib/utils/uuid-compress";
@@ -132,63 +132,23 @@ async function fetchEventQuestions(
 }
 
 export function useEventRsvps(eventId: string) {
-  const { queryScope } = useAuthStatus();
-  const queryClient = useQueryClient();
-  const canFetch = Boolean(eventId) && queryScope !== "pending";
-  const query = useQuery({
-    enabled: canFetch,
-    placeholderData: () =>
-      queryScope === "auth"
-        ? queryClient.getQueryData<EventRsvpsData>(["event-rsvps", eventId, "anon"])
-        : undefined,
-    queryFn: async () => {
-      const accessToken = queryScope === "auth" ? await ensureFreshToken() : null;
-
-      if (queryScope === "auth" && !accessToken) {
-        throw new ApiError("Authentication required", 401);
-      }
-
-      return fetchEventRsvps(eventId, accessToken);
-    },
-    queryKey: ["event-rsvps", eventId, queryScope],
+  return useAuthScopedQuery<EventRsvpsData>({
+    baseQueryKey: ["event-rsvps", eventId],
+    enabled: Boolean(eventId),
+    keepAnonymousPlaceholderOnAuth: true,
+    queryFn: ({ accessToken }) => fetchEventRsvps(eventId, accessToken),
     staleTime: 60000,
   });
-
-  return {
-    ...query,
-    isAuthTransitioning: queryScope === "auth" && query.isFetching && query.isPlaceholderData,
-    isLoading: query.isLoading || queryScope === "pending",
-  };
 }
 
 export function useEventQuestions(eventId: string) {
-  const { queryScope } = useAuthStatus();
-  const queryClient = useQueryClient();
-  const canFetch = Boolean(eventId) && queryScope !== "pending";
-  const query = useQuery({
-    enabled: canFetch,
-    placeholderData: () =>
-      queryScope === "auth"
-        ? queryClient.getQueryData<EventQuestionsData>(["event-questions", eventId, "anon"])
-        : undefined,
-    queryFn: async () => {
-      const accessToken = queryScope === "auth" ? await ensureFreshToken() : null;
-
-      if (queryScope === "auth" && !accessToken) {
-        throw new ApiError("Authentication required", 401);
-      }
-
-      return fetchEventQuestions(eventId, accessToken);
-    },
-    queryKey: ["event-questions", eventId, queryScope],
+  return useAuthScopedQuery<EventQuestionsData>({
+    baseQueryKey: ["event-questions", eventId],
+    enabled: Boolean(eventId),
+    keepAnonymousPlaceholderOnAuth: true,
+    queryFn: ({ accessToken }) => fetchEventQuestions(eventId, accessToken),
     staleTime: 15000,
   });
-
-  return {
-    ...query,
-    isAuthTransitioning: queryScope === "auth" && query.isFetching && query.isPlaceholderData,
-    isLoading: query.isLoading || queryScope === "pending",
-  };
 }
 
 export function useCreateRsvpMutation(eventId: string) {
