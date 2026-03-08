@@ -141,6 +141,7 @@ function QuestionComposerFields({
   rows,
   selectedTalkIndex,
   showCompactSelect,
+  submitButtonThemeClassName,
   submitLabel,
   talkOptions,
   text,
@@ -156,6 +157,7 @@ function QuestionComposerFields({
   rows: 2 | 3;
   selectedTalkIndex: string;
   showCompactSelect: boolean;
+  submitButtonThemeClassName: string;
   submitLabel: string;
   talkOptions: { key: string; topic: string }[];
   text: string;
@@ -188,7 +190,7 @@ function QuestionComposerFields({
           onClick={onSubmit}
           disabled={!canSubmit}
           aria-label={submitLabel}
-          className={`${submitButtonClassName} ${submitButtonSize}`}
+          className={`${submitButtonClassName} ${submitButtonThemeClassName} ${submitButtonSize}`}
         >
           {isSubmitting ? (
             <LoadingSpinner size="sm" ariaLabel={submitLabel} />
@@ -346,7 +348,10 @@ export function CommunityQuestionsPanel({
   const { handleRefresh, isWindowOpen } = panel;
   const isLiveView = mode === "live";
   const canSubmitQuestion =
-    panel.canParticipate && panel.text.trim().length >= 3 && !panel.createQuestion.isPending;
+    !panel.isAuthTransitioning &&
+    panel.canParticipate &&
+    panel.text.trim().length >= 3 &&
+    !panel.createQuestion.isPending;
   const isUpcomingMode = !panel.isWindowOpen && !panel.isReplayMode;
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(defaultAutoRefresh);
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>(null);
@@ -361,7 +366,8 @@ export function CommunityQuestionsPanel({
     : isUpcomingMode
       ? panel.t("questions.windowOpensSoon")
       : panel.t("questions.title");
-  const showQuestionComposer = !isLiveView && panel.isWindowOpen && panel.isAuthenticated;
+  const showQuestionComposer =
+    !isLiveView && panel.isWindowOpen && panel.isAuthenticated && !panel.isAuthTransitioning;
   const showQuestionFilters = !isUpcomingMode && (!panel.isReplayMode || hasAnyQuestions);
   const showMobileDock =
     isWindowOpen && (!isLiveView || showQuestionFilters || panel.isAuthenticated);
@@ -454,12 +460,19 @@ export function CommunityQuestionsPanel({
                 iconClassName="relative -top-px h-3.5 w-3.5"
               />
 
-              {!isLiveView && panel.isAuthenticated && (
+              {!isLiveView && panel.isAuthenticated && !panel.isAuthTransitioning && (
                 <div
                   className={`inline-flex min-h-9 items-center gap-1.5 self-start rounded-full px-3 py-1.5 text-xs font-semibold sm:self-auto ${ENGAGEMENT_BRANDING.boost.classes.activeGradient} ${ENGAGEMENT_BRANDING.boost.classes.activeText} ${ENGAGEMENT_BRANDING.boost.classes.activeShadow}`}
                 >
                   <BoltIcon className="h-3.5 w-3.5" />
                   {panel.t("questions.boostsLeft", { count: String(panel.availableBoosts ?? 0) })}
+                </div>
+              )}
+
+              {!isLiveView && panel.isAuthTransitioning && (
+                <div className="inline-flex min-h-9 items-center gap-1.5 self-start rounded-full border border-neutral-200/80 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 sm:self-auto dark:border-white/15 dark:bg-white/8 dark:text-neutral-200">
+                  <LoadingSpinner size="sm" ariaLabel={panel.t("questions.refreshing")} />
+                  <span>{panel.t("questions.refreshing")}</span>
                 </div>
               )}
 
@@ -492,6 +505,7 @@ export function CommunityQuestionsPanel({
             rows={2}
             selectedTalkIndex={panel.selectedTalkIndex}
             showCompactSelect
+            submitButtonThemeClassName={theme.sendButton}
             submitLabel={panel.t("questions.askButton")}
             talkOptions={talkOptions}
             text={panel.text}
@@ -629,6 +643,7 @@ export function CommunityQuestionsPanel({
             rows={3}
             selectedTalkIndex={panel.selectedTalkIndex}
             showCompactSelect={false}
+            submitButtonThemeClassName={theme.sendButton}
             submitLabel={panel.t("questions.askButton")}
             talkOptions={talkOptions}
             text={panel.text}

@@ -6,9 +6,10 @@ import { useCallback, useMemo, useState } from "react";
 
 import { RsvpAvatarList } from "@/components/events/RsvpAvatarList";
 import { CheckCircleIcon, CheckIcon } from "@/components/shared/Icons";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useCreateRsvpMutation, useDeleteRsvpMutation, useEventRsvps } from "@/lib/api/events";
 import { useUserProfile } from "@/lib/api/user-profile";
-import { useAppSelector, useAuthStatus } from "@/lib/redux/hooks";
+import { useAuthStatus } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { useHaptics } from "@/lib/utils/haptics";
 
@@ -20,18 +21,26 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
   const t = useTranslations("events");
   const router = useRouter();
   const haptics = useHaptics();
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  const { isPending: isAuthPending } = useAuthStatus();
-  const { data: rsvps, isLoading: rsvpsLoading } = useEventRsvps(eventId);
-  const { data: userProfile } = useUserProfile(isAuthenticated);
+  const { isMounted, isPending: isAuthPending, queryScope } = useAuthStatus();
+  const isAuthenticated = queryScope === "auth";
+  const { data: rsvps, isAuthTransitioning, isLoading: rsvpsLoading } = useEventRsvps(eventId);
+  const { data: userProfile, isLoading: userProfileLoading } = useUserProfile(isAuthenticated);
   const createMutation = useCreateRsvpMutation(eventId);
   const deleteMutation = useDeleteRsvpMutation(eventId);
   const [error, setError] = useState<string | null>(null);
 
   const isRsvped = useMemo(() => rsvps?.hasRsvped ?? false, [rsvps]);
   const totalCount = rsvps?.totalCount ?? 0;
+  const isAuthenticatedDataLoading =
+    isMounted &&
+    (isAuthTransitioning || (isAuthenticated && (!rsvps || !userProfile) && rsvpsLoading));
 
-  const isLoading = createMutation.isPending || deleteMutation.isPending || isAuthPending;
+  const isLoading =
+    createMutation.isPending ||
+    deleteMutation.isPending ||
+    isAuthPending ||
+    isAuthenticatedDataLoading ||
+    userProfileLoading;
 
   const handleClick = useCallback(() => {
     setError(null);
@@ -115,7 +124,9 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
         }`}
       >
         <div className="relative z-10 flex items-center justify-center gap-3">
-          {isRsvped ? (
+          {isAuthenticatedDataLoading ? (
+            <LoadingSpinner size="sm" ariaLabel={t("rsvpOnBonfire")} />
+          ) : isRsvped ? (
             <>
               <CheckCircleIcon className="h-5 w-5" />
               <span>{t("youreGoing")}</span>

@@ -133,9 +133,14 @@ async function fetchEventQuestions(
 
 export function useEventRsvps(eventId: string) {
   const { queryScope } = useAuthStatus();
+  const queryClient = useQueryClient();
   const canFetch = Boolean(eventId) && queryScope !== "pending";
   const query = useQuery({
     enabled: canFetch,
+    placeholderData: () =>
+      queryScope === "auth"
+        ? queryClient.getQueryData<EventRsvpsData>(["event-rsvps", eventId, "anon"])
+        : undefined,
     queryFn: async () => {
       const accessToken = queryScope === "auth" ? await ensureFreshToken() : null;
 
@@ -151,15 +156,21 @@ export function useEventRsvps(eventId: string) {
 
   return {
     ...query,
+    isAuthTransitioning: queryScope === "auth" && query.isFetching && query.isPlaceholderData,
     isLoading: query.isLoading || queryScope === "pending",
   };
 }
 
 export function useEventQuestions(eventId: string) {
   const { queryScope } = useAuthStatus();
+  const queryClient = useQueryClient();
   const canFetch = Boolean(eventId) && queryScope !== "pending";
   const query = useQuery({
     enabled: canFetch,
+    placeholderData: () =>
+      queryScope === "auth"
+        ? queryClient.getQueryData<EventQuestionsData>(["event-questions", eventId, "anon"])
+        : undefined,
     queryFn: async () => {
       const accessToken = queryScope === "auth" ? await ensureFreshToken() : null;
 
@@ -175,6 +186,7 @@ export function useEventQuestions(eventId: string) {
 
   return {
     ...query,
+    isAuthTransitioning: queryScope === "auth" && query.isFetching && query.isPlaceholderData,
     isLoading: query.isLoading || queryScope === "pending",
   };
 }

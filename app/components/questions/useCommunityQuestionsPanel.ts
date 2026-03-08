@@ -110,7 +110,8 @@ export function useCommunityQuestionsPanel(eventId: string) {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const isAuthHydrated = useAppSelector((state) => state.auth.hydrated);
   const userProfile = useAppSelector((state) => state.profile.profile);
-  const { data, dataUpdatedAt, isFetching, isLoading, refetch } = useEventQuestions(eventId);
+  const { data, dataUpdatedAt, isAuthTransitioning, isFetching, isLoading, refetch } =
+    useEventQuestions(eventId);
   const createQuestion = useCreateEventQuestionMutation(eventId);
   const boostQuestion = useBoostEventQuestionMutation(eventId);
   const unboostQuestion = useUnboostEventQuestionMutation(eventId);
@@ -143,6 +144,10 @@ export function useCommunityQuestionsPanel(eventId: string) {
 
     if (!isAuthenticated) {
       handleAuthRedirect();
+      return false;
+    }
+
+    if (isAuthTransitioning) {
       return false;
     }
 
@@ -244,6 +249,7 @@ export function useCommunityQuestionsPanel(eventId: string) {
     handleSubmit,
     handleToggleBoost,
     isAuthenticated,
+    isAuthTransitioning,
     isAuthHydrated,
     isFetching,
     isLoading,
