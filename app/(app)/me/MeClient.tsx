@@ -182,16 +182,21 @@ export function MeClient() {
   const profile = isHydrated ? (profileState.profile ?? profileQuery.data?.profile ?? null) : null;
   const isCrew = userRoles.includes(USER_ROLES.CREW);
   const isEditor = userRoles.includes(USER_ROLES.EDITOR);
-  const boostLedger = isHydrated
-    ? profileState.boostLedger.length
-      ? profileState.boostLedger
-      : (profileQuery.data?.boostLedger.items ?? [])
-    : [];
-  const attempts = isHydrated
-    ? profileState.attempts.length
-      ? profileState.attempts
-      : (profileQuery.data?.attempts.items ?? [])
-    : [];
+  let boostLedger: typeof profileState.boostLedger = [];
+  if (isHydrated) {
+    boostLedger =
+      profileState.boostLedger.length > 0
+        ? profileState.boostLedger
+        : (profileQuery.data?.boostLedger.items ?? []);
+  }
+
+  let attempts: typeof profileState.attempts = [];
+  if (isHydrated) {
+    attempts =
+      profileState.attempts.length > 0
+        ? profileState.attempts
+        : (profileQuery.data?.attempts.items ?? []);
+  }
   const boostAllocation = isHydrated
     ? (profileState.boostAllocation ?? profileQuery.data?.boostAllocation ?? null)
     : null;
@@ -306,12 +311,12 @@ export function MeClient() {
   const deleteError =
     deleteChallengeMutation.isError || deleteAccountMutation.isError ? tDelete("error") : null;
 
-  const deleteStatus =
-    deleteStep === "verify"
-      ? tDelete("status")
-      : deleteStep === "done"
-        ? tDelete("completed")
-        : null;
+  let deleteStatus: string | null = null;
+  if (deleteStep === "verify") {
+    deleteStatus = tDelete("status");
+  } else if (deleteStep === "done") {
+    deleteStatus = tDelete("completed");
+  }
 
   const boostLedgerLoading = loading || !isHydrated;
   const boostLedgerError = profileQuery.isError ? t("ledger.error") : null;

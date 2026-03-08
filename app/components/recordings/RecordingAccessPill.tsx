@@ -21,11 +21,12 @@ export function RecordingAccessPill({
   }
 
   const isSignInAccess = requiredMembershipTier === 0;
-  const stateLabel = isEarlyAccess
-    ? t("earlyAccessShort")
-    : isSignInAccess
-      ? t("signInShort")
-      : t("membersOnlyShort");
+  let stateLabel = t("membersOnlyShort");
+  if (isEarlyAccess) {
+    stateLabel = t("earlyAccessShort");
+  } else if (isSignInAccess) {
+    stateLabel = t("signInShort");
+  }
 
   return (
     <div

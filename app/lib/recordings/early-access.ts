@@ -40,15 +40,17 @@ const normalizeAccessRequirement = (
   const candidate = value as { at?: unknown; type?: unknown; tier?: unknown };
 
   if (candidate.type === "public") {
-    return typeof candidate.at === "string"
-      ? { at: candidate.at, type: "public" }
-      : { type: "public" };
+    if (typeof candidate.at === "string") {
+      return { at: candidate.at, type: "public" };
+    }
+    return { type: "public" };
   }
 
   if (candidate.type === "authenticated") {
-    return typeof candidate.at === "string"
-      ? { at: candidate.at, type: "authenticated" }
-      : { type: "authenticated" };
+    if (typeof candidate.at === "string") {
+      return { at: candidate.at, type: "authenticated" };
+    }
+    return { type: "authenticated" };
   }
 
   if (
@@ -57,9 +59,10 @@ const normalizeAccessRequirement = (
       candidate.tier === EARLY_ACCESS_LEVELS.GUILD_TIER_2 ||
       candidate.tier === EARLY_ACCESS_LEVELS.GUILD_TIER_3)
   ) {
-    return typeof candidate.at === "string"
-      ? { at: candidate.at, tier: candidate.tier, type: "guild" }
-      : { tier: candidate.tier, type: "guild" };
+    if (typeof candidate.at === "string") {
+      return { at: candidate.at, tier: candidate.tier, type: "guild" };
+    }
+    return { tier: candidate.tier, type: "guild" };
   }
 
   return undefined;

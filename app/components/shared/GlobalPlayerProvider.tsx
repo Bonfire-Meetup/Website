@@ -330,12 +330,13 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
       }
 
       const { info } = parsed;
-      const playerState =
-        typeof info === "number"
-          ? info
-          : typeof info === "object" && info && "playerState" in info
-            ? (info as { playerState?: number }).playerState
-            : undefined;
+      let playerState: number | undefined;
+      if (typeof info === "number") {
+        playerState = info;
+      } else if (typeof info === "object" && info && "playerState" in info) {
+        const { playerState: infoPlayerState } = info as { playerState?: number };
+        playerState = infoPlayerState;
+      }
 
       if (
         (parsed.event === "onStateChange" || parsed.event === "infoDelivery") &&

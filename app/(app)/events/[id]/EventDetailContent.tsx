@@ -275,14 +275,14 @@ export function EventDetailContent({
   const isPastEvent = isEventPast({ date, time }, new Date());
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
   const daysUntil = getDaysUntilEventDate(date);
-  const countdownLabel =
-    daysUntil === null
-      ? null
-      : daysUntil === 0
-        ? t("countdownToday")
-        : daysUntil === 1
-          ? t("countdownTomorrow")
-          : t("countdownDays", { count: daysUntil.toString() });
+  let countdownLabel: string | null = null;
+  if (daysUntil === 0) {
+    countdownLabel = t("countdownToday");
+  } else if (daysUntil === 1) {
+    countdownLabel = t("countdownTomorrow");
+  } else if (daysUntil !== null) {
+    countdownLabel = t("countdownDays", { count: daysUntil.toString() });
+  }
 
   const calendarDateTime = !isTba ? parseEventDateTimeParts(date, time) : null;
   const calendarStart = calendarDateTime ? formatCalendarDate(calendarDateTime) : null;

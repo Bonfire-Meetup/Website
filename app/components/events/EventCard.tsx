@@ -79,14 +79,14 @@ export function EventCard({
 
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : "";
   const daysUntil = getDaysUntilEventDate(date);
-  const countdownLabel =
-    daysUntil === null
-      ? null
-      : daysUntil === 0
-        ? t("countdownToday")
-        : daysUntil === 1
-          ? t("countdownTomorrow")
-          : t("countdownDays", { count: daysUntil.toString() });
+  let countdownLabel: string | null = null;
+  if (daysUntil === 0) {
+    countdownLabel = t("countdownToday");
+  } else if (daysUntil === 1) {
+    countdownLabel = t("countdownTomorrow");
+  } else if (daysUntil !== null) {
+    countdownLabel = t("countdownDays", { count: daysUntil.toString() });
+  }
   const theme = getEventLocationTheme(location);
   const topMetaPillClass =
     "inline-flex min-h-8 shrink-0 items-center justify-center gap-1 whitespace-nowrap bg-neutral-100/90 px-2.5 py-1 text-[11px] font-semibold tracking-[0.14em] text-neutral-600 uppercase sm:px-3 sm:py-1.5 sm:text-xs dark:bg-white/10 dark:text-neutral-200";

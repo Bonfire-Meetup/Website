@@ -50,11 +50,12 @@ export default function UnsubscribePage() {
   const t = useTranslations("sections.newsletterUnsubscribe");
   const [{ token }] = useQueryStates(newsletterUnsubscribeQueryParsers);
 
-  const [state, setState] = useState<PageState>(() =>
-    token
-      ? { status: "idle" }
-      : { status: "error", message: t("errors.missingToken"), errorCode: "missing_token" },
-  );
+  const [state, setState] = useState<PageState>(() => {
+    if (token) {
+      return { status: "idle" };
+    }
+    return { status: "error", message: t("errors.missingToken"), errorCode: "missing_token" };
+  });
 
   const resolveError = useCallback(
     (error?: string): { message: string; errorCode: ErrorCode } => {

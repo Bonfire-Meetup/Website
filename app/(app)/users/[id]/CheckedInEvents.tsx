@@ -94,11 +94,12 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
                       year: "numeric",
                     }).format(new Date(event.rsvpedAt))
                   : null;
-                const statusLabel = event.hasCheckIn
-                  ? event.hasRsvp
-                    ? t("checkedIn.statusBoth")
-                    : t("checkedIn.checkedInOn", { date: formattedCheckedInAt ?? "" })
-                  : t("checkedIn.rsvpOn", { date: formattedRsvpedAt ?? "" });
+                let statusLabel = t("checkedIn.rsvpOn", { date: formattedRsvpedAt ?? "" });
+                if (event.hasCheckIn && event.hasRsvp) {
+                  statusLabel = t("checkedIn.statusBoth");
+                } else if (event.hasCheckIn) {
+                  statusLabel = t("checkedIn.checkedInOn", { date: formattedCheckedInAt ?? "" });
+                }
 
                 return (
                   <div

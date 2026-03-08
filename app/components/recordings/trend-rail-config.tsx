@@ -19,12 +19,12 @@ export function getTrendRailChrome(kind: TrendRailKind): {
   gradientFrom: string;
   gradientTo: string;
 } {
-  const shelf =
-    kind === "memberPicks"
-      ? LIBRARY_SHELVES.MEMBER_PICKS
-      : kind === "hot"
-        ? LIBRARY_SHELVES.HOT
-        : LIBRARY_SHELVES.HIDDEN_GEMS;
+  let shelf: (typeof LIBRARY_SHELVES)[keyof typeof LIBRARY_SHELVES] = LIBRARY_SHELVES.HIDDEN_GEMS;
+  if (kind === "memberPicks") {
+    shelf = LIBRARY_SHELVES.MEMBER_PICKS;
+  } else if (kind === "hot") {
+    shelf = LIBRARY_SHELVES.HOT;
+  }
   const theme = getLibraryShelfTheme(shelf);
 
   if (!theme) {
