@@ -20,7 +20,7 @@ import {
 } from "@/lib/auth/client";
 import { handleUnauthorizedClientState } from "@/lib/auth/client-session";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { setAuthLoading, setToken } from "@/lib/redux/slices/authSlice";
+import { clearAuth, setAuthLoading, setToken } from "@/lib/redux/slices/authSlice";
 
 const REFRESH_BUFFER_SECONDS = 120;
 const BASE_CHECK_INTERVAL_MS = 15000;
@@ -117,7 +117,7 @@ export function useAuthBootstrap() {
     setLoggingOut(false);
     updateLastActivity();
 
-    const initAuth = async () => {
+    const initAuth = () => {
       const token = readAccessToken();
 
       if (token && isAccessTokenValid(token)) {
@@ -125,13 +125,14 @@ export function useAuthBootstrap() {
         dispatch(setToken({ token, decoded: decoded ?? undefined }));
 
         if (isAccessTokenExpiringSoon(token, REFRESH_BUFFER_SECONDS)) {
-          await performRefresh();
+          performRefresh().catch(() => undefined);
         }
       } else {
         if (token) {
           clearAccessToken();
         }
-        await performRefresh();
+        dispatch(clearAuth());
+        performRefresh().catch(() => undefined);
       }
 
       startTokenCheckInterval();
