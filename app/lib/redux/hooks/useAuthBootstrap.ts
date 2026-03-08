@@ -195,11 +195,13 @@ export function useAuthBootstrap() {
       if (newToken) {
         const decoded = decodeAccessToken(newToken);
         dispatch(setToken({ token: newToken, decoded: decoded ?? undefined }));
-      } else {
+      } else if (auth.isAuthenticated || auth.token) {
         handleUnauthorizedClientState();
+      } else {
+        dispatch(clearAuth());
       }
     });
 
     return unsubscribe;
-  }, [dispatch]);
+  }, [auth.isAuthenticated, auth.token, dispatch]);
 }
