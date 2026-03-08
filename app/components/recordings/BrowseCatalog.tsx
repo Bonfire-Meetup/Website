@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import {
   startTransition,
   useCallback,
@@ -19,6 +20,10 @@ import {
   type LibraryApiPayload,
   type LibraryBasePayload,
 } from "@/lib/recordings/library-filter";
+import {
+  libraryQueryParsers,
+  type LibraryQueryState,
+} from "@/lib/recordings/library-search-params-client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { logError } from "@/lib/utils/log-client";
 
@@ -39,6 +44,10 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
   const tRows = useTranslations("libraryPage.rows");
   const locale = useLocale();
   const router = useRouter();
+  const [queryState, setQueryState] = useQueryStates(libraryQueryParsers, {
+    history: "replace",
+    shallow: true,
+  });
   const [payload, setPayload] = useState<LibraryBasePayload>(initialPayload);
   const [prevInitialPayload, setPrevInitialPayload] = useState(initialPayload);
   const [localSearchQuery, setLocalSearchQuery] = useState(initialPayload.searchQuery);
@@ -50,6 +59,13 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
   const requestIdRef = useRef(0);
   const activeRequestRef = useRef<AbortController | null>(null);
   const lastCommittedSearchRef = useRef(initialPayload.searchQuery);
+  const {
+    location: queryLocation,
+    tag: queryTag,
+    episode: queryEpisode,
+    shelf: queryShelf,
+    q: querySearch,
+  } = queryState;
 
   if (prevInitialPayload !== initialPayload) {
     setPrevInitialPayload(initialPayload);
@@ -65,6 +81,12 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
   useLayoutEffect(() => {
     lastCommittedSearchRef.current = payload.searchQuery;
   }, [payload.searchQuery]);
+
+  useEffect(() => {
+    if (localSearchQuery !== querySearch) {
+      setLocalSearchQuery(querySearch);
+    }
+  }, [localSearchQuery, querySearch]);
 
   const { activeLocation } = payload;
   const { activeTag } = payload;
@@ -144,26 +166,52 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
     }
   }, []);
 
+  const syncUrlState = useCallback(
+    (nextState: Partial<LibraryQueryState>) => {
+      setQueryState(nextState).catch((error) => {
+        logError("library.query_state_update_failed", error);
+      });
+    },
+    [setQueryState],
+  );
+
   const updateFilters = useCallback(
     (location: LocationFilter, tag: string, episode: string, search = "", shelf = activeShelf) => {
       const trimmedSearch = search.trim();
       lastCommittedSearchRef.current = trimmedSearch;
-
-      const params = buildLibrarySearchParams(location, tag, episode, trimmedSearch, shelf);
-
-      const nextUrl = params.toString()
-        ? `${PAGE_ROUTES.LIBRARY_BROWSE}?${params.toString()}`
-        : PAGE_ROUTES.LIBRARY_BROWSE;
-      startTransition(() => {
-        router.replace(nextUrl, { scroll: false });
+      syncUrlState({
+        episode,
+        location,
+        q: trimmedSearch,
+        shelf,
+        tag,
       });
-
-      fetchPayload(params);
     },
-    [activeShelf, fetchPayload, router],
+    [activeShelf, syncUrlState],
   );
 
   const filterKey = `${activeLocation}-${activeTag}-${activeEpisode}-${activeShelf}-${deferredSearchQuery}`;
+  const queryFilterKey = `${queryLocation}-${queryTag}-${queryEpisode}-${queryShelf}-${querySearch}`;
+
+  useEffect(() => {
+    if (queryFilterKey === filterKey) {
+      return;
+    }
+
+    lastCommittedSearchRef.current = querySearch;
+    fetchPayload(
+      buildLibrarySearchParams(queryLocation, queryTag, queryEpisode, querySearch, queryShelf),
+    );
+  }, [
+    fetchPayload,
+    filterKey,
+    queryEpisode,
+    queryFilterKey,
+    queryLocation,
+    querySearch,
+    queryShelf,
+    queryTag,
+  ]);
 
   useEffect(() => {
     const trimmed = localSearchQuery.trim();

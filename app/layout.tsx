@@ -6,6 +6,7 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata, Viewport } from "next";
 import { getTranslations } from "next-intl/server";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { AppProviders } from "./AppProviders";
 import { RouteComplete } from "./components/navigation/RouteComplete";
@@ -93,17 +94,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
-        <RollbarProvider>
-          <NavigationProvider>
-            <NavigationLoader />
-            <AppProviders initialLocale={DEFAULT_LOCALE} initialMessages={messages}>
-              <RouteComplete />
-              {children}
-            </AppProviders>
-          </NavigationProvider>
-          <Analytics />
-          <SpeedInsights />
-        </RollbarProvider>
+        <NuqsAdapter>
+          <RollbarProvider>
+            <NavigationProvider>
+              <NavigationLoader />
+              <AppProviders initialLocale={DEFAULT_LOCALE} initialMessages={messages}>
+                <RouteComplete />
+                {children}
+              </AppProviders>
+            </NavigationProvider>
+            <Analytics />
+            <SpeedInsights />
+          </RollbarProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );

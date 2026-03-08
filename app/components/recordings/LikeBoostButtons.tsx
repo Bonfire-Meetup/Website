@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ApiError } from "@/lib/api/errors";
@@ -38,7 +38,6 @@ export function LikeBoostButtons({
   const t = useTranslations("recordings");
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const haptics = useHaptics();
   const { engagement, setLikes, setBoosts } = useVideoEngagementRedux(shortId);
 
@@ -205,7 +204,7 @@ export function LikeBoostButtons({
   };
 
   const handleBoost = async () => {
-    const query = searchParams.toString();
+    const query = typeof window === "undefined" ? "" : window.location.search.slice(1);
     const returnPath = `${pathname}${query ? `?${query}` : ""}`;
 
     if (!hasInteractionAccess) {

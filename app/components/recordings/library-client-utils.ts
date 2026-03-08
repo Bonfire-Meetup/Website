@@ -5,6 +5,7 @@ import {
   type LibraryShelf,
   type LocationFilter,
 } from "@/lib/recordings/library-filter";
+import { createLibrarySearchParams } from "@/lib/recordings/library-search-params-client";
 
 export function buildLibrarySearchParams(
   location: LocationFilter,
@@ -13,29 +14,13 @@ export function buildLibrarySearchParams(
   search: string,
   shelf: LibraryShelf = LIBRARY_SHELVES.ALL,
 ) {
-  const params = new URLSearchParams();
-
-  if (location !== "all") {
-    params.set("location", location);
-  }
-
-  if (tag !== "all") {
-    params.set("tag", tag);
-  }
-
-  if (episode !== "all") {
-    params.set("episode", episode);
-  }
-
-  if (search.trim()) {
-    params.set("q", search.trim());
-  }
-
-  if (shelf !== LIBRARY_SHELVES.ALL) {
-    params.set("shelf", shelf);
-  }
-
-  return params;
+  return createLibrarySearchParams({
+    episode,
+    location,
+    q: search.trim(),
+    shelf,
+    tag,
+  });
 }
 
 export async function fetchLibraryApiPayload(params: URLSearchParams, signal: AbortSignal) {

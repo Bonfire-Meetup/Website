@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import { useCallback, useEffect, useState } from "react";
 
 import { CheckIcon, CloseIcon, MailIcon } from "@/components/shared/Icons";
@@ -10,6 +10,7 @@ import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { API_ROUTES } from "@/lib/api/routes";
+import { newsletterUnsubscribeQueryParsers } from "@/lib/routes/app-search-params-client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 type SubscribedAs = "newsletter" | "account" | "both";
@@ -47,7 +48,7 @@ function InfoCard({ label, content }: { label: string; content: string }) {
 
 export default function UnsubscribePage() {
   const t = useTranslations("sections.newsletterUnsubscribe");
-  const token = useSearchParams().get("token");
+  const [{ token }] = useQueryStates(newsletterUnsubscribeQueryParsers);
 
   const [state, setState] = useState<PageState>(() =>
     token

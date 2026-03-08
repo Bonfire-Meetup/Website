@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import {
@@ -38,7 +38,6 @@ export function WatchLaterButton({
   const t = useTranslations("recordings");
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const haptics = useHaptics();
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
@@ -74,7 +73,7 @@ export function WatchLaterButton({
 
     if (!isAuthed) {
       haptics.neutral();
-      const query = searchParams.toString();
+      const query = typeof window === "undefined" ? "" : window.location.search.slice(1);
       const returnPath = `${pathname}${query ? `?${query}` : ""}`;
       router.push(PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(LOGIN_REASON.WATCH_LATER, returnPath));
       return;

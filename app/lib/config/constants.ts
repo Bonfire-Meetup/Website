@@ -71,6 +71,7 @@ export const WEBSITE_URLS = {
       NEXT_INTL: "https://next-intl-docs.vercel.app",
       NEXT_THEMES: "https://github.com/pacocoursey/next-themes",
       NEXTJS: "https://nextjs.org",
+      NUQS: "https://nuqs.dev",
       OXC: "https://oxc-project.github.io",
       POSTCSS: "https://postcss.org",
       QRCODE: "https://github.com/soldair/node-qrcode",

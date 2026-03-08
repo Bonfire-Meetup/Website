@@ -1,3 +1,10 @@
+import {
+  createContactUrl,
+  createLoginWithChallengeUrl,
+  createLoginWithReasonUrl,
+  createNewsletterEditorUrl,
+} from "@/lib/routes/app-search-params";
+
 export const LOGIN_REASON = {
   EVENT_RSVP: "event-rsvp",
   SESSION_EXPIRED: "session-expired",
@@ -8,16 +15,13 @@ export const LOGIN_REASON = {
 
 export type LoginReason = (typeof LOGIN_REASON)[keyof typeof LOGIN_REASON];
 
-const withOptionalReturnPath = (basePath: string, returnPath?: string) =>
-  returnPath ? `${basePath}&returnPath=${encodeURIComponent(returnPath)}` : basePath;
-
 export const PAGE_ROUTES = {
   ANCHOR: {
     EVENTS: "/#events",
     TOP: "/#top",
   },
   CONTACT: "/contact",
-  CONTACT_WITH_TYPE: (type: string) => `/contact?type=${type}`,
+  CONTACT_WITH_TYPE: (type: string) => createContactUrl(type),
   CREW: "/crew",
   FAQ: "/faq",
   GUIDES: "/guides",
@@ -34,12 +38,12 @@ export const PAGE_ROUTES = {
   LIBRARY: "/library",
   LIBRARY_BROWSE: "/library/browse",
   LOGIN: "/login",
-  LOGIN_WITH_CHALLENGE: (token: string) => `/login?challenge=${token}`,
-  LOGIN_WITH_REASON: (reason: LoginReason) => `/login?reason-hint=${reason}`,
+  LOGIN_WITH_CHALLENGE: (token: string) => createLoginWithChallengeUrl(token),
+  LOGIN_WITH_REASON: (reason: LoginReason) => createLoginWithReasonUrl(reason),
   LOGIN_WITH_CHALLENGE_AND_RETURN: (token: string, returnPath?: string) =>
-    withOptionalReturnPath(`/login?challenge=${token}`, returnPath),
+    createLoginWithChallengeUrl(token, returnPath),
   LOGIN_WITH_REASON_AND_RETURN: (reason: LoginReason, returnPath?: string) =>
-    withOptionalReturnPath(`/login?reason-hint=${reason}`, returnPath),
+    createLoginWithReasonUrl(reason, returnPath),
   ME: "/me",
   EVENT: (id: string) => `/events/${id}`,
   EVENT_QUESTIONS: (id: string) => `/events/${id}/questions`,
@@ -60,6 +64,7 @@ export const PAGE_ROUTES = {
   NEWSLETTER_ARCHIVE: "/newsletters",
   NEWSLETTER: (slug: string) => `/newsletters/${slug}`,
   NEWSLETTER_EDITOR: "/newsletters/editor/compose",
+  NEWSLETTER_EDITOR_WITH_RESEND: (slug: string) => createNewsletterEditorUrl(slug),
 } as const;
 
 export const DYNAMIC_ROUTE_PREFIXES = [

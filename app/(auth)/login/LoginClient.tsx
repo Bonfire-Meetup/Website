@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { AuthControls } from "@/components/auth/AuthControls";
@@ -26,6 +27,7 @@ import { decodeAccessToken, writeAccessToken } from "@/lib/auth/client";
 import { authenticateWithPasskey, isWebAuthnSupported } from "@/lib/auth/webauthn-client";
 import { useAppDispatch, useAuthStatus } from "@/lib/redux/hooks";
 import { setToken } from "@/lib/redux/slices/authSlice";
+import { loginQueryParsers, sanitizeReturnPath } from "@/lib/routes/app-search-params-client";
 import { LOGIN_REASON, type LoginReason, PAGE_ROUTES } from "@/lib/routes/pages";
 import { clearAllAuthChallenges, getAuthChallengeKey } from "@/lib/storage/keys";
 
@@ -123,22 +125,12 @@ export function LoginClient() {
   const t = useTranslations("authLogin");
   const tCommon = useTranslations("common");
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const [{ challenge, reasonHint, returnPath: rawReturnPath }] = useQueryStates(loginQueryParsers, {
+    urlKeys: { reasonHint: "reason-hint" },
+  });
   const dispatch = useAppDispatch();
   const authStatus = useAuthStatus();
-  const returnPath = useMemo(() => {
-    const value = searchParams.get("returnPath");
-
-    if (!value || !value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) {
-      return null;
-    }
-
-    if (value.includes("://") || value.includes("\\\\")) {
-      return null;
-    }
-
-    return value;
-  }, [searchParams]);
+  const returnPath = useMemo(() => sanitizeReturnPath(rawReturnPath), [rawReturnPath]);
 
   const [step, setStep] = useState<Step>("request");
   const [email, setEmail] = useState("");
@@ -159,7 +151,6 @@ export function LoginClient() {
     setPasskeySupported(isWebAuthnSupported());
   }, []);
 
-  const reasonHint = searchParams.get("reason-hint");
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const storeChallengeEmail = (token: string, value: string) => {
@@ -193,20 +184,18 @@ export function LoginClient() {
   }, [authStatus.isAuthenticated, authStatus.token, returnPath, router]);
 
   useEffect(() => {
-    const token = searchParams.get("challenge");
-
-    if (!token) {
+    if (!challenge) {
       return;
     }
 
-    const storedEmail = readChallengeEmail(token);
+    const storedEmail = readChallengeEmail(challenge);
 
     if (storedEmail) {
       setEmail(storedEmail);
       setStep("verify");
-      setChallengeToken(token);
+      setChallengeToken(challenge);
     }
-  }, [searchParams]);
+  }, [challenge]);
 
   const inputBaseClass =
     "w-full rounded-xl border bg-white px-4 py-3 text-sm text-neutral-900 placeholder-neutral-400 transition-all duration-200 focus:outline-none focus:ring-2 dark:bg-white/5 dark:text-white dark:placeholder-neutral-500";

@@ -141,7 +141,7 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
             {isEditor && (
               <div className="flex items-center gap-4">
                 <Link
-                  href={`${PAGE_ROUTES.NEWSLETTER_EDITOR}?resend=${encodeURIComponent(slug)}`}
+                  href={PAGE_ROUTES.NEWSLETTER_EDITOR_WITH_RESEND(slug)}
                   className="flex items-center gap-1.5 text-sm text-neutral-400 transition-colors hover:text-rose-600 dark:text-neutral-500 dark:hover:text-rose-400"
                 >
                   <MailIcon className="h-3.5 w-3.5" />

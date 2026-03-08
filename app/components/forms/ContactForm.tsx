@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import {
   useActionState,
   useCallback,
@@ -15,6 +15,7 @@ import {
 import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
 import { useCsrfToken } from "@/lib/api/csrf";
 import { type ContactFormState, submitContactForm } from "@/lib/forms/form-actions";
+import { contactQueryParsers } from "@/lib/routes/app-search-params-client";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { useHaptics } from "@/lib/utils/haptics";
 import {
@@ -77,7 +78,7 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
   const t = useTranslations("contactPage.form");
   const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
   const [isTransitionPending, startTransition] = useTransition();
-  const searchParams = useSearchParams();
+  const [{ type }] = useQueryStates(contactQueryParsers);
   const formRef = useRef<HTMLFormElement>(null);
   const turnstileRef = useRef<TurnstileWidgetHandle>(null);
   const haptics = useHaptics();
@@ -130,14 +131,13 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
     }
 
     if (!hasDraftInquiryType) {
-      const nextType = searchParams.get("type");
-      if (nextType && inquiryOptions.some((option) => option.value === nextType)) {
-        setInquiryType(nextType);
+      if (type && inquiryOptions.some((option) => option.value === type)) {
+        setInquiryType(type);
       }
     }
 
     setMounted(true);
-  }, [inquiryOptions, searchParams]);
+  }, [inquiryOptions, type]);
 
   const saveDraft = useCallback(() => {
     if (state.success) {

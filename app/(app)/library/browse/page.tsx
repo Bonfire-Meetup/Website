@@ -4,6 +4,10 @@ import { getTranslations } from "next-intl/server";
 import { BrowseCatalog } from "@/components/recordings/BrowseCatalog";
 import { buildMetaPageMetadata } from "@/lib/metadata";
 import { buildLibraryBrowsePayload, parseLibraryShelf } from "@/lib/recordings/library-filter";
+import {
+  createLibrarySearchParams,
+  loadLibraryQueryState,
+} from "@/lib/recordings/library-search-params-server";
 import { getLibraryShelfOrders } from "@/lib/recordings/library-shelf-orders";
 
 export default async function LibraryBrowsePage({
@@ -20,25 +24,9 @@ export default async function LibraryBrowsePage({
   const tCommon = await getTranslations("common");
   const tFilters = await getTranslations("libraryPage.filters");
   const tRecordings = await getTranslations("recordings");
-  const params = await searchParams;
-  const urlParams = new URLSearchParams();
-
-  if (params.location) {
-    urlParams.set("location", params.location);
-  }
-  if (params.tag) {
-    urlParams.set("tag", params.tag);
-  }
-  if (params.episode) {
-    urlParams.set("episode", params.episode);
-  }
-  if (params.shelf) {
-    urlParams.set("shelf", params.shelf);
-  }
-  if (params.q) {
-    urlParams.set("q", params.q);
-  }
-  const activeShelf = parseLibraryShelf(params.shelf ?? null);
+  const params = await loadLibraryQueryState(searchParams);
+  const urlParams = createLibrarySearchParams(params);
+  const activeShelf = parseLibraryShelf(params.shelf);
   const { hiddenGemOrder, hotOrder, memberPickOrder } = await getLibraryShelfOrders(activeShelf);
 
   const payload = await buildLibraryBrowsePayload({

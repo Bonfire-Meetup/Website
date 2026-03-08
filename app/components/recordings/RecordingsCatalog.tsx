@@ -28,6 +28,7 @@ import {
   type LibraryApiPayload,
   type LibraryRowsPayload,
 } from "@/lib/recordings/library-filter";
+import { createLibraryUrl } from "@/lib/recordings/library-search-params-client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { logError } from "@/lib/utils/log-client";
 
@@ -198,12 +199,13 @@ export function RecordingsCatalog({
       const nextView = viewOverride ?? (localViewMode === "grid" || hasFilters ? "grid" : "rows");
       lastCommittedSearchRef.current = trimmedSearch;
 
-      const params = buildLibrarySearchParams(location, tag, episode, trimmedSearch);
-
       if (nextView === "grid") {
-        const nextUrl = params.toString()
-          ? `${PAGE_ROUTES.LIBRARY_BROWSE}?${params.toString()}`
-          : PAGE_ROUTES.LIBRARY_BROWSE;
+        const nextUrl = createLibraryUrl(PAGE_ROUTES.LIBRARY_BROWSE, {
+          episode,
+          location,
+          q: trimmedSearch,
+          tag,
+        });
         startTransition(() => {
           if (navigationMode === "replace") {
             router.replace(nextUrl, { scroll: false });
@@ -217,10 +219,12 @@ export function RecordingsCatalog({
 
       setLocalViewMode("rows");
       const apiParams = buildLibrarySearchParams(location, tag, episode, trimmedSearch);
-
-      const nextUrl = params.toString()
-        ? `${PAGE_ROUTES.LIBRARY}?${params.toString()}`
-        : PAGE_ROUTES.LIBRARY;
+      const nextUrl = createLibraryUrl(PAGE_ROUTES.LIBRARY, {
+        episode,
+        location,
+        q: trimmedSearch,
+        tag,
+      });
       startTransition(() => {
         router.replace(nextUrl, { scroll: false });
       });

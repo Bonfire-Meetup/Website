@@ -154,7 +154,16 @@ export function MeClient() {
 
     resetClientAuthState({ dispatch, queryClient });
     router.replace(PAGE_ROUTES.LOGIN);
-  }, [auth.isAuthenticated, auth.token, auth.hydrated, auth.loading, queryClient, router, dispatch, loggingOut]);
+  }, [
+    auth.isAuthenticated,
+    auth.token,
+    auth.hydrated,
+    auth.loading,
+    queryClient,
+    router,
+    dispatch,
+    loggingOut,
+  ]);
 
   useEffect(() => {
     const err = profileQuery.error;

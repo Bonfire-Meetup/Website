@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import { useEffect, useState } from "react";
 
 import { StaticPageHero } from "@/components/layout/StaticPageHero";
@@ -13,6 +14,7 @@ import { API_ROUTES } from "@/lib/api/routes";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppSelector } from "@/lib/redux/hooks";
 import type { RootState } from "@/lib/redux/store";
+import { newsletterEditorQueryParsers } from "@/lib/routes/app-search-params-client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { createJsonAuthHeaders } from "@/lib/utils/http";
 
@@ -22,8 +24,8 @@ import type { NewsletterSection, NewsletterWizardData } from "./types";
 export function NewsletterEditorPageClient() {
   const t = useTranslations("newsletterEditor");
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const resendSlug = searchParams.get("resend") ?? undefined;
+  const [{ resend }] = useQueryStates(newsletterEditorQueryParsers);
+  const resendSlug = resend ?? undefined;
 
   const auth = useAppSelector((state) => state.auth) as RootState["auth"];
   const [mounted, setMounted] = useState(false);
