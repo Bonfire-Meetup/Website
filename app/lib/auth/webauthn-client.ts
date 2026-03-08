@@ -151,6 +151,7 @@ export const registerPasskey = async (
 export interface AuthenticatePasskeyResult {
   ok: boolean;
   accessToken?: string;
+  idToken?: string;
   expiresIn?: number;
   error?: string;
 }
@@ -202,6 +203,7 @@ export const authenticateWithPasskey = async (): Promise<AuthenticatePasskeyResu
   const result = (await verifyResponse.json()) as {
     access_token: string;
     expires_in: number;
+    id_token?: string;
     token_type: string;
   };
 
@@ -209,5 +211,6 @@ export const authenticateWithPasskey = async (): Promise<AuthenticatePasskeyResu
     ok: true,
     accessToken: result.access_token,
     expiresIn: result.expires_in,
+    idToken: result.id_token,
   };
 };

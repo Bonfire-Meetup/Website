@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Link } from "@/i18n/navigation";
 import { API_ROUTES } from "@/lib/api/routes";
-import { decodeAccessToken, writeAccessToken } from "@/lib/auth/client";
+import { decodeAccessToken, decodeIdToken, writeAuthTokens } from "@/lib/auth/client";
 import { authenticateWithPasskey, isWebAuthnSupported } from "@/lib/auth/webauthn-client";
 import { useAppDispatch, useAuthStatus } from "@/lib/redux/hooks";
 import { setToken } from "@/lib/redux/slices/authSlice";
@@ -227,10 +227,18 @@ export function LoginClient() {
     }
 
     if (result.accessToken) {
-      writeAccessToken(result.accessToken);
+      writeAuthTokens({ accessToken: result.accessToken, idToken: result.idToken });
       clearAllAuthChallenges();
       const decoded = decodeAccessToken(result.accessToken);
-      dispatch(setToken({ token: result.accessToken, decoded: decoded ?? undefined }));
+      const decodedIdToken = result.idToken ? decodeIdToken(result.idToken) : null;
+      dispatch(
+        setToken({
+          token: result.accessToken,
+          idToken: result.idToken,
+          decoded: decoded ?? undefined,
+          decodedIdToken,
+        }),
+      );
       router.replace(returnPath ?? PAGE_ROUTES.ME);
       return;
     }
@@ -364,12 +372,21 @@ export function LoginClient() {
         return;
       }
 
-      const data = (await response.json()) as { access_token?: string };
+      const data = (await response.json()) as { access_token?: string; id_token?: string };
 
       if (data.access_token) {
         clearAllAuthChallenges();
         const decoded = decodeAccessToken(data.access_token);
-        dispatch(setToken({ token: data.access_token, decoded: decoded ?? undefined }));
+        const decodedIdToken = data.id_token ? decodeIdToken(data.id_token) : null;
+        writeAuthTokens({ accessToken: data.access_token, idToken: data.id_token });
+        dispatch(
+          setToken({
+            token: data.access_token,
+            idToken: data.id_token,
+            decoded: decoded ?? undefined,
+            decodedIdToken,
+          }),
+        );
         router.replace(returnPath ?? PAGE_ROUTES.ME);
 
         return;

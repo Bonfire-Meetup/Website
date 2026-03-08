@@ -16,6 +16,7 @@ import {
   isValidRefreshTokenFormat,
   REFRESH_TOKEN_COOKIE_NAME,
   signAccessToken,
+  signIdToken,
 } from "@/lib/auth/jwt";
 import {
   getAuthUserById,
@@ -95,9 +96,21 @@ const issueTokens = async (
   const user = await getAuthUserById(userId);
   const roles = user?.roles ?? [];
   const membershipTier = user?.membershipTier ?? null;
+  const publicProfile = user?.preferences.publicProfile ?? false;
+  const userEmail = user?.email ?? "";
+  const userName = user?.name ?? null;
 
   const accessTokenJti = crypto.randomUUID();
   const accessToken = await signAccessToken(userId, accessTokenJti, roles, membershipTier);
+  const idToken = await signIdToken({
+    email: userEmail,
+    jti: crypto.randomUUID(),
+    membershipTier,
+    name: userName,
+    publicProfile,
+    roles,
+    userId,
+  });
   const accessExpiresIn = getAccessTokenTtlSeconds();
   const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000).toISOString();
 
@@ -132,6 +145,7 @@ const issueTokens = async (
     accessExpiresIn,
     accessTokenJti,
     cookieValue,
+    idToken,
   };
 };
 
@@ -224,7 +238,7 @@ const handleRefreshTokenGrant = async (
 
   await markRefreshTokenUsed(tokenHash);
 
-  const { accessToken, accessExpiresIn, accessTokenJti, cookieValue } = await issueTokens(
+  const { accessToken, accessExpiresIn, accessTokenJti, cookieValue, idToken } = await issueTokens(
     refreshToken.userId,
     refreshToken.tokenFamilyId,
     refreshToken.id,
@@ -243,6 +257,7 @@ const handleRefreshTokenGrant = async (
     {
       access_token: accessToken,
       expires_in: accessExpiresIn,
+      id_token: idToken,
       token_type: "Bearer",
     },
     {
@@ -355,7 +370,7 @@ const handleEmailOtpGrant = async (
 
   const tokenFamilyId = crypto.randomUUID();
 
-  const { accessToken, accessExpiresIn, accessTokenJti, cookieValue } = await issueTokens(
+  const { accessToken, accessExpiresIn, accessTokenJti, cookieValue, idToken } = await issueTokens(
     userId,
     tokenFamilyId,
     null,
@@ -375,6 +390,7 @@ const handleEmailOtpGrant = async (
     {
       access_token: accessToken,
       expires_in: accessExpiresIn,
+      id_token: idToken,
       token_type: "Bearer",
     },
     {

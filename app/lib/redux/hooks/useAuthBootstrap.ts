@@ -5,6 +5,8 @@ import { useCallback, useEffect, useRef } from "react";
 import {
   clearAccessToken,
   decodeAccessToken,
+  decodeIdToken,
+  getAccessTokenExpiresIn,
   getConsecutiveFailures,
   getIsLoggingOut,
   hasDeviceWoken,
@@ -12,11 +14,12 @@ import {
   isAccessTokenValid,
   isCircuitOpen,
   onTokenRefreshed,
+  readIdToken,
   readAccessToken,
-  refreshAccessToken,
+  refreshAuthTokens,
   setLoggingOut,
   updateLastActivity,
-  writeAccessToken,
+  writeAuthTokens,
 } from "@/lib/auth/client";
 import { handleUnauthorizedClientState } from "@/lib/auth/client-session";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
@@ -25,6 +28,28 @@ import { clearAuth, setAuthLoading, setToken } from "@/lib/redux/slices/authSlic
 const REFRESH_BUFFER_SECONDS = 120;
 const BASE_CHECK_INTERVAL_MS = 15000;
 const WAKE_DETECTION_THRESHOLD_MS = 30000;
+
+const isIdTokenUsable = (token: string | null, accessTokenSubject?: string): boolean => {
+  if (!token) {
+    return false;
+  }
+
+  const decoded = decodeIdToken(token);
+
+  if (!decoded?.sub || !decoded.exp) {
+    return false;
+  }
+
+  if (decoded.exp * 1000 <= Date.now()) {
+    return false;
+  }
+
+  if (accessTokenSubject && decoded.sub !== accessTokenSubject) {
+    return false;
+  }
+
+  return true;
+};
 
 const getAdaptiveInterval = (): number => {
   const failures = getConsecutiveFailures();
@@ -53,13 +78,13 @@ export function useAuthBootstrap() {
     dispatch(setAuthLoading(true));
 
     try {
-      const newToken = await refreshAccessToken();
+      const tokens = await refreshAuthTokens();
 
       if (!isMountedRef.current || getIsLoggingOut()) {
         return null;
       }
 
-      return newToken;
+      return tokens?.accessToken ?? null;
     } finally {
       isRefreshingRef.current = false;
       dispatch(setAuthLoading(false));
@@ -119,12 +144,18 @@ export function useAuthBootstrap() {
 
     const initAuth = () => {
       const token = readAccessToken();
+      const idToken = readIdToken();
 
       if (token && isAccessTokenValid(token)) {
         const decoded = decodeAccessToken(token);
-        dispatch(setToken({ token, decoded: decoded ?? undefined }));
+        const decodedIdToken = idToken ? decodeIdToken(idToken) : null;
+        dispatch(setToken({ token, idToken, decoded: decoded ?? undefined, decodedIdToken }));
 
-        if (isAccessTokenExpiringSoon(token, REFRESH_BUFFER_SECONDS)) {
+        const shouldRefreshForMissingIdToken = !isIdTokenUsable(idToken, decoded?.sub);
+        const expiresIn = getAccessTokenExpiresIn(token);
+        const shouldRefreshForTokenAge = expiresIn !== null && expiresIn <= REFRESH_BUFFER_SECONDS;
+
+        if (shouldRefreshForMissingIdToken || shouldRefreshForTokenAge) {
           performRefresh().catch(() => undefined);
         }
       } else {
@@ -152,11 +183,11 @@ export function useAuthBootstrap() {
     }
 
     if (auth.token) {
-      writeAccessToken(auth.token);
+      writeAuthTokens({ accessToken: auth.token, idToken: auth.idToken });
     } else if (!auth.isAuthenticated) {
       clearAccessToken();
     }
-  }, [auth.token, auth.isAuthenticated, auth.hydrated]);
+  }, [auth.idToken, auth.token, auth.isAuthenticated, auth.hydrated]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -187,14 +218,22 @@ export function useAuthBootstrap() {
   }, [checkAndRefreshToken, startTokenCheckInterval, stopTokenCheckInterval]);
 
   useEffect(() => {
-    const unsubscribe = onTokenRefreshed((newToken) => {
+    const unsubscribe = onTokenRefreshed((tokens) => {
       if (!isMountedRef.current) {
         return;
       }
 
-      if (newToken) {
-        const decoded = decodeAccessToken(newToken);
-        dispatch(setToken({ token: newToken, decoded: decoded ?? undefined }));
+      if (tokens?.accessToken) {
+        const decoded = decodeAccessToken(tokens.accessToken);
+        const decodedIdToken = tokens.idToken ? decodeIdToken(tokens.idToken) : null;
+        dispatch(
+          setToken({
+            token: tokens.accessToken,
+            idToken: tokens.idToken,
+            decoded: decoded ?? undefined,
+            decodedIdToken,
+          }),
+        );
       } else if (auth.isAuthenticated || auth.token) {
         handleUnauthorizedClientState();
       } else {

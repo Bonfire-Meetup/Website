@@ -8,17 +8,25 @@ import { STORAGE_KEYS } from "../storage/keys";
 
 import {
   decodeAccessToken,
+  decodeIdToken,
   getAccessTokenExpiresIn,
   isAccessTokenExpiringSoon,
   isAccessTokenValid,
   type AccessTokenPayload,
+  type IdTokenPayload,
 } from "./token";
 
 const accessTokenStorageKey = STORAGE_KEYS.ACCESS_TOKEN;
+const idTokenStorageKey = STORAGE_KEYS.ID_TOKEN;
 
 const TOKEN_REFRESH_BUFFER_SECONDS = 120;
 
-let refreshPromise: Promise<string | null> | null = null;
+export interface ClientAuthTokens {
+  accessToken: string;
+  idToken: string | null;
+}
+
+let refreshPromise: Promise<ClientAuthTokens | null> | null = null;
 
 let isLoggingOut = false;
 
@@ -30,7 +38,7 @@ let lastFailureTimestamp = 0;
 const MAX_CONSECUTIVE_FAILURES = 3;
 const CIRCUIT_RESET_MS = 60000;
 
-type RefreshListener = (token: string | null) => void;
+type RefreshListener = (tokens: ClientAuthTokens | null) => void;
 const refreshListeners = new Set<RefreshListener>();
 
 export const onTokenRefreshed = (listener: RefreshListener): (() => void) => {
@@ -38,8 +46,8 @@ export const onTokenRefreshed = (listener: RefreshListener): (() => void) => {
   return () => refreshListeners.delete(listener);
 };
 
-const notifyTokenRefreshed = (token: string | null) => {
-  refreshListeners.forEach((listener) => listener(token));
+const notifyTokenRefreshed = (tokens: ClientAuthTokens | null) => {
+  refreshListeners.forEach((listener) => listener(tokens));
 };
 
 export const updateLastActivity = () => {
@@ -95,6 +103,25 @@ export const readAccessToken = () => {
   return readPersistedAccessToken();
 };
 
+const readPersistedIdToken = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  return window.localStorage.getItem(idTokenStorageKey);
+};
+
+export const readIdToken = () => {
+  const state = store.getState();
+  const reduxToken = state.auth.idToken;
+
+  if (reduxToken) {
+    return reduxToken;
+  }
+
+  return readPersistedIdToken();
+};
+
 export const writeAccessToken = (token: string) => {
   if (typeof window === "undefined") {
     return;
@@ -103,12 +130,42 @@ export const writeAccessToken = (token: string) => {
   window.localStorage.setItem(accessTokenStorageKey, token);
 };
 
+export const writeIdToken = (token: string) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.setItem(idTokenStorageKey, token);
+};
+
+export const writeAuthTokens = ({
+  accessToken,
+  idToken,
+}: {
+  accessToken: string;
+  idToken?: string | null;
+}) => {
+  writeAccessToken(accessToken);
+
+  if (idToken) {
+    writeIdToken(idToken);
+    return;
+  }
+
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.removeItem(idTokenStorageKey);
+};
+
 export const clearAccessToken = () => {
   if (typeof window === "undefined") {
     return;
   }
 
   window.localStorage.removeItem(accessTokenStorageKey);
+  window.localStorage.removeItem(idTokenStorageKey);
 };
 
 export const getHasValidToken = (): boolean => {
@@ -116,7 +173,7 @@ export const getHasValidToken = (): boolean => {
   return token ? isAccessTokenValid(token) : false;
 };
 
-export const refreshAccessToken = (): Promise<string | null> => {
+export const refreshAuthTokens = (): Promise<ClientAuthTokens | null> => {
   if (refreshPromise) {
     return refreshPromise;
   }
@@ -129,12 +186,13 @@ export const refreshAccessToken = (): Promise<string | null> => {
 
   const performRefresh = async () => {
     const existingToken = readAccessToken();
+    const existingIdToken = readIdToken();
     if (
       existingToken &&
       isAccessTokenValid(existingToken) &&
       !isAccessTokenExpiringSoon(existingToken, TOKEN_REFRESH_BUFFER_SECONDS)
     ) {
-      return existingToken;
+      return { accessToken: existingToken, idToken: existingIdToken };
     }
 
     try {
@@ -159,14 +217,16 @@ export const refreshAccessToken = (): Promise<string | null> => {
         return null;
       }
 
-      const data = (await response.json()) as { access_token: string };
+      const data = (await response.json()) as { access_token: string; id_token?: string };
       const newToken = data.access_token;
+      const newIdToken = data.id_token ?? null;
 
       if (newToken) {
         consecutiveFailures = 0;
-        writeAccessToken(newToken);
-        notifyTokenRefreshed(newToken);
-        return newToken;
+        writeAuthTokens({ accessToken: newToken, idToken: newIdToken });
+        const nextTokens = { accessToken: newToken, idToken: newIdToken };
+        notifyTokenRefreshed(nextTokens);
+        return nextTokens;
       }
 
       consecutiveFailures++;
@@ -193,6 +253,9 @@ export const refreshAccessToken = (): Promise<string | null> => {
   return refreshPromise;
 };
 
+export const refreshAccessToken = async (): Promise<string | null> =>
+  (await refreshAuthTokens())?.accessToken ?? null;
+
 export const getValidAccessToken = (): Promise<string | null> => {
   const token = readAccessToken();
 
@@ -212,11 +275,12 @@ export const getValidAccessToken = (): Promise<string | null> => {
 
 export {
   decodeAccessToken,
+  decodeIdToken,
   getAccessTokenExpiresIn,
   isAccessTokenExpiringSoon,
   isAccessTokenValid,
 };
-export type { AccessTokenPayload };
+export type { AccessTokenPayload, IdTokenPayload };
 
 export const revokeSession = async (options?: { revokeAll?: boolean; revokeFamily?: boolean }) => {
   setLoggingOut(true);

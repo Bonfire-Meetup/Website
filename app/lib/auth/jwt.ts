@@ -64,6 +64,58 @@ export const signAccessToken = async (
     .sign(privateKey);
 };
 
+export const signIdToken = async ({
+  email,
+  jti,
+  membershipTier,
+  name,
+  publicProfile,
+  roles = [],
+  userId,
+}: {
+  email: string;
+  jti: string;
+  membershipTier?: number | null;
+  name?: string | null;
+  publicProfile?: boolean;
+  roles?: string[];
+  userId: string;
+}) => {
+  const privateKey = await importPKCS8(getJwtPrivateKey(), "EdDSA");
+
+  const payload: {
+    typ: string;
+    email: string;
+    name?: string | null;
+    publicProfile: boolean;
+    rol: string[];
+    mbt?: number;
+  } = {
+    typ: "id",
+    email: email.toLowerCase(),
+    publicProfile: publicProfile ?? false,
+    rol: roles,
+  };
+
+  if (name !== undefined) {
+    payload.name = name;
+  }
+
+  if (membershipTier !== null && membershipTier !== undefined && membershipTier > 0) {
+    payload.mbt = membershipTier;
+  }
+
+  return new SignJWT(payload)
+    .setProtectedHeader({ alg: "EdDSA", kid: getJwtKeyId(), typ: "JWT" })
+    .setIssuer(getJwtIssuer())
+    .setAudience(getJwtAudience())
+    .setSubject(userId)
+    .setIssuedAt()
+    .setExpirationTime(`${accessTokenTtlSeconds}s`)
+    .setJti(jti)
+    .sign(privateKey);
+};
+
 export const verifyAccessToken = async (token: string) => {
   const publicKey = await importSPKI(getJwtPublicKey(), "EdDSA");
   const { payload } = await jwtVerify(token, publicKey, {

@@ -12,6 +12,7 @@ import {
   hashRefreshToken,
   REFRESH_TOKEN_COOKIE_NAME,
   signAccessToken,
+  signIdToken,
 } from "@/lib/auth/jwt";
 import { verifyAuthentication } from "@/lib/auth/webauthn";
 import {
@@ -72,9 +73,21 @@ const issueTokens = async (
   const user = await getAuthUserById(userId);
   const roles = user?.roles ?? [];
   const membershipTier = user?.membershipTier ?? null;
+  const publicProfile = user?.preferences.publicProfile ?? false;
+  const userEmail = user?.email ?? "";
+  const userName = user?.name ?? null;
 
   const accessTokenJti = crypto.randomUUID();
   const accessToken = await signAccessToken(userId, accessTokenJti, roles, membershipTier);
+  const idToken = await signIdToken({
+    email: userEmail,
+    jti: crypto.randomUUID(),
+    membershipTier,
+    name: userName,
+    publicProfile,
+    roles,
+    userId,
+  });
   const accessExpiresIn = getAccessTokenTtlSeconds();
   const accessExpiresAt = new Date(Date.now() + accessExpiresIn * 1000).toISOString();
 
@@ -109,6 +122,7 @@ const issueTokens = async (
     accessExpiresIn,
     accessTokenJti,
     cookieValue,
+    idToken,
   };
 };
 
@@ -195,12 +209,8 @@ export const POST = withRequestContext(
       await updatePasskeyCounter(passkey.credentialId, verification.authenticationInfo.newCounter);
 
       const tokenFamilyId = crypto.randomUUID();
-      const { accessToken, accessExpiresIn, accessTokenJti, cookieValue } = await issueTokens(
-        passkey.userId,
-        tokenFamilyId,
-        ip,
-        userAgent,
-      );
+      const { accessToken, accessExpiresIn, accessTokenJti, cookieValue, idToken } =
+        await issueTokens(passkey.userId, tokenFamilyId, ip, userAgent);
 
       const emailFingerprint = getEmailFingerprint(user.email);
       const requestId = getRequestId();
@@ -231,6 +241,7 @@ export const POST = withRequestContext(
         {
           access_token: accessToken,
           expires_in: accessExpiresIn,
+          id_token: idToken,
           token_type: "Bearer",
         },
         {

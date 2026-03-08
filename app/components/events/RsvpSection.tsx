@@ -8,8 +8,7 @@ import { RsvpAvatarList } from "@/components/events/RsvpAvatarList";
 import { CheckCircleIcon, CheckIcon } from "@/components/shared/Icons";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useCreateRsvpMutation, useDeleteRsvpMutation, useEventRsvps } from "@/lib/api/events";
-import { useUserProfile } from "@/lib/api/user-profile";
-import { useAuthStatus } from "@/lib/redux/hooks";
+import { useAppSelector, useAuthStatus } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { useHaptics } from "@/lib/utils/haptics";
 
@@ -23,8 +22,8 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
   const haptics = useHaptics();
   const { isMounted, isPending: isAuthPending, queryScope } = useAuthStatus();
   const isAuthenticated = queryScope === "auth";
+  const authUser = useAppSelector((state) => state.auth.user);
   const { data: rsvps, isAuthTransitioning, isLoading: rsvpsLoading } = useEventRsvps(eventId);
-  const { data: userProfile, isLoading: userProfileLoading } = useUserProfile(isAuthenticated);
   const createMutation = useCreateRsvpMutation(eventId);
   const deleteMutation = useDeleteRsvpMutation(eventId);
   const [error, setError] = useState<string | null>(null);
@@ -32,15 +31,13 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
   const isRsvped = useMemo(() => rsvps?.hasRsvped ?? false, [rsvps]);
   const totalCount = rsvps?.totalCount ?? 0;
   const isAuthenticatedDataLoading =
-    isMounted &&
-    (isAuthTransitioning || (isAuthenticated && (!rsvps || !userProfile) && rsvpsLoading));
+    isMounted && (isAuthTransitioning || (isAuthenticated && !rsvps && rsvpsLoading));
 
   const isLoading =
     createMutation.isPending ||
     deleteMutation.isPending ||
     isAuthPending ||
-    isAuthenticatedDataLoading ||
-    userProfileLoading;
+    isAuthenticatedDataLoading;
 
   const handleClick = useCallback(() => {
     setError(null);
@@ -56,9 +53,9 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
       return;
     }
 
-    const userId = userProfile?.profile.id;
-    const userName = userProfile?.profile.name;
-    const isPublic = userProfile?.profile.publicProfile ?? false;
+    const userId = authUser?.id;
+    const userName = authUser?.name;
+    const isPublic = authUser?.publicProfile ?? false;
 
     if (!userId) {
       haptics.error();
@@ -101,7 +98,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
     isRsvped,
     eventId,
     router,
-    userProfile,
+    authUser,
     createMutation,
     deleteMutation,
     haptics,
