@@ -72,7 +72,7 @@
       "available": "boosts available",
       "availableOne": "boost available",
       "nextAllocation": "Next allocation: {date}",
-      "limitNote": "Maximum 6 boosts total. No extra boosts will be issued beyond this limit."
+      "limitNote": "Maximum 8 boosts total. No extra boosts will be issued beyond this limit."
     },
     "boosted": {
       "title": "Boosted videos",

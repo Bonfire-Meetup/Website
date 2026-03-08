@@ -104,7 +104,7 @@ export const WEBSITE_URLS = {
 
 export const BOOST_CONFIG = {
   BOOSTS_PER_MONTH: 2,
-  MAX_BOOSTS: 6,
+  MAX_BOOSTS: 8,
 } as const;
 
 export const DEFAULT_TIMEZONE = "Europe/Prague";
