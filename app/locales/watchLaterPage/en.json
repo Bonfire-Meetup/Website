@@ -20,7 +20,11 @@
     "watchNow": "Watch now",
     "savedAt": "Saved on {date}",
     "savedRecently": "Saved recently",
+    "topicsLabel": "Filter by topic",
+    "allTags": "All topics",
     "queueLabel": "Your queue",
+    "queueFilteredBy": "Filtered by #{tag}.",
+    "sortLabel": "Sort",
     "filters": {
       "recent": "Recent first",
       "oldest": "Oldest first",

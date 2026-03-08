@@ -20,7 +20,11 @@
     "watchNow": "Pustit teď",
     "savedAt": "Uloženo {date}",
     "savedRecently": "Uloženo nedávno",
+    "topicsLabel": "Filtrovat podle tématu",
+    "allTags": "Všechna témata",
     "queueLabel": "Tvoje fronta",
+    "queueFilteredBy": "Filtrované podle #{tag}.",
+    "sortLabel": "Řazení",
     "filters": {
       "recent": "Nejnovější",
       "oldest": "Nejstarší",

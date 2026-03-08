@@ -140,7 +140,7 @@ export function MeClient() {
   }, [watchlistQuery.data, dispatch]);
 
   useEffect(() => {
-    if (!auth.hydrated) {
+    if (!auth.hydrated || auth.loading) {
       return;
     }
 
@@ -154,7 +154,7 @@ export function MeClient() {
 
     resetClientAuthState({ dispatch, queryClient });
     router.replace(PAGE_ROUTES.LOGIN);
-  }, [auth.isAuthenticated, auth.token, auth.hydrated, queryClient, router, dispatch, loggingOut]);
+  }, [auth.isAuthenticated, auth.token, auth.hydrated, auth.loading, queryClient, router, dispatch, loggingOut]);
 
   useEffect(() => {
     const err = profileQuery.error;

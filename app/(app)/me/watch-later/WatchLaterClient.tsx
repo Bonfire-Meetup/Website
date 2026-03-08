@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { RecordingDetailedCard } from "@/components/recordings/RecordingDetailedCard";
+import { RecordingImage } from "@/components/recordings/RecordingImage";
 import { WatchLaterLoadingSkeleton } from "@/components/recordings/RecordingLoadingSkeletons";
 import { WatchLaterButton } from "@/components/recordings/WatchLaterButton";
 import {
@@ -20,11 +21,13 @@ import { Link } from "@/i18n/navigation";
 import { ApiError } from "@/lib/api/errors";
 import { useWatchlist } from "@/lib/api/user-profile";
 import { getHasValidToken } from "@/lib/auth/client";
-import { getAllRecordings } from "@/lib/recordings/recordings";
+import { getAllRecordings, type Recording } from "@/lib/recordings/recordings";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { setWatchlist } from "@/lib/redux/slices/profileSlice";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatDateTimeUTC, formatLongDateUTC } from "@/lib/utils/locale";
+
+import { type WatchLaterTagCloudItem, WatchLaterTagCloud } from "./WatchLaterTagCloud";
 
 const HERO_PANEL_CLASS =
   "rounded-[28px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,248,240,0.72)_0%,rgba(255,244,232,0.56)_100%)] shadow-[0_28px_60px_-36px_rgba(15,23,42,0.34)] ring-1 ring-white/35 backdrop-blur-xl backdrop-saturate-150 dark:border-white/20 dark:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:shadow-[0_20px_48px_-32px_rgba(0,0,0,0.7)] dark:ring-white/10";
@@ -35,6 +38,68 @@ const HERO_WATCHLATER_BUTTON_CLASS =
 const QUEUE_FILTER_BUTTON_CLASS = "rounded-full border px-3 py-1.5 text-sm font-medium transition";
 
 type WatchlistFilter = "recent" | "oldest" | "title";
+type WatchlistTagFilter = "all" | string;
+type WatchlistRecording = Recording & { addedAt: string | null };
+
+function sortWatchlistRecordings(
+  recordings: WatchlistRecording[],
+  filter: WatchlistFilter,
+  locale: string,
+) {
+  return [...recordings].sort((left, right) => {
+    if (filter === "title") {
+      return left.title.localeCompare(right.title, locale, { sensitivity: "base" });
+    }
+
+    const leftTime = left.addedAt ? new Date(left.addedAt).getTime() : 0;
+    const rightTime = right.addedAt ? new Date(right.addedAt).getTime() : 0;
+
+    if (filter === "oldest") {
+      return leftTime - rightTime;
+    }
+
+    return rightTime - leftTime;
+  });
+}
+
+function getWatchLaterTagWeight(count: number, maxCount: number): WatchLaterTagCloudItem["weight"] {
+  if (count >= Math.max(2, maxCount)) {
+    return "high";
+  }
+
+  return "low";
+}
+
+function buildWatchLaterTagCloud(
+  recordings: WatchlistRecording[],
+  locale: string,
+): WatchLaterTagCloudItem[] {
+  const tagCounts = new Map<string, number>();
+
+  recordings.forEach((recording) => {
+    recording.tags.forEach((tag) => {
+      tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+    });
+  });
+
+  const sortedTags = [...tagCounts.entries()].sort(
+    ([leftTag, leftCount], [rightTag, rightCount]) => {
+      if (rightCount !== leftCount) {
+        return rightCount - leftCount;
+      }
+
+      return leftTag.localeCompare(rightTag, locale, { sensitivity: "base" });
+    },
+  );
+  const maxCount = sortedTags[0]?.[1] ?? 1;
+
+  return sortedTags.map(([tag, count], index) => ({
+    accentIndex: index,
+    count,
+    tag,
+    weight: getWatchLaterTagWeight(count, maxCount),
+  }));
+}
 
 export function WatchLaterClient() {
   const t = useTranslations("watchLaterPage");
@@ -45,6 +110,7 @@ export function WatchLaterClient() {
   const watchlistFromRedux = useAppSelector((state) => state.profile.watchlist);
   const [hasToken, setHasToken] = useState(false);
   const [activeFilter, setActiveFilter] = useState<WatchlistFilter>("recent");
+  const [activeTag, setActiveTag] = useState<WatchlistTagFilter>("all");
 
   useEffect(() => {
     const token = getHasValidToken();
@@ -68,6 +134,52 @@ export function WatchLaterClient() {
       router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
     }
   }, [error, router]);
+
+  const allRecordings = getAllRecordings();
+  const recordingsById = new Map(allRecordings.map((recording) => [recording.shortId, recording]));
+  const addedAtByVideoId = new Map(
+    (watchlistData?.items ?? []).map((item) => [item.videoId, item.addedAt] as const),
+  );
+  const watchlistRecordings = watchlistFromRedux
+    .map((videoId) => {
+      const recording = recordingsById.get(videoId);
+      if (!recording) {
+        return null;
+      }
+
+      return {
+        ...recording,
+        addedAt: addedAtByVideoId.get(videoId) ?? null,
+      };
+    })
+    .filter((recording): recording is WatchlistRecording => recording !== null)
+    .sort((left, right) => {
+      const leftTime = left.addedAt ? new Date(left.addedAt).getTime() : 0;
+      const rightTime = right.addedAt ? new Date(right.addedAt).getTime() : 0;
+      return rightTime - leftTime;
+    });
+  const tagCloudItems = buildWatchLaterTagCloud(watchlistRecordings, locale);
+  const filteredRecordings = sortWatchlistRecordings(
+    watchlistRecordings.filter(
+      (recording) => activeTag === "all" || recording.tags.includes(activeTag),
+    ),
+    activeFilter,
+    locale,
+  );
+  const savedCountLabel =
+    watchlistRecordings.length === 1
+      ? t("savedOne")
+      : t("saved", { count: watchlistRecordings.length });
+  const filteredCountLabel =
+    filteredRecordings.length === 1
+      ? t("savedOne")
+      : t("saved", { count: filteredRecordings.length });
+
+  useEffect(() => {
+    if (activeTag !== "all" && !tagCloudItems.some((item) => item.tag === activeTag)) {
+      setActiveTag("all");
+    }
+  }, [activeTag, tagCloudItems]);
 
   if (!hasToken) {
     return null;
@@ -107,46 +219,8 @@ export function WatchLaterClient() {
     );
   }
 
-  const allRecordings = getAllRecordings();
-  const recordingsById = new Map(allRecordings.map((recording) => [recording.shortId, recording]));
-  const addedAtByVideoId = new Map(
-    (watchlistData?.items ?? []).map((item) => [item.videoId, item.addedAt] as const),
-  );
-  const watchlistRecordings = watchlistFromRedux
-    .map((videoId) => {
-      const recording = recordingsById.get(videoId);
-      if (!recording) {
-        return null;
-      }
-
-      return {
-        ...recording,
-        addedAt: addedAtByVideoId.get(videoId) ?? null,
-      };
-    })
-    .filter((recording) => recording !== null)
-    .sort((left, right) => {
-      const leftTime = left.addedAt ? new Date(left.addedAt).getTime() : 0;
-      const rightTime = right.addedAt ? new Date(right.addedAt).getTime() : 0;
-      return rightTime - leftTime;
-    });
-
   const isEmpty = watchlistRecordings.length === 0;
   const featuredRecording = watchlistRecordings[0] ?? null;
-  const filteredRecordings = [...watchlistRecordings].sort((left, right) => {
-    if (activeFilter === "title") {
-      return left.title.localeCompare(right.title, locale, { sensitivity: "base" });
-    }
-
-    const leftTime = left.addedAt ? new Date(left.addedAt).getTime() : 0;
-    const rightTime = right.addedAt ? new Date(right.addedAt).getTime() : 0;
-
-    if (activeFilter === "oldest") {
-      return leftTime - rightTime;
-    }
-
-    return rightTime - leftTime;
-  });
 
   if (isEmpty) {
     return (
@@ -199,46 +273,74 @@ export function WatchLaterClient() {
               style={{ backgroundImage: `url(${featuredRecording.thumbnail})` }}
             />
             <div className="absolute inset-0 bg-[linear-gradient(108deg,rgba(15,23,42,0.42)_0%,rgba(15,23,42,0.14)_42%,rgba(15,23,42,0.48)_100%)] dark:bg-[linear-gradient(110deg,rgba(0,0,0,0.78)_0%,rgba(0,0,0,0.56)_48%,rgba(0,0,0,0.82)_100%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.18),transparent_34%),radial-gradient(circle_at_84%_16%,rgba(249,115,22,0.28),transparent_34%),radial-gradient(circle_at_54%_72%,rgba(244,63,94,0.1),transparent_40%)] dark:bg-[radial-gradient(circle_at_22%_20%,rgba(255,255,255,0.08),transparent_40%),radial-gradient(circle_at_85%_16%,rgba(249,115,22,0.16),transparent_36%)]" />
+            <div className="absolute inset-0 hidden bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.18),transparent_34%),radial-gradient(circle_at_84%_16%,rgba(249,115,22,0.28),transparent_34%),radial-gradient(circle_at_54%_72%,rgba(244,63,94,0.1),transparent_40%)] sm:block dark:bg-[radial-gradient(circle_at_22%_20%,rgba(255,255,255,0.08),transparent_40%),radial-gradient(circle_at_85%_16%,rgba(249,115,22,0.16),transparent_36%)]" />
           </div>
         ) : null}
 
-        <div className="relative z-10 flex min-h-[430px] flex-col px-4 py-4 sm:min-h-[520px] sm:px-8 sm:py-8 lg:px-10 lg:py-9">
+        <div className="relative z-10 flex flex-col px-5 py-6 sm:min-h-[520px] sm:px-8 sm:py-8 lg:px-10 lg:py-9">
           <BackLink
             href={PAGE_ROUTES.ME}
-            className="mb-4 w-fit border-white/75 bg-white/44 text-neutral-950 shadow-[0_18px_34px_-24px_rgba(15,23,42,0.28)] backdrop-blur-md backdrop-saturate-150 hover:bg-white/58 sm:mb-0 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/16"
+            className="mb-6 w-fit border-white/75 bg-white/44 text-neutral-950 shadow-[0_18px_34px_-24px_rgba(15,23,42,0.28)] backdrop-blur-md backdrop-saturate-150 hover:bg-white/58 sm:mb-0 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/16"
           >
             {t("backToAccount")}
           </BackLink>
 
-          <div className="mt-auto grid gap-4 sm:gap-6 xl:grid-cols-[minmax(0,1fr)_23rem] xl:items-end">
-            <div className={`${HERO_PANEL_CLASS} min-w-0 p-5 sm:p-7`}>
+          <div className="mt-5 grid gap-3 sm:mt-auto sm:gap-6 xl:grid-cols-[minmax(0,1fr)_23rem] xl:items-end">
+            <div className={`${HERO_PANEL_CLASS} min-w-0 p-6 sm:p-7`}>
               <p className="text-brand-600 dark:text-brand-300 mb-3 text-xs font-bold tracking-[0.32em] uppercase">
                 {t("eyebrow")}
               </p>
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
                 <div className="max-w-2xl">
-                  <h1 className="text-[2.1rem] leading-none font-black tracking-tight text-neutral-950 sm:text-4xl lg:text-[2.7rem] dark:text-white">
+                  <h1 className="text-[1.75rem] leading-none font-black tracking-tight text-neutral-950 sm:text-4xl lg:text-[2.7rem] dark:text-white">
                     {t("title")}
                   </h1>
-                  <p className="mt-3 max-w-xl text-sm leading-6 text-neutral-700 sm:text-base dark:text-neutral-200">
+                  <p className="mt-3 max-w-xl text-sm leading-[1.5] text-neutral-700 sm:mt-3 sm:text-base sm:leading-6 dark:text-neutral-200">
                     {t("subtitle")}
                   </p>
                 </div>
                 <div className="ml-auto" />
               </div>
 
-              <div className="mt-5 flex flex-wrap gap-3">
-                <div className="rounded-full border border-white/55 bg-white/26 px-4 py-2 text-sm font-semibold text-neutral-950 dark:border-white/20 dark:bg-white/8 dark:text-white">
-                  {watchlistRecordings.length === 1
-                    ? t("savedOne")
-                    : t("saved", { count: watchlistRecordings.length })}
+              {featuredRecording ? (
+                <div className="mt-6 border-t border-black/8 pt-6 sm:hidden dark:border-white/10">
+                  <div className="flex items-start gap-4">
+                    <div className="w-[34%] shrink-0 overflow-hidden rounded-[16px]">
+                      <RecordingImage
+                        src={featuredRecording.thumbnail}
+                        alt={featuredRecording.title}
+                        aspectClassName="aspect-[4/5]"
+                        imgClassName="scale-[1.04] object-[92%_center]"
+                        sizes="40vw"
+                        loading="eager"
+                        fetchPriority="high"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h2 className="line-clamp-2 text-[1.1rem] leading-[1.2] font-black tracking-tight text-neutral-950 dark:text-white">
+                        {featuredRecording.title}
+                      </h2>
+                      <p className="mt-2 line-clamp-1 text-sm leading-5 text-neutral-600 dark:text-neutral-300">
+                        {featuredRecording.speaker.join(", ")}
+                      </p>
+                      <Button
+                        href={PAGE_ROUTES.WATCH(featuredRecording.slug, featuredRecording.shortId)}
+                        variant="primary"
+                        className="mt-5 w-full justify-center"
+                      >
+                        <PlayIcon className="h-4 w-4" />
+                        {t("watchNow")}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : null}
             </div>
 
             {featuredRecording ? (
-              <div className={`${HERO_PANEL_CLASS} min-w-0 overflow-hidden bg-black/40 p-5 sm:p-6`}>
+              <div
+                className={`${HERO_PANEL_CLASS} hidden min-w-0 overflow-hidden bg-black/40 p-5 sm:block sm:p-6`}
+              >
                 <p className="text-[11px] font-bold tracking-[0.28em] text-neutral-600 uppercase dark:text-neutral-300">
                   {t("featuredLabel")}
                 </p>
@@ -290,26 +392,30 @@ export function WatchLaterClient() {
         </div>
       </section>
 
-      <section className="space-y-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <section className="space-y-3 sm:space-y-4">
+        <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-bold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-500">
+            <p className="hidden text-xs font-bold tracking-[0.28em] text-neutral-500 uppercase sm:block dark:text-neutral-500">
               {t("queueLabel")}
             </p>
-            <h2 className="mt-1 text-2xl font-black tracking-tight text-neutral-950 dark:text-white">
-              {watchlistRecordings.length === 1
-                ? t("savedOne")
-                : t("saved", { count: watchlistRecordings.length })}
+            <h2 className="text-xl font-black tracking-tight text-neutral-950 sm:mt-1 sm:text-2xl dark:text-white">
+              {activeTag === "all" ? savedCountLabel : filteredCountLabel}
             </h2>
           </div>
           <Link
             href={PAGE_ROUTES.LIBRARY}
-            className="hover:text-brand-600 dark:hover:text-brand-300 inline-flex items-center gap-2 self-start text-sm font-semibold text-neutral-700 transition sm:self-auto dark:text-neutral-300"
+            className="hover:text-brand-600 dark:hover:text-brand-300 inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-neutral-700 transition dark:text-neutral-300"
           >
             {t("browseMore")}
             <ArrowRightIcon className="h-4 w-4" />
           </Link>
         </div>
+
+        <WatchLaterTagCloud
+          activeTag={activeTag}
+          items={tagCloudItems}
+          onTagChange={setActiveTag}
+        />
 
         <div className="flex flex-wrap gap-2">
           {(["recent", "oldest", "title"] as const).map((filter) => {
@@ -332,7 +438,7 @@ export function WatchLaterClient() {
           })}
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
           {filteredRecordings.map((recording) => (
             <div key={recording.shortId}>
               <RecordingDetailedCard
