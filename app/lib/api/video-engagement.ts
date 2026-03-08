@@ -1,9 +1,11 @@
+"use client";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/lib/api/errors";
-import { shouldRetryMutation } from "@/lib/api/query-utils";
+import { ensureFreshToken, shouldRetryMutation } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
-import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { useAuthStatus } from "@/lib/redux/hooks";
 import { createAuthHeaders } from "@/lib/utils/http";
 import { logError } from "@/lib/utils/log-client";
 
@@ -64,19 +66,27 @@ export function useVideoLikes(shortId: string) {
 }
 
 export function useVideoBoosts(shortId: string, enabled = true) {
-  const canFetch = Boolean(shortId) && enabled;
-  const hasToken = Boolean(readAccessToken());
-
-  return useQuery({
+  const { queryScope } = useAuthStatus();
+  const canFetch = Boolean(shortId) && enabled && queryScope !== "pending";
+  const query = useQuery({
     enabled: canFetch,
-    queryFn: () => {
-      const token = readAccessToken();
-      const isValid = token ? isAccessTokenValid(token) : false;
-      return fetchVideoBoosts(shortId, isValid ? token : null);
+    queryFn: async () => {
+      const accessToken = queryScope === "auth" ? await ensureFreshToken() : null;
+
+      if (queryScope === "auth" && !accessToken) {
+        throw new ApiError("Authentication required", 401);
+      }
+
+      return fetchVideoBoosts(shortId, accessToken);
     },
-    queryKey: ["video-boosts", shortId, hasToken ? "auth" : "anon"],
+    queryKey: ["video-boosts", shortId, queryScope],
     staleTime: 5000,
   });
+
+  return {
+    ...query,
+    isLoading: query.isLoading || queryScope === "pending",
+  };
 }
 
 export function useVideoLikeMutation(shortId: string) {
@@ -139,7 +149,8 @@ export function useVideoLikeMutation(shortId: string) {
 
 export function useVideoBoostMutation(shortId: string) {
   const queryClient = useQueryClient();
-  const hasToken = Boolean(readAccessToken());
+  const { queryScope } = useAuthStatus();
+  const boostQueryScope = queryScope === "anon" ? "anon" : "auth";
 
   return useMutation<
     { boostedBy?: BoostedByData; count: number; availableBoosts?: number },
@@ -152,9 +163,11 @@ export function useVideoBoostMutation(shortId: string) {
         throw new ApiError("Missing shortId", 400);
       }
 
-      const token = readAccessToken();
-      const isValid = token ? isAccessTokenValid(token) : false;
-      const tokenForRequest = isValid ? token : null;
+      const tokenForRequest = await ensureFreshToken();
+
+      if (!tokenForRequest) {
+        throw new ApiError("Authentication required", 401);
+      }
 
       const response = await fetch(API_ROUTES.VIDEO.BOOSTS(shortId), {
         headers: createAuthHeaders(tokenForRequest),
@@ -182,12 +195,12 @@ export function useVideoBoostMutation(shortId: string) {
       });
 
       if (context?.previousData) {
-        const queryKey = ["video-boosts", shortId, hasToken ? "auth" : "anon"] as const;
+        const queryKey = ["video-boosts", shortId, boostQueryScope] as const;
         queryClient.setQueryData<VideoBoostsData>(queryKey, context.previousData);
       }
     },
     onMutate: async (adding) => {
-      const queryKey = ["video-boosts", shortId, hasToken ? "auth" : "anon"] as const;
+      const queryKey = ["video-boosts", shortId, boostQueryScope] as const;
 
       await queryClient.cancelQueries({ queryKey });
 
@@ -215,13 +228,13 @@ export function useVideoBoostMutation(shortId: string) {
     onSettled: () => {
       if (shortId) {
         queryClient.invalidateQueries({
-          queryKey: ["video-boosts", shortId, hasToken ? "auth" : "anon"],
+          queryKey: ["video-boosts", shortId, boostQueryScope],
         });
       }
       queryClient.invalidateQueries({ queryKey: ["user-profile"] });
     },
     onSuccess: (data, adding) => {
-      const queryKey = ["video-boosts", shortId, hasToken ? "auth" : "anon"] as const;
+      const queryKey = ["video-boosts", shortId, boostQueryScope] as const;
 
       queryClient.setQueryData<VideoBoostsData>(queryKey, (old) => ({
         ...old,

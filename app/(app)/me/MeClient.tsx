@@ -25,12 +25,11 @@ import {
   useUserProfile,
   useWatchlist,
 } from "@/lib/api/user-profile";
-import { clearAccessToken, revokeSession } from "@/lib/auth/client";
+import { revokeSession } from "@/lib/auth/client";
+import { resetClientAuthState } from "@/lib/auth/client-session";
 import { USER_ROLES } from "@/lib/config/roles";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { clearAuth } from "@/lib/redux/slices/authSlice";
 import {
-  clearProfile,
   removeBoost as removeBoostAction,
   setAttempts,
   setBoostAllocation,
@@ -155,13 +154,7 @@ export function MeClient() {
       return;
     }
 
-    dispatch(clearAuth());
-    dispatch(clearProfile());
-    clearAccessToken();
-    queryClient.removeQueries({ queryKey: ["user-profile"] });
-    queryClient.removeQueries({ queryKey: ["video-boosts"] });
-    queryClient.removeQueries({ queryKey: ["watchlist"] });
-    queryClient.removeQueries({ queryKey: ["video-watchlist"] });
+    resetClientAuthState({ dispatch, queryClient });
     router.replace(PAGE_ROUTES.LOGIN);
   }, [auth.isAuthenticated, auth.token, auth.hydrated, queryClient, router, dispatch, loggingOut]);
 
@@ -171,13 +164,7 @@ export function MeClient() {
       return;
     }
 
-    dispatch(clearAuth());
-    dispatch(clearProfile());
-    clearAccessToken();
-    queryClient.removeQueries({ queryKey: ["user-profile"] });
-    queryClient.removeQueries({ queryKey: ["video-boosts"] });
-    queryClient.removeQueries({ queryKey: ["watchlist"] });
-    queryClient.removeQueries({ queryKey: ["video-watchlist"] });
+    resetClientAuthState({ dispatch, queryClient });
     router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
   }, [profileQuery.error, queryClient, router, dispatch, loggingOut]);
 
@@ -214,12 +201,7 @@ export function MeClient() {
     setLoggingOut(true);
 
     await revokeSession();
-    dispatch(clearAuth());
-    dispatch(clearProfile());
-    queryClient.removeQueries({ queryKey: ["user-profile"] });
-    queryClient.removeQueries({ queryKey: ["video-boosts"] });
-    queryClient.removeQueries({ queryKey: ["watchlist"] });
-    queryClient.removeQueries({ queryKey: ["video-watchlist"] });
+    resetClientAuthState({ dispatch, queryClient });
 
     router.replace(PAGE_ROUTES.HOME);
   };

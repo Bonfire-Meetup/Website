@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuthSync } from "@/lib/redux/hooks";
+import { useAuthBootstrap } from "@/lib/redux/hooks";
 
 export function AuthInitializer() {
-  useAuthSync();
+  useAuthBootstrap();
 
   return null;
 }

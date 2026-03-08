@@ -8,7 +8,7 @@ import { RsvpAvatarList } from "@/components/events/RsvpAvatarList";
 import { CheckCircleIcon, CheckIcon } from "@/components/shared/Icons";
 import { useCreateRsvpMutation, useDeleteRsvpMutation, useEventRsvps } from "@/lib/api/events";
 import { useUserProfile } from "@/lib/api/user-profile";
-import { useAppSelector } from "@/lib/redux/hooks";
+import { useAppSelector, useAuthStatus } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
 import { useHaptics } from "@/lib/utils/haptics";
 
@@ -21,6 +21,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
   const router = useRouter();
   const haptics = useHaptics();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const { isPending: isAuthPending } = useAuthStatus();
   const { data: rsvps, isLoading: rsvpsLoading } = useEventRsvps(eventId);
   const { data: userProfile } = useUserProfile(isAuthenticated);
   const createMutation = useCreateRsvpMutation(eventId);
@@ -30,10 +31,14 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
   const isRsvped = useMemo(() => rsvps?.hasRsvped ?? false, [rsvps]);
   const totalCount = rsvps?.totalCount ?? 0;
 
-  const isLoading = createMutation.isPending || deleteMutation.isPending;
+  const isLoading = createMutation.isPending || deleteMutation.isPending || isAuthPending;
 
   const handleClick = useCallback(() => {
     setError(null);
+
+    if (isAuthPending) {
+      return;
+    }
 
     if (!isAuthenticated) {
       haptics.neutral();
@@ -83,6 +88,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
     }
   }, [
     isAuthenticated,
+    isAuthPending,
     isRsvped,
     eventId,
     router,
@@ -130,9 +136,13 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
       {error && <p className="text-sm font-medium text-red-600 dark:text-red-400">{error}</p>}
 
       <div className="flex flex-wrap items-center gap-x-2 gap-y-2 text-xs text-neutral-500 dark:text-neutral-400">
-        <span className="font-semibold text-neutral-700 dark:text-neutral-200">
-          {totalCount > 0 ? t("attendingCount", { count: totalCount }) : t("beFirst")}
-        </span>
+        {rsvpsLoading && !rsvps ? (
+          <span className="h-4 w-28 animate-pulse rounded-full bg-neutral-200 dark:bg-white/10" />
+        ) : (
+          <span className="font-semibold text-neutral-700 dark:text-neutral-200">
+            {totalCount > 0 ? t("attendingCount", { count: totalCount }) : t("beFirst")}
+          </span>
+        )}
         {(rsvpsLoading || totalCount > 0) && <RsvpAvatarList eventId={eventId} />}
       </div>
     </div>

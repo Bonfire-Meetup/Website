@@ -22,14 +22,9 @@ import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Link } from "@/i18n/navigation";
 import { API_ROUTES } from "@/lib/api/routes";
-import {
-  decodeAccessToken,
-  isAccessTokenValid,
-  readAccessToken,
-  writeAccessToken,
-} from "@/lib/auth/client";
+import { decodeAccessToken, writeAccessToken } from "@/lib/auth/client";
 import { authenticateWithPasskey, isWebAuthnSupported } from "@/lib/auth/webauthn-client";
-import { useAppDispatch } from "@/lib/redux/hooks";
+import { useAppDispatch, useAuthStatus } from "@/lib/redux/hooks";
 import { setToken } from "@/lib/redux/slices/authSlice";
 import { LOGIN_REASON, type LoginReason, PAGE_ROUTES } from "@/lib/routes/pages";
 import { clearAllAuthChallenges, getAuthChallengeKey } from "@/lib/storage/keys";
@@ -130,6 +125,7 @@ export function LoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
+  const authStatus = useAuthStatus();
   const returnPath = useMemo(() => {
     const value = searchParams.get("returnPath");
 
@@ -191,12 +187,10 @@ export function LoginClient() {
   };
 
   useEffect(() => {
-    const token = readAccessToken();
-
-    if (token && isAccessTokenValid(token)) {
+    if (authStatus.isAuthenticated && authStatus.token) {
       router.replace(returnPath ?? PAGE_ROUTES.ME);
     }
-  }, [returnPath, router]);
+  }, [authStatus.isAuthenticated, authStatus.token, returnPath, router]);
 
   useEffect(() => {
     const token = searchParams.get("challenge");

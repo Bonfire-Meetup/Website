@@ -8,7 +8,7 @@ import {
   shouldRetryQuery,
 } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
-import { clearAccessToken } from "@/lib/auth/client";
+import { handleUnauthorizedClientState } from "@/lib/auth/client-session";
 import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
 import { logError } from "@/lib/utils/log-client";
 
@@ -103,7 +103,7 @@ export function useUpdatePreferenceMutation() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          clearAccessToken();
+          handleUnauthorizedClientState();
         }
         const data = await fetchJsonOrNull<{ error?: string }>(response);
         throw new ApiError("User preferences update failed", response.status, data?.error);
@@ -143,7 +143,7 @@ export function useRemoveBoostMutation() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          clearAccessToken();
+          handleUnauthorizedClientState();
         }
         throw new ApiError("Failed to remove boost", response.status);
       }
@@ -178,7 +178,7 @@ export function useDeleteAccountChallengeMutation() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          clearAccessToken();
+          handleUnauthorizedClientState();
         }
         throw new ApiError("Failed to request delete challenge", response.status);
       }
@@ -210,7 +210,7 @@ export function useDeleteAccountMutation() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          clearAccessToken();
+          handleUnauthorizedClientState();
         }
         const data = await fetchJsonOrNull<{ error?: string }>(response);
         throw new ApiError("Failed to delete account", response.status, data?.error);
@@ -220,7 +220,7 @@ export function useDeleteAccountMutation() {
       logError("user.delete.account_failed", error);
     },
     onSuccess: () => {
-      clearAccessToken();
+      handleUnauthorizedClientState();
       queryClient.clear();
     },
     retry: shouldRetryMutation,
@@ -284,7 +284,7 @@ export function useAddToWatchlistMutation() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          clearAccessToken();
+          handleUnauthorizedClientState();
         }
         throw new ApiError("Failed to add to watchlist", response.status);
       }
@@ -333,7 +333,7 @@ export function useRemoveFromWatchlistMutation() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          clearAccessToken();
+          handleUnauthorizedClientState();
         }
         throw new ApiError("Failed to remove from watchlist", response.status);
       }
@@ -426,7 +426,7 @@ export function useDeletePasskeyMutation() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          clearAccessToken();
+          handleUnauthorizedClientState();
         }
         throw new ApiError("Failed to delete passkey", response.status);
       }
@@ -459,7 +459,7 @@ export function useUpdatePasskeyMutation() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          clearAccessToken();
+          handleUnauthorizedClientState();
         }
         throw new ApiError("Failed to update passkey", response.status);
       }

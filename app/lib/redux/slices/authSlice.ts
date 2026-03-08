@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-import type { AccessTokenPayload } from "@/lib/auth/client";
+import type { AccessTokenPayload } from "@/lib/auth/token";
 
 interface AuthState {
   token: string | null;
@@ -48,24 +48,12 @@ const authSlice = createSlice({
       state.error = null;
       state.hydrated = true;
     },
-    setUser: (state, action: PayloadAction<Partial<AuthState["user"]>>) => {
-      state.user = state.user
-        ? { ...state.user, ...action.payload }
-        : (action.payload as AuthState["user"]);
-    },
     setAuthLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
-    },
-    setAuthError: (state, action: PayloadAction<string | null>) => {
-      state.error = action.payload;
-    },
-    setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
-      state.isAuthenticated = action.payload;
     },
   },
 });
 
-export const { setToken, clearAuth, setUser, setAuthLoading, setAuthError, setIsAuthenticated } =
-  authSlice.actions;
+export const { setToken, clearAuth, setAuthLoading } = authSlice.actions;
 
 export default authSlice.reducer;

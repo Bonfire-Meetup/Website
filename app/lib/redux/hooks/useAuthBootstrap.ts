@@ -18,8 +18,9 @@ import {
   updateLastActivity,
   writeAccessToken,
 } from "@/lib/auth/client";
+import { handleUnauthorizedClientState } from "@/lib/auth/client-session";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { clearAuth, setAuthLoading, setToken } from "@/lib/redux/slices/authSlice";
+import { setAuthLoading, setToken } from "@/lib/redux/slices/authSlice";
 
 const REFRESH_BUFFER_SECONDS = 120;
 const BASE_CHECK_INTERVAL_MS = 15000;
@@ -35,7 +36,7 @@ const getAdaptiveInterval = (): number => {
   return BASE_CHECK_INTERVAL_MS;
 };
 
-export function useAuthSync() {
+export function useAuthBootstrap() {
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -194,12 +195,10 @@ export function useAuthSync() {
         const decoded = decodeAccessToken(newToken);
         dispatch(setToken({ token: newToken, decoded: decoded ?? undefined }));
       } else {
-        dispatch(clearAuth());
+        handleUnauthorizedClientState();
       }
     });
 
     return unsubscribe;
   }, [dispatch]);
-
-  return auth;
 }

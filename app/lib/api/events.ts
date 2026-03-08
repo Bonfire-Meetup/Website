@@ -1,9 +1,11 @@
+"use client";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/lib/api/errors";
-import { shouldRetryMutation } from "@/lib/api/query-utils";
+import { ensureFreshToken, shouldRetryMutation } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
-import { isAccessTokenValid, readAccessToken } from "@/lib/auth/client";
+import { useAuthStatus } from "@/lib/redux/hooks";
 import { createAuthHeaders } from "@/lib/utils/http";
 import { logError } from "@/lib/utils/log-client";
 import { compressUuid } from "@/lib/utils/uuid-compress";
@@ -130,35 +132,51 @@ async function fetchEventQuestions(
 }
 
 export function useEventRsvps(eventId: string) {
-  const canFetch = Boolean(eventId);
-  const hasToken = Boolean(readAccessToken());
-
-  return useQuery({
+  const { queryScope } = useAuthStatus();
+  const canFetch = Boolean(eventId) && queryScope !== "pending";
+  const query = useQuery({
     enabled: canFetch,
-    queryFn: () => {
-      const token = readAccessToken();
-      const isValid = token ? isAccessTokenValid(token) : false;
-      return fetchEventRsvps(eventId, isValid ? token : null);
+    queryFn: async () => {
+      const accessToken = queryScope === "auth" ? await ensureFreshToken() : null;
+
+      if (queryScope === "auth" && !accessToken) {
+        throw new ApiError("Authentication required", 401);
+      }
+
+      return fetchEventRsvps(eventId, accessToken);
     },
-    queryKey: ["event-rsvps", eventId, hasToken ? "auth" : "anon"],
+    queryKey: ["event-rsvps", eventId, queryScope],
     staleTime: 60000,
   });
+
+  return {
+    ...query,
+    isLoading: query.isLoading || queryScope === "pending",
+  };
 }
 
 export function useEventQuestions(eventId: string) {
-  const canFetch = Boolean(eventId);
-  const hasToken = Boolean(readAccessToken());
-
-  return useQuery({
+  const { queryScope } = useAuthStatus();
+  const canFetch = Boolean(eventId) && queryScope !== "pending";
+  const query = useQuery({
     enabled: canFetch,
-    queryFn: () => {
-      const token = readAccessToken();
-      const isValid = token ? isAccessTokenValid(token) : false;
-      return fetchEventQuestions(eventId, isValid ? token : null);
+    queryFn: async () => {
+      const accessToken = queryScope === "auth" ? await ensureFreshToken() : null;
+
+      if (queryScope === "auth" && !accessToken) {
+        throw new ApiError("Authentication required", 401);
+      }
+
+      return fetchEventQuestions(eventId, accessToken);
     },
-    queryKey: ["event-questions", eventId, hasToken ? "auth" : "anon"],
+    queryKey: ["event-questions", eventId, queryScope],
     staleTime: 15000,
   });
+
+  return {
+    ...query,
+    isLoading: query.isLoading || queryScope === "pending",
+  };
 }
 
 export function useCreateRsvpMutation(eventId: string) {
@@ -175,10 +193,9 @@ export function useCreateRsvpMutation(eventId: string) {
         throw new ApiError("Missing eventId", 400);
       }
 
-      const token = readAccessToken();
-      const isValid = token ? isAccessTokenValid(token) : false;
+      const token = await ensureFreshToken();
 
-      if (!isValid) {
+      if (!token) {
         throw new ApiError("Authentication required", 401);
       }
 
@@ -268,10 +285,9 @@ export function useDeleteRsvpMutation(eventId: string) {
         throw new ApiError("Missing eventId", 400);
       }
 
-      const token = readAccessToken();
-      const isValid = token ? isAccessTokenValid(token) : false;
+      const token = await ensureFreshToken();
 
-      if (!isValid) {
+      if (!token) {
         throw new ApiError("Authentication required", 401);
       }
 
@@ -351,10 +367,9 @@ export function useCreateEventQuestionMutation(eventId: string) {
         throw new ApiError("Missing eventId", 400);
       }
 
-      const token = readAccessToken();
-      const isValid = token ? isAccessTokenValid(token) : false;
+      const token = await ensureFreshToken();
 
-      if (!isValid) {
+      if (!token) {
         throw new ApiError("Authentication required", 401);
       }
 
@@ -426,10 +441,9 @@ export function useBoostEventQuestionMutation(eventId: string) {
     { questionId: string }
   >({
     mutationFn: async ({ questionId }) => {
-      const token = readAccessToken();
-      const isValid = token ? isAccessTokenValid(token) : false;
+      const token = await ensureFreshToken();
 
-      if (!isValid) {
+      if (!token) {
         throw new ApiError("Authentication required", 401);
       }
 
@@ -468,10 +482,9 @@ export function useUnboostEventQuestionMutation(eventId: string) {
     { questionId: string }
   >({
     mutationFn: async ({ questionId }) => {
-      const token = readAccessToken();
-      const isValid = token ? isAccessTokenValid(token) : false;
+      const token = await ensureFreshToken();
 
-      if (!isValid) {
+      if (!token) {
         throw new ApiError("Authentication required", 401);
       }
 
@@ -506,10 +519,9 @@ export function useDeleteEventQuestionMutation(eventId: string) {
 
   return useMutation<{ success: boolean }, ApiError, { questionId: string }>({
     mutationFn: async ({ questionId }) => {
-      const token = readAccessToken();
-      const isValid = token ? isAccessTokenValid(token) : false;
+      const token = await ensureFreshToken();
 
-      if (!isValid) {
+      if (!token) {
         throw new ApiError("Authentication required", 401);
       }
 

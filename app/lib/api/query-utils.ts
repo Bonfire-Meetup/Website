@@ -1,13 +1,15 @@
 import { ApiError } from "@/lib/api/errors";
 import {
-  clearAccessToken,
   getValidAccessToken as getValidToken,
   isAccessTokenExpiringSoon,
   isAccessTokenValid,
   readAccessToken,
   refreshAccessToken,
 } from "@/lib/auth/client";
+import { handleUnauthorizedClientState } from "@/lib/auth/client-session";
 import { createAuthHeaders } from "@/lib/utils/http";
+
+const TOKEN_REFRESH_BUFFER_SECONDS = 120;
 
 export function getValidAccessToken(): string | null {
   const token = readAccessToken();
@@ -28,7 +30,10 @@ export function ensureFreshToken(): Promise<string | null> {
     return refreshAccessToken();
   }
 
-  if (!isAccessTokenValid(token) || isAccessTokenExpiringSoon(token)) {
+  if (
+    !isAccessTokenValid(token) ||
+    isAccessTokenExpiringSoon(token, TOKEN_REFRESH_BUFFER_SECONDS)
+  ) {
     return refreshAccessToken();
   }
 
@@ -38,7 +43,7 @@ export function ensureFreshToken(): Promise<string | null> {
 export async function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
   let token = readAccessToken();
 
-  if (!token || isAccessTokenExpiringSoon(token)) {
+  if (!token || isAccessTokenExpiringSoon(token, TOKEN_REFRESH_BUFFER_SECONDS)) {
     token = await refreshAccessToken();
   }
 
@@ -59,7 +64,7 @@ export async function authFetch(url: string, options: RequestInit = {}): Promise
         headers: { ...createAuthHeaders(newToken), ...options.headers },
       });
     }
-    clearAccessToken();
+    handleUnauthorizedClientState();
   }
 
   return response;

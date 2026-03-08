@@ -1,21 +1,18 @@
 "use client";
 
 import { API_ROUTES } from "@/lib/api/routes";
+import { store } from "@/lib/redux/store";
 import { logWarn } from "@/lib/utils/log-client";
 
 import { STORAGE_KEYS } from "../storage/keys";
 
-export interface AccessTokenPayload {
-  sub?: string;
-  exp?: number;
-  iat?: number;
-  aud?: string | string[];
-  iss?: string;
-  jti?: string;
-  typ?: string;
-  rol?: string[];
-  mbt?: number;
-}
+import {
+  decodeAccessToken,
+  getAccessTokenExpiresIn,
+  isAccessTokenExpiringSoon,
+  isAccessTokenValid,
+  type AccessTokenPayload,
+} from "./token";
 
 const accessTokenStorageKey = STORAGE_KEYS.ACCESS_TOKEN;
 
@@ -79,19 +76,23 @@ export const setLoggingOut = (value: boolean) => {
 
 export const getIsLoggingOut = () => isLoggingOut;
 
-const decodeBase64Url = (value: string) => {
-  const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
-  const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
-
-  return atob(padded);
-};
-
-export const readAccessToken = () => {
+const readPersistedAccessToken = () => {
   if (typeof window === "undefined") {
     return null;
   }
 
   return window.localStorage.getItem(accessTokenStorageKey);
+};
+
+export const readAccessToken = () => {
+  const state = store.getState();
+  const reduxToken = state.auth.token;
+
+  if (reduxToken) {
+    return reduxToken;
+  }
+
+  return readPersistedAccessToken();
 };
 
 export const writeAccessToken = (token: string) => {
@@ -110,61 +111,9 @@ export const clearAccessToken = () => {
   window.localStorage.removeItem(accessTokenStorageKey);
 };
 
-export const decodeAccessToken = (token: string): AccessTokenPayload | null => {
-  const parts = token.split(".");
-
-  if (parts.length < 2) {
-    return null;
-  }
-
-  try {
-    const json = decodeBase64Url(parts[1] ?? "");
-
-    return JSON.parse(json) as AccessTokenPayload;
-  } catch {
-    return null;
-  }
-};
-
-export const isAccessTokenValid = (token: string) => {
-  const payload = decodeAccessToken(token);
-
-  if (!payload?.exp) {
-    return false;
-  }
-
-  return payload.exp * 1000 > Date.now();
-};
-
 export const getHasValidToken = (): boolean => {
   const token = readAccessToken();
   return token ? isAccessTokenValid(token) : false;
-};
-
-export const isAccessTokenExpiringSoon = (
-  token: string,
-  bufferSeconds = TOKEN_REFRESH_BUFFER_SECONDS,
-) => {
-  const payload = decodeAccessToken(token);
-
-  if (!payload?.exp) {
-    return true;
-  }
-
-  const expiresAt = payload.exp * 1000;
-  const bufferMs = bufferSeconds * 1000;
-
-  return expiresAt - Date.now() < bufferMs;
-};
-
-export const getAccessTokenExpiresIn = (token: string): number | null => {
-  const payload = decodeAccessToken(token);
-
-  if (!payload?.exp) {
-    return null;
-  }
-
-  return Math.max(0, Math.floor((payload.exp * 1000 - Date.now()) / 1000));
 };
 
 export const refreshAccessToken = (): Promise<string | null> => {
@@ -183,7 +132,7 @@ export const refreshAccessToken = (): Promise<string | null> => {
     if (
       existingToken &&
       isAccessTokenValid(existingToken) &&
-      !isAccessTokenExpiringSoon(existingToken)
+      !isAccessTokenExpiringSoon(existingToken, TOKEN_REFRESH_BUFFER_SECONDS)
     ) {
       return existingToken;
     }
@@ -251,12 +200,23 @@ export const getValidAccessToken = (): Promise<string | null> => {
     return refreshAccessToken();
   }
 
-  if (isAccessTokenValid(token) && !isAccessTokenExpiringSoon(token)) {
+  if (
+    isAccessTokenValid(token) &&
+    !isAccessTokenExpiringSoon(token, TOKEN_REFRESH_BUFFER_SECONDS)
+  ) {
     return Promise.resolve(token);
   }
 
   return refreshAccessToken();
 };
+
+export {
+  decodeAccessToken,
+  getAccessTokenExpiresIn,
+  isAccessTokenExpiringSoon,
+  isAccessTokenValid,
+};
+export type { AccessTokenPayload };
 
 export const revokeSession = async (options?: { revokeAll?: boolean; revokeFamily?: boolean }) => {
   setLoggingOut(true);

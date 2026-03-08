@@ -12,12 +12,12 @@ import {
   useDeletePasskeyMutation,
   usePasskeys,
 } from "@/lib/api/user-profile";
-import { readAccessToken } from "@/lib/auth/client";
 import {
   isPlatformAuthenticatorAvailable,
   isWebAuthnSupported,
   registerPasskey,
 } from "@/lib/auth/webauthn-client";
+import { useAuthStatus } from "@/lib/redux/hooks";
 import { formatShortDateUTC } from "@/lib/utils/locale";
 
 export function PasskeyBlock() {
@@ -26,6 +26,7 @@ export function PasskeyBlock() {
   const queryClient = useQueryClient();
   const passkeysQuery = usePasskeys();
   const deletePasskeyMutation = useDeletePasskeyMutation();
+  const authStatus = useAuthStatus();
 
   const [isRegistering, setIsRegistering] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
@@ -49,7 +50,7 @@ export function PasskeyBlock() {
       return;
     }
 
-    const accessToken = readAccessToken();
+    const accessToken = authStatus.token;
     if (!accessToken) {
       setRegisterError(t("errorUnauthorized"));
       setIsRegistering(false);

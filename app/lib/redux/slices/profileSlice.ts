@@ -109,12 +109,6 @@ const profileSlice = createSlice({
       state.deleteCode = "";
       state.deleteIntent = false;
     },
-    setProfileLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
-    },
-    setProfileError: (state, action: PayloadAction<string | null>) => {
-      state.error = action.payload;
-    },
     clearProfile: (state) => {
       state.profile = null;
       state.boosts = [];
@@ -148,8 +142,6 @@ export const {
   setDeleteCode,
   setDeleteIntent,
   resetDelete,
-  setProfileLoading,
-  setProfileError,
   clearProfile,
 } = profileSlice.actions;
 
