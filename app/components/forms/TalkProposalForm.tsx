@@ -561,7 +561,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
 
         <Button
           type="submit"
-          variant="glass"
+          variant="fire-primary"
           disabled={isPending || isTransitionPending || turnstileExecuting || !csrfToken}
           className="w-full"
         >

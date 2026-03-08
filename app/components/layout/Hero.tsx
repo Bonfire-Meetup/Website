@@ -130,10 +130,10 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
             fetchPriority="high"
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/72 via-black/26 to-transparent transition-opacity duration-300 group-hover:from-black/60 dark:from-black/80" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_84%_16%,rgba(244,114,182,0.34),transparent_36%)] opacity-90 transition-opacity duration-500 group-hover:opacity-100 dark:opacity-80" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_84%_16%,rgba(249,115,22,0.16),transparent_26%),radial-gradient(circle_at_70%_24%,rgba(244,63,94,0.1),transparent_34%)] opacity-70 transition-opacity duration-500 group-hover:opacity-85 dark:opacity-60" />
 
           <div className="absolute top-3 left-3 z-20 inline-flex items-center gap-1.5 rounded-full border border-white/24 bg-black/35 px-2.5 py-1 text-[10px] font-semibold tracking-[0.12em] text-white uppercase backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-fuchsia-400 to-orange-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-orange-400 to-rose-500" />
             {text.badge}
           </div>
 
@@ -160,7 +160,7 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
         <Link
           href={watchPath}
           prefetch={false}
-          className="inline-flex h-8 items-center gap-1.5 rounded-full border border-white/35 bg-gradient-to-r from-fuchsia-500/95 to-orange-500/95 px-3 text-[10px] font-semibold tracking-[0.12em] text-white uppercase shadow-[0_10px_24px_-14px_rgba(244,63,94,0.9)] transition-transform duration-300 hover:translate-x-0.5"
+          className="inline-flex h-8 items-center gap-1.5 rounded-full border border-white/35 bg-gradient-to-r from-orange-500/95 via-rose-500/95 to-red-600/95 px-3 text-[10px] font-semibold tracking-[0.12em] text-white uppercase shadow-[0_10px_24px_-14px_rgba(249,115,22,0.72)] transition-transform duration-300 hover:translate-x-0.5"
         >
           <PlayIcon className="h-3.5 w-3.5" />
           {text.watchNow}
@@ -206,7 +206,7 @@ function QueueVideoCard({
       onClick={onActivate}
       className={`group flex min-w-[13.5rem] basis-[13.5rem] items-center gap-2 overflow-hidden rounded-xl border p-2 text-left transition-[border-color,box-shadow,transform,background-color] duration-300 sm:min-w-[14.5rem] sm:basis-[14.5rem] lg:min-w-0 lg:flex-1 lg:basis-0 ${
         isActive
-          ? "border-fuchsia-400/60 bg-white/88 shadow-[0_12px_26px_-18px_rgba(217,70,239,0.65)] dark:border-fuchsia-300/60 dark:bg-black/44 dark:shadow-[0_16px_26px_-18px_rgba(217,70,239,0.58)]"
+          ? "border-orange-300/65 bg-white/88 shadow-[0_12px_26px_-18px_rgba(249,115,22,0.34)] dark:border-orange-300/45 dark:bg-black/44 dark:shadow-[0_16px_26px_-18px_rgba(244,63,94,0.28)]"
           : "border-black/10 bg-white/60 hover:border-black/20 hover:bg-white/80 dark:border-white/10 dark:bg-black/24 dark:hover:border-white/18 dark:hover:bg-black/34"
       }`}
     >
@@ -274,7 +274,7 @@ function TrendingDock({
       onMouseLeave={() => setIsAutoPlayPaused(false)}
     >
       <div className="relative min-w-0 overflow-hidden rounded-[30px] border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.66)_0%,rgba(255,255,255,0.36)_100%)] p-3 shadow-[0_24px_60px_-34px_rgba(17,24,39,0.55)] backdrop-blur-xl sm:p-4 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(20,20,22,0.82)_0%,rgba(10,10,11,0.62)_100%)] dark:shadow-[0_28px_56px_-26px_rgba(0,0,0,0.95)]">
-        <div className="pointer-events-none absolute -top-16 right-0 h-36 w-36 rounded-full bg-fuchsia-500/26 blur-3xl dark:bg-fuchsia-500/18" />
+        <div className="pointer-events-none absolute -top-16 right-0 h-36 w-36 rounded-full bg-orange-500/24 blur-3xl dark:bg-orange-500/18" />
         <div className="pointer-events-none absolute -bottom-14 left-2 h-36 w-40 rounded-full bg-orange-500/24 blur-3xl dark:bg-orange-500/16" />
 
         <div className="relative space-y-3">
@@ -448,21 +448,24 @@ export function Hero({ images, trendingRecordings = [] }: HeroProps) {
               <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
                 <Button
                   href="#events"
-                  variant="glass"
+                  variant="hero-primary"
+                  size="lg"
                   external
-                  className="group relative rounded-2xl border border-fuchsia-300/45 bg-gradient-to-r from-fuchsia-600 via-rose-500 to-orange-500 px-6 py-3 text-sm font-bold text-white shadow-[0_16px_34px_-16px_rgba(236,72,153,0.75)] transition-[transform,box-shadow,filter] duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_42px_-16px_rgba(236,72,153,0.88)] hover:brightness-105 sm:px-8 sm:py-3.5 sm:text-base dark:border-fuchsia-300/35"
+                  className="group relative px-6 py-3 sm:px-8 sm:py-3.5 sm:text-base"
                 >
                   <span className="relative z-10">{t("cta.events")}</span>
-                  <div className="pointer-events-none absolute -inset-3 -z-10 rounded-[1.35rem] bg-gradient-to-r from-fuchsia-500/35 to-orange-500/35 opacity-85 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
+                  <div className="pointer-events-none absolute -inset-3 -z-10 rounded-[1.35rem] bg-gradient-to-r from-orange-500/24 to-rose-500/20 opacity-65 blur-2xl transition-opacity duration-300 group-hover:opacity-85" />
                 </Button>
 
-                <Link
+                <Button
                   href={PAGE_ROUTES.LIBRARY}
-                  className="inline-flex items-center gap-1.5 rounded-2xl border border-black/12 bg-white/72 px-5 py-3 text-sm font-semibold text-neutral-700 transition-colors hover:border-black/22 hover:text-neutral-950 sm:px-6 sm:text-base dark:border-white/12 dark:bg-black/30 dark:text-white/78 dark:hover:border-white/22 dark:hover:text-white"
+                  variant="hero-secondary"
+                  size="lg"
+                  className="gap-1.5 px-5 py-3 sm:px-6 sm:text-base"
                 >
                   {tHeader("library")}
                   <ArrowRightIcon className="h-4 w-4" />
-                </Link>
+                </Button>
               </div>
             </div>
           </div>

@@ -153,8 +153,9 @@ export function NewsletterSectionClient() {
 
         <Button
           type="submit"
+          variant="fire-primary"
           disabled={status === "loading" || !email.trim()}
-          className="glass-button w-full md:w-auto md:shrink-0"
+          className="w-full md:w-auto md:shrink-0"
         >
           {status === "loading" ? (
             <>

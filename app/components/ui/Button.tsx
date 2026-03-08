@@ -3,7 +3,16 @@ import type { ReactNode } from "react";
 
 import { DYNAMIC_ROUTE_PREFIXES } from "@/lib/routes/pages";
 
-type ButtonVariant = "primary" | "secondary" | "ghost" | "glass" | "plain" | "glass-secondary";
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "ghost"
+  | "glass"
+  | "plain"
+  | "glass-secondary"
+  | "fire-primary"
+  | "hero-primary"
+  | "hero-secondary";
 type ButtonSize = "xs" | "sm" | "md" | "lg";
 
 interface ButtonProps {
@@ -23,7 +32,7 @@ interface ButtonProps {
 }
 
 const baseClasses =
-  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-semibold transition";
+  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-semibold transition active:scale-[0.99]";
 
 const disabledClasses =
   "disabled:cursor-not-allowed disabled:opacity-60 disabled:pointer-events-none";
@@ -33,9 +42,15 @@ const variantClasses: Record<ButtonVariant, string> = {
     "text-neutral-600 hover:bg-rose-100/60 hover:text-rose-700 dark:text-neutral-400 dark:hover:bg-rose-500/10 dark:hover:text-rose-400",
   glass: "glass-button",
   "glass-secondary": "glass-button-secondary",
+  "fire-primary":
+    "dark-gradient-button overflow-hidden border border-orange-300/35 bg-gradient-to-r from-orange-400 via-orange-500 to-rose-600 bg-clip-padding text-white shadow-[0_14px_30px_-16px_rgba(249,115,22,0.42)] transition-[border-color,box-shadow,filter] duration-300 hover:border-orange-300/50 hover:shadow-[0_18px_34px_-16px_rgba(244,63,94,0.34)] hover:brightness-103 dark:border-orange-300/25 dark:hover:border-orange-300/38 dark:shadow-orange-500/28",
+  "hero-primary":
+    "dark-gradient-button overflow-hidden rounded-2xl border border-orange-300/40 bg-gradient-to-r from-orange-400 via-orange-500 to-rose-600 bg-clip-padding text-white shadow-[0_16px_34px_-18px_rgba(249,115,22,0.42)] transition-[border-color,box-shadow,filter] duration-300 hover:border-orange-300/55 hover:shadow-[0_20px_38px_-18px_rgba(244,63,94,0.34)] hover:brightness-103 dark:border-orange-300/25 dark:hover:border-orange-300/38",
+  "hero-secondary":
+    "rounded-2xl border border-black/12 bg-white/78 text-neutral-700 shadow-[0_10px_24px_-20px_rgba(15,23,42,0.26)] transition-[border-color,box-shadow,color,background-color] duration-300 hover:border-orange-300/45 hover:bg-white/84 hover:text-neutral-950 hover:shadow-[0_16px_30px_-22px_rgba(249,115,22,0.22)] dark:border-white/12 dark:bg-black/30 dark:text-white/78 dark:hover:border-orange-300/28 dark:hover:bg-black/34 dark:hover:text-white dark:hover:shadow-[0_16px_30px_-22px_rgba(249,115,22,0.16)]",
   plain: "",
   primary:
-    "bg-gradient-to-r from-rose-700 via-orange-500 to-red-600 text-white shadow-lg shadow-orange-500/25 hover:from-rose-800 hover:via-orange-600 hover:to-red-700 dark:shadow-orange-500/30",
+    "dark-gradient-button overflow-hidden border border-orange-300/35 bg-gradient-to-r from-orange-400 via-orange-500 to-rose-600 bg-clip-padding text-white shadow-[0_14px_30px_-16px_rgba(249,115,22,0.4)] transition-[border-color,box-shadow,filter] duration-300 hover:border-orange-300/50 hover:shadow-[0_18px_34px_-16px_rgba(244,63,94,0.32)] hover:brightness-103 dark:border-orange-300/25 dark:hover:border-orange-300/38 dark:shadow-orange-500/28",
   secondary:
     "bg-white/80 text-neutral-600 shadow-sm ring-1 ring-black/5 hover:bg-white dark:bg-white/10 dark:text-neutral-300 dark:ring-white/10 dark:hover:bg-white/20",
 };

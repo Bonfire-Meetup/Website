@@ -278,24 +278,25 @@ html.smooth-scroll {
 
 .glass-button {
   position: relative;
-  background: linear-gradient(135deg, #a21caf 0%, #f97316 50%, #dc2626 100%);
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 38%, #ff5555 68%, #dc2626 100%);
   background-size: 200% 200%;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: none;
+  border: 1px solid rgba(251, 146, 60, 0.28);
   border-radius: 16px;
   box-shadow:
-    0 4px 20px rgba(162, 28, 175, 0.3),
-    0 2px 8px rgba(249, 115, 22, 0.2),
+    0 10px 28px rgba(249, 115, 22, 0.18),
+    0 4px 12px rgba(220, 38, 38, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   color: var(--color-text-primary);
   font-weight: 600;
   padding: 14px 32px;
   transition:
-    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    background-position 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background-position 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
 
@@ -339,12 +340,13 @@ html.smooth-scroll {
 }
 
 .glass-button:hover {
-  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(251, 146, 60, 0.42);
   box-shadow:
-    0 8px 30px rgba(162, 28, 175, 0.4),
-    0 4px 15px rgba(249, 115, 22, 0.25),
+    0 16px 36px rgba(249, 115, 22, 0.22),
+    0 6px 18px rgba(220, 38, 38, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
   background-position: 100% 100%;
+  filter: saturate(1.03);
 }
 
 .glass-button:hover::after {
@@ -352,7 +354,7 @@ html.smooth-scroll {
 }
 
 .glass-button:active {
-  transform: translateY(-1px) scale(1.01);
+  filter: saturate(0.98);
 }
 
 .glass-button-secondary {
@@ -370,8 +372,9 @@ html.smooth-scroll {
   font-weight: 600;
   padding: 14px 32px;
   transition:
-    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .glass-button-secondary {
@@ -384,7 +387,7 @@ html.smooth-scroll {
 }
 
 .glass-button-secondary:hover {
-  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(249, 115, 22, 0.18);
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 1);
@@ -396,6 +399,17 @@ html.smooth-scroll {
     0 0 40px rgba(249, 115, 22, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   border-color: rgba(249, 115, 22, 0.15);
+}
+
+.dark .dark-gradient-button {
+  filter: saturate(0.78) brightness(0.82);
+  box-shadow:
+    0 10px 24px -18px rgba(249, 115, 22, 0.16),
+    0 4px 14px -14px rgba(244, 63, 94, 0.14);
+}
+
+.dark .dark-gradient-button:hover {
+  filter: saturate(0.84) brightness(0.88);
 }
 
 .gradient-bg {

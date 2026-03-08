@@ -227,7 +227,7 @@ export default function UnsubscribePage() {
               <Button
                 onClick={handleUnsubscribe}
                 disabled={state.status !== "ready"}
-                variant="glass"
+                variant="fire-primary"
                 className="w-full sm:w-auto"
               >
                 {state.status === "loading" ? (

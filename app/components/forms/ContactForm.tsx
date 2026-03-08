@@ -433,7 +433,7 @@ function ContactFormInner({ onReset }: ContactFormInnerProps) {
 
         <Button
           type="submit"
-          variant="glass"
+          variant="fire-primary"
           disabled={isPending || isTransitionPending || turnstileExecuting || !csrfToken}
           className="w-full"
         >

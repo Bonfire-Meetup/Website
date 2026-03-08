@@ -32,11 +32,12 @@ export function TalkBanner() {
               <Button
                 href={PAGE_ROUTES.SPEAK}
                 prefetch={false}
-                variant="glass"
-                className="group flex items-center gap-3 px-8 py-4"
+                variant="hero-primary"
+                className="group relative flex items-center gap-3 px-8 py-4"
               >
                 <span className="text-lg font-bold">{t("cta")}</span>
                 <ArrowRightIcon className="h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
+                <div className="pointer-events-none absolute -inset-3 -z-10 rounded-[1.35rem] bg-gradient-to-r from-orange-500/24 to-rose-500/20 opacity-65 blur-2xl transition-opacity duration-300 group-hover:opacity-85" />
               </Button>
             </div>
           </div>
