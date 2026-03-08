@@ -361,11 +361,12 @@ export function CommunityQuestionsPanel({
       ? formatDateTimeLocal(new Date(panel.dataUpdatedAt).toISOString(), panel.locale)
       : null;
   const hasAnyQuestions = (panel.data?.items.length ?? 0) > 0;
-  const panelTitle = panel.isReplayMode
-    ? panel.t("questions.windowReplay")
-    : isUpcomingMode
-      ? panel.t("questions.windowOpensSoon")
-      : panel.t("questions.title");
+  let panelTitle = panel.t("questions.title");
+  if (panel.isReplayMode) {
+    panelTitle = panel.t("questions.windowReplay");
+  } else if (isUpcomingMode) {
+    panelTitle = panel.t("questions.windowOpensSoon");
+  }
   const showQuestionComposer =
     !isLiveView && panel.isWindowOpen && panel.isAuthenticated && !panel.isAuthTransitioning;
   const showQuestionFilters = !isUpcomingMode && (!panel.isReplayMode || hasAnyQuestions);

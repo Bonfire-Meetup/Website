@@ -22,12 +22,12 @@ export function RichTextArea({ id, value, onChange, placeholder, rows = 12 }: Ri
   const [mode, setMode] = useState<"write" | "preview">("write");
 
   const charCount = value.length;
-  const charColor =
-    charCount >= CHAR_MAX
-      ? "text-rose-500 dark:text-rose-400"
-      : charCount >= CHAR_WARN
-        ? "text-amber-500 dark:text-amber-400"
-        : "text-neutral-400 dark:text-neutral-500";
+  let charColor = "text-neutral-400 dark:text-neutral-500";
+  if (charCount >= CHAR_MAX) {
+    charColor = "text-rose-500 dark:text-rose-400";
+  } else if (charCount >= CHAR_WARN) {
+    charColor = "text-amber-500 dark:text-amber-400";
+  }
 
   return (
     <div className="space-y-1.5">

@@ -41,6 +41,12 @@ function MobileBottomNavInner() {
 
   const isResolvingAuth = mounted && auth.loading && !auth.hydrated;
   const isAuthed = mounted && auth.isAuthenticated && auth.hydrated;
+  let profileIcon = LogInIcon;
+  if (isResolvingAuth) {
+    profileIcon = SpinnerIcon;
+  } else if (isAuthed) {
+    profileIcon = UserIcon;
+  }
 
   const navItems: NavItem[] = [
     { href: PAGE_ROUTES.HOME, label: t("home"), icon: HomeIcon, exact: true },
@@ -49,7 +55,7 @@ function MobileBottomNavInner() {
     {
       href: isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN,
       label: isAuthed ? t("profile") : t("login"),
-      icon: isResolvingAuth ? SpinnerIcon : isAuthed ? UserIcon : LogInIcon,
+      icon: profileIcon,
       disabled: isResolvingAuth,
     },
   ];

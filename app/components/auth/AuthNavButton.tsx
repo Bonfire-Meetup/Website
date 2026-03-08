@@ -23,7 +23,12 @@ function AuthNavButtonInner() {
   const isAuthed = mounted && auth.isAuthenticated && auth.hydrated;
   const isSignInState = !isResolvingAuth && !isAuthed;
   const href = isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN;
-  const ariaLabel = isResolvingAuth ? "Authenticating" : isAuthed ? "Account" : "Login";
+  let ariaLabel = "Login";
+  if (isResolvingAuth) {
+    ariaLabel = "Authenticating";
+  } else if (isAuthed) {
+    ariaLabel = "Account";
+  }
 
   const buttonContent = (
     <IconButton

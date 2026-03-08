@@ -91,29 +91,29 @@ export function RecordingPlayer({
     viewerMembershipTier > 0 &&
     viewerMembershipTier < requiredMembershipTier,
   );
-  const requiredAccessLabel =
-    requiredMembershipTier === 0
-      ? ""
-      : requiredGuildLevelName
-        ? t("earlyAccessRequiredGuildByName", { level: requiredGuildLevelName })
-        : "";
-  const requiredAccessShortLabel =
-    requiredMembershipTier === 0
-      ? t("signInShort")
-      : requiredMembershipTier
-        ? MEMBERSHIP_TIER_LABELS[requiredMembershipTier]
-        : "";
-  const accessLockedTitle = isGuildTierLockedForMember
-    ? isEarlyAccess
+  let requiredAccessLabel = "";
+  if (requiredMembershipTier !== 0 && requiredGuildLevelName) {
+    requiredAccessLabel = t("earlyAccessRequiredGuildByName", { level: requiredGuildLevelName });
+  }
+
+  let requiredAccessShortLabel = "";
+  if (requiredMembershipTier === 0) {
+    requiredAccessShortLabel = t("signInShort");
+  } else if (requiredMembershipTier) {
+    requiredAccessShortLabel = MEMBERSHIP_TIER_LABELS[requiredMembershipTier];
+  }
+
+  let accessLockedTitle = t("membersOnlyLockedTitle");
+  if (isGuildTierLockedForMember) {
+    accessLockedTitle = isEarlyAccess
       ? t("earlyAccessLockedTitleGuildLevel", { level: requiredGuildLevelName })
-      : t("membersOnlyLockedTitleGuildLevel", { level: requiredGuildLevelName })
-    : isEarlyAccess
-      ? requiredMembershipTier === 0
-        ? t("earlyAccessLockedTitleLogin")
-        : t("earlyAccessLockedTitle")
-      : requiredMembershipTier === 0
-        ? t("membersOnlyLockedTitleLogin")
-        : t("membersOnlyLockedTitle");
+      : t("membersOnlyLockedTitleGuildLevel", { level: requiredGuildLevelName });
+  } else if (isEarlyAccess) {
+    accessLockedTitle =
+      requiredMembershipTier === 0 ? t("earlyAccessLockedTitleLogin") : t("earlyAccessLockedTitle");
+  } else if (requiredMembershipTier === 0) {
+    accessLockedTitle = t("membersOnlyLockedTitleLogin");
+  }
   const accessLockedSubtitle =
     isGuildTierLockedForMember && currentGuildLevelName
       ? t("guildLevelUpgradeHint", {
@@ -121,38 +121,38 @@ export function RecordingPlayer({
           requiredLevel: requiredGuildLevelName,
         })
       : "";
-  const accessStatus: AccessStatusKind = isRestricted
-    ? isEarlyAccess
-      ? "earlyAccess"
-      : "membersOnly"
-    : "public";
+  let accessStatus: AccessStatusKind = "public";
+  if (isRestricted) {
+    accessStatus = isEarlyAccess ? "earlyAccess" : "membersOnly";
+  }
   const loginHref = `${PAGE_ROUTES.LOGIN}?returnPath=${encodeURIComponent(
     PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
   )}`;
-  const likeInteractionGateHref = isAccessCheckPending
-    ? undefined
-    : !hasPlaybackAccess
-      ? !auth.isAuthenticated
-        ? PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(
-            LOGIN_REASON.VIDEO_LOCKED_LIKE,
-            PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
-          )
-        : requiredMembershipTier && requiredMembershipTier > 0
-          ? PAGE_ROUTES.GUILD
-          : undefined
-      : undefined;
-  const boostInteractionGateHref = isAccessCheckPending
-    ? undefined
-    : !hasPlaybackAccess
-      ? !auth.isAuthenticated
-        ? PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(
-            LOGIN_REASON.VIDEO_BOOST,
-            PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
-          )
-        : requiredMembershipTier && requiredMembershipTier > 0
-          ? PAGE_ROUTES.GUILD
-          : undefined
-      : undefined;
+  const recordingPath = PAGE_ROUTES.WATCH(recording.slug, recording.shortId);
+
+  let likeInteractionGateHref: string | undefined;
+  if (!isAccessCheckPending && !hasPlaybackAccess) {
+    if (!auth.isAuthenticated) {
+      likeInteractionGateHref = PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(
+        LOGIN_REASON.VIDEO_LOCKED_LIKE,
+        recordingPath,
+      );
+    } else if (requiredMembershipTier && requiredMembershipTier > 0) {
+      likeInteractionGateHref = PAGE_ROUTES.GUILD;
+    }
+  }
+
+  let boostInteractionGateHref: string | undefined;
+  if (!isAccessCheckPending && !hasPlaybackAccess) {
+    if (!auth.isAuthenticated) {
+      boostInteractionGateHref = PAGE_ROUTES.LOGIN_WITH_REASON_AND_RETURN(
+        LOGIN_REASON.VIDEO_BOOST,
+        recordingPath,
+      );
+    } else if (requiredMembershipTier && requiredMembershipTier > 0) {
+      boostInteractionGateHref = PAGE_ROUTES.GUILD;
+    }
+  }
 
   const [shareUrl, setShareUrl] = useState("");
   const shareText = `${recording.title} - ${recording.speaker.join(", ")}`;

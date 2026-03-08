@@ -443,6 +443,13 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     [cinemaMode, dispatch, video],
   );
 
+  let playerContainerClassName = "z-40 rounded-xl";
+  if (showMiniPlayer) {
+    playerContainerClassName = "z-50 rounded-t-2xl ring-1 ring-black/40";
+  } else if (cinemaMode) {
+    playerContainerClassName = "z-[80] rounded-2xl shadow-2xl";
+  }
+
   return (
     <GlobalPlayerContext.Provider value={value}>
       {children}
@@ -511,7 +518,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
           )}
 
           <div
-            className={`fixed overflow-hidden bg-black ${showMiniPlayer ? "z-50 rounded-t-2xl ring-1 ring-black/40" : cinemaMode ? "z-[80] rounded-2xl shadow-2xl" : "z-40 rounded-xl"} ${!showMiniPlayer && isAnimating ? "transition-all duration-300" : ""} ${showMiniPlayer && !isDragging && !isResizing ? "transition-all duration-300 ease-out" : ""}`}
+            className={`fixed overflow-hidden bg-black ${playerContainerClassName} ${!showMiniPlayer && isAnimating ? "transition-all duration-300" : ""} ${showMiniPlayer && !isDragging && !isResizing ? "transition-all duration-300 ease-out" : ""}`}
             style={
               showMiniPlayer
                 ? {

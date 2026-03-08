@@ -35,15 +35,18 @@ export async function generateMetadata(): Promise<Metadata> {
     zlin: tCommon("zlin"),
   };
   const keywords = t.raw("keywords") as string[];
-  const processedKeywords = keywords.map((k) =>
-    k === "{prague}"
-      ? commonValues.prague
-      : k === "{zlin}"
-        ? commonValues.zlin
-        : k === "{country}"
-          ? commonValues.country
-          : k,
-  );
+  const processedKeywords = keywords.map((k) => {
+    if (k === "{prague}") {
+      return commonValues.prague;
+    }
+    if (k === "{zlin}") {
+      return commonValues.zlin;
+    }
+    if (k === "{country}") {
+      return commonValues.country;
+    }
+    return k;
+  });
 
   return {
     authors: [{ name: t("author", commonValues) }],

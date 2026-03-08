@@ -146,6 +146,15 @@ export function LoginClient() {
   const autoSubmitRef = useRef(false);
   const lastSubmittedCodeRef = useRef<string | null>(null);
 
+  let submitLabel = t("verify");
+  if (loading && step === "request") {
+    submitLabel = t("sendingCode");
+  } else if (loading) {
+    submitLabel = t("verifying");
+  } else if (step === "request") {
+    submitLabel = t("sendCode");
+  }
+
   useEffect(() => {
     setPlaceholder(emailPlaceholders[Math.floor(Math.random() * emailPlaceholders.length)]);
     setPasskeySupported(isWebAuthnSupported());
@@ -600,13 +609,7 @@ export function LoginClient() {
                   >
                     <span className="flex items-center justify-center gap-2 whitespace-nowrap">
                       {loading && <LoadingSpinner size="sm" />}
-                      {loading
-                        ? step === "request"
-                          ? t("sendingCode")
-                          : t("verifying")
-                        : step === "request"
-                          ? t("sendCode")
-                          : t("verify")}
+                      {submitLabel}
                     </span>
                   </Button>
                   <Button

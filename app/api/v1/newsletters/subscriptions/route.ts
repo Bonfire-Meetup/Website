@@ -75,7 +75,13 @@ export const POST = withRequestContext(
 type SubscribedAs = "newsletter" | "account" | "both";
 
 function toSubscribedAs(newsletter: boolean, account: boolean): SubscribedAs {
-  return newsletter && account ? "both" : newsletter ? "newsletter" : "account";
+  if (newsletter && account) {
+    return "both";
+  }
+  if (newsletter) {
+    return "newsletter";
+  }
+  return "account";
 }
 
 async function getSubscriptionStatus(email: string) {

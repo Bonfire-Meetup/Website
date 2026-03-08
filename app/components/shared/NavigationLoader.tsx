@@ -80,6 +80,13 @@ export function NavigationLoader() {
     return null;
   }
 
+  let visibilityClass = "opacity-0";
+  if (!visible && progress === 100) {
+    visibilityClass = "loader-complete";
+  } else if (visible) {
+    visibilityClass = "opacity-100";
+  }
+
   return (
     <>
       <style>{`
@@ -114,7 +121,7 @@ export function NavigationLoader() {
         }
       `}</style>
       <div
-        className={`fixed top-0 right-0 left-0 z-[9999] h-[2px] transition-opacity duration-200 ${!visible && progress === 100 ? "loader-complete" : visible ? "opacity-100" : "opacity-0"}`}
+        className={`fixed top-0 right-0 left-0 z-[9999] h-[2px] transition-opacity duration-200 ${visibilityClass}`}
       >
         <div
           className="loader-bar h-full transition-all duration-100 ease-out"

@@ -145,7 +145,7 @@ function hexToRgb(hex: string): RGB {
 }
 
 function mix(a: RGB, b: RGB, t: number): RGB {
-  const tt = t <= 0 ? 0 : t >= 1 ? 1 : t;
+  const tt = Math.min(1, Math.max(0, t));
   return {
     r: (a.r + (b.r - a.r) * tt) | 0,
     g: (a.g + (b.g - a.g) * tt) | 0,
@@ -154,7 +154,7 @@ function mix(a: RGB, b: RGB, t: number): RGB {
 }
 
 function rgba(c: RGB, a: number): string {
-  const aa = a <= 0 ? 0 : a >= 1 ? 1 : a;
+  const aa = Math.min(1, Math.max(0, a));
   return `rgba(${c.r},${c.g},${c.b},${round2(aa)})`;
 }
 
@@ -646,9 +646,12 @@ export function UserAvatar({
   const showInitials = Boolean(initials) && size >= (isTiny ? 14 : 24);
   const renderedInitials = showInitials && isTiny && size < 22 ? initials.slice(0, 1) : initials;
 
-  const fontSize = showInitials
-    ? Math.max(isTiny ? 10 : 12, Math.floor(size * (isTiny ? 0.5 : 0.38)))
-    : 0;
+  let fontSize = 0;
+  if (showInitials) {
+    const minFontSize = isTiny ? 10 : 12;
+    const sizeMultiplier = isTiny ? 0.5 : 0.38;
+    fontSize = Math.max(minFontSize, Math.floor(size * sizeMultiplier));
+  }
 
   return (
     <div

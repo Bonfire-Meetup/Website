@@ -15,8 +15,12 @@ export function useAuthStatus() {
     setMounted(true);
   }, []);
 
-  const queryScope: AuthQueryScope =
-    !mounted || !auth.hydrated ? "pending" : auth.isAuthenticated ? "auth" : "anon";
+  let queryScope: AuthQueryScope = "anon";
+  if (!mounted || !auth.hydrated) {
+    queryScope = "pending";
+  } else if (auth.isAuthenticated) {
+    queryScope = "auth";
+  }
 
   return {
     ...auth,
