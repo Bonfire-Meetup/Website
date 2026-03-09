@@ -9,9 +9,9 @@ import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { hashToU64, makeAvatarSeedFromId } from "@/lib/utils/hash-rng";
 
 import { LogInIcon, UserIcon } from "../shared/Icons";
-import { UserAvatar } from "../user/UserAvatar";
 import { IconButton } from "../ui/IconButton";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
+import { UserAvatar } from "../user/UserAvatar";
 
 interface AuthNavButtonProps {
   className?: string;

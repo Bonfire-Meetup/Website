@@ -282,11 +282,7 @@ function HeaderInner() {
               size="sm"
               className={`${DESKTOP_UTIL_BUTTON_CLASS} px-0`}
             />
-            <ThemeToggle
-              variant="plain"
-              size="sm"
-              className={DESKTOP_UTIL_BUTTON_CLASS}
-            />
+            <ThemeToggle variant="plain" size="sm" className={DESKTOP_UTIL_BUTTON_CLASS} />
             <AuthNavButton
               variant="plain"
               size="sm"
