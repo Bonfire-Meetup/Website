@@ -16,6 +16,21 @@ import { formatTimeUTC } from "@/lib/utils/locale";
 
 const REFRESH_INTERVAL_MS = 9 * 60 * 1000;
 const DEVICE_WAKE_THRESHOLD_MS = 30 * 1000;
+const TICKET_GRADIENT_CLASS = "bg-gradient-to-br from-rose-700 via-orange-500 to-red-600";
+const TICKET_SHELL_CLASS =
+  "relative overflow-hidden rounded-[2rem] border border-black/10 bg-white/85 shadow-[0_32px_90px_-38px_rgba(15,23,42,0.5)] ring-1 ring-white/60 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/85 dark:ring-white/10";
+const TICKET_SURFACE_CLASS =
+  "bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(255,247,237,0.92)_100%)] dark:bg-[linear-gradient(180deg,rgba(23,23,23,0.98)_0%,rgba(10,10,10,0.98)_100%)]";
+const QR_FRAME_CLASS =
+  "relative rounded-[1.75rem] border border-neutral-200/80 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.98),rgba(245,245,245,0.94)_58%,rgba(229,229,229,0.95)_100%)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(229,231,235,0.9),0_18px_45px_-28px_rgba(15,23,42,0.4)] dark:border-white/10 dark:bg-[radial-gradient(circle_at_top,rgba(38,38,38,0.98),rgba(23,23,23,0.96)_58%,rgba(10,10,10,0.98)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_-1px_0_rgba(255,255,255,0.04),0_18px_45px_-28px_rgba(0,0,0,0.8)]";
+const QR_META_BAR_CLASS =
+  "mb-3 flex items-center justify-between rounded-full border border-black/5 bg-white/70 px-3 py-1.5 dark:border-white/8 dark:bg-[linear-gradient(180deg,rgba(38,38,38,0.92)_0%,rgba(23,23,23,0.9)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]";
+const QR_CODE_SURFACE_CLASS =
+  "relative h-64 w-64 overflow-hidden rounded-[1.25rem] border border-black/5 bg-neutral-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] dark:border-white/8 dark:bg-[linear-gradient(180deg,rgba(24,24,27,0.98)_0%,rgba(9,9,11,0.98)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_50px_-36px_rgba(0,0,0,0.95)]";
+const VALID_UNTIL_CLASS =
+  "flex items-center justify-between rounded-2xl border border-black/5 bg-white/72 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-sm dark:border-white/8 dark:bg-[linear-gradient(180deg,rgba(32,32,36,0.92)_0%,rgba(18,18,20,0.92)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_40px_-34px_rgba(0,0,0,0.9)]";
+const TICKET_BUTTON_CLASS =
+  "bg-gradient-to-r from-rose-700 via-orange-500 to-red-600 shadow-orange-500/25 hover:shadow-lg hover:from-rose-800 hover:via-orange-600 hover:to-red-700";
 
 export function CheckInClient() {
   const t = useTranslations("checkIn");
@@ -163,26 +178,56 @@ export function CheckInClient() {
 
   return (
     <div className="mx-auto max-w-md">
-      <div className="overflow-hidden rounded-3xl shadow-2xl">
-        <div className="relative h-32 bg-gradient-to-br from-orange-500 via-pink-600 to-red-600">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIwLjUiIG9wYWNpdHk9IjAuMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30" />
-          <div className="relative flex h-full flex-col items-center justify-center px-6">
-            <div className="mb-2 text-sm font-medium tracking-wider text-white/90 uppercase">
-              {t("ticket.header")}
+      <div className={TICKET_SHELL_CLASS}>
+        <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.55),transparent_45%),linear-gradient(135deg,rgba(255,255,255,0.22),transparent_45%,rgba(255,255,255,0.08)_65%,transparent_78%)]" />
+        <div
+          className={`relative overflow-hidden rounded-[calc(2rem-1px)] ${TICKET_SURFACE_CLASS}`}
+        >
+          <div className={`relative h-30 sm:h-36 ${TICKET_GRADIENT_CLASS}`}>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.35),transparent_32%),radial-gradient(circle_at_85%_15%,rgba(255,255,255,0.22),transparent_24%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.18)_35%,transparent_52%,rgba(255,255,255,0.08)_68%,transparent_100%)]" />
+            <div className="absolute inset-x-0 bottom-0 h-px bg-white/30" />
+            <div className="relative flex h-full flex-col justify-center px-5 py-4 sm:justify-between sm:px-6 sm:py-5">
+              <div className="hidden items-center justify-between sm:flex">
+                <div className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-semibold tracking-[0.28em] text-white/90 uppercase backdrop-blur-sm">
+                  BONFIRE
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-white/85" />
+                  <span className="h-2 w-2 rounded-full bg-white/45" />
+                  <span className="h-2 w-2 rounded-full bg-white/25" />
+                </div>
+              </div>
+              <div className="text-center sm:pt-1">
+                <div className="mb-1 text-[11px] font-semibold tracking-[0.18em] text-white/88 uppercase sm:mb-2 sm:text-sm sm:tracking-[0.3em]">
+                  {t("ticket.header")}
+                </div>
+                <div className="text-[1.75rem] leading-none font-black tracking-[0.1em] text-white uppercase sm:text-3xl sm:tracking-[0.18em]">
+                  {t("ticket.label")}
+                </div>
+              </div>
+              <div className="mt-3 hidden items-center justify-between sm:flex">
+                <span className="h-px w-16 bg-white/35" />
+                <span className="h-px w-12 bg-white/25" />
+              </div>
             </div>
-            <div className="text-2xl font-black text-white">{t("ticket.label")}</div>
           </div>
-        </div>
 
-        <div className="bg-white dark:bg-neutral-900">
-          <div className="relative border-b border-dashed border-neutral-200 px-6 py-8 dark:border-neutral-700">
-            <div className="absolute top-1/2 -left-4 h-8 w-8 -translate-y-1/2 rounded-full bg-neutral-50 dark:bg-neutral-950" />
-            <div className="absolute top-1/2 -right-4 h-8 w-8 -translate-y-1/2 rounded-full bg-neutral-50 dark:bg-neutral-950" />
+          <div className="relative px-6 pt-6 pb-5">
+            <div className="absolute top-0 left-0 h-24 w-24 rounded-full bg-orange-300/10 blur-3xl dark:bg-orange-500/10" />
+            <div className="absolute right-0 bottom-0 h-20 w-20 rounded-full bg-rose-300/10 blur-3xl dark:bg-rose-500/10" />
+            <div className="absolute top-1/2 -left-4 h-8 w-8 -translate-y-1/2 rounded-full border border-black/5 bg-neutral-50 shadow-inner dark:border-white/10 dark:bg-neutral-950" />
+            <div className="absolute top-1/2 -right-4 h-8 w-8 -translate-y-1/2 rounded-full border border-black/5 bg-neutral-50 shadow-inner dark:border-white/10 dark:bg-neutral-950" />
+            <div className="absolute inset-x-6 top-0 border-t border-dashed border-neutral-200 dark:border-neutral-700" />
 
             <div className="flex flex-col items-center">
               {tokenQuery.isLoading || !qrDataUrl ? (
-                <div className="rounded-2xl bg-white p-4 shadow-inner">
-                  <div className="relative h-64 w-64 overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-800">
+                <div className={QR_FRAME_CLASS}>
+                  <div className={QR_META_BAR_CLASS}>
+                    <span className="h-2 w-10 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+                    <QrCodeIcon className="h-4 w-4 text-neutral-400 dark:text-neutral-500" />
+                  </div>
+                  <div className={QR_CODE_SURFACE_CLASS}>
                     <div className="absolute inset-0 grid grid-cols-8 gap-2 p-3">
                       {Array.from({ length: 64 }, (_, skeletonIndex) => skeletonIndex).map(
                         (skeletonIndex) => (
@@ -205,18 +250,28 @@ export function CheckInClient() {
                   </div>
                 </div>
               ) : (
-                <div className="rounded-2xl bg-white p-4 shadow-inner">
-                  <img src={qrDataUrl} alt="Check-in QR" className="h-64 w-64" />
+                <div className={QR_FRAME_CLASS}>
+                  <div className={QR_META_BAR_CLASS}>
+                    <span className="h-2 w-10 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+                    <QrCodeIcon className="h-4 w-4 text-neutral-400 dark:text-neutral-500" />
+                  </div>
+                  <div className="overflow-hidden rounded-[1.25rem] border border-black/5 bg-white p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_18px_40px_-32px_rgba(15,23,42,0.45)] dark:border-white/8 dark:bg-[linear-gradient(180deg,rgba(24,24,27,0.98)_0%,rgba(9,9,11,0.98)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_50px_-36px_rgba(0,0,0,0.95)]">
+                    <img
+                      src={qrDataUrl}
+                      alt="Check-in QR"
+                      className="h-64 w-64 rounded-[0.95rem] bg-white"
+                    />
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="space-y-4 px-6 py-6">
+          <div className="space-y-4 px-6 pt-1 pb-6">
             {expiresLabel && (
-              <div className="flex items-center justify-between rounded-xl bg-neutral-50 px-4 py-3 dark:bg-neutral-800/50">
+              <div className={VALID_UNTIL_CLASS}>
                 <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
-                  <ClockIcon className="h-4 w-4" />
+                  <ClockIcon className="h-4 w-4 text-orange-600 dark:text-orange-400" />
                   <span className="text-sm font-medium">
                     {t("expiresAt", { time: expiresLabel })}
                   </span>
@@ -227,7 +282,7 @@ export function CheckInClient() {
             <Button
               onClick={handleManualRefresh}
               disabled={refreshing}
-              className="w-full bg-gradient-to-r from-orange-500 via-pink-600 to-red-600 py-3 text-white shadow-md hover:shadow-lg disabled:opacity-50"
+              className={`w-full rounded-2xl py-3 text-white shadow-md disabled:opacity-50 ${TICKET_BUTTON_CLASS}`}
             >
               <ClockIcon className="mr-2 h-4 w-4" />
               {refreshing ? t("refreshing") : t("refresh")}
