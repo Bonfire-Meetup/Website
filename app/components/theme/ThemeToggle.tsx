@@ -5,7 +5,19 @@ import { IconButton } from "../ui/IconButton";
 
 import { useTheme } from "./useTheme";
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  className?: string;
+  variant?: "glass" | "plain";
+  size?: "sm" | "md" | "pill";
+  shape?: "rounded" | "full";
+}
+
+export function ThemeToggle({
+  className = "hover:scale-105 active:scale-95",
+  variant = "glass",
+  size = "md",
+  shape = "rounded",
+}: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
 
   const cycleTheme = () => {
@@ -20,10 +32,10 @@ export function ThemeToggle() {
       onClick={cycleTheme}
       ariaLabel={`Current theme: ${theme}. Click to change.`}
       title={`Theme: ${theme}`}
-      size="md"
-      shape="rounded"
-      variant="glass"
-      className="hover:scale-105 active:scale-95"
+      size={size}
+      shape={shape}
+      variant={variant}
+      className={className}
     >
       {theme === "light" && <SunIcon className="h-5 w-5 text-amber-500 transition-transform" />}
       {theme === "dark" && <MoonIcon className="h-5 w-5 text-blue-400 transition-transform" />}

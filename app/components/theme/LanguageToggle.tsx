@@ -7,28 +7,47 @@ import { LOCALES } from "@/lib/i18n/locales";
 import { useI18n } from "../providers/I18nClientSync";
 import { IconButton } from "../ui/IconButton";
 
-export function LanguageToggle() {
+interface LanguageToggleProps {
+  className?: string;
+  variant?: "glass" | "plain";
+  size?: "sm" | "md" | "pill";
+  shape?: "rounded" | "full";
+}
+
+export function LanguageToggle({
+  className = "text-sm font-medium hover:scale-105 active:scale-95",
+  variant = "glass",
+  size = "pill",
+  shape = "rounded",
+}: LanguageToggleProps) {
   const t = useTranslations("language");
   const { locale, setLocale } = useI18n();
+  const isEnglish = locale === LOCALES.EN;
+  const currentLabel = isEnglish ? t("enLabel") : t("csLabel");
 
   const toggleLocale = () => {
-    setLocale(locale === LOCALES.EN ? LOCALES.CS : LOCALES.EN);
+    setLocale(isEnglish ? LOCALES.CS : LOCALES.EN);
   };
 
   return (
     <IconButton
       onClick={toggleLocale}
       ariaLabel={
-        locale === LOCALES.EN
+        isEnglish
           ? t("switchTo", { language: t("czech") })
           : t("switchTo", { language: t("english") })
       }
-      size="pill"
-      shape="rounded"
-      variant="glass"
-      className="text-sm font-medium hover:scale-105 active:scale-95"
+      size={size}
+      shape={shape}
+      variant={variant}
+      title={currentLabel}
+      className={className}
     >
-      <span className="uppercase">{locale === LOCALES.EN ? t("csLabel") : t("enLabel")}</span>
+      <span className="inline-flex items-center justify-center uppercase">
+        <span className="text-[10px] leading-none font-semibold tracking-[0.12em]">
+          {currentLabel}
+        </span>
+      </span>
     </IconButton>
   );
 }
