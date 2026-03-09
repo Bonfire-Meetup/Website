@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { getAuthUserById } from "@/lib/data/auth";
 import { getUpcomingRsvpEvents, type UpcomingRsvpEvent } from "@/lib/data/profile-events";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatShortDateUTC } from "@/lib/utils/locale";
 
 import { OwnerOnlyAction } from "./OwnerOnlyAction";
 
@@ -128,17 +129,10 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
         <div className="flex-1 p-4 sm:p-6">
           <div className="space-y-3">
             {events.map((event, index) => {
-              let formattedDate = t("goingTo.tba");
-              if (event.date && event.date.trim().toUpperCase() !== "TBA") {
-                const date = new Date(event.date);
-                if (!isNaN(date.getTime())) {
-                  formattedDate = new Intl.DateTimeFormat(locale, {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  }).format(date);
-                }
-              }
+              const formattedDate =
+                event.date && event.date.trim().toUpperCase() !== "TBA"
+                  ? formatShortDateUTC(event.date, locale) || t("goingTo.tba")
+                  : t("goingTo.tba");
 
               return (
                 <Link

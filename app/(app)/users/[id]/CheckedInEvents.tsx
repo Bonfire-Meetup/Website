@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { getAuthUserById } from "@/lib/data/auth";
 import { getAttendedEvents, type AttendedEvent } from "@/lib/data/profile-events";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { formatShortDateUTC } from "@/lib/utils/locale";
 
 import { OwnerOnlyAction } from "./OwnerOnlyAction";
 
@@ -68,32 +69,12 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
           {events.length > 0 ? (
             <div className="space-y-3">
               {events.map((event, index) => {
-                let formattedDate = t("checkedIn.tba");
-                if (event.date && event.date !== "TBA") {
-                  const date = new Date(event.date);
-                  if (!isNaN(date.getTime())) {
-                    formattedDate = new Intl.DateTimeFormat(locale, {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    }).format(date);
-                  }
-                }
-
-                const formattedCheckedInAt = event.checkedInAt
-                  ? new Intl.DateTimeFormat(locale, {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    }).format(new Date(event.checkedInAt))
-                  : null;
-                const formattedRsvpedAt = event.rsvpedAt
-                  ? new Intl.DateTimeFormat(locale, {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    }).format(new Date(event.rsvpedAt))
-                  : null;
+                const formattedDate =
+                  event.date && event.date !== "TBA"
+                    ? formatShortDateUTC(event.date, locale) || t("checkedIn.tba")
+                    : t("checkedIn.tba");
+                const formattedCheckedInAt = formatShortDateUTC(event.checkedInAt, locale) || null;
+                const formattedRsvpedAt = formatShortDateUTC(event.rsvpedAt, locale) || null;
                 let statusLabel = t("checkedIn.rsvpOn", { date: formattedRsvpedAt ?? "" });
                 if (event.hasCheckIn && event.hasRsvp) {
                   statusLabel = t("checkedIn.statusBoth");

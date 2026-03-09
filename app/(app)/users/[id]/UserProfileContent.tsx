@@ -18,6 +18,7 @@ import type { QuestionActivityLevel } from "@/lib/config/question-activity";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { copyToClipboard } from "@/lib/utils/clipboard";
 import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
+import { formatShortDateUTC } from "@/lib/utils/locale";
 import { usePrefersReducedMotion } from "@/lib/utils/prefers-reduced-motion";
 
 import { BoostTitleBadge } from "./BoostTitleBadge";
@@ -50,6 +51,15 @@ interface UserProfileContentProps {
   checkedInEventsSlot: ReactNode;
 }
 
+function getValidDateMs(value: string | null): number | null {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = new Date(value).getTime();
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
 export function UserProfileContent({
   user,
   stats,
@@ -64,24 +74,15 @@ export function UserProfileContent({
 
   const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}${PAGE_ROUTES.USER(user.publicId)}`;
   const shareText = user.name ? t("shareText", { name: user.name }) : t("shareTextAnonymous");
-  const lastBoostedDate = stats.lastBoostedAt
-    ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(
-        new Date(stats.lastBoostedAt),
-      )
-    : null;
-  const lastCheckedInDate = stats.lastCheckedInAt
-    ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(
-        new Date(stats.lastCheckedInAt),
-      )
-    : null;
+  const lastBoostedDate = formatShortDateUTC(stats.lastBoostedAt, locale) || null;
+  const lastCheckedInDate = formatShortDateUTC(stats.lastCheckedInAt, locale) || null;
   const RECENT_ACTIVITY_WINDOW_DAYS = 30;
   const now = Date.now();
   const recentWindowMs = RECENT_ACTIVITY_WINDOW_DAYS * 24 * 60 * 60 * 1000;
-  const hasRecentBoost =
-    stats.lastBoostedAt !== null && now - new Date(stats.lastBoostedAt).getTime() <= recentWindowMs;
-  const hasRecentCheckIn =
-    stats.lastCheckedInAt !== null &&
-    now - new Date(stats.lastCheckedInAt).getTime() <= recentWindowMs;
+  const lastBoostedAtMs = getValidDateMs(stats.lastBoostedAt);
+  const lastCheckedInAtMs = getValidDateMs(stats.lastCheckedInAt);
+  const hasRecentBoost = lastBoostedAtMs !== null && now - lastBoostedAtMs <= recentWindowMs;
+  const hasRecentCheckIn = lastCheckedInAtMs !== null && now - lastCheckedInAtMs <= recentWindowMs;
   const isRecentlyActive = hasRecentBoost || hasRecentCheckIn;
   const membershipLabel =
     user.isMember && user.membershipTier
