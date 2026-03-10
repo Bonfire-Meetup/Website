@@ -3,41 +3,145 @@
     "eyebrow": "Call for Speakers",
     "titlePart1": "Share Your",
     "titleHighlight": "Knowledge",
-    "subtitle": "We're always looking for passionate speakers to share their expertise with our community. Whether you're a seasoned pro or first-time speaker, we want to hear from you.",
+    "titlePart2": "Share a talk with the community.",
+    "subtitle": "If you have a talk you want to share with the Czech game dev community, send it our way.",
+    "heroChips": {
+      "newVoices": "First-timers welcome",
+      "realWork": "Built from practice",
+      "noFluff": "Specific beats polished"
+    },
+    "pillars": {
+      "insight": {
+        "label": "Insight",
+        "body": "We want concrete thinking, sharp takeaways, and ideas people can bring back into their own work."
+      },
+      "energy": {
+        "label": "Presence",
+        "body": "A great talk does not need hype, but it does need conviction, rhythm, and a reason to be live."
+      },
+      "clarity": {
+        "label": "Shape",
+        "body": "If you can explain the arc clearly, we can help the talk find the right slot, room, and audience."
+      }
+    },
     "questions": "Have questions about speaking? Email us at",
+    "editorial": {
+      "eyebrow": "Editorial Filter",
+      "title": "We program talks that spark hallway conversations after the lights come back on.",
+      "body": "That usually means practical case studies, unusual process breakdowns, failures worth unpacking, or a perspective the local scene does not hear often enough. You do not need to be polished. You do need a clear reason this talk should exist.",
+      "footer": "Send the strongest version of the idea, even if the title is still rough."
+    },
     "whatWeLookFor": {
       "title": "What We Look For",
+      "subtitle": "Signals that usually make a proposal click",
       "item1": "Game development topics: programming, art, design, audio, production, business",
       "item2": "Practical insights and real-world experiences",
       "item3": "Both beginner-friendly and advanced deep-dives",
       "item4": "Passion for sharing knowledge with the community"
     },
+    "encouragement": {
+      "eyebrow": "Send It Anyway",
+      "title": "Short talk, long talk, first talk, weird talk. Your voice matters.",
+      "body1": "You do not need years of speaker experience or a perfectly polished format.",
+      "body2": "A rough idea, a lesson from the work, or a topic you care about is enough to start. If you are excited to share it, we want to hear it."
+    },
+    "process": {
+      "eyebrow": "What Happens Next",
+      "title": "Three short steps",
+      "step1": "Send the core idea, the audience payoff, and the format that fits it best.",
+      "step2": "We review for topic fit, clarity, and how the talk rounds out the event mix.",
+      "step3": "If it feels right, we follow up about timing, framing, and where it belongs."
+    },
     "form": {
-      "title": "Submit Your Proposal",
-      "subtitle": "Tell us about your talk idea.",
+      "intro": {
+        "eyebrow": "Speaker Intake",
+        "cards": {
+          "signalTitle": "Lead with the spark",
+          "signalBody": "Tell us what is genuinely interesting, unusual, or useful about this talk.",
+          "shapeTitle": "Give it a shape",
+          "shapeBody": "A rough format is enough. We mainly need to understand the size and pacing.",
+          "fitTitle": "Help us place it",
+          "fitBody": "Location is flexible. We use it as a signal, not a hard constraint."
+        }
+      },
+      "stepper": {
+        "progress": "Progress",
+        "count": "Step {current} of {total}",
+        "speaker": "You",
+        "talk": "Talk",
+        "shape": "Format"
+      },
+      "title": "Pitch the talk",
+      "subtitle": "A few short steps to tell us what you want to share.",
+      "sections": {
+        "speaker": {
+          "eyebrow": "About You",
+          "title": "Who is bringing this talk into the room?"
+        },
+        "talk": {
+          "eyebrow": "The Core",
+          "title": "What is the sharpest version of the idea?"
+        },
+        "shape": {
+          "eyebrow": "Format",
+          "title": "How should the session be shaped?"
+        }
+      },
       "speakerName": "Your Name",
-      "speakerNamePlaceholder": "John Doe",
+      "speakerNamePlaceholder": "Nathan Drake",
       "email": "Email Address",
-      "emailPlaceholder": "john@example.com",
+      "emailPlaceholder": "nathan@uncharted.dev",
       "talkTitle": "Talk Title",
-      "talkTitlePlaceholder": "A catchy title for your talk",
+      "talkTitlePlaceholder": "What shipping our combat loop taught us about player trust",
       "abstract": "Talk Abstract",
-      "abstractPlaceholder": "Describe what your talk is about, what attendees will learn, and why it's relevant to game developers...",
-      "abstractHint": "Minimum 50 characters. Be specific about the value for attendees.",
+      "abstractPlaceholder": "Tell us what happened in the project, what you learned, and what other game developers could take back to their own teams.",
+      "abstractHint": "Minimum 50 characters. Strong abstracts usually cover the angle, the audience payoff, and what makes the story real.",
+      "abstractCount": "{count} characters",
       "duration": "Preferred Duration",
       "durationPlaceholder": "Select duration",
       "duration15": "15 minutes (Lightning talk)",
+      "duration15Description": "Fast, focused, and great for one sharp idea.",
       "duration30": "30 minutes (Standard)",
+      "duration30Description": "Enough room for a clear story, examples, and takeaways.",
       "duration45": "45 minutes (Deep dive)",
+      "duration45Description": "Best for more technical topics or a fuller project breakdown.",
       "preferredLocation": "Preferred Location",
       "locationEither": "Either {prague} or {zlin}",
+      "locationEitherDescription": "We are happy to place it where it fits best.",
+      "locationPragueDescription": "Choose this if Prague feels like the right home for the talk.",
+      "locationZlinDescription": "Choose this if Zlin feels like the right home for the talk.",
       "experience": "Speaker Experience",
-      "experiencePlaceholder": "Tell us about your background and any previous speaking experience...",
-      "experienceHint": "Optional. First-time speakers are welcome!",
-      "submit": "Submit Proposal",
+      "experiencePlaceholder": "For example: gameplay programmer on an indie release, tech artist on a live game, narrative designer on a student project...",
+      "experienceHint": "Optional. First-time speakers are absolutely welcome.",
+      "experienceCount": "{count} characters",
+      "stepHelp": {
+        "speaker": {
+          "title": "About you",
+          "point1": "Just the basics here. We only need to know who you are and how to reach you.",
+          "point2": "If this is your first talk, that is completely fine."
+        },
+        "talk": {
+          "title": "About the talk",
+          "point1": "The clearest abstracts usually explain what happened and what others can learn from it.",
+          "point2": "Working titles are fine. The core idea matters more."
+        },
+        "shape": {
+          "title": "About the format",
+          "point1": "Short talks and deep dives are both welcome.",
+          "point2": "Pick the shape that fits the idea best. We can help refine it later."
+        }
+      },
+      "followUp": {
+        "title": "If the idea is close",
+        "body": "We may help tighten the framing, rebalance the length, or shift the emphasis before scheduling it."
+      },
+      "back": "Back",
+      "next": "Next",
+      "submit": "Send the pitch",
       "submitting": "Submitting...",
+      "successEyebrow": "Received",
       "successTitle": "Proposal Submitted!",
-      "successMessage": "Thanks for your submission! We'll review your proposal and get back to you within a few weeks.",
+      "successMessage": "Thanks for sending it. We will review the proposal and follow up once we know how it fits the upcoming programming mix.",
       "submitAnother": "Submit Another Proposal",
       "clearDraft": "Clear draft",
       "draftNote": "Drafts are stored locally in your browser. If you don't submit, your data never reaches us.",

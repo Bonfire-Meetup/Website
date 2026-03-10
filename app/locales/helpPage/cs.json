@@ -1,0 +1,33 @@
+{
+  "helpPage": {
+    "title": "Podpora | {brandName}",
+    "description": "Najděte odpovědi, návody krok za krokem, pravidla i možnosti, jak kontaktovat Bonfire, na jednom místě.",
+    "eyebrow": "Centrum podpory",
+    "subtitle": "Nejrychlejší cesta k odpovědím, postupům krok za krokem, pravidlům i přímému kontaktu.",
+    "titlePart1": "Najděte",
+    "titleHighlight": "správnou podporu",
+    "tiles": {
+      "faq": {
+        "title": "FAQ",
+        "description": "Rychlé odpovědi na časté otázky o akcích Bonfire, záznamech, přístupu a fungování komunity.",
+        "eyebrow": "Rychlé odpovědi"
+      },
+      "guides": {
+        "title": "Návody",
+        "description": "Postupy krok za krokem pro registraci, přihlášení, RSVP, check-in, soukromí a správu účtu.",
+        "eyebrow": "Krok za krokem"
+      },
+      "legal": {
+        "title": "CoC a právní",
+        "description": "Pravidla, zásady, informace o médiích, cookies a další důležité podmínky fungování Bonfire.",
+        "eyebrow": "Pravidla a zásady"
+      },
+      "contact": {
+        "title": "Ozvěte se",
+        "description": "Napište nám, když potřebujete něco konkrétního, chcete spolupracovat nebo nenajdete odpověď v samoobslužné nápovědě.",
+        "eyebrow": "Kontakt"
+      }
+    },
+    "open": "Otevřít"
+  }
+}

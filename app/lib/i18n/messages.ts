@@ -11,6 +11,7 @@ import enErrorMessages from "@/locales/error/en.json";
 import enEventsMessages from "@/locales/events/en.json";
 import enFaqPageMessages from "@/locales/faqPage/en.json";
 import enFooterMessages from "@/locales/footer/en.json";
+import enHelpPageMessages from "@/locales/helpPage/en.json";
 import enGuideMessages from "@/locales/guides/en.json";
 import enGuildPageMessages from "@/locales/guildPage/en.json";
 import enHeaderMessages from "@/locales/header/en.json";
@@ -45,6 +46,7 @@ const moduleLoaders = [
   (locale: Locale) => import(`@/locales/events/${locale}.json`),
   (locale: Locale) => import(`@/locales/faqPage/${locale}.json`),
   (locale: Locale) => import(`@/locales/footer/${locale}.json`),
+  (locale: Locale) => import(`@/locales/helpPage/${locale}.json`),
   (locale: Locale) => import(`@/locales/guides/${locale}.json`),
   (locale: Locale) => import(`@/locales/guildPage/${locale}.json`),
   (locale: Locale) => import(`@/locales/header/${locale}.json`),
@@ -82,6 +84,7 @@ const enMessages = mergeMessages(
   enEventsMessages,
   enFaqPageMessages,
   enFooterMessages,
+  enHelpPageMessages,
   enGuideMessages,
   enGuildPageMessages,
   enHeaderMessages,

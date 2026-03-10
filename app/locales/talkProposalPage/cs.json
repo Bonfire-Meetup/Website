@@ -3,41 +3,145 @@
     "eyebrow": "Výzva pro speakery",
     "titlePart1": "Sdílejte své",
     "titleHighlight": "Znalosti",
-    "subtitle": "Hledáme nadšené přednášející, kteří chtějí sdílet své zkušenosti s naší komunitou. Ať už jste zkušený profík nebo vystupujete poprvé, rádi vás uslyšíme.",
+    "titlePart2": "Podělte se o přednášku s komunitou.",
+    "subtitle": "Pokud máte přednášku, o kterou se chcete podělit s českou game dev komunitou, pošlete nám ji.",
+    "heroChips": {
+      "newVoices": "První talk vítán",
+      "realWork": "Postavené na praxi",
+      "noFluff": "Bez omáčky"
+    },
+    "pillars": {
+      "insight": {
+        "label": "Přínos",
+        "body": "Chceme konkrétní myšlení, jasné takeawaye a nápady, které si lidé odnesou zpět do vlastní práce."
+      },
+      "energy": {
+        "label": "Přítomnost",
+        "body": "Skvělý talk nepotřebuje hype, ale potřebuje přesvědčení, rytmus a důvod, proč má být naživo."
+      },
+      "clarity": {
+        "label": "Tvar",
+        "body": "Když umíte jasně popsat oblouk přednášky, dokážeme jí najít správný slot, prostor i publikum."
+      }
+    },
     "questions": "Máte otázky ohledně přednášení? Napište nám na",
+    "editorial": {
+      "eyebrow": "Editorský filtr",
+      "title": "Skládáme talky, po kterých se ještě dlouho mluví v předsálí.",
+      "body": "Obvykle to znamená praktické case studies, neobvyklé rozbory procesů, chyby, které stojí za rozpitvání, nebo perspektivu, kterou místní scéna neslyší dost často. Nemusíte být dokonale vybroušení. Potřebujete ale jasný důvod, proč má tahle přednáška existovat.",
+      "footer": "Pošlete nejsilnější verzi nápadu, i když je název zatím pracovní."
+    },
     "whatWeLookFor": {
       "title": "Co hledáme",
+      "subtitle": "Signály, díky kterým návrh obvykle zafunguje",
       "item1": "Témata z herního vývoje: programování, art, design, audio, produkce, business",
       "item2": "Praktické poznatky a reálné zkušenosti",
       "item3": "Přednášky pro začátečníky i pokročilé hluboké ponory",
       "item4": "Nadšení pro sdílení znalostí s komunitou"
     },
+    "encouragement": {
+      "eyebrow": "Pošlete to i tak",
+      "title": "Krátká přednáška, dlouhá přednáška, první přednáška, zvláštní přednáška. Na vašem hlasu záleží.",
+      "body1": "Nepotřebujete roky speaker zkušeností ani dokonale vyladěný formát.",
+      "body2": "Na začátek stačí hrubý nápad, lekce z praxe nebo téma, na kterém vám záleží. Pokud se o něj chcete podělit, chceme o tom slyšet."
+    },
+    "process": {
+      "eyebrow": "Co se bude dít dál",
+      "title": "Tři krátké kroky",
+      "step1": "Pošlete jádro nápadu, přínos pro publikum a formát, který mu nejlépe sedí.",
+      "step2": "Návrh projdeme z hlediska tématu, srozumitelnosti a toho, jak doplňuje zbytek programu.",
+      "step3": "Když to bude sedět, ozveme se kvůli timingům, framingu a tomu, kam talk patří."
+    },
     "form": {
-      "title": "Pošlete návrh",
-      "subtitle": "Řekněte nám o své přednášce.",
+      "intro": {
+        "eyebrow": "Speaker intake",
+        "cards": {
+          "signalTitle": "Začněte jiskrou",
+          "signalBody": "Řekněte nám, co je na tomhle talku opravdu zajímavé, neobvyklé nebo užitečné.",
+          "shapeTitle": "Dejte mu tvar",
+          "shapeBody": "Hrubá představa formátu stačí. Potřebujeme hlavně pochopit rozsah a tempo.",
+          "fitTitle": "Pomozte nám ho umístit",
+          "fitBody": "Lokace je flexibilní. Bereme ji jako signál, ne jako tvrdé omezení."
+        }
+      },
+      "stepper": {
+        "progress": "Postup",
+        "count": "Krok {current} z {total}",
+        "speaker": "Vy",
+        "talk": "Přednáška",
+        "shape": "Formát"
+      },
+      "title": "Pošlete pitch",
+      "subtitle": "Pár krátkých kroků a budeme vědět, co chcete sdílet.",
+      "sections": {
+        "speaker": {
+          "eyebrow": "O vás",
+          "title": "Kdo tenhle talk přinese do místnosti?"
+        },
+        "talk": {
+          "eyebrow": "Jádro",
+          "title": "Jak vypadá nejostřejší verze toho nápadu?"
+        },
+        "shape": {
+          "eyebrow": "Formát",
+          "title": "Jak by měla být session vystavěná?"
+        }
+      },
       "speakerName": "Vaše jméno",
-      "speakerNamePlaceholder": "Jan Novák",
+      "speakerNamePlaceholder": "Nathan Drake",
       "email": "E-mailová adresa",
-      "emailPlaceholder": "jan@example.com",
+      "emailPlaceholder": "nathan@uncharted.dev",
       "talkTitle": "Název přednášky",
-      "talkTitlePlaceholder": "Chytlavý název vaší přednášky",
+      "talkTitlePlaceholder": "Co nás při shipnutí combat loopu naučilo o důvěře hráče",
       "abstract": "Abstrakt přednášky",
-      "abstractPlaceholder": "Popište, o čem vaše přednáška bude, co se účastníci naučí a proč je to relevantní pro herní vývojáře...",
-      "abstractHint": "Minimum 50 znaků. Buďte konkrétní ohledně přínosu pro účastníky.",
+      "abstractPlaceholder": "Popište, co se v projektu stalo, co jste se naučili a co si z toho mohou odnést další game developeři do vlastních týmů.",
+      "abstractHint": "Minimum 50 znaků. Silné abstrakty obvykle pokrývají úhel, přínos pro publikum i to, proč je ten příběh skutečný.",
+      "abstractCount": "{count} znaků",
       "duration": "Preferovaná délka",
       "durationPlaceholder": "Vyberte délku",
       "duration15": "15 minut (Bleskový talk)",
+      "duration15Description": "Rychlé, úderné a ideální pro jednu jasnou myšlenku.",
       "duration30": "30 minut (Standardní)",
+      "duration30Description": "Dost prostoru na srozumitelný příběh, příklady i takeawaye.",
       "duration45": "45 minut (Hluboký ponor)",
+      "duration45Description": "Nejlepší pro techničtější témata nebo detailnější rozbor projektu.",
       "preferredLocation": "Preferovaná lokace",
       "locationEither": "{prague} nebo {zlin}",
+      "locationEitherDescription": "Rádi ji zařadíme tam, kde bude dávat největší smysl.",
+      "locationPragueDescription": "Zvolte tohle, pokud vám Praha pro ten talk dává největší smysl.",
+      "locationZlinDescription": "Zvolte tohle, pokud vám Zlín pro ten talk dává největší smysl.",
       "experience": "Zkušenosti speakera",
-      "experiencePlaceholder": "Řekněte nám o svém pozadí a předchozích zkušenostech s přednášením...",
-      "experienceHint": "Volitelné. Vítáme i ty, co přednáší poprvé!",
-      "submit": "Odeslat návrh",
+      "experiencePlaceholder": "Například: gameplay programátor na indie hře, tech artist na live projektu, narrative designer na studentské hře...",
+      "experienceHint": "Volitelné. S radostí vítáme i ty, kdo budou přednášet poprvé.",
+      "experienceCount": "{count} znaků",
+      "stepHelp": {
+        "speaker": {
+          "title": "O vás",
+          "point1": "Tady stačí základ. Potřebujeme jen vědět, kdo jste a jak se vám ozvat.",
+          "point2": "Jestli je to váš první talk, je to úplně v pohodě."
+        },
+        "talk": {
+          "title": "O přednášce",
+          "point1": "Nejčitelnější abstrakty obvykle říkají, co se stalo a co si z toho ostatní mohou odnést.",
+          "point2": "Pracovní název je v pohodě. Důležitější je samotná myšlenka."
+        },
+        "shape": {
+          "title": "O formátu",
+          "point1": "Krátké talky i hlubší ponory jsou vítané.",
+          "point2": "Vyberte tvar, který nápadu sedí nejlépe. Později ho můžeme doladit."
+        }
+      },
+      "followUp": {
+        "title": "Když je nápad blízko",
+        "body": "Můžeme pomoct dotáhnout framing, upravit délku nebo posunout důraz ještě před zařazením do programu."
+      },
+      "back": "Zpět",
+      "next": "Pokračovat",
+      "submit": "Poslat pitch",
       "submitting": "Odesílám...",
+      "successEyebrow": "Přijato",
       "successTitle": "Návrh odeslán!",
-      "successMessage": "Děkujeme za váš návrh! Projdeme ho a ozveme se vám během několika týdnů.",
+      "successMessage": "Díky za poslání. Návrh projdeme a ozveme se, jakmile budeme vědět, jak zapadá do chystaného programu.",
       "submitAnother": "Odeslat další návrh",
       "clearDraft": "Vymazat koncept",
       "draftNote": "Koncepty se ukládají lokálně ve vašem prohlížeči. Pokud formulář neodešlete, vaše data k nám nikdy nedorazí.",

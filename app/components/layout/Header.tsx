@@ -67,15 +67,21 @@ const DESKTOP_NAV_ITEMS: DesktopNavItem[] = [
     matches: (pathname) => pathname.startsWith("/crew"),
   },
   {
-    href: PAGE_ROUTES.FAQ,
-    label: "faq",
+    href: PAGE_ROUTES.SPEAK,
+    label: "speak",
     prefetch: false,
-    matches: (pathname) => pathname.startsWith("/faq"),
+    matches: (pathname) => pathname.startsWith(PAGE_ROUTES.SPEAK),
   },
   {
-    href: PAGE_ROUTES.CONTACT_WITH_TYPE("general"),
-    label: "contact",
-    matches: (pathname) => pathname.startsWith("/contact"),
+    href: PAGE_ROUTES.SUPPORT,
+    label: "support",
+    prefetch: false,
+    matches: (pathname) =>
+      pathname.startsWith(PAGE_ROUTES.SUPPORT) ||
+      pathname.startsWith(PAGE_ROUTES.FAQ) ||
+      pathname.startsWith(PAGE_ROUTES.GUIDES) ||
+      pathname.startsWith(PAGE_ROUTES.LEGAL) ||
+      pathname.startsWith(PAGE_ROUTES.CONTACT),
   },
 ];
 
@@ -134,8 +140,15 @@ function getMobileSectionMarker(
 
   if (pathname.startsWith("/guides")) {
     return {
-      dotClassName: "bg-rose-500/80 dark:bg-rose-400/85",
-      label: t("guides"),
+      dotClassName: "bg-violet-500/80 dark:bg-violet-400/85",
+      label: t("support"),
+    };
+  }
+
+  if (pathname.startsWith(PAGE_ROUTES.SUPPORT)) {
+    return {
+      dotClassName: "bg-violet-500/80 dark:bg-violet-400/85",
+      label: t("support"),
     };
   }
 
@@ -148,8 +161,8 @@ function getMobileSectionMarker(
 
   if (pathname.startsWith("/legal")) {
     return {
-      dotClassName: "bg-neutral-500/80 dark:bg-neutral-400/85",
-      label: t("legal"),
+      dotClassName: "bg-violet-500/80 dark:bg-violet-400/85",
+      label: t("support"),
     };
   }
 
@@ -184,14 +197,14 @@ function getMobileSectionMarker(
   if (pathname.startsWith("/faq")) {
     return {
       dotClassName: "bg-violet-500/80 dark:bg-violet-400/85",
-      label: t("faq"),
+      label: t("support"),
     };
   }
 
   if (pathname.startsWith("/contact")) {
     return {
-      dotClassName: "bg-cyan-500/80 dark:bg-cyan-400/85",
-      label: t("contact"),
+      dotClassName: "bg-violet-500/80 dark:bg-violet-400/85",
+      label: t("support"),
     };
   }
 

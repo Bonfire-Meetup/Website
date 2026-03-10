@@ -1,0 +1,33 @@
+{
+  "helpPage": {
+    "title": "Support | {brandName}",
+    "description": "Find answers, step-by-step guides, rules, and ways to reach Bonfire in one place.",
+    "eyebrow": "Support Hub",
+    "subtitle": "The fastest way to find answers, follow step-by-step instructions, check the rules, or reach out directly.",
+    "titlePart1": "Find the",
+    "titleHighlight": "right support fast",
+    "tiles": {
+      "faq": {
+        "title": "FAQ",
+        "description": "Quick answers to common questions about Bonfire events, recordings, access, and community basics.",
+        "eyebrow": "Quick Answers"
+      },
+      "guides": {
+        "title": "Guides",
+        "description": "Step-by-step walkthroughs for registration, sign-in, RSVP, check-in, privacy, and account actions.",
+        "eyebrow": "Step by Step"
+      },
+      "legal": {
+        "title": "CoC & Legal",
+        "description": "Rules, policies, media guidance, cookies, and the details that shape how Bonfire runs.",
+        "eyebrow": "Rules & Policy"
+      },
+      "contact": {
+        "title": "Get in Touch",
+        "description": "Reach out when you need something specific, want to collaborate, or cannot find the answer through self-serve help.",
+        "eyebrow": "Reach Out"
+      }
+    },
+    "open": "Open"
+  }
+}
