@@ -11,7 +11,7 @@ function TicketQrSkeleton() {
         <Skeleton className="h-2 w-10 rounded-full" />
         <QrCodeIcon className="h-4 w-4 text-neutral-400 dark:text-neutral-500" />
       </div>
-      <div className="relative h-64 w-64 overflow-hidden rounded-[1.25rem] border border-white/45 bg-white/56 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_20px_44px_-34px_rgba(15,23,42,0.22)] backdrop-blur-md dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_20px_44px_-34px_rgba(0,0,0,0.5)]">
+      <div className="relative h-80 w-80 overflow-hidden rounded-[1.25rem] border border-white/45 bg-white/56 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_20px_44px_-34px_rgba(15,23,42,0.22)] backdrop-blur-md dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_20px_44px_-34px_rgba(0,0,0,0.5)]">
         <div className="absolute inset-0 grid grid-cols-8 gap-2 p-3">
           {Array.from({ length: 64 }, (_, skeletonIndex) => skeletonIndex).map((skeletonIndex) => (
             <Skeleton

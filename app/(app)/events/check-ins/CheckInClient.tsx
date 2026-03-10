@@ -28,7 +28,7 @@ const QR_FRAME_CLASS =
 const QR_META_BAR_CLASS =
   "mb-3 flex items-center justify-between rounded-full border border-white/45 bg-white/36 px-3 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] backdrop-blur-xl dark:border-white/10 dark:bg-white/8 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]";
 const QR_CODE_SURFACE_CLASS =
-  "relative h-64 w-64 overflow-hidden rounded-[1.25rem] border border-white/45 bg-white/56 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_20px_44px_-34px_rgba(15,23,42,0.22)] backdrop-blur-md dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_20px_44px_-34px_rgba(0,0,0,0.5)]";
+  "relative h-80 w-80 overflow-hidden rounded-[1.25rem] border border-white/45 bg-white/56 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_20px_44px_-34px_rgba(15,23,42,0.22)] backdrop-blur-md dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_20px_44px_-34px_rgba(0,0,0,0.5)]";
 const VALID_UNTIL_CLASS =
   "flex min-h-[50px] items-center justify-between rounded-2xl border border-white/40 bg-white/34 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_18px_38px_-34px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_18px_38px_-34px_rgba(0,0,0,0.45)]";
 
@@ -143,7 +143,7 @@ export function CheckInClient() {
     QRCode.toDataURL(qrContent, {
       errorCorrectionLevel: "M",
       margin: 1,
-      scale: 8,
+      scale: 10,
       color: { dark: "#000000", light: "#ffffff" },
     })
       .then((url: string) => {
