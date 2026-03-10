@@ -221,7 +221,9 @@ export function RecordingDetailedCard({
         >
           <div
             className={
-              isGrid ? "w-full space-y-2 px-4 pt-14 pb-4" : "w-full space-y-2 px-3.5 pt-12 pb-3.5"
+              isGrid
+                ? "w-full space-y-2 px-4 pt-10 pb-4 sm:pt-14"
+                : "w-full space-y-2 px-3.5 pt-9 pb-3.5 sm:pt-12"
             }
           >
             <RecordingMeta

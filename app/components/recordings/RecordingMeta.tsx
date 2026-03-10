@@ -21,7 +21,7 @@ export function RecordingMeta({
     <RecordingHeaderMetaRow
       location={location}
       formattedDate={formatDate(date, locale)}
-      className={`${metaBaseClass} ${trackingClass}`}
+      className={`hidden sm:flex ${metaBaseClass} ${trackingClass}`}
       leftGroupClassName="flex flex-wrap items-center gap-2"
       metaGroupClassName="flex flex-wrap items-center gap-2"
       locationSize="xxs"

@@ -1,14 +1,17 @@
 import { InfoIcon, QrCodeIcon } from "@/components/shared/Icons";
 import { Skeleton } from "@/components/shared/Skeletons";
 
+const TICKET_HEADER_PANEL_CLASS =
+  "mx-auto w-full max-w-[17rem] rounded-[1.5rem] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.08)_100%)] px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_18px_40px_-28px_rgba(120,53,15,0.45)] backdrop-blur-md dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_40px_-28px_rgba(0,0,0,0.5)]";
+
 function TicketQrSkeleton() {
   return (
-    <div className="relative rounded-[1.75rem] border border-neutral-200/80 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.98),rgba(245,245,245,0.94)_58%,rgba(229,229,229,0.95)_100%)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(229,231,235,0.9),0_18px_45px_-28px_rgba(15,23,42,0.4)] dark:border-white/10 dark:bg-[radial-gradient(circle_at_top,rgba(38,38,38,0.98),rgba(23,23,23,0.96)_58%,rgba(10,10,10,0.98)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),inset_0_-1px_0_rgba(255,255,255,0.04),0_18px_45px_-28px_rgba(0,0,0,0.8)]">
-      <div className="mb-3 flex items-center justify-between rounded-full border border-black/5 bg-white/70 px-3 py-1.5 dark:border-white/8 dark:bg-[linear-gradient(180deg,rgba(38,38,38,0.92)_0%,rgba(23,23,23,0.9)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+    <div className="relative rounded-[1.75rem] border border-white/45 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.78),rgba(255,255,255,0.56)_34%,rgba(255,244,238,0.44)_62%,rgba(255,255,255,0.28)_100%)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(255,255,255,0.42),0_24px_55px_-34px_rgba(15,23,42,0.38)] backdrop-blur-xl dark:border-white/12 dark:bg-[radial-gradient(circle_at_top,rgba(80,80,88,0.34),rgba(34,34,38,0.3)_38%,rgba(14,14,18,0.22)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(255,255,255,0.03),0_24px_55px_-34px_rgba(0,0,0,0.55)]">
+      <div className="mb-3 flex items-center justify-between rounded-full border border-white/45 bg-white/36 px-3 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] backdrop-blur-xl dark:border-white/10 dark:bg-white/8 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
         <Skeleton className="h-2 w-10 rounded-full" />
         <QrCodeIcon className="h-4 w-4 text-neutral-400 dark:text-neutral-500" />
       </div>
-      <div className="relative h-64 w-64 overflow-hidden rounded-[1.25rem] border border-black/5 bg-neutral-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] dark:border-white/8 dark:bg-[linear-gradient(180deg,rgba(24,24,27,0.98)_0%,rgba(9,9,11,0.98)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_24px_50px_-36px_rgba(0,0,0,0.95)]">
+      <div className="relative h-64 w-64 overflow-hidden rounded-[1.25rem] border border-white/45 bg-white/56 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_20px_44px_-34px_rgba(15,23,42,0.22)] backdrop-blur-md dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_20px_44px_-34px_rgba(0,0,0,0.5)]">
         <div className="absolute inset-0 grid grid-cols-8 gap-2 p-3">
           {Array.from({ length: 64 }, (_, skeletonIndex) => skeletonIndex).map((skeletonIndex) => (
             <Skeleton
@@ -17,8 +20,9 @@ function TicketQrSkeleton() {
             />
           ))}
         </div>
+        <div className="pointer-events-none absolute inset-x-8 top-3 h-8 rounded-full bg-white/35 blur-xl dark:bg-white/8" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="rounded-lg bg-white/80 p-3 backdrop-blur-sm dark:bg-neutral-900/80">
+          <div className="rounded-lg border border-white/40 bg-white/55 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-md dark:border-white/10 dark:bg-white/8 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
             <QrCodeIcon className="h-10 w-10 text-neutral-400 dark:text-neutral-600" />
           </div>
         </div>
@@ -32,31 +36,24 @@ export default function CheckInLoading() {
     <main className="gradient-bg-static min-h-screen px-4 pt-20 pb-20 sm:pt-32">
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-md">
-          <div className="relative overflow-hidden rounded-[2rem] border border-black/10 bg-white/85 shadow-[0_32px_90px_-38px_rgba(15,23,42,0.5)] ring-1 ring-white/60 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/85 dark:ring-white/10">
-            <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.55),transparent_45%),linear-gradient(135deg,rgba(255,255,255,0.22),transparent_45%,rgba(255,255,255,0.08)_65%,transparent_78%)]" />
-            <div className="relative overflow-hidden rounded-[calc(2rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(255,247,237,0.92)_100%)] dark:bg-[linear-gradient(180deg,rgba(23,23,23,0.98)_0%,rgba(10,10,10,0.98)_100%)]">
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/45 bg-white/28 shadow-[0_40px_120px_-52px_rgba(15,23,42,0.58)] ring-1 ring-white/55 backdrop-blur-2xl dark:border-white/8 dark:bg-neutral-950/24 dark:ring-white/8">
+            <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.72),transparent_34%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.3),transparent_22%),linear-gradient(135deg,rgba(255,255,255,0.24),transparent_46%,rgba(255,255,255,0.08)_68%,transparent_82%)] dark:bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.08),transparent_26%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.04),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.04),transparent_44%,rgba(255,255,255,0.015)_70%,transparent_84%)]" />
+            <div className="pointer-events-none absolute inset-[1px] rounded-[calc(2rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.26),transparent_18%,transparent_78%,rgba(255,255,255,0.12)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_18%,transparent_82%,rgba(255,255,255,0.02)_100%)]" />
+            <div className="relative overflow-hidden rounded-[calc(2rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.5)_0%,rgba(255,248,240,0.34)_45%,rgba(255,255,255,0.22)_100%)] backdrop-blur-2xl dark:bg-[linear-gradient(180deg,rgba(24,24,28,0.3)_0%,rgba(12,12,14,0.2)_48%,rgba(6,6,8,0.14)_100%)]">
               <div className="relative h-30 bg-gradient-to-br from-rose-700 via-orange-500 to-red-600 sm:h-32">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.35),transparent_32%),radial-gradient(circle_at_85%_15%,rgba(255,255,255,0.22),transparent_24%)]" />
                 <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.18)_35%,transparent_52%,rgba(255,255,255,0.08)_68%,transparent_100%)]" />
                 <div className="absolute inset-x-0 bottom-0 h-px bg-white/30" />
-                <div className="relative flex h-full flex-col justify-center px-5 py-4 sm:justify-between sm:px-6 sm:py-5">
-                  <div className="hidden items-center justify-between sm:flex">
-                    <Skeleton className="h-6 w-24 rounded-full bg-white/25 dark:bg-white/20" />
-                    <div className="flex items-center gap-1.5">
-                      <Skeleton className="h-2 w-2 rounded-full bg-white/80 dark:bg-white/35" />
-                      <Skeleton className="h-2 w-2 rounded-full bg-white/50 dark:bg-white/25" />
-                      <Skeleton className="h-2 w-2 rounded-full bg-white/30 dark:bg-white/20" />
+                <div className="absolute -top-6 right-6 h-20 w-20 rounded-full bg-white/16 blur-2xl dark:bg-white/6" />
+                <div className="absolute bottom-2 left-8 h-14 w-24 rounded-full bg-amber-200/18 blur-2xl dark:bg-orange-300/8" />
+                <div className="relative flex h-full flex-col justify-center px-5 py-4 sm:px-6 sm:py-5">
+                  <div className={TICKET_HEADER_PANEL_CLASS}>
+                    <div className="mb-2 flex items-center justify-center gap-2">
+                      <Skeleton className="h-px w-6 bg-white/35 dark:bg-white/15" />
+                      <Skeleton className="h-3 w-24 bg-white/25 sm:h-4 sm:w-28 dark:bg-white/20" />
+                      <Skeleton className="h-px w-6 bg-white/35 dark:bg-white/15" />
                     </div>
-                  </div>
-
-                  <div className="text-center sm:pt-1">
-                    <Skeleton className="mx-auto mb-1 h-3 w-24 bg-white/25 sm:mb-3 sm:h-4 sm:w-28 dark:bg-white/20" />
                     <Skeleton className="mx-auto h-7 w-36 bg-white/30 sm:h-8 sm:w-40 dark:bg-white/20" />
-                  </div>
-
-                  <div className="mt-3 hidden items-center justify-between sm:flex">
-                    <Skeleton className="h-3 w-16 bg-white/25 dark:bg-white/20" />
-                    <Skeleton className="h-3 w-14 bg-white/25 dark:bg-white/20" />
                   </div>
                 </div>
               </div>
@@ -74,11 +71,11 @@ export default function CheckInLoading() {
               </div>
 
               <div className="space-y-4 px-6 pt-1 pb-6">
-                <div className="rounded-2xl border border-black/5 bg-white/72 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] backdrop-blur-sm dark:border-white/8 dark:bg-[linear-gradient(180deg,rgba(32,32,36,0.92)_0%,rgba(18,18,20,0.92)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_40px_-34px_rgba(0,0,0,0.9)]">
+                <div className="rounded-2xl border border-white/40 bg-white/34 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_18px_38px_-34px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_18px_38px_-34px_rgba(0,0,0,0.45)]">
                   <Skeleton className="h-5 w-40" />
                 </div>
 
-                <Skeleton className="h-12 w-full rounded-2xl bg-gradient-to-r from-rose-700/80 via-orange-500/80 to-red-600/80" />
+                <Skeleton className="h-12 w-full rounded-2xl border border-white/20 bg-gradient-to-r from-rose-700/80 via-orange-500/80 to-red-600/80" />
               </div>
             </div>
           </div>
