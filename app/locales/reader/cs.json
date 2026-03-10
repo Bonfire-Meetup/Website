@@ -10,6 +10,7 @@
     "stopReader": "Zastavit čtečku",
     "errors": {
       "noEventSelected": "Nejprve vyberte akci",
+      "manualIdRequired": "Nejprve zadejte záložní ID",
       "cameraAccessFailed": "Nepodařilo se získat přístup ke kameře. Zkontrolujte oprávnění.",
       "cameraPermissionDenied": "Přístup ke kameře byl zamítnut. Povolte prosím přístup ke kameře v nastavení prohlížeče.",
       "cameraNotFound": "Kamera nebyla nalezena. Připojte prosím kameru a zkuste to znovu.",
@@ -22,11 +23,31 @@
       "contentInvalid": "Obsah QR kódu je neplatný nebo není platný check-in token",
       "signatureInvalid": "Podpis tokenu je neplatný",
       "tokenExpired": "Token vypršel",
+      "userNotFound": "Záložní ID nebylo nalezeno",
+      "lookupFailed": "Nepodařilo se najít uživatele pro toto záložní ID",
       "alreadyCheckedIn": "Uživatel je již zkontrolován pro tuto akci",
       "checkInFailed": "Nepodařilo se zkontrolovat uživatele. Zkuste to prosím znovu."
     },
     "messages": {
       "qrDetected": "QR kód detekován, ověřování..."
+    },
+    "manual": {
+      "title": "Ruční zadání záložního ID",
+      "toggleOpen": "Použít záložní ID",
+      "toggleClose": "Skrýt záložní ID",
+      "description": "Zadejte záložní ID zobrazené na vstupence.",
+      "label": "Záložní ID",
+      "placeholder": "XXXXXXXXXXX-XXXXXXXXXXX",
+      "hint": "Používají se jen písmena a čísla. Znaky jako 0, O, I a l se nikdy nepoužívají.",
+      "lookup": "Najít uživatele",
+      "lookingUp": "Hledám uživatele..."
+    },
+    "debug": {
+      "title": "Diagnostika skeneru",
+      "copy": "Kopírovat",
+      "copied": "Zkopírováno",
+      "show": "Zobrazit",
+      "hide": "Skrýt"
     },
     "checkIn": "Zkontrolovat uživatele",
     "checkingIn": "Kontroluji...",
@@ -34,6 +55,7 @@
       "valid": "Platný",
       "expired": "Vypršel",
       "invalid": "Neplatný",
+      "back": "Zpět do čtečky",
       "email": "E-mail",
       "ticketExpired": "Vstupenka vypršela. Požádejte uživatele, aby si vygeneroval novou.",
       "userId": "ID uživatele",

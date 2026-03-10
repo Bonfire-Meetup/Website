@@ -10,6 +10,7 @@ import {
 } from "@/lib/api/route-wrappers";
 import { logError, logWarn } from "@/lib/utils/log";
 import { getRequestId } from "@/lib/utils/request-context";
+import { compressUuid } from "@/lib/utils/uuid-compress";
 
 const TOKEN_VERSION = "v1";
 const TOKEN_TTL_SECONDS = 10 * 60;
@@ -92,6 +93,7 @@ export const GET = withRequestContext(
         return NextResponse.json({
           token: signed,
           expiresAt: new Date(exp * 1000).toISOString(),
+          publicId: compressUuid(userId),
         });
       } catch (err) {
         logError("check_in.token_generation_failed", err, { userId });

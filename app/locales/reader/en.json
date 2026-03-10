@@ -10,6 +10,7 @@
     "stopReader": "Stop Reader",
     "errors": {
       "noEventSelected": "Please select an event first",
+      "manualIdRequired": "Enter a backup ID first",
       "cameraAccessFailed": "Failed to access camera. Please check permissions.",
       "cameraPermissionDenied": "Camera permission denied. Please allow camera access in your browser settings.",
       "cameraNotFound": "No camera found. Please connect a camera and try again.",
@@ -22,11 +23,31 @@
       "contentInvalid": "QR code content is invalid or not a valid check-in token",
       "signatureInvalid": "Token signature is invalid",
       "tokenExpired": "Token has expired",
+      "userNotFound": "Backup ID was not found",
+      "lookupFailed": "Failed to find the user for this backup ID",
       "alreadyCheckedIn": "User is already checked in for this event",
       "checkInFailed": "Failed to check in user. Please try again."
     },
     "messages": {
       "qrDetected": "QR code detected, verifying..."
+    },
+    "manual": {
+      "title": "Backup ID entry",
+      "toggleOpen": "Use backup ID",
+      "toggleClose": "Hide backup ID",
+      "description": "Type the backup ID shown on the attendee ticket.",
+      "label": "Backup ID",
+      "placeholder": "XXXXXXXXXXX-XXXXXXXXXXX",
+      "hint": "Letters and numbers only. Characters like 0, O, I, and l are never used.",
+      "lookup": "Find user",
+      "lookingUp": "Finding user..."
+    },
+    "debug": {
+      "title": "Scanner diagnostics",
+      "copy": "Copy",
+      "copied": "Copied",
+      "show": "Show",
+      "hide": "Hide"
     },
     "checkIn": "Check In User",
     "checkingIn": "Checking in...",
@@ -34,6 +55,7 @@
       "valid": "Valid",
       "expired": "Expired",
       "invalid": "Invalid",
+      "back": "Back to reader",
       "email": "Email",
       "ticketExpired": "Ticket is expired. Ask the user to generate a new one.",
       "userId": "User ID",

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import QRCode from "qrcode";
 import { useEffect, useMemo, useState } from "react";
 
-import { ClockIcon, QrCodeIcon, InfoIcon } from "@/components/shared/Icons";
+import { ClockIcon, QrCodeIcon, InfoIcon, CloseIcon, RefreshIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { ApiError } from "@/lib/api/errors";
 import { useCheckInToken } from "@/lib/api/user-profile";
@@ -31,8 +31,28 @@ const QR_CODE_SURFACE_CLASS =
   "relative h-64 w-64 overflow-hidden rounded-[1.25rem] border border-white/45 bg-white/56 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_20px_44px_-34px_rgba(15,23,42,0.22)] backdrop-blur-md dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_20px_44px_-34px_rgba(0,0,0,0.5)]";
 const VALID_UNTIL_CLASS =
   "flex min-h-[50px] items-center justify-between rounded-2xl border border-white/40 bg-white/34 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_18px_38px_-34px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_18px_38px_-34px_rgba(0,0,0,0.45)]";
-const TICKET_BUTTON_CLASS =
-  "border border-white/20 bg-gradient-to-r from-rose-700 via-orange-500 to-red-600 shadow-[0_18px_38px_-24px_rgba(234,88,12,0.6)] hover:shadow-[0_20px_44px_-22px_rgba(234,88,12,0.7)] hover:from-rose-800 hover:via-orange-600 hover:to-red-700";
+
+function BackupZoomIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.8}
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z"
+      />
+    </svg>
+  );
+}
+
+function isNumericCharacter(value: string): boolean {
+  return /^[0-9]$/.test(value);
+}
 
 export function CheckInClient() {
   const t = useTranslations("checkIn");
@@ -41,6 +61,8 @@ export function CheckInClient() {
   const auth = useAppSelector((state) => state.auth);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [showLargeBackupId, setShowLargeBackupId] = useState(false);
+  const [backupIdCopied, setBackupIdCopied] = useState(false);
   const tokenQuery = useCheckInToken(auth.hydrated && auth.isAuthenticated);
   const [lastActivityTime, setLastActivityTime] = useState(() => Date.now());
 
@@ -141,12 +163,49 @@ export function CheckInClient() {
   }, [tokenValue]);
 
   const expiresAt = tokenQuery.data?.expiresAt;
+  const publicId = tokenQuery.data?.publicId ?? null;
+  const backupIdCharacters = useMemo(() => {
+    if (!publicId) {
+      return [];
+    }
+
+    const occurrenceCounts = new Map<string, number>();
+
+    return Array.from(publicId, (character, index) => {
+      const occurrence = (occurrenceCounts.get(character) ?? 0) + 1;
+      occurrenceCounts.set(character, occurrence);
+
+      return {
+        character,
+        isDash: character === "-",
+        key: `${character}-${occurrence}`,
+        position: index + 1,
+      };
+    });
+  }, [publicId]);
   const expiresLabel = useMemo(() => {
     if (!expiresAt) {
       return null;
     }
     return formatTimeUTC(expiresAt, locale);
   }, [locale, expiresAt]);
+
+  useEffect(() => {
+    if (!showLargeBackupId) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShowLargeBackupId(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showLargeBackupId]);
 
   const handleManualRefresh = async () => {
     setRefreshing(true);
@@ -156,6 +215,22 @@ export function CheckInClient() {
       // Errors handled by query state
     }
     setRefreshing(false);
+  };
+
+  const handleCopyBackupId = async () => {
+    if (!publicId) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(publicId);
+      setBackupIdCopied(true);
+      window.setTimeout(() => {
+        setBackupIdCopied(false);
+      }, 2000);
+    } catch {
+      setBackupIdCopied(false);
+    }
   };
 
   if (tokenQuery.isError) {
@@ -278,14 +353,54 @@ export function CheckInClient() {
               )}
             </div>
 
-            <Button
-              onClick={handleManualRefresh}
-              disabled={refreshing}
-              className={`w-full rounded-2xl py-3 text-white shadow-md disabled:opacity-50 ${TICKET_BUTTON_CLASS}`}
-            >
-              <ClockIcon className="mr-2 h-4 w-4" />
-              {refreshing ? t("refreshing") : t("refresh")}
-            </Button>
+            <div className="rounded-2xl border border-white/38 bg-white/24 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_18px_38px_-34px_rgba(15,23,42,0.14)] backdrop-blur-xl dark:border-white/10 dark:bg-white/6 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_38px_-34px_rgba(0,0,0,0.42)]">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="mb-1 text-[11px] font-semibold tracking-[0.18em] text-neutral-500 uppercase dark:text-neutral-400">
+                    {t("ticket.backupId")}
+                  </div>
+                  {publicId ? (
+                    <div className="font-mono text-sm leading-5 font-semibold text-neutral-900 dark:text-neutral-100">
+                      {publicId}
+                    </div>
+                  ) : (
+                    <div className="h-5 w-44 rounded-full bg-neutral-200/90 dark:bg-white/12" />
+                  )}
+                </div>
+                <button
+                  type="button"
+                  aria-label={t("ticket.showLarge")}
+                  onClick={() => setShowLargeBackupId(true)}
+                  disabled={!publicId}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/35 bg-white/42 text-neutral-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] transition-colors hover:bg-white/55 disabled:opacity-50 dark:border-white/12 dark:bg-white/8 dark:text-neutral-200 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] dark:hover:bg-white/12"
+                >
+                  <BackupZoomIcon className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 rounded-[1.35rem] border border-white/28 bg-white/18 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-xl dark:border-white/10 dark:bg-white/4 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+              <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-500/14 text-orange-700 dark:text-orange-300">
+                  <RefreshIcon className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                    {refreshing ? t("refreshing") : t("ticket.refreshStatus")}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  handleManualRefresh().catch(() => undefined);
+                }}
+                disabled={refreshing}
+                className="shrink-0 rounded-full px-2.5 py-1.5 text-xs font-semibold text-neutral-700 underline decoration-neutral-400/70 decoration-1 underline-offset-4 transition-colors hover:text-neutral-950 disabled:opacity-50 dark:text-neutral-200 dark:decoration-neutral-500/70 dark:hover:text-white"
+              >
+                {t("ticket.refreshAction")}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -312,6 +427,86 @@ export function CheckInClient() {
           </div>
         </div>
       </div>
+
+      {showLargeBackupId && publicId && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/70 px-4 py-6 backdrop-blur-sm"
+          onClick={() => setShowLargeBackupId(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="backup-id-dialog-title"
+            className="w-full max-w-[32rem] overflow-hidden rounded-[1.7rem] border border-white/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(255,248,240,0.9)_100%)] p-3 shadow-[0_40px_120px_-40px_rgba(15,23,42,0.55)] ring-1 ring-white/60 backdrop-blur-2xl sm:p-4 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(24,24,28,0.96)_0%,rgba(10,10,14,0.95)_100%)] dark:ring-white/10"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="mb-3 flex items-center justify-between gap-3 sm:mb-4">
+              <div className="min-w-0">
+                <div
+                  id="backup-id-dialog-title"
+                  className="text-[11px] leading-none font-semibold tracking-[0.18em] text-neutral-500 uppercase dark:text-neutral-400"
+                >
+                  {t("ticket.backupId")}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleCopyBackupId().catch(() => undefined);
+                  }}
+                  className="rounded-full border border-neutral-200/80 bg-white/80 px-3 py-1.5 text-xs font-medium text-neutral-700 transition-colors hover:bg-white dark:border-white/10 dark:bg-white/6 dark:text-neutral-200 dark:hover:bg-white/10"
+                >
+                  {backupIdCopied ? t("ticket.copied") : t("ticket.copy")}
+                </button>
+                <button
+                  type="button"
+                  aria-label={t("ticket.closeLarge")}
+                  onClick={() => setShowLargeBackupId(false)}
+                  className="rounded-full border border-neutral-200/80 bg-white/70 p-2 text-neutral-600 transition-colors hover:bg-white dark:border-white/10 dark:bg-white/6 dark:text-neutral-300 dark:hover:bg-white/10"
+                >
+                  <CloseIcon className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="rounded-[1.3rem] border border-neutral-200/80 bg-white/86 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.88)] dark:border-white/10 dark:bg-white/6 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+              <div className="grid grid-cols-5 overflow-hidden rounded-[1rem] border border-neutral-200/80 bg-neutral-100/80 dark:border-white/10 dark:bg-white/6">
+                {backupIdCharacters.map((item) => {
+                  const isEvenTile = item.position % 2 === 1;
+                  const isNumber = isNumericCharacter(item.character);
+
+                  return (
+                    <div
+                      key={item.key}
+                      className={`flex aspect-square flex-col items-center justify-center px-1.5 py-2 ${
+                        isEvenTile
+                          ? "bg-white/55 dark:bg-white/4"
+                          : "bg-neutral-100/75 dark:bg-white/8"
+                      }`}
+                    >
+                      <div
+                        className={`font-mono leading-none font-semibold ${
+                          item.isDash
+                            ? "text-[3rem] text-orange-600 sm:text-[4rem] dark:text-orange-400"
+                            : isNumber
+                              ? "text-[2.65rem] text-sky-700 sm:text-[3.8rem] dark:text-sky-300"
+                              : "text-[2.65rem] text-neutral-950 sm:text-[3.8rem] dark:text-white"
+                        }`}
+                      >
+                        {item.character}
+                      </div>
+                      <div className="mt-1.5 text-[13px] text-neutral-500 sm:text-sm dark:text-neutral-400">
+                        {item.position}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

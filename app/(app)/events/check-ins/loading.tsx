@@ -75,7 +75,24 @@ export default function CheckInLoading() {
                   <Skeleton className="h-5 w-40" />
                 </div>
 
-                <Skeleton className="h-12 w-full rounded-2xl border border-white/20 bg-gradient-to-r from-rose-700/80 via-orange-500/80 to-red-600/80" />
+                <div className="rounded-2xl border border-white/38 bg-white/24 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_18px_38px_-34px_rgba(15,23,42,0.14)] backdrop-blur-xl dark:border-white/10 dark:bg-white/6 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_38px_-34px_rgba(0,0,0,0.42)]">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <Skeleton className="mb-2 h-3 w-20" />
+                      <Skeleton className="h-5 w-44" />
+                      <Skeleton className="mt-2 h-3 w-40" />
+                    </div>
+                    <Skeleton className="h-9 w-9 rounded-full" />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-3 rounded-[1.35rem] border border-white/28 bg-white/18 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-xl dark:border-white/10 dark:bg-white/4 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                  <div className="flex min-w-0 items-center gap-2.5">
+                    <Skeleton className="h-7 w-7 rounded-full" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                  <Skeleton className="h-4 w-14" />
+                </div>
               </div>
             </div>
           </div>

@@ -15,6 +15,7 @@ export const API_ROUTES = {
   CSRF: "/api/v1/csrf",
   CHECK_IN: {
     BASE: "/api/v1/check-ins",
+    LOOKUP: "/api/v1/check-ins/lookup",
     VERIFY: "/api/v1/check-ins/verify",
   },
   LIBRARY: "/api/v1/library",

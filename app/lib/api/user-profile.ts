@@ -324,7 +324,7 @@ export function useRemoveFromWatchlistMutation() {
   });
 }
 export function useCheckInToken(enabled = true) {
-  return useQuery<{ token: string; expiresAt: string }, ApiError>({
+  return useQuery<{ token: string; expiresAt: string; publicId: string }, ApiError>({
     enabled,
     queryFn: async () => {
       const response = await authFetch(API_ROUTES.USERS.ME.CHECK_IN);
@@ -332,7 +332,7 @@ export function useCheckInToken(enabled = true) {
         const data = await fetchJsonOrNull<{ error?: string }>(response);
         throw new ApiError("Failed to fetch check-in token", response.status, data?.error);
       }
-      return (await response.json()) as { token: string; expiresAt: string };
+      return (await response.json()) as { token: string; expiresAt: string; publicId: string };
     },
     queryKey: ["check-in-token"],
     retry: shouldRetryQuery,
