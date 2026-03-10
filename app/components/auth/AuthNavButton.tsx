@@ -251,7 +251,7 @@ function AuthNavButtonInner({
           <div className="absolute top-[calc(100%+0.65rem)] right-[-0.1rem] z-50 w-[13.75rem]">
             <div className="overflow-hidden rounded-[18px] border border-white/55 bg-[linear-gradient(180deg,rgba(255,255,255,0.86)_0%,rgba(255,255,255,0.74)_100%)] p-1.25 shadow-[0_26px_58px_-28px_rgba(15,23,42,0.22),0_10px_24px_-18px_rgba(15,23,42,0.14)] backdrop-blur-xl dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(20,20,24,0.86)_0%,rgba(14,14,18,0.76)_100%)] dark:shadow-[0_30px_60px_-30px_rgba(0,0,0,0.56),0_12px_26px_-20px_rgba(0,0,0,0.34)]">
               <div className={MENU_SECTION_LABEL_CLASS}>
-                <span>{t("profile")}</span>
+                <span>{tAccount("title")}</span>
                 <span className="h-px flex-1 bg-black/8 dark:bg-white/10" />
               </div>
               <div className="space-y-0.5">
@@ -306,7 +306,7 @@ function AuthNavButtonInner({
               ) : null}
               <div className="mt-1.5 space-y-0.5">
                 <div className={MENU_SECTION_LABEL_CLASS}>
-                  <span>{t("signOut")}</span>
+                  <span>{t("session")}</span>
                   <span className="h-px flex-1 bg-black/8 dark:bg-white/10" />
                 </div>
                 <button
