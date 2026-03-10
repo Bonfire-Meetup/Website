@@ -12,8 +12,8 @@ import {
   QuestionMarkCircleIcon,
   ShieldIcon,
 } from "@/components/shared/Icons";
-import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { Card } from "@/components/ui/Card";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 interface HelpTile {
   description: string;
