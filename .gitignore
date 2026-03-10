@@ -137,3 +137,4 @@ cdn-webp/
 .wrangler/
 .rollbar-sourcemaps
 .vercel/
+public/vendor/

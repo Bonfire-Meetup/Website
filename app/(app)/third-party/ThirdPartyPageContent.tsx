@@ -68,7 +68,7 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
   utilities: [
     { name: "qrcode", license: "MIT", url: WEBSITE_URLS.ATTRIBUTIONS.TECH.QRCODE },
     {
-      name: "qr-scanner",
+      name: "react-qr-scanner",
       license: "MIT",
       url: WEBSITE_URLS.ATTRIBUTIONS.TECH.QR_SCANNER,
     },

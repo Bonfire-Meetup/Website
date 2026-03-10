@@ -1,9 +1,21 @@
 "use client";
 
+import { Scanner, type IDetectedBarcode } from "@yudiel/react-qr-scanner";
+import { prepareZXingModule } from "barcode-detector/ponyfill";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import QrScanner from "qr-scanner";
 import { useEffect, useRef, useState } from "react";
+
+prepareZXingModule({
+  overrides: {
+    locateFile: (path, prefix) => {
+      if (path.endsWith(".wasm")) {
+        return `/vendor/${path}`;
+      }
+      return prefix + path;
+    },
+  },
+});
 
 import {
   ArrowLeftIcon,
@@ -39,11 +51,6 @@ function isCameraNotReadableError(err: Error): boolean {
   return err.name === "NotReadableError" || err.message.includes("not readable");
 }
 
-function isExpectedDecodeMiss(error: Error | string): boolean {
-  const message = typeof error === "string" ? error : error.message;
-  return message.includes("No QR code found");
-}
-
 interface ScanResult {
   email?: string;
   expired?: boolean;
@@ -67,70 +74,7 @@ interface PublicIdParts {
   second: string;
 }
 
-interface ExtendedMediaTrackCapabilities extends MediaTrackCapabilities {
-  focusMode?: string[];
-  torch?: boolean;
-  zoom?: {
-    min?: number;
-    max?: number;
-  };
-}
-
 const PUBLIC_ID_ALLOWED_CHARS = /[1-9A-HJ-NP-Za-km-z]/g;
-
-function formatScannerMessage(error: Error | string): string {
-  return typeof error === "string" ? error : error.message;
-}
-
-function formatCameraList(cameras: QrScanner.Camera[]): string {
-  if (cameras.length === 0) {
-    return "none";
-  }
-
-  return cameras.map((camera) => camera.label || camera.id).join(" | ");
-}
-
-function formatTrackDiagnostics(track: MediaStreamTrack): string {
-  const settings = track.getSettings();
-  const size =
-    settings.width && settings.height ? `${settings.width}x${settings.height}` : "unknown-size";
-  const facingMode = settings.facingMode ?? "unknown-facing";
-  return `${track.label || "Unnamed camera"} | ${size} | ${facingMode}`;
-}
-
-function getDecoderDiagnostics(): string {
-  return "auto";
-}
-
-function getScanRegionDiagnostics(): string {
-  return "library default";
-}
-
-function getInversionModeDiagnostics(): string {
-  return "library default (original for webcam)";
-}
-
-function formatTrackCapabilities(capabilities: ExtendedMediaTrackCapabilities | null): string {
-  if (!capabilities) {
-    return "unavailable";
-  }
-
-  const parts: string[] = [];
-
-  if (Array.isArray(capabilities.focusMode) && capabilities.focusMode.length > 0) {
-    parts.push(`focus=${capabilities.focusMode.join("/")}`);
-  }
-
-  if (typeof capabilities.torch === "boolean") {
-    parts.push(`torch=${capabilities.torch ? "yes" : "no"}`);
-  }
-
-  if (capabilities.zoom) {
-    parts.push(`zoom=${capabilities.zoom.min ?? "?"}-${capabilities.zoom.max ?? "?"}`);
-  }
-
-  return parts.length > 0 ? parts.join(" | ") : "none";
-}
 
 function sanitizePublicIdInput(value: string): string {
   const normalized =
@@ -181,8 +125,6 @@ export function ReaderClient() {
   const [showDiagnostics, setShowDiagnostics] = useState(false);
   const [diagnosticsCopied, setDiagnosticsCopied] = useState(false);
   const [, setDebugEntriesVersion] = useState(0);
-  const scannerRef = useRef<QrScanner | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const debugEntriesRef = useRef<DebugEntry[]>([]);
   const isProcessingRef = useRef<boolean>(false);
   const firstPublicIdInputRef = useRef<HTMLInputElement | null>(null);
@@ -220,13 +162,6 @@ export function ReaderClient() {
     }
   }, [auth.hydrated, auth.isAuthenticated, isCrew, router]);
 
-  const destroyScanner = () => {
-    if (scannerRef.current) {
-      scannerRef.current.destroy();
-      scannerRef.current = null;
-    }
-  };
-
   const appendDebugEntry = (message: string, level: DebugEntry["level"] = "info") => {
     const timestamp = new Date().toLocaleTimeString("en-GB", {
       hour: "2-digit",
@@ -249,52 +184,6 @@ export function ReaderClient() {
     }
   };
 
-  const logActiveTrack = () => {
-    const stream = videoRef.current?.srcObject;
-    if (!(stream instanceof MediaStream)) {
-      appendDebugEntry("No active media stream on video element.", "warn");
-      return;
-    }
-
-    const [track] = stream.getVideoTracks();
-    if (!track) {
-      appendDebugEntry("Media stream started without a video track.", "warn");
-      return;
-    }
-
-    appendDebugEntry(`Active track: ${formatTrackDiagnostics(track)}`);
-  };
-
-  const logTrackCapabilities = () => {
-    const stream = videoRef.current?.srcObject;
-    if (!(stream instanceof MediaStream)) {
-      return;
-    }
-
-    const [track] = stream.getVideoTracks();
-    if (!track || typeof track.getCapabilities !== "function") {
-      appendDebugEntry("Track capabilities unavailable.", "warn");
-      return;
-    }
-
-    const capabilities = track.getCapabilities() as ExtendedMediaTrackCapabilities;
-    appendDebugEntry(`Track capabilities: ${formatTrackCapabilities(capabilities)}`);
-  };
-
-  const logAvailableCameras = async () => {
-    try {
-      const cameras = await QrScanner.listCameras(true);
-      appendDebugEntry(`Available cameras: ${formatCameraList(cameras)}`);
-      return cameras;
-    } catch (cameraListError) {
-      const message = formatScannerMessage(
-        cameraListError instanceof Error ? cameraListError : String(cameraListError),
-      );
-      appendDebugEntry(`Failed to list cameras: ${message}`, "warn");
-      return null;
-    }
-  };
-
   const setInvalidScanResult = (
     errorMessage: string,
     options: Pick<ScanResult, "email" | "expired" | "name" | "publicId"> = {},
@@ -313,7 +202,6 @@ export function ReaderClient() {
   };
 
   const resetReaderState = () => {
-    destroyScanner();
     isProcessingRef.current = false;
     debugEntriesRef.current = [];
     setDebugEntriesVersion((current) => current + 1);
@@ -330,28 +218,14 @@ export function ReaderClient() {
     setDiagnosticsCopied(false);
   };
 
-  useEffect(
-    () => () => {
-      destroyScanner();
-    },
-    [],
-  );
-
   useEffect(() => {
-    const handlePageHide = () => {
-      destroyScanner();
-      isProcessingRef.current = false;
-    };
-
     const handlePageShow = () => {
       resetReaderState();
     };
 
-    window.addEventListener("pagehide", handlePageHide);
     window.addEventListener("pageshow", handlePageShow);
 
     return () => {
-      window.removeEventListener("pagehide", handlePageHide);
       window.removeEventListener("pageshow", handlePageShow);
     };
   }, []);
@@ -382,14 +256,9 @@ export function ReaderClient() {
     );
   }
 
-  const stopScanner = () => {
-    appendDebugEntry("Stopping scanner.");
-    destroyScanner();
-    setIsScanning(false);
-  };
-
   const handleStopReader = () => {
-    stopScanner();
+    appendDebugEntry("Stopping scanner.");
+    setIsScanning(false);
     setIsVerifying(false);
     setScanResult(null);
     isProcessingRef.current = false;
@@ -406,10 +275,9 @@ export function ReaderClient() {
       return;
     }
 
-    appendDebugEntry("Bonfire QR detected. Stopping camera and verifying ticket.");
+    appendDebugEntry("Bonfire QR detected. Verifying ticket.");
     isProcessingRef.current = true;
     setScanResult(null);
-    stopScanner();
 
     const parsed = parseCheckInToken(token);
     const isExpiredToken = parsed.error === "Token expired";
@@ -509,133 +377,68 @@ export function ReaderClient() {
     }
   };
 
-  const startReader = async ({ preserveDiagnostics = false } = {}) => {
+  const handleStartReader = () => {
     if (!selectedEvent) {
       haptics.neutral();
       setError(t("errors.noEventSelected"));
       return;
     }
 
-    if (!preserveDiagnostics) {
-      debugEntriesRef.current = [];
-      setDebugEntriesVersion((current) => current + 1);
-    }
+    debugEntriesRef.current = [];
+    setDebugEntriesVersion((current) => current + 1);
     setError(null);
     setScanResult(null);
     setIsVerifying(false);
     isProcessingRef.current = false;
 
     appendDebugEntry(`Starting scanner for event ${selectedEvent}.`);
-    appendDebugEntry(`Decoder: ${getDecoderDiagnostics()}.`);
-    appendDebugEntry(`Scan region: ${getScanRegionDiagnostics()}.`);
-    appendDebugEntry(`Inversion mode: ${getInversionModeDiagnostics()}.`);
     appendDebugEntry("Preferred camera request: environment.");
 
     setIsScanning(true);
+  };
 
-    const maxAttempts = 20;
-    const delay = (ms: number) =>
-      new Promise<void>((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, ms);
-      });
+  const handleScannerScan = (detectedCodes: IDetectedBarcode[]) => {
+    if (isProcessingRef.current) {
+      return;
+    }
 
-    const waitForVideo = async (attempt = 0): Promise<HTMLVideoElement | null> => {
-      if (attempt >= maxAttempts) {
-        return null;
+    for (const code of detectedCodes) {
+      if (code.rawValue) {
+        handleScanSuccess(code.rawValue).catch(() => undefined);
+        return;
       }
-      const element = videoRef.current;
-      if (element) {
-        return element;
-      }
-      await delay(50);
-      return waitForVideo(attempt + 1);
-    };
+    }
+  };
 
-    const videoElement = await waitForVideo();
+  const handleScannerError = (cameraError: unknown) => {
+    const scannerError =
+      cameraError instanceof Error ? cameraError : new Error(String(cameraError));
+    appendDebugEntry(`Camera error: ${scannerError.message}`, "error");
 
-    if (!videoElement) {
+    if (isCameraPermissionError(scannerError)) {
       haptics.error();
-      appendDebugEntry("Video element did not mount in time.", "error");
-      setError(t("errors.cameraAccessFailed"));
+      setError(t("errors.cameraPermissionDenied"));
       setIsScanning(false);
       return;
     }
 
-    try {
-      const scanner = new QrScanner(
-        videoElement,
-        (result) => {
-          handleScanSuccess(result.data).catch(() => undefined);
-        },
-        {
-          onDecodeError: (scanError) => {
-            if (isExpectedDecodeMiss(scanError)) {
-              return;
-            }
-
-            appendDebugEntry(`QR decode error: ${formatScannerMessage(scanError)}`, "warn");
-          },
-          preferredCamera: "environment",
-          highlightScanRegion: true,
-          highlightCodeOutline: true,
-          returnDetailedScanResult: true,
-        },
-      );
-      scannerRef.current = scanner;
-
-      try {
-        await scanner.start();
-        appendDebugEntry("Scanner started.");
-        logActiveTrack();
-        logTrackCapabilities();
-        await logAvailableCameras();
-      } catch (cameraError) {
-        const scannerError =
-          cameraError instanceof Error ? cameraError : new Error(String(cameraError));
-        appendDebugEntry(`Camera error: ${scannerError.message}`, "error");
-
-        if (isCameraPermissionError(scannerError)) {
-          haptics.error();
-          setError(t("errors.cameraPermissionDenied"));
-          setIsScanning(false);
-          destroyScanner();
-          return;
-        }
-
-        if (isCameraNotFoundError(scannerError)) {
-          haptics.error();
-          setError(t("errors.cameraNotFound"));
-          setIsScanning(false);
-          destroyScanner();
-          return;
-        }
-
-        if (isCameraNotReadableError(scannerError)) {
-          haptics.error();
-          setError(t("errors.cameraNotReadable"));
-          setIsScanning(false);
-          destroyScanner();
-          return;
-        }
-
-        haptics.error();
-        setError(t("errors.cameraAccessFailed"));
-        setIsScanning(false);
-        destroyScanner();
-      }
-    } catch {
+    if (isCameraNotFoundError(scannerError)) {
       haptics.error();
-      appendDebugEntry("Scanner initialization failed before camera start.", "error");
-      setError(t("errors.cameraAccessFailed"));
+      setError(t("errors.cameraNotFound"));
       setIsScanning(false);
-      destroyScanner();
+      return;
     }
-  };
 
-  const handleStartReader = () => {
-    startReader().catch(() => undefined);
+    if (isCameraNotReadableError(scannerError)) {
+      haptics.error();
+      setError(t("errors.cameraNotReadable"));
+      setIsScanning(false);
+      return;
+    }
+
+    haptics.error();
+    setError(t("errors.cameraAccessFailed"));
+    setIsScanning(false);
   };
 
   const handleCheckIn = async () => {
@@ -703,7 +506,7 @@ export function ReaderClient() {
       return;
     }
 
-    stopScanner();
+    setIsScanning(false);
     setError(null);
     setScanResult(null);
     setIsVerifying(false);
@@ -1073,7 +876,18 @@ export function ReaderClient() {
           <div className="space-y-3 sm:space-y-4">
             <div className="overflow-hidden rounded-xl border border-neutral-200 bg-black shadow-lg sm:rounded-2xl dark:border-neutral-700">
               <div className="aspect-square w-full">
-                <video ref={videoRef} className="h-full w-full object-cover" muted playsInline />
+                <Scanner
+                  onScan={handleScannerScan}
+                  onError={handleScannerError}
+                  constraints={{ facingMode: "environment" }}
+                  formats={["qr_code"]}
+                  paused={isProcessingRef.current}
+                  components={{ finder: true }}
+                  styles={{
+                    container: { width: "100%", height: "100%" },
+                    video: { objectFit: "cover" },
+                  }}
+                />
               </div>
             </div>
             {isVerifying && (

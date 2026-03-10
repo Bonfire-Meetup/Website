@@ -73,7 +73,7 @@ export const WEBSITE_URLS = {
       NUQS: "https://nuqs.dev",
       OXC: "https://oxc-project.github.io",
       POSTCSS: "https://postcss.org",
-      QR_SCANNER: "https://github.com/nimiq/qr-scanner",
+      QR_SCANNER: "https://github.com/yudielcurbelo/react-qr-scanner",
       QRCODE: "https://github.com/soldair/node-qrcode",
       REACT: "https://react.dev",
       REACT_DOM: "https://react.dev",
