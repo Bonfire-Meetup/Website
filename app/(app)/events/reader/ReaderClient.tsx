@@ -881,6 +881,7 @@ export function ReaderClient() {
                   onError={handleScannerError}
                   constraints={{ facingMode: "environment" }}
                   formats={["qr_code"]}
+                  sound={false}
                   paused={isProcessingRef.current}
                   components={{ finder: true }}
                   styles={{
