@@ -1,19 +1,34 @@
+import { createSelector } from "@reduxjs/toolkit";
+
 import type { RootState } from "@/lib/redux/store";
 
 export const selectAccessTokenClaims = (state: RootState) => state.auth.decodedToken;
 
 export const selectIdTokenClaims = (state: RootState) => state.auth.decodedIdToken;
 
-export const selectAuthUserId = (state: RootState) =>
-  state.auth.decodedToken?.sub ?? state.auth.decodedIdToken?.sub;
+const EMPTY_ROLES: string[] = [];
 
-export const selectAuthRoles = (state: RootState) => state.auth.decodedToken?.rol ?? [];
+export const selectAuthUserId = createSelector(
+  [selectAccessTokenClaims, selectIdTokenClaims],
+  (accessTokenClaims, idTokenClaims) => accessTokenClaims?.sub ?? idTokenClaims?.sub,
+);
 
-export const selectAuthMembershipTier = (state: RootState) => state.auth.decodedToken?.mbt ?? 0;
+export const selectAuthRoles = createSelector(
+  [selectAccessTokenClaims],
+  (accessTokenClaims) => accessTokenClaims?.rol ?? EMPTY_ROLES,
+);
 
-export const selectAuthViewer = (state: RootState) => ({
-  email: state.auth.decodedIdToken?.email,
-  id: selectAuthUserId(state),
-  name: state.auth.decodedIdToken?.name,
-  publicProfile: state.auth.decodedIdToken?.publicProfile ?? false,
-});
+export const selectAuthMembershipTier = createSelector(
+  [selectAccessTokenClaims],
+  (accessTokenClaims) => accessTokenClaims?.mbt ?? 0,
+);
+
+export const selectAuthViewer = createSelector(
+  [selectAuthUserId, selectIdTokenClaims],
+  (userId, idTokenClaims) => ({
+    email: idTokenClaims?.email,
+    id: userId,
+    name: idTokenClaims?.name,
+    publicProfile: idTokenClaims?.publicProfile ?? false,
+  }),
+);

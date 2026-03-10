@@ -567,17 +567,21 @@ export function ReaderClient() {
       const scanner = new QrScanner(
         videoElement,
         (result) => {
-          handleScanSuccess(result).catch(() => undefined);
+          handleScanSuccess(result.data).catch(() => undefined);
         },
-        (scanError) => {
-          if (isExpectedDecodeMiss(scanError)) {
-            return;
-          }
+        {
+          onDecodeError: (scanError) => {
+            if (isExpectedDecodeMiss(scanError)) {
+              return;
+            }
 
-          appendDebugEntry(`QR decode error: ${formatScannerMessage(scanError)}`, "warn");
+            appendDebugEntry(`QR decode error: ${formatScannerMessage(scanError)}`, "warn");
+          },
+          preferredCamera: "environment",
+          highlightScanRegion: true,
+          highlightCodeOutline: true,
+          returnDetailedScanResult: true,
         },
-        undefined,
-        "environment",
       );
       scannerRef.current = scanner;
 
