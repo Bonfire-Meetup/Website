@@ -106,8 +106,8 @@ function getScanRegionDiagnostics(): string {
   return "library default";
 }
 
-function getInversionModeDiagnostics(): QrScanner.InversionMode {
-  return "original";
+function getInversionModeDiagnostics(): string {
+  return "library default (original for webcam)";
 }
 
 function formatTrackCapabilities(capabilities: ExtendedMediaTrackCapabilities | null): string {
@@ -180,9 +180,10 @@ export function ReaderClient() {
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [showDiagnostics, setShowDiagnostics] = useState(false);
   const [diagnosticsCopied, setDiagnosticsCopied] = useState(false);
-  const [debugEntries, setDebugEntries] = useState<DebugEntry[]>([]);
+  const [, setDebugEntriesVersion] = useState(0);
   const scannerRef = useRef<QrScanner | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const debugEntriesRef = useRef<DebugEntry[]>([]);
   const isProcessingRef = useRef<boolean>(false);
   const firstPublicIdInputRef = useRef<HTMLInputElement | null>(null);
   const secondPublicIdInputRef = useRef<HTMLInputElement | null>(null);
@@ -233,14 +234,19 @@ export function ReaderClient() {
       second: "2-digit",
     });
 
-    setDebugEntries((current) => [
-      ...current.slice(-11),
+    const nextEntries = [
+      ...debugEntriesRef.current.slice(-11),
       {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         level,
         message: `${timestamp} ${message}`,
       },
-    ]);
+    ];
+    debugEntriesRef.current = nextEntries;
+
+    if (showDiagnostics || nextEntries.length === 1 || !isScanning) {
+      setDebugEntriesVersion((current) => current + 1);
+    }
   };
 
   const logActiveTrack = () => {
@@ -309,6 +315,8 @@ export function ReaderClient() {
   const resetReaderState = () => {
     destroyScanner();
     isProcessingRef.current = false;
+    debugEntriesRef.current = [];
+    setDebugEntriesVersion((current) => current + 1);
     setSelectedEvent("");
     setManualPublicIdParts({ first: "", second: "" });
     setIsScanning(false);
@@ -509,7 +517,8 @@ export function ReaderClient() {
     }
 
     if (!preserveDiagnostics) {
-      setDebugEntries([]);
+      debugEntriesRef.current = [];
+      setDebugEntriesVersion((current) => current + 1);
     }
     setError(null);
     setScanResult(null);
@@ -558,21 +567,18 @@ export function ReaderClient() {
       const scanner = new QrScanner(
         videoElement,
         (result) => {
-          handleScanSuccess(result.data).catch(() => undefined);
+          handleScanSuccess(result).catch(() => undefined);
         },
-        {
-          onDecodeError: (scanError) => {
-            if (isExpectedDecodeMiss(scanError)) {
-              return;
-            }
+        (scanError) => {
+          if (isExpectedDecodeMiss(scanError)) {
+            return;
+          }
 
-            appendDebugEntry(`QR decode error: ${formatScannerMessage(scanError)}`, "warn");
-          },
-          preferredCamera: "environment",
-          returnDetailedScanResult: true,
+          appendDebugEntry(`QR decode error: ${formatScannerMessage(scanError)}`, "warn");
         },
+        undefined,
+        "environment",
       );
-      scanner.setInversionMode(getInversionModeDiagnostics());
       scannerRef.current = scanner;
 
       try {
@@ -770,11 +776,11 @@ export function ReaderClient() {
   const manualPublicIdValue = joinPublicId(manualPublicIdParts);
 
   const handleCopyDiagnostics = async () => {
-    if (debugEntries.length === 0) {
+    if (debugEntriesRef.current.length === 0) {
       return;
     }
 
-    const diagnosticsText = debugEntries.map((entry) => entry.message).join("\n");
+    const diagnosticsText = debugEntriesRef.current.map((entry) => entry.message).join("\n");
 
     try {
       await navigator.clipboard.writeText(diagnosticsText);
@@ -796,6 +802,8 @@ export function ReaderClient() {
     setManualPublicIdParts({ first: "", second: "" });
     setShowManualEntry(false);
   };
+
+  const debugEntries = debugEntriesRef.current;
 
   if (scanResult) {
     const resultToneClass = scanResult.valid
