@@ -17,7 +17,7 @@ import {
   getRefreshTokenByHash,
   insertAuthAttempt,
   markAuthChallengeUsed,
-  markRefreshTokenUsed,
+  markRefreshTokenUsedIfUnused,
   revokeRefreshTokenFamily,
   upsertAuthUser,
 } from "@/lib/data/auth";
@@ -85,6 +85,7 @@ const handleRefreshTokenGrant = async (
   clientFingerprint: ReturnType<typeof getClientFingerprint>,
   requestId: string,
 ) => {
+  const reuseWindowMs = getRefreshTokenReuseWindowSeconds() * 1000;
   const delay = () =>
     new Promise<void>((resolve) => {
       setTimeout(() => {
@@ -145,27 +146,75 @@ const handleRefreshTokenGrant = async (
     return unauthorizedResponse("expired_refresh_token");
   }
 
-  if (refreshToken.usedAt) {
-    const usedAtTime = new Date(refreshToken.usedAt).getTime();
-    const now = Date.now();
-    const reuseWindowMs = getRefreshTokenReuseWindowSeconds() * 1000;
+  const handleUsedRefreshToken = async (usedToken: typeof refreshToken) => {
+    if (!usedToken.usedAt) {
+      return null;
+    }
 
+    const usedAtTime = new Date(usedToken.usedAt).getTime();
+    const now = Date.now();
     if (now - usedAtTime > reuseWindowMs) {
-      logError("auth.token.refresh.token_reuse_detected", new Error("Token reuse detected"), {
+      logWarn("auth.token.refresh.token_reuse_detected", {
         ...clientFingerprint,
-        tokenFamilyId: refreshToken.tokenFamilyId,
-        usedAt: refreshToken.usedAt,
+        tokenFamilyId: usedToken.tokenFamilyId,
+        usedAt: usedToken.usedAt,
         requestId,
       });
 
-      await revokeRefreshTokenFamily(refreshToken.tokenFamilyId);
+      await revokeRefreshTokenFamily(usedToken.tokenFamilyId);
       return unauthorizedResponse("token_reuse_detected");
     }
 
-    logInfo("auth.token.refresh.concurrent_request", { ...clientFingerprint, requestId });
+    logInfo("auth.token.refresh.concurrent_request", {
+      ...clientFingerprint,
+      tokenFamilyId: usedToken.tokenFamilyId,
+      usedAt: usedToken.usedAt,
+      requestId,
+    });
+
+    return null;
+  };
+
+  const usedTokenResponse = await handleUsedRefreshToken(refreshToken);
+
+  if (usedTokenResponse) {
+    return usedTokenResponse;
   }
 
-  await markRefreshTokenUsed(tokenHash);
+  if (!refreshToken.usedAt) {
+    const didMarkUsed = await markRefreshTokenUsedIfUnused(tokenHash);
+
+    if (!didMarkUsed) {
+      const latestRefreshToken = await getRefreshTokenByHash(tokenHash);
+
+      if (!latestRefreshToken) {
+        return unauthorizedResponse("invalid_refresh_token");
+      }
+
+      if (latestRefreshToken.revokedAt) {
+        logWarn("auth.token.refresh.revoked_token_used", {
+          ...clientFingerprint,
+          tokenFamilyId: latestRefreshToken.tokenFamilyId,
+          requestId,
+        });
+        return unauthorizedResponse("revoked_refresh_token");
+      }
+
+      if (new Date(latestRefreshToken.expiresAt) <= new Date()) {
+        return unauthorizedResponse("expired_refresh_token");
+      }
+
+      const racedTokenResponse = await handleUsedRefreshToken(latestRefreshToken);
+
+      if (racedTokenResponse) {
+        return racedTokenResponse;
+      }
+
+      if (!latestRefreshToken.usedAt) {
+        return unauthorizedResponse("invalid_refresh_token");
+      }
+    }
+  }
 
   const { accessToken, accessExpiresIn, accessTokenJti, cookieValue, idToken } =
     await issueAuthTokens({

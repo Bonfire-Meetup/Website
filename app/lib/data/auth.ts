@@ -443,11 +443,22 @@ export const getRefreshTokenByHash = async (tokenHash: string): Promise<RefreshT
   return rows[0] ?? null;
 };
 
-export const markRefreshTokenUsed = async (tokenHash: string) => {
-  await db()
+export const markRefreshTokenUsedIfUnused = async (tokenHash: string): Promise<boolean> => {
+  const now = new Date().toISOString();
+  const rows = await db()
     .update(authRefreshToken)
-    .set({ usedAt: new Date().toISOString() })
-    .where(eq(authRefreshToken.tokenHash, tokenHash));
+    .set({ usedAt: now })
+    .where(
+      and(
+        eq(authRefreshToken.tokenHash, tokenHash),
+        isNull(authRefreshToken.usedAt),
+        isNull(authRefreshToken.revokedAt),
+        gt(authRefreshToken.expiresAt, now),
+      ),
+    )
+    .returning({ id: authRefreshToken.id });
+
+  return rows.length > 0;
 };
 
 export const revokeRefreshToken = async (tokenHash: string) => {
