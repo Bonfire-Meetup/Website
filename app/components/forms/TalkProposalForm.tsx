@@ -463,6 +463,8 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
     setExperience("");
     setDuration("");
     setPreferredLocation("either");
+    setCurrentStep(0);
+    setClientErrors({});
     removeFromLocalStorage(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
   };
 
@@ -582,6 +584,8 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
   const inputNormalClass = "form-input";
   const inputErrorClass = "form-input-error";
   const currentHelper = helperItems[currentStep];
+  const isSubmitDisabled =
+    isPending || isTransitionPending || turnstileExecuting || !csrfToken || !duration;
 
   return (
     <form
@@ -934,7 +938,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
               key="submit-form"
               type="submit"
               variant="fire-primary"
-              disabled={isPending || isTransitionPending || turnstileExecuting || !csrfToken}
+              disabled={isSubmitDisabled}
               className="w-full rounded-xl px-5 py-3 text-sm sm:w-auto sm:min-w-36"
             >
               {isPending || isTransitionPending || turnstileExecuting ? (
