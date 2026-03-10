@@ -1,8 +1,8 @@
 "use client";
 
-import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import QrScanner from "qr-scanner";
 import { useEffect, useRef, useState } from "react";
 
 import { QrCodeIcon, CheckIcon, CloseIcon } from "@/components/shared/Icons";
@@ -33,7 +33,14 @@ function isCameraNotReadableError(err: Error): boolean {
   return err.name === "NotReadableError" || err.message.includes("not readable");
 }
 
+function isExpectedDecodeMiss(error: Error | string): boolean {
+  const message = typeof error === "string" ? error : error.message;
+  return message.includes("No QR code found");
+}
+
 interface ScanResult {
+  email?: string;
+  expired?: boolean;
   valid: boolean;
   publicId?: string;
   name?: string | null;
@@ -43,46 +50,30 @@ interface ScanResult {
   alreadyCheckedIn?: boolean;
 }
 
-function getScannerConfig(isIOS: boolean) {
-  return {
-    aspectRatio: 1,
-    disableFlip: false,
-    fps: isIOS ? 18 : 14,
-    qrbox: (vw: number, vh: number) => {
-      const min = Math.min(vw, vh);
-      const scale = isIOS ? 0.52 : 0.58;
-      const size = Math.max(180, Math.min(Math.floor(min * scale), 320));
-      return { width: size, height: size };
-    },
-  };
-}
-
-function getScannerConstraints(isIOS: boolean): MediaTrackConstraints {
-  return {
-    facingMode: { ideal: "environment" },
-    frameRate: { ideal: isIOS ? 24 : 18 },
-    height: { ideal: isIOS ? 720 : 900 },
-    width: { ideal: isIOS ? 1280 : 1600 },
-  };
-}
-
 export function ReaderClient() {
   const t = useTranslations("reader");
+  const pathname = usePathname();
   const router = useRouter();
   const haptics = useHaptics();
   const auth = useAppSelector((state) => state.auth);
   const userRoles = useAppSelector(selectAuthRoles);
+  const [hasMounted, setHasMounted] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<string>("");
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isCheckingIn, setIsCheckingIn] = useState(false);
-  const scannerRef = useRef<Html5Qrcode | null>(null);
+  const scannerRef = useRef<QrScanner | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const isProcessingRef = useRef<boolean>(false);
 
   const events = getUpcomingEvents(new Date());
   const isCrew = userRoles.includes(USER_ROLES.CREW);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     if (auth.hydrated && (!auth.isAuthenticated || !isCrew)) {
@@ -90,23 +81,72 @@ export function ReaderClient() {
     }
   }, [auth.hydrated, auth.isAuthenticated, isCrew, router]);
 
+  const destroyScanner = () => {
+    if (scannerRef.current) {
+      scannerRef.current.destroy();
+      scannerRef.current = null;
+    }
+  };
+
+  const setInvalidScanResult = (
+    errorMessage: string,
+    options: Pick<ScanResult, "email" | "expired" | "name" | "publicId"> = {},
+  ) => {
+    if (options.expired) {
+      haptics.neutral();
+    } else {
+      haptics.error();
+    }
+    setScanResult({
+      ...options,
+      valid: false,
+      error: errorMessage,
+      timestamp: Date.now(),
+    });
+  };
+
+  const resetReaderState = () => {
+    destroyScanner();
+    isProcessingRef.current = false;
+    setSelectedEvent("");
+    setIsScanning(false);
+    setScanResult(null);
+    setError(null);
+    setIsVerifying(false);
+    setIsCheckingIn(false);
+  };
+
   useEffect(
     () => () => {
-      if (scannerRef.current) {
-        scannerRef.current
-          .stop()
-          .then(() => {
-            scannerRef.current = null;
-          })
-          .catch(() => {
-            scannerRef.current = null;
-          });
-      }
+      destroyScanner();
     },
     [],
   );
 
-  if (!auth.hydrated) {
+  useEffect(() => {
+    const handlePageHide = () => {
+      destroyScanner();
+      isProcessingRef.current = false;
+    };
+
+    const handlePageShow = () => {
+      resetReaderState();
+    };
+
+    window.addEventListener("pagehide", handlePageHide);
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => {
+      window.removeEventListener("pagehide", handlePageHide);
+      window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, []);
+
+  useEffect(() => {
+    resetReaderState();
+  }, [pathname]);
+
+  if (!hasMounted || !auth.hydrated) {
     return (
       <div className="mx-auto w-full max-w-2xl px-2 sm:px-0">
         <div className="flex items-center justify-center py-8 sm:py-12">
@@ -128,20 +168,13 @@ export function ReaderClient() {
     );
   }
 
-  const stopScanner = async () => {
-    if (scannerRef.current) {
-      try {
-        await scannerRef.current.stop();
-        await scannerRef.current.clear();
-        // oxlint-disable-next-line no-empty
-      } catch {}
-      scannerRef.current = null;
-    }
+  const stopScanner = () => {
+    destroyScanner();
     setIsScanning(false);
   };
 
-  const handleStopReader = async () => {
-    await stopScanner();
+  const handleStopReader = () => {
+    stopScanner();
     setIsVerifying(false);
     setScanResult(null);
     isProcessingRef.current = false;
@@ -151,7 +184,30 @@ export function ReaderClient() {
     if (isProcessingRef.current) {
       return;
     }
+
+    const token = extractTokenFromUrl(decodedText);
+
+    if (!token) {
+      return;
+    }
+
     isProcessingRef.current = true;
+    setScanResult(null);
+    stopScanner();
+
+    const parsed = parseCheckInToken(token);
+    const isExpiredToken = parsed.error === "Token expired";
+
+    if (!parsed.valid && !isExpiredToken) {
+      setIsVerifying(false);
+      let errorMessage = t("errors.contentInvalid");
+      if (parsed.error?.includes("format") || parsed.error?.includes("version")) {
+        errorMessage = t("errors.contentInvalid");
+      }
+      setInvalidScanResult(errorMessage);
+      isProcessingRef.current = false;
+      return;
+    }
 
     const timeoutId = setTimeout(() => {
       isProcessingRef.current = false;
@@ -159,43 +215,6 @@ export function ReaderClient() {
     }, 10000);
 
     setIsVerifying(true);
-    setScanResult(null);
-
-    const token = extractTokenFromUrl(decodedText);
-
-    if (!token) {
-      clearTimeout(timeoutId);
-      setIsVerifying(false);
-      haptics.error();
-      setScanResult({
-        valid: false,
-        error: t("errors.contentInvalid"),
-        timestamp: Date.now(),
-      });
-      isProcessingRef.current = false;
-      return;
-    }
-
-    const parsed = parseCheckInToken(token);
-
-    if (!parsed.valid) {
-      clearTimeout(timeoutId);
-      setIsVerifying(false);
-      haptics.error();
-      let errorMessage = t("errors.contentInvalid");
-      if (parsed.error === "Token expired") {
-        errorMessage = t("errors.tokenExpired");
-      } else if (parsed.error?.includes("format") || parsed.error?.includes("version")) {
-        errorMessage = t("errors.contentInvalid");
-      }
-      setScanResult({
-        valid: false,
-        error: errorMessage,
-        timestamp: Date.now(),
-      });
-      isProcessingRef.current = false;
-      return;
-    }
 
     try {
       const response = await authFetch(API_ROUTES.CHECK_IN.VERIFY, {
@@ -211,17 +230,25 @@ export function ReaderClient() {
         clearTimeout(timeoutId);
         haptics.success();
         setScanResult({
+          email: result.email,
           valid: true,
           publicId: result.publicId,
           name: result.name,
           timestamp: Date.now(),
           checkedIn: false,
         });
-        await stopScanner();
+        isProcessingRef.current = false;
+      } else if (result.expired) {
+        clearTimeout(timeoutId);
+        setInvalidScanResult(t("result.ticketExpired"), {
+          email: result.email,
+          expired: true,
+          name: result.name,
+          publicId: result.publicId,
+        });
         isProcessingRef.current = false;
       } else {
         clearTimeout(timeoutId);
-        haptics.error();
         let errorMessage = t("errors.verificationFailed");
         const isInvalidSignature = result.error === "Invalid signature";
         if (isInvalidSignature) {
@@ -241,14 +268,7 @@ export function ReaderClient() {
             errorMessage = result.error;
           }
         }
-        setScanResult({
-          valid: false,
-          error: errorMessage,
-          timestamp: Date.now(),
-        });
-        if (isInvalidSignature) {
-          await stopScanner();
-        }
+        setInvalidScanResult(errorMessage);
         isProcessingRef.current = false;
       }
     } catch (err) {
@@ -258,12 +278,7 @@ export function ReaderClient() {
         router.replace(PAGE_ROUTES.LOGIN_WITH_REASON(LOGIN_REASON.SESSION_EXPIRED));
         return;
       }
-      haptics.error();
-      setScanResult({
-        valid: false,
-        error: t("errors.verificationFailed"),
-        timestamp: Date.now(),
-      });
+      setInvalidScanResult(t("errors.verificationFailed"));
       isProcessingRef.current = false;
     }
   };
@@ -290,111 +305,89 @@ export function ReaderClient() {
         }, ms);
       });
 
-    const waitForContainer = async (attempt = 0): Promise<HTMLElement | null> => {
+    const waitForVideo = async (attempt = 0): Promise<HTMLVideoElement | null> => {
       if (attempt >= maxAttempts) {
         return null;
       }
-      const element = document.getElementById("qr-reader-container");
+      const element = videoRef.current;
       if (element) {
         return element;
       }
       await delay(50);
-      return waitForContainer(attempt + 1);
+      return waitForVideo(attempt + 1);
     };
 
-    const containerElement = await waitForContainer();
+    const videoElement = await waitForVideo();
 
-    if (!containerElement) {
+    if (!videoElement) {
       haptics.error();
-      setError(t("errors.scannerContainerNotFound"));
+      setError(t("errors.cameraAccessFailed"));
       setIsScanning(false);
       return;
     }
 
-    const isIOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
-
     try {
-      const scanner = new Html5Qrcode("qr-reader-container", {
-        useBarCodeDetectorIfSupported: !isIOS,
-        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
-        verbose: false,
-      });
+      const scanner = new QrScanner(
+        videoElement,
+        (result) => {
+          handleScanSuccess(result.data).catch(() => undefined);
+        },
+        {
+          maxScansPerSecond: 25,
+          onDecodeError: (scanError) => {
+            if (isExpectedDecodeMiss(scanError)) {
+              return;
+            }
+            console.error("QR decode error:", scanError);
+          },
+          preferredCamera: "environment",
+          returnDetailedScanResult: true,
+        },
+      );
+      scanner.setInversionMode("both");
       scannerRef.current = scanner;
 
-      const config = getScannerConfig(isIOS);
-
       try {
-        await scanner.start(
-          { facingMode: "environment" },
-          config,
-          (decodedText) => {
-            handleScanSuccess(decodedText).catch(() => undefined);
-          },
-          () => undefined,
-        );
+        await scanner.start();
       } catch (cameraError) {
         console.error("Camera error:", cameraError);
-        if (cameraError instanceof Error) {
-          if (isCameraPermissionError(cameraError)) {
-            haptics.error();
-            setError(t("errors.cameraPermissionDenied"));
-            setIsScanning(false);
-            scannerRef.current = null;
-            return;
-          } else if (isCameraNotFoundError(cameraError)) {
-            haptics.error();
-            setError(t("errors.cameraNotFound"));
-            setIsScanning(false);
-            scannerRef.current = null;
-            return;
-          } else if (isCameraNotReadableError(cameraError)) {
-            haptics.error();
-            setError(t("errors.cameraNotReadable"));
-            setIsScanning(false);
-            scannerRef.current = null;
-            return;
-          }
-          try {
-            await scanner.start(
-              getScannerConstraints(isIOS),
-              config,
-              (decodedText) => {
-                handleScanSuccess(decodedText).catch(() => undefined);
-              },
-              () => undefined,
-            );
-          } catch (constraintsError) {
-            console.error("Constraints error:", constraintsError);
-            try {
-              await scanner.start(
-                { facingMode: "user" },
-                config,
-                (decodedText) => {
-                  handleScanSuccess(decodedText).catch(() => undefined);
-                },
-                () => undefined,
-              );
-            } catch (fallbackError) {
-              console.error("Fallback error:", fallbackError);
-              haptics.error();
-              setError(t("errors.cameraAccessFailed"));
-              setIsScanning(false);
-              scannerRef.current = null;
-            }
-          }
-        } else {
-          console.error("Unknown camera error:", cameraError);
+        const scannerError =
+          cameraError instanceof Error ? cameraError : new Error(String(cameraError));
+
+        if (isCameraPermissionError(scannerError)) {
           haptics.error();
-          setError(t("errors.cameraAccessFailed"));
+          setError(t("errors.cameraPermissionDenied"));
           setIsScanning(false);
-          scannerRef.current = null;
+          destroyScanner();
+          return;
         }
+
+        if (isCameraNotFoundError(scannerError)) {
+          haptics.error();
+          setError(t("errors.cameraNotFound"));
+          setIsScanning(false);
+          destroyScanner();
+          return;
+        }
+
+        if (isCameraNotReadableError(scannerError)) {
+          haptics.error();
+          setError(t("errors.cameraNotReadable"));
+          setIsScanning(false);
+          destroyScanner();
+          return;
+        }
+
+        haptics.error();
+        setError(t("errors.cameraAccessFailed"));
+        setIsScanning(false);
+        destroyScanner();
       }
     } catch {
       haptics.error();
       setError(t("errors.cameraAccessFailed"));
       setIsScanning(false);
-      scannerRef.current = null;
+      destroyScanner();
     }
   };
 
@@ -505,7 +498,9 @@ export function ReaderClient() {
         {isScanning && (
           <div className="space-y-3 sm:space-y-4">
             <div className="overflow-hidden rounded-xl border border-neutral-200 bg-black shadow-lg sm:rounded-2xl dark:border-neutral-700">
-              <div id="qr-reader-container" className="qr-scanner-container aspect-square w-full" />
+              <div className="aspect-square w-full">
+                <video ref={videoRef} className="h-full w-full object-cover" muted playsInline />
+              </div>
             </div>
             {isVerifying && (
               <div className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2.5 text-xs text-blue-700 sm:px-4 sm:py-3 sm:text-sm dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-200">
@@ -520,7 +515,9 @@ export function ReaderClient() {
             className={`overflow-hidden rounded-xl border shadow-lg sm:rounded-2xl ${
               scanResult.valid
                 ? "border-emerald-200 bg-emerald-50 dark:border-emerald-500/30 dark:bg-emerald-500/10"
-                : "border-red-200 bg-red-50 dark:border-red-500/30 dark:bg-red-500/10"
+                : scanResult.expired
+                  ? "border-orange-200 bg-orange-50 dark:border-orange-500/30 dark:bg-orange-500/10"
+                  : "border-red-200 bg-red-50 dark:border-red-500/30 dark:bg-red-500/10"
             }`}
           >
             <div className="px-4 py-4 sm:px-6 sm:py-5">
@@ -537,11 +534,15 @@ export function ReaderClient() {
                     className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full shadow-md sm:h-14 sm:w-14 ${
                       scanResult.valid
                         ? "bg-emerald-600 dark:bg-emerald-500"
-                        : "bg-red-600 dark:bg-red-500"
+                        : scanResult.expired
+                          ? "bg-orange-500 dark:bg-orange-400"
+                          : "bg-red-600 dark:bg-red-500"
                     }`}
                   >
                     {scanResult.valid ? (
                       <CheckIcon className="h-6 w-6 text-white sm:h-7 sm:w-7" />
+                    ) : scanResult.expired ? (
+                      <CloseIcon className="h-6 w-6 text-white sm:h-7 sm:w-7" />
                     ) : (
                       <CloseIcon className="h-6 w-6 text-white sm:h-7 sm:w-7" />
                     )}
@@ -554,10 +555,16 @@ export function ReaderClient() {
                         className={`text-sm font-bold sm:text-base ${
                           scanResult.valid
                             ? "text-emerald-900 dark:text-emerald-100"
-                            : "text-red-900 dark:text-red-100"
+                            : scanResult.expired
+                              ? "text-orange-900 dark:text-orange-100"
+                              : "text-red-900 dark:text-red-100"
                         }`}
                       >
-                        {scanResult.valid ? t("result.valid") : t("result.invalid")}
+                        {scanResult.valid
+                          ? t("result.valid")
+                          : scanResult.expired
+                            ? t("result.expired")
+                            : t("result.invalid")}
                       </div>
                       {scanResult.valid && (
                         <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-600 dark:bg-emerald-400" />
@@ -567,29 +574,65 @@ export function ReaderClient() {
                       className={`text-xs font-medium ${
                         scanResult.valid
                           ? "text-emerald-600/70 dark:text-emerald-300/70"
-                          : "text-red-600/70 dark:text-red-300/70"
+                          : scanResult.expired
+                            ? "text-orange-600/70 dark:text-orange-300/70"
+                            : "text-red-600/70 dark:text-red-300/70"
                       }`}
                     >
                       {formatTimeUTC(new Date(scanResult.timestamp).toISOString())}
                     </div>
                   </div>
-                  {scanResult.valid && scanResult.name && (
-                    <div className="mb-2 text-base font-semibold text-emerald-900 sm:text-lg dark:text-emerald-100">
+                  {(scanResult.valid || scanResult.expired) && scanResult.name && (
+                    <div
+                      className={`mb-2 text-base font-semibold sm:text-lg ${
+                        scanResult.valid
+                          ? "text-emerald-900 dark:text-emerald-100"
+                          : "text-orange-900 dark:text-orange-100"
+                      }`}
+                    >
                       {scanResult.name}
                     </div>
                   )}
-                  {scanResult.valid && scanResult.publicId && (
+                  {(scanResult.valid || scanResult.expired) && scanResult.publicId && (
                     <div className="mb-3 space-y-1.5">
-                      <div className="text-xs font-medium tracking-wide text-emerald-800/70 uppercase dark:text-emerald-200/70">
+                      <div
+                        className={`text-xs font-medium tracking-wide uppercase ${
+                          scanResult.valid
+                            ? "text-emerald-800/70 dark:text-emerald-200/70"
+                            : "text-orange-800/70 dark:text-orange-200/70"
+                        }`}
+                      >
                         {t("result.userId")}
                       </div>
-                      <div className="rounded-md border border-emerald-200/50 bg-emerald-100/50 px-2.5 py-1.5 font-mono text-sm text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-100">
+                      <div
+                        className={`rounded-md px-2.5 py-1.5 font-mono text-sm ${
+                          scanResult.valid
+                            ? "border border-emerald-200/50 bg-emerald-100/50 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-100"
+                            : "border border-orange-200/60 bg-orange-100/60 text-orange-900 dark:border-orange-500/30 dark:bg-orange-500/20 dark:text-orange-100"
+                        }`}
+                      >
                         {scanResult.publicId}
                       </div>
                     </div>
                   )}
+                  {scanResult.expired && scanResult.email && (
+                    <div className="mb-3 space-y-1.5">
+                      <div className="text-xs font-medium tracking-wide text-orange-800/70 uppercase dark:text-orange-200/70">
+                        {t("result.email")}
+                      </div>
+                      <div className="rounded-md border border-orange-200/60 bg-orange-100/60 px-2.5 py-1.5 text-sm break-all text-orange-900 dark:border-orange-500/30 dark:bg-orange-500/20 dark:text-orange-100">
+                        {scanResult.email}
+                      </div>
+                    </div>
+                  )}
                   {!scanResult.valid && scanResult.error && (
-                    <div className="mt-2 text-sm text-red-800 dark:text-red-200">
+                    <div
+                      className={`mt-2 text-sm ${
+                        scanResult.expired
+                          ? "text-orange-800 dark:text-orange-200"
+                          : "text-red-800 dark:text-red-200"
+                      }`}
+                    >
                       {scanResult.error}
                     </div>
                   )}

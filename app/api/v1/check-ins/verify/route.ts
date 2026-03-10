@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 import { withRequestContext, withRole } from "@/lib/api/route-wrappers";
 import { USER_ROLES } from "@/lib/config/roles";
+import { getAuthUserById } from "@/lib/data/auth";
 import { logError } from "@/lib/utils/log";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
@@ -17,6 +18,13 @@ interface CheckInTokenPayload {
   v: string;
 }
 
+interface VerifyTokenResult {
+  valid: boolean;
+  expired?: boolean;
+  userId?: string;
+  error?: string;
+}
+
 const base64UrlDecode = (value: string) => {
   let base64 = value.replace(/-/g, "+").replace(/_/g, "/");
   const padding = base64.length % 4;
@@ -26,7 +34,7 @@ const base64UrlDecode = (value: string) => {
   return Buffer.from(base64, "base64").toString("utf-8");
 };
 
-const verifyToken = (token: string): { valid: boolean; userId?: string; error?: string } => {
+const verifyToken = (token: string): VerifyTokenResult => {
   if (!SECRET) {
     return { valid: false, error: "Check-in not configured" };
   }
@@ -61,7 +69,7 @@ const verifyToken = (token: string): { valid: boolean; userId?: string; error?: 
 
     const nowSeconds = Math.floor(Date.now() / 1000);
     if (decodedPayload.exp < nowSeconds) {
-      return { valid: false, error: "Token expired" };
+      return { expired: true, userId: decodedPayload.sub, valid: false, error: "Token expired" };
     }
 
     return {
@@ -90,11 +98,33 @@ export const POST = withRequestContext(
       const result = verifyToken(token);
 
       if (!result.valid || !result.userId) {
+        if (result.expired && result.userId) {
+          const user = await getAuthUserById(result.userId);
+          if (!user) {
+            return NextResponse.json({ valid: false, error: "User not found" }, { status: 404 });
+          }
+
+          return NextResponse.json({
+            email: user.email,
+            expired: true,
+            name: user.name,
+            publicId: compressUuid(user.id),
+            valid: false,
+          });
+        }
+
         return NextResponse.json(result, { status: 401 });
       }
 
+      const user = await getAuthUserById(result.userId);
+      if (!user) {
+        return NextResponse.json({ valid: false, error: "User not found" }, { status: 404 });
+      }
+
       return NextResponse.json({
-        publicId: compressUuid(result.userId),
+        email: user.email,
+        name: user.name,
+        publicId: compressUuid(user.id),
         valid: true,
       });
     } catch (error) {

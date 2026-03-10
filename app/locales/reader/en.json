@@ -32,7 +32,10 @@
     "checkingIn": "Checking in...",
     "result": {
       "valid": "Valid",
+      "expired": "Expired",
       "invalid": "Invalid",
+      "email": "Email",
+      "ticketExpired": "Ticket is expired. Ask the user to generate a new one.",
       "userId": "User ID",
       "checkedIn": "Checked in successfully",
       "alreadyCheckedIn": "Already checked in"

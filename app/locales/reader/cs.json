@@ -32,7 +32,10 @@
     "checkingIn": "Kontroluji...",
     "result": {
       "valid": "Platný",
+      "expired": "Vypršel",
       "invalid": "Neplatný",
+      "email": "E-mail",
+      "ticketExpired": "Vstupenka vypršela. Požádejte uživatele, aby si vygeneroval novou.",
       "userId": "ID uživatele",
       "checkedIn": "Úspěšně zkontrolován",
       "alreadyCheckedIn": "Již zkontrolován"

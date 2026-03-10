@@ -68,9 +68,9 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
   utilities: [
     { name: "qrcode", license: "MIT", url: WEBSITE_URLS.ATTRIBUTIONS.TECH.QRCODE },
     {
-      name: "html5-qrcode",
-      license: "Apache-2.0",
-      url: WEBSITE_URLS.ATTRIBUTIONS.TECH.HTML5_QRCODE,
+      name: "qr-scanner",
+      license: "MIT",
+      url: WEBSITE_URLS.ATTRIBUTIONS.TECH.QR_SCANNER,
     },
     { name: "ua-parser-js", license: "MIT", url: WEBSITE_URLS.ATTRIBUTIONS.TECH.UA_PARSER },
     { name: "zod", license: "MIT", url: WEBSITE_URLS.ATTRIBUTIONS.TECH.ZOD },
