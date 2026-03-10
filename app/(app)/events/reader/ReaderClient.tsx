@@ -44,11 +44,6 @@ function isExpectedDecodeMiss(error: Error | string): boolean {
   return message.includes("No QR code found");
 }
 
-function isDecodeTimeout(error: Error | string): boolean {
-  const message = typeof error === "string" ? error : error.message;
-  return message.includes("Scanner error: timeout");
-}
-
 interface ScanResult {
   email?: string;
   expired?: boolean;
@@ -72,8 +67,13 @@ interface PublicIdParts {
   second: string;
 }
 
-interface QrScannerWithInternals {
-  _disableBarcodeDetector?: boolean;
+interface ExtendedMediaTrackCapabilities extends MediaTrackCapabilities {
+  focusMode?: string[];
+  torch?: boolean;
+  zoom?: {
+    min?: number;
+    max?: number;
+  };
 }
 
 const PUBLIC_ID_ALLOWED_CHARS = /[1-9A-HJ-NP-Za-km-z]/g;
@@ -98,127 +98,38 @@ function formatTrackDiagnostics(track: MediaStreamTrack): string {
   return `${track.label || "Unnamed camera"} | ${size} | ${facingMode}`;
 }
 
-function isAppleTouchDevice(): boolean {
-  if (typeof navigator === "undefined") {
-    return false;
-  }
-
-  return (
-    /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
-  );
-}
-
-function disableNativeBarcodeDetector(): boolean {
-  const qrScannerWithInternals = QrScanner as unknown as QrScannerWithInternals;
-  const wasDisabled = qrScannerWithInternals._disableBarcodeDetector === true;
-  qrScannerWithInternals._disableBarcodeDetector = true;
-  return !wasDisabled;
-}
-
-function calculateScanRegion(video: HTMLVideoElement): QrScanner.ScanRegion {
-  const width = video.videoWidth;
-  const height = video.videoHeight;
-
-  if (!width || !height) {
-    return {
-      x: 0,
-      y: 0,
-      width: 400,
-      height: 400,
-      downScaledWidth: 400,
-      downScaledHeight: 400,
-    };
-  }
-
-  if (!isAppleTouchDevice()) {
-    const size = Math.round((2 / 3) * Math.min(width, height));
-    return {
-      x: Math.round((width - size) / 2),
-      y: Math.round((height - size) / 2),
-      width: size,
-      height: size,
-      downScaledWidth: 400,
-      downScaledHeight: 400,
-    };
-  }
-
-  const maxDimension = 960;
-
-  if (width >= height) {
-    return {
-      x: 0,
-      y: 0,
-      width,
-      height,
-      downScaledWidth: maxDimension,
-      downScaledHeight: Math.round((height / width) * maxDimension),
-    };
-  }
-
-  return {
-    x: 0,
-    y: 0,
-    width,
-    height,
-    downScaledWidth: Math.round((width / height) * maxDimension),
-    downScaledHeight: maxDimension,
-  };
-}
-
-function scoreRearCamera(camera: QrScanner.Camera): number {
-  const label = camera.label.toLowerCase();
-
-  if (/front|facetime|selfie/.test(label)) {
-    return Number.NEGATIVE_INFINITY;
-  }
-
-  let score = 0;
-
-  if (/back|rear|environment/.test(label)) {
-    score += 100;
-  }
-
-  if (label === "back camera") {
-    score += 120;
-  }
-
-  if (label.includes("dual wide")) {
-    score += 100;
-  } else if (label.includes("dual camera")) {
-    score += 90;
-  } else if (/\bwide\b/.test(label) && !label.includes("ultra wide")) {
-    score += 80;
-  } else if (label.includes("triple")) {
-    score += 45;
-  }
-
-  if (label.includes("ultra wide")) {
-    score -= 100;
-  }
-
-  if (label.includes("telephoto")) {
-    score -= 80;
-  }
-
-  return score;
-}
-
-function pickPreferredRearCamera(cameras: QrScanner.Camera[]): QrScanner.Camera | null {
-  const rankedRearCameras = cameras
-    .map((camera) => ({ camera, score: scoreRearCamera(camera) }))
-    .filter(({ score }) => Number.isFinite(score))
-    .sort((left, right) => right.score - left.score);
-
-  return rankedRearCameras[0]?.camera ?? null;
-}
-
 function getDecoderDiagnostics(): string {
-  return isAppleTouchDevice() ? "worker (native detector disabled)" : "auto";
+  return "auto";
 }
 
 function getScanRegionDiagnostics(): string {
-  return isAppleTouchDevice() ? "full frame downscaled to max 960px" : "center square 2/3 @ 400px";
+  return "library default";
+}
+
+function getInversionModeDiagnostics(): QrScanner.InversionMode {
+  return "original";
+}
+
+function formatTrackCapabilities(capabilities: ExtendedMediaTrackCapabilities | null): string {
+  if (!capabilities) {
+    return "unavailable";
+  }
+
+  const parts: string[] = [];
+
+  if (Array.isArray(capabilities.focusMode) && capabilities.focusMode.length > 0) {
+    parts.push(`focus=${capabilities.focusMode.join("/")}`);
+  }
+
+  if (typeof capabilities.torch === "boolean") {
+    parts.push(`torch=${capabilities.torch ? "yes" : "no"}`);
+  }
+
+  if (capabilities.zoom) {
+    parts.push(`zoom=${capabilities.zoom.min ?? "?"}-${capabilities.zoom.max ?? "?"}`);
+  }
+
+  return parts.length > 0 ? parts.join(" | ") : "none";
 }
 
 function sanitizePublicIdInput(value: string): string {
@@ -273,7 +184,6 @@ export function ReaderClient() {
   const scannerRef = useRef<QrScanner | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const isProcessingRef = useRef<boolean>(false);
-  const timeoutFallbackAppliedRef = useRef<boolean>(false);
   const firstPublicIdInputRef = useRef<HTMLInputElement | null>(null);
   const secondPublicIdInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -349,6 +259,22 @@ export function ReaderClient() {
     appendDebugEntry(`Active track: ${formatTrackDiagnostics(track)}`);
   };
 
+  const logTrackCapabilities = () => {
+    const stream = videoRef.current?.srcObject;
+    if (!(stream instanceof MediaStream)) {
+      return;
+    }
+
+    const [track] = stream.getVideoTracks();
+    if (!track || typeof track.getCapabilities !== "function") {
+      appendDebugEntry("Track capabilities unavailable.", "warn");
+      return;
+    }
+
+    const capabilities = track.getCapabilities() as ExtendedMediaTrackCapabilities;
+    appendDebugEntry(`Track capabilities: ${formatTrackCapabilities(capabilities)}`);
+  };
+
   const logAvailableCameras = async () => {
     try {
       const cameras = await QrScanner.listCameras(true);
@@ -361,46 +287,6 @@ export function ReaderClient() {
       appendDebugEntry(`Failed to list cameras: ${message}`, "warn");
       return null;
     }
-  };
-
-  const optimizeRearCameraSelection = async (scanner: QrScanner, cameras: QrScanner.Camera[]) => {
-    if (!isAppleTouchDevice()) {
-      return;
-    }
-
-    const preferredRearCamera = pickPreferredRearCamera(cameras);
-    if (!preferredRearCamera) {
-      appendDebugEntry("No preferred rear camera candidate found.", "warn");
-      return;
-    }
-
-    appendDebugEntry(`Preferred rear camera candidate: ${preferredRearCamera.label}.`);
-
-    const activeTrackLabel =
-      videoRef.current?.srcObject instanceof MediaStream
-        ? (videoRef.current.srcObject.getVideoTracks()[0]?.label.toLowerCase() ?? "")
-        : "";
-
-    const currentScore = activeTrackLabel
-      ? scoreRearCamera({ id: "", label: activeTrackLabel })
-      : Number.NEGATIVE_INFINITY;
-    const preferredScore = scoreRearCamera(preferredRearCamera);
-
-    if (
-      activeTrackLabel &&
-      activeTrackLabel.includes(preferredRearCamera.label.toLowerCase()) &&
-      currentScore >= preferredScore
-    ) {
-      return;
-    }
-
-    if (currentScore >= preferredScore) {
-      return;
-    }
-
-    appendDebugEntry(`Switching to preferred rear camera: ${preferredRearCamera.label}.`);
-    await scanner.setCamera(preferredRearCamera.id);
-    logActiveTrack();
   };
 
   const setInvalidScanResult = (
@@ -423,7 +309,6 @@ export function ReaderClient() {
   const resetReaderState = () => {
     destroyScanner();
     isProcessingRef.current = false;
-    timeoutFallbackAppliedRef.current = false;
     setSelectedEvent("");
     setManualPublicIdParts({ first: "", second: "" });
     setIsScanning(false);
@@ -625,20 +510,17 @@ export function ReaderClient() {
 
     if (!preserveDiagnostics) {
       setDebugEntries([]);
-      timeoutFallbackAppliedRef.current = false;
     }
     setError(null);
     setScanResult(null);
     setIsVerifying(false);
     isProcessingRef.current = false;
 
-    if (isAppleTouchDevice() && disableNativeBarcodeDetector()) {
-      appendDebugEntry("Disabled native barcode detector on Apple mobile for worker fallback.");
-    }
-
     appendDebugEntry(`Starting scanner for event ${selectedEvent}.`);
     appendDebugEntry(`Decoder: ${getDecoderDiagnostics()}.`);
     appendDebugEntry(`Scan region: ${getScanRegionDiagnostics()}.`);
+    appendDebugEntry(`Inversion mode: ${getInversionModeDiagnostics()}.`);
+    appendDebugEntry("Preferred camera request: environment.");
 
     setIsScanning(true);
 
@@ -679,25 +561,8 @@ export function ReaderClient() {
           handleScanSuccess(result.data).catch(() => undefined);
         },
         {
-          calculateScanRegion,
-          maxScansPerSecond: isAppleTouchDevice() ? 12 : 25,
           onDecodeError: (scanError) => {
             if (isExpectedDecodeMiss(scanError)) {
-              return;
-            }
-
-            if (isDecodeTimeout(scanError) && !timeoutFallbackAppliedRef.current) {
-              timeoutFallbackAppliedRef.current = true;
-              appendDebugEntry(
-                "Native QR detector timed out. Restarting scanner with worker decoder.",
-                "warn",
-              );
-              disableNativeBarcodeDetector();
-              destroyScanner();
-              setIsScanning(false);
-              window.setTimeout(() => {
-                startReader({ preserveDiagnostics: true }).catch(() => undefined);
-              }, 0);
               return;
             }
 
@@ -707,17 +572,15 @@ export function ReaderClient() {
           returnDetailedScanResult: true,
         },
       );
-      scanner.setInversionMode("both");
+      scanner.setInversionMode(getInversionModeDiagnostics());
       scannerRef.current = scanner;
 
       try {
         await scanner.start();
         appendDebugEntry("Scanner started.");
         logActiveTrack();
-        const cameras = await logAvailableCameras();
-        if (cameras) {
-          await optimizeRearCameraSelection(scanner, cameras);
-        }
+        logTrackCapabilities();
+        await logAvailableCameras();
       } catch (cameraError) {
         const scannerError =
           cameraError instanceof Error ? cameraError : new Error(String(cameraError));
