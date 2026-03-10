@@ -31,8 +31,6 @@
       "duration45": "45 minut (Hluboký ponor)",
       "preferredLocation": "Preferovaná lokace",
       "locationEither": "{prague} nebo {zlin}",
-      "locationPrague": "{prague}",
-      "locationZlin": "{zlin}",
       "experience": "Zkušenosti speakera",
       "experiencePlaceholder": "Řekněte nám o svém pozadí a předchozích zkušenostech s přednášením...",
       "experienceHint": "Volitelné. Vítáme i ty, co přednáší poprvé!",

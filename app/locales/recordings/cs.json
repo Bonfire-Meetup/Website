@@ -13,14 +13,12 @@
     "copied": "Zkopírováno!",
     "goToGuild": "Odemknout přes Guild",
     "spark": "Spark",
-    "sparks": "Sparks",
     "lightItUp": "Hoď Spark",
     "watchLater": "Sledovat později",
     "addToWatchLater": "Přidat do sledování",
     "removeFromWatchLater": "Odebrat z sledování",
     "inWatchlist": "Uloženo",
     "boost": "Boost",
-    "boosts": "Boosty",
     "boostItUp": "Hoď Boost",
     "boostNoBoostsAvailable": "Boosty na tenhle měsíc jsou vyčerpané. Další budou zase příští měsíc!",
     "rateLimitError": "Wow, klídek 🙂 Máš cooldown. Zkus to za chvilku.",
@@ -56,7 +54,6 @@
     "earlyAccessCountdownMinutesSeconds": "{minutes}m {seconds}s",
     "earlyAccessCountdownSeconds": "{seconds}s",
     "youtubeNotice": "Video poskytuje YouTube. Po spuštění mohou být nastaveny cookies.",
-    "empty": "Nic jsme nenašli.",
     "beFirstToBoost": "Zatím žádný boost. Hoď první!"
   }
 }

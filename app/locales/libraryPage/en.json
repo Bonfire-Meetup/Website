@@ -1,8 +1,5 @@
 {
   "libraryPage": {
-    "eyebrow": "Stream the sessions",
-    "title": "Talk Library",
-    "subtitle": "Browse the full archive of Bonfire talks on tech, art, and production, plus live podcast episodes and interviews.",
     "rows": {
       "latest": "Latest uploads",
       "prague": "{prague} sessions",

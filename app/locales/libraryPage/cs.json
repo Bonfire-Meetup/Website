@@ -1,8 +1,5 @@
 {
   "libraryPage": {
-    "eyebrow": "Pusť si to zpětně",
-    "title": "Library přednášek",
-    "subtitle": "Kompletní archiv Bonfire - tech, art i produkce. Plus live podcasty a rozhovory.",
     "rows": {
       "latest": "Nejnovější",
       "prague": "{prague} sessions",

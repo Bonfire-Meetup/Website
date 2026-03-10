@@ -13,14 +13,12 @@
     "copied": "Copied!",
     "goToGuild": "Unlock with Guild",
     "spark": "Spark",
-    "sparks": "Sparks",
     "lightItUp": "Light it up",
     "watchLater": "Watch Later",
     "addToWatchLater": "Add to Watch Later",
     "removeFromWatchLater": "Remove from Watch Later",
     "inWatchlist": "Saved",
     "boost": "Boost",
-    "boosts": "Boosts",
     "boostItUp": "Boost it",
     "boostNoBoostsAvailable": "You've used all your boosts this month. More coming next month!",
     "rateLimitError": "Whoa, easy there! Your action is on cooldown. Try again in a sec.",
@@ -56,7 +54,6 @@
     "earlyAccessCountdownMinutesSeconds": "{minutes}m {seconds}s",
     "earlyAccessCountdownSeconds": "{seconds}s",
     "youtubeNotice": "The video is provided by YouTube. Cookies may be set once playback starts.",
-    "empty": "No recordings found.",
     "beFirstToBoost": "No boosts yet. Be the first!"
   }
 }

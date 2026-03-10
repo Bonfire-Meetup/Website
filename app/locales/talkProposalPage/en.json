@@ -31,8 +31,6 @@
       "duration45": "45 minutes (Deep dive)",
       "preferredLocation": "Preferred Location",
       "locationEither": "Either {prague} or {zlin}",
-      "locationPrague": "{prague}",
-      "locationZlin": "{zlin}",
       "experience": "Speaker Experience",
       "experiencePlaceholder": "Tell us about your background and any previous speaking experience...",
       "experienceHint": "Optional. First-time speakers are welcome!",
