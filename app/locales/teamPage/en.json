@@ -1,17 +1,10 @@
 {
   "teamPage": {
     "eyebrow": "Team",
-    "title": "Meet the beautiful chaos crew",
     "titlePart1": "Meet the",
     "titleHighlight": "beautiful chaos",
     "titlePart2": "crew",
     "subtitle": "We run meetups, wrangle cables, and keep the vibes sharp in {prague} and {zlin}.",
-    "introEyebrow": "How it works",
-    "introLines": [
-      "No capes. Just checklists, coffee, and a stubborn love for game dev.",
-      "If something goes right, it was planned. If something goes wrong, it was still planned.",
-      "We are allergic to boring events. We bring the spark."
-    ],
     "stats": "{people} people · {cities} cities",
     "crewEyebrow": "Local crew",
     "cities": [

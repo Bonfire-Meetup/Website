@@ -12,11 +12,13 @@
       "label": "Check-in Pass",
       "backupId": "Backup ID",
       "backupToggle": "Can’t scan? Show backup ID",
-      "backupHint": "If scanning fails, crew can type this ID manually.",
       "showLarge": "Show larger",
       "copy": "Copy ID",
       "copied": "Copied",
       "largeHint": "Show this enlarged if crew needs to read it from a distance.",
+      "refreshStatusLabel": "Ticket status",
+      "refreshStatus": "Auto-updating",
+      "refreshAction": "Refresh",
       "closeLarge": "Close large backup ID"
     },
     "tips": {

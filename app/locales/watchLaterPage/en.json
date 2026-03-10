@@ -9,7 +9,6 @@
     "emptyHint": "Save anything interesting from the library and it will land here automatically.",
     "saved": "{count} saved videos",
     "savedOne": "1 saved video",
-    "remove": "Remove",
     "loading": "Loading your watchlist...",
     "error": "Unable to load your watchlist right now. Try again in a moment or jump back to the library.",
     "errorTitle": "Your saved queue is temporarily unavailable.",
@@ -23,8 +22,6 @@
     "topicsLabel": "Filter by topic",
     "allTags": "All topics",
     "queueLabel": "Your queue",
-    "queueFilteredBy": "Filtered by #{tag}.",
-    "sortLabel": "Sort",
     "filters": {
       "recent": "Recent first",
       "oldest": "Oldest first",

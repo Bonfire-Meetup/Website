@@ -1,6 +1,5 @@
 {
   "footer": {
-    "tagline": "{tagline}",
     "brandName": "{brandName}",
     "vibes": "Neformální pivo, velké nápady a good vibes. 🔥🎮",
     "emailLabel": "E-mail",
@@ -9,10 +8,8 @@
     "discordLabel": "Discord",
     "githubLabel": "GitHub",
     "copyright": "© {year} {brandName}. Ukuchtěno s láskou pro gamedev komunitu.",
-    "crewLabel": "Crew",
     "timelineLabel": "Timeline",
     "newsletterArchiveLabel": "Newslettery",
-    "faqLabel": "FAQ",
     "pressLabel": "Press",
     "legalLabel": "Kodex & právo",
     "attributionsLabel": "Attribuce"

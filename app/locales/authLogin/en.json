@@ -5,7 +5,6 @@
     "title": "Sign in to Bonfire",
     "subtitle": "No password. Code arrives in 10 seconds.",
     "secureTitle": "No password needed",
-    "secureBody": "We'll send a code to your email. Quick, simple, and secure.",
     "steps": {
       "step1": "Type email",
       "step2": "We send code",
@@ -16,7 +15,6 @@
     "codeHint": "Enter the 6-digit code we sent to your inbox.",
     "noRegistrationHint": "No account? Signing in will create one automatically.",
     "emailLabel": "Email",
-    "emailPlaceholder": "lara@croft.com",
     "codeLabel": "Code",
     "sendCode": "Send code",
     "sendingCode": "Sending code",
@@ -37,12 +35,10 @@
     "errorTooManyAttempts": "Too many attempts. Request a new code.",
     "errorInvalidRequest": "Invalid request. Please try again.",
     "passkey": {
-      "title": "Sign in with passkey",
       "button": "Use passkey",
       "authenticating": "Authenticating",
       "or": "or",
       "note": "Passkeys work after your first email sign-in and registration in Account → Security.",
-      "errorCancelled": "Passkey authentication cancelled.",
       "errorNotFound": "No passkey found for this device.",
       "errorFailed": "Passkey authentication failed. Please try again."
     }

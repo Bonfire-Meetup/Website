@@ -1,17 +1,10 @@
 {
   "teamPage": {
     "eyebrow": "Tým",
-    "title": "Poznej krásně chaotickou crew",
     "titlePart1": "Poznej",
     "titleHighlight": "krásně chaotickou",
     "titlePart2": "crew",
     "subtitle": "Děláme meetupy, krotíme kabely a držíme vibe v Praze a Zlíně.",
-    "introEyebrow": "Jak to funguje",
-    "introLines": [
-      "Žádné pláště. Jen checklisty, kafe a tvrdohlavá láska ke gamedevu.",
-      "Když se něco povede, bylo to v plánu. Když se něco nepovede, bylo to taky v plánu.",
-      "Na nudné eventy máme alergii. My přinášíme jiskru."
-    ],
     "stats": "{people} lidí · {cities} města",
     "crewEyebrow": "Lokální crew",
     "cities": [

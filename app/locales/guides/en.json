@@ -5,7 +5,6 @@
     "eyebrow": "How-To",
     "heading": "Guides for getting things done",
     "subtitle": "Clear practical walkthroughs for Bonfire members and event visitors.",
-    "availableGuides": "Available guides",
     "browseAllGuides": "Explore all guides",
     "openGuide": "Open guide",
     "categories": {
@@ -16,38 +15,31 @@
     "guides": {
       "checkIn": {
         "title": "Event check-in",
-        "description": "Learn the full check-in flow from login to getting scanned by crew.",
-        "cta": "Open guide"
+        "description": "Learn the full check-in flow from login to getting scanned by crew."
       },
       "engagementSignals": {
         "title": "Sparks and boosts",
-        "description": "Understand engagement signals, limits, visibility scoring, and how boosts also push live event questions.",
-        "cta": "Open guide"
+        "description": "Understand engagement signals, limits, visibility scoring, and how boosts also push live event questions."
       },
       "eventRsvp": {
         "title": "Event RSVP",
-        "description": "How RSVP works, where to find events, waitlist behavior, and calendar export.",
-        "cta": "Open guide"
+        "description": "How RSVP works, where to find events, waitlist behavior, and calendar export."
       },
       "registration": {
         "title": "Registration and sign-in",
-        "description": "Understand email codes, passkeys, and why first sign-in creates your account.",
-        "cta": "Open guide"
+        "description": "Understand email codes, passkeys, and why first sign-in creates your account."
       },
       "profilePrivacy": {
         "title": "Profile privacy",
-        "description": "Understand public profile visibility, check-in visibility, and privacy controls.",
-        "cta": "Open guide"
+        "description": "Understand public profile visibility, check-in visibility, and privacy controls."
       },
       "speaking": {
         "title": "Speaking at Bonfire",
-        "description": "How to apply as a speaker, what makes a strong proposal, and what happens next.",
-        "cta": "Open guide"
+        "description": "How to apply as a speaker, what makes a strong proposal, and what happens next."
       },
       "accountDeletion": {
         "title": "Account deletion",
-        "description": "Understand the intent/confirm flow, one-time code, and permanent deletion warning.",
-        "cta": "Open guide"
+        "description": "Understand the intent/confirm flow, one-time code, and permanent deletion warning."
       }
     }
   },
@@ -89,27 +81,10 @@
       "title": "Why it matters",
       "description": "When people check in, we can better understand attendance, improve planning, and celebrate the people who consistently show up for each other."
     },
-    "pillars": {
-      "one": {
-        "title": "Show up",
-        "description": "Your presence is visible and appreciated."
-      },
-      "two": {
-        "title": "Support events",
-        "description": "Check-ins help us plan better future meetups."
-      },
-      "three": {
-        "title": "Inspire others",
-        "description": "Consistent participation motivates the whole community."
-      }
-    },
     "benefits": {
-      "title": "About benefits right now",
       "description": "We are still deciding what exact benefits check-ins will unlock in the future. Checking in now already helps the community and event planning."
     },
     "cta": {
-      "title": "Ready for your next check-in?",
-      "description": "Start now and make your next event count.",
       "login": "Login",
       "checkIn": "Open check-in"
     }
@@ -352,10 +327,6 @@
     "subtitle": "Understand what these signals mean and how to use them well.",
     "heroLead": "Sparks are lightweight feedback, boosts are stronger votes.",
     "heroSublead": "Together they shape discovery, especially in trending views.",
-    "labels": {
-      "spark": "Spark signal",
-      "boost": "Boost signal"
-    },
     "sections": {
       "sparks": {
         "title": "Sparks",

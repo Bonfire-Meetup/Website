@@ -3,8 +3,6 @@
     "eyebrow": "Photo Albums",
     "title": "We Were There",
     "subtitle": "A photo chronicle of Bonfire meetups, talks, and community moments.",
-    "featuredTitle": "Featured Shots",
-    "featuredSubtitle": "A rotating selection from across the albums.",
     "stats": {
       "albums": "Albums",
       "photos": "Photos"
@@ -15,10 +13,7 @@
     "galleryHint": "Open any photo to view it fullscreen.",
     "albumPhotos": "{count} photos",
     "photographersBy": "Photographs by",
-    "viewAlbum": "View album",
     "openPhoto": "Open photo: {title}",
-    "download": "Download",
-    "backToAlbums": "Back to albums",
-    "backToTop": "Back to top"
+    "download": "Download"
   }
 }

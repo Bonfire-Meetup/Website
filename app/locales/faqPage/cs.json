@@ -1,7 +1,6 @@
 {
   "faqPage": {
     "eyebrow": "FAQ",
-    "title": "Často kladené dotazy",
     "titlePart1": "Často kladené",
     "titleHighlight": "dotazy",
     "subtitle": "Rychlé odpovědi na to, jak web funguje - akce, komunita i Sparks/Boosty.",
@@ -64,9 +63,6 @@
         "title": "Jak u nás fungují passkeys?",
         "answer": "Nejdřív se přihlas e‑mailem a vytvoř účet. Potom si v Účtu v sekci Zabezpečení přidej passkey."
       }
-    },
-    "impact": {
-      "title": "Jak to ovlivňuje viditelnost"
     },
     "sparks": {
       "title": "Co jsou Sparks?",

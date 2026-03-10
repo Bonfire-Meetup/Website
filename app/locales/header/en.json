@@ -17,23 +17,15 @@
     "faq": "FAQ",
     "press": "Press Kit",
     "contact": "Contact",
-    "codeOfConduct": "Code of Conduct",
-    "back": "Back",
-    "menu": "Open menu",
     "close": "Close menu",
     "logoAlt": "Bonfire Events logo",
     "profile": "Profile",
-    "helloName": "Hello {name}",
     "dashboard": "Dashboard",
     "crewTools": "Crew tools",
     "editorTools": "Editor tools",
     "checkIn": "Check-in",
     "login": "Sign in",
     "signOut": "Sign out",
-    "more": "More",
-    "moreMenuTitle": "Menu",
-    "settings": "Settings",
-    "language": "Language",
-    "theme": "Theme"
+    "more": "More"
   }
 }

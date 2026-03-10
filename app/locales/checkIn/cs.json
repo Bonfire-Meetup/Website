@@ -12,11 +12,13 @@
       "label": "Check-in pas",
       "backupId": "Záložní ID",
       "backupToggle": "Nejde skenovat? Zobrazit záložní ID",
-      "backupHint": "Pokud skenování selže, crew může toto ID zadat ručně.",
       "showLarge": "Zobrazit větší",
       "copy": "Kopírovat ID",
       "copied": "Zkopírováno",
       "largeHint": "Zobrazte ho větší, pokud ho crew potřebuje přečíst z větší vzdálenosti.",
+      "refreshStatusLabel": "Stav vstupenky",
+      "refreshStatus": "Aktualizuje se",
+      "refreshAction": "Obnovit",
       "closeLarge": "Zavřít velké záložní ID"
     },
     "tips": {

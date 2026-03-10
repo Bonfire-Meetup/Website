@@ -5,7 +5,6 @@
     "eyebrow": "Návody",
     "heading": "Přehled návodů",
     "subtitle": "Praktické postupy, které tě rychle provedou vším důležitým.",
-    "availableGuides": "Dostupné návody",
     "browseAllGuides": "Projít všechny návody",
     "openGuide": "Otevřít návod",
     "categories": {
@@ -16,38 +15,31 @@
     "guides": {
       "checkIn": {
         "title": "Check-in na akci",
-        "description": "Projdi celý check-in postup od přihlášení až po naskenování crew.",
-        "cta": "Otevřít návod"
+        "description": "Projdi celý check-in postup od přihlášení až po naskenování crew."
       },
       "engagementSignals": {
         "title": "Sparks a boosty",
-        "description": "Pochop engagement signály, limity, dopad na viditelnost i to, jak boosty posouvají otázky v live event Q&A.",
-        "cta": "Otevřít návod"
+        "description": "Pochop engagement signály, limity, dopad na viditelnost i to, jak boosty posouvají otázky v live event Q&A."
       },
       "eventRsvp": {
         "title": "RSVP na akci",
-        "description": "Jak funguje RSVP, kde najít akce, chování waitlistu a export do kalendáře.",
-        "cta": "Otevřít návod"
+        "description": "Jak funguje RSVP, kde najít akce, chování waitlistu a export do kalendáře."
       },
       "registration": {
         "title": "Registrace a přihlášení",
-        "description": "Jak fungují e-mailové kódy, passkeys a proč první přihlášení vytváří účet.",
-        "cta": "Otevřít návod"
+        "description": "Jak fungují e-mailové kódy, passkeys a proč první přihlášení vytváří účet."
       },
       "profilePrivacy": {
         "title": "Soukromí profilu",
-        "description": "Jak funguje veřejnost profilu, viditelnost check-inů a nastavení soukromí.",
-        "cta": "Otevřít návod"
+        "description": "Jak funguje veřejnost profilu, viditelnost check-inů a nastavení soukromí."
       },
       "speaking": {
         "title": "Přednášení na Bonfire",
-        "description": "Jak se přihlásit jako speaker, co dělá návrh silný a co následuje dál.",
-        "cta": "Otevřít návod"
+        "description": "Jak se přihlásit jako speaker, co dělá návrh silný a co následuje dál."
       },
       "accountDeletion": {
         "title": "Smazání účtu",
-        "description": "Jak funguje flow intent/confirm, jednorázový kód a nevratnost smazání.",
-        "cta": "Otevřít návod"
+        "description": "Jak funguje flow intent/confirm, jednorázový kód a nevratnost smazání."
       }
     }
   },
@@ -89,27 +81,10 @@
       "title": "Proč na tom záleží",
       "description": "Když se lidé checkují, lépe chápeme účast, lépe plánujeme další akce a můžeme ocenit ty, kteří komunitu dlouhodobě drží pohromadě."
     },
-    "pillars": {
-      "one": {
-        "title": "Buď vidět",
-        "description": "Tvoje účast je vidět a má hodnotu."
-      },
-      "two": {
-        "title": "Podpoř akce",
-        "description": "Check-iny nám pomáhají lépe plánovat další meetupy."
-      },
-      "three": {
-        "title": "Motivuj ostatní",
-        "description": "Pravidelná účast inspiruje celou komunitu."
-      }
-    },
     "benefits": {
-      "title": "Co se týče benefitů",
       "description": "Teď ještě přesně řešíme, jaké benefity check-iny přinesou. Už teď ale check-in pomáhá komunitě i plánování akcí."
     },
     "cta": {
-      "title": "Připravený na další check-in?",
-      "description": "Začni hned a dej své příští návštěvě váhu.",
       "login": "Přihlásit se",
       "checkIn": "Otevřít check-in"
     }
@@ -352,10 +327,6 @@
     "subtitle": "Pochop, co tyto signály znamenají a jak je používat efektivně.",
     "heroLead": "Sparks jsou lehká zpětná vazba, boosty jsou silnější hlas.",
     "heroSublead": "Společně ovlivňují objevitelnost, hlavně v trending přehledech.",
-    "labels": {
-      "spark": "Spark signál",
-      "boost": "Boost signál"
-    },
     "sections": {
       "sparks": {
         "title": "Sparks",

@@ -1,7 +1,6 @@
 {
   "faqPage": {
     "eyebrow": "FAQ",
-    "title": "Frequently asked questions",
     "titlePart1": "Frequently asked",
     "titleHighlight": "questions",
     "subtitle": "Quick answers about how the site works - including meetups, community, and platform features.",
@@ -64,9 +63,6 @@
         "title": "How do passkeys work here?",
         "answer": "First, sign in with email to create your account. Then add a passkey in Account > Security."
       }
-    },
-    "impact": {
-      "title": "How it impacts visibility"
     },
     "sparks": {
       "title": "What are Sparks?",

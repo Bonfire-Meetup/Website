@@ -9,7 +9,6 @@
     "emptyHint": "Cokoliv si uložíš v knihovně, objeví se automaticky tady.",
     "saved": "Uloženo {count} videí",
     "savedOne": "Uloženo 1 video",
-    "remove": "Odebrat",
     "loading": "Načítám uložené přednášky…",
     "error": "Uložené přednášky se teď nepodařilo načíst. Zkus to za chvíli znovu nebo se vrať do knihovny.",
     "errorTitle": "Tvoje uložená fronta je dočasně nedostupná.",
@@ -23,8 +22,6 @@
     "topicsLabel": "Filtrovat podle tématu",
     "allTags": "Všechna témata",
     "queueLabel": "Tvoje fronta",
-    "queueFilteredBy": "Filtrované podle #{tag}.",
-    "sortLabel": "Řazení",
     "filters": {
       "recent": "Nejnovější",
       "oldest": "Nejstarší",

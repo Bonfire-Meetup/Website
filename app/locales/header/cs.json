@@ -17,23 +17,15 @@
     "faq": "FAQ",
     "press": "Press kit",
     "contact": "Kontakt",
-    "codeOfConduct": "Kodex",
-    "back": "Zpět",
-    "menu": "Otevřít menu",
     "close": "Zavřít menu",
     "logoAlt": "Logo Bonfire Events",
     "profile": "Profil",
-    "helloName": "Ahoj {name}",
     "dashboard": "Dashboard",
     "crewTools": "Crew tools",
     "editorTools": "Editor tools",
     "checkIn": "Check-in",
     "login": "Přihlásit se",
     "signOut": "Odhlásit se",
-    "more": "Více",
-    "moreMenuTitle": "Menu",
-    "settings": "Nastavení",
-    "language": "Jazyk",
-    "theme": "Motiv"
+    "more": "Více"
   }
 }

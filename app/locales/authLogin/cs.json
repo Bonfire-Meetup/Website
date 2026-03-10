@@ -5,7 +5,6 @@
     "title": "Přihlaste se",
     "subtitle": "Bez hesla. Kód přijde na mail během 10 sekund.",
     "secureTitle": "Bez hesla",
-    "secureBody": "Pošleme vám kód na e-mail. Rychle, jednoduše a bezpečně.",
     "steps": {
       "step1": "Zadejte e-mail",
       "step2": "Pošleme kód",
@@ -16,7 +15,6 @@
     "codeHint": "Zadejte 6místný kód z e-mailu.",
     "noRegistrationHint": "Nemáte účet? Přihlášením ho vytvoříme automaticky.",
     "emailLabel": "E-mail",
-    "emailPlaceholder": "lara@croft.com",
     "codeLabel": "Kód",
     "sendCode": "Poslat kód",
     "sendingCode": "Posílám kód",
@@ -37,12 +35,10 @@
     "errorTooManyAttempts": "Příliš mnoho pokusů. Požádejte o nový kód.",
     "errorInvalidRequest": "Neplatný požadavek. Zkuste to znovu.",
     "passkey": {
-      "title": "Přihlásit se passkey",
       "button": "Použít passkey",
       "authenticating": "Ověřuji",
       "or": "nebo",
       "note": "Passkeys fungují po prvním přihlášení e‑mailem a registraci v Účtu → Zabezpečení.",
-      "errorCancelled": "Ověření passkey bylo zrušeno.",
       "errorNotFound": "Passkey pro toto zařízení nebyl nalezen.",
       "errorFailed": "Ověření passkey selhalo. Zkuste to znovu."
     }
