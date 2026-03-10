@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 
 import { withRequestContext, withRole } from "@/lib/api/route-wrappers";
 import { USER_ROLES } from "@/lib/config/roles";
-import { getAuthUserById } from "@/lib/data/auth";
 import { logError } from "@/lib/utils/log";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
@@ -94,14 +93,8 @@ export const POST = withRequestContext(
         return NextResponse.json(result, { status: 401 });
       }
 
-      const user = await getAuthUserById(result.userId);
-      if (!user) {
-        return NextResponse.json({ valid: false, error: "User not found" }, { status: 404 });
-      }
-
       return NextResponse.json({
-        publicId: compressUuid(user.id),
-        name: user.name,
+        publicId: compressUuid(result.userId),
         valid: true,
       });
     } catch (error) {

@@ -43,6 +43,29 @@ interface ScanResult {
   alreadyCheckedIn?: boolean;
 }
 
+function getScannerConfig(isIOS: boolean) {
+  return {
+    aspectRatio: 1,
+    disableFlip: false,
+    fps: isIOS ? 18 : 14,
+    qrbox: (vw: number, vh: number) => {
+      const min = Math.min(vw, vh);
+      const scale = isIOS ? 0.52 : 0.58;
+      const size = Math.max(180, Math.min(Math.floor(min * scale), 320));
+      return { width: size, height: size };
+    },
+  };
+}
+
+function getScannerConstraints(isIOS: boolean): MediaTrackConstraints {
+  return {
+    facingMode: { ideal: "environment" },
+    frameRate: { ideal: isIOS ? 24 : 18 },
+    height: { ideal: isIOS ? 720 : 900 },
+    width: { ideal: isIOS ? 1280 : 1600 },
+  };
+}
+
 export function ReaderClient() {
   const t = useTranslations("reader");
   const router = useRouter();
@@ -298,15 +321,7 @@ export function ReaderClient() {
       });
       scannerRef.current = scanner;
 
-      const config = {
-        fps: 10,
-        qrbox: (vw: number, vh: number) => {
-          const min = Math.min(vw, vh);
-          const size = Math.floor(min * 0.7);
-          return { width: size, height: size };
-        },
-        disableFlip: false,
-      };
+      const config = getScannerConfig(isIOS);
 
       try {
         await scanner.start(
@@ -340,14 +355,8 @@ export function ReaderClient() {
             return;
           }
           try {
-            const constraints: MediaTrackConstraints = {
-              facingMode: { ideal: "environment" },
-              width: { ideal: 1920 },
-              height: { ideal: 1080 },
-            };
-
             await scanner.start(
-              constraints,
+              getScannerConstraints(isIOS),
               config,
               (decodedText) => {
                 handleScanSuccess(decodedText).catch(() => undefined);

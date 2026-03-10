@@ -2,7 +2,7 @@ import { InfoIcon, QrCodeIcon } from "@/components/shared/Icons";
 import { Skeleton } from "@/components/shared/Skeletons";
 
 const TICKET_HEADER_PANEL_CLASS =
-  "mx-auto w-full max-w-[17rem] rounded-[1.5rem] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.08)_100%)] px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_18px_40px_-28px_rgba(120,53,15,0.45)] backdrop-blur-md dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_40px_-28px_rgba(0,0,0,0.5)]";
+  "mx-auto w-full max-w-[14rem] rounded-[1.15rem] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.08)_100%)] px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_18px_40px_-28px_rgba(120,53,15,0.45)] backdrop-blur-md sm:max-w-[17rem] sm:rounded-[1.5rem] sm:px-5 sm:py-4 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_40px_-28px_rgba(0,0,0,0.5)]";
 
 function TicketQrSkeleton() {
   return (
@@ -44,16 +44,16 @@ export default function CheckInLoading() {
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.35),transparent_32%),radial-gradient(circle_at_85%_15%,rgba(255,255,255,0.22),transparent_24%)]" />
                 <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.18)_35%,transparent_52%,rgba(255,255,255,0.08)_68%,transparent_100%)]" />
                 <div className="absolute inset-x-0 bottom-0 h-px bg-white/30" />
-                <div className="absolute -top-6 right-6 h-20 w-20 rounded-full bg-white/16 blur-2xl dark:bg-white/6" />
-                <div className="absolute bottom-2 left-8 h-14 w-24 rounded-full bg-amber-200/18 blur-2xl dark:bg-orange-300/8" />
-                <div className="relative flex h-full flex-col justify-center px-5 py-4 sm:px-6 sm:py-5">
+                <div className="absolute -top-4 right-5 h-14 w-14 rounded-full bg-white/16 blur-2xl sm:-top-6 sm:right-6 sm:h-20 sm:w-20 dark:bg-white/6" />
+                <div className="absolute bottom-3 left-6 h-10 w-16 rounded-full bg-amber-200/18 blur-2xl sm:bottom-2 sm:left-8 sm:h-14 sm:w-24 dark:bg-orange-300/8" />
+                <div className="relative flex h-full flex-col justify-center px-4 py-3 sm:px-6 sm:py-5">
                   <div className={TICKET_HEADER_PANEL_CLASS}>
-                    <div className="mb-2 flex items-center justify-center gap-2">
-                      <Skeleton className="h-px w-6 bg-white/35 dark:bg-white/15" />
-                      <Skeleton className="h-3 w-24 bg-white/25 sm:h-4 sm:w-28 dark:bg-white/20" />
-                      <Skeleton className="h-px w-6 bg-white/35 dark:bg-white/15" />
+                    <div className="mb-1.5 flex items-center justify-center gap-2 sm:mb-2">
+                      <Skeleton className="h-px w-4 bg-white/35 sm:w-6 dark:bg-white/15" />
+                      <Skeleton className="h-2.5 w-20 bg-white/25 sm:h-4 sm:w-28 dark:bg-white/20" />
+                      <Skeleton className="h-px w-4 bg-white/35 sm:w-6 dark:bg-white/15" />
                     </div>
-                    <Skeleton className="mx-auto h-7 w-36 bg-white/30 sm:h-8 sm:w-40 dark:bg-white/20" />
+                    <Skeleton className="mx-auto h-6 w-30 bg-white/30 sm:h-8 sm:w-40 dark:bg-white/20" />
                   </div>
                 </div>
               </div>

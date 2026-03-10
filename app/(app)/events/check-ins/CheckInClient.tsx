@@ -18,7 +18,7 @@ const REFRESH_INTERVAL_MS = 9 * 60 * 1000;
 const DEVICE_WAKE_THRESHOLD_MS = 30 * 1000;
 const TICKET_GRADIENT_CLASS = "bg-gradient-to-br from-rose-700 via-orange-500 to-red-600";
 const TICKET_HEADER_PANEL_CLASS =
-  "mx-auto w-full max-w-[17rem] rounded-[1.5rem] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.08)_100%)] px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_18px_40px_-28px_rgba(120,53,15,0.45)] backdrop-blur-md dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_40px_-28px_rgba(0,0,0,0.5)]";
+  "mx-auto w-full max-w-[14rem] rounded-[1.15rem] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.08)_100%)] px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_18px_40px_-28px_rgba(120,53,15,0.45)] backdrop-blur-md sm:max-w-[17rem] sm:rounded-[1.5rem] sm:px-5 sm:py-4 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_40px_-28px_rgba(0,0,0,0.5)]";
 const TICKET_SHELL_CLASS =
   "relative overflow-hidden rounded-[2rem] border border-white/45 bg-white/28 shadow-[0_40px_120px_-52px_rgba(15,23,42,0.58)] ring-1 ring-white/55 backdrop-blur-2xl dark:border-white/8 dark:bg-neutral-950/24 dark:ring-white/8";
 const TICKET_SURFACE_CLASS =
@@ -190,18 +190,18 @@ export function CheckInClient() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.35),transparent_32%),radial-gradient(circle_at_85%_15%,rgba(255,255,255,0.22),transparent_24%)]" />
             <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.18)_35%,transparent_52%,rgba(255,255,255,0.08)_68%,transparent_100%)]" />
             <div className="absolute inset-x-0 bottom-0 h-px bg-white/30" />
-            <div className="absolute -top-6 right-6 h-20 w-20 rounded-full bg-white/16 blur-2xl dark:bg-white/6" />
-            <div className="absolute bottom-2 left-8 h-14 w-24 rounded-full bg-amber-200/18 blur-2xl dark:bg-orange-300/8" />
-            <div className="relative flex h-full flex-col justify-center px-5 py-4 sm:px-6 sm:py-5">
+            <div className="absolute -top-4 right-5 h-14 w-14 rounded-full bg-white/16 blur-2xl sm:-top-6 sm:right-6 sm:h-20 sm:w-20 dark:bg-white/6" />
+            <div className="absolute bottom-3 left-6 h-10 w-16 rounded-full bg-amber-200/18 blur-2xl sm:bottom-2 sm:left-8 sm:h-14 sm:w-24 dark:bg-orange-300/8" />
+            <div className="relative flex h-full flex-col justify-center px-4 py-3 sm:px-6 sm:py-5">
               <div className={TICKET_HEADER_PANEL_CLASS}>
-                <div className="mb-2 flex items-center justify-center gap-2">
-                  <span className="h-px w-6 bg-white/35" />
-                  <div className="text-[11px] font-semibold tracking-[0.18em] text-white/80 uppercase sm:text-sm sm:tracking-[0.24em]">
+                <div className="mb-1.5 flex items-center justify-center gap-2 sm:mb-2">
+                  <span className="h-px w-4 bg-white/35 sm:w-6" />
+                  <div className="text-[10px] font-semibold tracking-[0.14em] text-white/80 uppercase sm:text-sm sm:tracking-[0.24em]">
                     {t("ticket.header")}
                   </div>
-                  <span className="h-px w-6 bg-white/35" />
+                  <span className="h-px w-4 bg-white/35 sm:w-6" />
                 </div>
-                <div className="text-center text-[1.8rem] leading-none font-black tracking-[0.08em] text-white uppercase drop-shadow-[0_10px_24px_rgba(0,0,0,0.2)] sm:text-3xl sm:tracking-[0.14em]">
+                <div className="text-center text-[1.35rem] leading-none font-black tracking-[0.06em] text-white uppercase drop-shadow-[0_10px_24px_rgba(0,0,0,0.2)] sm:text-3xl sm:tracking-[0.14em]">
                   {t("ticket.label")}
                 </div>
               </div>
