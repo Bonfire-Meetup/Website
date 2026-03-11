@@ -10,6 +10,7 @@
     "categories": {
       "events": "Events",
       "account": "Your account",
+      "crew": "Crew",
       "community": "Community"
     },
     "guides": {
@@ -36,6 +37,10 @@
       "speaking": {
         "title": "Speaking at Bonfire",
         "description": "How to apply as a speaker, what makes a strong proposal, and what happens next."
+      },
+      "ticketScanning": {
+        "title": "Ticket scanning",
+        "description": "How to scan attendee QR codes and handle backup IDs at the door."
       },
       "accountDeletion": {
         "title": "Account deletion",
@@ -73,6 +78,10 @@
         "description": "Show the QR code to crew at the event entrance and let them scan it."
       },
       "five": {
+        "title": "QR not working? Use backup ID",
+        "description": "If scanning fails, tap the magnifying glass on your check-in pass to display your backup ID in large letters. Show it to crew so they can type it in manually."
+      },
+      "six": {
         "title": "Be part of community",
         "description": "Your check-ins are shown on your profile when it is public."
       }
@@ -379,6 +388,71 @@
     "cta": {
       "library": "Open library",
       "account": "Open account"
+    }
+  },
+  "ticketScanningGuide": {
+    "title": "Ticket scanning guide | {brandName}",
+    "description": "Crew guide for scanning attendee tickets and using backup IDs.",
+    "eyebrow": "Crew Guide",
+    "heading": "Ticket scanning guide",
+    "subtitle": "How to scan attendee QR codes and handle backup IDs at the door.",
+    "heroLead": "You are the first point of contact for every attendee.",
+    "heroSublead": "A smooth scan means a great first impression of the event.",
+    "sections": {
+      "qrScan": {
+        "title": "QR code scanning",
+        "items": {
+          "one": "Open the Event Reader page from your crew tools.",
+          "two": "Select the current event from the tiles and start the reader.",
+          "three": "Point your camera at the attendee's QR code displayed on their check-in pass.",
+          "four": "The scanner detects the code automatically and verifies the token. No tap needed."
+        }
+      },
+      "backupId": {
+        "title": "Backup ID path",
+        "description": "If the QR code cannot be scanned (broken screen, low brightness, etc.), use the backup ID printed on the attendee's ticket.",
+        "items": {
+          "one": "Tap \"Use backup ID\" below the scanner to expand the manual entry form.",
+          "two": "Ask the attendee to show the backup ID on their check-in pass.",
+          "three": "Type the ID exactly as shown. Letters and numbers only, characters like 0, O, I, and l are never used.",
+          "four": "Tap \"Find user\" to look up the attendee, then confirm check-in."
+        }
+      },
+      "camera": {
+        "title": "Camera tips",
+        "items": {
+          "one": "Grant camera permission when prompted. The scanner needs it to read QR codes.",
+          "two": "If the camera won't start, check that no other app is using it and refresh the page.",
+          "three": "Hold the phone steady about 15–20 cm from the QR code for fastest detection."
+        }
+      },
+      "results": {
+        "title": "Scan results",
+        "valid": {
+          "label": "Valid",
+          "description": "The attendee is verified and you can confirm check-in."
+        },
+        "alreadyCheckedIn": {
+          "label": "Already checked in",
+          "description": "The attendee was scanned earlier, no action needed."
+        },
+        "expired": {
+          "label": "Expired",
+          "description": "The token has expired. Ask the attendee to regenerate their check-in pass."
+        },
+        "invalid": {
+          "label": "Invalid",
+          "description": "The QR code is not a valid check-in token. Ask the attendee to open the correct page."
+        }
+      }
+    },
+    "notes": {
+      "title": "Good to know",
+      "description": "If anything goes wrong, the scanner diagnostics panel can help troubleshoot. Tap \"Show\" at the bottom of the reader to see camera and detection details."
+    },
+    "cta": {
+      "reader": "Open event reader",
+      "checkInGuide": "Open check-in guide"
     }
   }
 }

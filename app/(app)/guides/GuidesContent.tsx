@@ -11,6 +11,7 @@ import {
   BoltIcon,
   FingerprintIcon,
   MicIcon,
+  QrCodeIcon,
   ShieldIcon,
   TicketIcon,
   TrashIcon,
@@ -22,6 +23,7 @@ interface GuideCard {
   icon: ComponentType<{ className?: string; "aria-hidden"?: "true" }>;
   title: string;
   description: string;
+  crew?: true;
   danger?: true;
 }
 
@@ -92,6 +94,18 @@ export function GuidesContent() {
         },
       ],
     },
+    {
+      label: t("categories.crew"),
+      cards: [
+        {
+          href: PAGE_ROUTES.GUIDES_TICKET_SCANNING,
+          icon: QrCodeIcon,
+          title: t("guides.ticketScanning.title"),
+          description: t("guides.ticketScanning.description"),
+          crew: true,
+        },
+      ],
+    },
   ];
 
   return (
@@ -112,6 +126,30 @@ export function GuidesContent() {
             <div className="grid gap-3 sm:grid-cols-2">
               {group.cards.map((card) => {
                 const Icon = card.icon;
+
+                if (card.crew) {
+                  return (
+                    <Link
+                      key={card.href}
+                      href={card.href}
+                      className="group flex flex-col rounded-2xl border border-indigo-300/40 bg-gradient-to-br from-indigo-50/50 via-white to-white p-5 transition-all hover:border-indigo-400/50 hover:shadow-sm sm:p-6 dark:border-indigo-300/20 dark:from-indigo-500/8 dark:via-white/5 dark:to-white/5 dark:hover:border-indigo-300/30"
+                    >
+                      <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-indigo-300/40 bg-indigo-500/10 text-indigo-600 dark:border-indigo-300/20 dark:text-indigo-400">
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </div>
+                      <h3 className="mb-2 text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
+                        {card.title}
+                      </h3>
+                      <p className="flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                        {card.description}
+                      </p>
+                      <div className="mt-5 flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+                        {t("openGuide")}
+                        <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                      </div>
+                    </Link>
+                  );
+                }
 
                 if (card.danger) {
                   return (

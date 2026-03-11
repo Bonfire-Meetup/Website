@@ -11,15 +11,17 @@ import {
   CheckCircleIcon,
   LogInIcon,
   QrCodeIcon,
+  SearchIcon,
 } from "@/components/shared/Icons";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-const STEP_KEYS = ["one", "two", "three", "four", "five"] as const;
+const STEP_KEYS = ["one", "two", "three", "four", "five", "six"] as const;
 
 const STEP_ICONS = {
-  five: CheckCircleIcon,
+  five: SearchIcon,
   four: QrCodeIcon,
   one: LogInIcon,
+  six: CheckCircleIcon,
   three: BadgeCheckIcon,
   two: BadgeCheckIcon,
 } as const;

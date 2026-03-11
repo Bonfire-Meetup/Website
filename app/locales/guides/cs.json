@@ -10,6 +10,7 @@
     "categories": {
       "events": "Akce",
       "account": "Tvůj účet",
+      "crew": "Crew",
       "community": "Komunita"
     },
     "guides": {
@@ -36,6 +37,10 @@
       "speaking": {
         "title": "Přednášení na Bonfire",
         "description": "Jak se přihlásit jako speaker, co dělá návrh silný a co následuje dál."
+      },
+      "ticketScanning": {
+        "title": "Skenování vstupenek",
+        "description": "Jak skenovat QR kódy účastníků a pracovat se záložním ID u vstupu."
       },
       "accountDeletion": {
         "title": "Smazání účtu",
@@ -73,6 +78,10 @@
         "description": "U vstupu ukaž crew svůj QR kód a nech ho naskenovat."
       },
       "five": {
+        "title": "QR nefunguje? Ukaž záložní ID",
+        "description": "Pokud skenování selže, klikni na lupu na svém check-in pasu pro zobrazení záložního ID velkými písmeny. Ukaž ho crew, aby ho mohli zadat ručně."
+      },
+      "six": {
         "title": "Buď součást komunity",
         "description": "Tvé check-iny se zobrazují na profilu, pokud je veřejný."
       }
@@ -379,6 +388,71 @@
     "cta": {
       "library": "Otevřít knihovnu",
       "account": "Otevřít účet"
+    }
+  },
+  "ticketScanningGuide": {
+    "title": "Návod: skenování vstupenek | {brandName}",
+    "description": "Crew návod pro skenování QR kódů účastníků a práci se záložním ID.",
+    "eyebrow": "Crew návod",
+    "heading": "Návod ke skenování vstupenek",
+    "subtitle": "Jak skenovat QR kódy účastníků a pracovat se záložním ID u vstupu.",
+    "heroLead": "Jsi první kontakt pro každého účastníka.",
+    "heroSublead": "Hladký scan znamená skvělý první dojem z akce.",
+    "sections": {
+      "qrScan": {
+        "title": "Skenování QR kódu",
+        "items": {
+          "one": "Otevři stránku Event Reader z crew nástrojů.",
+          "two": "Vyber aktuální akci z dlaždic a spusť čtečku.",
+          "three": "Namiř kameru na QR kód účastníka zobrazený na jeho check-in pasu.",
+          "four": "Skener kód rozpozná automaticky a ověří token. Bez klikání."
+        }
+      },
+      "backupId": {
+        "title": "Záložní ID cesta",
+        "description": "Pokud QR kód nelze naskenovat (rozbitý displej, nízký jas atd.), použij záložní ID vytištěné na vstupence.",
+        "items": {
+          "one": "Pod skenerem klikni na \u201EPoužít záložní ID\u201C pro rozbalení formuláře.",
+          "two": "Požádej účastníka, aby ukázal záložní ID na svém check-in pasu.",
+          "three": "Zadej ID přesně jak je zobrazeno. Jen písmena a čísla, znaky jako 0, O, I a l se nikdy nepoužívají.",
+          "four": "Klikni na \u201ENajít uživatele\u201C pro vyhledání účastníka a potvrď check-in."
+        }
+      },
+      "camera": {
+        "title": "Tipy pro kameru",
+        "items": {
+          "one": "Povol přístup ke kameře po výzvě. Skener ji potřebuje ke čtení QR kódů.",
+          "two": "Pokud se kamera nespustí, zkontroluj, že ji nepoužívá jiná aplikace, a obnov stránku.",
+          "three": "Drž telefon stabilně asi 15–20 cm od QR kódu pro nejrychlejší detekci."
+        }
+      },
+      "results": {
+        "title": "Výsledky skenování",
+        "valid": {
+          "label": "Platný",
+          "description": "Účastník je ověřen a můžeš potvrdit check-in."
+        },
+        "alreadyCheckedIn": {
+          "label": "Již zkontrolován",
+          "description": "Účastník byl naskenován dříve, žádná akce potřeba."
+        },
+        "expired": {
+          "label": "Vypršel",
+          "description": "Token vypršel. Požádej účastníka, aby si znovu vygeneroval check-in pas."
+        },
+        "invalid": {
+          "label": "Neplatný",
+          "description": "QR kód není platný check-in token. Požádej účastníka, aby otevřel správnou stránku."
+        }
+      }
+    },
+    "notes": {
+      "title": "Dobré vědět",
+      "description": "Když se něco pokazí, panel diagnostiky skeneru pomůže s řešením. Klikni na \u201EZobrazit\u201C dole ve čtečce pro zobrazení detailů kamery a detekce."
+    },
+    "cta": {
+      "reader": "Otevřít čtečku",
+      "checkInGuide": "Otevřít návod na check-in"
     }
   }
 }
