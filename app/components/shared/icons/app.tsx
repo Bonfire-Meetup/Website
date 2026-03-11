@@ -416,7 +416,7 @@ export function UsersIcon({ className, ...props }: IconProps) {
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.592-2.641m-9.977 3.28a9.375 9.375 0 0 0-1.96 4.23.75.75 0 0 0 1.168.63c1.056-.522 2.168-.822 3.313-.822 1.146 0 2.257.3 3.312.822a.75.75 0 0 0 1.168-.63c-.26-1.53-.956-2.94-1.96-4.23"
+        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.592-2.641"
       />
       <path
         strokeLinecap="round"
@@ -425,6 +425,48 @@ export function UsersIcon({ className, ...props }: IconProps) {
       />
     </svg>
   );
+}
+
+export function HeadsetIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12a8.25 8.25 0 0 1 16.5 0" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12v5.25h4.5V12" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 12v5.25h-4.5V12" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 17.25A7.5 7.5 0 0 1 12 21" />
+    </svg>
+  );
+}
+
+export function WalkieTalkieIcon({ className, ...props }: IconProps) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      {...props}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4.5h9v18h-9z" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M16.5 4.5l2.25-3M9.75 8.25h4.5M9.75 10.5h4.5M7.5 14.25H5.25v3h2.25"
+      />
+    </svg>
+  );
+}
+
+export function CrewIcon({ className, ...props }: IconProps) {
+  return <WalkieTalkieIcon className={className} {...props} />;
 }
 
 export function GuildIcon({ className, ...props }: IconProps) {

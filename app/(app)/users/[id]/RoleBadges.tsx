@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { MicIcon, UsersIcon } from "@/components/shared/Icons";
+import { CrewIcon, MicIcon } from "@/components/shared/Icons";
 import { QuestionActivityBadge } from "@/components/user/QuestionActivityBadge";
 import { hasMembership } from "@/lib/config/membership";
 import type { QuestionActivityLevel } from "@/lib/config/question-activity";
@@ -21,7 +21,7 @@ const roleConfig = {
       "from-blue-500 via-indigo-500 to-rose-500 dark:from-blue-400 dark:via-indigo-400 dark:to-rose-400",
     glow: "rgba(99, 102, 241, 0.4)",
     iconColor: "text-indigo-500 dark:text-indigo-400",
-    icon: <UsersIcon className="h-4 w-4" />,
+    icon: <CrewIcon className="h-4 w-4" />,
   },
   [USER_ROLES.SPEAKER]: {
     labelKey: "speaker" as const,
