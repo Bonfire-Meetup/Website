@@ -9,6 +9,7 @@ import enEmailMessages from "@/locales/email/en.json";
 import enRootMessages from "@/locales/en.json";
 import enErrorMessages from "@/locales/error/en.json";
 import enEventsMessages from "@/locales/events/en.json";
+import enEventsSurveyPageMessages from "@/locales/eventsSurveyPage/en.json";
 import enFaqPageMessages from "@/locales/faqPage/en.json";
 import enFooterMessages from "@/locales/footer/en.json";
 import enGuideMessages from "@/locales/guides/en.json";
@@ -44,6 +45,7 @@ const moduleLoaders = [
   (locale: Locale) => import(`@/locales/email/${locale}.json`),
   (locale: Locale) => import(`@/locales/error/${locale}.json`),
   (locale: Locale) => import(`@/locales/events/${locale}.json`),
+  (locale: Locale) => import(`@/locales/eventsSurveyPage/${locale}.json`),
   (locale: Locale) => import(`@/locales/faqPage/${locale}.json`),
   (locale: Locale) => import(`@/locales/footer/${locale}.json`),
   (locale: Locale) => import(`@/locales/helpPage/${locale}.json`),
@@ -82,6 +84,7 @@ const enMessages = mergeMessages(
   enEmailMessages,
   enErrorMessages,
   enEventsMessages,
+  enEventsSurveyPageMessages,
   enFaqPageMessages,
   enFooterMessages,
   enHelpPageMessages,

@@ -21,6 +21,7 @@ initBotId({
     { method: "DELETE", path: API_ROUTES.ME.BASE },
     { method: "POST", path: API_ROUTES.NEWSLETTER.SUBSCRIPTIONS },
     { method: "POST", path: PAGE_ROUTES.CONTACT },
+    { method: "POST", path: PAGE_ROUTES.EVENT_SURVEY },
     { method: "POST", path: PAGE_ROUTES.SPEAK },
   ],
 });

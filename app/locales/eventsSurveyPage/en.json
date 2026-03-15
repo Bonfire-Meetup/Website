@@ -1,0 +1,125 @@
+{
+  "eventsSurveyPage": {
+    "meta": {
+      "title": "Event Survey",
+      "subtitle": "Tell us how the last Bonfire event felt and help shape the next one."
+    },
+    "eyebrow": "Bonfire Feedback",
+    "titlePart1": "Help Us Shape",
+    "titleHighlight": "What Comes Next",
+    "subtitle": "We’d love to hear what clicked, what didn’t, and what you’d love to see more of next time.",
+    "form": {
+      "summary": {
+        "setup": "Pick the event and give us the vibe check",
+        "highlights": "Tell us what landed and what you want more of",
+        "future": "Tell us what would bring you back"
+      },
+      "sections": {
+        "setup": {
+          "kicker": "Start Here",
+          "title": "Set the scene",
+          "description": "Choose the event first, then give us the quick overall read on how the night felt."
+        },
+        "highlights": {
+          "kicker": "Highlights",
+          "title": "What really landed?",
+          "description": "Tell us what people showed up for, what felt strongest, and what deserves more space next time."
+        },
+        "talks": {
+          "kicker": "Talks",
+          "title": "How did the talks feel?",
+          "description": "Give us the broad read on pacing and format. If you want to go deeper, there’s a talk-by-talk section right below."
+        },
+        "talkFeedback": {
+          "kicker": "Optional Deep Dive",
+          "title": "Go talk by talk",
+          "description": "If you want to get more specific, this is where you can rate individual talks and leave a quick note."
+        },
+        "future": {
+          "kicker": "Next Time",
+          "title": "What should happen next?",
+          "description": "Wrap up with whether you’d come again and anything we should tweak, try, or rethink."
+        }
+      },
+      "title": "Feedback Survey",
+      "subtitle": "Tell us what you enjoyed, what missed the mark, and what would make the next one even better.",
+      "submit": "Send Feedback",
+      "submitting": "Sending...",
+      "successTitle": "You’re all set",
+      "successMessage": "Thanks for taking a minute. We’ll use this to keep making Bonfire better.",
+      "sendAnother": "Send Another One",
+      "clearDraft": "Clear draft",
+      "draftNote": "Drafts stay in your browser until you hit submit. If you leave without sending, nothing gets saved on our side.",
+      "eventPlaceholder": "Choose an event",
+      "eventGroups": {
+        "upcoming": "Upcoming events",
+        "past": "Past events"
+      },
+      "otherPlaceholder": "Add a quick note",
+      "suggestionsPlaceholder": "Anything you’d love us to improve, change, or try next time?",
+      "talkCommentPlaceholder": "Anything about this talk you’d love us to keep, improve, or do differently?",
+      "questions": {
+        "event": "Which event are you thinking about?",
+        "overallRating": "How did the event feel overall?",
+        "overallRatingHint": "(0 = not for me, 5 = loved it)",
+        "favoriteParts": "What part of the event did you enjoy most?",
+        "futureTopics": "What would you love to see more of at future Bonfires?",
+        "talkFormat": "How did the talk length and format feel?",
+        "talkFeedbackToggle": "Rate individual talks",
+        "talkFeedbackToggleClosed": "Open talk-by-talk rating",
+        "talkFeedbackToggleOpen": "Talk-by-talk rating is open",
+        "talkFeedbackHint": "Optional. Add talk-specific ratings and notes for {eventTitle}.",
+        "talkFeedbackSummary": "{count, plural, =0 {No talks rated yet} one {# of {total} talks rated} other {# of {total} talks rated}}",
+        "moreTalks": "+{count} more",
+        "talksOverallRating": "How did the talk lineup feel overall?",
+        "talksOverallRatingHint": "(0 = not for me, 5 = loved it)",
+        "talkRating": "How did this talk land for you?",
+        "talkRatingHint": "(0 = not for me, 5 = loved it)",
+        "talkComment": "Optional note",
+        "nextEventLikelihood": "How likely are you to come to the next one?",
+        "nextEventLikelihoodHint": "(0 = probably not, 5 = absolutely)",
+        "suggestions": "Anything else you want to tell us?"
+      },
+      "options": {
+        "technology_talk": "Technology talk",
+        "art_audio_management_talk": "Art / Audio / Management talk",
+        "interview_or_live_podcast": "Interview or live podcast",
+        "networking_social_time": "Networking / social time",
+        "technology": "Technology (engines, tools, coding)",
+        "art_animation_workflows": "Art & animation workflows",
+        "game_audio_sound_design_music": "Game audio & sound design & music",
+        "game_production_project_management": "Game production & project management",
+        "game_marketing_community": "Game marketing & community",
+        "behind_the_scenes_interviews": "Behind-the-scenes interviews",
+        "live_podcasts_panels": "Live podcasts or panels",
+        "perfect_as_is": "Perfect as is",
+        "talks_should_be_shorter": "Talks should be shorter",
+        "talks_could_go_deeper": "Talks could go deeper / be longer",
+        "more_time_for_qna": "More time for Q&A",
+        "other": "Other"
+      },
+      "scale": {
+        "0": "0",
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5"
+      },
+      "errors": {
+        "eventRequired": "Please choose an event.",
+        "atLeastOneAnswer": "Please choose an event and answer at least one question before sending this in.",
+        "invalidTalkFeedback": "A few talk responses could not be matched to the selected event.",
+        "otherRequired": "Please fill in the custom option you selected.",
+        "otherTooLong": "Please keep that extra note under 500 characters.",
+        "talkCommentTooLong": "Please keep each talk note under 1000 characters.",
+        "suggestionsTooLong": "Please keep your final note under 5000 characters.",
+        "rateLimited": "You’ve sent too many responses. Please try again later.",
+        "captchaFailed": "Please confirm you’re human.",
+        "botBlocked": "We couldn’t verify this request. Please try again.",
+        "csrfInvalid": "Please refresh the page and try again.",
+        "generic": "Something went wrong. Please try again."
+      }
+    }
+  }
+}

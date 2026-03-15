@@ -1,0 +1,125 @@
+{
+  "eventsSurveyPage": {
+    "meta": {
+      "title": "Dotazník k akci",
+      "subtitle": "Řekněte nám, jak na vás působila poslední Bonfire akce, a pomozte nám vyladit další."
+    },
+    "eyebrow": "Bonfire Feedback",
+    "titlePart1": "Pomozte Nám",
+    "titleHighlight": "Vyladit, Co Přijde Dál",
+    "subtitle": "Budeme rádi, když nám řeknete, co fungovalo, co ne a co byste příště chtěli vidět víc.",
+    "form": {
+      "summary": {
+        "setup": "Vyberte akci a dejte nám rychlý vibe check",
+        "highlights": "Řekněte nám, co fungovalo a čeho chcete víc",
+        "future": "Řekněte nám, co by vás přivedlo zpět"
+      },
+      "sections": {
+        "setup": {
+          "kicker": "Začátek",
+          "title": "Pojďme to zasadit do kontextu",
+          "description": "Nejdřív vyberte akci a pak nám dejte rychlý celkový pocit z celého večera."
+        },
+        "highlights": {
+          "kicker": "To Nejlepší",
+          "title": "Co sedlo nejvíc?",
+          "description": "Řekněte nám, kvůli čemu lidi přišli, co bylo nejsilnější a čeho by mělo být příště víc."
+        },
+        "talks": {
+          "kicker": "Přednášky",
+          "title": "Jak působily přednášky?",
+          "description": "Dejte nám celkový pocit z délky a formátu. Pokud budete chtít jít víc do detailu, hned pod tím je rozpad po jednotlivých přednáškách."
+        },
+        "talkFeedback": {
+          "kicker": "Volitelný Deep Dive",
+          "title": "Jít přednášku po přednášce",
+          "description": "Pokud chcete být konkrétnější, tady můžete ohodnotit jednotlivé přednášky a přidat krátkou poznámku."
+        },
+        "future": {
+          "kicker": "Příště",
+          "title": "Co by mělo přijít dál?",
+          "description": "Na závěr nám řekněte, jestli byste přišli znovu a co bychom měli příště upravit, zkusit nebo promyslet jinak."
+        }
+      },
+      "title": "Feedback Survey",
+      "subtitle": "Řekněte nám, co vás bavilo, co úplně nesedlo a co by příště udělalo akci ještě lepší.",
+      "submit": "Odeslat zpětnou vazbu",
+      "submitting": "Odesílám...",
+      "successTitle": "Máme to",
+      "successMessage": "Díky, že jste si našli chvilku. Tenhle feedback nám pomůže dělat Bonfire ještě lepší.",
+      "sendAnother": "Poslat další odpověď",
+      "clearDraft": "Vymazat koncept",
+      "draftNote": "Koncept zůstává ve vašem prohlížeči, dokud ho neodešlete. Když odejdete bez odeslání, k nám se nic neuloží.",
+      "eventPlaceholder": "Vyberte akci",
+      "eventGroups": {
+        "upcoming": "Nadcházející akce",
+        "past": "Proběhlé akce"
+      },
+      "otherPlaceholder": "Přidejte krátkou poznámku",
+      "suggestionsPlaceholder": "Je něco, co bychom měli příště zlepšit, změnit nebo zkusit jinak?",
+      "talkCommentPlaceholder": "Je něco, co bychom si z téhle přednášky měli odnést, zachovat nebo zlepšit?",
+      "questions": {
+        "event": "Na kterou akci teď myslíte?",
+        "overallRating": "Jak na vás akce působila celkově?",
+        "overallRatingHint": "(0 = vůbec ne, 5 = bylo to super)",
+        "favoriteParts": "Která část akce vás bavila nejvíc?",
+        "futureTopics": "Čeho byste na budoucích Bonfire akcích chtěli vídat víc?",
+        "talkFormat": "Jak na vás působila délka a formát přednášek?",
+        "talkFeedbackToggle": "Ohodnotit jednotlivé přednášky",
+        "talkFeedbackToggleClosed": "Otevřít hodnocení po přednáškách",
+        "talkFeedbackToggleOpen": "Hodnocení po přednáškách je otevřené",
+        "talkFeedbackHint": "Volitelné. Přidejte hodnocení a poznámky ke konkrétním přednáškám z akce {eventTitle}.",
+        "talkFeedbackSummary": "{count, plural, =0 {Zatím bez hodnocení} one {Ohodnocena # z {total} přednášek} few {Ohodnoceny # z {total} přednášek} other {Ohodnoceno # z {total} přednášek}}",
+        "moreTalks": "+{count} dalších",
+        "talksOverallRating": "Jak na vás působil line-up přednášek jako celek?",
+        "talksOverallRatingHint": "(0 = vůbec mi to nesedlo, 5 = fakt super)",
+        "talkRating": "Jak na vás tahle přednáška zapůsobila?",
+        "talkRatingHint": "(0 = vůbec mi to nesedlo, 5 = fakt super)",
+        "talkComment": "Volitelná poznámka",
+        "nextEventLikelihood": "Jak pravděpodobné je, že dorazíte i příště?",
+        "nextEventLikelihoodHint": "(0 = spíš ne, 5 = určitě jo)",
+        "suggestions": "Je ještě něco, co nám chcete říct?"
+      },
+      "options": {
+        "technology_talk": "Technology talk",
+        "art_audio_management_talk": "Art / Audio / Management talk",
+        "interview_or_live_podcast": "Interview nebo live podcast",
+        "networking_social_time": "Networking / social část",
+        "technology": "Technologie (enginy, nástroje, kódování)",
+        "art_animation_workflows": "Art a animační workflow",
+        "game_audio_sound_design_music": "Game audio, sound design a hudba",
+        "game_production_project_management": "Game production a project management",
+        "game_marketing_community": "Game marketing a komunita",
+        "behind_the_scenes_interviews": "Rozhovory ze zákulisí",
+        "live_podcasts_panels": "Live podcasty nebo panely",
+        "perfect_as_is": "Je to ideální tak, jak to je",
+        "talks_should_be_shorter": "Přednášky by měly být kratší",
+        "talks_could_go_deeper": "Přednášky by mohly být delší / jít víc do hloubky",
+        "more_time_for_qna": "Více času na Q&A",
+        "other": "Jiné"
+      },
+      "scale": {
+        "0": "0",
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5"
+      },
+      "errors": {
+        "eventRequired": "Vyberte prosím akci.",
+        "atLeastOneAnswer": "Před odesláním prosím vyberte akci a vyplňte aspoň jednu odpověď.",
+        "invalidTalkFeedback": "Část feedbacku k přednáškám se nepodařilo přiřadit k vybrané akci.",
+        "otherRequired": "Vyplňte prosím zvolenou vlastní možnost.",
+        "otherTooLong": "Doplňující poznámku prosím zkraťte pod 500 znaků.",
+        "talkCommentTooLong": "Poznámku k přednášce prosím zkraťte pod 1000 znaků.",
+        "suggestionsTooLong": "Závěrečnou poznámku prosím zkraťte pod 5000 znaků.",
+        "rateLimited": "Odeslali jste příliš mnoho odpovědí. Zkuste to prosím později.",
+        "captchaFailed": "Potvrďte prosím, že nejste robot.",
+        "botBlocked": "Tento požadavek se nepodařilo ověřit. Zkuste to prosím znovu.",
+        "csrfInvalid": "Obnovte prosím stránku a zkuste to znovu.",
+        "generic": "Něco se pokazilo. Zkuste to prosím znovu."
+      }
+    }
+  }
+}
