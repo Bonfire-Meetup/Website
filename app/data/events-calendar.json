@@ -170,8 +170,8 @@
     },
     {
       "id": "zlin-6",
-      "title": "Bonfire@Zlin #6",
-      "announcementStatus": "draft",
+      "title": "Bonfire@Zlin #6 - Horizon Drift",
+      "announcementStatus": "partial",
       "location": "Zlin",
       "date": "2026-03-30",
       "time": "17:00",
@@ -181,6 +181,18 @@
         {
           "name": "TBA",
           "topic": "To be announced"
+        },
+        {
+          "name": "Jarek Kolář",
+          "company": "INGAME STUDIOS",
+          "topic": "Concept to Comeback: The Evolution of Crime Boss",
+          "url": "https://www.ingamestudios.com/"
+        },
+        {
+          "name": "Filip Ondráš",
+          "company": "Vector Virtuoso s.r.o.",
+          "topic": "Ako zvýšiť šance na úspech Vášho štúdia? Alebo post-mortem ako ste o ňom ešte nepremýšľali.",
+          "url": "https://www.vectorvirtuoso.com/"
         }
       ],
       "links": {}

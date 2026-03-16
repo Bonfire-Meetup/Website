@@ -28,6 +28,14 @@ export function primarySpeakerName(name: string | string[]): string {
   return Array.isArray(name) ? name[0] : name;
 }
 
+export function hasRenderableSpeakerName(name: string | string[]): boolean {
+  return primarySpeakerName(name).trim().length > 0;
+}
+
+export function isTbaSpeakerName(name: string | string[]): boolean {
+  return primarySpeakerName(name).trim().toUpperCase() === "TBA";
+}
+
 export function formatSpeakerNames(name: string | string[]): string {
   return getSpeakerNames(name).join(" & ");
 }

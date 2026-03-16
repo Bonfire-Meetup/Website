@@ -5,7 +5,7 @@ import { getGoogleMapsSearchUrl } from "@/lib/events/links";
 import {
   formatSpeakerNameWithCompany,
   formatSpeakerNames,
-  primarySpeakerName,
+  hasRenderableSpeakerName,
   resolveSpeakerLinks,
   withCompany,
 } from "@/lib/events/speakers";
@@ -69,13 +69,8 @@ export function EventCard({
   t,
 }: EventCardProps) {
   const isTba = isTbaDate(date);
-  const hasSpeakers = speakers.some(
-    (speaker) => primarySpeakerName(speaker.name).trim().length > 0,
-  );
-  const confirmedSpeakers = speakers.filter((speaker) => {
-    const primary = primarySpeakerName(speaker.name).trim();
-    return primary.length > 0 && primary !== "TBA";
-  });
+  const visibleSpeakers = speakers.filter((speaker) => hasRenderableSpeakerName(speaker.name));
+  const hasSpeakers = visibleSpeakers.length > 0;
 
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : "";
   const daysUntil = getDaysUntilEventDate(date);
@@ -190,9 +185,9 @@ export function EventCard({
 
           <div className="mb-5">
             <p className="section-label">{t("speakers")}</p>
-            {confirmedSpeakers.length > 0 ? (
+            {visibleSpeakers.length > 0 ? (
               <div className="space-y-2">
-                {confirmedSpeakers.map((speaker) => (
+                {visibleSpeakers.map((speaker) => (
                   <div
                     key={`${formatSpeakerNames(speaker.name)}-${speaker.topic}`}
                     className="speaker-card"
@@ -269,10 +264,10 @@ export function EventCard({
                 {countdownLabel}
               </Pill>
             )}
-            {confirmedSpeakers.length > 0 && (
+            {visibleSpeakers.length > 0 && (
               <Pill size="sm" className={topMetaPillClass}>
                 <MicIcon className="h-3 w-3" />
-                {confirmedSpeakers.length} {confirmedSpeakers.length === 1 ? "Talk" : "Talks"}
+                {visibleSpeakers.length} {visibleSpeakers.length === 1 ? "Talk" : "Talks"}
               </Pill>
             )}
           </div>
@@ -328,9 +323,9 @@ export function EventCard({
         {hasSpeakers && (
           <div className="mb-6">
             <p className="section-label-spaced">{t("speakers")}</p>
-            {confirmedSpeakers.length > 0 ? (
+            {visibleSpeakers.length > 0 ? (
               <div className="space-y-2.5">
-                {confirmedSpeakers.map((speaker, index) => {
+                {visibleSpeakers.map((speaker, index) => {
                   const resolved = resolveSpeakerLinks(speaker);
                   return (
                     <div

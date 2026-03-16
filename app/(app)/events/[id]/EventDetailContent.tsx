@@ -40,6 +40,7 @@ import { parseEventTitle } from "@/lib/events/presentation";
 import {
   formatSpeakerNameWithCompany,
   formatSpeakerNames,
+  hasRenderableSpeakerName,
   primarySpeakerName,
   resolveSpeakerLinks,
 } from "@/lib/events/speakers";
@@ -393,13 +394,8 @@ export function EventDetailContent({
     },
   ].filter((link) => link.url && link.url.length > 0);
 
-  const hasSpeakers = speakers.some(
-    (speaker) => primarySpeakerName(speaker.name).trim().length > 0,
-  );
-  const confirmedSpeakers = speakers.filter((speaker) => {
-    const primary = primarySpeakerName(speaker.name).trim();
-    return primary.length > 0 && primary !== "TBA";
-  });
+  const visibleSpeakers = speakers.filter((speaker) => hasRenderableSpeakerName(speaker.name));
+  const hasSpeakers = visibleSpeakers.length > 0;
   const talkOptions = speakers
     .map((speaker, index) => ({
       key: speaker.recordingId ?? `${primarySpeakerName(speaker.name)}-${index}`,
@@ -636,15 +632,15 @@ export function EventDetailContent({
                   </div>
                 </div>
                 <span className="inline-flex items-center rounded-full border border-neutral-200/70 bg-white/70 px-3.5 py-1.5 text-xs font-semibold text-neutral-700 dark:border-white/10 dark:bg-white/10 dark:text-neutral-200">
-                  {t("talkCount", { count: confirmedSpeakers.length })}
+                  {t("talkCount", { count: visibleSpeakers.length })}
                 </span>
               </div>
 
-              {confirmedSpeakers.length > 0 && (
+              {visibleSpeakers.length > 0 && (
                 <div
-                  className={`grid gap-5 ${confirmedSpeakers.length === 1 ? "mx-auto max-w-xl" : "sm:grid-cols-2"}`}
+                  className={`grid gap-5 ${visibleSpeakers.length === 1 ? "mx-auto max-w-xl" : "sm:grid-cols-2"}`}
                 >
-                  {confirmedSpeakers.map((speaker, index) => {
+                  {visibleSpeakers.map((speaker, index) => {
                     const accent = getSpeakerAccent(speaker, location);
                     const slotTime = speaker.startTime?.trim() ?? "";
                     const displayIndex = index + 1;
@@ -773,7 +769,7 @@ export function EventDetailContent({
                 </div>
               )}
 
-              {confirmedSpeakers.length === 0 && (
+              {visibleSpeakers.length === 0 && (
                 <div className="glass rounded-3xl border-2 border-dashed border-neutral-200 p-16 text-center dark:border-neutral-700">
                   <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-100 to-orange-100 dark:from-rose-500/15 dark:to-orange-500/10">
                     <MicIcon className="h-8 w-8 text-rose-400 dark:text-rose-300" />
@@ -1033,7 +1029,7 @@ export function EventDetailContent({
                   </div>
                 </div>
 
-                {confirmedSpeakers.length > 0 && (
+                {visibleSpeakers.length > 0 && (
                   <div className="mt-2 rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
@@ -1043,7 +1039,7 @@ export function EventDetailContent({
                         </span>
                       </div>
                       <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-                        {t("talkCount", { count: confirmedSpeakers.length })}
+                        {t("talkCount", { count: visibleSpeakers.length })}
                       </span>
                     </div>
                   </div>

@@ -2,6 +2,7 @@ import { isTbaDate } from "@/data/events-calendar";
 import { LOCATIONS } from "@/lib/config/constants";
 import { getDaysUntilEventDate } from "@/lib/events/datetime";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
+import { getSpeakerNames, hasRenderableSpeakerName } from "@/lib/events/speakers";
 import { getEventLocationTheme } from "@/lib/events/theme";
 import { type EventItem } from "@/lib/events/types";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -59,11 +60,12 @@ export function UpcomingEventCompactCard({
           ? t("countdownTomorrow")
           : t("countdownDays", { count: daysUntil.toString() });
   const theme = getEventLocationTheme(location);
-  const confirmedSpeakerNames = speakers
-    .flatMap((speaker) => (Array.isArray(speaker.name) ? speaker.name : [speaker.name]))
+  const visibleSpeakerNames = speakers
+    .filter((speaker) => hasRenderableSpeakerName(speaker.name))
+    .flatMap((speaker) => getSpeakerNames(speaker.name))
     .map((speakerName) => speakerName.trim())
-    .filter((speakerName) => speakerName.length > 0 && speakerName !== "TBA");
-  const speakerSummary = confirmedSpeakerNames.join(", ");
+    .filter((speakerName) => speakerName.length > 0);
+  const speakerSummary = visibleSpeakerNames.join(", ");
   const mapUrl = getGoogleMapsSearchUrl(venue);
 
   return (
@@ -144,7 +146,7 @@ export function UpcomingEventCompactCard({
           </EventMetaRow>
         </div>
 
-        {confirmedSpeakerNames.length > 0 && (
+        {visibleSpeakerNames.length > 0 && (
           <div className="mb-5 flex items-start gap-2.5 rounded-xl bg-white/60 px-3 py-2 text-sm text-neutral-600 dark:bg-white/5 dark:text-neutral-300">
             <MicIcon className={`mt-0.5 h-4 w-4 shrink-0 ${theme.iconTint}`} />
             <span className="leading-relaxed">
