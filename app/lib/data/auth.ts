@@ -369,9 +369,14 @@ export const deleteAuthUserById = async (id: string) => {
   await db().delete(appUser).where(eq(appUser.id, id));
 };
 
-export const cleanupExpiredAuthChallenges = async () => {
+export const cleanupExpiredAuthChallenges = async (): Promise<number> => {
   const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  await db().delete(authChallenge).where(lt(authChallenge.expiresAt, cutoff));
+  const rows = await db()
+    .delete(authChallenge)
+    .where(lt(authChallenge.expiresAt, cutoff))
+    .returning({ id: authChallenge.id });
+
+  return rows.length;
 };
 
 export const maybeCleanupExpiredAuthChallenges = async () => {
@@ -521,9 +526,14 @@ export const getActiveRefreshTokenCountByUser = async (userId: string): Promise<
   return rows[0]?.count ?? 0;
 };
 
-export const cleanupExpiredRefreshTokens = async () => {
+export const cleanupExpiredRefreshTokens = async (): Promise<number> => {
   const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  await db().delete(authRefreshToken).where(lt(authRefreshToken.expiresAt, cutoff));
+  const rows = await db()
+    .delete(authRefreshToken)
+    .where(lt(authRefreshToken.expiresAt, cutoff))
+    .returning({ id: authRefreshToken.id });
+
+  return rows.length;
 };
 
 export const maybeCleanupExpiredRefreshTokens = async () => {

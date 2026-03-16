@@ -225,9 +225,14 @@ export const markPasskeyChallengeUsed = async (id: string) => {
     .where(eq(authPasskeyChallenge.id, id));
 };
 
-export const cleanupExpiredPasskeyChallenges = async () => {
+export const cleanupExpiredPasskeyChallenges = async (): Promise<number> => {
   const cutoff = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  await db().delete(authPasskeyChallenge).where(lt(authPasskeyChallenge.expiresAt, cutoff));
+  const rows = await db()
+    .delete(authPasskeyChallenge)
+    .where(lt(authPasskeyChallenge.expiresAt, cutoff))
+    .returning({ id: authPasskeyChallenge.id });
+
+  return rows.length;
 };
 
 export const maybeCleanupExpiredPasskeyChallenges = async () => {
