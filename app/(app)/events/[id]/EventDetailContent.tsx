@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import type { CSSProperties } from "react";
 
 import { RsvpSection } from "@/components/events/RsvpSection";
 import { ShareEventButton } from "@/components/events/ShareEventButton";
@@ -26,6 +27,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { isEventPast, isTbaDate, parseEventDateTimeParts } from "@/data/events-calendar";
 import { getLocationPartners } from "@/data/location-partners";
+import { Link } from "@/i18n/navigation";
 import {
   DEFAULT_TIMEZONE,
   LOCATIONS,
@@ -34,6 +36,7 @@ import {
 } from "@/lib/config/constants";
 import { getDaysUntilEventDate } from "@/lib/events/datetime";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
+import { parseEventTitle } from "@/lib/events/presentation";
 import {
   formatSpeakerNameWithCompany,
   formatSpeakerNames,
@@ -177,6 +180,33 @@ function getSpeakerAccent(speaker: Speaker, location: LocationValue) {
   };
 }
 
+function getSurveyCtaPresentation(
+  color: string,
+  mode: "solid" | "soft",
+): { className: string; style: CSSProperties } {
+  if (mode === "solid") {
+    return {
+      className:
+        "inline-flex items-center justify-center gap-2 rounded-2xl px-4.5 py-2.5 text-sm font-semibold text-white transition-[transform,filter,box-shadow] hover:brightness-105 active:scale-[0.99]",
+      style: {
+        background: `linear-gradient(135deg, ${color} 0%, ${color}cc 100%)`,
+        boxShadow: `0 14px 30px -16px ${color}80`,
+      },
+    };
+  }
+
+  return {
+    className:
+      "inline-flex items-center justify-center gap-2 rounded-2xl border px-4.5 py-2.5 text-sm font-semibold transition-[transform,filter,box-shadow] hover:brightness-105 active:scale-[0.99] dark:text-white",
+    style: {
+      background: `${color}0d`,
+      borderColor: `${color}55`,
+      color,
+      boxShadow: `0 12px 24px -18px ${color}66`,
+    },
+  };
+}
+
 function getSpeakerInitials(name: string) {
   const parts = name
     .trim()
@@ -271,6 +301,7 @@ export function EventDetailContent({
 }: EventDetailContentProps) {
   const t = useTranslations("events");
   const locale = useLocale();
+  const parsedTitle = parseEventTitle(title);
   const isTba = isTbaDate(date);
   const isPastEvent = isEventPast({ date, time }, new Date());
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
@@ -330,6 +361,10 @@ export function EventDetailContent({
         titleShadowDark:
           "0 0 40px rgba(59, 130, 246, 0.25), 0 0 80px rgba(59, 130, 246, 0.1)" as string,
       };
+  const shouldShowEpisodeBadge =
+    Boolean(episode) && parsedTitle?.prefix.trim().toLowerCase() !== episode?.trim().toLowerCase();
+  const wrapUpSurveyCta = getSurveyCtaPresentation(loc.color, "solid");
+  const closedSurveyCta = getSurveyCtaPresentation(loc.color, "soft");
 
   const platformLinks = [
     {
@@ -428,7 +463,7 @@ export function EventDetailContent({
       <div className="relative z-10">
         <div className="relative overflow-hidden px-4 pt-28 pb-6 sm:pt-32 sm:pb-8">
           <div className="mx-auto max-w-5xl text-center">
-            {episode && (
+            {shouldShowEpisodeBadge && (
               <div className="mb-5 flex justify-center">
                 <span
                   className={`inline-flex items-center gap-2 rounded-full ${loc.badge} px-4 py-2 text-sm font-bold text-white shadow-lg`}
@@ -439,41 +474,34 @@ export function EventDetailContent({
               </div>
             )}
 
-            {(() => {
-              const separatorMatch = title.match(/^(.+?)\s*[-–—:]\s*(.+)$/);
-              if (separatorMatch) {
-                const [, prefix, subtitle] = separatorMatch;
-                return (
-                  <h1 className="mb-5">
-                    <span className="mb-3 block text-sm font-bold tracking-[0.2em] text-neutral-400 uppercase sm:text-base dark:text-neutral-500">
-                      {prefix}
+            {parsedTitle ? (
+              <h1 className="mb-5">
+                <span className="mb-3 block text-sm font-bold tracking-[0.2em] text-neutral-400 uppercase sm:text-base dark:text-neutral-500">
+                  {parsedTitle.prefix}
+                </span>
+                <span className="relative inline-block">
+                  <span
+                    className={`bg-gradient-to-r bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl ${loc.titleGradient}`}
+                  >
+                    {parsedTitle.subtitle}
+                  </span>
+                  <span
+                    className="pointer-events-none absolute inset-0 -z-10 blur-2xl select-none"
+                    aria-hidden="true"
+                  >
+                    <span
+                      className={`bg-gradient-to-r bg-clip-text text-4xl font-extrabold tracking-tight text-transparent opacity-30 sm:text-5xl md:text-6xl lg:text-7xl dark:opacity-40 ${loc.titleGradient}`}
+                    >
+                      {parsedTitle.subtitle}
                     </span>
-                    <span className="relative inline-block">
-                      <span
-                        className={`bg-gradient-to-r bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl ${loc.titleGradient}`}
-                      >
-                        {subtitle}
-                      </span>
-                      <span
-                        className="pointer-events-none absolute inset-0 -z-10 blur-2xl select-none"
-                        aria-hidden="true"
-                      >
-                        <span
-                          className={`bg-gradient-to-r bg-clip-text text-4xl font-extrabold tracking-tight text-transparent opacity-30 sm:text-5xl md:text-6xl lg:text-7xl dark:opacity-40 ${loc.titleGradient}`}
-                        >
-                          {subtitle}
-                        </span>
-                      </span>
-                    </span>
-                  </h1>
-                );
-              }
-              return (
-                <h1 className="mb-5 text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl md:text-6xl lg:text-7xl dark:text-white">
-                  {title}
-                </h1>
-              );
-            })()}
+                  </span>
+                </span>
+              </h1>
+            ) : (
+              <h1 className="mb-5 text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl md:text-6xl lg:text-7xl dark:text-white">
+                {title}
+              </h1>
+            )}
 
             <p className="mx-auto max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-300">
               {description}
@@ -511,20 +539,37 @@ export function EventDetailContent({
                   />
 
                   <div className="relative">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-neutral-700 uppercase ring-1 ring-black/5 dark:bg-black/20 dark:text-neutral-200 dark:ring-white/10">
-                      <SparklesIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
-                      {t("wrapUpEyebrow")}
-                    </div>
-                    <h2 className="text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
-                      {t("wrapUpTitle")}
-                    </h2>
-                    <p className="mt-2 max-w-2xl text-neutral-700 dark:text-neutral-200">
-                      {t("wrapUpDescription")}
-                    </p>
-                    <div className="mt-5">
-                      <Button href={PAGE_ROUTES.CONTACT} variant="secondary" size="sm">
-                        {t("wrapUpCta")}
-                      </Button>
+                    <div className="flex flex-col gap-5 sm:gap-6 md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+                      <div className="min-w-0">
+                        <p
+                          className="mb-4 text-[11px] font-semibold tracking-[0.16em] uppercase"
+                          style={{ color: loc.color }}
+                        >
+                          {t("wrapUpEyebrow")}
+                        </p>
+
+                        <div
+                          className="border-l-2 pl-4 sm:pl-5"
+                          style={{ borderColor: `${loc.color}55` }}
+                        >
+                          <h2 className="max-w-2xl text-2xl leading-[1.02] font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
+                            {t("wrapUpTitle")}
+                          </h2>
+                          <p className="mt-3 max-w-2xl text-neutral-700 dark:text-neutral-200">
+                            {t("wrapUpDescription")}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="md:self-end">
+                        <Link
+                          href={PAGE_ROUTES.EVENT_SURVEY_WITH_EVENT(id)}
+                          className={wrapUpSurveyCta.className}
+                          style={wrapUpSurveyCta.style}
+                        >
+                          {t("wrapUpSurveyCta")}
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -824,6 +869,16 @@ export function EventDetailContent({
                         <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-300">
                           {t("rsvpClosedDescription")}
                         </p>
+                        <div className="mt-3">
+                          <Link
+                            href={PAGE_ROUTES.EVENT_SURVEY_WITH_EVENT(id)}
+                            className={closedSurveyCta.className}
+                            style={closedSurveyCta.style}
+                          >
+                            <SparklesIcon className="h-4 w-4" />
+                            {t("rsvpClosedSurveyCta")}
+                          </Link>
+                        </div>
                       </div>
                     ) : (
                       <RsvpSection eventId={id} />

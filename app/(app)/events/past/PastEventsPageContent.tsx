@@ -1,10 +1,10 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { type CSSProperties, useMemo, useState } from "react";
 
 import { EventsPageHero } from "@/components/events/EventsPageHero";
-import { ArrowRightIcon } from "@/components/shared/Icons";
+import { ArrowRightIcon, SparklesIcon } from "@/components/shared/Icons";
 import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
@@ -308,13 +308,28 @@ export function PastEventsPageContent() {
                           </p>
 
                           <div className="mt-4">
-                            <Link
-                              href={PAGE_ROUTES.EVENT(event.id)}
-                              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300/80 bg-white px-3.5 py-1.5 text-sm font-semibold text-neutral-700 transition-all group-hover:translate-x-0.5 hover:border-neutral-400 hover:text-neutral-900 dark:border-white/15 dark:bg-white/10 dark:text-neutral-200 dark:hover:border-white/25 dark:hover:text-white"
-                            >
-                              {t("pastPageViewDetails")}
-                              <ArrowRightIcon className={`h-4 w-4 ${theme.iconTint}`} />
-                            </Link>
+                            <div className="flex flex-wrap gap-2">
+                              <Link
+                                href={PAGE_ROUTES.EVENT_SURVEY_WITH_EVENT(event.id)}
+                                className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold text-white shadow-[0_14px_28px_-18px_var(--survey-color)] transition-[transform,filter,box-shadow] group-hover:translate-x-0.5 hover:brightness-105"
+                                style={
+                                  {
+                                    "--survey-color": `${theme.color}80`,
+                                    background: `linear-gradient(135deg, ${theme.color} 0%, ${theme.color}cc 100%)`,
+                                  } as CSSProperties
+                                }
+                              >
+                                <SparklesIcon className="h-4 w-4" />
+                                {t("pastPageSurveyCta")}
+                              </Link>
+                              <Link
+                                href={PAGE_ROUTES.EVENT(event.id)}
+                                className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300/80 bg-white px-3.5 py-1.5 text-sm font-semibold text-neutral-700 transition-all hover:border-neutral-400 hover:text-neutral-900 dark:border-white/15 dark:bg-white/10 dark:text-neutral-200 dark:hover:border-white/25 dark:hover:text-white"
+                              >
+                                {t("pastPageViewDetails")}
+                                <ArrowRightIcon className={`h-4 w-4 ${theme.iconTint}`} />
+                              </Link>
+                            </div>
                           </div>
                         </div>
                       </article>

@@ -1,5 +1,6 @@
 import {
   createContactUrl,
+  createEventSurveyUrl,
   createLoginWithChallengeUrl,
   createLoginWithReasonUrl,
   createNewsletterEditorUrl,
@@ -52,6 +53,7 @@ export const PAGE_ROUTES = {
   EVENT_PAST: "/events/past",
   EVENT_READER: "/events/reader",
   EVENT_SURVEY: "/events/survey",
+  EVENT_SURVEY_WITH_EVENT: (eventId: string) => createEventSurveyUrl(eventId),
   EVENT_UPCOMING: "/events/upcoming",
   PHOTOS: "/photos",
   PHOTOS_ALBUM: (album: string) => `/photos/${album}`,

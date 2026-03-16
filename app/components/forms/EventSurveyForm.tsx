@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import {
   type ComponentType,
   type ReactNode,
@@ -140,6 +141,11 @@ interface SurveySectionProps {
 
 function getStoredDraft(): EventSurveyDraft | null {
   return readLocalStorage(STORAGE_KEYS.DRAFT_EVENT_SURVEY);
+}
+
+function getPreselectedEventId(searchParams: URLSearchParams): string {
+  const eventId = searchParams.get("eventId")?.trim();
+  return eventId && getEventById(eventId) ? eventId : "";
 }
 
 function isDraftEmpty(draft: EventSurveyDraft): boolean {
@@ -355,6 +361,7 @@ interface EventSurveyFormInnerProps {
 function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
   const t = useTranslations("eventsSurveyPage.form");
   const locale = useLocale();
+  const searchParams = useSearchParams();
   const [state, formAction, isPending] = useActionState(submitEventSurvey, initialState);
   const [isTransitionPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
@@ -407,11 +414,17 @@ function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
 
   useEffect(() => {
     const storedDraft = getStoredDraft();
+    const preselectedEventId = getPreselectedEventId(searchParams);
 
     if (storedDraft) {
-      setDraft(storedDraft);
+      setDraft(storedDraft.eventId ? storedDraft : { ...storedDraft, eventId: preselectedEventId });
+      return;
     }
-  }, []);
+
+    if (preselectedEventId) {
+      setDraft((current) => ({ ...current, eventId: preselectedEventId }));
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (state.message === "captchaFailed") {
@@ -844,16 +857,16 @@ function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
                       )}
                     </span>
                     <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-                      {draft.talkFeedbackEnabled
-                        ? t("questions.talkFeedbackToggleOpen")
-                        : t("questions.talkFeedbackToggleClosed")}
+                      {t("questions.talkFeedbackToggle")}
                     </span>
                   </div>
                   <p className="mt-1 text-sm leading-6 text-neutral-500 dark:text-neutral-400">
-                    {t("questions.talkFeedbackSummary", {
-                      count: ratedTalkCount,
-                      total: eventTalks.length,
-                    })}
+                    {draft.talkFeedbackEnabled
+                      ? t("questions.talkFeedbackExpandedHint")
+                      : t("questions.talkFeedbackSummary", {
+                          count: ratedTalkCount,
+                          total: eventTalks.length,
+                        })}
                   </p>
                   {!draft.talkFeedbackEnabled ? (
                     <div className="mt-3 flex flex-wrap gap-1.5 sm:gap-2">

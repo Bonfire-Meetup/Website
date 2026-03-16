@@ -29,3 +29,12 @@ export function createNewsletterEditorUrl(resend?: string): string {
   const params = new URLSearchParams({ resend });
   return `/newsletters/editor/compose?${params.toString()}`;
 }
+
+export function createEventSurveyUrl(eventId?: string): string {
+  if (!eventId) {
+    return "/events/survey";
+  }
+
+  const params = new URLSearchParams({ eventId });
+  return `/events/survey?${params.toString()}`;
+}
