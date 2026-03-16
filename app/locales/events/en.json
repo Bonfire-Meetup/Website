@@ -64,6 +64,7 @@
     "wrapUpSurveyCta": "Fill the survey",
     "wrapUpCta": "Share feedback",
     "speakerPreview": "You can hear inspiring speakers like {names}.",
+    "speakerPreviewPartial": "You can hear inspiring speakers like {names}, and stay tuned for {count} more {count, plural, one {speaker} other {speakers}} to be unveiled.",
     "orRegisterVia": "Or register via:",
     "onePrivateRsvp": "1 private",
     "multiplePrivateRsvps": "{count} private",

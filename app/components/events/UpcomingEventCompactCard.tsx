@@ -2,7 +2,7 @@ import { isTbaDate } from "@/data/events-calendar";
 import { LOCATIONS } from "@/lib/config/constants";
 import { getDaysUntilEventDate } from "@/lib/events/datetime";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
-import { getSpeakerNames, hasRenderableSpeakerName } from "@/lib/events/speakers";
+import { getSpeakerNames, hasRenderableSpeakerName, isTbaSpeakerName } from "@/lib/events/speakers";
 import { getEventLocationTheme } from "@/lib/events/theme";
 import { type EventItem } from "@/lib/events/types";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -60,12 +60,16 @@ export function UpcomingEventCompactCard({
           ? t("countdownTomorrow")
           : t("countdownDays", { count: daysUntil.toString() });
   const theme = getEventLocationTheme(location);
-  const visibleSpeakerNames = speakers
-    .filter((speaker) => hasRenderableSpeakerName(speaker.name))
+  const visibleSpeakers = speakers.filter((speaker) => hasRenderableSpeakerName(speaker.name));
+  const announcedSpeakerNames = visibleSpeakers
+    .filter((speaker) => !isTbaSpeakerName(speaker.name))
     .flatMap((speaker) => getSpeakerNames(speaker.name))
     .map((speakerName) => speakerName.trim())
     .filter((speakerName) => speakerName.length > 0);
-  const speakerSummary = visibleSpeakerNames.join(", ");
+  const hiddenSpeakerCount = visibleSpeakers.filter((speaker) =>
+    isTbaSpeakerName(speaker.name),
+  ).length;
+  const speakerSummary = announcedSpeakerNames.join(", ");
   const mapUrl = getGoogleMapsSearchUrl(venue);
 
   return (
@@ -146,11 +150,18 @@ export function UpcomingEventCompactCard({
           </EventMetaRow>
         </div>
 
-        {visibleSpeakerNames.length > 0 && (
+        {visibleSpeakers.length > 0 && (
           <div className="mb-5 flex items-start gap-2.5 rounded-xl bg-white/60 px-3 py-2 text-sm text-neutral-600 dark:bg-white/5 dark:text-neutral-300">
             <MicIcon className={`mt-0.5 h-4 w-4 shrink-0 ${theme.iconTint}`} />
             <span className="leading-relaxed">
-              {t("speakerPreview", { names: speakerSummary })}
+              {announcedSpeakerNames.length > 0
+                ? hiddenSpeakerCount > 0
+                  ? t("speakerPreviewPartial", {
+                      count: hiddenSpeakerCount.toString(),
+                      names: speakerSummary,
+                    })
+                  : t("speakerPreview", { names: speakerSummary })
+                : t("speakersTba")}
             </span>
           </div>
         )}

@@ -64,6 +64,7 @@
     "wrapUpSurveyCta": "Vyplnit dotazník",
     "wrapUpCta": "Poslat zpětnou vazbu",
     "speakerPreview": "Můžeš si poslechnout inspirativní speakery jako {names}.",
+    "speakerPreviewPartial": "Můžeš si poslechnout inspirativní speakery jako {names} a na odhalení dalších {count} {count, plural, one {speakera} few {speakerů} other {speakerů}} si ještě chvíli počkat.",
     "orRegisterVia": "Nebo se registruj přes:",
     "onePrivateRsvp": "1 soukromý",
     "multiplePrivateRsvps": "{count} soukromých",
