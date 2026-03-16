@@ -19,6 +19,7 @@ import {
   markAuthChallengeUsed,
   markRefreshTokenUsedIfUnused,
   revokeRefreshTokenFamily,
+  touchAuthUserLastLoginAt,
   upsertAuthUser,
 } from "@/lib/data/auth";
 import {
@@ -358,6 +359,7 @@ const handleEmailOtpGrant = async (
       userId,
     });
 
+  await touchAuthUserLastLoginAt(userId);
   await recordAttempt("success", userId);
   logInfo("auth.token.issued", {
     ...emailFingerprint,

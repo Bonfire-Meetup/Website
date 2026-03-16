@@ -6,7 +6,7 @@ import { z } from "zod";
 import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
 import { issueAuthTokens } from "@/lib/auth/issue-auth-tokens";
 import { verifyAuthentication } from "@/lib/auth/webauthn";
-import { getAuthUserById, insertAuthAttempt } from "@/lib/data/auth";
+import { getAuthUserById, insertAuthAttempt, touchAuthUserLastLoginAt } from "@/lib/data/auth";
 import {
   getPasskeyByCredentialId,
   getPasskeyChallenge,
@@ -142,6 +142,7 @@ export const POST = withRequestContext(
           userId: passkey.userId,
         });
 
+      await touchAuthUserLastLoginAt(passkey.userId);
       const emailFingerprint = getEmailFingerprint(user.email);
       const requestId = getRequestId();
 

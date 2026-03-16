@@ -145,17 +145,23 @@ export const markAuthChallengeUsed = async (id: string) => {
 };
 
 export const upsertAuthUser = async (email: string): Promise<string> => {
-  const now = new Date().toISOString();
   const rows = await db()
     .insert(appUser)
-    .values({ email, lastLoginAt: now })
+    .values({ email })
     .onConflictDoUpdate({
       target: appUser.email,
-      set: { lastLoginAt: now },
+      set: { email },
     })
     .returning({ id: appUser.id });
 
   return rows[0]?.id ?? "";
+};
+
+export const touchAuthUserLastLoginAt = async (userId: string) => {
+  await db()
+    .update(appUser)
+    .set({ lastLoginAt: new Date().toISOString() })
+    .where(eq(appUser.id, userId));
 };
 
 export const getAuthUserById = async (id: string): Promise<AuthUserRow | null> => {
