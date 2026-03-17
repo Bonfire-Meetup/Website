@@ -31,6 +31,7 @@ interface UpcomingEventCompactCardProps {
   description: EventItem["description"];
   speakers: EventItem["speakers"];
   locale: string;
+  now: Date | null;
   t: TranslationFn;
 }
 
@@ -46,11 +47,12 @@ export function UpcomingEventCompactCard({
   description,
   speakers,
   locale,
+  now,
   t,
 }: UpcomingEventCompactCardProps) {
   const isTba = isTbaDate(date);
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
-  const daysUntil = getDaysUntilEventDate(date);
+  const daysUntil = now ? getDaysUntilEventDate(date, now) : null;
   const countdownLabel =
     daysUntil === null
       ? null

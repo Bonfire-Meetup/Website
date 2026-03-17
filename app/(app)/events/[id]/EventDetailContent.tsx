@@ -6,6 +6,7 @@ import type { CSSProperties } from "react";
 
 import { RsvpSection } from "@/components/events/RsvpSection";
 import { ShareEventButton } from "@/components/events/ShareEventButton";
+import { useRenderNow } from "@/components/events/useRenderNow";
 import {
   CommunityQuestionsPanel,
   DEFAULT_PANEL_THEME,
@@ -302,11 +303,12 @@ export function EventDetailContent({
 }: EventDetailContentProps) {
   const t = useTranslations("events");
   const locale = useLocale();
+  const now = useRenderNow();
   const parsedTitle = parseEventTitle(title);
   const isTba = isTbaDate(date);
-  const isPastEvent = isEventPast({ date, time }, new Date());
+  const isPastEvent = now ? isEventPast({ date, time }, now) : false;
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : t("tba");
-  const daysUntil = getDaysUntilEventDate(date);
+  const daysUntil = now ? getDaysUntilEventDate(date, now) : null;
   let countdownLabel: string | null = null;
   if (daysUntil === 0) {
     countdownLabel = t("countdownToday");

@@ -49,6 +49,7 @@ interface EventCardProps {
   speakers: EventItem["speakers"];
   links?: EventLinks;
   locale: string;
+  now: Date | null;
   t: TranslationFn;
 }
 
@@ -66,6 +67,7 @@ export function EventCard({
   registrationUrl,
   speakers,
   locale,
+  now,
   t,
 }: EventCardProps) {
   const isTba = isTbaDate(date);
@@ -73,7 +75,7 @@ export function EventCard({
   const hasSpeakers = visibleSpeakers.length > 0;
 
   const formattedDate = !isTba ? formatEventDateUTC(date, locale) : "";
-  const daysUntil = getDaysUntilEventDate(date);
+  const daysUntil = now ? getDaysUntilEventDate(date, now) : null;
   let countdownLabel: string | null = null;
   if (daysUntil === 0) {
     countdownLabel = t("countdownToday");

@@ -12,6 +12,7 @@ import { SectionHeader } from "../ui/SectionHeader";
 
 import { EventCard } from "./EventCard";
 import { UpcomingEventCompactCard } from "./UpcomingEventCompactCard";
+import { useRenderNow } from "./useRenderNow";
 
 export type { EventItem };
 
@@ -31,6 +32,7 @@ export function EventsSectionClient({
   const t = useTranslations("sections.events");
   const tEvents = useTranslations("events");
   const locale = useLocale();
+  const now = useRenderNow();
   const [activeEpisode, setActiveEpisode] = useState(initialEpisode ?? "all");
 
   const episodes = useMemo(() => {
@@ -111,6 +113,7 @@ export function EventsSectionClient({
                 description={event.description}
                 speakers={event.speakers}
                 locale={locale}
+                now={now}
                 t={tEvents}
                 isPlaceholder={event.isPlaceholder}
               />
@@ -129,6 +132,7 @@ export function EventsSectionClient({
                 speakers={event.speakers}
                 links={event.links}
                 locale={locale}
+                now={now}
                 t={tEvents}
                 isPlaceholder={event.isPlaceholder}
               />
