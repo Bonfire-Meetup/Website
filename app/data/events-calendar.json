@@ -171,7 +171,7 @@
     {
       "id": "zlin-6",
       "title": "Bonfire@Zlin #6 - Horizon Drift",
-      "announcementStatus": "partial",
+      "announcementStatus": "full",
       "location": "Zlin",
       "date": "2026-03-30",
       "time": "17:00",
@@ -179,8 +179,10 @@
       "description": "Game dev meetup in Zlin with talks and community discussion.",
       "speakers": [
         {
-          "name": "TBA",
-          "topic": "To be announced"
+          "name": "Xuan Do",
+          "company": "Flying Rat Studio",
+          "topic": "Unity ScriptableObjects: Best Practices and Data-Driven Design",
+          "url": "https://www.flying-rat.studio/"
         },
         {
           "name": "Jarek Kolář",
