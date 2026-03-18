@@ -346,6 +346,7 @@ export function CommunityQuestionsPanel({
 }: CommunityQuestionsPanelProps) {
   const panel = useCommunityQuestionsPanel(eventId);
   const { handleRefresh, isWindowOpen } = panel;
+  const [hasMounted, setHasMounted] = useState(false);
   const isLiveView = mode === "live";
   const canSubmitQuestion =
     !panel.isAuthTransitioning &&
@@ -376,6 +377,10 @@ export function CommunityQuestionsPanel({
   const handleComposerTalkChange = (value: string) => panel.setSelectedTalkIndex(value);
   const handleFilterTalkChange = (value: TalkFilter) => panel.setActiveTalkFilter(value);
   const handleFilterSortChange = (value: SortMode) => panel.setSortMode(value);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!showAutoRefreshToggle || !autoRefreshEnabled || !isWindowOpen) {
@@ -416,7 +421,7 @@ export function CommunityQuestionsPanel({
     return () => window.clearTimeout(timeoutId);
   }, [panel.submissionCount]);
 
-  if (panel.isLoading && !panel.data) {
+  if (!hasMounted || (panel.isLoading && !panel.data)) {
     return <CommunityQuestionsPanelSkeleton />;
   }
 

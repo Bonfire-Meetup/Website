@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 
 import { RsvpSection } from "@/components/events/RsvpSection";
 import { ShareEventButton } from "@/components/events/ShareEventButton";
@@ -52,6 +52,7 @@ interface Speaker {
   name: string | string[];
   company?: string | string[];
   topic: string;
+  description?: string;
   startTime?: string;
   profileId?: string | string[];
   url?: string | string[];
@@ -303,6 +304,7 @@ export function EventDetailContent({
 }: EventDetailContentProps) {
   const t = useTranslations("events");
   const locale = useLocale();
+  const [hasMounted, setHasMounted] = useState(false);
   const now = useRenderNow();
   const parsedTitle = parseEventTitle(title);
   const isTba = isTbaDate(date);
@@ -368,6 +370,10 @@ export function EventDetailContent({
     Boolean(episode) && parsedTitle?.prefix.trim().toLowerCase() !== episode?.trim().toLowerCase();
   const wrapUpSurveyCta = getSurveyCtaPresentation(loc.color, "solid");
   const closedSurveyCta = getSurveyCtaPresentation(loc.color, "soft");
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const platformLinks = [
     {
@@ -576,7 +582,10 @@ export function EventDetailContent({
             <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-2.5">
               <div className="glass flex items-center gap-2 rounded-2xl px-3.5 py-2">
                 <CalendarIcon className="h-[18px] w-[18px]" style={{ color: loc.color }} />
-                <span className="text-sm font-semibold text-neutral-900 dark:text-white">
+                <span
+                  suppressHydrationWarning={!hasMounted}
+                  className="text-sm font-semibold text-neutral-900 dark:text-white"
+                >
                   {formattedDate}
                 </span>
               </div>
@@ -692,6 +701,15 @@ export function EventDetailContent({
                         <p className={`relative ${accent.topicHeadingClassName}`}>
                           {speaker.topic}
                         </p>
+
+                        {speaker.description?.trim() && (
+                          <div className="relative mt-3 overflow-hidden rounded-2xl border border-amber-200/70 bg-linear-to-br from-amber-50/95 via-white to-orange-50/80 px-3.5 py-3.5 shadow-[0_14px_30px_-24px_rgba(180,83,9,0.45)] ring-1 ring-white/60 dark:border-amber-400/20 dark:from-amber-500/12 dark:via-neutral-950 dark:to-orange-500/10 dark:ring-white/5">
+                            <div className="pointer-events-none absolute top-3 right-3 h-6 w-6 rounded-full bg-white/70 blur-md dark:bg-amber-100/10" />
+                            <p className="relative max-w-[58ch] text-[13px] leading-5 text-neutral-700 sm:text-sm dark:text-neutral-200">
+                              {speaker.description}
+                            </p>
+                          </div>
+                        )}
 
                         <div className="relative mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-black/5 pt-4 dark:border-white/10">
                           {resolveSpeakerLinks(speaker).map((resolved) => {

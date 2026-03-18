@@ -4,6 +4,7 @@ export interface EventSpeaker {
   name: string | string[];
   company?: string | string[];
   topic: string;
+  description?: string;
   startTime?: string;
   profileId?: string | string[];
   url?: string | string[];

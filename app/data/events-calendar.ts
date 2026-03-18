@@ -36,6 +36,7 @@ function validateEvent(event: CalendarEventJson): EventItem {
     ...(speaker.company && { company: speaker.company }),
     startTime: speaker.startTime ?? speaker.start,
     topic: speaker.topic,
+    ...(speaker.description && { description: speaker.description }),
     ...(speaker.profileId && { profileId: speaker.profileId }),
     ...(speaker.url && { url: speaker.url }),
     ...(speaker.recordingId && { recordingId: speaker.recordingId }),
