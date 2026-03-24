@@ -691,6 +691,20 @@ export function CommunityQuestionsPanel({
             </div>
           )}
 
+          {showAutoRefreshToggle && (
+            <div className="mb-2 flex justify-center">
+              <label className="inline-flex min-h-9 items-center gap-2 rounded-full border border-neutral-200/80 bg-white/92 px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-sm backdrop-blur dark:border-white/15 dark:bg-neutral-950/88 dark:text-neutral-200">
+                <input
+                  type="checkbox"
+                  checked={autoRefreshEnabled}
+                  onChange={(event) => setAutoRefreshEnabled(event.target.checked)}
+                  className="h-3.5 w-3.5 rounded border-neutral-300 text-neutral-900 accent-neutral-900 dark:border-white/20 dark:accent-white"
+                />
+                {panel.t("questions.autoRefresh")}
+              </label>
+            </div>
+          )}
+
           <div className="flex items-center gap-1.5 rounded-[1.4rem] border border-neutral-200/80 bg-white/92 p-1.5 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.45)] backdrop-blur dark:border-white/12 dark:bg-neutral-950/88">
             {!isLiveView && panel.isAuthHydrated && !panel.isAuthenticated ? (
               <button
