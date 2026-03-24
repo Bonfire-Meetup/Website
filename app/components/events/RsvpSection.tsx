@@ -18,6 +18,22 @@ interface RsvpSectionProps {
 }
 
 const CANCEL_CONFIRM_TIMEOUT_MS = 3000;
+const SPLIT_BUTTON_CLASS =
+  "group relative cursor-pointer overflow-hidden rounded-xl px-4 py-4 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60";
+
+interface ResponsiveLabelProps {
+  desktop: string;
+  mobile: string;
+}
+
+function ResponsiveLabel({ desktop, mobile }: ResponsiveLabelProps) {
+  return (
+    <>
+      <span className="whitespace-nowrap sm:hidden">{mobile}</span>
+      <span className="hidden whitespace-nowrap sm:inline">{desktop}</span>
+    </>
+  );
+}
 
 export function RsvpSection({ eventId }: RsvpSectionProps) {
   const t = useTranslations("events");
@@ -128,6 +144,11 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
     });
   };
 
+  const resetConfirmCancel = () => {
+    setConfirmCancel(false);
+    setError(null);
+  };
+
   const handleClick = () => {
     setError(null);
 
@@ -149,14 +170,9 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
 
       cancelRsvp();
     } else {
-      setConfirmCancel(false);
+      resetConfirmCancel();
       createRsvp();
     }
-  };
-
-  const handleCancelConfirm = () => {
-    setConfirmCancel(false);
-    setError(null);
   };
 
   const handleConfirmCancel = () => {
@@ -177,35 +193,27 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
 
       {isRsvped && confirmCancel ? (
         <div className="grid grid-cols-2 gap-2">
-          <button
-            onClick={handleConfirmCancel}
-            disabled={isLoading}
-            className="group relative cursor-pointer overflow-hidden rounded-xl px-4 py-4 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
-          >
+          <button onClick={handleConfirmCancel} disabled={isLoading} className={SPLIT_BUTTON_CLASS}>
             <div className="absolute inset-0 bg-gradient-to-r from-red-700 via-rose-600 to-red-500 shadow-red-900/40" />
             <div className="absolute inset-0 bg-gradient-to-r from-red-800 via-rose-700 to-red-600 opacity-0 transition-opacity group-hover:opacity-100" />
-            <div className="relative z-10 flex items-center justify-center gap-3">
+            <div className="relative z-10 flex items-center justify-center gap-2">
               {deleteMutation.isPending ? (
                 <LoadingSpinner size="sm" ariaLabel={t("withdrawRsvp")} />
               ) : (
                 <>
                   <CheckIcon className="h-5 w-5" />
-                  <span>{t("withdrawRsvp")}</span>
+                  <ResponsiveLabel mobile={t("withdrawRsvpShort")} desktop={t("withdrawRsvp")} />
                 </>
               )}
             </div>
           </button>
 
-          <button
-            onClick={handleCancelConfirm}
-            disabled={isLoading}
-            className="group relative cursor-pointer overflow-hidden rounded-xl px-4 py-4 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
-          >
+          <button onClick={resetConfirmCancel} disabled={isLoading} className={SPLIT_BUTTON_CLASS}>
             <div className="absolute inset-0 bg-gradient-to-r from-neutral-500 via-neutral-600 to-neutral-700" />
             <div className="absolute inset-0 bg-gradient-to-r from-neutral-600 via-neutral-700 to-neutral-800 opacity-0 transition-opacity group-hover:opacity-100" />
-            <div className="relative z-10 flex items-center justify-center gap-3">
+            <div className="relative z-10 flex items-center justify-center gap-2">
               <CheckCircleIcon className="h-5 w-5" />
-              <span>{t("keepRsvp")}</span>
+              <ResponsiveLabel mobile={t("keepRsvpShort")} desktop={t("keepRsvp")} />
             </div>
           </button>
         </div>

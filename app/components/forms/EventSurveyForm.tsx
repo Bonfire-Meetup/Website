@@ -600,7 +600,7 @@ function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
             variant="plain"
             size="sm"
             onClick={clearDraft}
-            className="form-clear-button w-full justify-center self-start sm:w-auto sm:self-auto"
+            className="form-clear-button w-full justify-center self-start sm:w-auto sm:self-auto sm:whitespace-nowrap"
           >
             <CloseIcon className="h-3.5 w-3.5" />
             {t("clearDraft")}
