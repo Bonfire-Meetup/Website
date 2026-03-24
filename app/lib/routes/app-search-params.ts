@@ -38,3 +38,12 @@ export function createEventSurveyUrl(eventId?: string): string {
   const params = new URLSearchParams({ eventId });
   return `/events/survey?${params.toString()}`;
 }
+
+export function createEventReaderUrl(eventId?: string): string {
+  if (!eventId) {
+    return "/events/reader";
+  }
+
+  const params = new URLSearchParams({ eventId });
+  return `/events/reader?${params.toString()}`;
+}

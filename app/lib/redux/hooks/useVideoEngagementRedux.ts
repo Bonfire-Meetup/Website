@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback } from "react";
+
 import type { BoostedByData } from "@/lib/api/video-engagement";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
@@ -12,13 +14,14 @@ import {
 export function useVideoEngagementRedux(shortId: string) {
   const dispatch = useAppDispatch();
   const engagement = useAppSelector((state) => state.videoEngagement[shortId] || null);
-
-  return {
-    engagement,
-    setLikes: (count: number, hasLiked: boolean) => {
+  const setLikes = useCallback(
+    (count: number, hasLiked: boolean) => {
       dispatch(setVideoLikes({ shortId, count, hasLiked }));
     },
-    setBoosts: (
+    [dispatch, shortId],
+  );
+  const setBoosts = useCallback(
+    (
       count: number,
       hasBoosted: boolean,
       availableBoosts?: number,
@@ -26,11 +29,26 @@ export function useVideoEngagementRedux(shortId: string) {
     ) => {
       dispatch(setVideoBoosts({ shortId, count, hasBoosted, availableBoosts, boostedBy }));
     },
-    toggleLike: (adding: boolean) => {
+    [dispatch, shortId],
+  );
+  const toggleLikeState = useCallback(
+    (adding: boolean) => {
       dispatch(toggleLike({ shortId, adding }));
     },
-    toggleBoost: (adding: boolean) => {
+    [dispatch, shortId],
+  );
+  const toggleBoostState = useCallback(
+    (adding: boolean) => {
       dispatch(toggleBoost({ shortId, adding }));
     },
+    [dispatch, shortId],
+  );
+
+  return {
+    engagement,
+    setLikes,
+    setBoosts,
+    toggleLike: toggleLikeState,
+    toggleBoost: toggleBoostState,
   };
 }

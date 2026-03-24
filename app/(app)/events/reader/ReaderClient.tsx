@@ -3,8 +3,8 @@
 import { Scanner, type IDetectedBarcode } from "@yudiel/react-qr-scanner";
 import { prepareZXingModule } from "barcode-detector/ponyfill";
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 prepareZXingModule({
   overrides: {
@@ -106,6 +106,7 @@ export function ReaderClient() {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const haptics = useHaptics();
   const auth = useAppSelector((state) => state.auth);
   const userRoles = useAppSelector(selectAuthRoles);
@@ -132,6 +133,11 @@ export function ReaderClient() {
 
   const events = getUpcomingEvents(new Date());
   const isCrew = userRoles.includes(USER_ROLES.CREW);
+  const requestedEventId = searchParams.get("eventId");
+  const preselectedEventId =
+    requestedEventId && events.some((event) => event.id === requestedEventId)
+      ? requestedEventId
+      : "";
 
   const formatEventTileMeta = (date: string, time: string) => {
     const parts: string[] = [];
@@ -201,11 +207,11 @@ export function ReaderClient() {
     });
   };
 
-  const resetReaderState = () => {
+  const resetReaderState = useCallback(() => {
     isProcessingRef.current = false;
     debugEntriesRef.current = [];
     setDebugEntriesVersion((current) => current + 1);
-    setSelectedEvent("");
+    setSelectedEvent(preselectedEventId);
     setManualPublicIdParts({ first: "", second: "" });
     setIsScanning(false);
     setScanResult(null);
@@ -216,7 +222,7 @@ export function ReaderClient() {
     setShowManualEntry(false);
     setShowDiagnostics(false);
     setDiagnosticsCopied(false);
-  };
+  }, [preselectedEventId]);
 
   useEffect(() => {
     const handlePageShow = () => {
@@ -228,11 +234,19 @@ export function ReaderClient() {
     return () => {
       window.removeEventListener("pageshow", handlePageShow);
     };
-  }, []);
+  }, [resetReaderState]);
 
   useEffect(() => {
     resetReaderState();
-  }, [pathname]);
+  }, [pathname, resetReaderState]);
+
+  useEffect(() => {
+    if (!preselectedEventId) {
+      return;
+    }
+
+    setSelectedEvent((current) => (current === preselectedEventId ? current : preselectedEventId));
+  }, [preselectedEventId]);
 
   if (!hasMounted || !auth.hydrated) {
     return (

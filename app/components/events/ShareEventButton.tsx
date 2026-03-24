@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { CheckIcon, LinkedInIcon, LinkIcon, ShareIcon, XIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 
 interface ShareEventButtonProps {
   sectionTitle: string;
@@ -14,7 +15,7 @@ interface ShareEventButtonProps {
   shareXLabel: string;
   shareLinkedInLabel: string;
   shareMessage: string;
-  shortPath?: string;
+  shareUrl: string;
 }
 
 export function ShareEventButton({
@@ -26,54 +27,33 @@ export function ShareEventButton({
   shareXLabel,
   shareLinkedInLabel,
   shareMessage,
-  shortPath,
+  shareUrl,
 }: ShareEventButtonProps) {
   const [copied, setCopied] = useState(false);
   const [nativeShareSupported, setNativeShareSupported] = useState(false);
-  const [eventUrl, setEventUrl] = useState("");
 
   useEffect(() => {
     setNativeShareSupported(
       typeof navigator !== "undefined" && typeof navigator.share === "function",
     );
-    if (typeof window !== "undefined") {
-      setEventUrl(shortPath ? `${window.location.origin}${shortPath}` : window.location.href);
-    }
-  }, [shortPath]);
+  }, []);
 
-  const shareUrlX = useMemo(() => {
-    if (!eventUrl) {
-      return "";
-    }
-    const params = new URLSearchParams({
-      text: shareMessage,
-      url: eventUrl,
-    });
-    return `https://x.com/intent/tweet?${params.toString()}`;
-  }, [eventUrl, shareMessage]);
-
-  const shareUrlLinkedIn = useMemo(() => {
-    if (!eventUrl) {
-      return "";
-    }
-    const params = new URLSearchParams({
-      url: eventUrl,
-    });
-    return `https://www.linkedin.com/sharing/share-offsite/?${params.toString()}`;
-  }, [eventUrl]);
+  const shareUrlX = `${WEBSITE_URLS.SHARE.X}?${new URLSearchParams({
+    text: shareMessage,
+    url: shareUrl,
+  }).toString()}`;
+  const shareUrlLinkedIn = `${WEBSITE_URLS.SHARE.LINKEDIN}?${new URLSearchParams({
+    url: shareUrl,
+  }).toString()}`;
 
   const handleClick = () => {
-    if (!eventUrl) {
-      return;
-    }
-
-    navigator.clipboard.writeText(eventUrl);
+    navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleNativeShare = async () => {
-    if (!nativeShareSupported || !eventUrl) {
+    if (!nativeShareSupported) {
       return;
     }
 
@@ -81,10 +61,10 @@ export function ShareEventButton({
       await navigator.share({
         title,
         text: shareMessage,
-        url: eventUrl,
+        url: shareUrl,
       });
     } catch {
-      // Ignore dismiss/share cancellation.
+      // Share sheet dismissal is expected.
     }
   };
 
@@ -124,13 +104,12 @@ export function ShareEventButton({
         </Button>
 
         <Button
-          href={shareUrlX || undefined}
+          href={shareUrlX}
           external
           target="_blank"
           rel="noopener noreferrer"
           variant="secondary"
           size="sm"
-          disabled={!eventUrl}
           className="w-full gap-2"
         >
           <XIcon className="h-4 w-4" />
@@ -138,13 +117,12 @@ export function ShareEventButton({
         </Button>
 
         <Button
-          href={shareUrlLinkedIn || undefined}
+          href={shareUrlLinkedIn}
           external
           target="_blank"
           rel="noopener noreferrer"
           variant="secondary"
           size="sm"
-          disabled={!eventUrl}
           className="w-full gap-2 sm:col-span-2"
         >
           <LinkedInIcon className="h-4 w-4" />

@@ -1,5 +1,6 @@
 import {
   createContactUrl,
+  createEventReaderUrl,
   createEventSurveyUrl,
   createLoginWithChallengeUrl,
   createLoginWithReasonUrl,
@@ -52,6 +53,7 @@ export const PAGE_ROUTES = {
   EVENT_CHECK_IN: "/events/check-ins",
   EVENT_PAST: "/events/past",
   EVENT_READER: "/events/reader",
+  EVENT_READER_WITH_EVENT: (eventId: string) => createEventReaderUrl(eventId),
   EVENT_SURVEY: "/events/survey",
   EVENT_SURVEY_WITH_EVENT: (eventId: string) => createEventSurveyUrl(eventId),
   EVENT_UPCOMING: "/events/upcoming",

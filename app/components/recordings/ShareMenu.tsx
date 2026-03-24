@@ -111,6 +111,9 @@ export function ShareMenu({
     ? "h-8 w-8 justify-center rounded-full p-0"
     : "rounded-lg px-3 py-1.5";
   const gapClasses = isIconOnly ? "gap-0" : "gap-1.5";
+  const defaultButtonClasses = buttonClassName
+    ? ""
+    : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white";
 
   return (
     <>
@@ -122,7 +125,7 @@ export function ShareMenu({
           aria-controls={showShareMenu ? menuId : undefined}
           aria-expanded={showShareMenu}
           aria-haspopup="menu"
-          className={`inline-flex cursor-pointer items-center text-xs leading-none font-medium text-neutral-500 transition-all hover:bg-neutral-100 hover:text-neutral-900 sm:leading-tight dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-white ${shapeClasses} ${gapClasses} ${buttonClassName}`}
+          className={`inline-flex cursor-pointer items-center text-xs leading-none font-medium transition-all sm:leading-tight ${defaultButtonClasses} ${shapeClasses} ${gapClasses} ${buttonClassName}`}
         >
           <ShareIcon className={`${iconClassName} shrink-0`} />
           {showLabel ? (

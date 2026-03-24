@@ -23,6 +23,8 @@ import {
   MapPinIcon,
   MicIcon,
   PlayIcon,
+  QuestionMarkCircleIcon,
+  QrCodeIcon,
   SparklesIcon,
 } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
@@ -35,6 +37,7 @@ import {
   WEBSITE_URLS,
   type LocationValue,
 } from "@/lib/config/constants";
+import { USER_ROLES } from "@/lib/config/roles";
 import { getDaysUntilEventDate } from "@/lib/events/datetime";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
 import { parseEventTitle } from "@/lib/events/presentation";
@@ -45,6 +48,7 @@ import {
   primarySpeakerName,
   resolveSpeakerLinks,
 } from "@/lib/events/speakers";
+import { useIsRole } from "@/lib/redux/hooks/useIsRole";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
@@ -304,6 +308,7 @@ export function EventDetailContent({
 }: EventDetailContentProps) {
   const t = useTranslations("events");
   const locale = useLocale();
+  const isCrew = useIsRole(USER_ROLES.CREW);
   const [hasMounted, setHasMounted] = useState(false);
   const now = useRenderNow();
   const parsedTitle = parseEventTitle(title);
@@ -325,6 +330,9 @@ export function EventDetailContent({
   const calendarEnd = calendarDateTime
     ? formatCalendarDate(addMinutes(calendarDateTime, DEFAULT_EVENT_DURATION_MINUTES))
     : null;
+  const shareUrl = `${WEBSITE_URLS.BASE}${shortPath ?? PAGE_ROUTES.EVENT(id)}`;
+  const crewToolButtonClass =
+    "w-full justify-center border-orange-200/70 bg-white/72 text-neutral-700 ring-orange-950/5 hover:bg-white/92 sm:justify-start dark:border-white/10 dark:bg-white/[0.06] dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-white/[0.1]";
   const googleCalendarUrl =
     calendarStart && calendarEnd
       ? buildGoogleCalendarUrl({
@@ -805,6 +813,36 @@ export function EventDetailContent({
 
         {!isTba && (
           <div className="mx-auto max-w-5xl px-4 pb-10">
+            {isCrew && (
+              <div className="mb-4 rounded-3xl border border-orange-200/60 bg-[linear-gradient(180deg,rgba(255,248,242,0.96)_0%,rgba(255,244,236,0.9)_100%)] p-4 shadow-[0_18px_55px_-42px_rgba(15,23,42,0.24)] sm:p-5 dark:border-orange-300/12 dark:bg-[linear-gradient(180deg,rgba(28,22,18,0.72)_0%,rgba(18,15,13,0.58)_100%)] dark:shadow-[0_18px_44px_-34px_rgba(0,0,0,0.42)]">
+                <p className="text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                  {t("crewToolsEyebrow")}
+                </p>
+                <h3 className="mt-1 text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                  {t("crewToolsTitle")}
+                </h3>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  <Button
+                    href={PAGE_ROUTES.EVENT_QUESTIONS(id)}
+                    variant="secondary"
+                    size="sm"
+                    className={crewToolButtonClass}
+                  >
+                    <QuestionMarkCircleIcon className="h-4 w-4" />
+                    {t("openCrewQuestionsFeed")}
+                  </Button>
+                  <Button
+                    href={PAGE_ROUTES.EVENT_READER_WITH_EVENT(id)}
+                    variant="secondary"
+                    size="sm"
+                    className={crewToolButtonClass}
+                  >
+                    <QrCodeIcon className="h-4 w-4" />
+                    {t("openTicketScanner")}
+                  </Button>
+                </div>
+              </div>
+            )}
             <CommunityQuestionsPanel
               eventId={id}
               theme={PANEL_THEMES[location] ?? DEFAULT_PANEL_THEME}
@@ -977,7 +1015,7 @@ export function EventDetailContent({
                   shareXLabel={t("shareOnX")}
                   shareLinkedInLabel={t("shareOnLinkedIn")}
                   shareMessage={t("shareMessage", { title })}
-                  shortPath={shortPath}
+                  shareUrl={shareUrl}
                 />
               </div>
             </div>

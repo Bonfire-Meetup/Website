@@ -8,6 +8,7 @@ import { useGlobalPlayer } from "@/components/shared/GlobalPlayerProvider";
 import { CinemaIcon } from "@/components/shared/Icons";
 import { BackLink } from "@/components/ui/BackLink";
 import { type BoostedByData } from "@/lib/api/video-engagement";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { MEMBERSHIP_TIER_LABELS } from "@/lib/config/membership";
 import { canAccessRecording, getRecordingAccessState } from "@/lib/recordings/early-access";
 import type { Recording } from "@/lib/recordings/recordings";
@@ -129,6 +130,7 @@ export function RecordingPlayer({
     PAGE_ROUTES.WATCH(recording.slug, recording.shortId),
   )}`;
   const recordingPath = PAGE_ROUTES.WATCH(recording.slug, recording.shortId);
+  const shareUrl = `${WEBSITE_URLS.BASE}${recordingPath}`;
 
   let likeInteractionGateHref: string | undefined;
   if (!isAccessCheckPending && !hasPlaybackAccess) {
@@ -154,7 +156,6 @@ export function RecordingPlayer({
     }
   }
 
-  const [shareUrl, setShareUrl] = useState("");
   const shareText = `${recording.title} - ${recording.speaker.join(", ")}`;
 
   useEffect(() => {
@@ -193,10 +194,6 @@ export function RecordingPlayer({
       router.refresh();
     }
   }, [earlyAccessEndsAtMs, hasPlaybackAccess, isEarlyAccess, router, nowMs]);
-
-  useEffect(() => {
-    setShareUrl(window.location.href);
-  }, [recording.slug, recording.shortId]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
