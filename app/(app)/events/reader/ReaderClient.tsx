@@ -8,7 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 prepareZXingModule({
   overrides: {
-    locateFile: (path, prefix) => {
+    locateFile: (path: string, prefix: string) => {
       if (path.endsWith(".wasm")) {
         return `/vendor/${path}`;
       }
