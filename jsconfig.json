@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "types": [],
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./app/*"],
       "@/i18n/*": ["./i18n/*"]
