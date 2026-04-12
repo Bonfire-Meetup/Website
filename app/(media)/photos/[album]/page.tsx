@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { cache } from "react";
 
 import { buildMetaPageMetadata, getBrandName } from "@/lib/metadata";
@@ -10,12 +10,23 @@ import {
 import { getFullPhotoAlbumById } from "@/lib/photos/photo-albums-data";
 import { photoAlbumUrlSlug } from "@/lib/photos/photo-albums-resolve";
 import { formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { AlbumPageContent } from "./AlbumPageContent";
 
 const albums = getPhotoAlbumSummariesOrdered();
 
 const loadAlbum = cache((albumId: string) => getFullPhotoAlbumById(albumId));
+
+function redirectIfNonCanonicalAlbumUrl(
+  albumKey: string,
+  album: NonNullable<ReturnType<typeof loadAlbum>>,
+) {
+  const canonical = photoAlbumUrlSlug(album);
+  if (albumKey !== canonical) {
+    permanentRedirect(PAGE_ROUTES.PHOTOS_ALBUM(canonical));
+  }
+}
 
 interface PageProps {
   params: Promise<{ album: string }>;
@@ -34,6 +45,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!album) {
     return buildMetaPageMetadata("photos");
   }
+
+  redirectIfNonCanonicalAlbumUrl(albumId, album);
 
   const [base, brandName] = await Promise.all([buildMetaPageMetadata("photos"), getBrandName()]);
   const episode = getEpisodeById(album.episodeId);
@@ -55,6 +68,8 @@ export default async function AlbumPage({ params }: PageProps) {
   if (!album) {
     notFound();
   }
+
+  redirectIfNonCanonicalAlbumUrl(albumId, album);
 
   return <AlbumPageContent album={album} baseUrl={PHOTO_ALBUM_BASE_URL} />;
 }
