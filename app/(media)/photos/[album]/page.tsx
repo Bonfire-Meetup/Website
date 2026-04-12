@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
-import photoAlbums from "@/data/photo-albums.json";
 import { buildMetaPageMetadata, getBrandName } from "@/lib/metadata";
-import type { PhotoAlbum } from "@/lib/photos/types";
-import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
+import {
+  getPhotoAlbumSummariesOrdered,
+  PHOTO_ALBUM_BASE_URL,
+} from "@/lib/photos/photo-album-summary";
+import { getFullPhotoAlbumById } from "@/lib/photos/photo-albums-data";
+import { photoAlbumUrlSlug } from "@/lib/photos/photo-albums-resolve";
+import { formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 
 import { AlbumPageContent } from "./AlbumPageContent";
 
-const { albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
+const albums = getPhotoAlbumSummariesOrdered();
 
-function toAlbumSlug(album: PhotoAlbum) {
-  return buildAlbumSlug(album.id, album.episodeId);
-}
+const loadAlbum = cache((albumId: string) => getFullPhotoAlbumById(albumId));
 
 interface PageProps {
   params: Promise<{ album: string }>;
@@ -20,13 +23,13 @@ interface PageProps {
 
 export function generateStaticParams() {
   return albums.map((album) => ({
-    album: toAlbumSlug(album),
+    album: photoAlbumUrlSlug(album),
   }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { album: albumId } = await params;
-  const album = albums.find((item) => albumId === item.id || albumId.startsWith(`${item.id}-`));
+  const album = loadAlbum(albumId);
 
   if (!album) {
     return buildMetaPageMetadata("photos");
@@ -47,11 +50,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function AlbumPage({ params }: PageProps) {
   const { album: albumId } = await params;
-  const album = albums.find((item) => albumId === item.id || albumId.startsWith(`${item.id}-`));
+  const album = loadAlbum(albumId);
 
   if (!album) {
     notFound();
   }
 
-  return <AlbumPageContent albumId={albumId} />;
+  return <AlbumPageContent album={album} baseUrl={PHOTO_ALBUM_BASE_URL} />;
 }

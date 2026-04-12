@@ -12,7 +12,8 @@
     "fix": "oxlint --fix . && oxfmt --write .",
     "postinstall": "mkdir -p public/vendor && cp node_modules/zxing-wasm/dist/reader/zxing_reader.wasm public/vendor/",
     "clean": "bun pm cache rm && rm -rf node_modules bun.lock && bun install",
-    "email:dev": "email dev --dir app/components/email"
+    "email:dev": "email dev --dir app/components/email",
+    "photos:refresh-data": "node scripts/refresh-photo-albums-data.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

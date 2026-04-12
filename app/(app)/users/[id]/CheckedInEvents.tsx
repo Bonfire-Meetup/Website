@@ -18,7 +18,7 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
   const t = await getTranslations("account.userProfile");
   const locale = await getLocale();
 
-  let events: AttendedEvent[] = [];
+  let events: AttendedEvent[];
 
   try {
     const user = await getAuthUserById(userId);

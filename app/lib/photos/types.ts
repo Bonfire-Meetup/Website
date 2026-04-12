@@ -18,3 +18,5 @@ export interface PhotoAlbum {
   episodeId: string;
   photographers?: PhotoAlbumPhotographer[];
 }
+
+export type PhotoAlbumSummary = Omit<PhotoAlbum, "images">;

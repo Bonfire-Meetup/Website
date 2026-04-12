@@ -182,7 +182,13 @@ if [[ "$push" == true ]]; then
 
   if command -v rclone >/dev/null 2>&1; then
     dest="${remote}:${bucket}"
-    rclone_args=(copy "$output_dir" "$dest" --transfers "$jobs" --checkers "$jobs")
+    rclone_args=(
+      copy "$output_dir" "$dest"
+      --transfers "$jobs"
+      --checkers "$jobs"
+      --exclude ".DS_Store"
+      --exclude "**/.DS_Store"
+    )
     if [[ "$override" != true ]]; then
       rclone_args+=(--ignore-existing)
     fi
@@ -193,7 +199,7 @@ if [[ "$push" == true ]]; then
       exit 1
     fi
     export output_dir bucket override
-    find "$output_dir" -type f -iname "*.webp" -print0 \
+    find "$output_dir" -type f -iname "*.webp" ! -name ".DS_Store" -print0 \
       | xargs -0 -P "$jobs" -I {} bash -c '
           webp_file="$1"
           key="${webp_file#"$output_dir"/}"

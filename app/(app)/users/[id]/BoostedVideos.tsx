@@ -19,7 +19,7 @@ export async function BoostedVideos({ userId, profileUserId }: BoostedVideosProp
   const t = await getTranslations("account.userProfile");
   const locale = await getLocale();
 
-  let recordings: CatalogRecording[] = [];
+  let recordings: CatalogRecording[];
 
   try {
     const boosts = await getUserBoosts(userId);

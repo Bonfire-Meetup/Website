@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { CheckIcon, CloseIcon, KeyIcon, PlusIcon, TrashIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
@@ -34,12 +34,12 @@ export function PasskeyBlock() {
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
-  const [webAuthnSupported] = useState<boolean | null>(() => {
+  const webAuthnSupported = useMemo<boolean | null>(() => {
     if (typeof window !== "undefined") {
       return isWebAuthnSupported();
     }
     return null;
-  });
+  }, []);
 
   const handleRegister = async () => {
     setIsRegistering(true);

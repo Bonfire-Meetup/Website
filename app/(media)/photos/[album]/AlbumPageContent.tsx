@@ -5,34 +5,23 @@ import { useTranslations } from "next-intl";
 import { AlbumImage } from "@/components/shared/AlbumImage";
 import { ExternalLinkIcon } from "@/components/shared/Icons";
 import { AccentBar } from "@/components/ui/AccentBar";
-import photoAlbums from "@/data/photo-albums.json";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { photoAlbumUrlSlug } from "@/lib/photos/photo-albums-resolve";
 import type { PhotoAlbum } from "@/lib/photos/types";
-import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
+import { formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { AlbumGallery } from "./AlbumGallery";
 import { AlbumShareButton } from "./AlbumShareButton";
 
-const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
-
-function toAlbumSlug(album: PhotoAlbum) {
-  return buildAlbumSlug(album.id, album.episodeId);
-}
-
 interface AlbumPageContentProps {
-  albumId: string;
+  album: PhotoAlbum;
+  baseUrl: string;
 }
 
-export function AlbumPageContent({ albumId }: AlbumPageContentProps) {
+export function AlbumPageContent({ album, baseUrl }: AlbumPageContentProps) {
   const t = useTranslations("photos");
   const tCommon = useTranslations("common");
-
-  const album = albums.find((item) => albumId === item.id || albumId.startsWith(`${item.id}-`));
-
-  if (!album) {
-    return null;
-  }
 
   const episode = getEpisodeById(album.episodeId);
   const title = episode ? formatEpisodeTitle(episode) : album.id;
@@ -43,7 +32,7 @@ export function AlbumPageContent({ albumId }: AlbumPageContentProps) {
         url: photographer.url?.trim(),
       }))
       .filter((photographer) => photographer.name.length > 0) ?? [];
-  const shareUrl = `${WEBSITE_URLS.BASE}${PAGE_ROUTES.PHOTOS_ALBUM(toAlbumSlug(album))}`;
+  const shareUrl = `${WEBSITE_URLS.BASE}${PAGE_ROUTES.PHOTOS_ALBUM(photoAlbumUrlSlug(album))}`;
   const shareText = `${title} - ${tCommon("brandName")}`;
 
   return (

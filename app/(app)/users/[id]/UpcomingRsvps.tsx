@@ -18,7 +18,7 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
   const t = await getTranslations("account.userProfile");
   const locale = await getLocale();
 
-  let events: UpcomingRsvpEvent[] = [];
+  let events: UpcomingRsvpEvent[];
 
   try {
     const user = await getAuthUserById(userId);

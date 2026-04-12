@@ -7,14 +7,18 @@ import { AlbumImage } from "@/components/shared/AlbumImage";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
-import photoAlbums from "@/data/photo-albums.json";
-import type { PhotoAlbum } from "@/lib/photos/types";
-import { buildAlbumSlug, episodes, type EpisodeEntry } from "@/lib/recordings/episodes";
+import {
+  PHOTO_ALBUM_BASE_URL,
+  getPhotoAlbumSummariesOrdered,
+} from "@/lib/photos/photo-album-summary";
+import { photoAlbumUrlSlug } from "@/lib/photos/photo-albums-resolve";
+import { episodes, type EpisodeEntry } from "@/lib/recordings/episodes";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatMonthUTC, getUTCDateParts } from "@/lib/utils/locale";
 
-const { baseUrl, albums } = photoAlbums as { baseUrl: string; albums: PhotoAlbum[] };
+const baseUrl = PHOTO_ALBUM_BASE_URL;
+const albums = getPhotoAlbumSummariesOrdered();
 
 function getEpisodeEntries(): EpisodeEntry[] {
   const recordings = getAllRecordings();
@@ -33,9 +37,7 @@ function getEpisodeEntries(): EpisodeEntry[] {
         number: episode.number,
         photosCount: album?.count ?? 0,
         photosCover: album?.cover,
-        photosHref: album
-          ? PAGE_ROUTES.PHOTOS_ALBUM(buildAlbumSlug(album.id, album.episodeId))
-          : undefined,
+        photosHref: album ? PAGE_ROUTES.PHOTOS_ALBUM(photoAlbumUrlSlug(album)) : undefined,
         recordingsCount: episodeRecordings.length,
         title: episode.title,
         videosHref: `${PAGE_ROUTES.LIBRARY_BROWSE}?episode=${episode.id}`,

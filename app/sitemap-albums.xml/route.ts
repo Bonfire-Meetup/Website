@@ -1,17 +1,17 @@
-import photoAlbums from "@/data/photo-albums.json";
 import { WEBSITE_URLS } from "@/lib/config/constants";
-import type { PhotoAlbum } from "@/lib/photos/types";
-import { buildAlbumSlug, getEpisodeById } from "@/lib/recordings/episodes";
+import { getPhotoAlbumSummariesOrdered } from "@/lib/photos/photo-album-summary";
+import { photoAlbumUrlSlug } from "@/lib/photos/photo-albums-resolve";
+import { getEpisodeById } from "@/lib/recordings/episodes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { buildSitemapXml } from "@/lib/utils/sitemap-utils";
 
-const { albums } = photoAlbums as { albums: Pick<PhotoAlbum, "id" | "episodeId">[] };
+const albums = getPhotoAlbumSummariesOrdered();
 
 const CACHE_CONTROL = "public, max-age=0, s-maxage=604800, stale-while-revalidate=86400";
 
 export async function GET() {
   const urls = albums.map((album) => {
-    const slug = buildAlbumSlug(album.id, album.episodeId);
+    const slug = photoAlbumUrlSlug(album);
     const episode = album.episodeId ? getEpisodeById(album.episodeId) : undefined;
     const lastmod = episode?.date ? new Date(episode.date).toISOString() : undefined;
 
