@@ -46,7 +46,7 @@ export function PhotosPageContent({
   const t = useTranslations("photos");
   const tCommon = useTranslations("common");
   const locale = useLocale();
-  const heroCovers = albums.length > 4 ? albums.slice(-4) : albums;
+  const heroCovers = albums.length > 4 ? albums.slice(0, 4) : albums;
   const lightboxImages = heroCovers.map((album) => ({
     alt: album.title,
     src: album.highlightSrc,

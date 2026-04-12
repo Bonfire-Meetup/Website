@@ -10,6 +10,7 @@ import {
   pickDailyRandomAlbumImage,
   pickSeededSubset,
 } from "@/lib/photos/photos-page-hero";
+import { sortPhotoAlbumsByEpisodeDateDesc } from "@/lib/photos/photos-page-order";
 import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 
 import { PhotosPageContent } from "./PhotosPageContent";
@@ -18,7 +19,7 @@ async function getPhotosPageData() {
   "use cache";
   cacheLife({ revalidate: CACHE_LIFETIMES.PHOTOS_PAGE_HERO });
 
-  const albums = getAllFullPhotoAlbums();
+  const albums = sortPhotoAlbumsByEpisodeDateDesc(getAllFullPhotoAlbums());
   const buildSeed = new Date().toISOString();
   const totalPhotos = albums.reduce((sum, album) => sum + album.count, 0);
   const cdnBase = PHOTO_ALBUM_BASE_URL;
