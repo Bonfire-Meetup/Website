@@ -13,6 +13,7 @@ import {
   LockClosedIcon,
 } from "@/components/shared/Icons";
 import { UserAvatar } from "@/components/user/UserAvatar";
+import { resolveGuildTierPillStyle } from "@/lib/billing/guild-tier-styles";
 import { MEMBERSHIP_TIER_LABELS, type MembershipTier } from "@/lib/config/membership";
 import type { QuestionActivityLevel } from "@/lib/config/question-activity";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -89,6 +90,7 @@ export function UserProfileContent({
       ? (MEMBERSHIP_TIER_LABELS[user.membershipTier as MembershipTier] ??
         t("roles.tierFallback", { tier: user.membershipTier }))
       : null;
+  const tierPillStyle = resolveGuildTierPillStyle(user.membershipTier);
 
   const handleCopyId = async () => {
     await copyToClipboard(user.publicId);
@@ -142,21 +144,19 @@ export function UserProfileContent({
                     <div className="group relative">
                       <div
                         className="absolute -inset-2 animate-pulse rounded-full opacity-40 blur-xl"
-                        style={{
-                          background:
-                            "radial-gradient(circle, rgba(251, 146, 60, 0.5) 0%, rgba(244, 63, 94, 0.3) 50%, transparent 70%)",
-                        }}
+                        style={{ background: tierPillStyle.glow }}
                       />
                       <div
                         className="absolute -inset-1 rounded-full opacity-70 blur-md transition-opacity duration-300 group-hover:opacity-100"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, rgba(251, 146, 60, 0.6), rgba(244, 63, 94, 0.4), rgba(251, 146, 60, 0.5))",
-                        }}
+                        style={{ background: tierPillStyle.blur }}
                       />
-                      <div className="relative flex items-center gap-2 rounded-full border border-amber-400/30 bg-white/90 px-4 py-2 shadow-lg shadow-amber-500/15 backdrop-blur-sm dark:border-amber-400/40 dark:bg-neutral-900/90 dark:shadow-amber-500/20">
-                        <GuildIcon className="h-4 w-4 text-amber-500 dark:text-amber-400" />
-                        <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-xs font-black tracking-wide text-transparent uppercase dark:from-amber-300 dark:via-orange-300 dark:to-rose-300">
+                      <div
+                        className={`relative flex items-center gap-2 rounded-full border bg-white/90 px-4 py-2 shadow-lg backdrop-blur-sm dark:bg-neutral-900/90 ${tierPillStyle.border} ${tierPillStyle.shadow}`}
+                      >
+                        <GuildIcon className={`h-4 w-4 ${tierPillStyle.icon}`} />
+                        <span
+                          className={`bg-gradient-to-r bg-clip-text text-xs font-black tracking-wide text-transparent uppercase ${tierPillStyle.text}`}
+                        >
                           {membershipLabel}
                         </span>
                       </div>

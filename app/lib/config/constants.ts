@@ -52,6 +52,7 @@ export const WEBSITE_URLS = {
       NEON: "https://neon.tech",
       RESEND: "https://resend.com",
       ROLLBAR: "https://rollbar.com",
+      STRIPE: "https://stripe.com",
       VERCEL: "https://vercel.com",
     },
     TECH: {
@@ -86,6 +87,7 @@ export const WEBSITE_URLS = {
       ROLLBAR_REACT: "https://github.com/rollbar/rollbar-react",
       SHARP: "https://sharp.pixelplumbing.com",
       SIMPLE_WEBAUTHN: "https://simplewebauthn.dev",
+      STRIPE_NODE: "https://github.com/stripe/stripe-node",
       TAILWINDCSS: "https://tailwindcss.com",
       TANSTACK_QUERY: "https://tanstack.com/query",
       TYPESCRIPT: "https://www.typescriptlang.org",

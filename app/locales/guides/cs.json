@@ -30,6 +30,10 @@
         "title": "Registrace a přihlášení",
         "description": "Jak fungují e-mailové kódy, passkeys a proč první přihlášení vytváří účet."
       },
+      "guildSubscription": {
+        "title": "Guild předplatné",
+        "description": "Jak fungují Guild úrovně, Stripe billing, refresh stavu a kde získat pomoc."
+      },
       "profilePrivacy": {
         "title": "Soukromí profilu",
         "description": "Jak funguje veřejnost profilu, viditelnost check-inů a nastavení soukromí."
@@ -153,6 +157,73 @@
     "cta": {
       "login": "Otevřít přihlášení",
       "account": "Otevřít účet"
+    }
+  },
+  "guildSubscriptionGuide": {
+    "title": "Návod: Guild předplatné | {brandName}",
+    "description": "Jak funguje Bonfire Guild předplatné včetně úrovní, Stripe billing a řešení potíží.",
+    "eyebrow": "Návody",
+    "heading": "Návod ke Guild předplatnému",
+    "subtitle": "Co obsahují jednotlivé úrovně, kde se řeší billing a co dělat, když se stav účtu opozdí.",
+    "heroLead": "Guild členství žije v Bonfire, ale billing a správa tarifu běží přes Stripe.",
+    "heroSublead": "Tím zůstávají platby a změny předplatného na jednom místě, zatímco Bonfire si synchronizuje přístup zpět do účtu.",
+    "statusBanner": {
+      "disabled": {
+        "pill": "Brzy",
+        "heading": "Předplatné zatím není spuštěné",
+        "body": "Doděláváme poslední kousky. Až to spustíme, přesně takhle to bude fungovat—sleduj novinky.",
+        "cta": "Mezitím se podívej na stránku Guild"
+      },
+      "live": {
+        "pill": "Právě live",
+        "heading": "Guild předplatné je otevřené",
+        "body": "Porovnej úrovně, přečti si co každá zahrnuje a rovnou skoč do checkoutu—vše na stránce Guild.",
+        "cta": "Otevřít stránku Guild"
+      }
+    },
+    "sections": {
+      "tiers": {
+        "title": "Guild úrovně",
+        "scout": {
+          "title": "Scout",
+          "description": "Vstupní úroveň pro členy, kteří chtějí Guild badge, členské kanály a včasný přehled o tom, co Bonfire chystá dál."
+        },
+        "explorer": {
+          "title": "Explorer",
+          "description": "Přidává dřívější přístup k záznamům, hlasování o budoucích tématech a více zákulisního kontextu kolem toho, co crew staví."
+        },
+        "trailblazer": {
+          "title": "Trailblazer",
+          "description": "Nejvyšší úroveň pro lidi, kteří chtějí být Bonfire nejblíž, včetně kontextu z planning callů, vstupu do témat a prvních pohledů na nové nápady."
+        }
+      },
+      "billing": {
+        "title": "Billing a správa",
+        "items": {
+          "one": "Guild úroveň si vybereš v Bonfire a dokončení checkoutu proběhne ve Stripe.",
+          "two": "Platební metody, zrušení, renewaly i změny tarifu se řeší ve Stripe i poté, co je předplatné aktivní.",
+          "three": "Když z účtu otevřeš „Spravovat ve Stripe“, odcházíš záměrně mimo Bonfire, aby se změny předplatného udělaly tam."
+        }
+      },
+      "sync": {
+        "title": "Když stav účtu vypadá opožděně",
+        "items": {
+          "one": "Většina změn se po checkoutu nebo billing změně ve Stripe synchronizuje automaticky.",
+          "two": "Pokud se Guild úroveň nebo přístupové detaily neaktualizují hned, běž na stránku účtu a použij tlačítko „Obnovit členství“.",
+          "three": "Tohle je správný první krok po checkoutu, změně tarifu nebo zrušení, pokud aplikace pořád ukazuje starší stav předplatného."
+        }
+      },
+      "support": {
+        "title": "Kdy kontaktovat podporu",
+        "description": "Pokud Stripe ukazuje správný stav předplatného a Bonfire ho ani po použití refresh tlačítka neodráží, napiš na"
+      }
+    },
+    "cta": {
+      "title": "Chceš rovnou na správné místo?",
+      "description": "Na stránce Guild si projdeš úrovně a na stránce účtu spustíš checkout nebo správu existujícího tarifu.",
+      "secondDescription": "Když i po refreshi něco nesedí, podpora může ověřit stav ve Stripe i Bonfire synchronizaci.",
+      "primary": "Otevřít Guild",
+      "secondary": "Otevřít účet"
     }
   },
   "profilePrivacyGuide": {

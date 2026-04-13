@@ -36,6 +36,20 @@
       "when": 1772980532208,
       "tag": "0004_add_boost_ledger",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1776072066394,
+      "tag": "0005_add_guild_subscription",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1776091227999,
+      "tag": "0006_guild_subscription_primary_key",
+      "breakpoints": true
     }
   ]
 }

@@ -10,15 +10,30 @@
       "highlight": "Bonfire Guild"
     },
     "subtitle": "Místo pro lidi, kteří se chtějí víc zapojit. Přednostní přístup k záznamům, zákulisní obsah a reálný vliv na to, kam Bonfire směřuje.",
-    "comingSoon": "Již brzy - Zůstaňte naladěni",
+    "status": {
+      "comingSoon": "Brzy",
+      "live": "Předplatné je spuštěné"
+    },
     "openNoteLabel": "Poznámka",
     "openNote": "Akce Bonfire jsou <bold>otevřené všem</bold> - členství v Guildu není potřeba. Guild je jen dobrovolná možnost pro ty, kdo chtějí podpořit, co děláme, a pomoct komunitě růst.",
+    "newsletter": {
+      "subtitle": "Nechte si poslat zprávu, až Bonfire Guild spustíme."
+    },
     "tiersSection": {
       "kicker": "Jak to funguje",
       "title": "Vyberte si, co vám sedí",
       "subtitle": "Tři úrovně pro různou míru zapojení. Začněte, kde chcete, a posouvejte se dál."
     },
     "tiers": {
+      "priceWithInterval": "{amount} / měsíc",
+      "actions": {
+        "choose": "Vybrat {name}",
+        "signIn": "Přihlásit se a vybrat",
+        "loading": "Načítám účet…",
+        "manage": "Spravovat tarif",
+        "comingSoon": "Brzy",
+        "preview": "Náhled"
+      },
       "scout": {
         "name": "Scout",
         "badge": "Úroveň 1",
@@ -83,10 +98,78 @@
         }
       ]
     },
+    "previewPerks": {
+      "scout": [
+        {
+          "icon": "film",
+          "title": "Guild odznak na profilu",
+          "description": "Viditelný signál, že Bonfire podporujete a chcete být blíž tomu, co se děje uvnitř."
+        },
+        {
+          "icon": "users",
+          "title": "Členské Discord kanály",
+          "description": "Klidnější prostor pro Guild členy, kde se dá mluvit s crew i mezi sebou."
+        },
+        {
+          "icon": "sparkles",
+          "title": "Včasné info o nadcházejících akcích",
+          "description": "Detaily dostanete dřív než veřejnost, takže můžete plánovat bez stresu na poslední chvíli."
+        },
+        {
+          "icon": "bolt",
+          "title": "Prioritní registrace na akce",
+          "description": "Lepší šance dostat se dovnitř, když je kapacita omezená nebo zájem rychle roste."
+        }
+      ],
+      "explorer": [
+        {
+          "icon": "film",
+          "title": "Vše ze Scout",
+          "description": "Zůstávají vám základní Guild výhody a přibývají benefity, které jsou okamžitě praktické."
+        },
+        {
+          "icon": "sparkles",
+          "title": "Přednostní přístup k záznamům z akcí",
+          "description": "Přednášky uvidíte ještě před veřejným vydáním a zůstanete v obraze, dokud je akce pořád čerstvá."
+        },
+        {
+          "icon": "bolt",
+          "title": "Hlasování o budoucích tématech přednášek",
+          "description": "Pomůžete směrovat program k tématům a otázkám, které vás opravdu zajímají."
+        },
+        {
+          "icon": "users",
+          "title": "Zákulisní obsah",
+          "description": "Uvidíte plánování, rozhodování i syrové momenty, které se do finálního výstupu nikdy nedostanou."
+        }
+      ],
+      "trailblazer": [
+        {
+          "icon": "film",
+          "title": "Vše z Explorer",
+          "description": "Dostanete kompletní balík záznamů a zákulisí a navíc nejbližší kontakt s tím, jak se Bonfire vyvíjí."
+        },
+        {
+          "icon": "users",
+          "title": "Účast na plánovacích hovorech s crew",
+          "description": "Uslyšíte, co se řeší včas, a můžete do toho přinést vlastní pohled."
+        },
+        {
+          "icon": "bolt",
+          "title": "Navrhujte řečníky a témata",
+          "description": "Můžete vytahovat lidi a nápady, které by podle vás měly dostat prostor jako další."
+        },
+        {
+          "icon": "sparkles",
+          "title": "První náhled na nové funkce platformy",
+          "description": "Nové experimenty uvidíte dřív než ostatní a pomůžete rozhodnout, co má smysl dál rozvíjet."
+        }
+      ]
+    },
     "cta": {
-      "title": "Pracujeme na tom",
-      "body": "Guild zatím není hotový - dáváme ho dohromady s péčí. Jestli vás to zaujalo, sledujte nás. Dáme vědět, až to bude.",
-      "badge": "Již brzy"
+      "title": "Začněte ve svém účtu",
+      "body": "Tady si vyberete úroveň a ve svém účtu pak spustíte Stripe checkout nebo otevřete billing portal pro správu.",
+      "badge": "Billing přes účet"
     }
   }
 }

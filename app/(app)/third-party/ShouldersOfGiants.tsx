@@ -14,6 +14,7 @@ const GIANTS = [
     url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.CLOUDFLARE_R2,
   },
   { key: "emails", provider: "Resend", url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.RESEND },
+  { key: "payments", provider: "Stripe", url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.STRIPE },
   { key: "bugReporting", provider: "Rollbar", url: WEBSITE_URLS.ATTRIBUTIONS.GIANTS.ROLLBAR },
   {
     key: "botProtection",

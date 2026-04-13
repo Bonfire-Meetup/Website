@@ -47,3 +47,30 @@ export function createEventReaderUrl(eventId?: string): string {
   const params = new URLSearchParams({ eventId });
   return `/events/reader?${params.toString()}`;
 }
+
+export function createMeGuildUrl(options?: { checkout?: "success" | "canceled" }) {
+  if (!options?.checkout) {
+    return "/me";
+  }
+
+  const params = new URLSearchParams({ "checkout-state": options.checkout });
+  return `/me?${params.toString()}`;
+}
+
+export function createMeGuildJoinUrl(options?: { tier?: 1 | 2 | 3; checkout?: "canceled" }) {
+  const params = new URLSearchParams();
+
+  if (options?.tier) {
+    params.set("tier", String(options.tier));
+  }
+
+  if (options?.checkout) {
+    params.set("checkout-state", options.checkout);
+  }
+
+  if (params.size === 0) {
+    return "/me/guild";
+  }
+
+  return `/me/guild?${params.toString()}`;
+}

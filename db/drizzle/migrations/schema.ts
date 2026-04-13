@@ -263,6 +263,57 @@ export const appUser = pgTable(
   ],
 );
 
+export const guildSubscription = pgTable(
+  "guild_subscription",
+  {
+    userId: uuid("user_id").primaryKey(),
+    stripeCustomerId: text("stripe_customer_id").notNull(),
+    stripeSubscriptionId: text("stripe_subscription_id"),
+    stripePriceId: text("stripe_price_id"),
+    membershipTier: smallint("membership_tier"),
+    status: text(),
+    cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false).notNull(),
+    currentPeriodStart: timestamp("current_period_start", {
+      withTimezone: true,
+      mode: "string",
+    }),
+    currentPeriodEnd: timestamp("current_period_end", {
+      withTimezone: true,
+      mode: "string",
+    }),
+    lastInvoiceId: text("last_invoice_id"),
+    lastInvoiceStatus: text("last_invoice_status"),
+    lastChargeAmount: integer("last_charge_amount"),
+    lastChargeCurrency: text("last_charge_currency"),
+    lastChargeAt: timestamp("last_charge_at", { withTimezone: true, mode: "string" }),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("guild_subscription_customer_id_unique_idx").using(
+      "btree",
+      table.stripeCustomerId.asc().nullsLast().op("text_ops"),
+    ),
+    uniqueIndex("guild_subscription_subscription_id_unique_idx").using(
+      "btree",
+      table.stripeSubscriptionId.asc().nullsLast().op("text_ops"),
+    ),
+    index("guild_subscription_status_idx").using(
+      "btree",
+      table.status.asc().nullsLast().op("text_ops"),
+    ),
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [appUser.id],
+      name: "guild_subscription_user_id_fkey",
+    }).onDelete("cascade"),
+  ],
+);
+
 export const videoLikes = pgTable(
   "video_likes",
   {

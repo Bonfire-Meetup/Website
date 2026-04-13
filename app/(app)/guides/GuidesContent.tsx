@@ -10,6 +10,7 @@ import {
   BadgeCheckIcon,
   BoltIcon,
   FingerprintIcon,
+  GuildIcon,
   MicIcon,
   QrCodeIcon,
   ShieldIcon,
@@ -61,6 +62,12 @@ export function GuidesContent() {
           icon: FingerprintIcon,
           title: t("guides.registration.title"),
           description: t("guides.registration.description"),
+        },
+        {
+          href: PAGE_ROUTES.GUIDES_GUILD_SUBSCRIPTION,
+          icon: GuildIcon,
+          title: t("guides.guildSubscription.title"),
+          description: t("guides.guildSubscription.description"),
         },
         {
           href: PAGE_ROUTES.GUIDES_PROFILE_PRIVACY,

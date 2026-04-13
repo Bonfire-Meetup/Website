@@ -30,6 +30,10 @@
         "title": "Registration and sign-in",
         "description": "Understand email codes, passkeys, and why first sign-in creates your account."
       },
+      "guildSubscription": {
+        "title": "Guild subscription",
+        "description": "Understand Guild tiers, Stripe billing, refresh behavior, and where to get help."
+      },
       "profilePrivacy": {
         "title": "Profile privacy",
         "description": "Understand public profile visibility, check-in visibility, and privacy controls."
@@ -153,6 +157,73 @@
     "cta": {
       "login": "Open login",
       "account": "Open account"
+    }
+  },
+  "guildSubscriptionGuide": {
+    "title": "Guild subscription guide | {brandName}",
+    "description": "How Bonfire Guild subscriptions work, including tiers, Stripe billing, and troubleshooting.",
+    "eyebrow": "Guides",
+    "heading": "Guild subscription guide",
+    "subtitle": "What each tier includes, where billing is handled, and what to do if access details lag behind.",
+    "heroLead": "Guild membership lives in Bonfire, but billing and plan management run through Stripe.",
+    "heroSublead": "That split keeps payments and subscription changes in one place while Bonfire syncs access back to your account.",
+    "statusBanner": {
+      "disabled": {
+        "pill": "Coming soon",
+        "heading": "Subscriptions aren't live yet",
+        "body": "We're still wiring up the last pieces. This guide is exactly how it'll work when the switch flips—stay tuned.",
+        "cta": "Take a look at the Guild page in the meantime"
+      },
+      "live": {
+        "pill": "Now live",
+        "heading": "Guild subscriptions are open",
+        "body": "Compare tiers, read what each one includes, and jump straight into checkout—all from the Guild page.",
+        "cta": "Open the Guild page"
+      }
+    },
+    "sections": {
+      "tiers": {
+        "title": "Guild tiers",
+        "scout": {
+          "title": "Scout",
+          "description": "The entry tier for members who want the Guild badge, member-only channels, and early heads-up on what Bonfire is doing next."
+        },
+        "explorer": {
+          "title": "Explorer",
+          "description": "Adds early access to recordings, voting on future topics, and more behind-the-scenes context around what the crew is building."
+        },
+        "trailblazer": {
+          "title": "Trailblazer",
+          "description": "The highest tier for people who want the closest loop with Bonfire, including planning-call context, topic input, and early looks at new ideas."
+        }
+      },
+      "billing": {
+        "title": "Billing and management",
+        "items": {
+          "one": "You choose a Guild tier inside Bonfire, then continue to Stripe to complete checkout.",
+          "two": "Payment methods, cancellations, renewals, and plan changes are managed in Stripe even after the subscription is active.",
+          "three": "When you open “Manage in Stripe” from your account, you are leaving Bonfire on purpose to handle subscription changes there."
+        }
+      },
+      "sync": {
+        "title": "If account details look behind",
+        "items": {
+          "one": "Most updates sync automatically after checkout or a billing change in Stripe.",
+          "two": "If your Guild tier or access details do not update right away, go to your account page and use the “Refresh membership” button.",
+          "three": "That refresh is the right first step after checkout, plan changes, or cancellations if the app still shows older subscription data."
+        }
+      },
+      "support": {
+        "title": "When to contact support",
+        "description": "If Stripe shows the right subscription state and Bonfire still does not reflect it after using the refresh button, contact"
+      }
+    },
+    "cta": {
+      "title": "Need the real entry points?",
+      "description": "Use the Guild page to review the tiers and your account page to start checkout or manage an existing plan.",
+      "secondDescription": "If anything still looks off after a refresh, support can help verify the Stripe state and Bonfire sync.",
+      "primary": "Open Guild",
+      "secondary": "Open account"
     }
   },
   "profilePrivacyGuide": {

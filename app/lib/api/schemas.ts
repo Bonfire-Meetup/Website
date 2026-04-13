@@ -51,6 +51,47 @@ export const newsletterSubscribeResponseSchema = z.object({
   subscribed: z.boolean(),
 });
 
+export const guildSubscriptionCheckoutRequestSchema = z.object({
+  tier: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+});
+
+export const guildSubscriptionLinkResponseSchema = z.object({
+  url: z.string().url(),
+});
+
+export const guildSubscriptionSyncRequestSchema = z.object({
+  checkoutSessionId: z.string().min(1).optional(),
+});
+
+export const guildSubscriptionSyncResponseSchema = z.object({
+  ok: z.boolean(),
+});
+
+export const guildSubscriptionChargeSchema = z.object({
+  amount: z.number().int().nonnegative(),
+  currency: z.string().min(1),
+  paidAt: z.string().datetime().nullable().optional(),
+  dueAt: z.string().datetime().nullable().optional(),
+  status: z.string().nullable().optional(),
+});
+
+export const guildSubscriptionSummarySchema = z.object({
+  tier: z.union([z.literal(1), z.literal(2), z.literal(3)]).nullable(),
+  status: z.string().nullable(),
+  isActive: z.boolean(),
+  cancelAtPeriodEnd: z.boolean(),
+  scheduledChange: z
+    .object({
+      tier: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+      effectiveAt: z.string().datetime(),
+    })
+    .nullable(),
+  currentPeriodStart: z.string().datetime().nullable(),
+  currentPeriodEnd: z.string().datetime().nullable(),
+  lastCharge: guildSubscriptionChargeSchema.nullable(),
+  upcomingCharge: guildSubscriptionChargeSchema.nullable(),
+});
+
 export const eventQuestionCreateSchema = z.object({
   locale: z.enum(["en", "cs"]).optional(),
   talkIndex: z.number().int().min(0).nullable().optional(),

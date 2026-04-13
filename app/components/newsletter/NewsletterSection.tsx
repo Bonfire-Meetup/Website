@@ -6,7 +6,13 @@ import { SectionHeader } from "../ui/SectionHeader";
 
 import { NewsletterSectionClient } from "./NewsletterSectionClient";
 
-export function NewsletterSection() {
+export function NewsletterSection({
+  title: titleOverride,
+  subtitle: subtitleOverride,
+}: {
+  title?: string;
+  subtitle?: string;
+} = {}) {
   const t = useTranslations("sections.newsletter");
 
   return (
@@ -14,8 +20,8 @@ export function NewsletterSection() {
       <div className="relative mx-auto max-w-7xl">
         <SectionHeader
           id="newsletter"
-          title={t("title")}
-          subtitle={t("subtitle")}
+          title={titleOverride ?? t("title")}
+          subtitle={subtitleOverride ?? t("subtitle")}
           className="mb-8"
         />
         <NewsletterSectionClient />

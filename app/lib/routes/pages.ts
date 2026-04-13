@@ -4,6 +4,8 @@ import {
   createEventSurveyUrl,
   createLoginWithChallengeUrl,
   createLoginWithReasonUrl,
+  createMeGuildJoinUrl,
+  createMeGuildUrl,
   createNewsletterEditorUrl,
 } from "@/lib/routes/app-search-params";
 
@@ -31,6 +33,7 @@ export const PAGE_ROUTES = {
   GUIDES_CHECK_IN: "/guides/events/check-in",
   GUIDES_ENGAGEMENT_SIGNALS: "/guides/community/engagement-signals",
   GUIDES_EVENT_RSVP: "/guides/events/event-rsvp",
+  GUIDES_GUILD_SUBSCRIPTION: "/guides/account/guild-subscription",
   GUIDES_PROFILE_PRIVACY: "/guides/account/profile-privacy",
   GUIDES_REGISTRATION: "/guides/account/registration",
   GUIDES_SPEAKING: "/guides/community/speaking",
@@ -48,6 +51,9 @@ export const PAGE_ROUTES = {
   LOGIN_WITH_REASON_AND_RETURN: (reason: LoginReason, returnPath?: string) =>
     createLoginWithReasonUrl(reason, returnPath),
   ME: "/me",
+  ME_GUILD: (options?: Parameters<typeof createMeGuildUrl>[0]) => createMeGuildUrl(options),
+  ME_GUILD_JOIN: (options?: Parameters<typeof createMeGuildJoinUrl>[0]) =>
+    createMeGuildJoinUrl(options),
   EVENT: (id: string) => `/events/${id}`,
   EVENT_QUESTIONS: (id: string) => `/events/${id}/questions`,
   EVENT_CHECK_IN: "/events/check-ins",

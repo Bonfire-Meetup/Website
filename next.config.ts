@@ -7,7 +7,7 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const CDN_HOSTNAME = "cdn-img.bnf.events";
 
 const nextConfig = {
-  allowedDevOrigins: ["localhost", "bonfire.dev"],
+  allowedDevOrigins: ["localhost", "bonfire.dev", "www.bnf.test"],
   cacheComponents: true,
   experimental: {
     turbopackFileSystemCacheForDev: true,

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { type CSSProperties, useEffect, useState } from "react";
 
+import { NewsletterSection } from "@/components/newsletter/NewsletterSection";
 import {
   BoltIcon,
   CheckIcon,
@@ -12,6 +13,16 @@ import {
   StarFilledIcon,
   UsersIcon,
 } from "@/components/shared/Icons";
+import { Button } from "@/components/ui/Button";
+import { useGuildSubscription } from "@/lib/api/subscription";
+import { getGuildTierCopy } from "@/lib/billing/guild-tier-copy";
+import {
+  GUILD_TIER_MARKETING_CARD_STYLES,
+  GUILD_TIER_PREVIEW_TINTS,
+} from "@/lib/billing/guild-tier-styles";
+import type { GuildMembershipTier } from "@/lib/config/guild-membership";
+import { useAuthStatus } from "@/lib/redux/hooks";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 function GuildEmber({ style, visible }: { style: CSSProperties; visible: boolean }) {
   return (
@@ -41,24 +52,61 @@ function TierCard({
   tier,
 }: {
   tier: {
+    actionHref?: string;
+    actionLabel: string;
+    actionClassName: string;
+    handleAction?: () => void;
+    price: string;
     name: string;
     tagline: string;
     features: string[];
     accent: string;
     glow: string;
+    selectedGlow: string;
     gradient: string;
     border: string;
     iconBg: string;
     badge: string;
     badgeText: string;
+    showPrice: boolean;
+    selected?: boolean;
   };
 }) {
   return (
     <div
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border ${tier.border} bg-white/80 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-shadow duration-300 hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.12)] dark:bg-neutral-950/80 dark:shadow-none dark:hover:shadow-[0_8px_40px_-8px_rgba(0,0,0,0.35)]`}
+      className={`guild-tier-card group relative flex h-full flex-col overflow-hidden rounded-2xl border ${tier.border} bg-white/80 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.12)] dark:bg-neutral-950/80 dark:shadow-none dark:hover:shadow-[0_8px_40px_-8px_rgba(0,0,0,0.35)] ${
+        tier.selected
+          ? "guild-tier-card--selected shadow-[0_28px_72px_-28px_rgba(15,23,42,0.22)] dark:shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)]"
+          : "guild-tier-card--idle"
+      }`}
     >
-      <div className={`relative h-full ${tier.gradient} p-px`}>
-        <div className="relative flex h-full flex-col rounded-[15px] bg-white/95 p-6 backdrop-blur-sm sm:p-7 dark:bg-neutral-950/95">
+      {tier.selected ? (
+        <>
+          <div
+            className={`guild-tier-glow-ambient pointer-events-none absolute inset-[-1px] rounded-[1.08rem] ${tier.selectedGlow} blur-sm`}
+          />
+          <div
+            className={`guild-tier-glow-ambient pointer-events-none absolute inset-[-6px] rounded-[1.35rem] ${tier.selectedGlow} blur-xl [animation-delay:0.35s]`}
+          />
+        </>
+      ) : null}
+      <div className={`relative flex h-full ${tier.gradient} p-px`}>
+        <div className="relative flex h-full w-full flex-col rounded-[15px] bg-white/95 p-6 backdrop-blur-sm sm:p-7 dark:bg-neutral-950/95">
+          {tier.selected ? (
+            <>
+              <div className="pointer-events-none absolute inset-0 rounded-[15px] ring-1 ring-white/70 dark:ring-white/12" />
+              <div className="pointer-events-none absolute inset-[1px] rounded-[14px] shadow-[inset_0_1px_0_rgba(255,255,255,0.55),inset_0_0_0_1px_rgba(255,255,255,0.12)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),inset_0_0_0_1px_rgba(255,255,255,0.06)]" />
+              <div
+                className={`pointer-events-none absolute -inset-8 ${tier.selectedGlow} opacity-60 blur-3xl`}
+              />
+              <div
+                className={`pointer-events-none absolute -top-16 -right-12 h-40 w-40 rounded-full ${tier.selectedGlow} opacity-70 blur-3xl`}
+              />
+              <div
+                className={`pointer-events-none absolute -bottom-14 -left-10 h-36 w-36 rounded-full ${tier.selectedGlow} opacity-65 blur-3xl`}
+              />
+            </>
+          ) : null}
           <div
             className={`pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full ${tier.glow} opacity-80 blur-3xl`}
           />
@@ -66,24 +114,31 @@ function TierCard({
             className={`pointer-events-none absolute -bottom-20 -left-20 h-40 w-40 rounded-full ${tier.glow} opacity-40 blur-3xl`}
           />
 
-          <div className="relative">
-            <div className="mb-4">
-              <span
-                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-widest uppercase ${tier.badge}`}
-              >
-                <StarFilledIcon className="h-2.5 w-2.5" />
-                {tier.badgeText}
-              </span>
+          <div className="relative flex h-full flex-col">
+            <div className="min-h-[150px]">
+              <div className="mb-4">
+                <span
+                  className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-widest uppercase ${tier.badge}`}
+                >
+                  <StarFilledIcon className="h-2.5 w-2.5" />
+                  {tier.badgeText}
+                </span>
+              </div>
+
+              <h3 className={`mb-2 text-xl font-black tracking-tight sm:text-2xl ${tier.accent}`}>
+                {tier.name}
+              </h3>
+              {tier.showPrice ? (
+                <p className="mb-1 text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
+                  {tier.price}
+                </p>
+              ) : null}
+              <p className="text-sm leading-[1.55] text-neutral-500 dark:text-neutral-400">
+                {tier.tagline}
+              </p>
             </div>
 
-            <h3 className={`mb-2 text-xl font-black tracking-tight sm:text-2xl ${tier.accent}`}>
-              {tier.name}
-            </h3>
-            <p className="mb-5 text-sm leading-[1.55] text-neutral-500 dark:text-neutral-400">
-              {tier.tagline}
-            </p>
-
-            <div className="mb-5 h-px w-full bg-gradient-to-r from-transparent via-neutral-200/80 to-transparent dark:via-neutral-700/60" />
+            <div className="my-5 h-px w-full bg-gradient-to-r from-transparent via-neutral-200/80 to-transparent dark:via-neutral-700/60" />
 
             <ul className="flex-1 space-y-3.5">
               {tier.features.map((feature) => (
@@ -99,9 +154,32 @@ function TierCard({
                 </li>
               ))}
             </ul>
+
+            <div className="mt-6 pt-1">
+              <span className="block">
+                <Button
+                  href={tier.actionHref}
+                  onClick={tier.handleAction}
+                  variant="plain"
+                  size="sm"
+                  className={`w-full rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_-18px_rgba(15,23,42,0.3)] transition-[transform,box-shadow,filter] duration-300 hover:-translate-y-px hover:brightness-105 ${tier.actionClassName}`}
+                >
+                  {tier.actionLabel}
+                </Button>
+              </span>
+            </div>
           </div>
         </div>
       </div>
+
+      {tier.selected ? (
+        <div
+          className="guild-tier-shimmer pointer-events-none absolute inset-0 z-[5] overflow-hidden rounded-2xl"
+          aria-hidden
+        >
+          <div className="guild-tier-shimmer-beam" />
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -121,45 +199,86 @@ const PERK_ACCENT = [
 ];
 
 function PerkCard({
+  accentClassName,
   item,
   index,
 }: {
-  item: { title: string; description: string; icon: string };
+  accentClassName?: string;
+  item: { eyebrow?: string; title: string; description?: string; icon: string };
   index: number;
 }) {
   const Icon = PERK_ICON_MAP[item.icon] ?? SparklesIcon;
-  const accent = PERK_ACCENT[index % PERK_ACCENT.length] ?? PERK_ACCENT[0];
+  const accent = accentClassName ?? PERK_ACCENT[index % PERK_ACCENT.length] ?? PERK_ACCENT[0];
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-neutral-200/60 bg-white/70 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-sm sm:p-7 dark:border-neutral-800/60 dark:bg-neutral-950/50">
+    <div className="relative overflow-hidden rounded-2xl border border-neutral-200/60 bg-white/78 p-6 shadow-[0_10px_32px_-28px_rgba(15,23,42,0.32)] backdrop-blur-sm sm:p-7 dark:border-neutral-800/60 dark:bg-neutral-950/50 dark:shadow-none">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-50/50 via-transparent to-neutral-100/30 dark:from-neutral-900/30 dark:to-neutral-800/20" />
 
       <div className="relative flex gap-5">
-        {/* Floating icon with soft glow */}
-        <div className="relative flex h-10 w-10 shrink-0 items-center justify-center">
-          <div className={`absolute inset-0 ${accent} opacity-20 blur-xl`}>
-            <Icon className="h-full w-full" />
+        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
+          <div className={`absolute inset-0 ${accent} opacity-18 blur-xl`}>
+            <Icon className="h-full w-full opacity-90" />
           </div>
+          <div className="absolute inset-0 rounded-2xl bg-white/70 dark:bg-white/5" />
           <Icon className={`relative h-5 w-5 ${accent}`} />
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="mb-1.5 text-base font-semibold tracking-tight text-neutral-900 dark:text-white">
+          {item.eyebrow ? (
+            <p className="mb-1 text-[10px] font-semibold tracking-[0.22em] text-neutral-500 uppercase dark:text-neutral-400">
+              {item.eyebrow}
+            </p>
+          ) : null}
+          <h3 className="mb-1.5 text-lg font-semibold tracking-tight text-neutral-900 dark:text-white">
             {item.title}
           </h3>
-          <p className="text-sm leading-[1.55] text-neutral-500 dark:text-neutral-400">
-            {item.description}
-          </p>
+          {item.description ? (
+            <p className="max-w-[34ch] text-sm leading-[1.65] text-neutral-600 dark:text-neutral-400">
+              {item.description}
+            </p>
+          ) : null}
         </div>
       </div>
     </div>
   );
 }
 
-export function GuildPageContent() {
+const PREVIEW_ICONS = ["film", "sparkles", "bolt", "users"] as const;
+
+export function GuildPageContent({
+  isEnabled,
+  prices,
+}: {
+  isEnabled: boolean;
+  prices: Record<GuildMembershipTier, string>;
+}) {
   const t = useTranslations("guildPage");
+  const { isAuthenticated, isPending } = useAuthStatus();
   const [embers, setEmbers] = useState<CSSProperties[]>([]);
   const [embersVisible, setEmbersVisible] = useState(false);
+  const [previewTier, setPreviewTier] = useState<GuildMembershipTier>(2);
+  const subscriptionQuery = useGuildSubscription(!isPending && isAuthenticated);
+  const tierCopy = getGuildTierCopy(t);
+  const hasActiveSubscription = Boolean(subscriptionQuery.data?.isActive);
+  const previewPerks = t.raw("previewPerks") as Record<
+    "scout" | "explorer" | "trailblazer",
+    { title: string; description: string; icon: string }[]
+  >;
+  const getTierPriceLabel = (tier: GuildMembershipTier) =>
+    isEnabled ? t("tiers.priceWithInterval", { amount: prices[tier] }) : prices[tier];
+  const activePreviewTier = !isEnabled && !hasActiveSubscription ? previewTier : null;
+  const previewDetails = activePreviewTier ? tierCopy[activePreviewTier] : null;
+  const previewTint = activePreviewTier ? GUILD_TIER_PREVIEW_TINTS[activePreviewTier] : null;
+  const previewPerkItems = previewDetails
+    ? previewPerks[
+        activePreviewTier === 1 ? "scout" : activePreviewTier === 2 ? "explorer" : "trailblazer"
+      ].map((item, index) => ({
+        ...item,
+        eyebrow: previewDetails.name,
+        icon: item.icon || PREVIEW_ICONS[index % PREVIEW_ICONS.length],
+      }))
+    : ((t.raw("perksSection.items") as { title: string; description: string; icon: string }[]) ??
+      []);
 
   useEffect(() => {
     setEmbers(generateGuildEmbers());
@@ -167,53 +286,84 @@ export function GuildPageContent() {
     return () => clearTimeout(timer);
   }, []);
 
-  const tiers = [
-    {
-      name: t("tiers.scout.name"),
-      tagline: t("tiers.scout.tagline"),
-      features: t.raw("tiers.scout.features") as string[],
-      accent: "text-emerald-600 dark:text-emerald-400",
-      glow: "bg-emerald-500/10 dark:bg-emerald-500/5",
-      gradient:
-        "bg-gradient-to-br from-emerald-200/60 via-transparent to-teal-200/40 dark:from-emerald-500/20 dark:to-teal-500/10",
-      border: "border-emerald-200/60 dark:border-emerald-500/20",
-      iconBg: "bg-gradient-to-br from-emerald-500 to-teal-600",
-      badge:
-        "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300",
-      badgeText: t("tiers.scout.badge"),
-    },
-    {
-      name: t("tiers.explorer.name"),
-      tagline: t("tiers.explorer.tagline"),
-      features: t.raw("tiers.explorer.features") as string[],
-      accent: "text-amber-600 dark:text-amber-400",
-      glow: "bg-amber-500/10 dark:bg-amber-500/5",
-      gradient:
-        "bg-gradient-to-br from-amber-200/60 via-transparent to-orange-200/40 dark:from-amber-500/20 dark:to-orange-500/10",
-      border: "border-amber-200/60 dark:border-amber-500/20",
-      iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-      badge:
-        "border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300",
-      badgeText: t("tiers.explorer.badge"),
-    },
-    {
-      name: t("tiers.trailblazer.name"),
-      tagline: t("tiers.trailblazer.tagline"),
-      features: t.raw("tiers.trailblazer.features") as string[],
-      accent: "text-rose-600 dark:text-rose-400",
-      glow: "bg-rose-500/10 dark:bg-rose-500/5",
-      gradient:
-        "bg-gradient-to-br from-rose-200/60 via-transparent to-red-200/40 dark:from-rose-500/20 dark:to-red-500/10",
-      border: "border-rose-200/60 dark:border-rose-500/20",
-      iconBg: "bg-gradient-to-br from-rose-500 to-red-600",
-      badge:
-        "border border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300",
-      badgeText: t("tiers.trailblazer.badge"),
-    },
-  ];
+  const getTierHref = (tier: 1 | 2 | 3) => {
+    if (isPending) {
+      return PAGE_ROUTES.GUILD;
+    }
+
+    if (hasActiveSubscription) {
+      return PAGE_ROUTES.ME;
+    }
+
+    if (!isEnabled) {
+      return PAGE_ROUTES.GUILD;
+    }
+
+    if (isAuthenticated) {
+      return PAGE_ROUTES.ME_GUILD_JOIN({ tier });
+    }
+
+    return `/login?returnPath=${encodeURIComponent(PAGE_ROUTES.ME_GUILD_JOIN({ tier }))}`;
+  };
+
+  const getTierActionLabel = (tier: 1 | 2 | 3, name: string) => {
+    if (isPending) {
+      return t("tiers.actions.loading");
+    }
+
+    if (subscriptionQuery.isLoading) {
+      return t("tiers.actions.loading");
+    }
+
+    if (hasActiveSubscription) {
+      return t("tiers.actions.manage");
+    }
+
+    if (!isEnabled) {
+      return t("tiers.actions.preview");
+    }
+
+    if (isAuthenticated) {
+      return t("tiers.actions.choose", { name });
+    }
+
+    return t("tiers.actions.signIn");
+  };
+
+  const tiers = ([1, 2, 3] as const).map((tierKey) => ({
+    actionHref: isEnabled ? getTierHref(tierKey) : undefined,
+    handleAction: !isEnabled ? () => setPreviewTier(tierKey) : undefined,
+    price: getTierPriceLabel(tierKey),
+    ...tierCopy[tierKey],
+    ...GUILD_TIER_MARKETING_CARD_STYLES[tierKey],
+    badgeText: tierCopy[tierKey].badge,
+    showPrice: isEnabled,
+    selected: activePreviewTier === tierKey,
+  }));
+
+  const tiersWithActions = tiers.map((tier, index) => ({
+    ...tier,
+    actionLabel: getTierActionLabel((index + 1) as 1 | 2 | 3, tier.name),
+  }));
 
   return (
     <div className="relative overflow-hidden">
+      {previewTint ? (
+        <div className="pointer-events-none absolute inset-0">
+          <div
+            className="absolute inset-0 dark:hidden"
+            style={{
+              background: `radial-gradient(circle at 16% 18%, ${previewTint.glowStrong}, transparent 28%), radial-gradient(circle at 84% 12%, ${previewTint.glow}, transparent 30%), radial-gradient(circle at 50% 72%, ${previewTint.glow}, transparent 34%)`,
+            }}
+          />
+          <div
+            className="absolute inset-0 hidden dark:block"
+            style={{
+              background: `radial-gradient(circle at 16% 18%, ${previewTint.darkGlowStrong}, transparent 30%), radial-gradient(circle at 84% 12%, ${previewTint.darkGlow}, transparent 34%), radial-gradient(circle at 50% 72%, ${previewTint.darkGlow}, transparent 38%)`,
+            }}
+          />
+        </div>
+      ) : null}
       <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-20 pb-24 sm:pt-24 sm:pb-28">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_25%,rgba(220,38,38,0.06),transparent_65%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_25%,rgba(220,38,38,0.03),transparent_65%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_15%,rgba(244,63,94,0.05),transparent_45%)] dark:bg-[radial-gradient(circle_at_80%_15%,rgba(244,63,94,0.02),transparent_45%)]" />
@@ -268,7 +418,7 @@ export function GuildPageContent() {
               <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
             </span>
             <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">
-              {t("comingSoon")}
+              {isEnabled ? t("status.live") : t("status.comingSoon")}
             </span>
           </div>
         </div>
@@ -328,7 +478,7 @@ export function GuildPageContent() {
           </div>
 
           <div className="grid gap-5 sm:gap-6 md:grid-cols-3">
-            {tiers.map((tier) => (
+            {tiersWithActions.map((tier) => (
               <TierCard key={tier.name} tier={tier} />
             ))}
           </div>
@@ -359,7 +509,28 @@ export function GuildPageContent() {
       </section>
 
       <section className="relative px-4 pt-20 pb-20 sm:pt-24 sm:pb-28">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,63,94,0.03),transparent_60%)] dark:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,63,94,0.015),transparent_60%)]" />
+        <div
+          className={`pointer-events-none absolute inset-0 ${
+            previewTint
+              ? ""
+              : "bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,63,94,0.03),transparent_60%)] dark:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,63,94,0.015),transparent_60%)]"
+          }`}
+          style={
+            previewTint
+              ? {
+                  background: `radial-gradient(ellipse 70% 50% at 50% 0%, ${previewTint.glowStrong}, transparent 60%)`,
+                }
+              : undefined
+          }
+        />
+        {previewTint ? (
+          <div
+            className="pointer-events-none absolute inset-0 hidden dark:block"
+            style={{
+              background: `radial-gradient(ellipse 72% 54% at 50% 0%, ${previewTint.darkGlowStrong}, transparent 62%)`,
+            }}
+          />
+        ) : null}
 
         <div className="relative mx-auto max-w-5xl">
           <div className="mb-12 text-center sm:mb-16">
@@ -370,58 +541,36 @@ export function GuildPageContent() {
               {t("perksSection.title")}
             </h2>
             <p className="mx-auto max-w-xl text-sm leading-[1.6] text-neutral-500 dark:text-neutral-400">
-              {t("perksSection.subtitle")}
+              {previewDetails?.tagline ?? t("perksSection.subtitle")}
             </p>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
-            {(
-              t.raw("perksSection.items") as { title: string; description: string; icon: string }[]
-            ).map((item, i) => (
-              <PerkCard key={item.title} item={item} index={i} />
+            {previewPerkItems.map((item, i) => (
+              <PerkCard
+                key={item.title}
+                item={item}
+                index={i}
+                accentClassName={previewTint?.iconAccent}
+              />
             ))}
           </div>
-        </div>
-      </section>
 
-      <section className="relative px-4 py-20 sm:py-28">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(244,63,94,0.04),transparent_65%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(244,63,94,0.02),transparent_65%)]" />
-
-        <div className="relative mx-auto max-w-2xl text-center">
-          <div className="relative overflow-hidden rounded-3xl border border-neutral-200/60 bg-white/80 px-8 py-14 shadow-[0_8px_50px_-12px_rgba(0,0,0,0.06)] backdrop-blur-2xl sm:px-14 sm:py-16 dark:border-neutral-800/60 dark:bg-neutral-950/60 dark:shadow-[0_8px_50px_-12px_rgba(0,0,0,0.4)]">
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-rose-500/[0.03] via-transparent to-amber-500/[0.03] dark:from-rose-500/[0.04] dark:to-amber-500/[0.04]" />
-            <div className="pointer-events-none absolute -top-32 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-rose-500/10 blur-[100px] dark:bg-rose-500/8" />
-            <div className="pointer-events-none absolute right-0 -bottom-24 h-48 w-48 rounded-full bg-amber-500/8 blur-[80px] dark:bg-amber-500/6" />
-
-            <div className="pointer-events-none absolute inset-0 rounded-3xl border border-rose-500/10 dark:border-rose-500/5" />
-
-            <div className="relative">
-              <div className="relative mb-8 inline-flex">
-                <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-rose-500 to-amber-500 opacity-30 blur-2xl" />
-                <GuildIcon className="relative h-12 w-12 text-neutral-900 dark:text-white" />
-              </div>
-
-              <h2 className="mb-5 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
-                {t("cta.title")}
-              </h2>
-
-              <p className="mx-auto mb-10 max-w-md text-base leading-relaxed text-neutral-600 dark:text-neutral-400">
-                {t("cta.body")}
-              </p>
-
-              <div className="inline-flex items-center gap-2.5 rounded-full bg-neutral-100/80 px-4 py-2 dark:bg-neutral-800/60">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-500" />
-                </span>
-                <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
-                  {t("cta.badge")}
-                </span>
+          {previewDetails ? (
+            <div className="mt-8 flex justify-center">
+              <div
+                className={`rounded-full border px-4 py-2 text-sm font-medium text-neutral-700 backdrop-blur-sm dark:text-neutral-200 ${
+                  previewTint?.ring ?? "border-neutral-200/70 dark:border-neutral-700/60"
+                } bg-gradient-to-r ${previewTint?.card ?? "from-white/80 via-white/70 to-white/80"}`}
+              >
+                {previewDetails.name}
               </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </section>
+
+      {!isEnabled ? <NewsletterSection subtitle={t("newsletter.subtitle")} /> : null}
     </div>
   );
 }

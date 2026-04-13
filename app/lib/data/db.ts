@@ -92,5 +92,14 @@ export function db(options: { required?: boolean } = {}): DrizzleClient | null {
 
 export function runTransaction<T>(callback: (tx: DrizzleTransaction) => Promise<T>): Promise<T> {
   const client = db();
-  return client.transaction(callback);
+  return client.transaction(callback).catch((error) => {
+    const message = error instanceof Error ? error.message : String(error);
+
+    if (message.includes("No transactions support in neon-http driver")) {
+      logWarn("db.transaction_not_supported_fallback", {});
+      return callback(client as unknown as DrizzleTransaction);
+    }
+
+    throw error;
+  });
 }

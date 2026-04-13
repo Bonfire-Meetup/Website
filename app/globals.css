@@ -1397,6 +1397,96 @@ html:not([data-motion="active"]) * {
   animation: guildTitleGlow 8s ease-in-out infinite;
 }
 
+/* Guild tier cards: preview/selected emphasis (transform + opacity only). */
+@keyframes guildTierSelectedAmbient {
+  0%,
+  100% {
+    transform: translate3d(0, -3px, 0) scale3d(1.02, 1.02, 1);
+  }
+  50% {
+    transform: translate3d(0, -9px, 0) scale3d(1.032, 1.032, 1);
+  }
+}
+
+@keyframes guildTierGlowOpacity {
+  0%,
+  100% {
+    opacity: 0.42;
+  }
+  50% {
+    opacity: 0.62;
+  }
+}
+
+@keyframes guildTierShimmerBeam {
+  0% {
+    transform: translate3d(-140%, 0, 0) skewX(-12deg);
+  }
+  100% {
+    transform: translate3d(220%, 0, 0) skewX(-12deg);
+  }
+}
+
+.guild-tier-card {
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease;
+}
+
+.guild-tier-card--idle {
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+}
+
+.guild-tier-card--selected {
+  z-index: 1;
+  animation: guildTierSelectedAmbient 4.8s ease-in-out infinite;
+}
+
+.guild-tier-card--selected:hover {
+  animation-play-state: paused;
+}
+
+.guild-tier-glow-ambient {
+  animation: guildTierGlowOpacity 3.2s ease-in-out infinite;
+}
+
+.guild-tier-shimmer {
+  border-radius: inherit;
+}
+
+.guild-tier-shimmer-beam {
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 55%;
+  height: 140%;
+  mix-blend-mode: soft-light;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0) 62%,
+    transparent 100%
+  );
+  opacity: 0.85;
+  animation: guildTierShimmerBeam 5.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  animation-delay: 0.6s;
+}
+
+.dark .guild-tier-shimmer-beam {
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0) 62%,
+    transparent 100%
+  );
+  opacity: 0.9;
+}
+
 @keyframes guildIconBreathe {
   0%,
   100% {
@@ -1455,6 +1545,30 @@ html:not([data-motion="active"]) * {
 }
 
 .guild-fireplace-compact {
+  --gfc-c1-1: 249, 115, 22;
+  --gfc-c1-2: 239, 68, 68;
+  --gfc-c1-3: 220, 38, 38;
+  --gfc-c2-1: 244, 63, 94;
+  --gfc-c2-2: 220, 38, 38;
+  --gfc-c2-3: 190, 18, 60;
+  --gfc-c3-1: 245, 158, 11;
+  --gfc-c3-2: 249, 115, 22;
+  --gfc-c3-3: 234, 88, 12;
+  --gfc-core-1: 255, 220, 120;
+  --gfc-core-2: 249, 115, 22;
+  --gfc-core-3: 239, 68, 68;
+  --gfc-c4-1: 220, 38, 38;
+  --gfc-c4-2: 190, 18, 60;
+  --gfc-c5-1: 234, 88, 12;
+  --gfc-c5-2: 245, 158, 11;
+  --gfc-t1-1: 249, 115, 22;
+  --gfc-t1-2: 239, 68, 68;
+  --gfc-t2-1: 245, 158, 11;
+  --gfc-t2-2: 249, 115, 22;
+  --gfc-t3-1: 255, 205, 120;
+  --gfc-t3-2: 249, 115, 22;
+  --gfc-t3-3: 244, 63, 94;
+
   position: absolute;
   bottom: -18px;
   left: 50%;
@@ -1469,6 +1583,85 @@ html:not([data-motion="active"]) * {
   isolation: isolate;
   transform: translateX(-50%) translateZ(0);
   backface-visibility: hidden;
+}
+
+/* /me Guild card: match flame hues to card tier (see data-guild-flame-tier on component). */
+.guild-fireplace-compact[data-guild-flame-tier="0"] {
+  --gfc-c1-1: 251, 191, 36;
+  --gfc-c1-2: 249, 115, 22;
+  --gfc-c1-3: 244, 63, 94;
+  --gfc-c2-1: 251, 113, 133;
+  --gfc-c2-2: 244, 63, 94;
+  --gfc-c2-3: 225, 29, 72;
+  --gfc-c3-1: 253, 186, 116;
+  --gfc-c3-2: 251, 146, 60;
+  --gfc-c3-3: 249, 115, 22;
+  --gfc-core-1: 254, 215, 170;
+  --gfc-core-2: 251, 146, 60;
+  --gfc-core-3: 251, 113, 133;
+  --gfc-c4-1: 225, 29, 72;
+  --gfc-c4-2: 190, 18, 60;
+  --gfc-c5-1: 249, 115, 22;
+  --gfc-c5-2: 253, 186, 116;
+  --gfc-t1-1: 251, 146, 60;
+  --gfc-t1-2: 244, 63, 94;
+  --gfc-t2-1: 253, 186, 116;
+  --gfc-t2-2: 249, 115, 22;
+  --gfc-t3-1: 255, 228, 196;
+  --gfc-t3-2: 251, 146, 60;
+  --gfc-t3-3: 251, 113, 133;
+}
+
+.guild-fireplace-compact[data-guild-flame-tier="1"] {
+  --gfc-c1-1: 56, 189, 248;
+  --gfc-c1-2: 14, 165, 233;
+  --gfc-c1-3: 37, 99, 235;
+  --gfc-c2-1: 96, 165, 250;
+  --gfc-c2-2: 59, 130, 246;
+  --gfc-c2-3: 29, 78, 216;
+  --gfc-c3-1: 34, 211, 238;
+  --gfc-c3-2: 14, 165, 233;
+  --gfc-c3-3: 59, 130, 246;
+  --gfc-core-1: 186, 230, 253;
+  --gfc-core-2: 56, 189, 248;
+  --gfc-core-3: 37, 99, 235;
+  --gfc-c4-1: 37, 99, 235;
+  --gfc-c4-2: 29, 78, 216;
+  --gfc-c5-1: 6, 182, 212;
+  --gfc-c5-2: 14, 165, 233;
+  --gfc-t1-1: 56, 189, 248;
+  --gfc-t1-2: 37, 99, 235;
+  --gfc-t2-1: 34, 211, 238;
+  --gfc-t2-2: 14, 165, 233;
+  --gfc-t3-1: 224, 242, 254;
+  --gfc-t3-2: 56, 189, 248;
+  --gfc-t3-3: 59, 130, 246;
+}
+
+.guild-fireplace-compact[data-guild-flame-tier="3"] {
+  --gfc-c1-1: 251, 113, 133;
+  --gfc-c1-2: 244, 63, 94;
+  --gfc-c1-3: 225, 29, 72;
+  --gfc-c2-1: 244, 114, 182;
+  --gfc-c2-2: 236, 72, 153;
+  --gfc-c2-3: 219, 39, 119;
+  --gfc-c3-1: 253, 164, 175;
+  --gfc-c3-2: 251, 113, 133;
+  --gfc-c3-3: 244, 63, 94;
+  --gfc-core-1: 254, 205, 211;
+  --gfc-core-2: 251, 113, 133;
+  --gfc-core-3: 244, 63, 94;
+  --gfc-c4-1: 225, 29, 72;
+  --gfc-c4-2: 190, 18, 60;
+  --gfc-c5-1: 244, 114, 182;
+  --gfc-c5-2: 251, 113, 133;
+  --gfc-t1-1: 251, 113, 133;
+  --gfc-t1-2: 236, 72, 153;
+  --gfc-t2-1: 253, 164, 175;
+  --gfc-t2-2: 244, 63, 94;
+  --gfc-t3-1: 255, 228, 230;
+  --gfc-t3-2: 251, 113, 133;
+  --gfc-t3-3: 244, 114, 182;
 }
 
 @media (min-width: 640px) {
@@ -1510,9 +1703,9 @@ html:not([data-motion="active"]) * {
   filter: blur(24px);
   background: radial-gradient(
     ellipse at 50% 76%,
-    rgba(249, 115, 22, 0.78) 0%,
-    rgba(239, 68, 68, 0.46) 32%,
-    rgba(220, 38, 38, 0.16) 56%,
+    rgba(var(--gfc-c1-1), 0.78) 0%,
+    rgba(var(--gfc-c1-2), 0.46) 32%,
+    rgba(var(--gfc-c1-3), 0.16) 56%,
     transparent 76%
   );
   animation: guildFlame1 6.4s ease-in-out infinite;
@@ -1525,9 +1718,9 @@ html:not([data-motion="active"]) * {
   filter: blur(22px);
   background: radial-gradient(
     ellipse at 58% 82%,
-    rgba(244, 63, 94, 0.5) 0%,
-    rgba(220, 38, 38, 0.3) 34%,
-    rgba(190, 18, 60, 0.1) 56%,
+    rgba(var(--gfc-c2-1), 0.5) 0%,
+    rgba(var(--gfc-c2-2), 0.3) 34%,
+    rgba(var(--gfc-c2-3), 0.1) 56%,
     transparent 76%
   );
   animation: guildFlame2 7.4s ease-in-out infinite;
@@ -1540,9 +1733,9 @@ html:not([data-motion="active"]) * {
   filter: blur(22px);
   background: radial-gradient(
     ellipse at 42% 82%,
-    rgba(245, 158, 11, 0.48) 0%,
-    rgba(249, 115, 22, 0.3) 34%,
-    rgba(234, 88, 12, 0.1) 56%,
+    rgba(var(--gfc-c3-1), 0.48) 0%,
+    rgba(var(--gfc-c3-2), 0.3) 34%,
+    rgba(var(--gfc-c3-3), 0.1) 56%,
     transparent 76%
   );
   animation: guildFlame3 8.2s ease-in-out infinite;
@@ -1555,9 +1748,9 @@ html:not([data-motion="active"]) * {
   bottom: -10%;
   background: radial-gradient(
     ellipse at 50% 100%,
-    rgba(255, 220, 120, 0.56) 0%,
-    rgba(249, 115, 22, 0.44) 30%,
-    rgba(239, 68, 68, 0.18) 56%,
+    rgba(var(--gfc-core-1), 0.56) 0%,
+    rgba(var(--gfc-core-2), 0.44) 30%,
+    rgba(var(--gfc-core-3), 0.18) 56%,
     transparent 74%
   );
   filter: blur(16px);
@@ -1574,8 +1767,8 @@ html:not([data-motion="active"]) * {
   filter: blur(18px);
   background: radial-gradient(
     ellipse at 54% 86%,
-    rgba(220, 38, 38, 0.34) 0%,
-    rgba(190, 18, 60, 0.16) 42%,
+    rgba(var(--gfc-c4-1), 0.34) 0%,
+    rgba(var(--gfc-c4-2), 0.16) 42%,
     transparent 74%
   );
   animation: guildFlameFlicker 6s ease-in-out infinite;
@@ -1588,8 +1781,8 @@ html:not([data-motion="active"]) * {
   filter: blur(18px);
   background: radial-gradient(
     ellipse at 46% 86%,
-    rgba(234, 88, 12, 0.34) 0%,
-    rgba(245, 158, 11, 0.16) 42%,
+    rgba(var(--gfc-c5-1), 0.34) 0%,
+    rgba(var(--gfc-c5-2), 0.16) 42%,
     transparent 74%
   );
   animation: guildFlameFlicker 6.4s ease-in-out 0.7s infinite;
@@ -1603,8 +1796,8 @@ html:not([data-motion="active"]) * {
   filter: blur(14px);
   background: radial-gradient(
     ellipse at 50% 70%,
-    rgba(249, 115, 22, 0.46) 0%,
-    rgba(239, 68, 68, 0.22) 40%,
+    rgba(var(--gfc-t1-1), 0.46) 0%,
+    rgba(var(--gfc-t1-2), 0.22) 40%,
     transparent 72%
   );
   animation: guildFlameTongue 5.4s ease-in-out infinite;
@@ -1618,8 +1811,8 @@ html:not([data-motion="active"]) * {
   filter: blur(14px);
   background: radial-gradient(
     ellipse at 50% 70%,
-    rgba(245, 158, 11, 0.38) 0%,
-    rgba(249, 115, 22, 0.2) 40%,
+    rgba(var(--gfc-t2-1), 0.38) 0%,
+    rgba(var(--gfc-t2-2), 0.2) 40%,
     transparent 72%
   );
   animation: guildFlameTongue2 6.2s ease-in-out 0.8s infinite;
@@ -1633,9 +1826,9 @@ html:not([data-motion="active"]) * {
   filter: blur(15px);
   background: radial-gradient(
     ellipse at 50% 68%,
-    rgba(255, 205, 120, 0.34) 0%,
-    rgba(249, 115, 22, 0.24) 34%,
-    rgba(244, 63, 94, 0.14) 52%,
+    rgba(var(--gfc-t3-1), 0.34) 0%,
+    rgba(var(--gfc-t3-2), 0.24) 34%,
+    rgba(var(--gfc-t3-3), 0.14) 52%,
     transparent 70%
   );
   animation: guildFlameTongue 6.8s ease-in-out 1.1s infinite;
@@ -2035,6 +2228,22 @@ html:not([data-motion="active"]) * {
   .guild-flame-tongue-compact-2,
   .guild-flame-tongue-compact-3 {
     animation: none;
+  }
+
+  .guild-tier-card--selected {
+    animation: none;
+    transform: translate3d(0, -4px, 0) scale3d(1.02, 1.02, 1);
+  }
+
+  .guild-tier-glow-ambient {
+    animation: none;
+    opacity: 0.5;
+  }
+
+  .guild-tier-shimmer-beam {
+    animation: none;
+    transform: none;
+    opacity: 0;
   }
 
   .early-access-loader {

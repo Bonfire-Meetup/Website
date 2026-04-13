@@ -48,6 +48,13 @@ const TECHNOLOGIES: Record<string, Technology[]> = {
     },
     { name: "Drizzle ORM", license: "Apache-2.0", url: WEBSITE_URLS.ATTRIBUTIONS.TECH.DRIZZLE_ORM },
   ],
+  payments: [
+    {
+      name: "stripe",
+      license: "Apache-2.0",
+      url: WEBSITE_URLS.ATTRIBUTIONS.TECH.STRIPE_NODE,
+    },
+  ],
   i18n: [
     { name: "next-intl", license: "MIT", url: WEBSITE_URLS.ATTRIBUTIONS.TECH.NEXT_INTL },
     { name: "nuqs", license: "MIT", url: WEBSITE_URLS.ATTRIBUTIONS.TECH.NUQS },

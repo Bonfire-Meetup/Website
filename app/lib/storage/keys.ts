@@ -2,6 +2,7 @@ export const STORAGE_KEYS = {
   ACCESS_TOKEN: "bonfire:access-token",
   ID_TOKEN: "bonfire:id-token",
   AUTH_CHALLENGE_PREFIX: "bonfire:auth-challenge",
+  GUILD_ACTIVATION: "bonfire:guild-activation",
   DRAFT_CONTACT_FORM: "bonfire:draft:contact-form",
   DRAFT_EVENT_SURVEY: "bonfire:draft:event-survey",
   DRAFT_TALK_PROPOSAL: "bonfire:draft:talk-proposal",

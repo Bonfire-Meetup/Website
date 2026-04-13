@@ -80,7 +80,7 @@ function getApiErrorReason(err: unknown): string | null {
   return typeof maybe.error === "string" ? maybe.error : null;
 }
 
-export function MeClient() {
+export function MeClient({ isGuildEnabled }: { isGuildEnabled: boolean }) {
   const t = useTranslations("account");
   const tDelete = useTranslations("account.delete");
   const locale = useLocale();
@@ -433,7 +433,10 @@ export function MeClient() {
         <>
           <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
             <ProfileCard profile={profile} onProfileUpdate={() => profileQuery.refetch()} />
-            <GuildCard />
+            <GuildCard
+              currentMembershipTier={auth.decodedToken?.mbt ?? null}
+              isEnabled={isGuildEnabled}
+            />
           </div>
 
           <div className="space-y-4">

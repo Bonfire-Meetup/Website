@@ -10,15 +10,30 @@
       "highlight": "Bonfire Guild"
     },
     "subtitle": "A place for folks who want to get more involved. Early access to recordings, behind-the-scenes stuff, and a real say in where Bonfire goes next.",
-    "comingSoon": "Coming Soon - Stay Tuned",
+    "status": {
+      "comingSoon": "Coming soon",
+      "live": "Subscriptions are live"
+    },
     "openNoteLabel": "A note",
     "openNote": "Bonfire events are <bold>open to everyone</bold> - no membership required. Guild is simply an optional way for those who want to support what we do and help the community grow.",
+    "newsletter": {
+      "subtitle": "Get notified when Bonfire Guild begins its rollout."
+    },
     "tiersSection": {
       "kicker": "How It Works",
       "title": "Pick What Fits",
       "subtitle": "Three tiers for different levels of involvement. Start wherever you like and grow from there."
     },
     "tiers": {
+      "priceWithInterval": "{amount} / month",
+      "actions": {
+        "choose": "Choose {name}",
+        "signIn": "Sign in to choose",
+        "loading": "Loading account…",
+        "manage": "Manage your plan",
+        "comingSoon": "Coming soon",
+        "preview": "Preview"
+      },
       "scout": {
         "name": "Scout",
         "badge": "Tier 1",
@@ -83,10 +98,78 @@
         }
       ]
     },
+    "previewPerks": {
+      "scout": [
+        {
+          "icon": "film",
+          "title": "Guild badge on your profile",
+          "description": "A visible signal that you back Bonfire and want to be part of the inner circle."
+        },
+        {
+          "icon": "users",
+          "title": "Member-only Discord channels",
+          "description": "A quieter space for Guild members to talk with the crew and with each other."
+        },
+        {
+          "icon": "sparkles",
+          "title": "Early heads-up on upcoming events",
+          "description": "Get the details before the public drop so you can plan ahead instead of rushing."
+        },
+        {
+          "icon": "bolt",
+          "title": "Priority event registration",
+          "description": "A better shot at getting in when seats are limited or demand spikes."
+        }
+      ],
+      "explorer": [
+        {
+          "icon": "film",
+          "title": "Everything in Scout",
+          "description": "You keep the core Guild perks and add the benefits that make the subscription feel immediately useful."
+        },
+        {
+          "icon": "sparkles",
+          "title": "Early access to event recordings",
+          "description": "Watch talks before the public release and stay in the loop while the event is still fresh."
+        },
+        {
+          "icon": "bolt",
+          "title": "Vote on future talk topics",
+          "description": "Help steer the program toward the themes and questions you actually want explored next."
+        },
+        {
+          "icon": "users",
+          "title": "Behind-the-scenes content",
+          "description": "See the planning, the tradeoffs, and the raw moments that never make it into the polished recap."
+        }
+      ],
+      "trailblazer": [
+        {
+          "icon": "film",
+          "title": "Everything in Explorer",
+          "description": "You get the full recording and behind-the-scenes package, plus the closest connection to how Bonfire evolves."
+        },
+        {
+          "icon": "users",
+          "title": "Join crew planning calls",
+          "description": "Hear what is being discussed early and bring your perspective into the room."
+        },
+        {
+          "icon": "bolt",
+          "title": "Suggest speakers and topics",
+          "description": "Surface the people and ideas you think Bonfire should prioritize next."
+        },
+        {
+          "icon": "sparkles",
+          "title": "First look at new platform features",
+          "description": "Preview experiments before everyone else and help shape what is worth keeping."
+        }
+      ]
+    },
     "cta": {
-      "title": "We're Working on It",
-      "body": "The Guild isn't ready just yet - we're putting it together with care. If this sounds like your kind of thing, keep an eye out. We'll let you know when it's time.",
-      "badge": "Coming Soon"
+      "title": "Start From Your Account",
+      "body": "Pick a tier here, then continue in your account to launch Stripe checkout or open the billing portal for management.",
+      "badge": "Account-centered billing"
     }
   }
 }

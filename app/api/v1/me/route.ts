@@ -21,6 +21,7 @@ import {
   authRefreshToken,
   authToken,
   contactSubmissions,
+  guildSubscription,
   newsletterSubscription,
   talkProposals,
   userBoostAllocation,
@@ -182,6 +183,7 @@ export const DELETE = withRequestContext(
       await db().delete(userWatchlist).where(eq(userWatchlist.userId, auth.userId));
       await db().delete(userBoostAllocation).where(eq(userBoostAllocation.userId, auth.userId));
       await db().delete(videoBoosts).where(eq(videoBoosts.userId, auth.userId));
+      await db().delete(guildSubscription).where(eq(guildSubscription.userId, auth.userId));
       await db().delete(newsletterSubscription).where(eq(newsletterSubscription.email, email));
       await db().delete(contactSubmissions).where(eq(contactSubmissions.email, email));
       await db().delete(talkProposals).where(eq(talkProposals.email, email));

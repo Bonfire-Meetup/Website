@@ -26,6 +26,10 @@ export const API_ROUTES = {
     PASSKEYS: "/api/v1/me/passkeys",
     PASSKEY: (id: string) => `/api/v1/me/passkeys/${id}`,
     PREFERENCES: "/api/v1/me/preferences",
+    SUBSCRIPTION: "/api/v1/me/subscription",
+    SUBSCRIPTION_CHECKOUT: "/api/v1/me/subscription/checkout",
+    SUBSCRIPTION_PORTAL: "/api/v1/me/subscription/portal",
+    SUBSCRIPTION_SYNC: "/api/v1/me/subscription/sync",
   },
   NEWSLETTER: {
     SUBSCRIPTIONS: "/api/v1/newsletters/subscriptions",
@@ -65,5 +69,8 @@ export const API_ROUTES = {
     QUESTION_BOOSTS: (eventId: string, questionId: string) =>
       `/api/v1/events/${eventId}/questions/${questionId}/boosts`,
     QUESTION_BOOSTS_PATTERN: "/api/v1/events/*/questions/*/boosts",
+  },
+  STRIPE: {
+    WEBHOOKS: "/api/v1/stripe/webhooks",
   },
 } as const;

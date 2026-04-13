@@ -27,17 +27,39 @@ export function ProfileSkeleton() {
 
 export function GuildSkeleton() {
   return (
-    <div className="animate-pulse overflow-hidden rounded-3xl border border-red-300/60 bg-gradient-to-br from-red-50/60 via-white to-red-100/70 p-6 dark:border-red-500/20 dark:from-neutral-900 dark:via-neutral-900/95 dark:to-red-950/30">
-      <div className="flex items-start justify-between">
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <div className="h-2.5 w-20 rounded bg-red-200/60 dark:bg-red-500/20" />
-            <div className="h-4 w-12 rounded-full bg-red-200/50 dark:bg-red-500/20" />
+    <div className="animate-pulse overflow-hidden rounded-2xl border border-amber-200/70 bg-linear-to-br from-white via-amber-50/70 to-rose-50/80 shadow-[0_16px_40px_-28px_rgba(251,146,60,0.35)] dark:border-amber-400/20 dark:from-amber-500/10 dark:via-orange-500/8 dark:to-rose-500/8 dark:shadow-none">
+      <div className="relative h-full overflow-hidden px-5 py-5">
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-amber-200/30 via-orange-200/10 to-transparent dark:from-amber-500/10 dark:via-orange-500/6 dark:to-transparent" />
+
+        <div className="relative flex h-full flex-col gap-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="h-7 w-36 rounded-full border border-amber-200/70 bg-white/70 dark:border-amber-300/20 dark:bg-white/8" />
+            <div className="h-6 w-14 rounded-full bg-amber-100/80 dark:bg-amber-500/10" />
           </div>
-          <div className="h-6 w-40 rounded bg-red-200/80 dark:bg-red-500/25" />
-          <div className="h-3.5 w-64 rounded bg-red-200/60 dark:bg-red-500/20" />
+
+          <div className="space-y-3">
+            <div className="h-7 w-56 rounded bg-neutral-200/80 dark:bg-white/12" />
+            <div className="h-3.5 w-full max-w-[23rem] rounded bg-neutral-200/60 dark:bg-white/10" />
+          </div>
+
+          <div className="space-y-2">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-start gap-2">
+                <div className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded-full bg-amber-200/80 dark:bg-amber-400/20" />
+                <div className="h-3.5 w-full rounded bg-neutral-200/60 dark:bg-white/10" />
+              </div>
+            ))}
+          </div>
+
+          <div className="flex-1" />
+
+          <div className="border-t border-black/8 pt-3 dark:border-white/10">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="h-7 w-24 rounded-full bg-amber-100/85 dark:bg-amber-500/14" />
+              <div className="h-8 w-24 rounded-lg bg-white/75 dark:bg-white/8" />
+            </div>
+          </div>
         </div>
-        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-red-200 to-rose-200 dark:from-red-500/20 dark:to-rose-500/20" />
       </div>
     </div>
   );
