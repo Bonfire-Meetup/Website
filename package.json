@@ -60,8 +60,8 @@
     "cssnano": "^7.1.4",
     "drizzle-kit": "^0.31.10",
     "eslint": "^10.2.0",
-    "oxfmt": "^0.44.0",
-    "oxlint": "^1.59.0",
+    "oxfmt": "^0.45.0",
+    "oxlint": "^1.60.0",
     "react-email": "5.2.10",
     "typescript": "^6.0.2"
   },
