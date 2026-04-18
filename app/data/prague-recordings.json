@@ -2,6 +2,20 @@
   "location": "Prague",
   "recordings": [
     {
+      "youtubeId": "GV0Xy51aZGc",
+      "shortId": "gv0zgc",
+      "slug": "jako-zacinat-odznova-vyvoj-her-pro-virtualni-realitu",
+      "title": "Jako začínat odznova - vývoj her pro virtuální realitu",
+      "speaker": ["Jindřich Skeldal"],
+      "date": "2026-03-24",
+      "thumbnail": "https://img.youtube.com/vi/GV0Xy51aZGc/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=GV0Xy51aZGc",
+      "description": null,
+      "tags": ["VR", "Production"],
+      "featureHeroThumbnail": "/library/featured/gv0zgc.webp",
+      "episodeId": "prague-8"
+    },
+    {
       "youtubeId": "w0x7Bq4bU1Y",
       "shortId": "x7q4b1",
       "slug": "top-5-cz-her-sarky-a-jaromira",

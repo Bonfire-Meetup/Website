@@ -1,9 +1,9 @@
 export const LIBRARY_FEATURED_SHORT_IDS = [
+  "gv0zgc",
   "x7q4b1",
   "y8bwzq",
   "czv1aj",
   "nyb4xq",
-  "qk5pzk",
 ] as const;
 
 const DEFAULT_ORDER = [...LIBRARY_FEATURED_SHORT_IDS];
