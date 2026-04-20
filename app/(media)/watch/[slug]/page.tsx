@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { WEBSITE_URLS } from "@/lib/config/constants";
@@ -21,6 +21,19 @@ function parseShortId(slug: string) {
   return slug.slice(-6);
 }
 
+function getRecordingByRouteSlug(slug: string) {
+  const shortId = parseShortId(slug);
+  return getAllRecordings().find((item: Recording) => item.shortId === shortId);
+}
+
+function redirectIfNonCanonicalWatchUrl(slug: string, recording: Recording) {
+  const canonicalSlug = `${recording.slug}-${recording.shortId}`;
+
+  if (slug !== canonicalSlug) {
+    permanentRedirect(PAGE_ROUTES.WATCH(recording.slug, recording.shortId));
+  }
+}
+
 export function generateStaticParams() {
   return getAllRecordings().map((recording) => ({
     slug: `${recording.slug}-${recording.shortId}`,
@@ -29,12 +42,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const shortId = parseShortId(slug);
-  const recording = getAllRecordings().find((item: Recording) => item.shortId === shortId);
+  const recording = getRecordingByRouteSlug(slug);
 
   if (!recording) {
     return buildNotFoundTitleMetadata("recordingNotFound");
   }
+
+  redirectIfNonCanonicalWatchUrl(slug, recording);
 
   const [titleSuffix, brandName] = await Promise.all([getMetaTitleSuffix(), getBrandName()]);
   const absoluteUrl = `${WEBSITE_URLS.BASE}${PAGE_ROUTES.WATCH(recording.slug, recording.shortId)}`;
@@ -78,14 +92,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 async function WatchPageContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const shortId = parseShortId(slug);
-  const allRecordings = getAllRecordings();
-  const recording = allRecordings.find((item: Recording) => item.shortId === shortId);
+  const recording = getRecordingByRouteSlug(slug);
 
   if (!recording) {
     notFound();
   }
 
+  redirectIfNonCanonicalWatchUrl(slug, recording);
+
+  const allRecordings = getAllRecordings();
   const relatedRecordings = getRelatedRecordings(recording, allRecordings);
 
   return <RecordingPlayer recording={recording} relatedRecordings={relatedRecordings} />;
