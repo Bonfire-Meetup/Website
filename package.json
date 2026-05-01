@@ -62,7 +62,7 @@
     "eslint": "^10.2.1",
     "oxfmt": "^0.45.0",
     "oxlint": "^1.60.0",
-    "react-email": "6.0.0",
+    "react-email": "6.0.5",
     "typescript": "^6.0.3"
   },
   "next-intl": {
