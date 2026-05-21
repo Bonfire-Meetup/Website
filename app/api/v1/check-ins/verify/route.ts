@@ -26,7 +26,7 @@ interface VerifyTokenResult {
 }
 
 const base64UrlDecode = (value: string) => {
-  let base64 = value.replace(/-/g, "+").replace(/_/g, "/");
+  let base64 = value.replace(/-/gu, "+").replace(/_/gu, "/");
   const padding = base64.length % 4;
   if (padding) {
     base64 += "=".repeat(4 - padding);

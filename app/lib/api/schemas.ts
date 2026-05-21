@@ -23,7 +23,7 @@ export const videoBoostStatsSchema = z.object({
           name: z.string().nullable(),
           publicId: z
             .string()
-            .regex(/^[1-9A-HJ-NP-Za-km-z]{11}-[1-9A-HJ-NP-Za-km-z]{11}$/, "Invalid user ID"),
+            .regex(/^[1-9A-HJ-NP-Za-km-z]{11}-[1-9A-HJ-NP-Za-km-z]{11}$/u, "Invalid user ID"),
         }),
       ),
     })

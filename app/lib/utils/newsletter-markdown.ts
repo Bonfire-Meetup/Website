@@ -3,12 +3,12 @@ const LINK_STYLE = "color: #f97316; text-decoration: underline;";
 export function parseInlineMarkdown(text: string): string {
   return text
     .replace(
-      /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+      /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/gu,
       `<a href="$2" style="${LINK_STYLE}" target="_blank" rel="noopener noreferrer">$1</a>`,
     )
-    .replace(/\*\*(.+?)\*\*/g, '<strong style="font-weight: bold;">$1</strong>')
-    .replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em style="font-style: italic;">$1</em>')
-    .replace(/__(.+?)__/g, "<u>$1</u>");
+    .replace(/\*\*(.+?)\*\*/gu, '<strong style="font-weight: bold;">$1</strong>')
+    .replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/gu, '<em style="font-style: italic;">$1</em>')
+    .replace(/__(.+?)__/gu, "<u>$1</u>");
 }
 
 export function renderMarkdownToHtml(text: string): string {

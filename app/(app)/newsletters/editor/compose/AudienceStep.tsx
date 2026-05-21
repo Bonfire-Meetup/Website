@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/Button";
 
 import type { AudienceCounts, NewsletterWizardData } from "./types";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;
 
 /** Split raw text on newlines, commas, and semicolons; return only valid, lowercase emails. */
 function parseEmails(raw: string): string[] {
   return [
     ...new Set(
       raw
-        .split(/[\n,;]+/)
+        .split(/[\n,;]+/u)
         .map((s) => s.trim().toLowerCase())
         .filter((s) => EMAIL_RE.test(s)),
     ),
@@ -77,7 +77,7 @@ export function AudienceStep({ data, onUpdate, counts }: AudienceStepProps) {
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     const pasted = e.clipboardData.getData("text");
     // Only intercept pastes that contain delimiters; single-email paste lands in the input normally.
-    if (/[\n,;]/.test(pasted)) {
+    if (/[\n,;]/u.test(pasted)) {
       e.preventDefault();
       addParsedEmails(pasted);
       setNewEmail("");

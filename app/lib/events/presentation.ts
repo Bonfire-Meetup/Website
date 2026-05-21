@@ -1,5 +1,5 @@
 export function parseEventTitle(title: string) {
-  const match = title.match(/^(.+?)\s*[-–—:]\s*(.+)$/);
+  const match = title.match(/^(.+?)\s*[-–—:]\s*(.+)$/u);
   if (match) {
     return { prefix: match[1], subtitle: match[2] };
   }

@@ -20,11 +20,11 @@ function encodeBase58(buffer: Buffer): string {
 }
 
 function decodeBase58(input: string): Buffer | null {
-  const normalized = input.replace(/[-_.]/g, "");
+  const normalized = input.replace(/[-_.]/gu, "");
   if (normalized.length !== TOTAL_LEN) {
     return null;
   }
-  if (!/^[1-9A-HJ-NP-Za-km-z]+$/.test(normalized)) {
+  if (!/^[1-9A-HJ-NP-Za-km-z]+$/u.test(normalized)) {
     return null;
   }
 
@@ -46,8 +46,8 @@ function groupBase58_11_11(value: string): string {
 }
 
 export function compressUuid(uuid: string): string {
-  const hex = uuid.replace(/-/g, "");
-  if (!/^[0-9a-fA-F]{32}$/.test(hex)) {
+  const hex = uuid.replace(/-/gu, "");
+  if (!/^[0-9a-fA-F]{32}$/u.test(hex)) {
     throw new Error("Invalid UUID");
   }
 

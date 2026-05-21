@@ -21,22 +21,22 @@ interface VideoCardProps {
   access?: RecordingAccessPolicy;
 }
 
-export const VideoCard = memo(function VideoCard({
-  shortId,
-  slug,
-  title,
-  speaker,
-  date,
-  thumbnail,
-  location,
-  locationLabel,
-  ariaLocationLabel,
-  locale = "en-US",
-  likeCount,
-  boostCount,
-  access,
-}: VideoCardProps) {
-  return (
+export const VideoCard = memo(
+  ({
+    shortId,
+    slug,
+    title,
+    speaker,
+    date,
+    thumbnail,
+    location,
+    locationLabel,
+    ariaLocationLabel,
+    locale = "en-US",
+    likeCount,
+    boostCount,
+    access,
+  }: VideoCardProps) => (
     <RecordingDetailedCard
       variant="glass"
       shortId={shortId}
@@ -53,5 +53,7 @@ export const VideoCard = memo(function VideoCard({
       likeCount={likeCount}
       boostCount={boostCount}
     />
-  );
-});
+  ),
+);
+
+VideoCard.displayName = "VideoCard";

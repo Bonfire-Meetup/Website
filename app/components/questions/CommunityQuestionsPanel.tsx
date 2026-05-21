@@ -567,7 +567,7 @@ export function CommunityQuestionsPanel({
           <div
             className={
               isLiveView
-                ? "scrollbar-thin max-h-[62vh] space-y-0 overflow-y-auto overscroll-contain pr-1"
+                ? "max-h-[62vh] scrollbar-thin space-y-0 overflow-y-auto overscroll-contain pr-1"
                 : "space-y-0"
             }
           >

@@ -10,7 +10,7 @@ import { loadMessages } from "@/lib/i18n/messages";
 const localeCache = new Map<string, Record<string, unknown>>();
 
 const interpolate = (template: string, data: Record<string, string>) =>
-  template.replace(/\{\{(\w+)\}\}/g, (_, key) => data[key] ?? "");
+  template.replace(/\{\{(\w+)\}\}/gu, (_, key) => data[key] ?? "");
 
 const ttlTextByLocale = (locale: Locale, minutes: number) => {
   if (locale === LOCALES.CS) {

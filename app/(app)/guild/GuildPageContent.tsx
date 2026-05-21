@@ -24,6 +24,10 @@ import type { GuildMembershipTier } from "@/lib/config/guild-membership";
 import { useAuthStatus } from "@/lib/redux/hooks";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
+const guildRichBold = (chunks: React.ReactNode) => (
+  <strong className="font-semibold text-neutral-900 dark:text-white">{chunks}</strong>
+);
+
 function GuildEmber({ style, visible }: { style: CSSProperties; visible: boolean }) {
   return (
     <div
@@ -496,11 +500,7 @@ export function GuildPageContent({
               </p>
               <p className="text-base leading-[1.75] text-neutral-700 sm:text-[1.0625rem] sm:leading-[1.8] dark:text-neutral-200">
                 {t.rich("openNote", {
-                  bold: (chunks) => (
-                    <strong className="font-semibold text-neutral-900 dark:text-white">
-                      {chunks}
-                    </strong>
-                  ),
+                  bold: guildRichBold,
                 })}
               </p>
             </div>

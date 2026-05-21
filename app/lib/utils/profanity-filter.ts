@@ -79,13 +79,13 @@ function removeDiacritics(text: string): string {
     ž: "z",
   };
 
-  return text.replace(/[áčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]/g, (char) => diacritics[char] || char);
+  return text.replace(/[áčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]/gu, (char) => diacritics[char] || char);
 }
 
 function normalizeWord(word: string): string {
   return removeDiacritics(word)
     .toLowerCase()
-    .replace(/[^a-z]/g, (char) => LEET_MAP[char] ?? "")
+    .replace(/[^a-z]/gu, (char) => LEET_MAP[char] ?? "")
     .trim();
 }
 

@@ -79,7 +79,7 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
     if (!isEditor) {
       return;
     }
-    const fetch_ = async () => {
+    const loadTestItems = async () => {
       const token = await getValidAccessTokenAsync();
       if (!token) {
         return;
@@ -95,7 +95,7 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
         // Ignore
       }
     };
-    fetch_();
+    loadTestItems();
   }, [isEditor]);
 
   return (

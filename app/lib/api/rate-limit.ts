@@ -64,7 +64,7 @@ export const isRateLimited = (storeKey: string, key: string, maxHits: number) =>
   return false;
 };
 
-export const isValidVideoId = (videoId: string) => /^[a-z0-9]{6}$/i.test(videoId);
+export const isValidVideoId = (videoId: string) => /^[a-z0-9]{6}$/iu.test(videoId);
 
 export const isOriginAllowed = async () => {
   const requestHeaders = await headers();

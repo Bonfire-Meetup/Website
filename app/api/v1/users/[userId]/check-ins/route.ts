@@ -36,7 +36,11 @@ interface RouteParams {
 }
 
 const base64UrlEncode = (value: string) =>
-  Buffer.from(value).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  Buffer.from(value)
+    .toString("base64")
+    .replace(/=/gu, "")
+    .replace(/\+/gu, "-")
+    .replace(/\//gu, "_");
 
 const signPayload = (payload: CheckInTokenPayload) => {
   const encodedPayload = base64UrlEncode(JSON.stringify(payload));

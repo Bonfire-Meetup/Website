@@ -180,7 +180,7 @@ function getStoredDraft(): {
   return readLocalStorage(STORAGE_KEYS.DRAFT_TALK_PROPOSAL);
 }
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;
 const VALIDATABLE_FIELDS = ["speakerName", "email", "talkTitle", "abstract", "duration"] as const;
 const FIELD_TO_STEP: Record<string, number> = {
   abstract: 1,

@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { LegalLinkButton } from "@/components/faq/LegalLinkButton";
 import { QuestionAnchor } from "@/components/faq/QuestionAnchor";
@@ -11,6 +12,74 @@ import { BoltIcon, FireIcon, GuildIcon } from "@/components/shared/Icons";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+
+const FAQ_LINK_CLASS =
+  "text-brand-600 decoration-brand-500/30 hover:text-brand-500 hover:decoration-brand-500 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300 font-semibold underline underline-offset-4 transition-colors";
+
+const faqRichBold = (chunks: ReactNode) => (
+  <strong className="text-neutral-900 dark:text-white">{chunks}</strong>
+);
+
+function resolveFaqLinkHref(qKey: string): string {
+  if (qKey === "howToSpeaker") {
+    return PAGE_ROUTES.SPEAK;
+  }
+  if (qKey === "howToJoin") {
+    return PAGE_ROUTES.CONTACT_WITH_TYPE("crew");
+  }
+  if (qKey === "photos") {
+    return PAGE_ROUTES.CONTACT_WITH_TYPE("press");
+  }
+  if (qKey === "howToDelete") {
+    return PAGE_ROUTES.ME;
+  }
+  if (qKey === "howToSignIn" || qKey === "howToRegister" || qKey === "passkeyFlow") {
+    return PAGE_ROUTES.GUIDES_REGISTRATION;
+  }
+  return PAGE_ROUTES.HOME;
+}
+
+function FaqRichLink({ children, qKey }: { children: ReactNode; qKey: string }) {
+  if (qKey === "discord") {
+    return (
+      <a
+        href={WEBSITE_URLS.SOCIAL.DISCORD}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={FAQ_LINK_CLASS}
+      >
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={resolveFaqLinkHref(qKey)} className={FAQ_LINK_CLASS}>
+      {children}
+    </Link>
+  );
+}
+
+const FAQ_QUESTION_KEYS = [
+  "whatIsBonfire",
+  "howOften",
+  "entryFee",
+  "howToSpeaker",
+  "howToJoin",
+  "isRecorded",
+  "discord",
+  "photos",
+  "howToRegister",
+  "howToSignIn",
+  "passkeyFlow",
+  "howToDelete",
+] as const;
+
+const faqLinkRenderers = Object.fromEntries(
+  FAQ_QUESTION_KEYS.map((qKey) => [
+    qKey,
+    (chunks: ReactNode) => <FaqRichLink qKey={qKey}>{chunks}</FaqRichLink>,
+  ]),
+) as Record<(typeof FAQ_QUESTION_KEYS)[number], (chunks: ReactNode) => ReactNode>;
 
 export function FaqPageContent() {
   const t = useTranslations("faqPage");
@@ -50,7 +119,7 @@ export function FaqPageContent() {
               </h2>
               <div className="grid gap-4 sm:grid-cols-1">
                 {section.questions.map((qKey) => {
-                  const anchorId = qKey.replace(/[A-Z]/g, (l) => `-${l.toLowerCase()}`);
+                  const anchorId = qKey.replace(/[A-Z]/gu, (l) => `-${l.toLowerCase()}`);
                   const mediaPolicyHref =
                     qKey === "photos" ? `${PAGE_ROUTES.LEGAL}#media-policy` : null;
                   return (
@@ -65,50 +134,8 @@ export function FaqPageContent() {
                       </h3>
                       <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                         {t.rich(`questions.${qKey}.answer`, {
-                          bold: (chunks) => (
-                            <strong className="text-neutral-900 dark:text-white">{chunks}</strong>
-                          ),
-                          link: (chunks) => {
-                            let href: string = PAGE_ROUTES.HOME;
-                            if (qKey === "howToSpeaker") {
-                              href = PAGE_ROUTES.SPEAK;
-                            }
-                            if (qKey === "howToJoin") {
-                              href = PAGE_ROUTES.CONTACT_WITH_TYPE("crew");
-                            }
-                            if (qKey === "photos") {
-                              href = PAGE_ROUTES.CONTACT_WITH_TYPE("press");
-                            }
-                            if (qKey === "howToDelete") {
-                              href = PAGE_ROUTES.ME;
-                            }
-                            if (qKey === "howToSignIn" || qKey === "howToRegister") {
-                              href = PAGE_ROUTES.GUIDES_REGISTRATION;
-                            }
-                            if (qKey === "passkeyFlow") {
-                              href = PAGE_ROUTES.GUIDES_REGISTRATION;
-                            }
-                            if (qKey === "discord") {
-                              return (
-                                <a
-                                  href={WEBSITE_URLS.SOCIAL.DISCORD}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-brand-600 decoration-brand-500/30 hover:text-brand-500 hover:decoration-brand-500 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300 font-semibold underline underline-offset-4 transition-colors"
-                                >
-                                  {chunks}
-                                </a>
-                              );
-                            }
-                            return (
-                              <Link
-                                href={href}
-                                className="text-brand-600 decoration-brand-500/30 hover:text-brand-500 hover:decoration-brand-500 dark:text-brand-400 dark:decoration-brand-400/30 dark:hover:text-brand-300 font-semibold underline underline-offset-4 transition-colors"
-                              >
-                                {chunks}
-                              </Link>
-                            );
-                          },
+                          bold: faqRichBold,
+                          link: faqLinkRenderers[qKey as (typeof FAQ_QUESTION_KEYS)[number]],
                         })}
                       </p>
                       {mediaPolicyHref ? (

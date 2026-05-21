@@ -51,7 +51,7 @@ function BackupZoomIcon({ className }: { className?: string }) {
 }
 
 function isNumericCharacter(value: string): boolean {
-  return /^[0-9]$/.test(value);
+  return /^[0-9]$/u.test(value);
 }
 
 export function CheckInClient() {

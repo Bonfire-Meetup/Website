@@ -217,7 +217,7 @@ function getSurveyCtaPresentation(
 function getSpeakerInitials(name: string) {
   const parts = name
     .trim()
-    .split(/\s+/)
+    .split(/\s+/u)
     .filter((part) => part.length > 0);
   if (parts.length === 0) {
     return "?";
@@ -426,8 +426,8 @@ export function EventDetailContent({
 
     const dtStamp = new Date()
       .toISOString()
-      .replace(/\.\d{3}Z$/, "Z")
-      .replace(/[-:]/g, "");
+      .replace(/\.\d{3}Z$/u, "Z")
+      .replace(/[-:]/gu, "");
     const uid = `${id}@bonfire.events`;
     const icsContent = [
       "BEGIN:VCALENDAR",
@@ -451,8 +451,8 @@ export function EventDetailContent({
     const anchor = document.createElement("a");
     const fileSafeTitle = title
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
+      .replace(/[^a-z0-9]+/gu, "-")
+      .replace(/(^-|-$)/gu, "");
     anchor.href = url;
     anchor.download = `${fileSafeTitle || "bonfire-event"}.ics`;
     document.body.appendChild(anchor);
@@ -725,7 +725,7 @@ export function EventDetailContent({
                               ? PAGE_ROUTES.USER(resolved.profileId)
                               : undefined;
                             const domain = resolved.url
-                              ? new URL(resolved.url).hostname.replace(/^www\./, "")
+                              ? new URL(resolved.url).hostname.replace(/^www\./u, "")
                               : undefined;
 
                             return (

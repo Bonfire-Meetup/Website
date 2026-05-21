@@ -38,7 +38,7 @@ export interface IdTokenPayload {
 }
 
 const decodeBase64Url = (value: string) => {
-  const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
+  const base64 = value.replace(/-/gu, "+").replace(/_/gu, "/");
   const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
 
   return atob(padded);

@@ -26,7 +26,7 @@ export function parseCheckInToken(token: string): VerifyTokenResult {
       return { valid: false, error: "Unsupported token version" };
     }
 
-    let base64 = encodedPayload.replace(/-/g, "+").replace(/_/g, "/");
+    let base64 = encodedPayload.replace(/-/gu, "+").replace(/_/gu, "/");
     const padding = base64.length % 4;
     if (padding) {
       base64 += "=".repeat(4 - padding);

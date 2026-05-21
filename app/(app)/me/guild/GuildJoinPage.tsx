@@ -32,6 +32,10 @@ import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 const BILLING_TIERS = [1, 2, 3] as const;
 
+const guildRichBold = (chunks: React.ReactNode) => (
+  <strong className="font-semibold text-neutral-900 dark:text-white">{chunks}</strong>
+);
+
 function TierCard({
   badge,
   disabled,
@@ -333,11 +337,7 @@ export function GuildJoinPage({
                       </p>
                       <p className="mt-2 max-w-2xl text-sm leading-[1.75] text-neutral-600 dark:text-neutral-300">
                         {tGuild.rich("openNote", {
-                          bold: (chunks) => (
-                            <strong className="font-semibold text-neutral-900 dark:text-white">
-                              {chunks}
-                            </strong>
-                          ),
+                          bold: guildRichBold,
                         })}
                       </p>
                       <Link

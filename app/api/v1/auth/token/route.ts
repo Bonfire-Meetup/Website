@@ -35,7 +35,7 @@ import { getUserAgentSummary } from "@/lib/utils/user-agent";
 const otpGrantSchema = z.object({
   grant_type: z.literal("urn:bonfire:grant-type:email-otp"),
   challenge_token: z.string().min(32),
-  code: z.string().regex(/^\d{1,6}$/),
+  code: z.string().regex(/^\d{1,6}$/u),
   email: z.string().email(),
 });
 

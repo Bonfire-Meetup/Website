@@ -8,7 +8,7 @@ export function normalizeText(value: string) {
 export function sanitizeUserText(value: string) {
   return value
     .normalize("NFC")
-    .replace(/\r\n?/g, "\n")
+    .replace(/\r\n?/gu, "\n")
     .split("")
     .filter((char) => {
       const code = char.charCodeAt(0);

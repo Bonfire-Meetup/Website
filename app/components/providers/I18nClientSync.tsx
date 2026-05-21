@@ -28,7 +28,7 @@ function getLocaleFromCookie(fallback: Locale): Locale {
   if (typeof document === "undefined") {
     return fallback;
   }
-  const match = document.cookie.match(/NEXT_LOCALE=([^;]+)/);
+  const match = document.cookie.match(/NEXT_LOCALE=([^;]+)/u);
   const value = match?.[1];
   return value && isValidLocale(value) ? value : fallback;
 }

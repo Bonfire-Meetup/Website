@@ -76,7 +76,7 @@ function parseDateUTC(dateString: string | null | undefined): Date {
       normalized = `${normalized}T00:00:00.000Z`;
     }
   }
-  normalized = normalized.replace(/\+00(:00)?$/, "Z");
+  normalized = normalized.replace(/\+00(:00)?$/u, "Z");
   const date = new Date(normalized);
   if (Number.isNaN(date.getTime())) {
     return new Date(NaN);

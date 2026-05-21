@@ -328,6 +328,8 @@ interface HeroProps {
   trendingRecordings?: HeroRecording[];
 }
 
+const EMPTY_TRENDING_RECORDINGS: HeroRecording[] = [];
+
 function generateEmbers() {
   return Array.from({ length: 6 }).map(() => ({
     animationDelay: `${Math.random() * -20}s`,
@@ -339,7 +341,7 @@ function generateEmbers() {
   }));
 }
 
-export function Hero({ images, trendingRecordings = [] }: HeroProps) {
+export function Hero({ images, trendingRecordings = EMPTY_TRENDING_RECORDINGS }: HeroProps) {
   const t = useTranslations("hero");
   const tCommon = useTranslations("common");
   const tHeader = useTranslations("header");

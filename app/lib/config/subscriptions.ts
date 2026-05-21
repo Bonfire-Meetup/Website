@@ -1,7 +1,7 @@
 import "server-only";
 
 import { serverEnv } from "@/lib/config/env";
-import { GUILD_TIER_VALUES, type GuildMembershipTier } from "@/lib/config/guild-membership";
+import { type GuildMembershipTier } from "@/lib/config/guild-membership";
 
 export { GUILD_TIER_VALUES, isGuildMembershipTier } from "@/lib/config/guild-membership";
 export type { GuildMembershipTier } from "@/lib/config/guild-membership";
@@ -40,7 +40,7 @@ export const getGuildTierByPriceId = (
   return Number(entry[0]) as GuildMembershipTier;
 };
 
-const normalizeBaseUrl = (value: string): string => value.replace(/\/$/, "");
+const normalizeBaseUrl = (value: string): string => value.replace(/\/$/u, "");
 
 export const getStripeAppBaseUrl = (request?: Request): string => {
   if (request) {

@@ -44,12 +44,12 @@ export const isConditionalMediationAvailable = async (): Promise<boolean> => {
 export const derivePasskeyName = (authenticatorAttachment?: string): string => {
   const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
 
-  const isIOS = /iPhone|iPad|iPod/.test(ua);
-  const isMac = /Macintosh/.test(ua) && !isIOS;
-  const isAndroid = /Android/.test(ua);
-  const isWindows = /Windows/.test(ua);
-  const isLinux = /Linux/.test(ua) && !isAndroid;
-  const isChromeOS = /CrOS/.test(ua);
+  const isIOS = /iPhone|iPad|iPod/u.test(ua);
+  const isMac = /Macintosh/u.test(ua) && !isIOS;
+  const isAndroid = /Android/u.test(ua);
+  const isWindows = /Windows/u.test(ua);
+  const isLinux = /Linux/u.test(ua) && !isAndroid;
+  const isChromeOS = /CrOS/u.test(ua);
 
   if (authenticatorAttachment === "cross-platform") {
     return "Security Key";

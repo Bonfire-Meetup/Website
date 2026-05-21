@@ -18,8 +18,8 @@ const normalizePem = (pem: string): string => {
   }
 
   return pem
-    .replace(/(-----BEGIN [A-Z ]+-----)/, "$1\n")
-    .replace(/(-----END [A-Z ]+-----)/, "\n$1");
+    .replace(/(-----BEGIN [A-Z ]+-----)/u, "$1\n")
+    .replace(/(-----END [A-Z ]+-----)/u, "\n$1");
 };
 
 const getJwtPrivateKey = () => normalizePem(serverEnv.BNF_JWT_PRIVATE_KEY);
@@ -164,7 +164,7 @@ export const isValidRefreshTokenFormat = (token: string): boolean => {
   if (token.length !== 43) {
     return false;
   }
-  return /^[A-Za-z0-9_-]+$/.test(token);
+  return /^[A-Za-z0-9_-]+$/u.test(token);
 };
 
 export const signUnsubscribeToken = async (email: string) => {

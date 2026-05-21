@@ -27,7 +27,7 @@ function parsePhotoHash(): number | null {
     return null;
   }
 
-  const match = window.location.hash.match(/^#photo-(\d+)$/);
+  const match = window.location.hash.match(/^#photo-(\d+)$/u);
 
   if (!match) {
     return null;

@@ -68,7 +68,7 @@ export function makeAvatarSeedFromPublicId(publicId: string): string {
 }
 
 export function readIdFromAvatarSeed(seed: string): bigint | null {
-  const m = /^av1_([0-9A-Z]+)_([0-9A-Z]{2})$/i.exec(seed.trim());
+  const m = /^av1_([0-9A-Z]+)_([0-9A-Z]{2})$/iu.exec(seed.trim());
   if (!m) {
     return null;
   }

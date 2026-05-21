@@ -74,12 +74,12 @@ interface PublicIdParts {
   second: string;
 }
 
-const PUBLIC_ID_ALLOWED_CHARS = /[1-9A-HJ-NP-Za-km-z]/g;
+const PUBLIC_ID_ALLOWED_CHARS = /[1-9A-HJ-NP-Za-km-z]/gu;
 
 function sanitizePublicIdInput(value: string): string {
   const normalized =
     value
-      .replace(/[-_.\s]/g, "")
+      .replace(/[-_.\s]/gu, "")
       .match(PUBLIC_ID_ALLOWED_CHARS)
       ?.join("") ?? "";
   return normalized.slice(0, 22);

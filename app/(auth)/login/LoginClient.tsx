@@ -338,7 +338,7 @@ export function LoginClient() {
         body: JSON.stringify({
           grant_type: "urn:bonfire:grant-type:email-otp",
           challenge_token: challengeToken,
-          code: code.replace(/\D/g, ""),
+          code: code.replace(/\D/gu, ""),
           email,
         }),
         headers: { "Content-Type": "application/json" },
@@ -412,7 +412,7 @@ export function LoginClient() {
     if (
       step === "verify" &&
       code.length === 6 &&
-      /^\d{6}$/.test(code) &&
+      /^\d{6}$/u.test(code) &&
       challengeToken &&
       !loading &&
       !autoSubmitRef.current &&
@@ -573,7 +573,7 @@ export function LoginClient() {
                       required
                       value={code.length === 6 ? `${code.slice(0, 3)} ${code.slice(3)}` : code}
                       onChange={(event) => {
-                        const normalized = event.target.value.replace(/\D/g, "").slice(0, 6);
+                        const normalized = event.target.value.replace(/\D/gu, "").slice(0, 6);
                         setCode(normalized);
                       }}
                       className={`${inputBaseClass} ${inputNormalClass} py-4 text-center font-mono text-xl tracking-[0.5em]`}

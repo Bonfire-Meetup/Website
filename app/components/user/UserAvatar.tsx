@@ -591,7 +591,7 @@ function generateAvatar(seed: string, isTiny: boolean, forcePatternType?: Patter
 }
 
 function getInitials(name: string): string {
-  const words = name.trim().split(/\s+/).filter(Boolean);
+  const words = name.trim().split(/\s+/u).filter(Boolean);
   if (words.length === 0) {
     return "";
   }

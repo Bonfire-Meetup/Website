@@ -30,6 +30,8 @@ import { WatchLaterButton } from "./WatchLaterButton";
 
 type RecordingDetailedVariant = "rail" | "grid" | "glass";
 
+const EMPTY_TAGS: string[] = [];
+
 interface RecordingDetailedCardProps {
   variant: RecordingDetailedVariant;
   shortId: string;
@@ -68,7 +70,7 @@ export function RecordingDetailedCard({
   date,
   thumbnail,
   location,
-  tags = [],
+  tags = EMPTY_TAGS,
   episode,
   episodeNumber,
   access,

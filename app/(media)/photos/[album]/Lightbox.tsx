@@ -42,7 +42,7 @@ interface MobileBarrelIndicatorProps {
 }
 
 const MobileBarrelIndicator = forwardRef<MobileBarrelIndicatorHandle, MobileBarrelIndicatorProps>(
-  function MobileBarrelIndicator({ currentIndex, totalCount }, ref) {
+  ({ currentIndex, totalCount }, ref) => {
     const slots = 11;
     const half = Math.floor(slots / 2);
     const renderCount = slots + 6;
@@ -233,6 +233,8 @@ const MobileBarrelIndicator = forwardRef<MobileBarrelIndicatorHandle, MobileBarr
     );
   },
 );
+
+MobileBarrelIndicator.displayName = "MobileBarrelIndicator";
 
 export function Lightbox({
   images,

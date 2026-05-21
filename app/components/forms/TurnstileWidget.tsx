@@ -44,329 +44,333 @@ interface Props {
   appearance?: "always" | "execute" | "interaction-only";
 }
 
-export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(function TurnstileWidget(
-  {
-    className = "",
-    onError,
-    resetKey,
-    mode = "render",
-    inputName = "cf-turnstile-response",
-    onToken,
-    appearance = "interaction-only",
-  },
-  ref,
-) {
-  const siteKey = clientEnv.NEXT_PUBLIC_BNF_TURNSTILE_SITE_KEY;
+export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(
+  (
+    {
+      className = "",
+      onError,
+      resetKey,
+      mode = "render",
+      inputName = "cf-turnstile-response",
+      onToken,
+      appearance = "interaction-only",
+    },
+    ref,
+  ) => {
+    const siteKey = clientEnv.NEXT_PUBLIC_BNF_TURNSTILE_SITE_KEY;
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const widgetIdRef = useRef<string | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const widgetIdRef = useRef<string | null>(null);
 
-  const [scriptLoaded, setScriptLoaded] = useState(false);
-  const [scriptError, setScriptError] = useState(false);
+    const [scriptLoaded, setScriptLoaded] = useState(false);
+    const [scriptError, setScriptError] = useState(false);
 
-  const [token, setToken] = useState<string>("");
+    const [token, setToken] = useState<string>("");
 
-  const [prevResetKey, setPrevResetKey] = useState(resetKey);
-  if (prevResetKey !== resetKey) {
-    setPrevResetKey(resetKey);
-    if (resetKey !== undefined && scriptLoaded) {
-      setToken("");
+    const [prevResetKey, setPrevResetKey] = useState(resetKey);
+    if (prevResetKey !== resetKey) {
+      setPrevResetKey(resetKey);
+      if (resetKey !== undefined && scriptLoaded) {
+        setToken("");
+      }
     }
-  }
 
-  const pendingExecuteResolveRef = useRef<((value: string | null) => void) | null>(null);
-  const pendingExecuteTimeoutRef = useRef<number | null>(null);
+    const pendingExecuteResolveRef = useRef<((value: string | null) => void) | null>(null);
+    const pendingExecuteTimeoutRef = useRef<number | null>(null);
 
-  const clearPendingExecute = useCallback(() => {
-    if (pendingExecuteTimeoutRef.current) {
-      window.clearTimeout(pendingExecuteTimeoutRef.current);
-      pendingExecuteTimeoutRef.current = null;
-    }
-    pendingExecuteResolveRef.current = null;
-  }, []);
+    const clearPendingExecute = useCallback(() => {
+      if (pendingExecuteTimeoutRef.current) {
+        window.clearTimeout(pendingExecuteTimeoutRef.current);
+        pendingExecuteTimeoutRef.current = null;
+      }
+      pendingExecuteResolveRef.current = null;
+    }, []);
 
-  const resolvePendingExecuteNull = useCallback(() => {
-    if (pendingExecuteResolveRef.current) {
-      pendingExecuteResolveRef.current(null);
-      clearPendingExecute();
-    }
-  }, [clearPendingExecute]);
-
-  const handleToken = useCallback(
-    (newToken: string) => {
-      setToken(newToken);
-      onToken?.(newToken);
-
+    const resolvePendingExecuteNull = useCallback(() => {
       if (pendingExecuteResolveRef.current) {
-        pendingExecuteResolveRef.current(newToken);
+        pendingExecuteResolveRef.current(null);
         clearPendingExecute();
       }
-    },
-    [onToken, clearPendingExecute],
-  );
+    }, [clearPendingExecute]);
 
-  const handleWidgetError = useCallback(() => {
-    setScriptError(true);
-    onError?.();
-    resolvePendingExecuteNull();
-  }, [onError, resolvePendingExecuteNull]);
+    const handleToken = useCallback(
+      (newToken: string) => {
+        setToken(newToken);
+        onToken?.(newToken);
 
-  const renderWidget = useCallback(() => {
-    const ts = window.turnstile;
-    if (!ts || !containerRef.current || !siteKey) {
-      return false;
-    }
-
-    if (widgetIdRef.current) {
-      try {
-        ts.remove(widgetIdRef.current);
-      } catch (error) {
-        logWarn("turnstileWidget.remove_failed", { error: String(error) });
-      }
-      widgetIdRef.current = null;
-    }
-
-    containerRef.current.replaceChildren();
-
-    setToken("");
-    resolvePendingExecuteNull();
-
-    try {
-      widgetIdRef.current = ts.render(containerRef.current, {
-        appearance,
-        callback: (t: unknown) => {
-          if (typeof t === "string") {
-            handleToken(t);
-          }
-        },
-        "error-callback": () => handleWidgetError(),
-        execution: mode,
-
-        "expired-callback": () => {
-          setToken("");
-          resolvePendingExecuteNull();
-        },
-
-        sitekey: siteKey,
-
-        theme: "auto",
-
-        "timeout-callback": () => {
-          setToken("");
-          resolvePendingExecuteNull();
-        },
-      });
-
-      return true;
-    } catch (error) {
-      logWarn("turnstileWidget.render_failed", { error: String(error) });
-      setScriptError(true);
-      onError?.();
-      return false;
-    }
-  }, [
-    appearance,
-    mode,
-    siteKey,
-    handleToken,
-    handleWidgetError,
-    resolvePendingExecuteNull,
-    onError,
-  ]);
-
-  const reset = useCallback(() => {
-    const ts = window.turnstile;
-    if (!widgetIdRef.current || !ts) {
-      return;
-    }
-
-    setToken("");
-    clearPendingExecute();
-
-    try {
-      ts.reset(widgetIdRef.current);
-    } catch {
-      renderWidget();
-    }
-  }, [clearPendingExecute, renderWidget]);
-
-  const execute = useCallback((): Promise<string | null> => {
-    if (mode !== "execute") {
-      return Promise.resolve(token || null);
-    }
-
-    const ts = window.turnstile;
-    const widgetId = widgetIdRef.current;
-
-    if (!ts || !widgetId || !ts.execute) {
-      logWarn("turnstileWidget.execute_unavailable", {});
-      return Promise.resolve(null);
-    }
-
-    if (token) {
-      return Promise.resolve(token);
-    }
-
-    if (pendingExecuteResolveRef.current) {
-      return new Promise((resolve) => {
-        const prev = pendingExecuteResolveRef.current;
-        pendingExecuteResolveRef.current = (val) => {
-          prev?.(val);
-          resolve(val);
-        };
-      });
-    }
-
-    return new Promise((resolve) => {
-      pendingExecuteResolveRef.current = resolve;
-
-      pendingExecuteTimeoutRef.current = window.setTimeout(() => {
         if (pendingExecuteResolveRef.current) {
-          pendingExecuteResolveRef.current(null);
+          pendingExecuteResolveRef.current(newToken);
           clearPendingExecute();
         }
-      }, 15_000);
+      },
+      [onToken, clearPendingExecute],
+    );
 
-      try {
-        if (ts.execute) {
-          ts.execute(widgetId);
-        }
-      } catch (error) {
-        logWarn("turnstileWidget.execute_failed", { error: String(error) });
-        resolve(null);
-        clearPendingExecute();
-      }
-    });
-  }, [clearPendingExecute, mode, token]);
+    const handleWidgetError = useCallback(() => {
+      setScriptError(true);
+      onError?.();
+      resolvePendingExecuteNull();
+    }, [onError, resolvePendingExecuteNull]);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      execute,
-      getToken: () => token || null,
-      reset,
-    }),
-    [execute, reset, token],
-  );
-
-  useEffect(() => {
-    clearPendingExecute();
-  }, [clearPendingExecute]);
-
-  useEffect(() => {
-    if (!scriptLoaded && window.turnstile) {
-      const timeoutId = window.setTimeout(() => {
-        if (window.turnstile) {
-          setScriptLoaded(true);
-        }
-      }, 50);
-
-      return () => {
-        window.clearTimeout(timeoutId);
-      };
-    }
-  }, [scriptLoaded]);
-
-  useEffect(() => {
-    if (resetKey === undefined) {
-      return;
-    }
-    if (!scriptLoaded) {
-      return;
-    }
-    if (!widgetIdRef.current) {
-      return;
-    }
-    const ts = window.turnstile;
-    if (!ts) {
-      return;
-    }
-    clearPendingExecute();
-    try {
-      ts.reset(widgetIdRef.current);
-    } catch (err) {
-      logWarn("turnstileWidget.reset_failed", { error: String(err) });
-    }
-  }, [resetKey, scriptLoaded, clearPendingExecute]);
-
-  useEffect(() => {
-    if (!scriptLoaded || scriptError) {
-      return;
-    }
-    if (!siteKey) {
-      return;
-    }
-    if (!containerRef.current) {
-      return;
-    }
-    if (!window.turnstile) {
-      return;
-    }
-
-    const rafId = window.requestAnimationFrame(() => {
-      if (containerRef.current && window.turnstile) {
-        renderWidget();
-      }
-    });
-
-    return () => {
-      window.cancelAnimationFrame(rafId);
-    };
-  }, [renderWidget, scriptLoaded, scriptError, siteKey]);
-
-  useEffect(() => {
-    const onPageShow = () => {
-      if (window.turnstile && containerRef.current) {
-        renderWidget();
-      }
-    };
-    window.addEventListener("pageshow", onPageShow);
-    return () => window.removeEventListener("pageshow", onPageShow);
-  }, [renderWidget]);
-
-  useEffect(
-    () => () => {
-      clearPendingExecute();
+    const renderWidget = useCallback(() => {
       const ts = window.turnstile;
-      if (widgetIdRef.current && ts) {
+      if (!ts || !containerRef.current || !siteKey) {
+        return false;
+      }
+
+      if (widgetIdRef.current) {
         try {
           ts.remove(widgetIdRef.current);
         } catch (error) {
-          logWarn("turnstileWidget.cleanup_failed", { error: String(error) });
+          logWarn("turnstileWidget.remove_failed", { error: String(error) });
         }
         widgetIdRef.current = null;
       }
-    },
-    [clearPendingExecute],
-  );
 
-  const handleScriptReady = useCallback(() => {
-    setScriptError(false);
-    setScriptLoaded(true);
-  }, []);
+      containerRef.current.replaceChildren();
 
-  if (!siteKey) {
-    return null;
-  }
+      setToken("");
+      resolvePendingExecuteNull();
 
-  return (
-    <div className={className}>
-      <Script
-        src={WEBSITE_URLS.SERVICES.TURNSTILE_SCRIPT}
-        strategy="afterInteractive"
-        onReady={handleScriptReady}
-        onError={handleWidgetError}
-      />
+      try {
+        widgetIdRef.current = ts.render(containerRef.current, {
+          appearance,
+          callback: (t: unknown) => {
+            if (typeof t === "string") {
+              handleToken(t);
+            }
+          },
+          "error-callback": () => handleWidgetError(),
+          execution: mode,
 
-      {mode === "render" && <input type="hidden" name={inputName} value={token} />}
+          "expired-callback": () => {
+            setToken("");
+            resolvePendingExecuteNull();
+          },
 
-      <div ref={containerRef} />
+          sitekey: siteKey,
 
-      {scriptError && (
-        <p className="mt-2 text-sm text-rose-500">
-          Failed to load verification widget. Please refresh the page.
-        </p>
-      )}
-    </div>
-  );
-});
+          theme: "auto",
+
+          "timeout-callback": () => {
+            setToken("");
+            resolvePendingExecuteNull();
+          },
+        });
+
+        return true;
+      } catch (error) {
+        logWarn("turnstileWidget.render_failed", { error: String(error) });
+        setScriptError(true);
+        onError?.();
+        return false;
+      }
+    }, [
+      appearance,
+      mode,
+      siteKey,
+      handleToken,
+      handleWidgetError,
+      resolvePendingExecuteNull,
+      onError,
+    ]);
+
+    const reset = useCallback(() => {
+      const ts = window.turnstile;
+      if (!widgetIdRef.current || !ts) {
+        return;
+      }
+
+      setToken("");
+      clearPendingExecute();
+
+      try {
+        ts.reset(widgetIdRef.current);
+      } catch {
+        renderWidget();
+      }
+    }, [clearPendingExecute, renderWidget]);
+
+    const execute = useCallback((): Promise<string | null> => {
+      if (mode !== "execute") {
+        return Promise.resolve(token || null);
+      }
+
+      const ts = window.turnstile;
+      const widgetId = widgetIdRef.current;
+
+      if (!ts || !widgetId || !ts.execute) {
+        logWarn("turnstileWidget.execute_unavailable", {});
+        return Promise.resolve(null);
+      }
+
+      if (token) {
+        return Promise.resolve(token);
+      }
+
+      if (pendingExecuteResolveRef.current) {
+        return new Promise((resolve) => {
+          const prev = pendingExecuteResolveRef.current;
+          pendingExecuteResolveRef.current = (val) => {
+            prev?.(val);
+            resolve(val);
+          };
+        });
+      }
+
+      return new Promise((resolve) => {
+        pendingExecuteResolveRef.current = resolve;
+
+        pendingExecuteTimeoutRef.current = window.setTimeout(() => {
+          if (pendingExecuteResolveRef.current) {
+            pendingExecuteResolveRef.current(null);
+            clearPendingExecute();
+          }
+        }, 15_000);
+
+        try {
+          if (ts.execute) {
+            ts.execute(widgetId);
+          }
+        } catch (error) {
+          logWarn("turnstileWidget.execute_failed", { error: String(error) });
+          resolve(null);
+          clearPendingExecute();
+        }
+      });
+    }, [clearPendingExecute, mode, token]);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        execute,
+        getToken: () => token || null,
+        reset,
+      }),
+      [execute, reset, token],
+    );
+
+    useEffect(() => {
+      clearPendingExecute();
+    }, [clearPendingExecute]);
+
+    useEffect(() => {
+      if (!scriptLoaded && window.turnstile) {
+        const timeoutId = window.setTimeout(() => {
+          if (window.turnstile) {
+            setScriptLoaded(true);
+          }
+        }, 50);
+
+        return () => {
+          window.clearTimeout(timeoutId);
+        };
+      }
+    }, [scriptLoaded]);
+
+    useEffect(() => {
+      if (resetKey === undefined) {
+        return;
+      }
+      if (!scriptLoaded) {
+        return;
+      }
+      if (!widgetIdRef.current) {
+        return;
+      }
+      const ts = window.turnstile;
+      if (!ts) {
+        return;
+      }
+      clearPendingExecute();
+      try {
+        ts.reset(widgetIdRef.current);
+      } catch (err) {
+        logWarn("turnstileWidget.reset_failed", { error: String(err) });
+      }
+    }, [resetKey, scriptLoaded, clearPendingExecute]);
+
+    useEffect(() => {
+      if (!scriptLoaded || scriptError) {
+        return;
+      }
+      if (!siteKey) {
+        return;
+      }
+      if (!containerRef.current) {
+        return;
+      }
+      if (!window.turnstile) {
+        return;
+      }
+
+      const rafId = window.requestAnimationFrame(() => {
+        if (containerRef.current && window.turnstile) {
+          renderWidget();
+        }
+      });
+
+      return () => {
+        window.cancelAnimationFrame(rafId);
+      };
+    }, [renderWidget, scriptLoaded, scriptError, siteKey]);
+
+    useEffect(() => {
+      const onPageShow = () => {
+        if (window.turnstile && containerRef.current) {
+          renderWidget();
+        }
+      };
+      window.addEventListener("pageshow", onPageShow);
+      return () => window.removeEventListener("pageshow", onPageShow);
+    }, [renderWidget]);
+
+    useEffect(
+      () => () => {
+        clearPendingExecute();
+        const ts = window.turnstile;
+        if (widgetIdRef.current && ts) {
+          try {
+            ts.remove(widgetIdRef.current);
+          } catch (error) {
+            logWarn("turnstileWidget.cleanup_failed", { error: String(error) });
+          }
+          widgetIdRef.current = null;
+        }
+      },
+      [clearPendingExecute],
+    );
+
+    const handleScriptReady = useCallback(() => {
+      setScriptError(false);
+      setScriptLoaded(true);
+    }, []);
+
+    if (!siteKey) {
+      return null;
+    }
+
+    return (
+      <div className={className}>
+        <Script
+          src={WEBSITE_URLS.SERVICES.TURNSTILE_SCRIPT}
+          strategy="afterInteractive"
+          onReady={handleScriptReady}
+          onError={handleWidgetError}
+        />
+
+        {mode === "render" && <input type="hidden" name={inputName} value={token} />}
+
+        <div ref={containerRef} />
+
+        {scriptError && (
+          <p className="mt-2 text-sm text-rose-500">
+            Failed to load verification widget. Please refresh the page.
+          </p>
+        )}
+      </div>
+    );
+  },
+);
+
+TurnstileWidget.displayName = "TurnstileWidget";

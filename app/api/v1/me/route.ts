@@ -106,7 +106,7 @@ export const GET = withRequestContext(
 
 const deleteSchema = z.object({
   challenge_token: z.string().min(32),
-  code: z.string().regex(/^\d{1,6}$/),
+  code: z.string().regex(/^\d{1,6}$/u),
 });
 
 export const DELETE = withRequestContext(
