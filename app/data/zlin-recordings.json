@@ -2,6 +2,48 @@
   "location": "Zlin",
   "recordings": [
     {
+      "youtubeId": "29ue7gk8hF4",
+      "shortId": "29u8hf",
+      "slug": "concept-to-comeback-the-evolution-of-crime-boss",
+      "title": "Concept to Comeback: The Evolution of Crime Boss",
+      "speaker": ["Jarek Kol\u00e1\u0159"],
+      "date": "2026-03-30",
+      "thumbnail": "https://img.youtube.com/vi/29ue7gk8hF4/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=29ue7gk8hF4",
+      "description": null,
+      "tags": ["Production"],
+      "featureHeroThumbnail": "/library/featured/29u8hf.webp",
+      "episodeId": "zlin-6"
+    },
+    {
+      "youtubeId": "DphixXuNqD0",
+      "shortId": "dphxn0",
+      "slug": "ako-zvysit-sance-na-uspech-vasho-studia",
+      "title": "Ako zv\u00fd\u0161i\u0165 \u0161ance na \u00faspech V\u00e1\u0161ho \u0161t\u00fadia?",
+      "speaker": ["Filip Ondr\u00e1\u0161"],
+      "date": "2026-03-30",
+      "thumbnail": "https://img.youtube.com/vi/DphixXuNqD0/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=DphixXuNqD0",
+      "description": null,
+      "tags": ["Production", "Career"],
+      "featureHeroThumbnail": "/library/featured/dphxn0.webp",
+      "episodeId": "zlin-6"
+    },
+    {
+      "youtubeId": "tiT_P31PDGk",
+      "shortId": "tt31pg",
+      "slug": "unity-scriptableobjects-best-practices-and-data-driven-design",
+      "title": "Unity ScriptableObjects: Best Practices and Data-Driven Design",
+      "speaker": ["Xuan Hung Do"],
+      "date": "2026-03-30",
+      "thumbnail": "https://img.youtube.com/vi/tiT_P31PDGk/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=tiT_P31PDGk",
+      "description": null,
+      "tags": ["Tech", "Unity"],
+      "featureHeroThumbnail": "/library/featured/tt31pg.webp",
+      "episodeId": "zlin-6"
+    },
+    {
       "youtubeId": "nYbRyVBMkXQ",
       "shortId": "nyb4xq",
       "slug": "barvy-smrti-od-inspirace-k-dilu",

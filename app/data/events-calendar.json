@@ -184,21 +184,24 @@
           "company": "Flying Rat Studio",
           "topic": "Unity ScriptableObjects: Best Practices and Data-Driven Design",
           "startTime": "17:15",
-          "url": "https://www.flying-rat.studio/"
+          "url": "https://www.flying-rat.studio/",
+          "recordingId": "tt31pg"
         },
         {
           "name": "Jarek Kolář",
           "company": "INGAME STUDIOS",
           "topic": "Concept to Comeback: The Evolution of Crime Boss",
           "startTime": "18:15",
-          "url": "https://www.ingamestudios.com/"
+          "url": "https://www.ingamestudios.com/",
+          "recordingId": "29u8hf"
         },
         {
           "name": "Filip Ondráš",
           "company": "Vector Virtuoso s.r.o.",
           "topic": "Ako zvýšiť šance na úspech Vášho štúdia? Alebo post-mortem ako ste o ňom ešte nepremýšľali.",
           "startTime": "19:00",
-          "url": "https://www.vectorvirtuoso.com/"
+          "url": "https://www.vectorvirtuoso.com/",
+          "recordingId": "dphxn0"
         }
       ],
       "links": {
@@ -336,7 +339,8 @@
           "topic": "Jai: Jak vypadá jazyk herního vývojáře Jonathana Blowa?",
           "startTime": "18:15",
           "profileId": "CtPK2iptd1f-ALRfyXnni4e",
-          "url": "https://apparently.studio/"
+          "url": "https://apparently.studio/",
+          "recordingId": "bu0fty"
         },
         {
           "name": "Jindřich Skeldal",

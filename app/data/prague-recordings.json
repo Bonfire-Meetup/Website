@@ -2,6 +2,20 @@
   "location": "Prague",
   "recordings": [
     {
+      "youtubeId": "bu0Ed2FTeYU",
+      "shortId": "bu0fty",
+      "slug": "jai-jak-vypada-jazyk-herniho-vyvojare-jonathana-blowa",
+      "title": "Jai: Jak vypad\u00e1 jazyk hern\u00edho v\u00fdvoj\u00e1\u0159e Jonathana Blowa?",
+      "speaker": ["Patrik Sm\u011bl\u00fd"],
+      "date": "2026-03-24",
+      "thumbnail": "https://img.youtube.com/vi/bu0Ed2FTeYU/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=bu0Ed2FTeYU",
+      "description": null,
+      "tags": ["Design", "Tech"],
+      "featureHeroThumbnail": "/library/featured/bu0fty.webp",
+      "episodeId": "prague-8"
+    },
+    {
       "youtubeId": "GV0Xy51aZGc",
       "shortId": "gv0zgc",
       "slug": "jako-zacinat-odznova-vyvoj-her-pro-virtualni-realitu",
