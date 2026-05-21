@@ -63,7 +63,7 @@ info "Checking migrations"
 if grep -q '^BNF_NEON_MIGRATION_DATABASE_URL=' .vercel/.env.production.local; then
   info "Running Drizzle migrations"
   bunx dotenv-cli -e .vercel/.env.production.local -- \
-    bash -lc 'bunx drizzle-kit migrate' \
+    bunx drizzle-kit migrate \
     2>&1 | tee drizzle-migrate.log
 else
   info "No migration DB URL; skipping migrations"
