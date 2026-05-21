@@ -2,6 +2,24 @@
   "location": "Prague",
   "recordings": [
     {
+      "youtubeId": "W-OSZGdKwmA",
+      "shortId": "w0skwm",
+      "slug": "jak-mluvit-o-hrach-s-hraci-a-mezi-hraci",
+      "title": "Jak mluvit o hr\u00e1ch, s hr\u00e1\u010di a mezi hr\u00e1\u010di",
+      "speaker": ["Jan Modr\u00e1k", "Ji\u0159\u00ed Bigas"],
+      "date": "2026-03-24",
+      "thumbnail": "https://img.youtube.com/vi/W-OSZGdKwmA/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=W-OSZGdKwmA",
+      "description": null,
+      "tags": ["Podcast", "Interview"],
+      "featureHeroThumbnail": "/library/featured/w0skwm.webp",
+      "episodeId": "prague-8",
+      "access": {
+        "now": { "type": "authenticated" },
+        "after": { "type": "public", "at": "2026-06-21T00:00:00+02:00" }
+      }
+    },
+    {
       "youtubeId": "bu0Ed2FTeYU",
       "shortId": "bu0fty",
       "slug": "jai-jak-vypada-jazyk-herniho-vyvojare-jonathana-blowa",
