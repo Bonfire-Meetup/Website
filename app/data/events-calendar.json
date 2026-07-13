@@ -364,6 +364,18 @@
         "facebook": "https://fb.me/e/4pBE30Jlu",
         "eventbrite": "https://www.eventbrite.com/e/bonfireprague-8-forge-of-possibility-tickets-1984180998780"
       }
+    },
+    {
+      "id": "prague-9",
+      "title": "Bonfire@Prague #9 - Architects of the Unseen",
+      "episode": "Bonfire@Prague #9",
+      "location": "Prague",
+      "date": "2026-07-28",
+      "time": "18:00",
+      "venue": "Space Break, Rytířská 406/10, 110 00 Staré Město",
+      "description": "Join us for an evening of game dev talks and networking!",
+      "speakers": [],
+      "links": {}
     }
   ]
 }
