@@ -23,7 +23,6 @@ interface UpcomingEventCompactCardProps {
   id: EventItem["id"];
   isPlaceholder?: boolean;
   title: EventItem["title"];
-  episode?: EventItem["episode"];
   location: EventItem["location"];
   date: EventItem["date"];
   time: EventItem["time"];
@@ -39,7 +38,6 @@ export function UpcomingEventCompactCard({
   id,
   isPlaceholder = false,
   title,
-  episode,
   location,
   date,
   time,
@@ -97,14 +95,6 @@ export function UpcomingEventCompactCard({
               >
                 <CalendarIcon className="h-3 w-3" />
                 {countdownLabel}
-              </Pill>
-            )}
-            {episode && (
-              <Pill
-                size="sm"
-                className="bg-neutral-100 font-semibold tracking-[0.2em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-300"
-              >
-                {episode}
               </Pill>
             )}
           </div>

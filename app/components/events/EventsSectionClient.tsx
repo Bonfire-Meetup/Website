@@ -21,12 +21,14 @@ export function EventsSectionClient({
   initialEpisode,
   preFilteredEvents,
   hideHeader = false,
+  hideEpisodeFilter = false,
   cardVariant = "full",
 }: {
   events: EventItem[];
   initialEpisode?: string;
   preFilteredEvents?: EventItem[];
   hideHeader?: boolean;
+  hideEpisodeFilter?: boolean;
   cardVariant?: "full" | "compact";
 }) {
   const t = useTranslations("sections.events");
@@ -59,7 +61,7 @@ export function EventsSectionClient({
   return (
     <>
       {!hideHeader && <SectionHeader id="events" title={t("title")} subtitle={t("subtitle")} />}
-      {episodes.length > 0 && (
+      {!hideEpisodeFilter && episodes.length > 0 && (
         <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
           <Pill
             size="sm"
@@ -105,7 +107,6 @@ export function EventsSectionClient({
                 key={event.id}
                 id={event.id}
                 title={event.title}
-                episode={event.episode}
                 location={event.location}
                 date={event.date}
                 time={event.time}

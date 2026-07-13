@@ -18,6 +18,7 @@ export function EventsSection({
           events={events}
           initialEpisode="all"
           preFilteredEvents={events}
+          hideEpisodeFilter
           cardVariant={cardVariant}
         />
       </div>
