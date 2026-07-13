@@ -375,7 +375,9 @@
       "venue": "Space Break, Rytířská 406/10, 110 00 Staré Město",
       "description": "Join us for an evening of game dev talks and networking!",
       "speakers": [],
-      "links": {}
+      "links": {
+        "facebook": "https://fb.me/e/66XiYeLMp"
+      }
     }
   ]
 }

@@ -452,7 +452,7 @@ export function EventDetailContent({
     const fileSafeTitle = title
       .toLowerCase()
       .replace(/[^a-z0-9]+/gu, "-")
-      .replace(/(^-|-$)/gu, "");
+      .replace(/(?<trim>(?:^-|-$))/gu, "");
     anchor.href = url;
     anchor.download = `${fileSafeTitle || "bonfire-event"}.ics`;
     document.body.appendChild(anchor);

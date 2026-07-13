@@ -72,7 +72,7 @@ function RoleIcon({ role, className }: { role: string; className?: string }) {
 }
 
 function renderWithBold(text: string) {
-  const parts = text.split(/(\*\*.*?\*\*)/gu);
+  const parts = text.split(/(?<bold>\*\*.*?\*\*)/gu);
   let offset = 0;
   return parts.map((part) => {
     const partOffset = offset;
