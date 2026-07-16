@@ -369,12 +369,22 @@
       "id": "prague-9",
       "title": "Bonfire@Prague #9 - Architects of the Unseen",
       "episode": "Bonfire@Prague #9",
+      "announcementStatus": "partial",
+      "announcedAt": "2026-07-16T00:00:00+02:00",
       "location": "Prague",
       "date": "2026-07-28",
       "time": "18:00",
       "venue": "Space Break, Rytířská 406/10, 110 00 Staré Město",
       "description": "Join us for an evening of game dev talks and networking!",
-      "speakers": [],
+      "speakers": [
+        {
+          "name": ["Tomáš Vrba", "Tomáš Vřeský"],
+          "company": ["Aerift Games", "Aerift Games"],
+          "topic": "Naše cesta Godotem, aneb je už na čase začít brát Godot vážně?",
+          "startTime": "18:15",
+          "url": ["https://aeriftgames.com/", "https://aeriftgames.com/"]
+        }
+      ],
       "links": {
         "facebook": "https://fb.me/e/66XiYeLMp"
       }
