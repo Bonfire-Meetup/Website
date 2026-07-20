@@ -383,6 +383,13 @@
           "topic": "Naše cesta Godotem, aneb je už na čase začít brát Godot vážně?",
           "startTime": "18:15",
           "url": ["https://aeriftgames.com/", "https://aeriftgames.com/"]
+        },
+        {
+          "name": "Lucie Tvarohová",
+          "company": "Scholastika",
+          "topic": "Mýty o game artu",
+          "startTime": "19:15",
+          "url": "https://scholastika.cz/"
         }
       ],
       "links": {
