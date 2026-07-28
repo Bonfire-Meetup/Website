@@ -149,6 +149,13 @@ export function formatTimeUTC(isoDateString: string, locale?: string): string {
   return new Intl.DateTimeFormat(locale ?? "en", TIME_OPTIONS).format(new Date(isoDateString));
 }
 
+export function formatTimeLocal(isoDateString: string, locale?: string): string {
+  return new Intl.DateTimeFormat(locale ?? "en", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(isoDateString));
+}
+
 const DATE_TIME_OPTIONS: Intl.DateTimeFormatOptions = {
   day: "numeric",
   hour: "2-digit",

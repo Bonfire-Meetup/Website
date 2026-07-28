@@ -12,7 +12,7 @@ import { useCheckInToken } from "@/lib/api/user-profile";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
-import { formatTimeUTC } from "@/lib/utils/locale";
+import { formatTimeLocal } from "@/lib/utils/locale";
 
 const REFRESH_INTERVAL_MS = 9 * 60 * 1000;
 const DEVICE_WAKE_THRESHOLD_MS = 30 * 1000;
@@ -187,7 +187,7 @@ export function CheckInClient() {
     if (!expiresAt) {
       return null;
     }
-    return formatTimeUTC(expiresAt, locale);
+    return formatTimeLocal(expiresAt, locale);
   }, [locale, expiresAt]);
 
   useEffect(() => {
