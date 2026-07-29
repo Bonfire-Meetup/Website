@@ -3,7 +3,7 @@ export interface SitemapUrl {
   lastmod?: string;
 }
 
-function escapeXml(value: string) {
+export function escapeXml(value: string) {
   return value
     .replace(/&/gu, "&amp;")
     .replace(/</gu, "&lt;")

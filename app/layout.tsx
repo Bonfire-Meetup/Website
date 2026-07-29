@@ -13,8 +13,10 @@ import { RouteComplete } from "./components/navigation/RouteComplete";
 import { NavigationProvider } from "./components/shared/NavigationContext";
 import { NavigationLoader } from "./components/shared/NavigationLoader";
 import { RollbarProvider } from "./components/shared/RollbarProvider";
+import { WEBSITE_URLS } from "./lib/config/constants";
 import { getInitialMessages } from "./lib/i18n/initial";
 import { DEFAULT_LOCALE } from "./lib/i18n/locales";
+import { PAGE_ROUTES } from "./lib/routes/pages";
 
 export const viewport: Viewport = {
   initialScale: 1,
@@ -49,6 +51,16 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 
   return {
+    alternates: {
+      types: {
+        "application/rss+xml": [
+          {
+            title: "Bonfire Events — Videos",
+            url: `${WEBSITE_URLS.BASE}${PAGE_ROUTES.FEED_VIDEOS}`,
+          },
+        ],
+      },
+    },
     authors: [{ name: t("author", commonValues) }],
     description: t("siteDescription", commonValues),
     keywords: processedKeywords,

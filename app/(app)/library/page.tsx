@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { RecordingsCatalog } from "@/components/recordings/RecordingsCatalog";
+import { WEBSITE_URLS } from "@/lib/config/constants";
 import { buildMetaPageMetadata } from "@/lib/metadata";
 import { getHiddenGems } from "@/lib/recordings/hidden-gems";
 import { getHotRecordingsSafe } from "@/lib/recordings/hot-picks";
 import { buildLibraryRowsPayload } from "@/lib/recordings/library-filter";
 import { getMemberPicksSafe } from "@/lib/recordings/member-picks";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export default async function LibraryPage() {
   const tCommon = await getTranslations("common");
@@ -38,5 +40,19 @@ export default async function LibraryPage() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return buildMetaPageMetadata("library");
+  const metadata = await buildMetaPageMetadata("library");
+
+  return {
+    ...metadata,
+    alternates: {
+      types: {
+        "application/rss+xml": [
+          {
+            title: "Bonfire Events — Videos",
+            url: `${WEBSITE_URLS.BASE}${PAGE_ROUTES.FEED_VIDEOS}`,
+          },
+        ],
+      },
+    },
+  };
 }

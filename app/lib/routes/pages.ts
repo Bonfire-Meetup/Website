@@ -28,6 +28,7 @@ export const PAGE_ROUTES = {
   CONTACT_WITH_TYPE: (type: string) => createContactUrl(type),
   CREW: "/crew",
   FAQ: "/faq",
+  FEED_VIDEOS: "/feed/videos.xml",
   GUIDES: "/guides",
   GUIDES_ACCOUNT_DELETION: "/guides/account/account-deletion",
   GUIDES_CHECK_IN: "/guides/events/check-in",
