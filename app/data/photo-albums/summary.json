@@ -2,6 +2,22 @@
   "baseUrl": "https://cdn-img.bnf.events",
   "albums": [
     {
+      "id": "prague-9",
+      "folder": "prague-9",
+      "cover": {
+        "src": "prague-9/796115789_268574196422265891_9280924479580531634_n.webp",
+        "width": 2048,
+        "height": 1366
+      },
+      "count": 35,
+      "photographers": [
+        {
+          "name": "Jakub Hubáček"
+        }
+      ],
+      "episodeId": "prague-9"
+    },
+    {
       "id": "zlin-5",
       "folder": "zlin-5",
       "cover": {

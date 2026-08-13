@@ -5,6 +5,7 @@ import prague_5Images from "@/data/photo-albums/albums/prague-5.json";
 import prague_6Images from "@/data/photo-albums/albums/prague-6.json";
 import prague_7Images from "@/data/photo-albums/albums/prague-7.json";
 import prague_8Images from "@/data/photo-albums/albums/prague-8.json";
+import prague_9Images from "@/data/photo-albums/albums/prague-9.json";
 import zlin_2Images from "@/data/photo-albums/albums/zlin-2.json";
 import zlin_3Images from "@/data/photo-albums/albums/zlin-3.json";
 import zlin_4Images from "@/data/photo-albums/albums/zlin-4.json";
@@ -18,6 +19,7 @@ import {
 import type { PhotoAlbum, PhotoAlbumImage } from "@/lib/photos/types";
 
 const IMAGE_PAYLOADS: Record<string, { images: PhotoAlbumImage[] }> = {
+  "prague-9": prague_9Images,
   "zlin-5": zlin_5Images,
   "zlin-6": zlin_6Images,
   "prague-8": prague_8Images,
