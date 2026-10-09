@@ -2,6 +2,48 @@
   "location": "Prague",
   "recordings": [
     {
+      "youtubeId": "paGiTOkQMNU",
+      "shortId": "pagmnu",
+      "slug": "nase-cesta-godotem-aneb-je-uz-na-case-zacit-brat-godot-vazne",
+      "title": "Naše cesta Godotem, aneb je už na čase začít brát Godot vážně?",
+      "speaker": ["Tomáš Vřeský", "Tomáš Vrba"],
+      "date": "2026-07-28",
+      "thumbnail": "https://img.youtube.com/vi/paGiTOkQMNU/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=paGiTOkQMNU",
+      "description": null,
+      "tags": ["Tech", "Godot"],
+      "featureHeroThumbnail": "",
+      "episodeId": "prague-9"
+    },
+    {
+      "youtubeId": "wnU8tkQ9xs8",
+      "shortId": "wnuxs8",
+      "slug": "myty-o-game-artu",
+      "title": "Mýty o game artu",
+      "speaker": ["Lucie Tvarohová"],
+      "date": "2026-07-28",
+      "thumbnail": "https://img.youtube.com/vi/wnU8tkQ9xs8/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=wnU8tkQ9xs8",
+      "description": null,
+      "tags": ["Art"],
+      "featureHeroThumbnail": "",
+      "episodeId": "prague-9"
+    },
+    {
+      "youtubeId": "4ziy33z9K4o",
+      "shortId": "4zik4o",
+      "slug": "chill-chat-4-martin-pohl",
+      "title": "Chill Chat #4 - Martin Pohl (ZNK)",
+      "speaker": ["Martin Pohl"],
+      "date": "2026-07-28",
+      "thumbnail": "https://img.youtube.com/vi/4ziy33z9K4o/maxresdefault.jpg",
+      "url": "https://www.youtube.com/watch?v=4ziy33z9K4o",
+      "description": null,
+      "tags": ["Interview"],
+      "featureHeroThumbnail": "",
+      "episodeId": "prague-9"
+    },
+    {
       "youtubeId": "W-OSZGdKwmA",
       "shortId": "w0skwm",
       "slug": "jak-mluvit-o-hrach-s-hraci-a-mezi-hraci",
