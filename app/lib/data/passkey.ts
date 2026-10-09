@@ -1,6 +1,5 @@
 import "server-only";
 
-import type { AuthenticatorTransportFuture } from "@simplewebauthn/server";
 import { and, count, eq, gt, isNull, lt, sql } from "drizzle-orm";
 
 import { db } from "@/lib/data/db";
@@ -46,7 +45,7 @@ export const insertPasskey = async ({
   counter: number;
   deviceType?: string | null;
   backedUp?: boolean;
-  transports?: AuthenticatorTransportFuture[] | null;
+  transports?: string[] | null;
   name?: string | null;
 }): Promise<string | null> => {
   const rows = await db()

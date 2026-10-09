@@ -28,8 +28,8 @@ function getLocaleFromCookie(fallback: Locale): Locale {
   if (typeof document === "undefined") {
     return fallback;
   }
-  const match = document.cookie.match(/NEXT_LOCALE=([^;]+)/u);
-  const value = match?.[1];
+  const match = document.cookie.match(/NEXT_LOCALE=(?<locale>[^;]+)/u);
+  const value = match?.groups?.locale;
   return value && isValidLocale(value) ? value : fallback;
 }
 

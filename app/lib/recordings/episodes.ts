@@ -39,7 +39,7 @@ export function formatEpisodeSlug(episode: Episode) {
   return episode.title
     .toLowerCase()
     .replace(/[^a-z0-9]+/gu, "-")
-    .replace(/(^-|-$)+/gu, "");
+    .replace(/(?:^-|-$)+/gu, "");
 }
 
 export function buildAlbumSlug(albumId: string, episodeId?: string) {

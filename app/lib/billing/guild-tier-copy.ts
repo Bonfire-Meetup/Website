@@ -2,7 +2,7 @@ import type { GuildMembershipTier } from "@/lib/config/guild-membership";
 
 interface GuildTranslator {
   (key: string): string;
-  raw(key: string): unknown;
+  raw: (key: string) => unknown;
 }
 
 export interface GuildTierCopy {

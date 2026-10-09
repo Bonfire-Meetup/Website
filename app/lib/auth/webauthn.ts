@@ -6,7 +6,7 @@ import {
   verifyAuthenticationResponse,
   verifyRegistrationResponse,
   type AuthenticationResponseJSON,
-  type AuthenticatorTransportFuture,
+  type AuthenticatorTransport,
   type CredentialDeviceType,
   type PublicKeyCredentialCreationOptionsJSON,
   type PublicKeyCredentialRequestOptionsJSON,
@@ -50,7 +50,7 @@ export const createRegistrationOptions = async ({
     attestationType: "none",
     excludeCredentials: existingPasskeys.map((passkey) => ({
       id: passkey.credentialId,
-      transports: passkey.transports as AuthenticatorTransportFuture[] | undefined,
+      transports: passkey.transports as AuthenticatorTransport[] | undefined,
     })),
     authenticatorSelection: {
       residentKey: "required",
@@ -94,7 +94,7 @@ export const createAuthenticationOptions = async ({
     userVerification: "required",
     allowCredentials: allowedPasskeys?.map((passkey) => ({
       id: passkey.credentialId,
-      transports: passkey.transports as AuthenticatorTransportFuture[] | undefined,
+      transports: passkey.transports as AuthenticatorTransport[] | undefined,
     })),
   });
 
@@ -121,7 +121,7 @@ export const verifyAuthentication = async ({
       id: passkey.credentialId,
       publicKey: Buffer.from(passkey.publicKey, "base64url"),
       counter: passkey.counter,
-      transports: passkey.transports as AuthenticatorTransportFuture[] | undefined,
+      transports: passkey.transports as AuthenticatorTransport[] | undefined,
     },
     requireUserVerification: true,
   });

@@ -18,8 +18,8 @@ const normalizePem = (pem: string): string => {
   }
 
   return pem
-    .replace(/(-----BEGIN [A-Z ]+-----)/u, "$1\n")
-    .replace(/(-----END [A-Z ]+-----)/u, "\n$1");
+    .replace(/(?<marker>-----BEGIN [A-Z ]+-----)/u, "$<marker>\n")
+    .replace(/(?<marker>-----END [A-Z ]+-----)/u, "\n$<marker>");
 };
 
 const getJwtPrivateKey = () => normalizePem(serverEnv.BNF_JWT_PRIVATE_KEY);
