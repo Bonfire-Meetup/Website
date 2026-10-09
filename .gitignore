@@ -140,3 +140,6 @@ cdn-webp/
 .rollbar-sourcemaps
 .vercel/
 public/vendor/
+scripts/socials/
+.agents/
+.claude/
