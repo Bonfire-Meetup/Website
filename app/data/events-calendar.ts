@@ -1,5 +1,7 @@
+import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
 import { isTbaDate, parseEventDateTimeMs, parseEventDateTimeParts } from "@/lib/events/datetime";
 import type { EventAnnouncementStatus, EventItem, EventSpeaker } from "@/lib/events/types";
+import { episodes } from "@/lib/recordings/episodes";
 
 import eventsCalendarData from "./events-calendar.json";
 
@@ -111,6 +113,18 @@ export function getPastEvents(now: Date): EventItem[] {
     }
   }
   return events;
+}
+
+export function getHostedEventCount(location: LocationValue, now: Date): number {
+  const city = location === LOCATIONS.PRAGUE ? "prague" : "zlin";
+  const hostedIds = new Set([
+    ...episodes.filter((episode) => episode.city === city).map((episode) => episode.id),
+    ...getPastEvents(now)
+      .filter((event) => event.location === location)
+      .map((event) => event.id),
+  ]);
+
+  return hostedIds.size;
 }
 
 const upcomingFallbackEvents: EventItem[] = [

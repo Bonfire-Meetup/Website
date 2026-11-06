@@ -1,6 +1,34 @@
 {
   "events": [
     {
+      "id": "prague-1",
+      "title": "Bonfire@Prague #1 - The Gathering",
+      "episode": "Bonfire@Prague #1",
+      "location": "Prague",
+      "date": "2023-11-09",
+      "time": "18:00",
+      "venue": "Klub FAMU, Smetanovo nábř. 2, 110 00 Staré Město",
+      "description": "The pilot Bonfire edition: a conversation on the history of CINEMAX studio, Unreal Editor scripting, and a nostalgic look at retro games.",
+      "speakers": [
+        {
+          "name": "Lukáš Macura",
+          "company": "CINEMAX",
+          "topic": "Rozhovor o historii studia CINEMAX"
+        },
+        {
+          "name": "Jakub Hubáček",
+          "company": "Flying Rat",
+          "topic": "Unreal Editor Scripting je váš kamarád"
+        },
+        {
+          "name": "Pavel Dobrovský",
+          "company": "Retro Nation, Level, ABC",
+          "topic": "Retro jako řemen"
+        }
+      ],
+      "links": {}
+    },
+    {
       "id": "zlin-1",
       "title": "Bonfire@Zlin #1 - The Pioneers",
       "episode": "Bonfire@Zlin #1",
@@ -24,6 +52,34 @@
           "name": "Martin Pernica",
           "topic": "Jak výběr technologie může ovlivnit vaši vývojářskou cestu",
           "recordingId": "jwbqs1"
+        }
+      ],
+      "links": {}
+    },
+    {
+      "id": "prague-2",
+      "title": "Bonfire@Prague #2 - The Dreamweavers",
+      "episode": "Bonfire@Prague #2",
+      "location": "Prague",
+      "date": "2024-02-08",
+      "time": "18:00",
+      "venue": "Klub FAMU, Smetanovo nábř. 2, 110 00 Staré Město",
+      "description": "From prototyping to production, the making of Happy Game, and the Middle Ages in video games through a historian's eyes.",
+      "speakers": [
+        {
+          "name": "Karel Matějka",
+          "company": "KO.DLL",
+          "topic": "Bzzzt: Od prototypování po produkci"
+        },
+        {
+          "name": "Lukáš Kunce",
+          "company": "Amanita Design",
+          "topic": "Happy Game: Veselý život neveselé hry"
+        },
+        {
+          "name": "Ondřej Purchart",
+          "company": "Flying Rat",
+          "topic": "Hrady a Pixely: Středověk ve videohrách očima historika"
         }
       ],
       "links": {}
