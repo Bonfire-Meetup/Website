@@ -39,6 +39,7 @@ export const WEBSITE_URLS = {
     FLYING_RAT: "https://flying-rat.studio",
     POLYPERFECT: "https://www.polyperfect.com/",
     SPACE_BREAK: "https://www.instagram.com/spacebreakcoffee/",
+    THE_PITCHERS: "https://www.thepitchers.cz/",
     UPPER_UTB: "https://upper.utb.cz/",
     UTB: "https://www.utb.cz/",
     VISIONGAME: "http://visiongame.cz/",

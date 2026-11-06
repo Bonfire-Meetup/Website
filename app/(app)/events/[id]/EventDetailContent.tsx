@@ -1145,7 +1145,7 @@ export function EventDetailContent({
                 </div>
 
                 {(() => {
-                  const partners = getLocationPartners(location);
+                  const partners = getLocationPartners(location, date);
                   if (partners.length === 0) {
                     return null;
                   }
