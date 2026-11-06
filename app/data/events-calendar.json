@@ -405,6 +405,32 @@
       "links": {
         "facebook": "https://fb.me/e/66XiYeLMp"
       }
+    },
+    {
+      "id": "prague-10",
+      "title": "Bonfire@Prague #10",
+      "announcementStatus": "partial",
+      "announcedAt": "2026-11-06T00:00:00+01:00",
+      "location": "Prague",
+      "date": "2026-11-26",
+      "time": "18:00",
+      "venue": "The Pitchers, náplavka, Hořejší nábř., kobka č. 15, 150 00 Praha 5-Smíchov",
+      "description": "Join us for an evening of game dev talks and networking!",
+      "speakers": [],
+      "links": {}
+    },
+    {
+      "id": "zlin-7",
+      "title": "Bonfire@Zlin #7",
+      "announcementStatus": "partial",
+      "announcedAt": "2026-11-06T00:00:00+01:00",
+      "location": "Zlin",
+      "date": "2026-11-30",
+      "time": "17:00",
+      "venue": "Studentsky klub U7, Štefánikova 150, 760 01 Zlín",
+      "description": "Game dev meetup in Zlin with talks and community discussion.",
+      "speakers": [],
+      "links": {}
     }
   ]
 }
