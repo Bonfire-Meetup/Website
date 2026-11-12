@@ -10,7 +10,7 @@ Usage: album-photos.sh [--source=DIR] [--output=DIR] [--bucket=NAME] [--remote=N
 Options:
   --source=DIR         Source folder (default: cdn).
   --output=DIR         Output folder for .webp (default: cdn-webp).
-  --bucket=NAME        R2 bucket name (default: bnf-events-photos).
+  --bucket=NAME        R2 bucket name (default: bnf-cdn). Photos go under photos/.
   --remote=NAME        rclone remote name (default: r2).
   --quality=NN         WebP quality (default: 80). Lower (e.g. 72-78) for smaller files once size is capped.
   --method=NN          cwebp -m, 0=fast .. 6=smaller/slower (default: 6 when --max-long-edge is set, else 4).
@@ -26,7 +26,8 @@ EOF
 
 source_dir="cdn"
 output_dir="cdn-webp"
-bucket="bnf-events-photos"
+bucket="bnf-cdn"
+prefix="photos"
 remote="r2"
 quality=80
 method=""
@@ -181,7 +182,7 @@ if [[ "$push" == true ]]; then
   fi
 
   if command -v rclone >/dev/null 2>&1; then
-    dest="${remote}:${bucket}"
+    dest="${remote}:${bucket}/${prefix}"
     rclone_args=(
       copy "$output_dir" "$dest"
       --transfers "$jobs"
@@ -198,11 +199,11 @@ if [[ "$push" == true ]]; then
       echo "error: rclone or wrangler is required for uploads"
       exit 1
     fi
-    export output_dir bucket override
+    export output_dir bucket prefix override
     find "$output_dir" -type f -iname "*.webp" ! -name ".DS_Store" -print0 \
       | xargs -0 -P "$jobs" -I {} bash -c '
           webp_file="$1"
-          key="${webp_file#"$output_dir"/}"
+          key="${prefix}/${webp_file#"$output_dir"/}"
           if [[ "$override" != true ]]; then
             if wrangler r2 object head "$bucket/$key" >/dev/null 2>&1; then
               echo "skip: $bucket/$key"

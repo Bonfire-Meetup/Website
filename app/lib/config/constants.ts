@@ -7,7 +7,7 @@ export type LocationValue = (typeof LOCATIONS)[keyof typeof LOCATIONS];
 
 export const WEBSITE_URLS = {
   BASE: "https://www.bnf.events",
-  CDN: "https://cdn-img.bnf.events",
+  CDN: "https://cdn.bnf.events",
   SERVICES: {
     RESEND_EMAILS_API: "https://api.resend.com/emails",
     TURNSTILE_SCRIPT: "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit",

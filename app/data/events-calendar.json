@@ -472,7 +472,15 @@
       "time": "18:00",
       "venue": "The Pitchers, náplavka, Hořejší nábř., kobka č. 15, 150 00 Praha 5-Smíchov",
       "description": "Join us for an evening of game dev talks and networking!",
-      "speakers": [],
+      "speakers": [
+        {
+          "name": "Martin Pelikán",
+          "company": "Flying Rat Studio",
+          "topic": "Jak se rodil vizuál pro PitPanic",
+          "startTime": "18:15",
+          "url": "https://www.flying-rat.studio/"
+        }
+      ],
       "links": {}
     },
     {
@@ -485,7 +493,13 @@
       "time": "17:00",
       "venue": "Studentsky klub U7, Štefánikova 150, 760 01 Zlín",
       "description": "Game dev meetup in Zlin with talks and community discussion.",
-      "speakers": [],
+      "speakers": [
+        {
+          "name": "David Konečný",
+          "topic": "Dá se po práci vyvíjet hra, dát dohromady tým a nezešílet? Jak vznikal Dredline Express.",
+          "startTime": "17:15"
+        }
+      ],
       "links": {}
     }
   ]

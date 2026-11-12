@@ -4,7 +4,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-const CDN_HOSTNAME = "cdn-img.bnf.events";
+const CDN_HOSTNAME = "cdn.bnf.events";
+const LEGACY_CDN_HOSTNAME = "cdn-img.bnf.events";
 
 const nextConfig = {
   allowedDevOrigins: ["localhost", "bonfire.dev", "www.bnf.test"],
@@ -26,7 +27,7 @@ const nextConfig = {
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://va.vercel-scripts.com https://*.vercel-insights.com https://vitals.vercel-insights.com https://vercel-insights.com",
             "style-src 'self' 'unsafe-inline'",
-            "img-src 'self' data: https://img.youtube.com https://i.ytimg.com https://cdn-img.bnf.events",
+            `img-src 'self' data: https://img.youtube.com https://i.ytimg.com https://${CDN_HOSTNAME} https://${LEGACY_CDN_HOSTNAME}`,
             "font-src 'self' data:",
             "connect-src 'self' https://api.rollbar.com https://challenges.cloudflare.com https://*.vercel-insights.com https://vitals.vercel-insights.com https://vercel-insights.com",
             "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com",
@@ -62,6 +63,11 @@ const nextConfig = {
       },
       {
         hostname: CDN_HOSTNAME,
+        pathname: "/**",
+        protocol: "https",
+      },
+      {
+        hostname: LEGACY_CDN_HOSTNAME,
         pathname: "/**",
         protocol: "https",
       },
