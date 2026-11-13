@@ -2,34 +2,20 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { CalendarIcon, CheckCircleIcon, CheckIcon, MapPinIcon } from "@/components/shared/Icons";
 import { Link } from "@/i18n/navigation";
-import { getAuthUserById } from "@/lib/data/auth";
-import { getAttendedEvents, type AttendedEvent } from "@/lib/data/profile-events";
+import type { AttendedEvent } from "@/lib/data/profile-events";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatShortDateUTC } from "@/lib/utils/locale";
 
 import { OwnerOnlyAction } from "./OwnerOnlyAction";
 
 interface CheckedInEventsProps {
-  userId: string;
+  events: AttendedEvent[];
   profileUserId: string;
 }
 
-export async function CheckedInEvents({ userId, profileUserId }: CheckedInEventsProps) {
+export async function CheckedInEvents({ events, profileUserId }: CheckedInEventsProps) {
   const t = await getTranslations("account.userProfile");
   const locale = await getLocale();
-
-  let events: AttendedEvent[];
-
-  try {
-    const user = await getAuthUserById(userId);
-    if (!user || !(user.preferences.publicProfile ?? false)) {
-      return null;
-    }
-
-    events = await getAttendedEvents(userId, new Date());
-  } catch {
-    events = [];
-  }
 
   return (
     <section

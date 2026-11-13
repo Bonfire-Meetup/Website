@@ -2,7 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { BoltIcon } from "@/components/shared/Icons";
 import { Link } from "@/i18n/navigation";
-import { getUserBoosts } from "@/lib/data/boosts";
+import type { PublicProfileRecording } from "@/lib/data/public-profile";
 import type { CatalogRecording } from "@/lib/recordings/catalog-types";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -11,27 +11,20 @@ import { BoostedVideosList } from "./BoostedVideosList";
 import { OwnerOnlyAction } from "./OwnerOnlyAction";
 
 interface BoostedVideosProps {
-  userId: string;
+  videos: PublicProfileRecording[];
   profileUserId: string;
 }
 
-export async function BoostedVideos({ userId, profileUserId }: BoostedVideosProps) {
+export async function BoostedVideos({ videos, profileUserId }: BoostedVideosProps) {
   const t = await getTranslations("account.userProfile");
   const locale = await getLocale();
 
-  let recordings: CatalogRecording[];
+  const recordingMap = new Map(getAllRecordings().map((r) => [r.shortId, r]));
+  const recordings: CatalogRecording[] = videos.flatMap((video) => {
+    const recording = recordingMap.get(video.shortId);
 
-  try {
-    const boosts = await getUserBoosts(userId);
-    const allRecordings = getAllRecordings();
-    const recordingMap = new Map(allRecordings.map((r) => [r.shortId, r]));
-
-    recordings = boosts
-      .map((boost) => recordingMap.get(boost.videoId))
-      .filter((r): r is (typeof allRecordings)[number] => r !== undefined);
-  } catch {
-    recordings = [];
-  }
+    return recording ? [recording] : [];
+  });
 
   return (
     <section

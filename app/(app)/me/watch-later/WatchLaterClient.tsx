@@ -21,7 +21,7 @@ import { Link } from "@/i18n/navigation";
 import { ApiError } from "@/lib/api/errors";
 import { useWatchlist } from "@/lib/api/user-profile";
 import { getHasValidToken } from "@/lib/auth/client";
-import { getAllRecordings, type Recording } from "@/lib/recordings/recordings";
+import type { Recording } from "@/lib/recordings/recordings";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { setWatchlist } from "@/lib/redux/slices/profileSlice";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
@@ -135,8 +135,11 @@ export function WatchLaterClient() {
     }
   }, [error, router]);
 
-  const allRecordings = getAllRecordings();
-  const recordingsById = new Map(allRecordings.map((recording) => [recording.shortId, recording]));
+  const recordingsById = new Map(
+    (watchlistData?.items ?? []).flatMap((item) =>
+      item.recording ? [[item.videoId, item.recording] as const] : [],
+    ),
+  );
   const addedAtByVideoId = new Map(
     (watchlistData?.items ?? []).map((item) => [item.videoId, item.addedAt] as const),
   );

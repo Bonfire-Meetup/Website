@@ -4,19 +4,11 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { hasMembership } from "@/lib/config/membership";
-import { getAuthUserById } from "@/lib/data/auth";
-import {
-  getUserBoosts,
-  getUserBoostCount,
-  getUserBoostsThisMonth,
-  getUserBoostStreak,
-} from "@/lib/data/boosts";
-import { getUserCheckIns } from "@/lib/data/check-in";
-import { getUserQuestionActivityLevel } from "@/lib/data/event-questions";
+import { getPublicProfile } from "@/lib/data/public-profile";
 import { getDevAccountFixture } from "@/lib/dev/local-fixtures";
 import { getSpeakerProfileByUserId, type SpeakerProfile } from "@/lib/events/speaker-profiles";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { decompressUuid, compressUuid } from "@/lib/utils/uuid-compress";
+import { decompressUuid } from "@/lib/utils/uuid-compress";
 
 import { BoostedVideos } from "./BoostedVideos";
 import { BoostedVideosSkeleton } from "./BoostedVideosSkeleton";
@@ -65,10 +57,10 @@ export async function generateMetadata({
     return { title: t("userProfileNotFound", { brandName: tCommon("brandName") }) };
   }
 
-  const user = await getAuthUserById(userId);
+  const result = await getPublicProfile(userId);
   const brandName = tCommon("brandName");
 
-  if (!user || !(user.preferences.publicProfile ?? false)) {
+  if (result.status !== "ok") {
     const title = t("privateProfileTitle", { brandName });
     const description = t("privateProfileDescription", { brandName });
     return {
@@ -83,9 +75,9 @@ export async function generateMetadata({
   const memberSince = new Intl.DateTimeFormat(locale, {
     month: "long",
     year: "numeric",
-  }).format(new Date(user.createdAt));
+  }).format(new Date(result.profile.createdAt));
 
-  const name = user.name || t("communityMember");
+  const name = result.profile.name || t("communityMember");
   const values = { brandName, memberSince, name };
 
   const title = t("userProfileTitle", values);
@@ -97,7 +89,7 @@ export async function generateMetadata({
       description,
       title,
       type: "profile",
-      username: user.name || undefined,
+      username: result.profile.name || undefined,
     },
     title,
     twitter: {
@@ -148,64 +140,55 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
     );
   }
 
-  const user = await getAuthUserById(userId);
-  if (!user) {
+  const result = await getPublicProfile(userId);
+
+  if (result.status === "not_found") {
     notFound();
   }
 
-  if (!(user.preferences.publicProfile ?? false)) {
+  if (result.status === "private") {
     return <PrivateProfileContent />;
   }
 
+  const { profile } = result;
   const memberSince = new Intl.DateTimeFormat(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",
-  }).format(new Date(user.createdAt));
-  const isMember = hasMembership(user.membershipTier);
-  const speakerProfile = getSpeakerProfileByUserId(id);
-  const [boosts, checkIns, boostCount, boostsThisMonth, boostStreak, questionActivityLevel] =
-    await Promise.all([
-      getUserBoosts(userId),
-      getUserCheckIns(userId),
-      getUserBoostCount(userId),
-      getUserBoostsThisMonth(userId),
-      getUserBoostStreak(userId),
-      getUserQuestionActivityLevel(userId),
-    ]);
+  }).format(new Date(profile.createdAt));
 
   return (
     <UserProfileContent
       user={{
-        publicId: compressUuid(user.id),
-        name: user.name,
+        publicId: profile.publicId,
+        name: profile.name,
         memberSince,
-        roles: user.roles,
-        membershipTier: user.membershipTier,
-        isMember,
-        questionActivityLevel,
-        boostCount,
-        boostsThisMonth,
-        boostStreak,
+        roles: profile.roles,
+        membershipTier: profile.membershipTier,
+        isMember: profile.membershipTier !== null,
+        questionActivityLevel: profile.questionActivityLevel,
+        boostCount: profile.stats.boostCount,
+        boostsThisMonth: profile.stats.boostsThisMonth,
+        boostStreak: profile.stats.boostStreak,
       }}
-      speaker={toSpeakerSummary(speakerProfile)}
+      speaker={toSpeakerSummary(getSpeakerProfileByUserId(id))}
       stats={{
-        lastBoostedAt: boosts[0]?.createdAt ?? null,
-        lastCheckedInAt: checkIns[0]?.createdAt ?? null,
+        lastBoostedAt: profile.stats.lastBoostedAt,
+        lastCheckedInAt: profile.stats.lastCheckedInAt,
       }}
       upcomingRsvpsSlot={
         <Suspense fallback={<UpcomingRsvpsSkeleton />}>
-          <UpcomingRsvps userId={userId} profileUserId={user.id} />
+          <UpcomingRsvps events={profile.upcomingRsvps} profileUserId={userId} />
         </Suspense>
       }
       boostedVideosSlot={
         <Suspense fallback={<BoostedVideosSkeleton />}>
-          <BoostedVideos userId={userId} profileUserId={user.id} />
+          <BoostedVideos videos={profile.boostedVideos} profileUserId={userId} />
         </Suspense>
       }
       checkedInEventsSlot={
         <Suspense fallback={<CheckedInEventsSkeleton />}>
-          <CheckedInEvents userId={userId} profileUserId={user.id} />
+          <CheckedInEvents events={profile.attendedEvents} profileUserId={userId} />
         </Suspense>
       }
     />

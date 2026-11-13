@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { PROFILE_EYEBROW, PROFILE_SURFACE, PROFILE_TONE } from "@/components/ui/surface";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { hasMembership } from "@/lib/config/membership";
-import { getAuthUserById } from "@/lib/data/auth";
-import { getUserBoostCount } from "@/lib/data/boosts";
-import { getAttendedEvents } from "@/lib/data/profile-events";
+import { getPublicProfile } from "@/lib/data/public-profile";
 import { getDevAccountFixture } from "@/lib/dev/local-fixtures";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { makeAvatarSeedFromPublicId } from "@/lib/utils/hash-rng";
@@ -19,15 +17,19 @@ interface SpeakerCommunityCardProps {
 
 async function loadCommunityMember(userId: string) {
   try {
-    const user = await getAuthUserById(userId);
-    if (!user || !(user.preferences.publicProfile ?? false)) {
+    const result = await getPublicProfile(userId);
+
+    if (result.status !== "ok") {
       return null;
     }
-    const [boostCount, attendedEvents] = await Promise.all([
-      getUserBoostCount(userId),
-      getAttendedEvents(userId, new Date()),
-    ]);
-    return { attendedCount: attendedEvents.length, boostCount, user };
+
+    const { profile } = result;
+
+    return {
+      attendedCount: profile.stats.eventsAttended,
+      boostCount: profile.stats.boostCount,
+      user: profile,
+    };
   } catch {
     return null;
   }

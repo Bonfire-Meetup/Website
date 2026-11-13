@@ -4,12 +4,14 @@ import { NextResponse } from "next/server";
 import { withRequestContext, withResolvedUserId } from "@/lib/api/route-wrappers";
 import { db } from "@/lib/data/db";
 import { userWatchlist } from "@/lib/data/schema";
+import { getAllRecordings } from "@/lib/recordings/recordings";
 import { logError } from "@/lib/utils/log";
 
 interface RouteParams {
   params: Promise<{ userId: string }>;
 }
 
+/** Lists the videos on your Watch Later list, newest first, with each recording. Use `me` as the user ID. */
 export const GET = withRequestContext(
   withResolvedUserId<RouteParams>("watchlist.get")(async (_request: Request, { userId }) => {
     try {
@@ -22,15 +24,20 @@ export const GET = withRequestContext(
         .where(eq(userWatchlist.userId, userId))
         .orderBy(sql`${userWatchlist.createdAt} DESC`);
 
+      const recordings = new Map(
+        getAllRecordings().map((recording) => [recording.shortId, recording]),
+      );
+
       return NextResponse.json({
         items: rows.map((row) => ({
+          addedAt: new Date(row.createdAt).toISOString(),
+          recording: recordings.get(row.videoId) ?? null,
           videoId: row.videoId,
-          addedAt: row.createdAt,
         })),
       });
     } catch (err) {
       logError("watchlist_fetch_failed", err, { userId });
-      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+      return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   }),
 );

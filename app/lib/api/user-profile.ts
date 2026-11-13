@@ -9,6 +9,7 @@ import {
 } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { handleUnauthorizedClientState } from "@/lib/auth/client-session";
+import type { Recording } from "@/lib/recordings/recordings";
 import { createAuthHeaders, createJsonAuthHeaders } from "@/lib/utils/http";
 import { logError } from "@/lib/utils/log-client";
 
@@ -189,15 +190,19 @@ export function useDeleteAccountMutation() {
   });
 }
 
+export interface WatchlistResponse {
+  items: { videoId: string; addedAt: string; recording: Recording | null }[];
+}
+
 export function useWatchlist(enabled = true) {
-  return useQuery<{ items: { videoId: string; addedAt: string }[] }, ApiError>({
+  return useQuery<WatchlistResponse, ApiError>({
     enabled,
     queryFn: async () => {
       const response = await authFetch(API_ROUTES.USERS.ME.WATCHLIST);
       if (!response.ok) {
         throw new ApiError("Failed to fetch watchlist", response.status);
       }
-      return (await response.json()) as { items: { videoId: string; addedAt: string }[] };
+      return (await response.json()) as WatchlistResponse;
     },
     queryKey: WATCHLIST_QUERY_KEY,
     retry: shouldRetryQuery,
@@ -259,20 +264,7 @@ export function useAddToWatchlistMutation() {
     onSuccess: (_data, shortId) => {
       queryClient.setQueryData(VIDEO_WATCHLIST_QUERY_KEY(shortId), { inWatchlist: true });
 
-      queryClient.setQueryData(
-        WATCHLIST_QUERY_KEY,
-        (old: { items: { videoId: string; addedAt: string }[] } | undefined) => {
-          if (!old) {
-            return old;
-          }
-          if (old.items.some((item) => item.videoId === shortId)) {
-            return old;
-          }
-          return {
-            items: [{ videoId: shortId, addedAt: new Date().toISOString() }, ...old.items],
-          };
-        },
-      );
+      queryClient.invalidateQueries({ queryKey: WATCHLIST_QUERY_KEY });
     },
     retry: shouldRetryMutation,
   });
@@ -308,17 +300,14 @@ export function useRemoveFromWatchlistMutation() {
     onSuccess: (_data, shortId) => {
       queryClient.setQueryData(VIDEO_WATCHLIST_QUERY_KEY(shortId), { inWatchlist: false });
 
-      queryClient.setQueryData(
-        WATCHLIST_QUERY_KEY,
-        (old: { items: { videoId: string; addedAt: string }[] } | undefined) => {
-          if (!old) {
-            return old;
-          }
-          return {
-            items: old.items.filter((item) => item.videoId !== shortId),
-          };
-        },
-      );
+      queryClient.setQueryData(WATCHLIST_QUERY_KEY, (old: WatchlistResponse | undefined) => {
+        if (!old) {
+          return old;
+        }
+        return {
+          items: old.items.filter((item) => item.videoId !== shortId),
+        };
+      });
     },
     retry: shouldRetryMutation,
   });

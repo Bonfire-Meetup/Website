@@ -2,34 +2,20 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { CalendarIcon, MapPinIcon, SparklesIcon, TicketIcon } from "@/components/shared/Icons";
 import { Link } from "@/i18n/navigation";
-import { getAuthUserById } from "@/lib/data/auth";
-import { getUpcomingRsvpEvents, type UpcomingRsvpEvent } from "@/lib/data/profile-events";
+import type { UpcomingRsvpEvent } from "@/lib/data/profile-events";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatShortDateUTC } from "@/lib/utils/locale";
 
 import { OwnerOnlyAction } from "./OwnerOnlyAction";
 
 interface UpcomingRsvpsProps {
-  userId: string;
+  events: UpcomingRsvpEvent[];
   profileUserId: string;
 }
 
-export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProps) {
+export async function UpcomingRsvps({ events, profileUserId }: UpcomingRsvpsProps) {
   const t = await getTranslations("account.userProfile");
   const locale = await getLocale();
-
-  let events: UpcomingRsvpEvent[];
-
-  try {
-    const user = await getAuthUserById(userId);
-    if (!user || !(user.preferences.publicProfile ?? false)) {
-      return null;
-    }
-
-    events = await getUpcomingRsvpEvents(userId, new Date());
-  } catch {
-    events = [];
-  }
 
   if (events.length === 0) {
     return (
