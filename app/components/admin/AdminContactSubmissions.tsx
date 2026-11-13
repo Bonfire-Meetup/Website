@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { useAdminContactSubmissions } from "@/lib/api/admin";
+import { useAdminContactSubmissions, type AdminContactSubmission } from "@/lib/api/admin";
 
 import {
   AdminCard,
@@ -23,12 +23,28 @@ const DEFAULT_TYPE = "general";
 
 export function AdminContactSubmissions() {
   const t = useTranslations("admin.contact");
-  const tCommon = useTranslations("admin.common");
   const query = useAdminContactSubmissions();
+  const submissions = query.data ?? [];
+
+  return (
+    <AdminListState
+      isLoading={query.isLoading}
+      isError={query.isError}
+      isEmpty={submissions.length === 0}
+      emptyMessage={t("empty")}
+      onRetry={() => query.refetch()}
+    >
+      <ContactSubmissionsView submissions={submissions} />
+    </AdminListState>
+  );
+}
+
+export function ContactSubmissionsView({ submissions }: { submissions: AdminContactSubmission[] }) {
+  const t = useTranslations("admin.contact");
+  const tCommon = useTranslations("admin.common");
   const [type, setType] = useState(ALL);
   const [search, setSearch] = useState("");
 
-  const submissions = query.data ?? [];
   const typeOf = (value: string | null) => value || DEFAULT_TYPE;
   const typeLabel = (value: string) => (t.has(`types.${value}`) ? t(`types.${value}`) : value);
   const availableTypes = [...new Set(submissions.map((item) => typeOf(item.inquiryType)))].sort();
@@ -39,13 +55,7 @@ export function AdminContactSubmissions() {
   );
 
   return (
-    <AdminListState
-      isLoading={query.isLoading}
-      isError={query.isError}
-      isEmpty={submissions.length === 0}
-      emptyMessage={t("empty")}
-      onRetry={() => query.refetch()}
-    >
+    <>
       <AdminToolbar count={visibleSubmissions.length}>
         <AdminSelect
           value={type}
@@ -60,35 +70,39 @@ export function AdminContactSubmissions() {
       </AdminToolbar>
 
       {visibleSubmissions.length === 0 ? (
-        <p className="py-10 text-center text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="py-10 text-center text-sm text-neutral-600 dark:text-neutral-400">
           {tCommon("noMatches")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {visibleSubmissions.map((item) => (
             <AdminCard key={item.id}>
-              <header className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <header className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
                 <div className="min-w-0">
-                  <h3 className="text-base font-bold text-neutral-900 dark:text-white">
+                  <h3 className="text-lg leading-snug font-bold text-neutral-900 dark:text-white">
                     {item.subject}
                   </h3>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-300">{item.name}</p>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+                    <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-200">
+                      {item.name}
+                    </span>
+                    <AdminTag tone="accent">{typeLabel(typeOf(item.inquiryType))}</AdminTag>
+                  </div>
                 </div>
                 <AdminTimestamp value={item.createdAt} />
               </header>
 
-              <div className="mb-4 flex flex-wrap items-center gap-2">
-                <AdminTag tone="accent">{typeLabel(typeOf(item.inquiryType))}</AdminTag>
-                <AdminMailLink email={item.email} subject={item.subject} />
-              </div>
-
-              <div className="surface-inset px-4 py-3">
+              <div className="mt-4 border-t border-neutral-200 pt-4 dark:border-white/10">
                 <AdminLongText text={item.message} />
               </div>
+
+              <footer className="mt-4">
+                <AdminMailLink email={item.email} subject={item.subject} />
+              </footer>
             </AdminCard>
           ))}
         </div>
       )}
-    </AdminListState>
+    </>
   );
 }

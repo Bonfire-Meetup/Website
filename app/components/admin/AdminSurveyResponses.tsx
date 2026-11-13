@@ -8,12 +8,17 @@ import { useEventsCatalog } from "@/lib/api/events";
 import type { EventItem } from "@/lib/events/types";
 
 import {
+  ADMIN_LABEL_CLASS,
+  ADMIN_PANEL_CLASS,
   AdminCard,
   AdminDistribution,
+  AdminField,
   AdminListState,
   AdminLongText,
-  AdminRating,
+  AdminScoreChip,
+  AdminScoreStat,
   AdminSearchField,
+  AdminSectionTitle,
   AdminSelect,
   AdminStat,
   AdminTag,
@@ -23,9 +28,9 @@ import {
 } from "./AdminPrimitives";
 
 const ALL_EVENTS = "all";
-const EMPTY_CATALOG: EventCatalog = new Map();
+export type EventCatalog = Map<string, EventItem>;
 
-type EventCatalog = Map<string, EventItem>;
+const EMPTY_CATALOG: EventCatalog = new Map();
 
 type RatingField = "overallRating" | "nextEventLikelihood" | "talksOverallRating";
 
@@ -112,14 +117,36 @@ const formatAverage = (value: number | null) => (value === null ? "–" : value.
 
 export function AdminSurveyResponses() {
   const t = useTranslations("admin.surveys");
-  const tCommon = useTranslations("admin.common");
-  const tOptions = useTranslations("eventsSurveyPage.form.options");
   const query = useAdminSurveyResponses();
   const catalog = useEventsCatalog().data ?? EMPTY_CATALOG;
+  const responses = query.data ?? [];
+
+  return (
+    <AdminListState
+      isLoading={query.isLoading}
+      isError={query.isError}
+      isEmpty={responses.length === 0}
+      emptyMessage={t("empty")}
+      onRetry={() => query.refetch()}
+    >
+      <SurveyResponsesView responses={responses} catalog={catalog} />
+    </AdminListState>
+  );
+}
+
+export function SurveyResponsesView({
+  responses,
+  catalog,
+}: {
+  responses: AdminSurveyResponse[];
+  catalog: EventCatalog;
+}) {
+  const t = useTranslations("admin.surveys");
+  const tCommon = useTranslations("admin.common");
+  const tOptions = useTranslations("eventsSurveyPage.form.options");
   const [eventFilter, setEventFilter] = useState(ALL_EVENTS);
   const [search, setSearch] = useState("");
 
-  const responses = query.data ?? [];
   const optionLabel = (key: string) => (tOptions.has(key) ? tOptions(key) : key);
   const eventResponses =
     eventFilter === ALL_EVENTS
@@ -147,13 +174,7 @@ export function AdminSurveyResponses() {
     : [];
 
   return (
-    <AdminListState
-      isLoading={query.isLoading}
-      isError={query.isError}
-      isEmpty={responses.length === 0}
-      emptyMessage={t("empty")}
-      onRetry={() => query.refetch()}
-    >
+    <>
       <AdminToolbar count={visibleResponses.length}>
         <AdminSelect
           value={eventFilter}
@@ -167,26 +188,31 @@ export function AdminSurveyResponses() {
         <AdminSearchField value={search} onChange={setSearch} />
       </AdminToolbar>
 
-      <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <AdminSectionTitle>{t("summary")}</AdminSectionTitle>
+
+      <div className="mb-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <AdminStat label={t("responses")} value={String(eventResponses.length)} />
-        <AdminStat
+        <AdminScoreStat
           label={t("avgOverall")}
-          value={formatAverage(overall.value)}
+          value={overall.value}
           hint={t("ratingsCount", { count: overall.count })}
+          scaleLabel={t("outOf")}
         />
-        <AdminStat
+        <AdminScoreStat
           label={t("avgNextEvent")}
-          value={formatAverage(nextEvent.value)}
+          value={nextEvent.value}
           hint={t("ratingsCount", { count: nextEvent.count })}
+          scaleLabel={t("outOf")}
         />
-        <AdminStat
+        <AdminScoreStat
           label={t("avgTalks")}
-          value={formatAverage(talks.value)}
+          value={talks.value}
           hint={t("ratingsCount", { count: talks.count })}
+          scaleLabel={t("outOf")}
         />
       </div>
 
-      <div className="mb-6 grid gap-3 lg:grid-cols-3">
+      <div className="mb-3 grid gap-3 lg:grid-cols-3">
         <AdminDistribution
           title={t("favoriteParts")}
           rows={toRows(eventResponses.flatMap((response) => response.favoriteParts))}
@@ -209,25 +235,23 @@ export function AdminSurveyResponses() {
       </div>
 
       {talkSummary.length > 0 ? (
-        <section className="surface mb-8 p-5">
-          <h3 className="eyebrow mb-4 text-xs text-neutral-500 dark:text-neutral-400">
-            {t("talkRatings")}
-          </h3>
-          <ul className="flex flex-col divide-y divide-neutral-200/70 dark:divide-white/10">
+        <section className={`${ADMIN_PANEL_CLASS} mb-10 p-5`}>
+          <h3 className={`${ADMIN_LABEL_CLASS} mb-4`}>{t("talkRatings")}</h3>
+          <ul className="flex flex-col divide-y divide-neutral-200 dark:divide-white/10">
             {talkSummary.map((talk) => (
-              <li key={talk.talkIndex} className="flex flex-col gap-2 py-3 first:pt-0 last:pb-0">
+              <li key={talk.talkIndex} className="flex flex-col gap-2 py-4 first:pt-0 last:pb-0">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-neutral-900 dark:text-white">
+                    <p className="text-[0.9375rem] font-semibold text-neutral-900 dark:text-white">
                       {talk.topic}
                     </p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">{talk.speaker}</p>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">{talk.speaker}</p>
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="text-xl font-black text-neutral-900 tabular-nums dark:text-white">
+                    <p className="text-2xl leading-none font-black text-neutral-900 tabular-nums dark:text-white">
                       {formatAverage(talk.average)}
                     </p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    <p className="mt-1 text-xs font-medium text-neutral-500 dark:text-neutral-400">
                       {t("ratingsCount", { count: talk.ratingsCount })}
                     </p>
                   </div>
@@ -241,7 +265,7 @@ export function AdminSurveyResponses() {
                       {talk.comments.map((comment) => (
                         <li
                           key={comment.id}
-                          className="surface-inset px-3 py-2 text-sm whitespace-pre-wrap text-neutral-700 dark:text-neutral-300"
+                          className="rounded-xl bg-neutral-100 px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap text-neutral-900 dark:bg-white/5 dark:text-neutral-100"
                         >
                           {comment.text}
                         </li>
@@ -254,23 +278,25 @@ export function AdminSurveyResponses() {
           </ul>
         </section>
       ) : (
-        <p className="mb-8 text-center text-xs text-neutral-500 dark:text-neutral-400">
+        <p className="mb-10 text-sm text-neutral-600 dark:text-neutral-400">
           {t("talkRatingsHint")}
         </p>
       )}
 
+      <AdminSectionTitle count={visibleResponses.length}>{t("allResponses")}</AdminSectionTitle>
+
       {visibleResponses.length === 0 ? (
-        <p className="py-10 text-center text-sm text-neutral-500 dark:text-neutral-400">
+        <p className="py-10 text-center text-sm text-neutral-600 dark:text-neutral-400">
           {tCommon("noMatches")}
         </p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {visibleResponses.map((response) => (
             <SurveyResponseCard key={response.id} response={response} optionLabel={optionLabel} />
           ))}
         </div>
       )}
-    </AdminListState>
+    </>
   );
 }
 
@@ -282,7 +308,6 @@ function SurveyResponseCard({
   optionLabel: (key: string) => string;
 }) {
   const t = useTranslations("admin.surveys");
-  const tCommon = useTranslations("admin.common");
   const withOther = (key: string, otherText: string | null) =>
     key === "other" && otherText ? t("other", { text: otherText }) : optionLabel(key);
 
@@ -299,61 +324,55 @@ function SurveyResponseCard({
       label: t("talkFormat"),
       values: response.talkFormat ? [withOther(response.talkFormat, response.talkFormatOther)] : [],
     },
-  ];
+  ].filter((group) => group.values.length > 0);
 
   return (
     <AdminCard>
-      <header className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-        <h3 className="text-base font-bold text-neutral-900 dark:text-white">
-          {response.eventTitle}
-        </h3>
-        <AdminTimestamp value={response.createdAt} />
+      <header className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
+          <h3 className="text-base font-bold text-neutral-900 dark:text-white">
+            {response.eventTitle}
+          </h3>
+          <AdminTimestamp value={response.createdAt} />
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-1.5">
+          <AdminScoreChip label={t("overall")} value={response.overallRating} />
+          <AdminScoreChip label={t("nextEvent")} value={response.nextEventLikelihood} />
+          <AdminScoreChip label={t("talks")} value={response.talksOverallRating} />
+        </div>
       </header>
 
-      <div className="mb-4 grid grid-cols-3 gap-2">
-        <AdminRating label={t("overall")} value={response.overallRating} />
-        <AdminRating label={t("nextEvent")} value={response.nextEventLikelihood} />
-        <AdminRating label={t("talks")} value={response.talksOverallRating} />
-      </div>
-
-      <dl className="mb-4 grid gap-3 sm:grid-cols-3">
-        {choiceGroups.map((group) => (
-          <div key={group.label} className="flex flex-col gap-1.5">
-            <dt className="eyebrow text-2xs text-neutral-500 dark:text-neutral-400">
-              {group.label}
-            </dt>
-            <dd className="flex flex-wrap gap-1.5">
-              {group.values.length > 0 ? (
-                group.values.map((value) => <AdminTag key={value}>{value}</AdminTag>)
-              ) : (
-                <span className="text-xs text-neutral-400">{tCommon("noAnswer")}</span>
-              )}
-            </dd>
-          </div>
-        ))}
-      </dl>
-
       {response.suggestions ? (
-        <div className="mb-4 flex flex-col gap-1.5">
-          <span className="eyebrow text-2xs text-neutral-500 dark:text-neutral-400">
-            {t("suggestions")}
-          </span>
-          <div className="surface-inset px-4 py-3">
-            <AdminLongText text={response.suggestions} />
-          </div>
+        <div className="mt-4 border-l-4 border-orange-400 pl-4 dark:border-orange-400/70">
+          <p className={`${ADMIN_LABEL_CLASS} mb-1`}>{t("suggestions")}</p>
+          <AdminLongText text={response.suggestions} />
         </div>
       ) : null}
 
+      {choiceGroups.length > 0 ? (
+        <dl className="mt-4 flex flex-col gap-2.5 border-t border-neutral-200 pt-4 dark:border-white/10">
+          {choiceGroups.map((group) => (
+            <AdminField key={group.label} label={group.label}>
+              <ul className="flex flex-wrap gap-1.5">
+                {group.values.map((value) => (
+                  <li key={value}>
+                    <AdminTag>{value}</AdminTag>
+                  </li>
+                ))}
+              </ul>
+            </AdminField>
+          ))}
+        </dl>
+      ) : null}
+
       {response.talkFeedback.length > 0 ? (
-        <div className="flex flex-col gap-1.5">
-          <span className="eyebrow text-2xs text-neutral-500 dark:text-neutral-400">
-            {t("talkFeedback")}
-          </span>
-          <ul className="flex flex-col gap-2">
+        <div className="mt-4 border-t border-neutral-200 pt-4 dark:border-white/10">
+          <p className={`${ADMIN_LABEL_CLASS} mb-2`}>{t("talkFeedback")}</p>
+          <ul className="flex flex-col divide-y divide-neutral-200 dark:divide-white/10">
             {response.talkFeedback.map((entry) => (
               <li
                 key={`${entry.talkIndex ?? "legacy"}-${entry.topic}`}
-                className="surface-inset flex flex-col gap-1 px-4 py-3"
+                className="flex flex-col gap-1.5 py-2.5 first:pt-0 last:pb-0"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -361,17 +380,15 @@ function SurveyResponseCard({
                       {entry.topic}
                     </p>
                     {entry.speaker ? (
-                      <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                      <p className="text-xs text-neutral-600 dark:text-neutral-400">
                         {entry.speaker}
                       </p>
                     ) : null}
                   </div>
-                  {entry.rating !== null ? (
-                    <AdminTag tone="accent">{entry.rating}/5</AdminTag>
-                  ) : null}
+                  {entry.rating !== null ? <AdminScoreChip label="" value={entry.rating} /> : null}
                 </div>
                 {entry.comment ? (
-                  <p className="text-sm whitespace-pre-wrap text-neutral-700 dark:text-neutral-300">
+                  <p className="rounded-lg bg-neutral-100 px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap text-neutral-900 dark:bg-white/5 dark:text-neutral-100">
                     {entry.comment}
                   </p>
                 ) : null}

@@ -30,7 +30,8 @@
       "searchPlaceholder": "Hledat…",
       "showMore": "Zobrazit více",
       "showLess": "Zobrazit méně",
-      "count": "{count, plural, one {# záznam} few {# záznamy} other {# záznamů}}"
+      "count": "{count, plural, one {# záznam} few {# záznamy} other {# záznamů}}",
+      "reply": "Odpovědět"
     },
     "surveys": {
       "empty": "Zatím žádné odpovědi z dotazníků.",
@@ -52,7 +53,10 @@
       "talks": "Přednášky",
       "suggestions": "Návrhy",
       "talkFeedback": "Hodnocení přednášek",
-      "other": "Jiné: {text}"
+      "other": "Jiné: {text}",
+      "summary": "Souhrn",
+      "allResponses": "Jednotlivé odpovědi",
+      "outOf": "z 5"
     },
     "talkProposals": {
       "empty": "Zatím žádné návrhy přednášek.",

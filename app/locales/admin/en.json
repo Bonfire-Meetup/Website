@@ -30,7 +30,8 @@
       "searchPlaceholder": "Search…",
       "showMore": "Show more",
       "showLess": "Show less",
-      "count": "{count, plural, one {# entry} other {# entries}}"
+      "count": "{count, plural, one {# entry} other {# entries}}",
+      "reply": "Reply"
     },
     "surveys": {
       "empty": "No survey responses yet.",
@@ -52,7 +53,10 @@
       "talks": "Talks",
       "suggestions": "Suggestions",
       "talkFeedback": "Talk feedback",
-      "other": "Other: {text}"
+      "other": "Other: {text}",
+      "summary": "Summary",
+      "allResponses": "Individual responses",
+      "outOf": "out of 5"
     },
     "talkProposals": {
       "empty": "No talk proposals yet.",
