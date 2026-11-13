@@ -30,7 +30,7 @@ export function RecordingAccessPill({
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-[0.08em] uppercase shadow-sm ${getAccessPillClasses(
+      className={`text-2xs inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-semibold tracking-wider uppercase shadow-sm ${getAccessPillClasses(
         isSignInAccess,
       )} ${className}`}
     >

@@ -65,7 +65,7 @@ export function EventsSectionClient({
         <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
           <Pill
             size="sm"
-            className="bg-neutral-900/5 font-semibold tracking-[0.2em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-300"
+            className="eyebrow bg-neutral-900/5 text-neutral-600 dark:bg-white/10 dark:text-neutral-300"
           >
             {t("filter.label")}
           </Pill>

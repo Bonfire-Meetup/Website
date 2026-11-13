@@ -98,7 +98,7 @@ export function HelpPageContent() {
   ];
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+    <main className="gradient-bg relative min-h-screen overflow-hidden">
       <StaticPageHero
         backgroundVariant="events"
         eyebrow={t("eyebrow")}
@@ -106,7 +106,7 @@ export function HelpPageContent() {
         heroWordSize="md"
         subtitle={t("subtitle")}
         title={
-          <h1 className="mb-5 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
+          <h1 className="page-title mb-5">
             <span className="block">{t("titlePart1")}</span>
             <span className="text-gradient-static block">{t("titleHighlight")}</span>
           </h1>
@@ -115,7 +115,7 @@ export function HelpPageContent() {
 
       <section className="relative mx-auto max-w-6xl px-4 pb-20 sm:px-6 sm:pb-24 lg:px-8">
         <div className="mx-auto mb-7 max-w-5xl sm:mb-8">
-          <div className="h-px bg-gradient-to-r from-transparent via-neutral-300/50 to-transparent dark:via-neutral-600/30" />
+          <div className="section-divider" />
         </div>
 
         <div className="mx-auto grid max-w-5xl gap-4 sm:gap-5 md:grid-cols-2 md:gap-6">
@@ -135,7 +135,7 @@ export function HelpPageContent() {
 
                 <div className="relative flex h-full flex-col">
                   <p
-                    className={`mb-3 text-[10px] font-semibold tracking-[0.18em] uppercase sm:mb-4 sm:text-[11px] ${chrome.eyebrowClassName}`}
+                    className={`text-2xs tracking-label sm:text-2xs mb-3 font-semibold uppercase sm:mb-4 ${chrome.eyebrowClassName}`}
                   >
                     {t(`tiles.${tile.key}.eyebrow`)}
                   </p>

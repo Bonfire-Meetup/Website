@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { CheckIcon, ExternalLinkIcon, GuildIcon } from "@/components/shared/Icons";
 import { AsyncButtonContent } from "@/components/ui/AsyncButtonContent";
 import { Button } from "@/components/ui/Button";
+import { Pill } from "@/components/ui/Pill";
 import {
   GUILD_SUBSCRIPTION_QUERY_KEY,
   syncGuildSubscriptionCheckout,
@@ -30,7 +31,7 @@ interface GuildCardProps {
 }
 
 const REFRESH_MEMBERSHIP_BUTTON_CLASS =
-  "h-auto min-h-0 shrink-0 rounded-md border border-neutral-200/60 bg-white/55 px-1.5! py-0.5! text-[11px]! font-normal leading-tight text-neutral-500/85 shadow-none hover:border-neutral-300/80 hover:bg-white/85 hover:text-neutral-700 dark:border-white/12 dark:bg-white/[0.08] dark:text-neutral-400/90 dark:hover:border-white/18 dark:hover:bg-white/[0.12] dark:hover:text-neutral-300 active:scale-[0.99]";
+  "h-auto min-h-0 shrink-0 rounded-md border border-neutral-200/60 bg-white/55 px-1.5! py-0.5! text-2xs! font-normal leading-tight text-neutral-500/85 shadow-none hover:border-neutral-300/80 hover:bg-white/85 hover:text-neutral-700 dark:border-white/12 dark:bg-white/[0.08] dark:text-neutral-400/90 dark:hover:border-white/18 dark:hover:bg-white/[0.12] dark:hover:text-neutral-300 active:scale-[0.99]";
 
 function SyncNotice({ message }: { message: string }) {
   return (
@@ -299,13 +300,16 @@ export function GuildCard({ currentMembershipTier, isEnabled }: GuildCardProps) 
       >
         {/* Header row */}
         <div className="flex items-start justify-between gap-3">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/50 bg-white/70 px-2.5 py-1 text-[11px] font-bold tracking-[0.18em] text-amber-800 uppercase dark:border-amber-300/20 dark:bg-white/8 dark:text-amber-200">
+          <Pill
+            size="xxs"
+            className="eyebrow gap-1.5 border border-amber-300/50 bg-white/70 text-amber-800 dark:border-amber-300/20 dark:bg-white/8 dark:text-amber-200"
+          >
             <GuildIcon className="h-3 w-3" />
             {t("kicker")}
-          </div>
+          </Pill>
           {hasActiveSubscription && (
             <div
-              className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold tracking-[0.12em] uppercase ${
+              className={`text-2xs tracking-label-sm rounded-full border px-2.5 py-1 font-semibold uppercase ${
                 activeTierStyle?.badge ??
                 "border-emerald-200/70 bg-emerald-50/80 text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-300"
               }`}
@@ -341,9 +345,12 @@ export function GuildCard({ currentMembershipTier, isEnabled }: GuildCardProps) 
 
             <div className="border-t border-black/8 pt-3 dark:border-white/10">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50/80 px-2.5 py-1 text-[11px] font-semibold text-amber-900 dark:border-amber-400/20 dark:bg-amber-500/10 dark:text-amber-100">
+                <Pill
+                  size="xxs"
+                  className="border border-amber-200/80 bg-amber-50/80 font-semibold text-amber-900 dark:border-amber-400/20 dark:bg-amber-500/10 dark:text-amber-100"
+                >
                   {t("disabled.badge")}
-                </span>
+                </Pill>
 
                 <Button href={PAGE_ROUTES.GUILD} variant="ghost" size="sm">
                   {t("learnMore")}
@@ -498,15 +505,15 @@ export function GuildCard({ currentMembershipTier, isEnabled }: GuildCardProps) 
 
             {/* Tier chips */}
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="rounded-full border border-sky-200/80 bg-sky-50/80 px-2 py-0.5 text-[10px] font-semibold text-sky-700 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300">
+              <span className="text-2xs rounded-full border border-sky-200/80 bg-sky-50/80 px-2 py-0.5 font-semibold text-sky-700 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-300">
                 {guildTiers[1].name}
               </span>
-              <span className="text-[10px] text-neutral-300 dark:text-neutral-600">·</span>
-              <span className="rounded-full border border-amber-200/80 bg-amber-50/80 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300">
+              <span className="text-2xs text-neutral-300 dark:text-neutral-600">·</span>
+              <span className="text-2xs rounded-full border border-amber-200/80 bg-amber-50/80 px-2 py-0.5 font-semibold text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300">
                 {guildTiers[2].name}
               </span>
-              <span className="text-[10px] text-neutral-300 dark:text-neutral-600">·</span>
-              <span className="rounded-full border border-rose-200/80 bg-rose-50/80 px-2 py-0.5 text-[10px] font-semibold text-rose-700 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
+              <span className="text-2xs text-neutral-300 dark:text-neutral-600">·</span>
+              <span className="text-2xs rounded-full border border-rose-200/80 bg-rose-50/80 px-2 py-0.5 font-semibold text-rose-700 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
                 {guildTiers[3].name}
               </span>
             </div>
@@ -533,9 +540,12 @@ export function GuildCard({ currentMembershipTier, isEnabled }: GuildCardProps) 
                     {t("billing.subscribeAction")}
                   </Button>
                 ) : (
-                  <span className="inline-flex items-center rounded-full border border-amber-200/80 bg-amber-50/80 px-2.5 py-1 text-[11px] font-semibold text-amber-900 dark:border-amber-400/20 dark:bg-amber-500/10 dark:text-amber-100">
+                  <Pill
+                    size="xxs"
+                    className="border border-amber-200/80 bg-amber-50/80 font-semibold text-amber-900 dark:border-amber-400/20 dark:bg-amber-500/10 dark:text-amber-100"
+                  >
                     {t("disabled.badge")}
-                  </span>
+                  </Pill>
                 )}
                 <Button href={PAGE_ROUTES.GUILD} variant="ghost" size="sm">
                   {t("learnMore")}

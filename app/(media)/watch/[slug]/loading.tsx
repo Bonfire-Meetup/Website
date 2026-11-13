@@ -6,7 +6,7 @@ function Skeleton({ className }: { className?: string }) {
 
 function RelatedCardSkeleton() {
   return (
-    <div className="relative overflow-hidden rounded-[16px] border border-black/10 bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] ring-1 ring-black/5 dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:ring-white/10">
+    <div className="shadow-soft dark:shadow-raised relative overflow-hidden rounded-[16px] border border-black/10 bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] ring-1 ring-black/5 dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/10">
       <Skeleton className="aspect-video w-full !rounded-none" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/54 via-black/22 to-transparent dark:from-black/62 dark:via-black/26" />
       <div className="absolute inset-0 flex items-end">
@@ -33,7 +33,7 @@ export default function WatchLoading() {
       <div className="relative mx-auto max-w-[85rem] px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-12 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
           <div className="min-w-0 space-y-8">
-            <div className="overflow-hidden rounded-2xl border border-black/10 bg-white/80 shadow-[0_28px_70px_-34px_rgba(17,24,39,0.45)] ring-1 ring-white/50 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/85 dark:shadow-[0_34px_84px_-34px_rgba(0,0,0,0.8)] dark:ring-white/10">
+            <div className="surface shadow-floating dark:shadow-floating overflow-hidden">
               <div className="hidden items-center justify-between border-b border-neutral-200/30 px-4 py-3 lg:flex dark:border-neutral-700/30">
                 <Skeleton className="h-5 w-36" />
                 <Skeleton className="h-7 w-24 rounded-lg" />
@@ -83,7 +83,7 @@ export default function WatchLoading() {
               <div className="h-px flex-1 bg-neutral-200/50 lg:hidden dark:bg-white/10" />
             </div>
 
-            <div className="overflow-hidden rounded-[16px] border border-black/10 bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] p-3 shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)]">
+            <div className="shadow-soft dark:shadow-raised overflow-hidden rounded-[16px] border border-black/10 bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] p-3 dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)]">
               <div className="flex items-center gap-4">
                 <Skeleton className="aspect-video w-28 shrink-0 rounded-xl" />
                 <div className="min-w-0 flex-1 space-y-2">

@@ -38,7 +38,7 @@ interface AuthNavButtonProps {
 }
 
 const MENU_SECTION_LABEL_CLASS =
-  "flex items-center gap-2 px-2.25 pt-0.5 pb-0.75 text-[10px] font-medium text-neutral-400 dark:text-neutral-500";
+  "flex items-center gap-2 px-2.25 pt-0.5 pb-0.75 text-2xs font-medium text-neutral-400 dark:text-neutral-500";
 
 function AuthNavButtonInner({
   className = "",
@@ -263,7 +263,7 @@ function AuthNavButtonInner({
                       key={item.href}
                       href={item.href}
                       prefetch={false}
-                      className="flex items-center gap-2.5 rounded-[13px] px-2.25 py-1.75 text-[14px] font-medium text-neutral-800 transition-colors hover:bg-black/[0.025] dark:text-neutral-100 dark:hover:bg-white/[0.04]"
+                      className="flex items-center gap-2.5 rounded-[13px] px-2.25 py-1.75 text-sm font-medium text-neutral-800 transition-colors hover:bg-black/[0.025] dark:text-neutral-100 dark:hover:bg-white/[0.04]"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <span className="flex h-4.5 w-4.5 shrink-0 items-center justify-center text-neutral-500 dark:text-neutral-400">
@@ -290,7 +290,7 @@ function AuthNavButtonInner({
                             key={item.href}
                             href={item.href}
                             prefetch={false}
-                            className="flex items-center gap-2.5 rounded-[13px] px-2.25 py-1.75 text-[14px] font-medium text-neutral-800 transition-colors hover:bg-black/[0.025] dark:text-neutral-100 dark:hover:bg-white/[0.04]"
+                            className="flex items-center gap-2.5 rounded-[13px] px-2.25 py-1.75 text-sm font-medium text-neutral-800 transition-colors hover:bg-black/[0.025] dark:text-neutral-100 dark:hover:bg-white/[0.04]"
                             onClick={() => setIsMenuOpen(false)}
                           >
                             <span className="flex h-4.5 w-4.5 shrink-0 items-center justify-center text-neutral-500 dark:text-neutral-400">
@@ -313,7 +313,7 @@ function AuthNavButtonInner({
                   type="button"
                   onClick={handleSignOut}
                   disabled={isSigningOut}
-                  className="flex w-full items-center gap-2.5 rounded-[13px] px-2.25 py-1.75 text-left text-[14px] font-medium text-rose-700 transition-colors hover:bg-rose-50/65 hover:text-rose-800 disabled:opacity-60 dark:text-rose-300 dark:hover:bg-rose-500/8 dark:hover:text-rose-200"
+                  className="flex w-full items-center gap-2.5 rounded-[13px] px-2.25 py-1.75 text-left text-sm font-medium text-rose-700 transition-colors hover:bg-rose-50/65 hover:text-rose-800 disabled:opacity-60 dark:text-rose-300 dark:hover:bg-rose-500/8 dark:hover:text-rose-200"
                 >
                   <span className="flex h-4.5 w-4.5 shrink-0 items-center justify-center text-rose-600 dark:text-rose-300">
                     <LogOutIcon className="h-4 w-4" />

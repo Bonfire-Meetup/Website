@@ -478,7 +478,7 @@ export function MeClient({ isGuildEnabled }: { isGuildEnabled: boolean }) {
                           {t("boostAllocation.title")}
                         </h3>
                       </div>
-                      <div className="text-[11px] font-medium text-emerald-700/80 sm:ml-auto sm:text-right dark:text-emerald-300/80">
+                      <div className="text-2xs font-medium text-emerald-700/80 sm:ml-auto sm:text-right dark:text-emerald-300/80">
                         {t("boostAllocation.nextAllocation", {
                           date: formatDayMonthUTC(boostAllocation.nextAllocationDate, locale),
                         })}
@@ -498,7 +498,7 @@ export function MeClient({ isGuildEnabled }: { isGuildEnabled: boolean }) {
                                 })}
                           </span>
                         </div>
-                        <div className="self-start rounded-full border border-emerald-200/80 bg-white/70 px-2.5 py-1 text-[11px] font-semibold tracking-[0.16em] text-emerald-700 uppercase shadow-sm shadow-emerald-100/70 dark:border-emerald-500/20 dark:bg-white/8 dark:text-emerald-300 dark:shadow-none">
+                        <div className="text-2xs tracking-label-sm self-start rounded-full border border-emerald-200/80 bg-white/70 px-2.5 py-1 font-semibold text-emerald-700 uppercase shadow-sm shadow-emerald-100/70 dark:border-emerald-500/20 dark:bg-white/8 dark:text-emerald-300 dark:shadow-none">
                           {boostCapacityLeft === 0
                             ? t("boostAllocation.atCap")
                             : t("boostAllocation.roomLeft", { count: boostCapacityLeft })}
@@ -520,7 +520,7 @@ export function MeClient({ isGuildEnabled }: { isGuildEnabled: boolean }) {
                           }}
                         />
                       </div>
-                      <div className="mt-1 text-[11px] text-emerald-600/75 dark:text-emerald-300/70">
+                      <div className="text-2xs mt-1 text-emerald-600/75 dark:text-emerald-300/70">
                         {boostAllocation.availableBoosts}/{BOOST_CONFIG.MAX_BOOSTS}
                       </div>
                     </div>

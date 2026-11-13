@@ -103,7 +103,7 @@ export function Rail<T>({
           {viewAllHref && viewAllLabel && (
             <Link
               href={viewAllHref}
-              className="inline-flex h-8 items-center rounded-full border border-black/10 bg-white/75 px-3 text-[11px] font-semibold text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-neutral-900 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-neutral-800 dark:hover:text-white"
+              className="btn-outline text-2xs h-8 rounded-full px-3 ring-1 ring-black/5 dark:ring-white/10"
             >
               {viewAllLabel}
             </Link>

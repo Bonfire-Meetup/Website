@@ -7,6 +7,7 @@ import { GuidePageShell } from "@/components/guides/GuidePageShell";
 import { GuideSection } from "@/components/guides/GuideSection";
 import { GuideStepList } from "@/components/guides/GuideStepList";
 import { BoltIcon, FireIcon } from "@/components/shared/Icons";
+import { Pill } from "@/components/ui/Pill";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 export function EngagementSignalsContent() {
@@ -28,7 +29,7 @@ export function EngagementSignalsContent() {
       contentClassName="max-w-4xl"
     >
       {/* Outer card has two distinct regions so GuideSectionCard doesn't fit here */}
-      <div className="overflow-hidden rounded-2xl border border-neutral-200/80 bg-white/75 shadow-sm dark:border-white/10 dark:bg-white/5">
+      <div className="surface overflow-hidden">
         <div className="px-5 py-7 sm:px-7 sm:py-8">
           <section className="grid gap-5 md:grid-cols-2">
             <article className="rounded-2xl border border-rose-300/40 bg-gradient-to-br from-rose-50/80 to-white p-5 dark:border-rose-400/20 dark:from-rose-500/10 dark:to-white/5">
@@ -40,10 +41,13 @@ export function EngagementSignalsContent() {
                   />
                   {t("sections.sparks.title")}
                 </h2>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-300/50 bg-rose-100 px-2.5 py-1 text-[11px] font-semibold text-rose-700 dark:border-rose-400/30 dark:bg-rose-500/15 dark:text-rose-200">
+                <Pill
+                  size="xxs"
+                  className="gap-1.5 border border-rose-300/50 bg-rose-100 font-semibold text-rose-700 dark:border-rose-400/30 dark:bg-rose-500/15 dark:text-rose-200"
+                >
                   <FireIcon className="h-3.5 w-3.5" aria-hidden="true" />
                   {tRecordings("spark")}
-                </span>
+                </Pill>
               </div>
               <p className="mb-4 text-sm leading-relaxed text-neutral-700 sm:text-base dark:text-neutral-300">
                 {t("sections.sparks.summary")}
@@ -71,10 +75,13 @@ export function EngagementSignalsContent() {
                   />
                   {t("sections.boosts.title")}
                 </h2>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/50 bg-emerald-100 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-500/15 dark:text-emerald-200">
+                <Pill
+                  size="xxs"
+                  className="gap-1.5 border border-emerald-300/50 bg-emerald-100 font-semibold text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-500/15 dark:text-emerald-200"
+                >
                   <BoltIcon className="h-3.5 w-3.5" aria-hidden="true" />
                   {tRecordings("boost")}
-                </span>
+                </Pill>
               </div>
               <p className="mb-4 text-sm leading-relaxed text-neutral-700 sm:text-base dark:text-neutral-300">
                 {t("sections.boosts.summary")}

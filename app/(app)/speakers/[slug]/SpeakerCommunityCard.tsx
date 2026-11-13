@@ -1,8 +1,8 @@
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { RoleBadges } from "@/(app)/users/[id]/RoleBadges";
-import { PROFILE_EYEBROW, PROFILE_SURFACE, PROFILE_TONE } from "@/components/profile/surface";
 import { Button } from "@/components/ui/Button";
+import { PROFILE_EYEBROW, PROFILE_SURFACE, PROFILE_TONE } from "@/components/ui/surface";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { hasMembership } from "@/lib/config/membership";
 import { getAuthUserById } from "@/lib/data/auth";

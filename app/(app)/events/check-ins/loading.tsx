@@ -33,10 +33,10 @@ function TicketQrSkeleton() {
 
 export default function CheckInLoading() {
   return (
-    <main className="gradient-bg-static min-h-screen px-4 pt-20 pb-20 sm:pt-32">
+    <main className="gradient-bg-static min-h-screen px-4 pt-28 pb-20 sm:pt-32">
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-md">
-          <div className="relative overflow-hidden rounded-2xl border border-white/45 bg-white/28 shadow-[0_40px_120px_-52px_rgba(15,23,42,0.58)] ring-1 ring-white/55 backdrop-blur-2xl dark:border-white/8 dark:bg-neutral-950/24 dark:ring-white/8">
+          <div className="surface shadow-floating relative overflow-hidden">
             <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.72),transparent_34%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.3),transparent_22%),linear-gradient(135deg,rgba(255,255,255,0.24),transparent_46%,rgba(255,255,255,0.08)_68%,transparent_82%)] dark:bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.08),transparent_26%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.04),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.04),transparent_44%,rgba(255,255,255,0.015)_70%,transparent_84%)]" />
             <div className="pointer-events-none absolute inset-[1px] rounded-[calc(1rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.26),transparent_18%,transparent_78%,rgba(255,255,255,0.12)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_18%,transparent_82%,rgba(255,255,255,0.02)_100%)]" />
             <div className="relative overflow-hidden rounded-[calc(1rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.5)_0%,rgba(255,248,240,0.34)_45%,rgba(255,255,255,0.22)_100%)] backdrop-blur-2xl dark:bg-[linear-gradient(180deg,rgba(24,24,28,0.3)_0%,rgba(12,12,14,0.2)_48%,rgba(6,6,8,0.14)_100%)]">
@@ -71,11 +71,11 @@ export default function CheckInLoading() {
               </div>
 
               <div className="space-y-4 px-6 pt-1 pb-6">
-                <div className="rounded-2xl border border-white/40 bg-white/34 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_18px_38px_-34px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_18px_38px_-34px_rgba(0,0,0,0.45)]">
+                <div className="surface px-4 py-3">
                   <Skeleton className="h-5 w-40" />
                 </div>
 
-                <div className="rounded-2xl border border-white/38 bg-white/24 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_18px_38px_-34px_rgba(15,23,42,0.14)] backdrop-blur-xl dark:border-white/10 dark:bg-white/6 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_38px_-34px_rgba(0,0,0,0.42)]">
+                <div className="surface px-4 py-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <Skeleton className="mb-2 h-3 w-20" />
@@ -97,7 +97,7 @@ export default function CheckInLoading() {
             </div>
           </div>
 
-          <div className="mt-6 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 shadow-sm dark:border-neutral-700/50 dark:bg-neutral-900/50">
+          <div className="surface mt-6 overflow-hidden">
             <div className="border-b border-neutral-200/70 px-4 py-3 dark:border-neutral-700/50">
               <div className="flex items-center gap-2 text-sm font-semibold text-neutral-900 dark:text-white">
                 <InfoIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />

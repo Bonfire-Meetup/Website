@@ -291,10 +291,10 @@ export function ConfirmationStep({
         </div>
       )}
 
-      <div className="mx-auto max-w-[600px] overflow-hidden rounded-2xl border border-neutral-200/90 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:border-white/10 dark:bg-neutral-900 dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]">
+      <div className="surface mx-auto max-w-[600px] overflow-hidden">
         <div className="max-h-[560px] overflow-y-auto">
           <div className="border-b border-neutral-200/80 px-5 py-4 dark:border-white/10">
-            <p className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
+            <p className="text-2xs font-semibold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
               {t("previewSubject")}
             </p>
             <p className="mt-1 font-semibold text-neutral-900 dark:text-white">{data.subject}</p>
@@ -318,7 +318,7 @@ export function ConfirmationStep({
         </div>
 
         <div className="border-t border-neutral-200/80 px-5 py-3 dark:border-white/10">
-          <p className="text-[11px] text-neutral-400 dark:text-neutral-500">
+          <p className="text-2xs text-neutral-400 dark:text-neutral-500">
             {t("previewAudience")}: {getAudienceLabel()}
             {data.audience.manualEmails.length > 0 && (
               <span className="mt-1 block truncate text-neutral-500 dark:text-neutral-400">

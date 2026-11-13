@@ -328,7 +328,7 @@ function SurveySection({
       <div className="relative p-4 sm:p-5 lg:p-6">
         <div className="mb-4 space-y-3 border-b border-neutral-200/80 pb-4 sm:mb-5 sm:pb-5 dark:border-white/10">
           <p
-            className={`text-[10px] font-semibold tracking-[0.18em] uppercase sm:text-[11px] ${kickerClassName}`}
+            className={`text-2xs tracking-label sm:text-2xs font-semibold uppercase ${kickerClassName}`}
           >
             {kicker}
           </p>
@@ -616,11 +616,11 @@ function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
             (label, index) => (
               <div
                 key={label}
-                className="relative min-w-[15rem] snap-start overflow-hidden rounded-2xl border border-neutral-200/80 bg-white/45 px-4 py-3 backdrop-blur-sm sm:min-w-0 sm:py-3.5 dark:border-white/10 dark:bg-white/[0.025]"
+                className="surface relative min-w-[15rem] snap-start overflow-hidden px-4 py-3 sm:min-w-0 sm:py-3.5"
               >
                 <div className="pointer-events-none absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-neutral-300/80 via-neutral-200/60 to-transparent dark:from-white/20 dark:via-white/10 dark:to-transparent" />
                 <div className="pl-3">
-                  <p className="text-[10px] font-semibold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500">
+                  <p className="eyebrow text-2xs text-neutral-400 dark:text-neutral-500">
                     Step 0{index + 1}
                   </p>
                   <p className="mt-1 text-sm leading-5 font-medium text-neutral-700 dark:text-neutral-200">
@@ -905,7 +905,7 @@ function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
                     />
                   </div>
 
-                  <div className="overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/45 dark:border-white/10 dark:bg-white/[0.025]">
+                  <div className="surface overflow-hidden">
                     {eventTalks.map((speaker, index) => {
                       const talkKey = String(index);
                       const entry = draft.talkFeedback[talkKey] ?? EMPTY_TALK_FEEDBACK_ENTRY;

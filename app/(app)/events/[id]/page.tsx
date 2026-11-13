@@ -69,7 +69,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
   }));
 
   return (
-    <div className="flex-1 bg-neutral-50 dark:bg-neutral-950">
+    <div className="gradient-bg flex-1">
       <EventDetailContent
         id={event.id}
         title={event.title}

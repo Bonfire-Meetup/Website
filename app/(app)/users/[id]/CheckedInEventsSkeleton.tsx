@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/shared/Skeletons";
 export function CheckedInEventsSkeleton() {
   return (
     <section className="relative">
-      <div className="glass-card relative rounded-2xl border border-black/5 bg-white/80 dark:border-white/10 dark:bg-neutral-950/70">
+      <div className="surface glass-card relative">
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
           <div className="flex items-center gap-4">
             <Skeleton className="h-12 w-12 rounded-xl" />
@@ -19,10 +19,7 @@ export function CheckedInEventsSkeleton() {
             { length: 2 },
             (_, skeletonIndex) => `checked-in-skeleton-${skeletonIndex}`,
           ).map((skeletonId) => (
-            <div
-              key={skeletonId}
-              className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-white/5 dark:bg-neutral-800/30"
-            >
+            <div key={skeletonId} className="surface-inset p-4">
               <Skeleton className="mb-2 h-4 w-3/4" />
               <Skeleton className="h-3 w-1/2" />
             </div>

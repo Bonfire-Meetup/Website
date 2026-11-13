@@ -105,12 +105,12 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
   };
 
   const fieldLabelClassName =
-    "text-[10px] font-medium tracking-[0.2em] text-neutral-400 uppercase dark:text-neutral-500";
+    "text-2xs font-medium tracking-label text-neutral-400 uppercase dark:text-neutral-500";
 
   return (
     <AccountPanel
       title={
-        <span className="text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+        <span className="eyebrow text-xs text-neutral-500 dark:text-neutral-400">
           {t("details")}
         </span>
       }
@@ -165,7 +165,7 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
                     type="button"
                     onClick={handleNameCancel}
                     disabled={updatingName}
-                    className="h-[38px] flex-1 rounded-lg border border-neutral-200 bg-white px-3 text-xs font-medium text-neutral-700 transition hover:bg-neutral-50 disabled:opacity-50 sm:flex-none dark:border-white/10 dark:bg-white/5 dark:text-neutral-300"
+                    className="btn-outline h-[38px] flex-1 rounded-lg px-3 text-xs disabled:opacity-50 sm:flex-none"
                   >
                     {t("name.cancel")}
                   </button>
@@ -240,7 +240,7 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
                     ? t("copyError")
                     : t("copyIdLabel")
               }
-              className="rounded-lg border border-neutral-200/80 bg-white/85 px-2 py-1 text-xs font-medium text-neutral-500 transition hover:border-neutral-300 hover:text-neutral-800 dark:border-white/10 dark:bg-white/6 dark:text-neutral-400 dark:hover:border-white/15 dark:hover:text-white"
+              className="btn-outline rounded-lg px-2 py-1 text-xs"
             >
               {copyStatus === "success" ? t("copySuccess") : t("copyIdLabel")}
             </button>

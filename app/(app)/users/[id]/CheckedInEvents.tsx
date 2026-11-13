@@ -38,7 +38,7 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
       aria-labelledby="profile-checkedin-events-heading"
       aria-describedby="profile-checkedin-events-count"
     >
-      <div className="glass-card relative flex h-full flex-col rounded-2xl border border-black/5 bg-white/80 dark:border-white/10 dark:bg-neutral-950/70">
+      <div className="surface glass-card relative flex h-full flex-col">
         <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
@@ -82,7 +82,7 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
                 return (
                   <div
                     key={event.id}
-                    className="group relative overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 p-4 transition-all duration-300 hover:border-blue-500/20 hover:bg-neutral-100 dark:border-white/5 dark:bg-neutral-800/30 dark:hover:bg-neutral-800/50"
+                    className="surface-inset group relative overflow-hidden p-4 transition-all duration-300 hover:border-blue-500/20 hover:bg-neutral-100 dark:hover:bg-neutral-800/50"
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <div className="flex items-start justify-between gap-4">
@@ -103,17 +103,17 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
                           )}
                         </div>
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <div className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 px-1.5 py-0.5 text-[11px] font-medium text-blue-600 dark:text-blue-400">
+                          <div className="text-2xs inline-flex items-center gap-1 rounded-md bg-blue-500/10 px-1.5 py-0.5 font-medium text-blue-600 dark:text-blue-400">
                             <CheckCircleIcon className="h-3 w-3" />
                             {statusLabel}
                           </div>
                           {event.hasRsvp && formattedCheckedInAt && (
-                            <div className="inline-flex items-center gap-1 rounded-md bg-neutral-200/60 px-1.5 py-0.5 text-[11px] font-medium text-neutral-700 dark:bg-white/10 dark:text-neutral-300">
+                            <div className="text-2xs inline-flex items-center gap-1 rounded-md bg-neutral-200/60 px-1.5 py-0.5 font-medium text-neutral-700 dark:bg-white/10 dark:text-neutral-300">
                               {t("checkedIn.checkedInOn", { date: formattedCheckedInAt })}
                             </div>
                           )}
                           {event.hasCheckIn && formattedRsvpedAt && (
-                            <div className="inline-flex items-center gap-1 rounded-md bg-neutral-200/60 px-1.5 py-0.5 text-[11px] font-medium text-neutral-700 dark:bg-white/10 dark:text-neutral-300">
+                            <div className="text-2xs inline-flex items-center gap-1 rounded-md bg-neutral-200/60 px-1.5 py-0.5 font-medium text-neutral-700 dark:bg-white/10 dark:text-neutral-300">
                               {t("checkedIn.rsvpOn", { date: formattedRsvpedAt })}
                             </div>
                           )}

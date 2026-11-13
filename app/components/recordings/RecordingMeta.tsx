@@ -4,7 +4,7 @@ import { formatDate } from "@/lib/utils/locale";
 import { RecordingHeaderMetaRow } from "./RecordingHeaderMetaRow";
 
 const metaBaseClass =
-  "flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase text-white/85 dark:text-white/75";
+  "flex flex-wrap items-center gap-2 text-2xs font-semibold uppercase text-white/85 dark:text-white/75";
 
 export function RecordingMeta({
   location,

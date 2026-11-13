@@ -34,7 +34,7 @@ export function NewsletterSectionCard({
 
         <div className="px-5 py-4">
           {!section.imageUrl && secondaryLabel && (
-            <p className="mb-2 text-[10px] font-bold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
+            <p className="text-2xs mb-2 font-bold tracking-wider text-neutral-400 uppercase dark:text-neutral-500">
               {secondaryLabel}
             </p>
           )}
@@ -70,7 +70,7 @@ export function NewsletterSectionCard({
 
       <div className="p-8 sm:p-10">
         {!section.imageUrl && secondaryLabel && (
-          <p className="mb-3 text-[11px] font-bold tracking-[0.15em] text-neutral-400 uppercase dark:text-neutral-500">
+          <p className="text-2xs tracking-label-sm mb-3 font-bold text-neutral-400 uppercase dark:text-neutral-500">
             {secondaryLabel}
           </p>
         )}

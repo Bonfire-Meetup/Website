@@ -21,7 +21,7 @@ export function RecordingFeaturedContent({
   showAccessPill = false,
 }: RecordingFeaturedContentProps) {
   const featuredHeroPanelClass =
-    "bg-black/60 text-white ring-1 ring-white/10 sm:border sm:border-white/55 sm:bg-[linear-gradient(180deg,rgba(255,248,240,0.76)_0%,rgba(255,244,232,0.6)_100%)] sm:text-neutral-950 sm:ring-white/35 sm:shadow-[0_28px_60px_-36px_rgba(15,23,42,0.34)] sm:backdrop-blur-xl sm:backdrop-saturate-150 dark:sm:border-white/16 dark:sm:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:sm:text-white dark:sm:ring-white/10 dark:sm:shadow-[0_20px_48px_-32px_rgba(0,0,0,0.7)]";
+    "bg-black/60 text-white ring-1 ring-white/10 sm:border sm:border-white/55 sm:bg-[linear-gradient(180deg,rgba(255,248,240,0.76)_0%,rgba(255,244,232,0.6)_100%)] sm:text-neutral-950 sm:ring-white/35 sm:shadow-floating sm:backdrop-blur-xl sm:backdrop-saturate-150 dark:sm:border-white/16 dark:sm:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:sm:text-white dark:sm:ring-white/10 dark:sm:shadow-raised";
 
   return (
     <div
@@ -34,7 +34,7 @@ export function RecordingFeaturedContent({
       <RecordingHeaderMetaRow
         location={recording.location}
         formattedDate={formatShortDateUTC(recording.date, locale)}
-        className={`flex flex-wrap items-center gap-2 text-[11px] font-semibold tracking-[0.28em] uppercase ${
+        className={`text-2xs tracking-label-lg flex flex-wrap items-center gap-2 font-semibold uppercase ${
           hasFeaturedHero
             ? "text-white/80 sm:text-neutral-600 dark:sm:text-white/70"
             : "text-neutral-600 dark:text-white/70"

@@ -447,13 +447,13 @@ export function LoginClient() {
 
       <div className="relative flex flex-1 items-center justify-center px-4 py-6 sm:px-6 sm:py-12">
         <div className="flex w-full max-w-md flex-col gap-4 md:max-w-4xl">
-          <div className="flex items-center justify-center gap-3 text-xs tracking-[0.3em] text-neutral-500 uppercase dark:text-neutral-400">
+          <div className="tracking-label-lg flex items-center justify-center gap-3 text-xs text-neutral-500 uppercase dark:text-neutral-400">
             <span>{t("eyebrow")}</span>
             <span className="h-1 w-1 rounded-full bg-neutral-400/60" />
             <span>{t("brand", { brandName: tCommon("brandName") })}</span>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_20px_60px_var(--color-shadow-dark-light)] backdrop-blur sm:rounded-2xl md:grid md:grid-cols-[1.35fr_1fr] dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_var(--color-shadow-dark-strong)]">
+          <div className="surface overflow-hidden sm:rounded-2xl md:grid md:grid-cols-[1.35fr_1fr]">
             <div className="hidden flex-col gap-6 bg-gradient-to-br from-white to-neutral-50 p-8 md:flex lg:p-10 dark:from-neutral-900 dark:to-neutral-950">
               <div>
                 <h1 className="text-2xl font-semibold tracking-tight lg:text-3xl">{t("title")}</h1>
@@ -462,8 +462,8 @@ export function LoginClient() {
                 </p>
               </div>
               <ReasonHintBanner hint={reasonHint as LoginReason | null} t={t} />
-              <div className="space-y-3 rounded-2xl border border-neutral-200/70 bg-white/80 px-5 py-4 text-sm text-neutral-700 dark:border-orange-500/20 dark:bg-orange-500/10 dark:text-neutral-200">
-                <div className="text-xs tracking-[0.2em] text-neutral-500 uppercase dark:text-orange-200/80">
+              <div className="surface space-y-3 px-5 py-4 text-sm text-neutral-700 dark:border-orange-500/20 dark:bg-orange-500/10 dark:text-neutral-200">
+                <div className="tracking-label text-xs text-neutral-500 uppercase dark:text-orange-200/80">
                   {t("secureTitle")}
                 </div>
                 <ul className="space-y-2.5">
@@ -576,7 +576,7 @@ export function LoginClient() {
                         const normalized = event.target.value.replace(/\D/gu, "").slice(0, 6);
                         setCode(normalized);
                       }}
-                      className={`${inputBaseClass} ${inputNormalClass} py-4 text-center font-mono text-xl tracking-[0.5em]`}
+                      className={`${inputBaseClass} ${inputNormalClass} tracking-label-lg py-4 text-center font-mono text-xl`}
                       placeholder="123 456"
                       autoFocus
                     />
@@ -648,7 +648,7 @@ export function LoginClient() {
                         {passkeyLoading ? t("passkey.authenticating") : t("passkey.button")}
                       </span>
                     </Button>
-                    <p className="text-[11px] text-neutral-400/80 dark:text-neutral-500/80">
+                    <p className="text-2xs text-neutral-400/80 dark:text-neutral-500/80">
                       {t("passkey.note")}
                     </p>
                   </div>

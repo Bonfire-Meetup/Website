@@ -138,7 +138,7 @@ export function Newsletter({
                 >
                   {!section.imageUrl && index === 0 && (
                     <Text
-                      className="m-0 mb-3 text-[11px] font-bold tracking-[0.15em] uppercase"
+                      className="text-2xs tracking-label-sm m-0 mb-3 font-bold uppercase"
                       style={{ color: BRAND.ember, margin: "0 0 12px" }}
                     >
                       Featured
@@ -147,7 +147,7 @@ export function Newsletter({
 
                   {!section.imageUrl && index > 0 && (
                     <Text
-                      className="m-0 mb-3 text-[11px] font-bold tracking-[0.15em] uppercase"
+                      className="text-2xs tracking-label-sm m-0 mb-3 font-bold uppercase"
                       style={{ color: "#a3a3a3", margin: "0 0 12px" }}
                     >
                       Update {String(index).padStart(2, "0")}
@@ -191,7 +191,7 @@ export function Newsletter({
                   {section.ctaHref && section.ctaLabel && (
                     <Button
                       href={section.ctaHref}
-                      className="inline-block text-[14px] font-semibold text-white"
+                      className="inline-block text-sm font-semibold text-white"
                       style={{
                         backgroundColor: BRAND.bonfire,
                         background: FIRE_GRADIENT_DIAGONAL,
@@ -222,14 +222,14 @@ export function Newsletter({
                   >
                     {appName}
                   </Text>
-                  <Text className="m-0 text-[12px]" style={{ color: "#a3a3a3", margin: "4px 0 0" }}>
+                  <Text className="m-0 text-xs" style={{ color: "#a3a3a3", margin: "4px 0 0" }}>
                     Community events for developers
                   </Text>
                 </Column>
                 <Column align="right" className="table-cell align-bottom">
                   <Link
                     href={unsubscribeUrl}
-                    className="text-[12px]"
+                    className="text-xs"
                     style={{ color: "#a3a3a3", textDecoration: "underline" }}
                   >
                     Unsubscribe
@@ -238,7 +238,7 @@ export function Newsletter({
               </Row>
               <Row style={{ marginTop: "20px" }}>
                 <Column>
-                  <Text className="m-0 text-[11px]" style={{ color: "#d4d4d4", margin: 0 }}>
+                  <Text className="text-2xs m-0" style={{ color: "#d4d4d4", margin: 0 }}>
                     © {new Date().getFullYear()} {appName}. All rights reserved.
                   </Text>
                 </Column>

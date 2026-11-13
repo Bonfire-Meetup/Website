@@ -17,6 +17,7 @@ import {
   RefreshIcon,
   SendIcon,
 } from "@/components/shared/Icons";
+import { Pill } from "@/components/ui/Pill";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { formatDateTimeLocal } from "@/lib/utils/locale";
 
@@ -39,7 +40,7 @@ interface CommunityQuestionsPanelProps {
 type MobilePanel = "composer" | "filters" | null;
 
 const PILL_SELECT_BASE =
-  "min-w-0 max-w-full rounded-full border border-neutral-200/70 bg-neutral-50 py-1 pl-2.5 pr-6 text-[11px] font-medium text-neutral-600 outline-none transition-colors dark:border-white/10 dark:bg-white/5 dark:text-neutral-300";
+  "min-w-0 max-w-full rounded-full border border-neutral-200/70 bg-neutral-50 py-1 pl-2.5 pr-6 text-2xs font-medium text-neutral-600 outline-none transition-colors dark:border-white/10 dark:bg-white/5 dark:text-neutral-300";
 const MOBILE_DOCK_BUTTON_BASE =
   "inline-flex h-11 min-w-0 items-center justify-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold whitespace-nowrap transition-colors";
 const MOBILE_DOCK_BUTTON_INACTIVE =
@@ -48,7 +49,7 @@ const MOBILE_DOCK_BUTTON_ACTIVE =
   "border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900";
 const MOBILE_SHEET_WRAPPER = "fixed inset-x-0 bottom-20 z-40 px-3 md:hidden";
 const MOBILE_SHEET_PANEL =
-  "rounded-[1.6rem] border border-neutral-200/80 bg-white/96 p-3 shadow-[0_28px_80px_-30px_rgba(15,23,42,0.55)] backdrop-blur dark:border-white/12 dark:bg-neutral-950/94";
+  "rounded-[1.6rem] border border-neutral-200/80 bg-white/96 p-3 shadow-floating backdrop-blur dark:border-white/12 dark:bg-neutral-950/94";
 
 function CommunityQuestionsPanelSkeleton() {
   return (
@@ -66,7 +67,7 @@ function CommunityQuestionsPanelSkeleton() {
         </div>
       </div>
 
-      <div className="hidden rounded-2xl border border-neutral-200/70 bg-white/70 p-3 md:block dark:border-white/10 dark:bg-white/5">
+      <div className="surface hidden p-3 md:block">
         <div className="flex items-end gap-2">
           <div className="h-[52px] flex-1 rounded-xl bg-neutral-200 dark:bg-white/10" />
           <div className="h-10 w-10 rounded-full bg-neutral-200 dark:bg-white/10" />
@@ -215,7 +216,7 @@ function QuestionComposerFields({
         </select>
 
         {text.length > 400 && (
-          <span className="ml-auto text-[10px] text-neutral-400 tabular-nums dark:text-neutral-500">
+          <span className="text-2xs ml-auto text-neutral-400 tabular-nums dark:text-neutral-500">
             {text.length}/600
           </span>
         )}
@@ -293,7 +294,7 @@ function MobileSheet({
       <div className={MOBILE_SHEET_PANEL}>
         <div className="mb-3 flex items-center justify-between gap-3">
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+            <p className="text-2xs tracking-label-sm font-semibold text-neutral-500 uppercase dark:text-neutral-400">
               {eyebrow}
             </p>
             <p className="text-sm font-semibold text-neutral-900 dark:text-white">{title}</p>
@@ -429,14 +430,14 @@ export function CommunityQuestionsPanel({
     <div className="mt-6 space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <p className="text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+          <p className="text-2xs tracking-label-sm font-semibold text-neutral-500 uppercase dark:text-neutral-400">
             {panel.t("questions.eyebrow")}
           </p>
           <h4 className="mt-1 text-lg font-bold text-neutral-900 sm:text-xl dark:text-white">
             {panelTitle}
           </h4>
           {isWindowOpen && lastRefreshLabel && (
-            <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400">
+            <p className="text-2xs mt-1 text-neutral-500 dark:text-neutral-400">
               {panel.t("questions.lastRefresh", { date: lastRefreshLabel })}
             </p>
           )}
@@ -476,10 +477,13 @@ export function CommunityQuestionsPanel({
               )}
 
               {!isLiveView && panel.isAuthTransitioning && (
-                <div className="inline-flex min-h-9 items-center gap-1.5 self-start rounded-full border border-neutral-200/80 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 sm:self-auto dark:border-white/15 dark:bg-white/8 dark:text-neutral-200">
+                <Pill
+                  size="sm"
+                  className="min-h-9 gap-1.5 self-start border border-neutral-200/80 bg-white font-semibold text-neutral-700 sm:self-auto dark:border-white/15 dark:bg-white/8 dark:text-neutral-200"
+                >
                   <LoadingSpinner size="sm" ariaLabel={panel.t("questions.refreshing")} />
                   <span>{panel.t("questions.refreshing")}</span>
-                </div>
+                </Pill>
               )}
 
               {!isLiveView && panel.isAuthHydrated && !panel.isAuthenticated && (
@@ -498,7 +502,7 @@ export function CommunityQuestionsPanel({
       </div>
 
       {showQuestionComposer && (
-        <div className="hidden rounded-2xl border border-neutral-200/70 bg-white/70 p-3 md:block dark:border-white/10 dark:bg-white/[0.04]">
+        <div className="surface hidden p-3 md:block">
           <QuestionComposerFields
             canSubmit={canSubmitQuestion}
             focusBorderClassName={theme.focusBorder}
@@ -576,7 +580,7 @@ export function CommunityQuestionsPanel({
                 <div className="questions-loader-modern max-w-[240px] flex-1">
                   <div className="questions-loader-modern__beam" />
                 </div>
-                <div className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                <div className="text-2xs text-neutral-500 dark:text-neutral-400">
                   {panel.t("questions.loading")}
                 </div>
               </div>
@@ -684,14 +688,17 @@ export function CommunityQuestionsPanel({
         <div className="sticky bottom-3 z-20 -mx-1 mt-2 md:hidden">
           {mobileSuccessVisible && (
             <div className="mb-2 flex justify-center">
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200/80 bg-emerald-50/95 px-3 py-1.5 text-xs font-semibold text-emerald-700 shadow-sm dark:border-emerald-400/20 dark:bg-emerald-500/10 dark:text-emerald-300">
+              <Pill
+                size="sm"
+                className="gap-2 border border-emerald-200/80 bg-emerald-50/95 font-semibold text-emerald-700 shadow-sm dark:border-emerald-400/20 dark:bg-emerald-500/10 dark:text-emerald-300"
+              >
                 <SendIcon className="h-3.5 w-3.5" />
                 <span>{panel.t("questions.submittedToast")}</span>
-              </div>
+              </Pill>
             </div>
           )}
 
-          <div className="flex items-center gap-1.5 rounded-xl border border-neutral-200/80 bg-white/92 p-1.5 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.45)] backdrop-blur dark:border-white/12 dark:bg-neutral-950/88">
+          <div className="shadow-raised flex items-center gap-1.5 rounded-xl border border-neutral-200/80 bg-white/92 p-1.5 backdrop-blur dark:border-white/12 dark:bg-neutral-950/88">
             {!isLiveView && panel.isAuthHydrated && !panel.isAuthenticated ? (
               <button
                 type="button"
@@ -715,7 +722,7 @@ export function CommunityQuestionsPanel({
                     <span className="min-w-0 truncate">{panel.t("questions.askButtonMobile")}</span>
                     {panel.availableBoosts !== null && (
                       <span
-                        className={`inline-flex min-w-6 shrink-0 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                        className={`text-2xs inline-flex min-w-6 shrink-0 items-center justify-center rounded-full px-1.5 py-0.5 font-bold ${
                           mobilePanel === "composer"
                             ? "bg-white/15 text-white dark:bg-black/10 dark:text-neutral-900"
                             : `${ENGAGEMENT_BRANDING.boost.classes.activeGradient} ${ENGAGEMENT_BRANDING.boost.classes.activeText} shadow-md shadow-emerald-500/25`

@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { getInitials } from "@/lib/utils/initials";
+
 // The buttons of the Bonfire symbol, the same frames the social images use:
 // The pointed-down one for a person, the wide one for a group photo.
 const FRAMES = {
@@ -31,15 +33,6 @@ interface SpeakerPhotoProps {
   photoUrl?: string;
   priority?: boolean;
   sizes: string;
-}
-
-function getInitials(name: string) {
-  return name
-    .split(/\s+/u)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
 }
 
 export function SpeakerPhoto({

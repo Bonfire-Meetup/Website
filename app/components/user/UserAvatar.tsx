@@ -11,6 +11,7 @@ import {
   round2,
   rngFromId,
 } from "@/lib/utils/hash-rng";
+import { getInitials } from "@/lib/utils/initials";
 
 const AVATAR_CSS = `
 .bnfAvatar .av-line {
@@ -588,32 +589,6 @@ function generateAvatar(seed: string, isTiny: boolean, forcePatternType?: Patter
   const spec: AvatarSpec = { background, pattern, patternElements, shimmerAngle };
   cacheSet(key, spec);
   return spec;
-}
-
-function getInitials(name: string): string {
-  const words = name.trim().split(/\s+/u).filter(Boolean);
-  if (words.length === 0) {
-    return "";
-  }
-
-  const getWordInitial = (word: string): string => {
-    const match = word.match(/[\p{L}\p{N}]/u);
-    return match?.[0]?.toUpperCase() ?? "";
-  };
-
-  const first = words.find((word) => getWordInitial(word) !== "");
-  if (!first) {
-    return "";
-  }
-
-  const firstInitial = getWordInitial(first);
-  if (words.length === 1) {
-    return firstInitial;
-  }
-
-  const last = [...words].reverse().find((word) => getWordInitial(word) !== "" && word !== first);
-  const lastInitial = last ? getWordInitial(last) : "";
-  return `${firstInitial}${lastInitial}` || firstInitial;
 }
 
 interface UserAvatarProps {

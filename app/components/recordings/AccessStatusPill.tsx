@@ -32,7 +32,7 @@ export function AccessStatusPill({ status }: AccessStatusPillProps) {
 
   return (
     <div
-      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-semibold tracking-[0.2em] uppercase ${style.pillClassName}`}
+      className={`text-2xs tracking-label inline-flex items-center gap-2 rounded-full px-3 py-1 font-semibold uppercase ${style.pillClassName}`}
     >
       <span className={`h-2 w-2 rounded-full ${style.dotClassName}`} />
       {t(status)}

@@ -6,6 +6,15 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
+  --text-2xs: 0.6875rem;
+  --tracking-label-sm: 0.12em;
+  --tracking-label: 0.2em;
+  --tracking-label-lg: 0.3em;
+
+  --shadow-soft: 0 8px 24px -18px rgba(15, 23, 42, 0.35);
+  --shadow-raised: 0 18px 44px -28px rgba(15, 23, 42, 0.45);
+  --shadow-floating: 0 28px 62px -34px rgba(15, 23, 42, 0.5);
+
   --color-brand-50: #fff1f2;
   --color-brand-100: #ffe4e6;
   --color-brand-200: #fecdd3;
@@ -2249,5 +2258,35 @@ html:not([data-motion="active"]) * {
 
   .questions-loader-modern__beam {
     animation: none;
+  }
+}
+
+/* Shared text and surface styles. They live in the components layer so any
+   utility class on the same element still wins. */
+@layer components {
+  .eyebrow {
+    font-weight: 700;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .page-title {
+    @apply text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white;
+  }
+
+  .text-link {
+    @apply underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:decoration-neutral-600 dark:hover:decoration-neutral-400;
+  }
+
+  .btn-outline {
+    @apply inline-flex cursor-pointer items-center border border-neutral-300/80 bg-white/70 font-semibold text-neutral-700 transition-colors hover:border-neutral-400 hover:bg-white hover:text-neutral-900 dark:border-white/15 dark:bg-white/5 dark:text-neutral-200 dark:hover:border-white/30 dark:hover:bg-white/10 dark:hover:text-white;
+  }
+
+  .surface {
+    @apply shadow-soft rounded-2xl border border-black/8 bg-white/80 backdrop-blur-sm dark:border-white/10 dark:bg-neutral-900/60 dark:shadow-none;
+  }
+
+  .surface-inset {
+    @apply rounded-xl border border-neutral-200/70 bg-neutral-50/70 dark:border-white/8 dark:bg-white/5;
   }
 }

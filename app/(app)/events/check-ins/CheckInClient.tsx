@@ -19,8 +19,7 @@ const DEVICE_WAKE_THRESHOLD_MS = 30 * 1000;
 const TICKET_GRADIENT_CLASS = "bg-gradient-to-br from-rose-700 via-orange-500 to-red-600";
 const TICKET_HEADER_PANEL_CLASS =
   "mx-auto w-full max-w-[14rem] rounded-[1.15rem] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.08)_100%)] px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_18px_40px_-28px_rgba(120,53,15,0.45)] backdrop-blur-md sm:max-w-[17rem] sm:rounded-[1.5rem] sm:px-5 sm:py-4 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_40px_-28px_rgba(0,0,0,0.5)]";
-const TICKET_SHELL_CLASS =
-  "relative overflow-hidden rounded-2xl border border-white/45 bg-white/28 shadow-[0_40px_120px_-52px_rgba(15,23,42,0.58)] ring-1 ring-white/55 backdrop-blur-2xl dark:border-white/8 dark:bg-neutral-950/24 dark:ring-white/8";
+const TICKET_SHELL_CLASS = "surface relative overflow-hidden shadow-floating";
 const TICKET_SURFACE_CLASS =
   "bg-[linear-gradient(180deg,rgba(255,255,255,0.5)_0%,rgba(255,248,240,0.34)_45%,rgba(255,255,255,0.22)_100%)] dark:bg-[linear-gradient(180deg,rgba(24,24,28,0.3)_0%,rgba(12,12,14,0.2)_48%,rgba(6,6,8,0.14)_100%)] backdrop-blur-2xl";
 const QR_FRAME_CLASS =
@@ -29,8 +28,7 @@ const QR_META_BAR_CLASS =
   "mb-3 flex items-center justify-between rounded-full border border-white/45 bg-white/36 px-3 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] backdrop-blur-xl dark:border-white/10 dark:bg-white/8 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]";
 const QR_CODE_SURFACE_CLASS =
   "relative h-80 w-80 overflow-hidden rounded-[1.25rem] border border-white/45 bg-white/56 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_20px_44px_-34px_rgba(15,23,42,0.22)] backdrop-blur-md dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_20px_44px_-34px_rgba(0,0,0,0.5)]";
-const VALID_UNTIL_CLASS =
-  "flex min-h-[50px] items-center justify-between rounded-2xl border border-white/40 bg-white/34 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.82),0_18px_38px_-34px_rgba(15,23,42,0.16)] backdrop-blur-xl dark:border-white/10 dark:bg-white/7 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_18px_38px_-34px_rgba(0,0,0,0.45)]";
+const VALID_UNTIL_CLASS = "surface flex min-h-[50px] items-center justify-between px-4 py-3";
 
 function BackupZoomIcon({ className }: { className?: string }) {
   return (
@@ -271,12 +269,12 @@ export function CheckInClient() {
               <div className={TICKET_HEADER_PANEL_CLASS}>
                 <div className="mb-1.5 flex items-center justify-center gap-2 sm:mb-2">
                   <span className="h-px w-4 bg-white/35 sm:w-6" />
-                  <div className="text-[10px] font-semibold tracking-[0.14em] text-white/80 uppercase sm:text-sm sm:tracking-[0.24em]">
+                  <div className="text-2xs tracking-label-sm sm:tracking-label font-semibold text-white/80 uppercase sm:text-sm">
                     {t("ticket.header")}
                   </div>
                   <span className="h-px w-4 bg-white/35 sm:w-6" />
                 </div>
-                <div className="text-center text-[1.35rem] leading-none font-black tracking-[0.06em] text-white uppercase drop-shadow-[0_10px_24px_rgba(0,0,0,0.2)] sm:text-3xl sm:tracking-[0.14em]">
+                <div className="sm:tracking-label-sm text-center text-[1.35rem] leading-none font-black tracking-wider text-white uppercase drop-shadow-[0_10px_24px_rgba(0,0,0,0.2)] sm:text-3xl">
                   {t("ticket.label")}
                 </div>
               </div>
@@ -331,7 +329,7 @@ export function CheckInClient() {
                     <img
                       src={qrDataUrl}
                       alt="Check-in QR"
-                      className="absolute inset-3 z-0 h-[calc(100%-1.5rem)] w-[calc(100%-1.5rem)] rounded-[0.95rem] bg-white shadow-[0_10px_20px_-16px_rgba(15,23,42,0.35)]"
+                      className="shadow-soft absolute inset-3 z-0 h-[calc(100%-1.5rem)] w-[calc(100%-1.5rem)] rounded-[0.95rem] bg-white"
                     />
                   </div>
                 </div>
@@ -353,10 +351,10 @@ export function CheckInClient() {
               )}
             </div>
 
-            <div className="rounded-2xl border border-white/38 bg-white/24 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_18px_38px_-34px_rgba(15,23,42,0.14)] backdrop-blur-xl dark:border-white/10 dark:bg-white/6 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_38px_-34px_rgba(0,0,0,0.42)]">
+            <div className="surface px-4 py-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  <div className="mb-1 text-[11px] font-semibold tracking-[0.18em] text-neutral-500 uppercase dark:text-neutral-400">
+                  <div className="eyebrow text-2xs mb-1 text-neutral-500 dark:text-neutral-400">
                     {t("ticket.backupId")}
                   </div>
                   {publicId ? (
@@ -405,7 +403,7 @@ export function CheckInClient() {
         </div>
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 shadow-sm dark:border-neutral-700/50 dark:bg-neutral-900/50">
+      <div className="surface mt-6 overflow-hidden">
         <div className="border-b border-neutral-200/70 px-4 py-3 dark:border-neutral-700/50">
           <div className="flex items-center gap-2 text-sm font-semibold text-neutral-900 dark:text-white">
             <InfoIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -437,14 +435,14 @@ export function CheckInClient() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="backup-id-dialog-title"
-            className="w-full max-w-[32rem] overflow-hidden rounded-[1.7rem] border border-white/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(255,248,240,0.9)_100%)] p-3 shadow-[0_40px_120px_-40px_rgba(15,23,42,0.55)] ring-1 ring-white/60 backdrop-blur-2xl sm:p-4 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(24,24,28,0.96)_0%,rgba(10,10,14,0.95)_100%)] dark:ring-white/10"
+            className="shadow-floating w-full max-w-[32rem] overflow-hidden rounded-[1.7rem] border border-white/30 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(255,248,240,0.9)_100%)] p-3 ring-1 ring-white/60 backdrop-blur-2xl sm:p-4 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(24,24,28,0.96)_0%,rgba(10,10,14,0.95)_100%)] dark:ring-white/10"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-3 flex items-center justify-between gap-3 sm:mb-4">
               <div className="min-w-0">
                 <div
                   id="backup-id-dialog-title"
-                  className="text-[11px] leading-none font-semibold tracking-[0.18em] text-neutral-500 uppercase dark:text-neutral-400"
+                  className="eyebrow text-2xs leading-none text-neutral-500 dark:text-neutral-400"
                 >
                   {t("ticket.backupId")}
                 </div>

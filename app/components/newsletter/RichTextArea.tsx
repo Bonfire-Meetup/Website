@@ -68,7 +68,7 @@ export function RichTextArea({ id, value, onChange, placeholder, rows = 12 }: Ri
         </>
       ) : (
         <div
-          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm leading-relaxed text-neutral-700 dark:border-white/10 dark:bg-white/3 dark:text-neutral-300 [&_p]:mb-3 [&_p:last-child]:mb-0"
+          className="surface-inset w-full px-4 py-3 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300 [&_p]:mb-3 [&_p:last-child]:mb-0"
           style={{ minHeight: `${rows * 1.625}rem` }}
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{

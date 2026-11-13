@@ -3,13 +3,13 @@
 import { useTranslations } from "next-intl";
 
 const TAG_CLOUD_PANEL_CLASS =
-  "sm:rounded-2xl sm:border sm:border-white/65 sm:bg-white/70 sm:p-4 sm:shadow-[0_18px_42px_-30px_rgba(15,23,42,0.28)] sm:ring-1 sm:ring-white/35 sm:backdrop-blur-xl dark:sm:border-white/10 dark:sm:bg-white/5 dark:sm:ring-white/10 dark:sm:shadow-[0_22px_48px_-32px_rgba(0,0,0,0.78)]";
+  "sm:rounded-2xl sm:border sm:border-white/65 sm:bg-white/70 sm:p-4 sm:shadow-raised sm:ring-1 sm:ring-white/35 sm:backdrop-blur-xl dark:sm:border-white/10 dark:sm:bg-white/5 dark:sm:ring-white/10 dark:sm:shadow-raised";
 
 const TAG_CLOUD_BUTTON_BASE_CLASS =
   "inline-flex items-center gap-2 rounded-full border font-medium tracking-[-0.01em] transition-[background-color,border-color,color,box-shadow] duration-200";
 
 const TAG_CLOUD_WEIGHT_CLASSES = {
-  high: "min-h-8 px-3 py-1 text-xs sm:min-h-10 sm:px-4 sm:py-2 sm:text-sm sm:shadow-[0_14px_28px_-22px_rgba(15,23,42,0.22)]",
+  high: "min-h-8 px-3 py-1 text-xs sm:min-h-10 sm:px-4 sm:py-2 sm:text-sm sm:shadow-soft",
   low: "min-h-8 px-2.5 py-1 text-xs sm:min-h-9 sm:px-3 sm:py-1.5 sm:text-sm",
 } as const;
 
@@ -42,7 +42,7 @@ export function WatchLaterTagCloud({ activeTag, items, onTagChange }: WatchLater
 
   return (
     <section className={TAG_CLOUD_PANEL_CLASS}>
-      <p className="text-xs font-bold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-500">
+      <p className="tracking-label-lg text-xs font-bold text-neutral-500 uppercase dark:text-neutral-500">
         {t("topicsLabel")}
       </p>
 
@@ -77,7 +77,7 @@ export function WatchLaterTagCloud({ activeTag, items, onTagChange }: WatchLater
             >
               <span className="capitalize">#{item.tag}</span>
               <span
-                className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold sm:text-[11px] ${
+                className={`text-2xs sm:text-2xs rounded-full px-1.5 py-0.5 font-semibold ${
                   isActive
                     ? "bg-white/14 text-white dark:bg-neutral-950/10 dark:text-neutral-950"
                     : "bg-black/5 text-current dark:bg-white/10"

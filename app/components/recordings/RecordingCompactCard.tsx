@@ -116,7 +116,7 @@ export function RecordingCompactCard({
                 className="mt-1.5 flex flex-col gap-1"
                 itemClassName="flex items-center gap-2"
                 dotClassName="bg-brand-400 h-1 w-1 shrink-0 rounded-full shadow-[0_0_4px_var(--color-brand-glow-light)]"
-                textClassName={`truncate ${isSmall ? "text-[10px]" : "text-[11px]"} font-medium text-white/80`}
+                textClassName={`truncate ${isSmall ? "text-2xs" : "text-2xs"} font-medium text-white/80`}
               />
             </div>
             {footer ? (

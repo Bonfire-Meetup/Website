@@ -155,7 +155,7 @@ export function PasskeyBlock() {
                     {passkey.name ?? t("defaultName")}
                   </span>
                   {passkey.backedUp && (
-                    <span className="rounded-full bg-emerald-50 px-1.5 py-0.5 text-[10px] font-medium text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                    <span className="text-2xs rounded-full bg-emerald-50 px-1.5 py-0.5 font-medium text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
                       {t("synced")}
                     </span>
                   )}

@@ -86,7 +86,7 @@ export function EventCard({
   }
   const theme = getEventLocationTheme(location);
   const topMetaPillClass =
-    "inline-flex min-h-8 shrink-0 items-center justify-center gap-1 whitespace-nowrap bg-neutral-100/90 px-2.5 py-1 text-[11px] font-semibold tracking-[0.14em] text-neutral-600 uppercase sm:px-3 sm:py-1.5 sm:text-xs dark:bg-white/10 dark:text-neutral-200";
+    "inline-flex min-h-8 shrink-0 items-center justify-center gap-1 whitespace-nowrap bg-neutral-100/90 px-2.5 py-1 text-2xs font-semibold tracking-label-sm text-neutral-600 uppercase sm:px-3 sm:py-1.5 sm:text-xs dark:bg-white/10 dark:text-neutral-200";
 
   const platformLinks = [
     {
@@ -131,7 +131,7 @@ export function EventCard({
             />
             <Pill
               size="sm"
-              className="bg-amber-100 font-semibold tracking-[0.2em] text-amber-700 uppercase dark:bg-amber-500/20 dark:text-amber-300"
+              className="eyebrow bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
             >
               {t("comingSoon")}
             </Pill>
@@ -143,11 +143,11 @@ export function EventCard({
               titleGradientClassName={theme.titleGradient}
               titleClassName="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white"
               subtitleClassName="block bg-gradient-to-r bg-clip-text text-xl font-extrabold tracking-tight text-transparent sm:text-2xl"
-              prefixClassName="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500"
+              prefixClassName="eyebrow mb-1 block text-2xs text-neutral-400 dark:text-neutral-500"
             />
           </h3>
           {episode && episode !== title && (
-            <p className="mb-2.5 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
+            <p className="tracking-label-lg mb-2.5 text-xs font-semibold text-neutral-500 uppercase dark:text-neutral-400">
               {t("episodeLabel")}: {episode}
             </p>
           )}
@@ -218,7 +218,7 @@ export function EventCard({
 
           {isPlaceholder ? (
             <div
-              className="mt-auto flex w-full items-center justify-center rounded-xl border border-neutral-200/80 bg-neutral-100/70 px-4 py-2.5 text-sm font-semibold text-neutral-600 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300"
+              className="surface-inset mt-auto flex w-full items-center justify-center px-4 py-2.5 text-sm font-semibold text-neutral-600 dark:text-neutral-300"
               aria-live="polite"
             >
               {t("tba")}
@@ -257,7 +257,7 @@ export function EventCard({
             location={location}
             ariaLabel={t("locationLabel", { location })}
             icon={<MapPinIcon className="h-4 w-4" />}
-            className="min-h-8 shrink-0 px-2.5 py-1 text-[11px] whitespace-nowrap sm:px-3 sm:py-1.5 sm:text-xs"
+            className="text-2xs min-h-8 shrink-0 px-2.5 py-1 whitespace-nowrap sm:px-3 sm:py-1.5 sm:text-xs"
           />
           <div className="flex shrink-0 items-center gap-1.5 sm:justify-end sm:gap-2">
             {countdownLabel && (
@@ -281,11 +281,11 @@ export function EventCard({
             titleGradientClassName={theme.titleGradient}
             titleClassName="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white"
             subtitleClassName="block bg-gradient-to-r bg-clip-text text-xl font-extrabold tracking-tight text-transparent sm:text-2xl"
-            prefixClassName="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500"
+            prefixClassName="eyebrow mb-1 block text-2xs text-neutral-400 dark:text-neutral-500"
           />
         </h3>
         {episode && episode !== title && (
-          <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
+          <p className="tracking-label-lg mb-4 text-xs font-semibold text-neutral-500 uppercase dark:text-neutral-400">
             {t("episodeLabel")}: {episode}
           </p>
         )}
@@ -335,7 +335,7 @@ export function EventCard({
                       className="flex items-start gap-3 rounded-2xl bg-white/60 p-3.5 shadow-sm shadow-black/5 dark:bg-white/5"
                     >
                       <div
-                        className="mt-1 flex h-7 w-7 flex-none items-center justify-center rounded-lg text-[9px] font-black text-white"
+                        className="text-2xs mt-1 flex h-7 w-7 flex-none items-center justify-center rounded-lg font-black text-white"
                         style={{ background: theme.color }}
                       >
                         {(index + 1).toString().padStart(2, "0")}
@@ -364,7 +364,7 @@ export function EventCard({
                                     {...(!profileHref && r.url
                                       ? { target: "_blank", rel: "noopener noreferrer" }
                                       : {})}
-                                    className="underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-700 hover:decoration-neutral-500 dark:decoration-neutral-600 dark:hover:text-neutral-200 dark:hover:decoration-neutral-400"
+                                    className="text-link hover:text-neutral-700 dark:hover:text-neutral-200"
                                   >
                                     {withCompany(r.name, r.company)}
                                   </a>
@@ -406,7 +406,7 @@ export function EventCard({
           )}
           {platformLinks.length > 0 && (
             <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-              <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
+              <span className="text-2xs text-neutral-400 dark:text-neutral-500">
                 {t("orRegisterVia")}
               </span>
               {platformLinks.map((platform) => (
@@ -415,7 +415,7 @@ export function EventCard({
                   href={platform.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[11px] text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+                  className="text-2xs inline-flex items-center gap-1 text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
                 >
                   <platform.icon className="h-3 w-3" />
                   {platform.label}

@@ -115,7 +115,7 @@ export function QuestionRow({
       >
         {talkTopic && (
           <span
-            className={`inline-block max-w-[90%] truncate rounded-full px-2 py-0.5 text-[10px] font-medium ${
+            className={`text-2xs inline-block max-w-[90%] truncate rounded-full px-2 py-0.5 font-medium ${
               useThemedBubble
                 ? "bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300"
                 : "bg-neutral-100 text-neutral-500 dark:bg-white/10 dark:text-neutral-400"
@@ -140,22 +140,22 @@ export function QuestionRow({
         >
           <div className={`flex items-center gap-1.5 ${isOwn ? "flex-row-reverse" : "flex-row"}`}>
             {isOwn ? (
-              <span className="text-[10px] font-medium text-neutral-500 dark:text-neutral-400">
+              <span className="text-2xs font-medium text-neutral-500 dark:text-neutral-400">
                 {selfLabel}
               </span>
             ) : question.authorIsPublic && question.authorPublicId ? (
               <a
                 href={PAGE_ROUTES.USER(question.authorPublicId)}
-                className="text-[10px] font-medium text-neutral-600 underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:decoration-neutral-500 dark:hover:text-white"
+                className="text-link text-2xs font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-300 dark:decoration-neutral-500 dark:hover:text-white"
               >
                 {question.authorName ?? anonymousLabel}
               </a>
             ) : (
-              <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
+              <span className="text-2xs text-neutral-400 dark:text-neutral-500">
                 {privateOnlyLabel}
               </span>
             )}
-            <span className="text-[10px] text-neutral-400 tabular-nums dark:text-neutral-500">
+            <span className="text-2xs text-neutral-400 tabular-nums dark:text-neutral-500">
               {formatBubbleTime(question.createdAt, locale)}
             </span>
           </div>
@@ -165,7 +165,7 @@ export function QuestionRow({
               type="button"
               onClick={() => onToggleBoost(question.id, question.hasBoosted)}
               disabled={toggleBoostPending || deleteQuestionPending || !isWindowOpen}
-              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
+              className={`text-2xs inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
                 question.hasBoosted
                   ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/30"
                   : "border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-400/20 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20"

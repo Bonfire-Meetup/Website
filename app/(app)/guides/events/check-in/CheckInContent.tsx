@@ -56,11 +56,11 @@ export function CheckInContent() {
 
           return (
             <li key={step} className="relative pl-14 sm:pl-16">
-              <div className="border-brand-300/45 dark:border-brand-300/20 absolute top-0 left-0 flex h-11 w-11 items-center justify-center rounded-2xl border bg-white/85 shadow-sm dark:bg-white/5">
+              <div className="surface border-brand-300/45 dark:border-brand-300/20 absolute top-0 left-0 flex h-11 w-11 items-center justify-center">
                 <Icon className="text-brand-700 dark:text-brand-300 h-5 w-5" aria-hidden="true" />
               </div>
               <div className="mb-2 flex items-center gap-3">
-                <span className="text-brand-700 dark:text-brand-300 text-xs font-bold tracking-[0.22em] uppercase">
+                <span className="eyebrow text-brand-700 dark:text-brand-300 text-xs">
                   {t("stepLabel", { number: index + 1 })}
                 </span>
                 <span className="h-px flex-1 bg-neutral-200 dark:bg-white/10" />

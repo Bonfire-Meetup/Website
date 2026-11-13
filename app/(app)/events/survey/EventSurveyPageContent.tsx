@@ -12,7 +12,7 @@ export function EventSurveyPageContent() {
   return (
     <>
       <ScrollToTop />
-      <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+      <main className="gradient-bg relative min-h-screen overflow-hidden">
         <StaticPageHero
           eyebrow={t("eyebrow")}
           heroWord="SURVEY"

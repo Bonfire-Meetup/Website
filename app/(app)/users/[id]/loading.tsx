@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/shared/Skeletons";
 
 export default function UserProfileLoading() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+    <main className="gradient-bg relative min-h-screen overflow-hidden">
       <div className="relative px-4 pt-24 pb-20 sm:px-6 sm:pt-32 lg:px-8 lg:pt-40">
         <div className="mx-auto max-w-5xl">
           <div className="relative mb-12 sm:mb-16">
@@ -30,7 +30,7 @@ export default function UserProfileLoading() {
             </div>
           </div>
 
-          <section className="mb-8 rounded-2xl border border-neutral-200 bg-white/75 px-4 py-3 dark:border-white/10 dark:bg-neutral-900/60">
+          <section className="surface mb-8 px-4 py-3">
             <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
               <div className="space-y-1">
                 <Skeleton className="h-3 w-24" />
@@ -70,7 +70,7 @@ export default function UserProfileLoading() {
               </div>
             </section>
 
-            <section className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 dark:border-white/5 dark:bg-neutral-900/50">
+            <section className="surface relative overflow-hidden">
               <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
                 <div className="flex items-center gap-4">
                   <Skeleton className="h-12 w-12 rounded-xl" />
@@ -85,10 +85,7 @@ export default function UserProfileLoading() {
                   { length: 2 },
                   (_, skeletonIndex) => `event-skeleton-${skeletonIndex}`,
                 ).map((skeletonId) => (
-                  <div
-                    key={skeletonId}
-                    className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-white/5 dark:bg-neutral-800/30"
-                  >
+                  <div key={skeletonId} className="surface-inset p-4">
                     <Skeleton className="mb-2 h-4 w-3/4" />
                     <Skeleton className="h-3 w-1/2" />
                   </div>

@@ -47,14 +47,14 @@ export function DangerZoneBlock({
           {[t("steps.intent"), t("steps.send"), t("steps.verify")].map((label, i) => (
             <div
               key={label}
-              className={`flex flex-1 items-center justify-center gap-2 px-3 py-3 text-[10px] font-semibold tracking-[0.2em] uppercase transition-colors ${
+              className={`text-2xs tracking-label flex flex-1 items-center justify-center gap-2 px-3 py-3 font-semibold uppercase transition-colors ${
                 i <= stepIndex
                   ? "bg-rose-50/80 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300"
                   : "text-neutral-400 dark:text-neutral-500"
               } ${i < 2 ? "border-r border-rose-200/70 dark:border-rose-500/15" : ""}`}
             >
               <span
-                className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold ${
+                className={`text-2xs flex h-5 w-5 items-center justify-center rounded-full font-bold ${
                   i < stepIndex
                     ? "bg-rose-500 text-white shadow-sm shadow-rose-200/80 dark:bg-rose-400 dark:shadow-none"
                     : i === stepIndex
@@ -92,16 +92,16 @@ export function DangerZoneBlock({
           )}
 
           {step === "verify" ? (
-            <div className="rounded-2xl border border-rose-200/70 bg-white/60 p-4 dark:border-rose-500/15 dark:bg-white/[0.03]">
+            <div className="surface border-rose-200/70 p-4 dark:border-rose-500/15">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="min-w-0">
-                  <label className="block text-xs tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                  <label className="tracking-label block text-xs text-neutral-500 uppercase dark:text-neutral-400">
                     {t("codeLabel")}
                   </label>
                   <input
                     value={code}
                     onChange={(event) => onCodeChange(event.target.value)}
-                    className="mt-2 w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-center text-base tracking-[0.35em] text-neutral-900 transition outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-300/40 sm:w-48 sm:text-lg sm:tracking-[0.5em] dark:border-white/10 dark:bg-white/5 dark:text-neutral-100"
+                    className="tracking-label-lg sm:tracking-label-lg mt-2 w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-center text-base text-neutral-900 transition outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-300/40 sm:w-48 sm:text-lg dark:border-white/10 dark:bg-white/5 dark:text-neutral-100"
                     inputMode="numeric"
                     autoComplete="one-time-code"
                     placeholder="000000"
@@ -131,7 +131,7 @@ export function DangerZoneBlock({
               </div>
             </div>
           ) : step === "confirm" ? (
-            <div className="rounded-2xl border border-rose-200/70 bg-white/60 p-4 dark:border-rose-500/15 dark:bg-white/[0.03]">
+            <div className="surface border-rose-200/70 p-4 dark:border-rose-500/15">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-sm leading-6 text-neutral-600 dark:text-neutral-400">
                   {t("sendIntro")}
@@ -160,7 +160,7 @@ export function DangerZoneBlock({
               </div>
             </div>
           ) : step === "done" ? null : (
-            <div className="rounded-2xl border border-rose-200/70 bg-white/60 p-4 dark:border-rose-500/15 dark:bg-white/[0.03]">
+            <div className="surface border-rose-200/70 p-4 dark:border-rose-500/15">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <label className="flex cursor-pointer items-start gap-3 text-sm text-neutral-700 sm:items-center dark:text-neutral-300">
                   <input

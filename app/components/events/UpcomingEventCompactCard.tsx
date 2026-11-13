@@ -91,7 +91,7 @@ export function UpcomingEventCompactCard({
             {countdownLabel && (
               <Pill
                 size="sm"
-                className="inline-flex items-center gap-1 bg-neutral-100/90 font-semibold tracking-[0.14em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-200"
+                className="tracking-label-sm inline-flex items-center gap-1 bg-neutral-100/90 font-semibold text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-200"
               >
                 <CalendarIcon className="h-3 w-3" />
                 {countdownLabel}
@@ -106,7 +106,7 @@ export function UpcomingEventCompactCard({
             titleGradientClassName={theme.titleGradient}
             titleClassName="text-lg font-bold tracking-tight text-neutral-900 sm:text-xl dark:text-white"
             subtitleClassName="block bg-gradient-to-r bg-clip-text text-lg font-extrabold tracking-tight text-transparent sm:text-xl"
-            prefixClassName="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500"
+            prefixClassName="eyebrow mb-1 block text-2xs text-neutral-400 dark:text-neutral-500"
           />
         </h3>
 
@@ -136,7 +136,7 @@ export function UpcomingEventCompactCard({
             href={mapUrl}
             className="flex items-center gap-2.5 text-sm text-neutral-700 transition-colors hover:text-neutral-900 dark:text-neutral-300 dark:hover:text-white"
             iconContainerClassName={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${theme.metaIcon}`}
-            textClassName="font-medium underline decoration-neutral-300 underline-offset-2 dark:decoration-neutral-600"
+            textClassName="text-link font-medium"
           >
             {venue}
           </EventMetaRow>
@@ -160,7 +160,7 @@ export function UpcomingEventCompactCard({
 
         {isPlaceholder ? (
           <div
-            className="mt-auto flex w-full items-center justify-center rounded-xl border border-neutral-200/80 bg-neutral-100/70 px-4 py-2.5 text-sm font-semibold text-neutral-600 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300"
+            className="surface-inset mt-auto flex w-full items-center justify-center px-4 py-2.5 text-sm font-semibold text-neutral-600 dark:text-neutral-300"
             aria-live="polite"
           >
             {t("tba")}

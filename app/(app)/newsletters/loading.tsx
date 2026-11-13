@@ -17,7 +17,7 @@ function IssueRowSkeleton() {
 
 export default function NewsletterArchiveLoading() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+    <main className="gradient-bg relative min-h-screen overflow-hidden">
       <StaticPageHeroSkeleton
         sectionPreset="compact"
         titleClassName="mx-auto mb-3 h-10 w-3/4 max-w-sm rounded-xl sm:h-12"

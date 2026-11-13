@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { type CSSProperties, useMemo, useState } from "react";
 
+import { DateTile } from "@/components/events/DateTile";
 import { EventsPageHero } from "@/components/events/EventsPageHero";
 import { ArrowRightIcon, SparklesIcon } from "@/components/shared/Icons";
 import { BackLink } from "@/components/ui/BackLink";
@@ -117,7 +118,7 @@ export function PastEventsPageContent() {
   const yearSelectBaseClass =
     "h-8 min-w-[122px] rounded-full border border-neutral-200/80 bg-white/80 px-3 text-xs font-semibold shadow-sm ring-1 ring-black/5 transition focus:ring-2 focus:outline-none focus:ring-brand-500/50 dark:border-white/12 dark:bg-white/8 dark:ring-white/10 dark:focus:ring-brand-400/50";
   const filterButtonClass = (isActive: boolean, activeClassName = defaultFilterButtonActiveClass) =>
-    `rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors ${
+    `rounded-full border px-2.5 py-1 text-2xs font-semibold transition-colors ${
       isActive
         ? activeClassName
         : "border-neutral-200/80 bg-white/75 text-neutral-600 hover:border-neutral-300 hover:bg-white dark:border-white/12 dark:bg-white/8 dark:text-neutral-300 dark:hover:border-white/22 dark:hover:bg-white/15"
@@ -152,24 +153,24 @@ export function PastEventsPageContent() {
   }, [filteredEvents, monthFormatter]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+    <main className="gradient-bg relative min-h-screen overflow-hidden">
       <EventsPageHero
         eyebrow={t("pastSectionEyebrow")}
         subtitle={t("pastPageSubtitle")}
         title={
-          <h1 className="mb-5 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
+          <h1 className="page-title mb-5">
             <span className="text-gradient-static block">{t("pastPageTitle")}</span>
           </h1>
         }
       />
 
       <section className="relative mx-auto max-w-7xl px-4 pb-24">
-        <div className="mb-6 rounded-2xl border border-neutral-200/80 bg-white/70 p-3 backdrop-blur-sm sm:p-3.5 dark:border-white/10 dark:bg-white/5">
+        <div className="surface mb-6 p-3 sm:p-3.5">
           <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between">
             <div className="hidden items-center gap-2 lg:flex">
               <Pill
                 size="sm"
-                className="bg-neutral-100 px-2 py-0.5 text-[10px] font-semibold tracking-[0.14em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-300"
+                className="text-2xs tracking-label-sm bg-neutral-100 px-2 py-0.5 font-semibold text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-300"
               >
                 {t("pastFiltersLabel")}
               </Pill>
@@ -177,7 +178,7 @@ export function PastEventsPageContent() {
 
             <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-3">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] font-semibold tracking-[0.12em] text-neutral-500 uppercase dark:text-neutral-400">
+                <span className="text-2xs tracking-label-sm font-semibold text-neutral-500 uppercase dark:text-neutral-400">
                   {t("pastFilterLocation")}
                 </span>
                 {locationOptions.map((option) => (
@@ -197,7 +198,7 @@ export function PastEventsPageContent() {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-semibold tracking-[0.12em] text-neutral-500 uppercase dark:text-neutral-400">
+                <span className="text-2xs tracking-label-sm font-semibold text-neutral-500 uppercase dark:text-neutral-400">
                   {t("pastFilterYear")}
                 </span>
                 <SelectDropdown
@@ -218,8 +219,8 @@ export function PastEventsPageContent() {
           <div className="space-y-10">
             {groups.map((group) => (
               <section key={group.key} className="grid gap-4 lg:grid-cols-[190px_1fr] lg:gap-6">
-                <div className="self-start rounded-2xl border border-neutral-200/80 bg-white/70 p-4 backdrop-blur-sm lg:sticky lg:top-24 dark:border-white/10 dark:bg-white/5">
-                  <p className="text-[11px] font-bold tracking-[0.16em] text-neutral-500 uppercase dark:text-neutral-400">
+                <div className="surface self-start p-4 lg:sticky lg:top-24">
+                  <p className="text-2xs tracking-label-sm font-bold text-neutral-500 uppercase dark:text-neutral-400">
                     {t("pastSectionEyebrow")}
                   </p>
                   <h2 className="mt-1 text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
@@ -248,34 +249,28 @@ export function PastEventsPageContent() {
                     return (
                       <article
                         key={event.id}
-                        className="group relative grid grid-cols-[78px_1fr] gap-3 overflow-hidden rounded-2xl border border-neutral-200/80 bg-white/75 p-4 transition-colors hover:bg-white sm:grid-cols-[88px_1fr] sm:gap-4 sm:p-5 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+                        className="surface group relative grid grid-cols-[78px_1fr] gap-3 overflow-hidden p-4 transition-colors hover:bg-white sm:grid-cols-[88px_1fr] sm:gap-4 sm:p-5 dark:hover:bg-white/10"
                       >
                         <div
                           className={`pointer-events-none absolute inset-y-0 left-0 w-1 opacity-65 ${theme.rail}`}
                         />
 
                         <div className="relative flex items-start">
-                          <div className="relative flex w-full flex-col items-center gap-0.5 rounded-2xl border border-neutral-200/80 bg-white/55 px-2 py-2.5 text-center backdrop-blur-sm sm:px-2.5 sm:py-3 dark:border-white/10 dark:bg-white/5">
-                            <span
-                              className="pointer-events-none absolute inset-x-2 top-0 h-px rounded-full opacity-50"
-                              style={{ backgroundColor: theme.color }}
-                            />
-                            <span className="text-xs font-semibold tracking-[0.14em] text-neutral-500 uppercase sm:tracking-[0.1em] dark:text-neutral-400">
-                              {weekday || event.date}
-                            </span>
-                            <span className="text-2xl leading-none font-black text-neutral-900 dark:text-white">
-                              {dayNumber}
-                            </span>
-                            <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                              {isValidDate ? monthShortFormatter.format(eventDate) : ""}
-                            </span>
-                          </div>
+                          <DateTile
+                            variant="plain"
+                            date={isValidDate ? event.date : undefined}
+                            location={event.location}
+                            top={weekday || event.date}
+                            day={dayNumber}
+                            bottom={isValidDate ? monthShortFormatter.format(eventDate) : undefined}
+                            className="w-full"
+                          />
                         </div>
 
                         <div className="min-w-0">
                           {shouldSplitTitle && parsedTitle ? (
                             <h3>
-                              <span className="block text-[11px] font-bold tracking-[0.16em] text-neutral-400 uppercase dark:text-neutral-500">
+                              <span className="text-2xs tracking-label-sm block font-bold text-neutral-400 uppercase dark:text-neutral-500">
                                 {parsedTitle.prefix}
                               </span>
                               <span className="text-gradient-static mt-0.5 block text-xl font-black tracking-tight sm:text-[1.35rem]">
@@ -324,7 +319,7 @@ export function PastEventsPageContent() {
                               </Link>
                               <Link
                                 href={PAGE_ROUTES.EVENT(event.id)}
-                                className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300/80 bg-white px-3.5 py-1.5 text-sm font-semibold text-neutral-700 transition-all hover:border-neutral-400 hover:text-neutral-900 dark:border-white/15 dark:bg-white/10 dark:text-neutral-200 dark:hover:border-white/25 dark:hover:text-white"
+                                className="btn-outline gap-1.5 rounded-full px-3.5 py-1.5 text-sm"
                               >
                                 {t("pastPageViewDetails")}
                                 <ArrowRightIcon className={`h-4 w-4 ${theme.iconTint}`} />

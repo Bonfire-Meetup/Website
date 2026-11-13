@@ -16,6 +16,7 @@ import {
 } from "@/components/shared/Icons";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { getInitials } from "@/lib/utils/initials";
 
 interface TeamMember {
   name: string;
@@ -45,15 +46,6 @@ const roleIconMap: Record<string, RoleIconType> = {
   recording: "video",
   "video, audio": "film",
 };
-
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
 
 function RoleIcon({ role, className }: { role: string; className?: string }) {
   const normalizedRole = role.toLowerCase();
@@ -165,7 +157,7 @@ function CitySection({
       <div className="relative">
         <div className="mb-8 flex items-end gap-4">
           <div className="flex-1">
-            <p className="text-brand-600 dark:text-brand-300 mb-2 text-xs font-bold tracking-[0.3em] uppercase">
+            <p className="text-brand-600 dark:text-brand-300 tracking-label-lg mb-2 text-xs font-bold uppercase">
               {crewEyebrow}
             </p>
             <h2
@@ -210,7 +202,7 @@ export function CrewPageContent() {
   const cityCount = citiesRaw.length;
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+    <main className="gradient-bg relative min-h-screen overflow-hidden">
       <StaticPageHero
         brandAccentClassName="bg-[radial-gradient(circle_at_center,var(--color-prague-glow-2),transparent_60%)]"
         containerClassName="mx-auto max-w-4xl text-center"

@@ -62,7 +62,7 @@ export default async function EventQuestionsPage({ params }: { params: Promise<{
   }));
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+    <main className="gradient-bg relative min-h-screen overflow-hidden">
       <StaticPageHero
         backgroundVariant="events"
         eyebrow={t("questionsPage.eyebrow")}
@@ -72,11 +72,7 @@ export default async function EventQuestionsPage({ params }: { params: Promise<{
         sectionClassName="relative px-4 pt-40 pb-10 text-center sm:pt-32 sm:pb-12"
         subtitle={t("questionsPage.title")}
         subtitleClassName="mx-auto mt-4 max-w-2xl text-neutral-600 dark:text-neutral-400"
-        title={
-          <h1 className="text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
-            {event.title}
-          </h1>
-        }
+        title={<h1 className="page-title">{event.title}</h1>}
       >
         <div className="absolute top-24 left-1/2 z-20 flex w-full max-w-5xl -translate-x-1/2 px-4 sm:top-28 sm:px-6">
           <BackLink href={PAGE_ROUTES.EVENT(id)}>{t("questionsPage.backToEvent")}</BackLink>

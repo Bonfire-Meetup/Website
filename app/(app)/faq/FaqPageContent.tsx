@@ -9,6 +9,7 @@ import { QuestionAnchor } from "@/components/faq/QuestionAnchor";
 import { GuideLinkButton } from "@/components/guides/GuideLinkButton";
 import { StaticPageHero } from "@/components/layout/StaticPageHero";
 import { BoltIcon, FireIcon, GuildIcon } from "@/components/shared/Icons";
+import { Pill } from "@/components/ui/Pill";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -86,7 +87,7 @@ export function FaqPageContent() {
   const tRecordings = useTranslations("recordings");
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+    <main className="gradient-bg relative min-h-screen overflow-hidden">
       <StaticPageHero
         backgroundVariant="events"
         eyebrow={t("eyebrow")}
@@ -94,7 +95,7 @@ export function FaqPageContent() {
         heroWordSize="md"
         subtitle={t("subtitle")}
         title={
-          <h1 className="mb-5 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
+          <h1 className="page-title mb-5">
             <span className="block">{t("titlePart1")}</span>
             <span className="text-gradient-static block">{t("titleHighlight")}</span>
           </h1>
@@ -126,7 +127,7 @@ export function FaqPageContent() {
                     <div
                       key={qKey}
                       id={anchorId}
-                      className="group hover:border-brand-500/30 dark:hover:border-brand-500/20 scroll-mt-32 rounded-2xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:bg-white/10"
+                      className="surface group hover:border-brand-500/30 dark:hover:border-brand-500/20 scroll-mt-32 p-6 transition-all duration-300 hover:bg-white sm:p-8 dark:hover:bg-white/10"
                     >
                       <h3 className="group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-3 flex items-center text-lg font-bold text-neutral-900 transition-colors dark:text-neutral-100">
                         {t(`questions.${qKey}.title`)}
@@ -167,17 +168,20 @@ export function FaqPageContent() {
             <div className="grid gap-6">
               <div
                 id="sparks"
-                className="group scroll-mt-32 rounded-2xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-rose-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-rose-500/20 dark:hover:bg-white/10"
+                className="surface group scroll-mt-32 p-6 transition-all duration-300 hover:border-rose-500/30 hover:bg-white sm:p-8 dark:hover:border-rose-500/20 dark:hover:bg-white/10"
               >
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <h3 className="flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-rose-600 dark:text-neutral-100 dark:group-hover:text-rose-400">
                     {t("sparks.title")}
                     <QuestionAnchor id="sparks" />
                   </h3>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200">
+                  <Pill
+                    size="xxs"
+                    className="gap-1.5 border border-rose-200 bg-rose-50 font-semibold text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200"
+                  >
                     <FireIcon className="h-3.5 w-3.5" aria-hidden="true" />
                     {tRecordings("spark")}
-                  </span>
+                  </Pill>
                 </div>
                 <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                   {t("sparks.body")}
@@ -186,17 +190,20 @@ export function FaqPageContent() {
 
               <div
                 id="boosts"
-                className="group scroll-mt-32 rounded-2xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-emerald-500/20 dark:hover:bg-white/10"
+                className="surface group scroll-mt-32 p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white sm:p-8 dark:hover:border-emerald-500/20 dark:hover:bg-white/10"
               >
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <h3 className="flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-emerald-600 dark:text-neutral-100 dark:group-hover:text-emerald-400">
                     {t("boosts.title")}
                     <QuestionAnchor id="boosts" />
                   </h3>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
+                  <Pill
+                    size="xxs"
+                    className="gap-1.5 border border-emerald-200 bg-emerald-50 font-semibold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200"
+                  >
                     <BoltIcon className="h-3.5 w-3.5" aria-hidden="true" />
                     {tRecordings("boost")}
-                  </span>
+                  </Pill>
                 </div>
                 <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                   {t("boosts.body")}

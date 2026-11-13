@@ -34,10 +34,10 @@ function IssueRow({ item, issueNumber }: { item: ArchiveListItem; issueNumber?: 
       </span>
 
       <div className="min-w-0 flex-1">
-        <p className="mb-1 text-[11px] font-semibold tracking-[0.15em] text-neutral-400 uppercase dark:text-neutral-500">
+        <p className="text-2xs tracking-label-sm mb-1 font-semibold text-neutral-400 uppercase dark:text-neutral-500">
           {formatLongDateUTC(item.sentAt, locale)}
           {item.testSend && (
-            <span className="ml-2 rounded-full bg-amber-100 px-1.5 py-px text-[10px] font-bold tracking-normal text-amber-700 normal-case dark:bg-amber-500/20 dark:text-amber-400">
+            <span className="text-2xs ml-2 rounded-full bg-amber-100 px-1.5 py-px font-bold tracking-normal text-amber-700 normal-case dark:bg-amber-500/20 dark:text-amber-400">
               {t("testBadge")}
             </span>
           )}
@@ -99,7 +99,7 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
   }, [isEditor]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+    <main className="gradient-bg relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-24 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-1),transparent_60%)]" />
         <div className="absolute top-1/3 right-0 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_center,var(--color-rose-glow),transparent_60%)]" />
@@ -108,17 +108,13 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
       <StaticPageHero
         backgroundVariant="none"
         eyebrow={t("eyebrow")}
-        eyebrowClassName="mb-4 flex items-center justify-center gap-3 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:text-sm sm:tracking-[0.5em] dark:text-rose-400"
+        eyebrowClassName="mb-4 flex items-center justify-center gap-3 text-xs font-bold tracking-label-lg text-rose-600 uppercase sm:text-sm sm:tracking-label-lg dark:text-rose-400"
         eyebrowLineClassName="to-rose-400"
         containerClassName="mx-auto max-w-3xl text-center"
         sectionPreset="compact"
         subtitle={t("subtitle")}
         subtitleClassName="mx-auto mt-4 max-w-lg text-neutral-500 dark:text-neutral-400"
-        title={
-          <h1 className="text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
-            {t("title")}
-          </h1>
-        }
+        title={<h1 className="page-title">{t("title")}</h1>}
       />
 
       <section className="relative mx-auto max-w-2xl px-4 pb-24 sm:px-6">
@@ -134,7 +130,7 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
         {isEditor && testItems.length > 0 && (
           <div className="mt-8">
             <div className="mb-3 flex items-center gap-3">
-              <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold tracking-widest text-amber-700 uppercase dark:bg-amber-500/20 dark:text-amber-400">
+              <span className="text-2xs rounded-full bg-amber-100 px-2.5 py-1 font-bold tracking-widest text-amber-700 uppercase dark:bg-amber-500/20 dark:text-amber-400">
                 {t("testSendsLabel")}
               </span>
               <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-800" />

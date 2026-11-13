@@ -7,6 +7,8 @@ import { AlbumImage } from "@/components/shared/AlbumImage";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
+import { LOCATIONS } from "@/lib/config/constants";
+import { getEventLocationTheme } from "@/lib/events/theme";
 import {
   PHOTO_ALBUM_BASE_URL,
   getPhotoAlbumSummariesOrdered,
@@ -73,11 +75,7 @@ export function TimelinePageContent() {
         heroWordSize="xs"
         subtitle={t("subtitle")}
         subtitleClassName="mx-auto max-w-3xl text-neutral-600 dark:text-neutral-400"
-        title={
-          <h1 className="mb-5 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
-            {t("title")}
-          </h1>
-        }
+        title={<h1 className="page-title mb-5">{t("title")}</h1>}
       />
 
       <section className="px-4 sm:px-6 lg:px-8">
@@ -104,7 +102,7 @@ export function TimelinePageContent() {
                           : "md:col-start-1 md:col-end-3 md:row-start-1 md:justify-self-end"
                       }
                     >
-                      <div className="glass-card group relative w-full max-w-[680px] overflow-hidden rounded-2xl border border-orange-500/10 bg-white/80 shadow-[0_25px_60px_-35px_var(--color-fire-mid-glow-6)] backdrop-blur lg:max-w-[760px] dark:border-orange-400/15 dark:bg-neutral-950/70">
+                      <div className="surface glass-card group relative w-full max-w-[680px] overflow-hidden border-orange-500/10 lg:max-w-[760px] dark:border-orange-400/15">
                         <span
                           className={`pointer-events-none absolute -top-6 text-[90px] font-black tracking-tight text-neutral-900/5 sm:text-[130px] dark:text-white/5 ${
                             isRight ? "-right-4" : "-left-4"
@@ -129,7 +127,7 @@ export function TimelinePageContent() {
                                 sizes="(max-width: 1024px) 100vw, 260px"
                               />
                             ) : (
-                              <div className="flex h-full w-full items-center justify-center bg-neutral-100 text-sm font-semibold tracking-[0.3em] text-neutral-400 uppercase dark:bg-neutral-900 dark:text-neutral-500">
+                              <div className="tracking-label-lg flex h-full w-full items-center justify-center bg-neutral-100 text-sm font-semibold text-neutral-400 uppercase dark:bg-neutral-900 dark:text-neutral-500">
                                 {t("noPhotos")}
                               </div>
                             )}
@@ -144,13 +142,13 @@ export function TimelinePageContent() {
                                       isRight ? "lg:right-3 lg:left-auto" : "lg:left-3"
                                     }`}
                                   >
-                                    <span className="text-[10px] leading-none font-bold tracking-wider text-white/90 uppercase">
+                                    <span className="text-2xs leading-none font-bold tracking-wider text-white/90 uppercase">
                                       {formatMonthUTC(entry.date, locale)}
                                     </span>
                                     <span className="text-lg leading-none font-black text-white">
                                       {day}
                                     </span>
-                                    <span className="text-[9px] leading-none font-medium text-white/70">
+                                    <span className="text-2xs leading-none font-medium text-white/70">
                                       {year}
                                     </span>
                                   </div>
@@ -158,13 +156,13 @@ export function TimelinePageContent() {
                               })()}
                           </div>
                           <div className="flex min-w-0 flex-1 flex-col gap-4 px-6 pt-1 pb-6 lg:py-6">
-                            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold tracking-[0.25em] text-neutral-500 uppercase dark:text-neutral-400">
+                            <div className="eyebrow flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
                               <Pill
                                 size="xxs"
                                 className={
-                                  entry.city === "prague"
-                                    ? "bg-rose-500/10 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300"
-                                    : "bg-blue-500/10 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
+                                  getEventLocationTheme(
+                                    entry.city === "prague" ? LOCATIONS.PRAGUE : LOCATIONS.ZLIN,
+                                  ).pill
                                 }
                               >
                                 {entry.city === "prague" ? t("prague") : t("zlin")}

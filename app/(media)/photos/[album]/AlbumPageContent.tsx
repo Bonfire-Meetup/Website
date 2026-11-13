@@ -43,7 +43,7 @@ export function AlbumPageContent({ album, baseUrl }: AlbumPageContentProps) {
       </div>
       <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6 lg:px-8">
         <section className="space-y-4">
-          <div className="relative overflow-hidden rounded-2xl border border-black/10 shadow-[0_32px_70px_-36px_rgba(15,23,42,0.62)] ring-1 ring-white/30 dark:border-white/10 dark:shadow-[0_30px_66px_-30px_rgba(0,0,0,0.84)] dark:ring-white/10">
+          <div className="shadow-floating dark:shadow-floating relative overflow-hidden rounded-2xl border border-black/10 ring-1 ring-white/30 dark:border-white/10 dark:ring-white/10">
             <div className="relative aspect-[16/9] overflow-hidden">
               <AlbumImage
                 src={`${baseUrl}/${album.cover.src}`}
@@ -53,7 +53,7 @@ export function AlbumPageContent({ album, baseUrl }: AlbumPageContentProps) {
                 sizes="(max-width: 1152px) 100vw, 1152px"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/72 via-black/26 to-black/10" />
-              <div className="absolute top-4 left-4 rounded-full border border-white/30 bg-black/50 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-white uppercase backdrop-blur-sm">
+              <div className="eyebrow absolute top-4 left-4 rounded-full border border-white/30 bg-black/50 px-3 py-1 text-xs text-white backdrop-blur-sm">
                 {t("albumPhotos", { count: album.count })}
               </div>
               <div className="absolute right-4 bottom-4 left-4 sm:right-6 sm:bottom-6 sm:left-6">
@@ -64,7 +64,7 @@ export function AlbumPageContent({ album, baseUrl }: AlbumPageContentProps) {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.86)_0%,rgba(255,244,231,0.82)_100%)] p-5 shadow-[0_24px_54px_-36px_rgba(15,23,42,0.52)] ring-1 ring-white/45 sm:p-6 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(30,30,32,0.78)_0%,rgba(15,15,17,0.9)_100%)] dark:ring-white/10">
+          <div className="shadow-floating rounded-2xl border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.86)_0%,rgba(255,244,231,0.82)_100%)] p-5 ring-1 ring-white/45 sm:p-6 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(30,30,32,0.78)_0%,rgba(15,15,17,0.9)_100%)] dark:ring-white/10">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="space-y-2">
                 <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">

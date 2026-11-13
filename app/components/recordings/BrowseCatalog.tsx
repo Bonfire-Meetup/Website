@@ -295,7 +295,7 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
                   {shelfHeader.icon}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[11px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                  <p className="text-2xs tracking-label-sm font-semibold text-neutral-500 uppercase dark:text-neutral-400">
                     {tLibrary("shelfLabel")}
                   </p>
                   <h2 className="truncate text-lg font-bold tracking-tight text-neutral-900 sm:text-xl dark:text-white">

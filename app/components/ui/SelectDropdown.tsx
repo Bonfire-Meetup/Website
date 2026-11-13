@@ -260,9 +260,7 @@ export function SelectDropdown({
               key={group.label}
               className="mt-2 border-t border-black/5 pt-2 dark:border-white/10"
             >
-              <div className="px-3 pb-1 text-[10px] font-semibold tracking-[0.2em] text-neutral-400 uppercase">
-                {group.label}
-              </div>
+              <div className="eyebrow text-2xs px-3 pb-1 text-neutral-400">{group.label}</div>
               {group.options.map((option) => (
                 <button
                   key={option.value}

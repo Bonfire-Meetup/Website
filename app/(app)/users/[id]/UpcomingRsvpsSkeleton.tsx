@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/shared/Skeletons";
 export function UpcomingRsvpsSkeleton() {
   return (
     <section className="relative">
-      <div className="glass-card relative rounded-2xl border border-black/5 bg-white/80 dark:border-white/10 dark:bg-neutral-950/70">
+      <div className="surface glass-card relative">
         <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-rose-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
@@ -21,10 +21,7 @@ export function UpcomingRsvpsSkeleton() {
             { length: 2 },
             (_, skeletonIndex) => `upcoming-rsvp-skeleton-${skeletonIndex}`,
           ).map((skeletonId) => (
-            <div
-              key={skeletonId}
-              className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-white/5 dark:bg-neutral-800/30"
-            >
+            <div key={skeletonId} className="surface-inset p-4">
               <Skeleton className="mb-2 h-4 w-3/4" />
               <Skeleton className="h-3 w-1/2" />
             </div>

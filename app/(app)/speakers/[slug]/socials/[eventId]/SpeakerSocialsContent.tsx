@@ -4,10 +4,10 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 
-import { PROFILE_EYEBROW, PROFILE_SURFACE, PROFILE_TONE } from "@/components/profile/surface";
 import { ArrowLeftIcon, DownloadIcon } from "@/components/shared/Icons";
 import { Lightbox } from "@/components/shared/Lightbox";
 import { AccentBar } from "@/components/ui/AccentBar";
+import { PROFILE_EYEBROW, PROFILE_SURFACE, PROFILE_TONE } from "@/components/ui/surface";
 import { Link } from "@/i18n/navigation";
 import type { SpeakerTalk } from "@/lib/events/speaker-profiles";
 import {
@@ -76,10 +76,7 @@ export function SpeakerSocialsContent({ speaker, talk }: SpeakerSocialsContentPr
             {talk.topic}
           </h1>
           <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-300">
-            <Link
-              href={PAGE_ROUTES.EVENT(talk.eventId)}
-              className="font-semibold underline decoration-neutral-300 underline-offset-2 hover:decoration-neutral-500 dark:decoration-neutral-600"
-            >
+            <Link href={PAGE_ROUTES.EVENT(talk.eventId)} className="text-link font-semibold">
               {talk.eventTitle}
             </Link>
             {hasDate && <> · {formatLongDateUTC(talk.date, locale)}</>}
@@ -155,7 +152,7 @@ export function SpeakerSocialsContent({ speaker, talk }: SpeakerSocialsContentPr
                         <p className="text-sm font-semibold text-neutral-900 dark:text-white">
                           {image.label}
                         </p>
-                        <p className="font-mono text-[11px] text-neutral-400 dark:text-neutral-500">
+                        <p className="text-2xs font-mono text-neutral-400 dark:text-neutral-500">
                           {image.width}×{image.height}
                         </p>
                       </div>
@@ -164,7 +161,7 @@ export function SpeakerSocialsContent({ speaker, talk }: SpeakerSocialsContentPr
                         download
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white/70 px-3 py-1.5 text-xs font-semibold text-neutral-700 transition-colors hover:border-black/20 hover:text-neutral-900 dark:border-white/15 dark:bg-white/5 dark:text-neutral-200 dark:hover:border-white/30 dark:hover:text-white"
+                        className="btn-outline gap-1.5 rounded-full px-3 py-1.5 text-xs"
                       >
                         <DownloadIcon className="h-3.5 w-3.5" />
                         {t("download")}

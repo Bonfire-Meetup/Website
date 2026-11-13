@@ -16,7 +16,7 @@ export function ResetCookieBannerButton() {
     <button
       type="button"
       onClick={handleReset}
-      className="mt-3 inline-flex items-center rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+      className="btn-outline mt-3 rounded-lg px-4 py-2 text-sm"
     >
       {t("resetBanner")}
     </button>

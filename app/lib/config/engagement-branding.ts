@@ -92,7 +92,7 @@ export const ENGAGEMENT_BRANDING = {
         "bg-[radial-gradient(circle_at_0%_0%,rgba(244,63,94,0.14),transparent_38%)] dark:bg-[radial-gradient(circle_at_0%_0%,rgba(251,146,60,0.22),transparent_38%)]",
       guildNoticeCardAccent:
         "bg-[radial-gradient(circle_at_0%_0%,rgba(251,191,36,0.12),transparent_38%)] dark:bg-[radial-gradient(circle_at_0%_0%,rgba(251,191,36,0.18),transparent_38%)]",
-      chip: "text-[9px] font-bold tracking-[0.14em]",
+      chip: "text-2xs font-bold tracking-label-sm",
       compactBadge:
         "rounded-full bg-gradient-to-r from-amber-300 via-orange-300 to-rose-300 text-neutral-900 ring-1 ring-white/45 shadow-lg",
       subtleBadge: "bg-amber-500/15 text-amber-700 dark:bg-amber-300/20 dark:text-amber-200",
@@ -103,17 +103,17 @@ export const ENGAGEMENT_BRANDING = {
         "bg-amber-500/15 text-amber-700 ring-1 ring-amber-500/20 dark:bg-amber-400/10 dark:text-amber-300 dark:ring-amber-300/20",
       countdownPanel:
         "rounded-xl border border-amber-200/40 bg-gradient-to-r from-amber-400/20 via-orange-400/16 to-rose-400/16 text-amber-50 shadow-[0_0_20px_rgba(251,146,60,0.18)]",
-      countdownLabel: "text-[10px] font-semibold tracking-[0.12em] text-amber-100/90 uppercase",
+      countdownLabel: "text-2xs font-semibold tracking-label-sm text-amber-100/90 uppercase",
       signInCountdownPanel:
         "w-full border-rose-300/55 bg-gradient-to-r from-rose-200/55 via-orange-200/45 to-red-200/45 px-2.5 py-1.5 text-rose-950 shadow-[0_0_20px_rgba(244,63,94,0.14)] sm:px-3 dark:border-rose-200/40 dark:bg-gradient-to-r dark:from-rose-400/20 dark:via-orange-400/16 dark:to-red-400/16 dark:text-rose-50 dark:shadow-[0_0_20px_rgba(244,63,94,0.2)]",
-      signInCountdownLabel: "text-rose-800 lg:text-[11px] dark:text-rose-100/90",
+      signInCountdownLabel: "text-rose-800 lg:text-2xs dark:text-rose-100/90",
       signInCountdownValue:
         "mt-0.5 text-xs font-bold tracking-tight break-words text-rose-950 tabular-nums lg:text-base dark:text-rose-50",
       signInLoaderGradient:
         "bg-[linear-gradient(90deg,rgba(251,146,60,0),rgba(244,63,94,0.95),rgba(254,205,211,0))]",
       guildCountdownPanel:
         "w-full border-amber-300/55 bg-gradient-to-r from-amber-200/55 via-orange-200/45 to-rose-200/45 px-2.5 py-1.5 text-amber-950 shadow-[0_0_20px_rgba(251,146,60,0.12)] sm:px-3 dark:border-amber-200/40 dark:bg-gradient-to-r dark:from-amber-400/20 dark:via-orange-400/16 dark:to-rose-400/16 dark:text-amber-50 dark:shadow-[0_0_20px_rgba(251,146,60,0.18)]",
-      guildCountdownLabel: "text-amber-800 lg:text-[11px] dark:text-amber-100/90",
+      guildCountdownLabel: "text-amber-800 lg:text-2xs dark:text-amber-100/90",
       guildCountdownValue:
         "mt-0.5 text-xs font-bold tracking-tight break-words text-amber-950 tabular-nums lg:text-base dark:text-amber-50",
       guildLoaderGradient:
@@ -139,7 +139,7 @@ export const ENGAGEMENT_BRANDING = {
         "hover:border-red-500/30 dark:hover:border-red-500/20 hover:bg-white dark:hover:bg-white/10",
       titleHover: "group-hover:text-red-600 dark:group-hover:text-red-400",
       badge:
-        "inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-[11px] font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200",
+        "inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-2xs font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200",
       infoBox:
         "rounded-2xl border border-red-200/60 bg-red-50/70 px-4 py-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200",
       infoBoxTitle: "font-semibold text-red-900 dark:text-red-100",
@@ -150,10 +150,9 @@ export const ENGAGEMENT_BRANDING = {
       iconContainer:
         "absolute top-6 right-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-red-200 to-rose-200 shadow-md shadow-red-500/20 dark:from-red-500/20 dark:to-rose-500/20 dark:shadow-inner",
       icon: "h-6 w-6 text-red-600 dark:text-red-300",
-      kicker:
-        "text-[10px] font-bold tracking-[0.3em] text-red-600/90 uppercase dark:text-red-300/90",
+      kicker: "text-2xs font-bold tracking-label-lg text-red-600/90 uppercase dark:text-red-300/90",
       soonBadge:
-        "rounded-full bg-red-200 px-2 py-0.5 text-[9px] font-bold tracking-wider text-red-800 uppercase dark:bg-red-500/20 dark:text-red-200",
+        "rounded-full bg-red-200 px-2 py-0.5 text-2xs font-bold tracking-wider text-red-800 uppercase dark:bg-red-500/20 dark:text-red-200",
       checkmark: "h-4 w-4 shrink-0 text-red-500 dark:text-red-400",
     },
   },

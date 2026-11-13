@@ -97,7 +97,7 @@ export function LocationCard({
         </div>
 
         <div className="mt-8">
-          <p className="mb-3 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
+          <p className="tracking-label-lg mb-3 text-xs font-semibold text-neutral-500 uppercase dark:text-neutral-400">
             {sponsorsTitle}
           </p>
           <div className="flex flex-wrap gap-3">

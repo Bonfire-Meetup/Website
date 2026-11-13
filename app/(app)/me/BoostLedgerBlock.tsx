@@ -144,12 +144,12 @@ export function BoostLedgerBlock({
                   <Link
                     href={entry.href}
                     prefetch={false}
-                    className="hover:text-brand-600 dark:hover:text-brand-300 truncate text-[11px] text-neutral-500 transition dark:text-neutral-400"
+                    className="hover:text-brand-600 dark:hover:text-brand-300 text-2xs truncate text-neutral-500 transition dark:text-neutral-400"
                   >
                     {entry.contextLabel}
                   </Link>
                 ) : entry.contextLabel ? (
-                  <div className="truncate text-[11px] text-neutral-500 dark:text-neutral-400">
+                  <div className="text-2xs truncate text-neutral-500 dark:text-neutral-400">
                     {entry.contextLabel}
                   </div>
                 ) : null;
@@ -159,7 +159,7 @@ export function BoostLedgerBlock({
                   {showBackfillDivider && (
                     <div className="my-2.5 flex items-center gap-3">
                       <div className="h-px flex-1 bg-linear-to-r from-transparent via-neutral-200 to-transparent dark:via-white/10" />
-                      <span className="shrink-0 rounded-full border border-neutral-200/80 bg-white/80 px-2 py-0.5 text-[10px] font-medium tracking-[0.16em] text-neutral-400 uppercase dark:border-white/10 dark:bg-white/5 dark:text-neutral-500">
+                      <span className="text-2xs tracking-label-sm shrink-0 rounded-full border border-neutral-200/80 bg-white/80 px-2 py-0.5 font-medium text-neutral-400 uppercase dark:border-white/10 dark:bg-white/5 dark:text-neutral-500">
                         {t("backfillDivider")}
                       </span>
                       <div className="h-px flex-1 bg-linear-to-r from-transparent via-neutral-200 to-transparent dark:via-white/10" />
@@ -191,7 +191,7 @@ export function BoostLedgerBlock({
                         <div className="truncate pt-0.5 text-xs leading-4">{resource}</div>
                       )}
                       {context && <div className="leading-4">{context}</div>}
-                      <div className="mt-1 text-[11px] leading-4 text-neutral-400 dark:text-neutral-500">
+                      <div className="text-2xs mt-1 leading-4 text-neutral-400 dark:text-neutral-500">
                         {formatDateTimeUTC(entry.createdAt, locale)}
                         {!entry.isBackfill && (
                           <>
@@ -202,7 +202,7 @@ export function BoostLedgerBlock({
                       </div>
                     </div>
                     <span
-                      className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums ${getDeltaTone(entry.delta)}`}
+                      className={`text-2xs shrink-0 rounded-full px-2 py-0.5 font-semibold tabular-nums ${getDeltaTone(entry.delta)}`}
                     >
                       {entry.delta > 0 ? `+${entry.delta}` : String(entry.delta)}
                     </span>

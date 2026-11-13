@@ -66,7 +66,7 @@ export function VideoMetadata({
             {isRestricted && !hideEarlyAccessBadge && (
               <Pill
                 size="sm"
-                className={`${ENGAGEMENT_BRANDING.access.classes.metadataPill} font-semibold tracking-[0.15em] uppercase`}
+                className={`${ENGAGEMENT_BRANDING.access.classes.metadataPill} tracking-label-sm font-semibold uppercase`}
               >
                 {accessLabel}
               </Pill>
@@ -103,7 +103,7 @@ export function VideoMetadata({
             <RecordingEpisodePill
               href={`${PAGE_ROUTES.LIBRARY_BROWSE}?episode=${encodeURIComponent(recording.episodeId)}`}
               size="sm"
-              className="bg-neutral-900/5 font-semibold tracking-[0.15em] text-neutral-600 uppercase transition hover:bg-neutral-900/10 hover:text-neutral-800 dark:bg-white/10 dark:text-neutral-200 dark:hover:bg-white/20 dark:hover:text-white"
+              className="tracking-label-sm bg-neutral-900/5 font-semibold text-neutral-600 uppercase transition hover:bg-neutral-900/10 hover:text-neutral-800 dark:bg-white/10 dark:text-neutral-200 dark:hover:bg-white/20 dark:hover:text-white"
               episodeId={recording.episodeId}
               episode={recording.episode}
               episodeNumber={recording.episodeNumber}

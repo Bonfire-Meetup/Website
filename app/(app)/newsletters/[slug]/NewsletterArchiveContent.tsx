@@ -172,7 +172,7 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
           backgroundVariant="none"
           containerClassName="mx-auto max-w-2xl text-center"
           eyebrow={t("eyebrow")}
-          eyebrowClassName="mb-5 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] text-rose-600 uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em] dark:text-rose-400"
+          eyebrowClassName="mb-5 flex items-center justify-center gap-2 text-xs font-bold tracking-label-lg text-rose-600 uppercase sm:gap-3 sm:text-sm sm:tracking-label-lg dark:text-rose-400"
           eyebrowLineClassName="to-rose-400"
           sectionPreset="detail"
           subtitle={
@@ -212,7 +212,7 @@ export function NewsletterArchiveContent({ newsletter, slug }: NewsletterArchive
                 )}
 
                 {index > 0 && (
-                  <p className="mb-3 text-[11px] font-bold tracking-[0.25em] text-rose-500/60 uppercase dark:text-rose-400/50">
+                  <p className="eyebrow text-2xs mb-3 text-rose-500/60 dark:text-rose-400/50">
                     {t("updateLabel", { number: String(index).padStart(2, "0") })}
                   </p>
                 )}

@@ -76,8 +76,8 @@ function TierCard({
       <div
         className={`relative overflow-hidden rounded-[15px] bg-white transition-all duration-300 dark:bg-neutral-950 ${
           selected
-            ? "shadow-[0_4px_24px_-6px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_24px_-6px_rgba(0,0,0,0.4)]"
-            : "group-hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.07)] dark:group-hover:shadow-[0_2px_12px_-4px_rgba(0,0,0,0.3)]"
+            ? "shadow-soft dark:shadow-soft"
+            : "group-hover:shadow-soft dark:group-hover:shadow-soft"
         }`}
       >
         {selected ? (
@@ -110,7 +110,7 @@ function TierCard({
                 {name}
               </span>
               <span
-                className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${colors.badge}`}
+                className={`text-2xs rounded-full border px-2 py-0.5 font-semibold ${colors.badge}`}
               >
                 {badge}
               </span>
@@ -275,7 +275,7 @@ export function GuildJoinPage({
   };
 
   return (
-    <main className="gradient-bg-static relative min-h-screen overflow-hidden px-4 pt-20 pb-24 sm:pt-32">
+    <main className="gradient-bg-static relative min-h-screen overflow-hidden px-4 pt-28 pb-24 sm:pt-32">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.08),transparent_38%)] dark:bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.05),transparent_36%)]" />
       <div className="pointer-events-none absolute inset-x-0 top-24 mx-auto h-72 max-w-5xl rounded-full bg-amber-200/20 blur-3xl dark:bg-amber-500/8" />
 
@@ -293,14 +293,14 @@ export function GuildJoinPage({
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_420px] lg:items-start lg:gap-10">
           {/* Left: heading + perks */}
           <div className="space-y-6">
-            <section className="relative overflow-hidden rounded-2xl border border-white/70 bg-[linear-gradient(145deg,rgba(255,255,255,0.95),rgba(255,250,245,0.88)_52%,rgba(255,246,237,0.92))] p-6 shadow-[0_24px_80px_-40px_rgba(15,23,42,0.32)] sm:p-8 dark:border-white/10 dark:bg-[linear-gradient(145deg,rgba(24,24,24,0.94),rgba(18,18,18,0.98)_56%,rgba(36,24,18,0.92))] dark:shadow-[0_24px_90px_-44px_rgba(0,0,0,0.55)]">
+            <section className="shadow-floating dark:shadow-floating relative overflow-hidden rounded-2xl border border-white/70 bg-[linear-gradient(145deg,rgba(255,255,255,0.95),rgba(255,250,245,0.88)_52%,rgba(255,246,237,0.92))] p-6 sm:p-8 dark:border-white/10 dark:bg-[linear-gradient(145deg,rgba(24,24,24,0.94),rgba(18,18,18,0.98)_56%,rgba(36,24,18,0.92))]">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(244,63,94,0.08),transparent_30%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.09),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(244,63,94,0.05),transparent_28%)]" />
               <div className="relative">
                 <div className="mb-6 flex flex-wrap items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-2xl border border-amber-300/50 bg-white/80 shadow-sm dark:border-amber-400/20 dark:bg-white/8">
+                  <div className="surface flex h-9 w-9 items-center justify-center border-amber-300/50 dark:border-amber-400/20">
                     <GuildIcon className="h-4 w-4 text-amber-600 dark:text-amber-300" />
                   </div>
-                  <span className="text-[11px] font-semibold tracking-[0.28em] text-amber-700/80 uppercase dark:text-amber-300/75">
+                  <span className="text-2xs tracking-label-lg font-semibold text-amber-700/80 uppercase dark:text-amber-300/75">
                     {t("kicker")}
                   </span>
                 </div>
@@ -314,10 +314,7 @@ export function GuildJoinPage({
 
                 <div className="mt-8 grid gap-3 sm:grid-cols-3">
                   {highlightedPerks.map((perk) => (
-                    <div
-                      key={perk}
-                      className="rounded-2xl border border-neutral-200/80 bg-white/75 px-4 py-4 shadow-[0_10px_30px_-24px_rgba(15,23,42,0.35)] backdrop-blur-sm dark:border-white/10 dark:bg-white/6 dark:shadow-none"
-                    >
+                    <div key={perk} className="surface px-4 py-4">
                       <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-sm">
                         <StarFilledIcon className="h-3.5 w-3.5 text-white" />
                       </div>
@@ -332,7 +329,7 @@ export function GuildJoinPage({
                   <div className="flex gap-4 px-5 py-5 sm:px-6">
                     <div className="w-px shrink-0 rounded-full bg-gradient-to-b from-amber-400/80 via-orange-400/55 to-transparent dark:from-amber-400/50 dark:via-orange-400/30" />
                     <div className="min-w-0">
-                      <p className="text-[11px] font-semibold tracking-[0.24em] text-neutral-500 uppercase dark:text-neutral-400">
+                      <p className="eyebrow text-2xs text-neutral-500 dark:text-neutral-400">
                         {tGuild("openNoteLabel")}
                       </p>
                       <p className="mt-2 max-w-2xl text-sm leading-[1.75] text-neutral-600 dark:text-neutral-300">
@@ -354,10 +351,7 @@ export function GuildJoinPage({
 
             <section className="grid gap-3 sm:grid-cols-2">
               {selectedTierDetails.features.slice(0, 4).map((feature) => (
-                <div
-                  key={feature}
-                  className="rounded-2xl border border-neutral-200/80 bg-white/70 px-4 py-4 shadow-[0_14px_34px_-28px_rgba(15,23,42,0.35)] backdrop-blur-sm dark:border-white/10 dark:bg-white/5 dark:shadow-none"
-                >
+                <div key={feature} className="surface px-4 py-4">
                   <div className="flex items-start gap-3">
                     <span
                       className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${colors.checkBg} shadow-sm`}
@@ -375,10 +369,10 @@ export function GuildJoinPage({
 
           {/* Right: tier selector + CTA */}
           <div className="w-full lg:sticky lg:top-24">
-            <div className="overflow-hidden rounded-2xl border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(250,250,249,0.9))] p-5 shadow-[0_24px_80px_-36px_rgba(15,23,42,0.28)] backdrop-blur-xl sm:p-6 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(19,19,19,0.96),rgba(10,10,10,0.98))] dark:shadow-[0_24px_80px_-36px_rgba(0,0,0,0.55)]">
+            <div className="shadow-floating dark:shadow-floating overflow-hidden rounded-2xl border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(250,250,249,0.9))] p-5 backdrop-blur-xl sm:p-6 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(19,19,19,0.96),rgba(10,10,10,0.98))]">
               <div className="mb-5 flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[11px] font-semibold tracking-[0.24em] text-neutral-500 uppercase dark:text-neutral-400">
+                  <p className="eyebrow text-2xs text-neutral-500 dark:text-neutral-400">
                     {tierLabel}
                   </p>
                   <h2 className="mt-1 text-xl font-black tracking-tight text-neutral-900 dark:text-white">
@@ -386,7 +380,7 @@ export function GuildJoinPage({
                   </h2>
                 </div>
                 <span
-                  className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${colors.badge}`}
+                  className={`text-2xs rounded-full border px-2.5 py-1 font-semibold ${colors.badge}`}
                 >
                   {selectedTierDetails.badge}
                 </span>

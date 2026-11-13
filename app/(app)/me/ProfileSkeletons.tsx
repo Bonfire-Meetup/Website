@@ -1,6 +1,6 @@
 export function ProfileSkeleton() {
   return (
-    <div className="animate-pulse overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
+    <div className="surface animate-pulse overflow-hidden">
       <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-3 dark:border-white/5">
         <div className="h-3 w-20 rounded bg-neutral-200/70 dark:bg-white/10" />
         <div className="h-8 w-8 rounded-full bg-neutral-200/50 dark:bg-white/5" />
@@ -81,10 +81,7 @@ export function PreferencesSkeleton() {
       <div className="h-7 w-32 animate-pulse rounded bg-neutral-200/60 dark:bg-white/10" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[1, 2].map((i) => (
-          <div
-            key={i}
-            className="animate-pulse overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5"
-          >
+          <div key={i} className="surface animate-pulse overflow-hidden">
             <div className="flex items-center justify-between gap-4 p-4">
               <div className="min-w-0 flex-1 space-y-2">
                 <div className="h-4 w-32 rounded bg-neutral-200/60 dark:bg-white/10" />
@@ -105,7 +102,7 @@ export function SecuritySkeleton() {
       <div className="h-7 w-32 animate-pulse rounded bg-neutral-200/60 dark:bg-white/10" />
       <div className="grid min-w-0 gap-6 lg:grid-cols-2">
         <div className="min-w-0">
-          <div className="animate-pulse overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
+          <div className="surface animate-pulse overflow-hidden">
             <div className="border-b border-neutral-100 px-4 py-3 dark:border-white/5">
               <div className="h-4 w-36 rounded bg-neutral-200/60 dark:bg-white/10" />
             </div>
@@ -122,7 +119,7 @@ export function SecuritySkeleton() {
           </div>
         </div>
         <div className="min-w-0">
-          <div className="animate-pulse overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
+          <div className="surface animate-pulse overflow-hidden">
             <div className="border-b border-neutral-100 px-4 py-3 dark:border-white/5">
               <div className="h-4 w-28 rounded bg-neutral-200/60 dark:bg-white/10" />
             </div>
@@ -164,7 +161,7 @@ export function ActivitySkeleton() {
         </div>
 
         <div className="min-w-0">
-          <div className="animate-pulse overflow-hidden rounded-2xl border border-neutral-200/70 bg-white/70 dark:border-white/10 dark:bg-white/5">
+          <div className="surface animate-pulse overflow-hidden">
             <div className="border-b border-neutral-100 px-4 py-3 dark:border-white/5">
               <div className="flex items-center justify-between gap-3">
                 <div className="h-4 w-32 rounded bg-neutral-200/60 dark:bg-white/10" />

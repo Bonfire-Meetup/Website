@@ -28,7 +28,7 @@ interface DesktopNavItem {
 }
 
 const DESKTOP_NAV_WRAPPER_CLASS =
-  "glass flex items-center gap-1.5 rounded-full border border-white/55 px-3 py-1.5 shadow-[0_18px_40px_-28px_rgba(15,23,42,0.18)] dark:border-white/10 dark:shadow-[0_18px_40px_-28px_rgba(0,0,0,0.4)]";
+  "glass flex items-center gap-1.5 rounded-full border border-white/55 px-3 py-1.5 shadow-raised dark:border-white/10 dark:shadow-raised";
 
 const DESKTOP_NAV_ITEM_BASE_CLASS =
   "min-w-[5rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-200";
@@ -40,7 +40,7 @@ const DESKTOP_NAV_ITEM_INACTIVE_CLASS =
   "text-neutral-600 hover:bg-white/70 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-white/7 dark:hover:text-white";
 
 const DESKTOP_UTILS_WRAPPER_CLASS =
-  "glass hidden md:flex md:items-center md:gap-0.5 md:rounded-full md:border md:border-white/55 md:px-1.5 md:py-1.5 md:shadow-[0_18px_38px_-28px_rgba(15,23,42,0.14)] dark:border-white/10 dark:shadow-[0_18px_38px_-28px_rgba(0,0,0,0.4)]";
+  "glass hidden md:flex md:items-center md:gap-0.5 md:rounded-full md:border md:border-white/55 md:px-1.5 md:py-1.5 md:shadow-raised dark:border-white/10 dark:shadow-raised";
 
 const DESKTOP_UTIL_BUTTON_CLASS =
   "h-8.5 w-8.5 rounded-full text-neutral-500 transition-[background-color,color] duration-200 hover:bg-white/70 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-white/8 dark:hover:text-white";
@@ -256,7 +256,7 @@ function HeaderInner() {
 
         <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 w-[calc(100%-9.75rem)] max-w-[11rem] min-w-0 -translate-x-1/2 -translate-y-1/2 md:hidden">
           <div className="flex h-8 w-full items-center justify-center gap-1.5 px-1.5">
-            <span className="min-w-0 truncate text-[12px] font-medium tracking-[0.03em] text-neutral-600 dark:text-neutral-300">
+            <span className="min-w-0 truncate text-xs font-medium tracking-wider text-neutral-600 dark:text-neutral-300">
               {mobileSectionMarker.label}
             </span>
             <span className={`h-1.5 w-1.5 rounded-full ${mobileSectionMarker.dotClassName}`} />
@@ -315,7 +315,7 @@ function HeaderInner() {
             }}
             variant="primary"
             size="sm"
-            className={`rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-200 md:rounded-full md:px-4 md:py-2.5 md:text-sm ${
+            className={`text-2xs rounded-lg px-2 py-1 font-semibold transition-all duration-200 md:rounded-full md:px-4 md:py-2.5 md:text-sm ${
               isLibraryContext
                 ? "shadow-md ring-1 shadow-orange-500/20 ring-white/60 dark:ring-white/25"
                 : "shadow-sm shadow-orange-500/15"

@@ -44,7 +44,7 @@ export function LanguageToggle({
       className={className}
     >
       <span className="inline-flex items-center justify-center uppercase">
-        <span className="text-[10px] leading-none font-semibold tracking-[0.12em]">
+        <span className="text-2xs tracking-label-sm leading-none font-semibold">
           {currentLabel}
         </span>
       </span>

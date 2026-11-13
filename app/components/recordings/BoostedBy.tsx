@@ -61,7 +61,7 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
               className="h-3 w-3 text-emerald-600/70 dark:text-emerald-400/70"
               aria-hidden="true"
             />
-            <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
+            <span className="text-2xs font-medium text-neutral-500 dark:text-neutral-400">
               {t("boostedBy")}
             </span>
           </div>
@@ -90,7 +90,7 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
             className="h-3 w-3 text-neutral-400/80 dark:text-neutral-500/80"
             aria-hidden="true"
           />
-          <span className="truncate text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
+          <span className="text-2xs truncate font-medium text-neutral-500 dark:text-neutral-400">
             {t("beFirstToBoost")}
           </span>
         </div>

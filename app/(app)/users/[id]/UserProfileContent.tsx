@@ -3,7 +3,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useState } from "react";
 
-import { PROFILE_EYEBROW, PROFILE_SURFACE, PROFILE_TONE } from "@/components/profile/surface";
 import {
   BoltIcon,
   CalendarIcon,
@@ -16,6 +15,8 @@ import {
 import { SpeakerPhoto } from "@/components/speakers/SpeakerPhoto";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
+import { Pill } from "@/components/ui/Pill";
+import { PROFILE_EYEBROW, PROFILE_SURFACE, PROFILE_TONE } from "@/components/ui/surface";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import { resolveGuildTierPillStyle } from "@/lib/billing/guild-tier-styles";
 import { MEMBERSHIP_TIER_LABELS, type MembershipTier } from "@/lib/config/membership";
@@ -192,7 +193,10 @@ export function UserProfileContent({
                     </span>
                   </button>
                   <ProfileShareButton shareUrl={profileUrl} shareText={shareText} />
-                  <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/80 px-3 py-1.5 text-xs text-neutral-600 dark:border-white/10 dark:bg-neutral-900/70 dark:text-neutral-300">
+                  <Pill
+                    size="sm"
+                    className="gap-2 border border-neutral-200 bg-white/80 text-neutral-600 dark:border-white/10 dark:bg-neutral-900/70 dark:text-neutral-300"
+                  >
                     <CalendarIcon className="h-3.5 w-3.5 text-neutral-400 dark:text-neutral-500" />
                     <span>
                       {t("memberSince")}{" "}
@@ -200,13 +204,11 @@ export function UserProfileContent({
                         {user.memberSince}
                       </span>
                     </span>
-                  </div>
+                  </Pill>
                 </div>
 
                 {user.name ? (
-                  <h1 className="text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
-                    {user.name}
-                  </h1>
+                  <h1 className="page-title">{user.name}</h1>
                 ) : (
                   <h1 className="text-4xl font-black tracking-tight text-neutral-400 sm:text-5xl lg:text-6xl">
                     {t("anonymousMember")}
@@ -326,7 +328,7 @@ export function UserProfileContent({
                     </h2>
                   </div>
                   <span
-                    className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-semibold sm:hidden ${
+                    className={`text-2xs inline-flex shrink-0 items-center rounded-full px-2 py-0.5 font-semibold sm:hidden ${
                       isRecentlyActive
                         ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
                         : "bg-neutral-500/15 text-neutral-700 dark:text-neutral-300"
@@ -346,30 +348,39 @@ export function UserProfileContent({
                   </p>
                   {user.boostCount > 0 && (
                     <div className="flex flex-wrap items-center gap-2 pt-2.5">
-                      <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300">
+                      <Pill
+                        size="sm"
+                        className="gap-1.5 border border-emerald-500/20 bg-emerald-500/10 font-semibold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300"
+                      >
                         <BoltIcon className="h-3 w-3 shrink-0" />
                         <span>
                           <span className="font-bold">{user.boostCount}</span>{" "}
                           {t("activity.totalBoostsLabel", { count: user.boostCount })}
                         </span>
-                      </div>
+                      </Pill>
                       {user.boostsThisMonth > 0 && (
-                        <div className="inline-flex items-center gap-1.5 rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1.5 text-xs font-semibold text-orange-700 dark:border-orange-500/30 dark:bg-orange-500/15 dark:text-orange-300">
+                        <Pill
+                          size="sm"
+                          className="gap-1.5 border border-orange-500/20 bg-orange-500/10 font-semibold text-orange-700 dark:border-orange-500/30 dark:bg-orange-500/15 dark:text-orange-300"
+                        >
                           <CalendarIcon className="h-3 w-3 shrink-0" />
                           <span>
                             <span className="font-bold">{user.boostsThisMonth}</span>{" "}
                             {t("activity.boostsThisMonthLabel", { count: user.boostsThisMonth })}
                           </span>
-                        </div>
+                        </Pill>
                       )}
                       {user.boostStreak > 0 && (
-                        <div className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 px-3 py-1.5 text-xs font-semibold text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/15 dark:text-rose-300">
+                        <Pill
+                          size="sm"
+                          className="gap-1.5 border border-rose-500/20 bg-rose-500/10 font-semibold text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/15 dark:text-rose-300"
+                        >
                           <FireIcon className="h-3 w-3 shrink-0" />
                           <span>
                             <span className="font-bold">{user.boostStreak}</span>{" "}
                             {t("activity.boostStreakLabel", { count: user.boostStreak })}
                           </span>
-                        </div>
+                        </Pill>
                       )}
                     </div>
                   )}
@@ -404,7 +415,7 @@ export function PrivateProfileContent() {
   const t = useTranslations("account.userProfile");
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+    <main className="gradient-bg relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(100,100,100,0.04),transparent)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(100,100,100,0.08),transparent)]" />
         <div

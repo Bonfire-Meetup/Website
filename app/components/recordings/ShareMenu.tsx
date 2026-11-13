@@ -195,7 +195,7 @@ export function ShareMenu({
         <div
           role="status"
           aria-live="polite"
-          className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-full bg-neutral-900/90 px-4 py-2 text-xs font-semibold tracking-[0.2em] text-white uppercase shadow-lg shadow-black/30 backdrop-blur"
+          className="eyebrow fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-full bg-neutral-900/90 px-4 py-2 text-xs text-white shadow-lg shadow-black/30 backdrop-blur"
         >
           {t("copied")}
         </div>

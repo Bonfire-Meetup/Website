@@ -31,7 +31,7 @@ export function StaticPageHero({
   children,
   containerClassName = "mx-auto max-w-3xl text-center",
   eyebrow,
-  eyebrowClassName = "text-brand-600 dark:text-brand-300 mb-6 flex items-center justify-center gap-2 text-xs font-bold tracking-[0.4em] uppercase sm:gap-3 sm:text-sm sm:tracking-[0.5em]",
+  eyebrowClassName = "text-brand-600 dark:text-brand-300 mb-6 flex items-center justify-center gap-2 text-xs font-bold tracking-label-lg uppercase sm:gap-3 sm:text-sm sm:tracking-label-lg",
   eyebrowLineClassName = "to-brand-400",
   heroWord,
   heroWordClassName,

@@ -111,7 +111,7 @@ interface ChoiceTileGroupProps {
 function StepSectionHeading({ eyebrow, title }: StepSectionHeadingProps) {
   return (
     <div>
-      <p className="text-xs font-semibold tracking-[0.3em] text-neutral-500 uppercase dark:text-neutral-400">
+      <p className="tracking-label-lg text-xs font-semibold text-neutral-500 uppercase dark:text-neutral-400">
         {eyebrow}
       </p>
       <h3 className="text-lg font-bold text-neutral-900 dark:text-white">{title}</h3>
@@ -550,7 +550,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
         <div className="form-success-icon">
           <CheckIcon className="h-8 w-8 text-white" />
         </div>
-        <p className="mb-3 text-xs font-semibold tracking-[0.34em] text-neutral-500 uppercase dark:text-neutral-400">
+        <p className="tracking-label-lg mb-3 text-xs font-semibold text-neutral-500 uppercase dark:text-neutral-400">
           {t("successEyebrow")}
         </p>
         <h2 className="mb-3 text-2xl font-bold text-neutral-900 dark:text-white">
@@ -588,11 +588,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
     isPending || isTransitionPending || turnstileExecuting || !csrfToken || !duration;
 
   return (
-    <form
-      ref={formRef}
-      onSubmit={handleSubmit}
-      className="mx-auto max-w-3xl rounded-2xl border border-black/8 bg-white p-4 shadow-[0_18px_50px_-40px_rgba(15,23,42,0.28)] sm:p-7 dark:border-white/10 dark:bg-white/4 dark:shadow-[0_18px_50px_-40px_rgba(0,0,0,0.55)]"
-    >
+    <form ref={formRef} onSubmit={handleSubmit} className="surface mx-auto max-w-3xl p-4 sm:p-7">
       <div className="mb-7 border-b border-black/6 pb-5 dark:border-white/10">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-center gap-4">
@@ -600,7 +596,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
               <MicIcon className="h-6 w-6 text-white" />
             </div>
             <div>
-              <p className="text-xs font-semibold tracking-[0.32em] text-neutral-500 uppercase dark:text-neutral-400">
+              <p className="tracking-label-lg text-xs font-semibold text-neutral-500 uppercase dark:text-neutral-400">
                 {t("intro.eyebrow")}
               </p>
               <h2 className="mt-2 text-xl font-black tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
@@ -629,7 +625,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
       {hasDraft && <div className="form-draft-note">{t("draftNote")}</div>}
 
       <div className="mb-7">
-        <div className="mb-3 flex items-center justify-between text-xs font-semibold tracking-[0.24em] text-neutral-500 uppercase dark:text-neutral-400">
+        <div className="eyebrow mb-3 flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
           <span>{t("stepper.progress")}</span>
           <span>{t("stepper.count", { current: currentStep + 1, total: stepItems.length })}</span>
         </div>
@@ -660,7 +656,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
               >
                 <div className="relative flex items-center justify-center">
                   <span
-                    className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-colors ${
+                    className={`text-2xs tracking-label inline-flex h-6 w-6 items-center justify-center rounded-full font-bold uppercase transition-colors ${
                       isActive
                         ? "bg-gradient-to-r from-orange-400 to-rose-500 text-white"
                         : isComplete
@@ -875,7 +871,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
         </section>
 
         <div className="mt-6 rounded-2xl border border-black/6 bg-neutral-50/80 px-4 py-4 dark:border-white/8 dark:bg-white/4">
-          <p className="text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
+          <p className="tracking-label-lg text-xs font-semibold text-neutral-500 uppercase dark:text-neutral-400">
             {currentHelper.title}
           </p>
           <ul className="mt-3 space-y-2.5">

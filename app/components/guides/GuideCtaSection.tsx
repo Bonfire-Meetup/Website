@@ -58,7 +58,7 @@ export function GuideCtaSection({
         </Link>
         <Link
           href={secondary.href}
-          className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-900 transition-colors hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-neutral-300 focus-visible:ring-offset-2 focus-visible:outline-none dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-neutral-950"
+          className="btn-outline gap-1.5 rounded-full px-4 py-2 text-sm focus-visible:ring-2 focus-visible:ring-neutral-300 focus-visible:ring-offset-2 focus-visible:outline-none dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-neutral-950"
         >
           {secondary.label}
           <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />

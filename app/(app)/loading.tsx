@@ -11,10 +11,7 @@ function GenericSectionSkeleton({ className = "" }: { className?: string }) {
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((id) => (
-            <div
-              key={id}
-              className="space-y-3 rounded-2xl border border-black/8 bg-white/55 p-5 dark:border-white/10 dark:bg-white/5"
-            >
+            <div key={id} className="surface space-y-3 p-5">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-4 w-4/5" />
               <Skeleton className="h-4 w-3/5" />

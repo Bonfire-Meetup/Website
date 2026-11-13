@@ -28,7 +28,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
           <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white">
             {t("relatedTitle")}
           </h2>
-          <span className="rounded-full bg-black/5 px-2.5 py-1 text-[10px] font-semibold tracking-[0.2em] text-neutral-600 uppercase dark:bg-white/10 dark:text-neutral-300">
+          <span className="eyebrow text-2xs rounded-full bg-black/5 px-2.5 py-1 text-neutral-600 dark:bg-white/10 dark:text-neutral-300">
             Queue
           </span>
         </div>
@@ -38,7 +38,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
         <Link
           href={PAGE_ROUTES.WATCH(nextUp.slug, nextUp.shortId)}
           prefetch={false}
-          className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-black/10 bg-[linear-gradient(165deg,rgba(255,255,255,0.95)_0%,rgba(255,247,237,0.92)_100%)] p-3 shadow-[0_20px_46px_-28px_rgba(17,24,39,0.5)] ring-1 ring-white/55 transition hover:shadow-[0_24px_50px_-26px_rgba(17,24,39,0.55)] dark:border-white/12 dark:bg-[linear-gradient(165deg,rgba(24,24,27,0.98)_0%,rgba(10,10,12,0.98)_100%)] dark:ring-white/10"
+          className="group shadow-raised hover:shadow-raised relative flex items-center gap-4 overflow-hidden rounded-2xl border border-black/10 bg-[linear-gradient(165deg,rgba(255,255,255,0.95)_0%,rgba(255,247,237,0.92)_100%)] p-3 ring-1 ring-white/55 transition dark:border-white/12 dark:bg-[linear-gradient(165deg,rgba(24,24,27,0.98)_0%,rgba(10,10,12,0.98)_100%)] dark:ring-white/10"
         >
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.22),transparent_52%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-xl bg-neutral-900">
@@ -52,7 +52,7 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
               fetchPriority="low"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-semibold tracking-[0.2em] text-neutral-700 uppercase shadow-sm">
+            <div className="eyebrow text-2xs absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-neutral-700 shadow-sm">
               <PlayIcon className="h-3 w-3" />
               {t("nextUp")}
             </div>
@@ -85,11 +85,11 @@ export function RelatedVideosSection({ relatedRecordings }: RelatedVideosSection
                   epShortLabel={t("epShort")}
                   fallbackLabel={t("special")}
                   asText
-                  className="text-[10px] font-medium tracking-wider text-neutral-400 uppercase"
+                  className="text-2xs font-medium tracking-wider text-neutral-400 uppercase"
                 />
                 <div className="flex items-center gap-1.5">
-                  <RecordingAccessPill access={related.access} className="px-2 py-0.5 text-[9px]" />
-                  <LocationPill location={related.location} size="xxs" className="!text-[9px]" />
+                  <RecordingAccessPill access={related.access} className="text-2xs px-2 py-0.5" />
+                  <LocationPill location={related.location} size="xxs" className="!text-2xs" />
                 </div>
               </div>
             }

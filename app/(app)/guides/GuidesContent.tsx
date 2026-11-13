@@ -127,7 +127,7 @@ export function GuidesContent() {
       <div className="space-y-10">
         {groups.map((group) => (
           <section key={group.label}>
-            <h2 className="mb-4 text-xs font-bold tracking-[0.25em] text-neutral-500 uppercase dark:text-neutral-400">
+            <h2 className="eyebrow mb-4 text-xs text-neutral-500 dark:text-neutral-400">
               {group.label}
             </h2>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -188,7 +188,7 @@ export function GuidesContent() {
                   <Link
                     key={card.href}
                     href={card.href}
-                    className="group hover:border-brand-300/40 dark:hover:border-brand-300/20 flex flex-col rounded-2xl border border-neutral-200/80 bg-white/70 p-5 transition-all hover:bg-white hover:shadow-sm sm:p-6 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/8"
+                    className="surface group hover:border-brand-300/40 dark:hover:border-brand-300/20 flex flex-col p-5 transition-all hover:bg-white hover:shadow-sm sm:p-6 dark:hover:bg-white/8"
                   >
                     <div className="border-brand-300/35 bg-brand-500/10 text-brand-700 dark:border-brand-300/20 dark:text-brand-300 mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl border">
                       <Icon className="h-5 w-5" aria-hidden="true" />

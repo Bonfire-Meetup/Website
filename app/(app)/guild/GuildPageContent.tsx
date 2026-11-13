@@ -80,7 +80,7 @@ function TierCard({
     <div
       className={`guild-tier-card group relative flex h-full flex-col overflow-hidden rounded-2xl border ${tier.border} bg-white/80 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.12)] dark:bg-neutral-950/80 dark:shadow-none dark:hover:shadow-[0_8px_40px_-8px_rgba(0,0,0,0.35)] ${
         tier.selected
-          ? "guild-tier-card--selected shadow-[0_28px_72px_-28px_rgba(15,23,42,0.22)] dark:shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)]"
+          ? "guild-tier-card--selected shadow-floating dark:shadow-floating"
           : "guild-tier-card--idle"
       }`}
     >
@@ -122,7 +122,7 @@ function TierCard({
             <div className="min-h-[150px]">
               <div className="mb-4">
                 <span
-                  className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-widest uppercase ${tier.badge}`}
+                  className={`text-2xs inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-semibold tracking-widest uppercase ${tier.badge}`}
                 >
                   <StarFilledIcon className="h-2.5 w-2.5" />
                   {tier.badgeText}
@@ -215,7 +215,7 @@ function PerkCard({
   const accent = accentClassName ?? PERK_ACCENT[index % PERK_ACCENT.length] ?? PERK_ACCENT[0];
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-neutral-200/60 bg-white/78 p-6 shadow-[0_10px_32px_-28px_rgba(15,23,42,0.32)] backdrop-blur-sm sm:p-7 dark:border-neutral-800/60 dark:bg-neutral-950/50 dark:shadow-none">
+    <div className="surface relative overflow-hidden p-6 sm:p-7">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-50/50 via-transparent to-neutral-100/30 dark:from-neutral-900/30 dark:to-neutral-800/20" />
 
       <div className="relative flex gap-5">
@@ -229,7 +229,7 @@ function PerkCard({
 
         <div className="min-w-0 flex-1">
           {item.eyebrow ? (
-            <p className="mb-1 text-[10px] font-semibold tracking-[0.22em] text-neutral-500 uppercase dark:text-neutral-400">
+            <p className="eyebrow text-2xs mb-1 text-neutral-500 dark:text-neutral-400">
               {item.eyebrow}
             </p>
           ) : null}
@@ -390,7 +390,7 @@ export function GuildPageContent({
 
         <div className="relative z-10 mx-auto w-full max-w-4xl text-center">
           <p
-            className="guild-hero-enter mb-5 text-[11px] font-semibold tracking-[0.35em] text-neutral-500 uppercase sm:text-xs sm:tracking-[0.45em] dark:text-neutral-400"
+            className="guild-hero-enter text-2xs tracking-label-lg sm:tracking-label-lg mb-5 font-semibold text-neutral-500 uppercase sm:text-xs dark:text-neutral-400"
             style={{ animationDelay: "100ms" }}
           >
             {t("kicker")}
@@ -470,7 +470,7 @@ export function GuildPageContent({
 
         <div className="relative mx-auto max-w-6xl">
           <div className="mb-14 text-center sm:mb-16">
-            <p className="mb-3 text-[11px] font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
+            <p className="text-2xs tracking-label-lg mb-3 font-semibold text-neutral-500 uppercase dark:text-neutral-400">
               {t("tiersSection.kicker")}
             </p>
             <h2 className="mb-3 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl md:text-4xl dark:text-white">
@@ -495,7 +495,7 @@ export function GuildPageContent({
             <div className="absolute top-0 left-0 h-full w-1 bg-gradient-to-b from-amber-400/60 via-rose-400/50 to-red-400/40 dark:from-amber-500/40 dark:via-rose-500/30 dark:to-red-500/30" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(251,191,36,0.04),transparent_60%)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_at_50%_0%,rgba(251,191,36,0.02),transparent_60%)]" />
             <div className="relative pl-5 sm:pl-6">
-              <p className="mb-3 text-[10px] font-semibold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+              <p className="eyebrow text-2xs mb-3 text-neutral-500 dark:text-neutral-400">
                 {t("openNoteLabel")}
               </p>
               <p className="text-base leading-[1.75] text-neutral-700 sm:text-[1.0625rem] sm:leading-[1.8] dark:text-neutral-200">
@@ -534,7 +534,7 @@ export function GuildPageContent({
 
         <div className="relative mx-auto max-w-5xl">
           <div className="mb-12 text-center sm:mb-16">
-            <p className="mb-3 text-[11px] font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
+            <p className="text-2xs tracking-label-lg mb-3 font-semibold text-neutral-500 uppercase dark:text-neutral-400">
               {t("perksSection.kicker")}
             </p>
             <h2 className="mb-3 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl md:text-4xl dark:text-white">

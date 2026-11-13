@@ -30,7 +30,7 @@ export default function WatchNotFound() {
           </BackLink>
           <Link
             href={PAGE_ROUTES.LIBRARY}
-            className="inline-flex items-center gap-2 rounded-full border border-neutral-300/90 bg-white/70 px-8 py-3 text-sm font-semibold text-neutral-700 transition-colors hover:bg-white hover:text-neutral-900 dark:border-white/15 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white"
+            className="btn-outline gap-2 rounded-full px-8 py-3 text-sm"
           >
             Browse Library
             <ArrowRightIcon className="h-4 w-4" aria-hidden="true" />

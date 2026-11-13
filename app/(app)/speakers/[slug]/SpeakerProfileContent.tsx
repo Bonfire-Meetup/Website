@@ -4,8 +4,8 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
+import { DateTile } from "@/components/events/DateTile";
 import { useRenderNow } from "@/components/events/useRenderNow";
-import { PROFILE_EYEBROW, PROFILE_SURFACE, PROFILE_TONE } from "@/components/profile/surface";
 import {
   BuildingIcon,
   CalendarIcon,
@@ -21,9 +21,11 @@ import { SpeakerPhoto } from "@/components/speakers/SpeakerPhoto";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
+import { PROFILE_EYEBROW, PROFILE_SURFACE, PROFILE_TONE } from "@/components/ui/surface";
 import { Link } from "@/i18n/navigation";
 import { LOCATIONS } from "@/lib/config/constants";
 import type { SpeakerProfile, SpeakerTalk } from "@/lib/events/speaker-profiles";
+import { getEventLocationTheme } from "@/lib/events/theme";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatLongDateUTC, formatMonthUTC, getUTCDateParts } from "@/lib/utils/locale";
 
@@ -60,6 +62,7 @@ function TalkCard({
   const t = useTranslations("speakerPage");
   const locale = useLocale();
   const isPrague = talk.location === LOCATIONS.PRAGUE;
+  const theme = getEventLocationTheme(talk.location);
   const dated = isDatedEvent(talk.date);
   const hasMedia = Boolean(talk.image ?? talk.recording ?? talk.photos);
   const mediaFrame =
@@ -69,48 +72,25 @@ function TalkCard({
 
   return (
     <article className={`${PROFILE_SURFACE} ${PROFILE_TONE.speaker}`}>
-      <div
-        className={`h-1 w-full bg-gradient-to-r ${
-          isPrague
-            ? "from-rose-500 via-orange-500 to-red-500"
-            : "from-blue-500 via-indigo-500 to-blue-600"
-        }`}
-      />
+      <div className={`h-1 w-full ${theme.rail}`} />
       <div
         className={`grid gap-6 p-6 sm:p-8 lg:gap-8 ${hasMedia ? "lg:grid-cols-[minmax(0,1fr)_300px]" : ""}`}
       >
         <div className="flex min-w-0 gap-5">
           {dated && (
-            <time
-              dateTime={talk.date}
-              className={`hidden h-fit shrink-0 flex-col items-center rounded-2xl px-3.5 py-3 text-white shadow-lg sm:flex ${
-                isPrague
-                  ? "bg-gradient-to-br from-orange-500 to-rose-600"
-                  : "bg-gradient-to-br from-sky-500 to-indigo-600"
-              }`}
-            >
-              <span className="text-[11px] leading-none font-bold tracking-wider uppercase">
-                {formatMonthUTC(talk.date, locale)}
-              </span>
-              <span className="my-1 text-3xl leading-none font-black">
-                {getUTCDateParts(talk.date).day}
-              </span>
-              <span className="text-[11px] leading-none font-medium opacity-80">
-                {getUTCDateParts(talk.date).year}
-              </span>
-            </time>
+            <DateTile
+              date={talk.date}
+              location={talk.location}
+              top={formatMonthUTC(talk.date, locale)}
+              day={String(getUTCDateParts(talk.date).day)}
+              bottom={String(getUTCDateParts(talk.date).year)}
+              className="hidden shrink-0 sm:flex"
+            />
           )}
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <Pill
-                size="xxs"
-                className={
-                  isPrague
-                    ? "bg-rose-500/10 font-semibold text-rose-700 dark:bg-rose-500/20 dark:text-rose-300"
-                    : "bg-blue-500/10 font-semibold text-blue-700 dark:bg-blue-500/20 dark:text-blue-300"
-                }
-              >
+              <Pill size="xxs" className={theme.pill}>
                 {isPrague ? t("prague") : t("zlin")}
               </Pill>
               {isUpcoming && (
@@ -138,7 +118,7 @@ function TalkCard({
                 {t("partOf")}{" "}
                 <Link
                   href={PAGE_ROUTES.SPEAKER(talk.group.slug)}
-                  className="font-semibold underline decoration-neutral-300 underline-offset-2 hover:decoration-neutral-500 dark:decoration-neutral-600"
+                  className="text-link font-semibold"
                 >
                   {talk.group.name}
                 </Link>
@@ -153,7 +133,7 @@ function TalkCard({
                     {index > 0 && ", "}
                     <Link
                       href={PAGE_ROUTES.SPEAKER(coSpeaker.slug)}
-                      className="font-semibold underline decoration-neutral-300 underline-offset-2 hover:decoration-neutral-500 dark:decoration-neutral-600"
+                      className="text-link font-semibold"
                     >
                       {coSpeaker.name}
                     </Link>
@@ -302,9 +282,7 @@ export function SpeakerProfileContent({
             <p className={`${PROFILE_EYEBROW} mb-3 text-orange-600 dark:text-orange-400`}>
               {isGroup ? t("groupEyebrow") : t("eyebrow")}
             </p>
-            <h1 className="text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
-              {profile.name}
-            </h1>
+            <h1 className="page-title">{profile.name}</h1>
             {profile.company && (
               <p className="mt-3 text-lg text-neutral-600 dark:text-neutral-300">
                 {profile.company}
@@ -345,7 +323,7 @@ export function SpeakerProfileContent({
           <section aria-labelledby="speaker-members-heading" className="mt-10">
             <h2
               id="speaker-members-heading"
-              className="mb-4 text-xs font-semibold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400"
+              className="eyebrow mb-4 text-xs text-neutral-500 dark:text-neutral-400"
             >
               {t("members")}
             </h2>
@@ -354,7 +332,7 @@ export function SpeakerProfileContent({
                 <li key={member.slug}>
                   <Link
                     href={PAGE_ROUTES.SPEAKER(member.slug)}
-                    className="group flex items-center gap-3 rounded-2xl border border-black/10 bg-white/70 py-2 pr-5 pl-2.5 transition-colors hover:border-orange-500/40 dark:border-white/10 dark:bg-white/5 dark:hover:border-orange-400/40"
+                    className="surface group flex items-center gap-3 py-2 pr-5 pl-2.5 transition-colors hover:border-orange-500/40 dark:hover:border-orange-400/40"
                   >
                     <SpeakerPhoto
                       name={member.name}

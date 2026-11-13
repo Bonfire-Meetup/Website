@@ -30,10 +30,10 @@ import { formatDateTimeUTC, formatLongDateUTC } from "@/lib/utils/locale";
 import { type WatchLaterTagCloudItem, WatchLaterTagCloud } from "./WatchLaterTagCloud";
 
 const HERO_PANEL_CLASS =
-  "rounded-2xl border border-white/70 bg-[linear-gradient(180deg,rgba(255,248,240,0.72)_0%,rgba(255,244,232,0.56)_100%)] shadow-[0_28px_60px_-36px_rgba(15,23,42,0.34)] ring-1 ring-white/35 backdrop-blur-xl backdrop-saturate-150 dark:border-white/20 dark:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:shadow-[0_20px_48px_-32px_rgba(0,0,0,0.7)] dark:ring-white/10";
+  "rounded-2xl border border-white/70 bg-[linear-gradient(180deg,rgba(255,248,240,0.72)_0%,rgba(255,244,232,0.56)_100%)] shadow-floating ring-1 ring-white/35 backdrop-blur-xl backdrop-saturate-150 dark:border-white/20 dark:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:shadow-raised dark:ring-white/10";
 
 const HERO_WATCHLATER_BUTTON_CLASS =
-  "rounded-xl border border-white/75 bg-white/52 px-3 py-2 text-sm text-neutral-950 shadow-[0_18px_34px_-24px_rgba(15,23,42,0.28)] hover:bg-white/68 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/16";
+  "rounded-xl border border-white/75 bg-white/52 px-3 py-2 text-sm text-neutral-950 shadow-raised hover:bg-white/68 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/16";
 
 const QUEUE_FILTER_BUTTON_CLASS = "rounded-full border px-3 py-1.5 text-sm font-medium transition";
 
@@ -191,11 +191,11 @@ export function WatchLaterClient() {
 
   if (error) {
     return (
-      <section className="relative overflow-hidden rounded-2xl border border-rose-200 bg-white/75 p-6 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)] backdrop-blur-xl sm:p-8 dark:border-rose-500/30 dark:bg-white/5 dark:shadow-[0_30px_80px_-36px_rgba(0,0,0,0.85)]">
+      <section className="surface shadow-floating dark:shadow-floating relative overflow-hidden border-rose-200 p-6 sm:p-8 dark:border-rose-500/30">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.12),transparent_32%),radial-gradient(circle_at_bottom_left,rgba(249,115,22,0.12),transparent_28%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.2),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(249,115,22,0.16),transparent_30%)]" />
         <div className="relative flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <p className="mb-3 text-xs font-bold tracking-[0.3em] text-rose-600 uppercase dark:text-rose-300">
+            <p className="tracking-label-lg mb-3 text-xs font-bold text-rose-600 uppercase dark:text-rose-300">
               {t("stateLabel")}
             </p>
             <h1 className="text-3xl font-black tracking-tight text-neutral-950 sm:text-4xl dark:text-white">
@@ -224,11 +224,11 @@ export function WatchLaterClient() {
 
   if (isEmpty) {
     return (
-      <section className="relative overflow-hidden rounded-2xl border border-white/70 bg-white/75 p-6 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)] backdrop-blur-xl sm:p-8 lg:p-10 dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_-36px_rgba(0,0,0,0.85)]">
+      <section className="surface shadow-floating dark:shadow-floating relative overflow-hidden p-6 sm:p-8 lg:p-10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(244,63,94,0.12),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(249,115,22,0.14),transparent_28%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(244,63,94,0.18),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(249,115,22,0.18),transparent_28%)]" />
         <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_20rem] lg:items-end">
           <div className="max-w-3xl">
-            <p className="text-brand-600 dark:text-brand-300 mb-3 text-xs font-bold tracking-[0.32em] uppercase">
+            <p className="text-brand-600 dark:text-brand-300 tracking-label-lg mb-3 text-xs font-bold uppercase">
               {t("eyebrow")}
             </p>
             <h1 className="max-w-2xl text-4xl leading-none font-black tracking-tight text-neutral-950 sm:text-5xl dark:text-white">
@@ -265,7 +265,7 @@ export function WatchLaterClient() {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-2xl border border-black/15 shadow-[0_28px_65px_-32px_rgba(15,23,42,0.65)] sm:rounded-2xl dark:border-white/10 dark:shadow-[0_28px_70px_-30px_rgba(0,0,0,0.85)]">
+      <section className="shadow-floating dark:shadow-floating relative overflow-hidden rounded-2xl border border-black/15 sm:rounded-2xl dark:border-white/10">
         {featuredRecording ? (
           <div className="pointer-events-none absolute inset-0">
             <div
@@ -280,14 +280,14 @@ export function WatchLaterClient() {
         <div className="relative z-10 flex flex-col px-5 py-6 sm:min-h-[520px] sm:px-8 sm:py-8 lg:px-10 lg:py-9">
           <BackLink
             href={PAGE_ROUTES.ME}
-            className="mb-6 w-fit border-white/75 bg-white/44 text-neutral-950 shadow-[0_18px_34px_-24px_rgba(15,23,42,0.28)] backdrop-blur-md backdrop-saturate-150 hover:bg-white/58 sm:mb-0 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/16"
+            className="shadow-raised mb-6 w-fit border-white/75 bg-white/44 text-neutral-950 backdrop-blur-md backdrop-saturate-150 hover:bg-white/58 sm:mb-0 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/16"
           >
             {t("backToAccount")}
           </BackLink>
 
           <div className="mt-5 grid gap-3 sm:mt-auto sm:gap-6 xl:grid-cols-[minmax(0,1fr)_23rem] xl:items-end">
             <div className={`${HERO_PANEL_CLASS} min-w-0 p-6 sm:p-7`}>
-              <p className="text-brand-600 dark:text-brand-300 mb-3 text-xs font-bold tracking-[0.32em] uppercase">
+              <p className="text-brand-600 dark:text-brand-300 tracking-label-lg mb-3 text-xs font-bold uppercase">
                 {t("eyebrow")}
               </p>
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
@@ -341,7 +341,7 @@ export function WatchLaterClient() {
               <div
                 className={`${HERO_PANEL_CLASS} hidden min-w-0 overflow-hidden bg-black/40 p-5 sm:block sm:p-6`}
               >
-                <p className="text-[11px] font-bold tracking-[0.28em] text-neutral-600 uppercase dark:text-neutral-300">
+                <p className="text-2xs tracking-label-lg font-bold text-neutral-600 uppercase dark:text-neutral-300">
                   {t("featuredLabel")}
                 </p>
                 <h2 className="mt-2 text-[1.7rem] font-black tracking-tight text-neutral-950 sm:text-2xl dark:text-white">
@@ -395,7 +395,7 @@ export function WatchLaterClient() {
       <section className="space-y-3 sm:space-y-4">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="hidden text-xs font-bold tracking-[0.28em] text-neutral-500 uppercase sm:block dark:text-neutral-500">
+            <p className="tracking-label-lg hidden text-xs font-bold text-neutral-500 uppercase sm:block dark:text-neutral-500">
               {t("queueLabel")}
             </p>
             <h2 className="text-xl font-black tracking-tight text-neutral-950 sm:mt-1 sm:text-2xl dark:text-white">

@@ -29,6 +29,7 @@ import {
 } from "@/components/shared/Icons";
 import { SpeakerPhoto } from "@/components/speakers/SpeakerPhoto";
 import { Button } from "@/components/ui/Button";
+import { Pill } from "@/components/ui/Pill";
 import { isEventPast, isTbaDate, parseEventDateTimeParts } from "@/data/events-calendar";
 import { getLocationPartners } from "@/data/location-partners";
 import { Link } from "@/i18n/navigation";
@@ -380,7 +381,7 @@ export function EventDetailContent({
 
             {parsedTitle ? (
               <h1 className="mb-5">
-                <span className="mb-3 block text-sm font-bold tracking-[0.2em] text-neutral-400 uppercase sm:text-base dark:text-neutral-500">
+                <span className="eyebrow mb-3 block text-sm text-neutral-400 sm:text-base dark:text-neutral-500">
                   {parsedTitle.prefix}
                 </span>
                 <span className="relative inline-block">
@@ -414,7 +415,7 @@ export function EventDetailContent({
             {isPastEvent && (
               <div className="mx-auto mt-8 max-w-3xl">
                 <div
-                  className="relative overflow-hidden rounded-2xl border bg-white/75 p-6 text-left backdrop-blur-sm sm:p-8 dark:bg-neutral-900/40"
+                  className="surface relative overflow-hidden p-6 text-left sm:p-8"
                   style={{ borderColor: `${loc.color}40` }}
                 >
                   <div
@@ -446,7 +447,7 @@ export function EventDetailContent({
                     <div className="flex flex-col gap-5 sm:gap-6 md:grid md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
                       <div className="min-w-0">
                         <p
-                          className="mb-4 text-[11px] font-semibold tracking-[0.16em] uppercase"
+                          className="text-2xs tracking-label-sm mb-4 font-semibold uppercase"
                           style={{ color: loc.color }}
                         >
                           {t("wrapUpEyebrow")}
@@ -528,7 +529,7 @@ export function EventDetailContent({
             <section aria-labelledby="event-programme-heading">
               <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                  <p className="eyebrow text-2xs text-neutral-500 dark:text-neutral-400">
                     {t("eventFlow")}
                   </p>
                   <h2
@@ -590,7 +591,7 @@ export function EventDetailContent({
                               href={PAGE_ROUTES.SPEAKER(
                                 speakerPathSegment(speaker.group.name, speaker.group.id),
                               )}
-                              className="text-sm font-bold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
+                              className="text-link text-sm font-bold text-neutral-900 dark:text-white"
                             >
                               {speaker.group.name}
                             </Link>
@@ -659,8 +660,8 @@ export function EventDetailContent({
         {!isTba && (
           <div className="mx-auto max-w-5xl px-4 pb-10">
             {isCrew && (
-              <div className="mb-4 rounded-2xl border border-orange-200/60 bg-[linear-gradient(180deg,rgba(255,248,242,0.96)_0%,rgba(255,244,236,0.9)_100%)] p-4 shadow-[0_18px_55px_-42px_rgba(15,23,42,0.24)] sm:p-5 dark:border-orange-300/12 dark:bg-[linear-gradient(180deg,rgba(28,22,18,0.72)_0%,rgba(18,15,13,0.58)_100%)] dark:shadow-[0_18px_44px_-34px_rgba(0,0,0,0.42)]">
-                <p className="text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+              <div className="shadow-floating dark:shadow-raised mb-4 rounded-2xl border border-orange-200/60 bg-[linear-gradient(180deg,rgba(255,248,242,0.96)_0%,rgba(255,244,236,0.9)_100%)] p-4 sm:p-5 dark:border-orange-300/12 dark:bg-[linear-gradient(180deg,rgba(28,22,18,0.72)_0%,rgba(18,15,13,0.58)_100%)]">
+                <p className="text-2xs tracking-label-sm font-semibold text-neutral-500 uppercase dark:text-neutral-400">
                   {t("crewToolsEyebrow")}
                 </p>
                 <h3 className="mt-1 text-lg font-bold text-neutral-900 dark:text-neutral-100">
@@ -697,7 +698,7 @@ export function EventDetailContent({
         )}
 
         <div className="mx-auto max-w-5xl px-4 pb-8">
-          <div className="h-px bg-gradient-to-r from-transparent via-neutral-300/50 to-transparent dark:via-neutral-600/30" />
+          <div className="section-divider" />
         </div>
 
         <div className="mx-auto max-w-5xl px-4 pb-24">
@@ -724,7 +725,7 @@ export function EventDetailContent({
                     >
                       <SparklesIcon className="h-5 w-5" style={{ color: loc.color }} />
                     </div>
-                    <p className="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                    <p className="eyebrow text-2xs text-neutral-500 dark:text-neutral-400">
                       {isTba ? t("saveTheDate") : t("joinUs")}
                     </p>
                   </div>
@@ -744,10 +745,13 @@ export function EventDetailContent({
                   </p>
 
                   {!isTba && !isPastEvent && countdownLabel && (
-                    <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-neutral-200/80 bg-white/80 px-3 py-1.5 text-xs font-semibold text-neutral-700 dark:border-white/10 dark:bg-white/10 dark:text-neutral-200">
+                    <Pill
+                      size="sm"
+                      className="mt-4 gap-2 border border-neutral-200/80 bg-white/80 font-semibold text-neutral-700 dark:border-white/10 dark:bg-white/10 dark:text-neutral-200"
+                    >
                       <ClockIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
                       <span>{countdownLabel}</span>
-                    </div>
+                    </Pill>
                   )}
 
                   <div className="mt-8">
@@ -777,7 +781,7 @@ export function EventDetailContent({
 
                   {platformLinks.length > 0 && (
                     <div className="mt-6 border-t border-neutral-200/40 pt-5 dark:border-white/10">
-                      <p className="mb-2.5 text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                      <p className="text-2xs tracking-label-sm mb-2.5 font-semibold text-neutral-500 uppercase dark:text-neutral-400">
                         {t("orRegisterVia")}
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -787,7 +791,7 @@ export function EventDetailContent({
                             href={platform.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group inline-flex items-center gap-1.5 rounded-lg border border-neutral-200/70 bg-white/60 px-3 py-1.5 text-[11px] font-medium text-neutral-600 transition-colors hover:bg-white hover:text-neutral-900 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+                            className="btn-outline group text-2xs gap-1.5 rounded-lg px-3 py-1.5"
                           >
                             <platform.icon className="h-3.5 w-3.5 opacity-70" />
                             <span>{platform.label}</span>
@@ -818,7 +822,7 @@ export function EventDetailContent({
 
                   {googleCalendarUrl && calendarStart && calendarEnd && (
                     <div className="mt-6 border-t border-neutral-200/40 pt-5 dark:border-white/10">
-                      <p className="mb-2.5 text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
+                      <p className="text-2xs tracking-label-sm mb-2.5 font-semibold text-neutral-500 uppercase dark:text-neutral-400">
                         {t("addToCalendar")}
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -959,7 +963,7 @@ export function EventDetailContent({
                   }
                   return (
                     <div className="mt-5 border-t border-neutral-200/50 pt-5 dark:border-neutral-700/50">
-                      <p className="mb-2.5 text-[9px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                      <p className="eyebrow text-2xs mb-2.5 text-neutral-500 dark:text-neutral-400">
                         {t("partners")}
                       </p>
                       <div className="flex flex-wrap gap-2">

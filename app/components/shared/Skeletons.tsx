@@ -52,7 +52,7 @@ export function RecordingsSectionSkeleton() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="relative overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] shadow-[0_16px_30px_-20px_rgba(17,24,39,0.35)] ring-1 ring-black/10 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:ring-white/12"
+              className="shadow-soft dark:shadow-raised relative overflow-hidden rounded-[16px] bg-[linear-gradient(180deg,rgba(249,250,251,0.98)_0%,rgba(229,231,235,0.98)_100%)] ring-1 ring-black/10 dark:bg-[linear-gradient(180deg,rgba(20,20,22,0.98)_0%,rgba(12,12,13,1)_100%)] dark:ring-white/12"
             >
               <Skeleton className="aspect-video w-full !rounded-none" />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/54 via-black/22 to-transparent dark:from-black/62 dark:via-black/26" />
@@ -99,10 +99,7 @@ export function HeroSkeleton() {
               <Skeleton className="mb-8 h-5 w-full max-w-xl" />
               <div className="mb-8 grid grid-cols-3 gap-2.5 sm:gap-3.5">
                 {[1, 2, 3].map((id) => (
-                  <div
-                    key={id}
-                    className="rounded-2xl border border-black/10 bg-white/70 px-3 py-2.5 dark:border-white/10 dark:bg-black/28"
-                  >
+                  <div key={id} className="surface px-3 py-2.5">
                     <Skeleton className="h-3 w-16" />
                     <Skeleton className="mt-2 h-6 w-10" />
                   </div>
@@ -131,7 +128,7 @@ export function HeroSkeleton() {
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-black/10 bg-white/56 p-2.5 dark:border-white/10 dark:bg-black/28">
+                <div className="surface p-2.5">
                   <Skeleton className="mx-auto h-3 w-24" />
                   <Skeleton className="mx-auto mt-1 h-3 w-28 sm:hidden" />
                   <div className="no-scrollbar mt-2 flex w-full min-w-0 gap-2 overflow-x-auto pb-1 lg:overflow-visible">

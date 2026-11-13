@@ -39,7 +39,7 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
           role="region"
           aria-labelledby="profile-upcoming-rsvps-heading"
         >
-          <div className="glass-card relative flex h-full flex-col rounded-2xl border border-black/5 bg-white/80 dark:border-white/10 dark:bg-neutral-950/70">
+          <div className="surface glass-card relative flex h-full flex-col">
             <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-rose-500/50 to-transparent" />
 
             <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
@@ -96,7 +96,7 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
       aria-labelledby="profile-upcoming-rsvps-heading"
       aria-describedby="profile-upcoming-rsvps-count"
     >
-      <div className="glass-card relative flex h-full flex-col rounded-2xl border border-black/5 bg-white/80 dark:border-white/10 dark:bg-neutral-950/70">
+      <div className="surface glass-card relative flex h-full flex-col">
         <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-rose-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
@@ -133,7 +133,7 @@ export async function UpcomingRsvps({ userId, profileUserId }: UpcomingRsvpsProp
                   key={event.id}
                   href={PAGE_ROUTES.EVENT(event.id)}
                   prefetch={false}
-                  className="group relative block overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 p-4 transition-all duration-300 hover:border-rose-500/20 hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-rose-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 focus-visible:outline-none dark:border-white/5 dark:bg-neutral-800/30 dark:hover:bg-neutral-800/50 dark:focus-visible:ring-offset-neutral-900"
+                  className="surface-inset group relative block overflow-hidden p-4 transition-all duration-300 hover:border-rose-500/20 hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-rose-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 focus-visible:outline-none dark:hover:bg-neutral-800/50 dark:focus-visible:ring-offset-neutral-900"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-start justify-between gap-4">

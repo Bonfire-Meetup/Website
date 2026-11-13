@@ -5,6 +5,7 @@ import Link from "next/link";
 import { type CSSProperties, useEffect, useState } from "react";
 
 import { ArrowRightIcon, BoltIcon, FireIcon, PlayIcon } from "@/components/shared/Icons";
+import { Pill } from "@/components/ui/Pill";
 import { WEBSITE_URLS, type LocationValue } from "@/lib/config/constants";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -44,8 +45,8 @@ function Ember({
 
 function HeroStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-black/10 bg-white/70 px-3 py-2.5 text-left backdrop-blur-sm transition-colors hover:border-black/18 dark:border-white/10 dark:bg-black/28 dark:hover:border-white/16">
-      <span className="block text-[11px] font-semibold tracking-[0.08em] text-neutral-500 uppercase dark:text-white/54">
+    <div className="surface group relative overflow-hidden px-3 py-2.5 text-left transition-colors hover:border-black/18 dark:hover:border-white/16">
+      <span className="text-2xs block font-semibold tracking-wider text-neutral-500 uppercase dark:text-white/54">
         {label}
       </span>
       <span className="mt-1 block text-xl leading-none font-black tracking-tight text-neutral-900 dark:text-white">
@@ -87,7 +88,7 @@ function EngagementChips({ recording }: { recording: HeroRecording }) {
     <div className="flex items-center gap-1.5">
       {hasBoost && (
         <span
-          className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-semibold text-white shadow-lg ${ENGAGEMENT_BRANDING.boost.classes.activeGradient}`}
+          className={`text-2xs inline-flex items-center gap-1 rounded-full px-2 py-1 font-semibold text-white shadow-lg ${ENGAGEMENT_BRANDING.boost.classes.activeGradient}`}
         >
           <BoltIcon className="h-3.5 w-3.5" />
           {recording.boostCount}
@@ -95,7 +96,7 @@ function EngagementChips({ recording }: { recording: HeroRecording }) {
       )}
       {hasLike && (
         <span
-          className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-semibold text-white shadow-lg ${ENGAGEMENT_BRANDING.like.classes.activeGradient}`}
+          className={`text-2xs inline-flex items-center gap-1 rounded-full px-2 py-1 font-semibold text-white shadow-lg ${ENGAGEMENT_BRANDING.like.classes.activeGradient}`}
         >
           <FireIcon className="h-3.5 w-3.5" />
           {recording.likeCount}
@@ -132,10 +133,13 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/72 via-black/26 to-transparent transition-opacity duration-300 group-hover:from-black/60 dark:from-black/80" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_84%_16%,rgba(249,115,22,0.16),transparent_26%),radial-gradient(circle_at_70%_24%,rgba(244,63,94,0.1),transparent_34%)] opacity-70 transition-opacity duration-500 group-hover:opacity-85 dark:opacity-60" />
 
-          <div className="absolute top-3 left-3 z-20 inline-flex items-center gap-1.5 rounded-full border border-white/24 bg-black/35 px-2.5 py-1 text-[10px] font-semibold tracking-[0.12em] text-white uppercase backdrop-blur-sm">
+          <Pill
+            size="xxs"
+            className="tracking-label-sm absolute top-3 left-3 z-20 gap-1.5 border border-white/24 bg-black/35 font-semibold text-white uppercase backdrop-blur-sm"
+          >
             <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-orange-400 to-rose-500" />
             {text.badge}
-          </div>
+          </Pill>
 
           <div className="absolute top-3 right-3 z-20">
             <EngagementChips recording={recording} />
@@ -143,11 +147,11 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
 
           <div className="absolute right-0 bottom-0 left-0 z-20 p-3 sm:p-4">
             <div className="mb-1.5 flex items-center gap-2">
-              <span className="inline-flex items-center rounded-full border border-white/25 bg-black/36 px-2 py-1 text-[9px] font-semibold tracking-[0.1em] text-white/92 uppercase backdrop-blur-sm">
+              <span className="text-2xs inline-flex items-center rounded-full border border-white/25 bg-black/36 px-2 py-1 font-semibold tracking-wider text-white/92 uppercase backdrop-blur-sm">
                 {recording.location}
               </span>
             </div>
-            <p className="mb-1 truncate text-[10px] font-medium tracking-[0.16em] text-white/72 uppercase">
+            <p className="text-2xs tracking-label-sm mb-1 truncate font-medium text-white/72 uppercase">
               {primarySpeaker}
             </p>
             <h3 className="line-clamp-2 min-h-[2.15rem] text-sm leading-snug font-semibold text-white sm:text-base">
@@ -160,7 +164,7 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
         <Link
           href={watchPath}
           prefetch={false}
-          className="inline-flex h-8 items-center gap-1.5 rounded-full border border-white/35 bg-gradient-to-r from-orange-500/95 via-rose-500/95 to-red-600/95 px-3 text-[10px] font-semibold tracking-[0.12em] text-white uppercase shadow-[0_10px_24px_-14px_rgba(249,115,22,0.72)] transition-transform duration-300 hover:translate-x-0.5"
+          className="text-2xs tracking-label-sm inline-flex h-8 items-center gap-1.5 rounded-full border border-white/35 bg-gradient-to-r from-orange-500/95 via-rose-500/95 to-red-600/95 px-3 font-semibold text-white uppercase shadow-[0_10px_24px_-14px_rgba(249,115,22,0.72)] transition-transform duration-300 hover:translate-x-0.5"
         >
           <PlayIcon className="h-3.5 w-3.5" />
           {text.watchNow}
@@ -224,10 +228,10 @@ function QueueVideoCard({
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="mb-0.5 truncate text-[9px] font-semibold tracking-[0.12em] text-neutral-500 uppercase dark:text-white/50">
+        <p className="text-2xs tracking-label-sm mb-0.5 truncate font-semibold text-neutral-500 uppercase dark:text-white/50">
           {String(rank).padStart(2, "0")} · {recording.speaker[0]}
         </p>
-        <h3 className="line-clamp-2 text-[11px] leading-[1.25] font-semibold text-neutral-900 dark:text-white/90">
+        <h3 className="text-2xs line-clamp-2 leading-[1.25] font-semibold text-neutral-900 dark:text-white/90">
           {recording.title}
         </h3>
       </div>
@@ -273,18 +277,18 @@ function TrendingDock({
       onMouseEnter={() => setIsAutoPlayPaused(true)}
       onMouseLeave={() => setIsAutoPlayPaused(false)}
     >
-      <div className="relative min-w-0 overflow-hidden rounded-[30px] border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.66)_0%,rgba(255,255,255,0.36)_100%)] p-3 shadow-[0_24px_60px_-34px_rgba(17,24,39,0.55)] backdrop-blur-xl sm:p-4 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(20,20,22,0.82)_0%,rgba(10,10,11,0.62)_100%)] dark:shadow-[0_28px_56px_-26px_rgba(0,0,0,0.95)]">
+      <div className="shadow-floating dark:shadow-floating relative min-w-0 overflow-hidden rounded-[30px] border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.66)_0%,rgba(255,255,255,0.36)_100%)] p-3 backdrop-blur-xl sm:p-4 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(20,20,22,0.82)_0%,rgba(10,10,11,0.62)_100%)]">
         <div className="pointer-events-none absolute -top-16 right-0 h-36 w-36 rounded-full bg-orange-500/24 blur-3xl dark:bg-orange-500/18" />
         <div className="pointer-events-none absolute -bottom-14 left-2 h-36 w-40 rounded-full bg-orange-500/24 blur-3xl dark:bg-orange-500/16" />
 
         <div className="relative space-y-3">
           {activeRecording && <ActiveVideoCard recording={activeRecording} text={text} />}
 
-          <div className="rounded-2xl border border-black/10 bg-white/56 p-2.5 backdrop-blur-sm dark:border-white/10 dark:bg-black/28">
-            <p className="text-center text-[9px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-white/54">
+          <div className="surface p-2.5">
+            <p className="text-2xs tracking-label-sm text-center font-semibold text-neutral-500 uppercase dark:text-white/54">
               {text.queue}
             </p>
-            <p className="mt-1 text-center text-[9px] font-medium tracking-[0.12em] text-neutral-500/90 uppercase sm:hidden dark:text-white/36">
+            <p className="text-2xs tracking-label-sm mt-1 text-center font-medium text-neutral-500/90 uppercase sm:hidden dark:text-white/36">
               {text.tapHint}
             </p>
 
@@ -304,7 +308,7 @@ function TrendingDock({
           <div className="text-center">
             <Link
               href="#recordings"
-              className="inline-flex items-center gap-1 text-[10px] font-semibold tracking-[0.1em] text-neutral-600 uppercase underline decoration-[1.5px] underline-offset-4 transition-colors hover:text-neutral-900 dark:text-white/62 dark:hover:text-white/86"
+              className="text-2xs inline-flex items-center gap-1 font-semibold tracking-wider text-neutral-600 uppercase underline decoration-[1.5px] underline-offset-4 transition-colors hover:text-neutral-900 dark:text-white/62 dark:hover:text-white/86"
             >
               {text.seeAll}
               <ArrowRightIcon className="h-3.5 w-3.5" />
@@ -421,7 +425,7 @@ export function Hero({ images, trendingRecordings = EMPTY_TRENDING_RECORDINGS }:
             }`}
           >
             <div className="mx-auto w-full max-w-2xl min-w-0 lg:mx-0">
-              <p className="mb-8 text-center text-[11px] font-semibold tracking-[0.26em] text-neutral-500 uppercase lg:mb-5 lg:text-left dark:text-neutral-400">
+              <p className="text-2xs tracking-label-lg mb-8 text-center font-semibold text-neutral-500 uppercase lg:mb-5 lg:text-left dark:text-neutral-400">
                 {t("eyebrow")}
               </p>
 

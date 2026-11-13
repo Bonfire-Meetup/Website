@@ -92,14 +92,14 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
                 <div className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
                   <div>{formatDateTimeUTC(attempt.createdAt, locale)}</div>
                   {attempt.userAgentSummary && (
-                    <div className="mt-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
+                    <div className="text-2xs mt-0.5 text-neutral-400 dark:text-neutral-500">
                       {attempt.userAgentSummary}
                     </div>
                   )}
                 </div>
               </div>
               <span
-                className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase ${getOutcomeStyle(attempt.outcome)}`}
+                className={`text-2xs shrink-0 rounded-full px-2 py-0.5 font-semibold tracking-wider uppercase ${getOutcomeStyle(attempt.outcome)}`}
               >
                 {attempt.outcome}
               </span>

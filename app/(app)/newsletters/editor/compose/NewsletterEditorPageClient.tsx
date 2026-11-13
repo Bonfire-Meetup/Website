@@ -95,7 +95,7 @@ export function NewsletterEditorPageClient() {
 
   if (isLoading) {
     return (
-      <main className="gradient-bg-static relative min-h-screen overflow-hidden px-2 pt-24 pb-16 sm:px-4 sm:pt-32 sm:pb-20">
+      <main className="gradient-bg-static relative min-h-screen overflow-hidden px-2 pt-28 pb-16 sm:px-4 sm:pt-32 sm:pb-20">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-24 left-1/2 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-9),transparent_62%)]" />
         </div>
@@ -114,7 +114,7 @@ export function NewsletterEditorPageClient() {
 
   if (resendError) {
     return (
-      <main className="gradient-bg-static relative min-h-screen overflow-hidden px-2 pt-24 pb-16 sm:px-4 sm:pt-32 sm:pb-20">
+      <main className="gradient-bg-static relative min-h-screen overflow-hidden px-2 pt-28 pb-16 sm:px-4 sm:pt-32 sm:pb-20">
         <div className="relative z-10 mx-auto max-w-5xl">
           <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
             <p className="text-neutral-600 dark:text-neutral-400">{t("resendLoadError")}</p>
@@ -133,7 +133,7 @@ export function NewsletterEditorPageClient() {
   }
 
   return (
-    <main className="gradient-bg-static relative min-h-screen overflow-hidden px-2 pt-24 pb-16 sm:px-4 sm:pt-32 sm:pb-20">
+    <main className="gradient-bg-static relative min-h-screen overflow-hidden px-2 pt-28 pb-16 sm:px-4 sm:pt-32 sm:pb-20">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-24 left-1/2 h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,var(--color-brand-glow-9),transparent_62%)]" />
         <div className="absolute top-1/2 left-1/4 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,var(--color-fire-mid-glow),transparent_62%)] opacity-40 blur-3xl" />

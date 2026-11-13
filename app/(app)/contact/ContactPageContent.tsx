@@ -13,14 +13,14 @@ export function ContactPageContent() {
   return (
     <>
       <ScrollToTop />
-      <main className="relative min-h-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+      <main className="gradient-bg relative min-h-screen overflow-hidden">
         <StaticPageHero
           eyebrow={t("eyebrow")}
           heroWord="CONTACT"
           subtitle={t("subtitle")}
           subtitleClassName="mx-auto max-w-xl text-neutral-600 dark:text-neutral-400"
           title={
-            <h1 className="mb-6 text-4xl font-black tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl dark:text-white">
+            <h1 className="page-title mb-6">
               <span className="block">{t("titlePart1")}</span>
               <span className="text-gradient-static block">{t("titleHighlight")}</span>
             </h1>

@@ -40,7 +40,7 @@ export async function BoostedVideos({ userId, profileUserId }: BoostedVideosProp
       aria-labelledby="profile-boosted-videos-heading"
       aria-describedby="profile-boosted-videos-count"
     >
-      <div className="glass-card relative rounded-2xl border border-black/5 bg-white/80 dark:border-white/10 dark:bg-neutral-950/70">
+      <div className="surface glass-card relative">
         <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">

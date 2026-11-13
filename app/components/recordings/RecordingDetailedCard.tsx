@@ -165,7 +165,7 @@ export function RecordingDetailedCard({
   const tiltHandlers = createCardTiltHandlers();
   const shadowClass = disableShadow
     ? "shadow-none hover:shadow-none"
-    : "shadow-[0_20px_38px_-24px_rgba(17,24,39,0.24),0_14px_34px_-26px_rgba(249,115,22,0.3)] hover:shadow-[0_30px_54px_-26px_rgba(17,24,39,0.3),0_18px_40px_-26px_rgba(249,115,22,0.38)] dark:shadow-[0_18px_38px_-18px_rgba(0,0,0,0.9)] dark:hover:shadow-[0_30px_52px_-20px_rgba(0,0,0,0.95)]";
+    : "shadow-[0_20px_38px_-24px_rgba(17,24,39,0.24),0_14px_34px_-26px_rgba(249,115,22,0.3)] hover:shadow-[0_30px_54px_-26px_rgba(17,24,39,0.3),0_18px_40px_-26px_rgba(249,115,22,0.38)] dark:shadow-raised dark:hover:shadow-raised";
   const outerClassName =
     className ??
     (isGrid
@@ -232,7 +232,7 @@ export function RecordingDetailedCard({
               location={location}
               date={date}
               locale={resolvedLocale}
-              trackingClass={isGrid ? "tracking-[0.14em]" : "tracking-[0.12em]"}
+              trackingClass={isGrid ? "tracking-label-sm" : "tracking-label-sm"}
             />
             <h3
               className={`${isGrid ? "text-[15px]" : "text-sm"} line-clamp-2 leading-[1.28] font-semibold tracking-[-0.01em] text-white`}
@@ -247,7 +247,7 @@ export function RecordingDetailedCard({
                   tag={tag}
                   href={`${PAGE_ROUTES.LIBRARY_BROWSE}?tag=${encodeURIComponent(tag)}`}
                   size="xxxs"
-                  className="tracking-[0.12em]"
+                  className="tracking-label-sm"
                 />
               ))}
             </div>
@@ -281,7 +281,7 @@ export function RecordingDetailedCard({
           />
           {episode && (
             <RecordingEpisodePill
-              className="pointer-events-none absolute top-3 right-3 z-20 bg-black/70 font-semibold tracking-[0.18em] text-white uppercase shadow"
+              className="eyebrow pointer-events-none absolute top-3 right-3 z-20 bg-black/70 text-white shadow"
               episode={episode}
               episodeNumber={episodeNumber}
               epShortLabel={t("epShort")}

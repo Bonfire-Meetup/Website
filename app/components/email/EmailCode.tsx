@@ -134,7 +134,7 @@ export function EmailCode({
                       }}
                     >
                       <Section className="px-8 py-5 text-center" align="center">
-                        <span className="code-text inline-block font-mono text-[36px] leading-none font-bold tracking-[0.25em] whitespace-nowrap text-neutral-900">
+                        <span className="code-text tracking-label inline-block font-mono text-[36px] leading-none font-bold whitespace-nowrap text-neutral-900">
                           {formattedCode}
                         </span>
                       </Section>
@@ -147,7 +147,7 @@ export function EmailCode({
 
                 {requestFrom && (
                   <Section className="mt-4 inline-block rounded-full bg-neutral-100 px-4 py-2">
-                    <Text className="m-0 text-[12px] text-neutral-500">📍 {requestFrom}</Text>
+                    <Text className="m-0 text-xs text-neutral-500">📍 {requestFrom}</Text>
                   </Section>
                 )}
               </Section>
@@ -158,7 +158,7 @@ export function EmailCode({
                     <Text className="m-0 text-sm">🛡️</Text>
                   </Column>
                   <Column className="align-top">
-                    <Text className="m-0 text-[12px] leading-relaxed text-neutral-500">
+                    <Text className="m-0 text-xs leading-relaxed text-neutral-500">
                       {securityTip}
                     </Text>
                   </Column>
@@ -169,7 +169,7 @@ export function EmailCode({
             <Section className="pt-8 text-center">
               <Text className="m-0 text-[13px] font-medium text-neutral-700">{footer}</Text>
               <Hr className="mx-auto my-5 w-12 border-t border-neutral-200" />
-              <Text className="m-0 text-[11px] leading-relaxed text-neutral-400">{ignore}</Text>
+              <Text className="text-2xs m-0 leading-relaxed text-neutral-400">{ignore}</Text>
             </Section>
           </Container>
         </Body>

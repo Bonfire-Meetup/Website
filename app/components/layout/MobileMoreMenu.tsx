@@ -240,7 +240,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
               }}
             >
               <div
-                className="mx-4 mb-6 overflow-hidden rounded-2xl border border-white/30 bg-white/60 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-neutral-900/55"
+                className="surface mx-4 mb-6 overflow-hidden shadow-lg"
                 style={{
                   transform: isOpen ? "scale(1)" : "scale(0.92)",
                   opacity: isOpen ? 1 : 0,
@@ -302,7 +302,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
                           <Icon className="h-6 w-6" />
                         </div>
                         <span
-                          className={`text-center text-[11px] leading-tight font-medium ${
+                          className={`text-2xs text-center leading-tight font-medium ${
                             active
                               ? "text-rose-700 dark:text-rose-300"
                               : "text-neutral-700 dark:text-neutral-300"

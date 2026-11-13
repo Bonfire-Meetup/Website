@@ -25,7 +25,7 @@ interface PhotosPageContentProps {
 }
 
 const statPillClass =
-  "inline-flex items-center gap-3 rounded-full border border-black/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(255,244,233,0.9)_100%)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-neutral-500 ring-1 ring-white/60 shadow-[0_16px_30px_-20px_rgba(15,23,42,0.35)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(36,36,38,0.8)_0%,rgba(20,20,22,0.9)_100%)] dark:text-neutral-400 dark:ring-white/10 dark:shadow-[0_20px_36px_-24px_rgba(0,0,0,0.75)]";
+  "inline-flex items-center gap-3 rounded-full border border-black/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(255,244,233,0.9)_100%)] px-4 py-2 text-xs font-semibold uppercase tracking-label-lg text-neutral-500 ring-1 ring-white/60 shadow-soft dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(36,36,38,0.8)_0%,rgba(20,20,22,0.9)_100%)] dark:text-neutral-400 dark:ring-white/10 dark:shadow-raised";
 
 function StatPill({ value, label }: { value: string | number; label: string }) {
   return (
@@ -103,7 +103,7 @@ export function PhotosPageContent({
                   type="button"
                   onClick={() => openLightbox(index)}
                   aria-label={t("openPhoto", { title: album.title })}
-                  className="group aspect-[3/4] overflow-hidden rounded-2xl border border-black/8 bg-neutral-100 shadow-[0_24px_50px_-26px_rgba(15,23,42,0.45)] ring-1 ring-white/45 transition-all hover:shadow-[0_28px_56px_-24px_rgba(15,23,42,0.5)] sm:cursor-zoom-in sm:rounded-2xl dark:border-white/10 dark:bg-neutral-900 dark:shadow-[0_24px_50px_-24px_rgba(0,0,0,0.8)] dark:ring-white/10"
+                  className="group shadow-raised hover:shadow-floating dark:shadow-raised aspect-[3/4] overflow-hidden rounded-2xl border border-black/8 bg-neutral-100 ring-1 ring-white/45 transition-all sm:cursor-zoom-in sm:rounded-2xl dark:border-white/10 dark:bg-neutral-900 dark:ring-white/10"
                 >
                   <AlbumImage
                     src={album.highlightSrc}
@@ -148,7 +148,7 @@ export function PhotosPageContent({
                 key={album.id}
                 href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
                 prefetch={false}
-                className="group relative overflow-hidden rounded-2xl border border-black/10 bg-neutral-900 shadow-[0_32px_70px_-36px_rgba(15,23,42,0.65)] ring-1 ring-white/30 transition-all duration-500 hover:shadow-[0_36px_80px_-34px_rgba(15,23,42,0.72)] dark:border-white/10 dark:ring-white/10"
+                className="group shadow-floating hover:shadow-floating relative overflow-hidden rounded-2xl border border-black/10 bg-neutral-900 ring-1 ring-white/30 transition-all duration-500 dark:border-white/10 dark:ring-white/10"
               >
                 <div className="aspect-[5/4] overflow-hidden">
                   <AlbumImage
@@ -161,7 +161,7 @@ export function PhotosPageContent({
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
                 <div className="absolute right-4 bottom-4 left-4">
                   <div className="space-y-2">
-                    <p className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold tracking-[0.22em] text-white/85 uppercase backdrop-blur-md">
+                    <p className="eyebrow inline-flex items-center rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs text-white/85 backdrop-blur-md">
                       {t("albumPhotos", { count: album.count })}
                     </p>
                     <h3 className="text-xl leading-tight font-black text-white sm:text-2xl">
@@ -184,7 +184,7 @@ export function PhotosPageContent({
                     {t("albumsSubtitle")}
                   </p>
                 </div>
-                <p className="rounded-full border border-black/10 bg-white/70 px-3 py-1 text-xs font-semibold tracking-[0.2em] text-neutral-600 uppercase dark:border-white/15 dark:bg-white/5 dark:text-neutral-300">
+                <p className="eyebrow rounded-full border border-black/10 bg-white/70 px-3 py-1 text-xs text-neutral-600 dark:border-white/15 dark:bg-white/5 dark:text-neutral-300">
                   {archiveAlbums.length}
                 </p>
               </div>
@@ -194,7 +194,7 @@ export function PhotosPageContent({
                     key={album.id}
                     href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
                     prefetch={false}
-                    className="group grid h-full overflow-hidden rounded-2xl border border-black/10 bg-white/75 shadow-[0_22px_42px_-30px_rgba(15,23,42,0.46)] ring-1 ring-white/50 transition-all duration-300 hover:shadow-[0_30px_58px_-30px_rgba(15,23,42,0.54)] sm:grid-cols-[180px_minmax(0,1fr)] dark:border-white/10 dark:bg-neutral-950/70 dark:ring-white/10"
+                    className="surface group hover:shadow-floating grid h-full overflow-hidden transition-all duration-300 sm:grid-cols-[180px_minmax(0,1fr)]"
                   >
                     <div className="aspect-[16/10] overflow-hidden sm:aspect-auto sm:h-full">
                       <AlbumImage
@@ -206,7 +206,7 @@ export function PhotosPageContent({
                     </div>
                     <div className="flex items-center justify-between gap-4 p-4">
                       <div className="space-y-1">
-                        <p className="text-xs font-semibold tracking-[0.16em] text-neutral-500 uppercase dark:text-neutral-400">
+                        <p className="tracking-label-sm text-xs font-semibold text-neutral-500 uppercase dark:text-neutral-400">
                           #{index + 3}
                         </p>
                         <h3 className="line-clamp-2 text-base font-semibold text-neutral-900 transition-colors group-hover:text-orange-700 dark:text-white dark:group-hover:text-orange-300">

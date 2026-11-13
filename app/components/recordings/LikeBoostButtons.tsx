@@ -331,7 +331,7 @@ export function LikeBoostButtons({
                 likeLoadError ? (
                   <FrownIcon className="h-4 w-4" />
                 ) : (
-                  <span className="flex items-center gap-1 text-[11px]">
+                  <span className="text-2xs flex items-center gap-1">
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:0ms]" />
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:120ms]" />
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:240ms]" />
@@ -340,7 +340,7 @@ export function LikeBoostButtons({
               ) : likeCount > 0 ? (
                 <span className="text-base tabular-nums">{likeCount}</span>
               ) : (
-                <span className="text-[11px]">{t(ENGAGEMENT_BRANDING.like.i18nKeys.action)}</span>
+                <span className="text-2xs">{t(ENGAGEMENT_BRANDING.like.i18nKeys.action)}</span>
               )}
             </span>
           </button>
@@ -404,7 +404,7 @@ export function LikeBoostButtons({
                 boostLoadError ? (
                   <FrownIcon className="h-4 w-4" />
                 ) : (
-                  <span className="flex items-center gap-1 text-[11px]">
+                  <span className="text-2xs flex items-center gap-1">
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:0ms]" />
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:120ms]" />
                     <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:240ms]" />
@@ -413,7 +413,7 @@ export function LikeBoostButtons({
               ) : boostCount > 0 ? (
                 <span className="text-base tabular-nums">{boostCount}</span>
               ) : (
-                <span className="text-[11px]">{t(ENGAGEMENT_BRANDING.boost.i18nKeys.action)}</span>
+                <span className="text-2xs">{t(ENGAGEMENT_BRANDING.boost.i18nKeys.action)}</span>
               )}
             </span>
           </button>
