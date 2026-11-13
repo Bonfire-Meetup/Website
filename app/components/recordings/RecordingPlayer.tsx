@@ -256,7 +256,7 @@ export function RecordingPlayer({
 
             <div className="surface shadow-floating dark:shadow-floating relative overflow-hidden">
               <div className="relative z-10 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.2),transparent_62%)] p-2 transition-all duration-300 sm:p-3">
-                <div className="shadow-floating dark:shadow-floating overflow-hidden rounded-xl bg-black ring-1 ring-black/40">
+                <div className="shadow-floating dark:shadow-floating mx-auto max-w-[max(18rem,calc((100dvh-8.5rem)*16/9))] overflow-hidden rounded-xl bg-black ring-1 ring-black/40 md:max-w-[max(18rem,calc((100dvh-8rem)*16/9))]">
                   {hasPlaybackAccess ? (
                     <div ref={inlinePlayerRef} className="relative aspect-video w-full bg-black" />
                   ) : (

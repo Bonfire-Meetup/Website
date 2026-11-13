@@ -34,7 +34,7 @@ export default function WatchLoading() {
 
             <div className="surface shadow-floating dark:shadow-floating overflow-hidden">
               <div className="p-2 sm:p-3">
-                <Skeleton className="aspect-video w-full rounded-xl" />
+                <Skeleton className="mx-auto aspect-video w-full max-w-[max(18rem,calc((100dvh-8.5rem)*16/9))] rounded-xl md:max-w-[max(18rem,calc((100dvh-8rem)*16/9))]" />
               </div>
 
               <div className="space-y-4 px-5 pt-4 pb-5 sm:px-6 sm:pt-5">
