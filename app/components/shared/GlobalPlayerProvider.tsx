@@ -59,6 +59,28 @@ const MAX_VIDEO_WIDTH = 1120;
 const MINI_WIDTH = 320;
 const MINI_HEIGHT = (MINI_WIDTH * 9) / 16;
 const EDGE_MARGIN = 16;
+const CINEMA_TRANSITION_MS = 520;
+const CINEMA_ASPECT = 16 / 9;
+const CINEMA_CLOSE_BUTTON_ZONE = 72;
+
+function getCinemaRect(): Rect {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const margin = Math.max(12, Math.min(32, vw * 0.02));
+
+  let width = Math.min(vw - margin * 2, (vh - margin * 2) * CINEMA_ASPECT);
+  let height = width / CINEMA_ASPECT;
+
+  const sideGap = (vw - width) / 2;
+  const topGap = (vh - height) / 2;
+
+  if (sideGap < CINEMA_CLOSE_BUTTON_ZONE && topGap < CINEMA_CLOSE_BUTTON_ZONE) {
+    height = Math.max(vh - CINEMA_CLOSE_BUTTON_ZONE * 2, 0);
+    width = height * CINEMA_ASPECT;
+  }
+
+  return { height, left: (vw - width) / 2, top: (vh - height) / 2, width };
+}
 
 const GlobalPlayerContext = createContext<GlobalPlayerContextValue | null>(null);
 
@@ -121,6 +143,51 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     Boolean(video) &&
     Boolean(playerRect) &&
     (isInline || canMiniPlayer);
+
+  const [isCinemaAnimating, setIsCinemaAnimating] = useState(false);
+  const [previousCinemaMode, setPreviousCinemaMode] = useState(cinemaMode);
+
+  if (previousCinemaMode !== cinemaMode) {
+    setPreviousCinemaMode(cinemaMode);
+    setIsCinemaAnimating(true);
+  }
+
+  useEffect(() => {
+    if (!isCinemaAnimating) {
+      return;
+    }
+
+    const timer = setTimeout(() => setIsCinemaAnimating(false), CINEMA_TRANSITION_MS);
+
+    return () => clearTimeout(timer);
+  }, [isCinemaAnimating, cinemaMode]);
+
+  const hasCinemaHistoryEntryRef = useRef(false);
+
+  useEffect(() => {
+    if (!cinemaMode) {
+      return;
+    }
+
+    window.history.pushState({ bonfireTheater: true }, "");
+    hasCinemaHistoryEntryRef.current = true;
+
+    const handlePopState = () => {
+      hasCinemaHistoryEntryRef.current = false;
+      dispatch(setCinemaModeAction(false));
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+
+      if (hasCinemaHistoryEntryRef.current) {
+        hasCinemaHistoryEntryRef.current = false;
+        window.history.back();
+      }
+    };
+  }, [cinemaMode, dispatch]);
 
   const [corner, setCorner] = useState<Corner>("bottom-right");
   const [miniSize, setMiniSize] = useState<number>(MINI_WIDTH);
@@ -233,18 +300,12 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     if (cinemaMode) {
-      const vw = window.innerWidth;
-      const width = Math.min(vw * 0.92, 1200);
-      const height = (width * 9) / 16;
-      dispatch(
-        setPlayerRect({
-          height,
-          left: (vw - width) / 2,
-          top: (window.innerHeight - height) / 2,
-          width,
-        }),
-      );
-      return;
+      const updateCinemaRect = () => dispatch(setPlayerRect(getCinemaRect()));
+
+      updateCinemaRect();
+      window.addEventListener("resize", updateCinemaRect);
+
+      return () => window.removeEventListener("resize", updateCinemaRect);
     }
 
     if (isInline) {
@@ -449,6 +510,19 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
     playerContainerClassName = "z-50 rounded-t-2xl ring-1 ring-black/40";
   } else if (cinemaMode) {
     playerContainerClassName = "z-[80] rounded-2xl shadow-2xl";
+  } else if (isCinemaAnimating) {
+    playerContainerClassName = "z-[80] rounded-xl";
+  }
+
+  let playerTransitionClassName = "";
+  if (showMiniPlayer) {
+    playerTransitionClassName =
+      isDragging || isResizing ? "" : "transition-all duration-300 ease-out";
+  } else if (isCinemaAnimating) {
+    playerTransitionClassName =
+      "transition-[top,left,width,height,border-radius,box-shadow] duration-500 ease-[cubic-bezier(0.2,0.85,0.2,1)] motion-reduce:transition-none";
+  } else if (isAnimating) {
+    playerTransitionClassName = "transition-all duration-300";
   }
 
   return (
@@ -456,22 +530,27 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
       {children}
       {shouldShowPlayer && video && playerRect && (
         <>
-          {cinemaMode && (
-            <>
-              <div
-                className="fixed inset-0 z-[70] bg-black/95"
-                onClick={() => dispatch(setCinemaModeAction(false))}
-              />
-              <button
-                type="button"
-                onClick={() => dispatch(setCinemaModeAction(false))}
-                className="fixed top-6 right-6 z-[90] inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white/80 backdrop-blur-sm transition hover:bg-white/20 hover:text-white"
-                aria-label={t("exitCinema")}
-              >
-                <CloseIcon className="h-5 w-5" />
-              </button>
-            </>
-          )}
+          <div
+            aria-hidden="true"
+            className={`fixed inset-0 z-[70] bg-black/95 transition-opacity duration-500 ease-out motion-reduce:transition-none ${
+              cinemaMode ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
+            onClick={() => dispatch(setCinemaModeAction(false))}
+          />
+          <button
+            type="button"
+            onClick={() => dispatch(setCinemaModeAction(false))}
+            tabIndex={cinemaMode ? 0 : -1}
+            aria-hidden={!cinemaMode}
+            className={`fixed top-6 right-6 z-[90] inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white/80 backdrop-blur-sm transition duration-300 hover:bg-white/20 hover:text-white motion-reduce:transition-none ${
+              cinemaMode
+                ? "scale-100 opacity-100 delay-200"
+                : "pointer-events-none scale-90 opacity-0"
+            }`}
+            aria-label={t("exitCinema")}
+          >
+            <CloseIcon className="h-5 w-5" />
+          </button>
 
           {showMiniPlayer && (
             <div
@@ -519,7 +598,7 @@ export function GlobalPlayerProvider({ children }: { children: React.ReactNode }
           )}
 
           <div
-            className={`fixed overflow-hidden bg-black ${playerContainerClassName} ${!showMiniPlayer && isAnimating ? "transition-all duration-300" : ""} ${showMiniPlayer && !isDragging && !isResizing ? "transition-all duration-300 ease-out" : ""}`}
+            className={`fixed overflow-hidden bg-black ${playerContainerClassName} ${playerTransitionClassName}`}
             style={
               showMiniPlayer
                 ? {
