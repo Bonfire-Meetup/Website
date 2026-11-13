@@ -51,7 +51,7 @@
     "react-redux": "^9.3.1",
     "remark-frontmatter": "^5.0.0",
     "remark-mdx-frontmatter": "^6.0.0",
-    "rollbar": "^4.2.0",
+    "rollbar": "^4.2.1",
     "sharp": "^0.35.5",
     "stripe": "^23.1.0",
     "tailwindcss": "^4.3.5",
@@ -72,7 +72,7 @@
     "eslint": "^10.14.0",
     "oxfmt": "^0.78.0",
     "oxlint": "^1.93.0",
-    "react-email": "6.11.11",
+    "react-email": "6.11.12",
     "typescript": "^7.0.2"
   },
   "next-intl": {
