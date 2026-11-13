@@ -1,40 +1,41 @@
 import { NextResponse } from "next/server";
 
-import { withRequestContext, withRole } from "@/lib/api/route-wrappers";
+import { withRateLimit, withRequestContext, withRole } from "@/lib/api/route-wrappers";
 import { USER_ROLES } from "@/lib/config/roles";
-import { deleteNewsletterBySlug, getNewsletterArchiveBySlug } from "@/lib/data/newsletter-archive";
+import {
+  deleteNewsletterBySlug,
+  getNewsletterArchiveBySlug,
+  toNewsletterDetail,
+} from "@/lib/data/newsletter-archive";
 import { logError, logInfo } from "@/lib/utils/log";
 
 interface RouteParams {
   params: Promise<{ slug: string }>;
 }
 
+/** Returns a newsletter from the archive: subject, preview text, send date and sections. */
 export const GET = withRequestContext(
-  withRole<RouteParams>(
-    "newsletter.get",
-    USER_ROLES.EDITOR,
-  )(async (_request: Request, { params }) => {
-    const { slug } = await params;
+  withRateLimit<RouteParams>({ maxHits: 60, storeKey: "newsletter" })(
+    async (_request: Request, { params }: RouteParams) => {
+      const { slug } = await params;
 
-    try {
-      const record = await getNewsletterArchiveBySlug(slug);
+      try {
+        const record = await getNewsletterArchiveBySlug(slug);
 
-      if (!record) {
-        return NextResponse.json({ error: "not_found" }, { status: 404 });
+        if (!record) {
+          return NextResponse.json({ error: "not_found" }, { status: 404 });
+        }
+
+        return NextResponse.json(toNewsletterDetail(record));
+      } catch (error) {
+        logError("newsletter.get.error", error, { slug });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
-
-      return NextResponse.json({
-        subject: record.subject,
-        previewText: record.previewText ?? "",
-        data: record.data,
-      });
-    } catch (error) {
-      logError("newsletter.get.error", error, { slug });
-      return NextResponse.json({ error: "internal_error" }, { status: 500 });
-    }
-  }),
+    },
+  ),
 );
 
+/** Deletes a newsletter from the archive. */
 export const DELETE = withRequestContext(
   withRole<RouteParams>(
     "newsletter.delete",

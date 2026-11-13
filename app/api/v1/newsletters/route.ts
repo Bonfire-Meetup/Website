@@ -1,7 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-import { withRequestContext, withRole } from "@/lib/api/route-wrappers";
+import { requireRole } from "@/lib/api/auth";
+import { parsePagination } from "@/lib/api/pagination";
+import { withRateLimit, withRequestContext, withRole } from "@/lib/api/route-wrappers";
 import { USER_ROLES } from "@/lib/config/roles";
 import {
   getNewsletterArchiveList,
@@ -18,17 +20,28 @@ import {
   streamNewsletter,
 } from "./newsletter-stream";
 
+/**
+ * Lists sent newsletters, newest first. Paginate with `limit` and `offset`.
+ *
+ * Pass `testSend=true` to list test sends instead; that requires the `editor` role.
+ */
 export const GET = withRequestContext(
-  withRole(
-    "newsletter.archive",
-    USER_ROLES.EDITOR,
-  )(async (request: NextRequest) => {
-    const testSend = request.nextUrl.searchParams.get("testSend") === "true";
+  withRateLimit({ maxHits: 60, storeKey: "newsletters" })(async (request: NextRequest) => {
+    const { searchParams } = request.nextUrl;
+    const testSend = searchParams.get("testSend") === "true";
 
-    const records = await getNewsletterArchiveList(100, 0);
-    const filtered = records.filter((r) => r.testSend === testSend).map(toArchiveListItem);
+    if (testSend) {
+      const auth = await requireRole(request, "newsletter.archive", USER_ROLES.EDITOR);
 
-    return NextResponse.json(filtered);
+      if (!auth.success) {
+        return auth.response;
+      }
+    }
+
+    const pagination = parsePagination(searchParams);
+    const records = await getNewsletterArchiveList(pagination.limit, pagination.offset, testSend);
+
+    return NextResponse.json({ ...pagination, items: records.map(toArchiveListItem) });
   }),
 );
 
@@ -40,6 +53,11 @@ const newSendSchema = z.object({
   testMode: z.boolean().default(false),
 });
 
+/**
+ * Sends a new newsletter and saves it to the archive.
+ *
+ * The response streams progress while the emails go out.
+ */
 export const POST = withRequestContext(
   withRole(
     "newsletter.send",

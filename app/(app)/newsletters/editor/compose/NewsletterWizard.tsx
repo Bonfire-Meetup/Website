@@ -6,22 +6,14 @@ import { useEffect, useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
-import { API_ROUTES } from "@/lib/api/routes";
-import { createJsonAuthHeaders } from "@/lib/utils/http";
+import { useNewsletterAudienceCounts } from "@/lib/api/newsletters";
 import { readLocalStorage, writeLocalStorage } from "@/lib/utils/local-storage";
 
 import { AudienceStep } from "./AudienceStep";
 import { ConfirmationStep } from "./ConfirmationStep";
 import { DraftSelector } from "./DraftSelector";
 import { EditorStep } from "./EditorStep";
-import type {
-  AudienceCounts,
-  NewsletterDraft,
-  NewsletterSection,
-  NewsletterWizardData,
-  WizardStep,
-} from "./types";
+import type { NewsletterDraft, NewsletterSection, NewsletterWizardData, WizardStep } from "./types";
 import { WizardProgress } from "./WizardProgress";
 
 const DRAFTS_KEY = "newsletter-drafts";
@@ -113,7 +105,7 @@ export function NewsletterWizard({ resendSlug, resendData }: NewsletterWizardPro
   const [drafts, setDrafts] = useState<NewsletterDraft[]>([]);
   const [activeDraftId, setActiveDraftId] = useState<string>("");
   const [mounted, setMounted] = useState(false);
-  const [audienceCounts, setAudienceCounts] = useState<AudienceCounts | null>(null);
+  const audienceCounts = useNewsletterAudienceCounts().data ?? null;
 
   useEffect(() => {
     if (isResend) {
@@ -129,26 +121,6 @@ export function NewsletterWizard({ resendSlug, resendData }: NewsletterWizardPro
     }
     setMounted(true);
   }, [isResend]);
-
-  useEffect(() => {
-    const fetchCounts = async () => {
-      const token = await getValidAccessTokenAsync();
-      if (!token) {
-        return;
-      }
-      try {
-        const res = await fetch(API_ROUTES.NEWSLETTER.AUDIENCE_COUNTS, {
-          headers: createJsonAuthHeaders(token),
-        });
-        if (res.ok) {
-          setAudienceCounts((await res.json()) as AudienceCounts);
-        }
-      } catch {
-        // Counts are optional; silently skip on failure
-      }
-    };
-    fetchCounts();
-  }, []);
 
   useEffect(() => {
     if (isResend || !mounted || !activeDraftId) {

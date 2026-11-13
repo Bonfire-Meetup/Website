@@ -1,30 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { getNewsletterArchiveBySlug } from "@/lib/data/newsletter-archive";
+import { getNewsletterArchiveBySlug, toNewsletterDetail } from "@/lib/data/newsletter-archive";
 import { getBrandName } from "@/lib/metadata";
-import type { NewsletterSection } from "@/lib/types/newsletter";
 
-import { type NewsletterArchiveData, NewsletterArchiveContent } from "./NewsletterArchiveContent";
+import { NewsletterArchiveContent } from "./NewsletterArchiveContent";
 
 interface NewsletterPageProps {
   params: Promise<{ slug: string }>;
-}
-
-function serializeNewsletter(
-  subject: string,
-  previewText: string | null,
-  testSend: boolean,
-  sentAt: Date,
-  sections: NewsletterSection[],
-): NewsletterArchiveData {
-  return {
-    subject,
-    previewText,
-    testSend,
-    sentAt: sentAt.toISOString(),
-    sections,
-  };
 }
 
 export default async function NewsletterPage({ params }: NewsletterPageProps) {
@@ -35,22 +18,7 @@ export default async function NewsletterPage({ params }: NewsletterPageProps) {
     notFound();
   }
 
-  const data = newsletter.data as { sections?: unknown[] } | undefined;
-  const rawSections = Array.isArray(data?.sections) ? data.sections : [];
-  const sections = rawSections.filter(
-    (s): s is NewsletterSection =>
-      typeof s === "object" && s !== null && "id" in s && "title" in s && "text" in s,
-  );
-
-  const newsletterData = serializeNewsletter(
-    newsletter.subject,
-    newsletter.previewText,
-    newsletter.testSend,
-    newsletter.sentAt,
-    sections,
-  );
-
-  return <NewsletterArchiveContent newsletter={newsletterData} slug={slug} />;
+  return <NewsletterArchiveContent newsletter={toNewsletterDetail(newsletter)} slug={slug} />;
 }
 
 export async function generateMetadata({ params }: NewsletterPageProps): Promise<Metadata> {

@@ -4,7 +4,8 @@ import { desc, eq } from "drizzle-orm";
 
 import { db } from "@/lib/data/db";
 import { newsletterArchive } from "@/lib/data/schema";
-import { decompressUuid } from "@/lib/utils/uuid-compress";
+import type { NewsletterSection } from "@/lib/types/newsletter";
+import { compressUuid, decompressUuid } from "@/lib/utils/uuid-compress";
 
 export interface NewsletterArchiveInput {
   subject: string;
@@ -30,6 +31,7 @@ export interface ArchiveRecord {
 
 export interface ArchiveListItem {
   id: string;
+  slug: string;
   subject: string;
   previewText: string | null;
   sentAt: string;
@@ -39,9 +41,39 @@ export interface ArchiveListItem {
 export function toArchiveListItem(record: ArchiveRecord): ArchiveListItem {
   return {
     id: record.id,
+    slug: compressUuid(record.id),
     subject: record.subject,
     previewText: record.previewText,
-    sentAt: String(record.sentAt),
+    sentAt: new Date(record.sentAt).toISOString(),
+    testSend: record.testSend,
+  };
+}
+
+export interface NewsletterDetail {
+  slug: string;
+  subject: string;
+  previewText: string;
+  sentAt: string;
+  testSend: boolean;
+  sections: NewsletterSection[];
+}
+
+const isSection = (value: unknown): value is NewsletterSection =>
+  typeof value === "object" &&
+  value !== null &&
+  "id" in value &&
+  "title" in value &&
+  "text" in value;
+
+export function toNewsletterDetail(record: ArchiveRecord): NewsletterDetail {
+  const data = record.data as { sections?: unknown[] } | undefined;
+
+  return {
+    previewText: record.previewText ?? "",
+    sections: Array.isArray(data?.sections) ? data.sections.filter(isSection) : [],
+    sentAt: new Date(record.sentAt).toISOString(),
+    slug: compressUuid(record.id),
+    subject: record.subject,
     testSend: record.testSend,
   };
 }
@@ -92,10 +124,11 @@ export const getNewsletterArchiveBySlug = async (slug: string) => {
   return record;
 };
 
-export const getNewsletterArchiveList = async (limit = 20, offset = 0) => {
+export const getNewsletterArchiveList = async (limit = 20, offset = 0, testSend = false) => {
   const database = db();
 
   const records = await database.query.newsletterArchive.findMany({
+    where: eq(newsletterArchive.testSend, testSend),
     orderBy: desc(newsletterArchive.sentAt),
     limit,
     offset,

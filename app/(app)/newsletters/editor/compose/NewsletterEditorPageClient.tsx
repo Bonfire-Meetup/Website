@@ -9,18 +9,29 @@ import { useEffect, useState } from "react";
 import { StaticPageHero } from "@/components/layout/StaticPageHero";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
-import { API_ROUTES } from "@/lib/api/routes";
+import { useNewsletterDetail } from "@/lib/api/newsletters";
 import { USER_ROLES } from "@/lib/config/roles";
+import type { NewsletterDetail } from "@/lib/data/newsletter-archive";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { selectAuthRoles } from "@/lib/redux/selectors/authSelectors";
 import type { RootState } from "@/lib/redux/store";
 import { newsletterEditorQueryParsers } from "@/lib/routes/app-search-params-client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { createJsonAuthHeaders } from "@/lib/utils/http";
 
 import { NewsletterWizard } from "./NewsletterWizard";
-import type { NewsletterSection, NewsletterWizardData } from "./types";
+import type { NewsletterWizardData } from "./types";
+
+function toWizardData(detail: NewsletterDetail): NewsletterWizardData {
+  const [primary, ...secondary] = detail.sections;
+
+  return {
+    audience: { manualEmails: [], type: "all" },
+    previewText: detail.previewText,
+    primaryNews: primary ?? { id: "primary", text: "", title: "" },
+    secondaryNews: secondary,
+    subject: detail.subject,
+  };
+}
 
 export function NewsletterEditorPageClient() {
   const t = useTranslations("newsletterEditor");
@@ -31,8 +42,9 @@ export function NewsletterEditorPageClient() {
   const auth = useAppSelector((state) => state.auth) as RootState["auth"];
   const userRoles = useAppSelector(selectAuthRoles);
   const [mounted, setMounted] = useState(false);
-  const [resendData, setResendData] = useState<NewsletterWizardData | null>(null);
-  const [resendError, setResendError] = useState(false);
+  const resendQuery = useNewsletterDetail(resendSlug);
+  const resendError = Boolean(resendSlug) && resendQuery.isError;
+  const resendData = resendQuery.data ? toWizardData(resendQuery.data) : null;
 
   useEffect(() => {
     setMounted(true);
@@ -45,50 +57,6 @@ export function NewsletterEditorPageClient() {
       router.replace(PAGE_ROUTES.ME);
     }
   }, [mounted, auth.hydrated, isEditor, router]);
-
-  useEffect(() => {
-    if (!resendSlug || !mounted || !auth.hydrated || !isEditor) {
-      return;
-    }
-
-    (async () => {
-      const token = await getValidAccessTokenAsync();
-      if (!token) {
-        setResendError(true);
-        return;
-      }
-
-      const res = await fetch(API_ROUTES.NEWSLETTER.ITEM(resendSlug), {
-        headers: createJsonAuthHeaders(token),
-      });
-
-      if (!res.ok) {
-        setResendError(true);
-        return;
-      }
-
-      const body = (await res.json()) as {
-        subject: string;
-        previewText: string;
-        data: { sections?: unknown[] };
-      };
-
-      const rawSections = Array.isArray(body.data?.sections) ? body.data.sections : [];
-      const sections = rawSections.filter(
-        (s): s is NewsletterSection =>
-          typeof s === "object" && s !== null && "id" in s && "title" in s && "text" in s,
-      );
-      const [primary, ...secondary] = sections;
-
-      setResendData({
-        subject: body.subject,
-        previewText: body.previewText ?? "",
-        primaryNews: primary ?? { id: "primary", title: "", text: "" },
-        secondaryNews: secondary,
-        audience: { type: "all", manualEmails: [] },
-      });
-    })();
-  }, [resendSlug, mounted, auth.hydrated, isEditor]);
 
   const isLoading =
     !mounted || !auth.hydrated || (Boolean(resendSlug) && resendData === null && !resendError);

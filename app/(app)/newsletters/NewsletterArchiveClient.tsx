@@ -2,17 +2,14 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 import { StaticPageHero } from "@/components/layout/StaticPageHero";
 import { NewsletterSectionClient } from "@/components/newsletter/NewsletterSectionClient";
 import { ArrowRightIcon } from "@/components/shared/Icons";
-import { getValidAccessTokenAsync } from "@/lib/api/query-utils";
-import { API_ROUTES } from "@/lib/api/routes";
+import { useNewsletterTestSends } from "@/lib/api/newsletters";
 import { USER_ROLES } from "@/lib/config/roles";
 import type { ArchiveListItem } from "@/lib/data/newsletter-archive";
 import { useIsRole } from "@/lib/redux/hooks/useIsRole";
-import { createJsonAuthHeaders } from "@/lib/utils/http";
 import { formatLongDateUTC } from "@/lib/utils/locale";
 import { compressUuid } from "@/lib/utils/uuid-compress";
 
@@ -73,30 +70,7 @@ export function NewsletterArchiveClient({ items }: NewsletterArchiveClientProps)
   const t = useTranslations("sections.newsletterArchiveIndex");
   const tNewsletter = useTranslations("sections.newsletter");
   const isEditor = useIsRole(USER_ROLES.EDITOR);
-  const [testItems, setTestItems] = useState<ArchiveListItem[]>([]);
-
-  useEffect(() => {
-    if (!isEditor) {
-      return;
-    }
-    const loadTestItems = async () => {
-      const token = await getValidAccessTokenAsync();
-      if (!token) {
-        return;
-      }
-      try {
-        const res = await fetch(`${API_ROUTES.NEWSLETTER.LIST}?testSend=true`, {
-          headers: createJsonAuthHeaders(token),
-        });
-        if (res.ok) {
-          setTestItems((await res.json()) as ArchiveListItem[]);
-        }
-      } catch {
-        // Ignore
-      }
-    };
-    loadTestItems();
-  }, [isEditor]);
+  const { items: testItems } = useNewsletterTestSends();
 
   return (
     <main className="gradient-bg relative min-h-screen overflow-hidden">
