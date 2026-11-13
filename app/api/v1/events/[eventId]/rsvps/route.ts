@@ -19,6 +19,9 @@ interface RouteParams {
   params: Promise<{ eventId: string }>;
 }
 
+/**
+ * Returns an event's RSVP count and public attendees, and whether you've RSVP'd when signed in.
+ */
 export const GET = withRequestContext(async (request: Request, { params }: RouteParams) => {
   const { eventId } = await params;
 
@@ -34,10 +37,11 @@ export const GET = withRequestContext(async (request: Request, { params }: Route
   } catch (error) {
     logError("events.rsvps.get_failed", error, { eventId, userId });
 
-    return NextResponse.json({ error: "Failed to load RSVPs" }, { status: 500 });
+    return NextResponse.json({ error: "internal_error" }, { status: 500 });
   }
 });
 
+/** RSVPs you to an upcoming event. */
 export const POST = withRequestContext(
   withAuth<RouteParams>("events.rsvp.create")(
     withRateLimit<RouteParams & AuthContext>({
@@ -66,22 +70,23 @@ export const POST = withRequestContext(
         }
 
         if (!result.success) {
-          return NextResponse.json({ error: result.error ?? "Failed to RSVP" }, { status: 500 });
+          return NextResponse.json({ error: "internal_error" }, { status: 500 });
         }
 
         const normalizedEventId = eventId.trim().toLowerCase();
         revalidateTag(`event-rsvps-${normalizedEventId}`, { expire: 0 });
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ ok: true }, { status: 201 });
       } catch (error) {
         logError("events.rsvps.create_failed", error, { eventId, userId: auth.userId });
 
-        return NextResponse.json({ error: "Failed to create RSVP" }, { status: 500 });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
     }),
   ),
 );
 
+/** Cancels your RSVP to an upcoming event. */
 export const DELETE = withRequestContext(
   withAuth<RouteParams>("events.rsvp.delete")(
     withRateLimit<RouteParams & AuthContext>({
@@ -106,17 +111,17 @@ export const DELETE = withRequestContext(
         const success = await deleteRsvp(auth.userId, eventId);
 
         if (!success) {
-          return NextResponse.json({ error: "Failed to cancel RSVP" }, { status: 500 });
+          return NextResponse.json({ error: "internal_error" }, { status: 500 });
         }
 
         const normalizedEventId = eventId.trim().toLowerCase();
         revalidateTag(`event-rsvps-${normalizedEventId}`, { expire: 0 });
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ ok: true });
       } catch (error) {
         logError("events.rsvps.delete_failed", error, { eventId, userId: auth.userId });
 
-        return NextResponse.json({ error: "Failed to cancel RSVP" }, { status: 500 });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
     }),
   ),

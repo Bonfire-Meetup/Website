@@ -45,7 +45,9 @@ export const withRateLimit =
     const { ipHash, uaHash } = await getClientHashes();
     const key = config.keyFn ? await config.keyFn({ request, ctx, ipHash, uaHash }) : ipHash;
 
-    if (isRateLimited(config.storeKey, key, config.maxHits)) {
+    const windowMs = config.windowSeconds ? config.windowSeconds * 1000 : undefined;
+
+    if (isRateLimited(config.storeKey, key, config.maxHits, windowMs)) {
       if (config.onLimit) {
         return config.onLimit({ request, ctx, ipHash, uaHash, key });
       }
@@ -58,7 +60,7 @@ export const withRateLimit =
       });
 
       return NextResponse.json(
-        { error: "Rate limited" },
+        { error: "rate_limited" },
         {
           status: 429,
           headers: {

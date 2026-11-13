@@ -8,6 +8,7 @@ import { logError, logInfo, logWarn } from "@/lib/utils/log";
 const RATE_LIMIT_STORE = "passkey.authenticate.options";
 const MAX_REQUESTS_PER_MINUTE = 15;
 
+/** Returns WebAuthn options for signing in with a passkey. */
 export const POST = withRequestContext(
   withRateLimit({
     maxHits: MAX_REQUESTS_PER_MINUTE,

@@ -12,6 +12,7 @@ interface RouteParams {
   params: Promise<{ userId: string }>;
 }
 
+/** Lists the videos you've boosted. Use `me` as the user ID. */
 export const GET = withRequestContext(
   withResolvedUserId<RouteParams>("account.boosts")(async (_request: Request, { userId }) => {
     try {

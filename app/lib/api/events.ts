@@ -155,7 +155,7 @@ export function useCreateRsvpMutation(eventId: string) {
   const queryClient = useQueryClient();
 
   return useMutation<
-    { success: boolean },
+    { ok: boolean },
     ApiError,
     OptimisticUserInfo,
     { previousEventData?: EventRsvpsData }
@@ -181,7 +181,7 @@ export function useCreateRsvpMutation(eventId: string) {
         throw new ApiError("RSVP create failed", response.status, errorData);
       }
 
-      return response.json() as Promise<{ success: boolean }>;
+      return response.json() as Promise<{ ok: boolean }>;
     },
     onError: (error, _vars, context) => {
       logError("events.rsvp.create_mutation_failed", error, { eventId });
@@ -247,7 +247,7 @@ export function useDeleteRsvpMutation(eventId: string) {
   const queryClient = useQueryClient();
 
   return useMutation<
-    { success: boolean },
+    { ok: boolean },
     ApiError,
     OptimisticUserInfo,
     { previousEventData?: EventRsvpsData }
@@ -272,7 +272,7 @@ export function useDeleteRsvpMutation(eventId: string) {
         throw new ApiError("RSVP delete failed", response.status);
       }
 
-      return response.json() as Promise<{ success: boolean }>;
+      return response.json() as Promise<{ ok: boolean }>;
     },
     onError: (error, _vars, context) => {
       logError("events.rsvp.delete_mutation_failed", error, { eventId });
@@ -329,7 +329,7 @@ export function useCreateEventQuestionMutation(eventId: string) {
   const queryClient = useQueryClient();
 
   return useMutation<
-    { success: boolean },
+    { ok: boolean },
     ApiError,
     EventQuestionCreateInput & { optimisticAuthor?: OptimisticQuestionAuthor },
     { previousAuthData?: EventQuestionsData; previousAnonData?: EventQuestionsData }
@@ -359,7 +359,7 @@ export function useCreateEventQuestionMutation(eventId: string) {
         throw new ApiError("Event question create failed", response.status, errorData);
       }
 
-      return response.json() as Promise<{ success: boolean }>;
+      return response.json() as Promise<{ ok: boolean }>;
     },
     onMutate: async ({ optimisticAuthor, ...payload }) => {
       await queryClient.cancelQueries({ queryKey: ["event-questions", eventId] });
@@ -489,7 +489,7 @@ export function useUnboostEventQuestionMutation(eventId: string) {
 export function useDeleteEventQuestionMutation(eventId: string) {
   const queryClient = useQueryClient();
 
-  return useMutation<{ success: boolean }, ApiError, { questionId: string }>({
+  return useMutation<{ ok: boolean }, ApiError, { questionId: string }>({
     mutationFn: async ({ questionId }) => {
       const token = await ensureFreshToken();
 
@@ -507,7 +507,7 @@ export function useDeleteEventQuestionMutation(eventId: string) {
         throw new ApiError("Question delete failed", response.status, errorData);
       }
 
-      return response.json() as Promise<{ success: boolean }>;
+      return response.json() as Promise<{ ok: boolean }>;
     },
     onError: (error) => {
       logError("events.questions.delete_mutation_failed", error, { eventId });

@@ -15,6 +15,7 @@ const preferencesSchema = z.object({
   publicProfile: z.boolean().optional(),
 });
 
+/** Updates your display name, public profile visibility, or community email preference. */
 export const PATCH = withRequestContext(
   withAuth("account.preferences")(async (request: Request, { auth }) => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);

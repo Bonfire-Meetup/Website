@@ -191,6 +191,22 @@ export function ReaderClient({ events: allEvents }: { events: EventItem[] }) {
     }
   };
 
+  const getVerifyErrorMessage = (code: unknown) => {
+    switch (code) {
+      case "invalid_signature":
+        return t("errors.signatureInvalid");
+      case "token_expired":
+        return t("errors.tokenExpired");
+      case "invalid_token_format":
+      case "unsupported_token_version":
+        return t("errors.contentInvalid");
+      case "user_not_found":
+        return t("errors.userNotFound");
+      default:
+        return t("errors.verificationFailed");
+    }
+  };
+
   const setInvalidScanResult = (
     errorMessage: string,
     options: Pick<ScanResult, "email" | "expired" | "name" | "publicId"> = {},
@@ -295,16 +311,12 @@ export function ReaderClient({ events: allEvents }: { events: EventItem[] }) {
     setScanResult(null);
 
     const parsed = parseCheckInToken(token);
-    const isExpiredToken = parsed.error === "Token expired";
+    const isExpiredToken = parsed.error === "token_expired";
 
     if (!parsed.valid && !isExpiredToken) {
       appendDebugEntry(`Token parse failed: ${parsed.error ?? "unknown error"}`, "warn");
       setIsVerifying(false);
-      let errorMessage = t("errors.contentInvalid");
-      if (parsed.error?.includes("format") || parsed.error?.includes("version")) {
-        errorMessage = t("errors.contentInvalid");
-      }
-      setInvalidScanResult(errorMessage);
+      setInvalidScanResult(t("errors.contentInvalid"));
       isProcessingRef.current = false;
       return;
     }
@@ -357,26 +369,7 @@ export function ReaderClient({ events: allEvents }: { events: EventItem[] }) {
           `Backend rejected ticket: ${typeof result.error === "string" ? result.error : "unknown"}`,
           "warn",
         );
-        let errorMessage = t("errors.verificationFailed");
-        const isInvalidSignature = result.error === "Invalid signature";
-        if (isInvalidSignature) {
-          errorMessage = t("errors.signatureInvalid");
-        } else if (result.error === "Token expired") {
-          errorMessage = t("errors.tokenExpired");
-        } else if (result.error) {
-          let isContentError = false;
-          if (result.error.includes("format")) {
-            isContentError = true;
-          } else if (result.error.includes("version")) {
-            isContentError = true;
-          }
-          if (isContentError) {
-            errorMessage = t("errors.contentInvalid");
-          } else {
-            errorMessage = result.error;
-          }
-        }
-        setInvalidScanResult(errorMessage);
+        setInvalidScanResult(getVerifyErrorMessage(result.error));
         isProcessingRef.current = false;
       }
     } catch (err) {
@@ -476,7 +469,7 @@ export function ReaderClient({ events: allEvents }: { events: EventItem[] }) {
 
       const result = await response.json();
 
-      if (result.success) {
+      if (result.ok) {
         haptics.success();
         setScanResult({
           ...scanResult,
@@ -488,9 +481,6 @@ export function ReaderClient({ events: allEvents }: { events: EventItem[] }) {
           ...scanResult,
           alreadyCheckedIn: true,
         });
-      } else if (result.error) {
-        haptics.error();
-        setError(result.error);
       } else {
         haptics.error();
         setError(t("errors.checkInFailed"));
@@ -550,7 +540,7 @@ export function ReaderClient({ events: allEvents }: { events: EventItem[] }) {
         });
       } else {
         const errorMessage =
-          result.error === "User not found" ? t("errors.userNotFound") : t("errors.lookupFailed");
+          result.error === "user_not_found" ? t("errors.userNotFound") : t("errors.lookupFailed");
         appendDebugEntry(`Backup ID lookup failed: ${result.error ?? "unknown"}`, "warn");
         setInvalidScanResult(errorMessage);
       }

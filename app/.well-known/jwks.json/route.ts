@@ -8,6 +8,7 @@ const getJwtPublicKey = () => serverEnv.BNF_JWT_PUBLIC_KEY;
 
 const getJwtKeyId = () => serverEnv.BNF_JWT_KEY_ID ?? "bnf-auth";
 
+/** Publishes the public keys for verifying Bonfire access and ID tokens. */
 export async function GET() {
   try {
     const publicKey = await importSPKI(getJwtPublicKey(), "EdDSA");
@@ -24,6 +25,6 @@ export async function GET() {
     );
   } catch (error) {
     logError("auth.jwks.failed", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "internal_error" }, { status: 500 });
   }
 }

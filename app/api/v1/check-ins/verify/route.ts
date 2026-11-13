@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 
 import { withRequestContext, withRole } from "@/lib/api/route-wrappers";
+import { checkInVerifySchema } from "@/lib/api/schemas";
 import { USER_ROLES } from "@/lib/config/roles";
 import { getAuthUserById } from "@/lib/data/auth";
 import { logError } from "@/lib/utils/log";
@@ -36,19 +37,19 @@ const base64UrlDecode = (value: string) => {
 
 const verifyToken = (token: string): VerifyTokenResult => {
   if (!SECRET) {
-    return { valid: false, error: "Check-in not configured" };
+    return { valid: false, error: "check_in_not_configured" };
   }
 
   try {
     const parts = token.split(".");
     if (parts.length !== 3) {
-      return { valid: false, error: "Invalid token format" };
+      return { valid: false, error: "invalid_token_format" };
     }
 
     const [version, encodedPayload, signature] = parts;
 
     if (version !== TOKEN_VERSION) {
-      return { valid: false, error: "Unsupported token version" };
+      return { valid: false, error: "unsupported_token_version" };
     }
 
     const expectedSignature = crypto
@@ -62,14 +63,14 @@ const verifyToken = (token: string): VerifyTokenResult => {
       signatureBuffer.length !== expectedBuffer.length ||
       !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
     ) {
-      return { valid: false, error: "Invalid signature" };
+      return { valid: false, error: "invalid_signature" };
     }
 
     const decodedPayload = JSON.parse(base64UrlDecode(encodedPayload)) as CheckInTokenPayload;
 
     const nowSeconds = Math.floor(Date.now() / 1000);
     if (decodedPayload.exp < nowSeconds) {
-      return { expired: true, userId: decodedPayload.sub, valid: false, error: "Token expired" };
+      return { expired: true, userId: decodedPayload.sub, valid: false, error: "token_expired" };
     }
 
     return {
@@ -78,30 +79,34 @@ const verifyToken = (token: string): VerifyTokenResult => {
     };
   } catch (error) {
     logError("check_in.verify_token_failed", error);
-    return { valid: false, error: "Failed to verify token" };
+    return { valid: false, error: "verification_failed" };
   }
 };
 
+/**
+ * Verifies a scanned check-in QR token and returns who it belongs to.
+ *
+ * Expired tickets still return the holder, with `expired: true`.
+ */
 export const POST = withRequestContext(
   withRole(
     "check_in.verify",
     USER_ROLES.CREW,
   )(async (request: Request) => {
+    const parsed = checkInVerifySchema.safeParse(await request.json().catch(() => null));
+
+    if (!parsed.success) {
+      return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+    }
+
     try {
-      const body = await request.json();
-      const { token } = body;
-
-      if (!token || typeof token !== "string") {
-        return NextResponse.json({ error: "Token required" }, { status: 400 });
-      }
-
-      const result = verifyToken(token);
+      const result = verifyToken(parsed.data.token);
 
       if (!result.valid || !result.userId) {
         if (result.expired && result.userId) {
           const user = await getAuthUserById(result.userId);
           if (!user) {
-            return NextResponse.json({ valid: false, error: "User not found" }, { status: 404 });
+            return NextResponse.json({ valid: false, error: "user_not_found" }, { status: 404 });
           }
 
           return NextResponse.json({
@@ -113,12 +118,12 @@ export const POST = withRequestContext(
           });
         }
 
-        return NextResponse.json(result, { status: 401 });
+        return NextResponse.json({ error: result.error, valid: false }, { status: 422 });
       }
 
       const user = await getAuthUserById(result.userId);
       if (!user) {
-        return NextResponse.json({ valid: false, error: "User not found" }, { status: 404 });
+        return NextResponse.json({ valid: false, error: "user_not_found" }, { status: 404 });
       }
 
       return NextResponse.json({
@@ -129,7 +134,7 @@ export const POST = withRequestContext(
       });
     } catch (error) {
       logError("check_in.verify_request_failed", error);
-      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+      return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   }),
 );

@@ -24,6 +24,12 @@ const rateLimitStore = new Map<string, number[]>();
 
 import { getRequestDescription } from "@/lib/utils/request-description";
 
+/**
+ * Starts an email sign-in by sending a one-time code.
+ *
+ * Requires a Cloudflare Turnstile token. Exchange the returned `challenge_token` and the emailed
+ * code at `POST /api/v1/auth/token`.
+ */
 export const POST = async (request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);

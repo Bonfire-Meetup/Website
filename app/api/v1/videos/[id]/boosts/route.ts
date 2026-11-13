@@ -16,6 +16,10 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+/**
+ * Returns a video's boost count and who boosted it. When signed in, also whether you boosted it
+ * and how many boosts you have left.
+ */
 export const GET = withRequestContext(
   withRateLimit<RouteParams>({
     maxHits: 60,
@@ -26,7 +30,7 @@ export const GET = withRequestContext(
         authResult.status === "valid" && authResult.userId ? authResult.userId : ipHash;
       return `read:${id}:${identifier}`;
     },
-    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    onLimit: () => NextResponse.json({ error: "rate_limited" }, { status: 429 }),
     storeKey: "video-api",
   })(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
@@ -45,7 +49,7 @@ export const GET = withRequestContext(
       if (authResult.status === "invalid") {
         logWarn("video.boosts.unauthorized", { operation: "get", videoId });
 
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        return NextResponse.json({ error: "unauthorized" }, { status: 401 });
       }
 
       const [stats, boostedUsers] = await Promise.all([
@@ -87,11 +91,12 @@ export const GET = withRequestContext(
         videoId,
       });
 
-      return NextResponse.json({ error: "Failed to load boosts" }, { status: 500 });
+      return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   }),
 );
 
+/** Boosts a video, spending one of your boosts. Requires sign-in. */
 export const POST = withRequestContext(
   withRateLimit<RouteParams>({
     maxHits: 10,
@@ -102,7 +107,7 @@ export const POST = withRequestContext(
         authResult.status === "valid" && authResult.userId ? authResult.userId : ipHash;
       return `write:${id}:${identifier}`;
     },
-    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    onLimit: () => NextResponse.json({ error: "rate_limited" }, { status: 429 }),
     storeKey: "video-api",
   })(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
@@ -118,7 +123,7 @@ export const POST = withRequestContext(
       if (status !== "valid" || !userId) {
         logWarn("video.boosts.unauthorized", { operation: "post", videoId });
 
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        return NextResponse.json({ error: "unauthorized" }, { status: 401 });
       }
 
       const boostResult = await createVideoBoost(videoId, userId);
@@ -138,11 +143,12 @@ export const POST = withRequestContext(
     } catch (error) {
       logError("video.boosts.post_failed", error, { operation: "post", videoId });
 
-      return NextResponse.json({ error: "Failed to save boost" }, { status: 500 });
+      return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   }),
 );
 
+/** Removes your boost from a video and gives the boost back. Requires sign-in. */
 export const DELETE = withRequestContext(
   withRateLimit<RouteParams>({
     maxHits: 10,
@@ -153,7 +159,7 @@ export const DELETE = withRequestContext(
         authResult.status === "valid" && authResult.userId ? authResult.userId : ipHash;
       return `write:${id}:${identifier}`;
     },
-    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    onLimit: () => NextResponse.json({ error: "rate_limited" }, { status: 429 }),
     storeKey: "video-api",
   })(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
@@ -169,7 +175,7 @@ export const DELETE = withRequestContext(
       if (status !== "valid" || !userId) {
         logWarn("video.boosts.unauthorized", { operation: "delete", videoId });
 
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        return NextResponse.json({ error: "unauthorized" }, { status: 401 });
       }
 
       const result = await removeVideoBoostOperation(videoId, userId);
@@ -179,7 +185,7 @@ export const DELETE = withRequestContext(
     } catch (error) {
       logError("video.boosts.delete_failed", error, { operation: "delete", videoId });
 
-      return NextResponse.json({ error: "Failed to remove boost" }, { status: 500 });
+      return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   }),
 );

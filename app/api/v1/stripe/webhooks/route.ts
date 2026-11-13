@@ -37,6 +37,10 @@ const getUserIdFromMetadata = (event: Stripe.Event): string | null => {
   return null;
 };
 
+/**
+ * Receives Stripe webhook events that keep Guild memberships in sync. Verified with the
+ * `stripe-signature` header.
+ */
 export const POST = (request: Request) =>
   runWithRequestContext(request, async () => {
     const payload = await request.text();

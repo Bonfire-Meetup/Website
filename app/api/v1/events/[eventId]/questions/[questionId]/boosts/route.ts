@@ -56,6 +56,7 @@ const validateRequestContext = async (
   return { ok: true, question };
 };
 
+/** Boosts a question, spending one of your boosts. */
 export const POST = withRequestContext(
   withAuth<RouteParams>("events.question_boosts.create")(
     withRateLimit<RouteParams & { auth: { userId: string } }>({
@@ -97,12 +98,13 @@ export const POST = withRequestContext(
           questionId,
           userId: auth.userId,
         });
-        return NextResponse.json({ error: "Failed to boost question" }, { status: 500 });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
     }),
   ),
 );
 
+/** Removes your boost from a question and gives the boost back. */
 export const DELETE = withRequestContext(
   withAuth<RouteParams>("events.question_boosts.delete")(
     withRateLimit<RouteParams & { auth: { userId: string } }>({
@@ -135,7 +137,7 @@ export const DELETE = withRequestContext(
           questionId,
           userId: auth.userId,
         });
-        return NextResponse.json({ error: "Failed to remove question boost" }, { status: 500 });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
     }),
   ),

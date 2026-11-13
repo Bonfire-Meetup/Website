@@ -345,7 +345,7 @@ const handleEmailOtpGrant = async (
       ...clientFingerprint,
     });
     await recordAttempt("user_failed");
-    return respond({ error: "Authentication failed" }, { status: 500 });
+    return respond({ error: "authentication_failed" }, { status: 500 });
   }
 
   const tokenFamilyId = crypto.randomUUID();
@@ -385,6 +385,13 @@ const handleEmailOtpGrant = async (
   );
 };
 
+/**
+ * Issues an access token and ID token.
+ *
+ * Use `grant_type` `urn:bonfire:grant-type:email-otp` to exchange an emailed code, or
+ * `refresh_token` to renew a session from the refresh-token cookie. Access tokens last 15
+ * minutes.
+ */
 export const POST = async (request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);

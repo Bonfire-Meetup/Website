@@ -76,17 +76,12 @@ export function NewsletterSectionClient() {
           } catch {
             // Ignore
           }
-          let errorMessage: string;
-          if (data.error) {
-            errorMessage = data.error as string;
-          } else {
-            errorMessage = t("error");
-          }
-
           if (response.status === 429) {
             setError(t("rateLimitError"));
+          } else if (data.error === "invalid_email") {
+            setError(t("invalidEmailError"));
           } else {
-            setError(errorMessage);
+            setError(t("error"));
           }
 
           haptics.error();

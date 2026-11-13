@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import { db } from "@/lib/data/db";
 
+/** Reports service and database health. Returns 503 when the database is unreachable. */
 export async function GET() {
   const timestamp = new Date().toISOString();
   const version = process.env.NEXT_PUBLIC_BNF_VERSION || "unknown";

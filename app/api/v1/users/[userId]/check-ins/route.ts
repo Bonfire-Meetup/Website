@@ -51,6 +51,7 @@ const signPayload = (payload: CheckInTokenPayload) => {
   return `${TOKEN_VERSION}.${encodedPayload}.${signature}`;
 };
 
+/** Returns your personal check-in QR token for events. Use `me` as the user ID. */
 export const GET = withRequestContext(
   withResolvedUserId<RouteParams>("check_in.get")(
     withRateLimit<RouteParams & ResolvedUserContext>({
@@ -65,7 +66,7 @@ export const GET = withRequestContext(
         });
 
         return NextResponse.json(
-          { error: "Too many requests. Please try again later." },
+          { error: "rate_limited" },
           {
             status: 429,
             headers: {
@@ -80,7 +81,7 @@ export const GET = withRequestContext(
       try {
         if (!SECRET) {
           logError("check_in.secret_not_configured", new Error("BNF_CHECKIN_SECRET not set"));
-          return NextResponse.json({ error: "Check-in not configured" }, { status: 500 });
+          return NextResponse.json({ error: "check_in_not_configured" }, { status: 500 });
         }
 
         const nowSeconds = Math.floor(Date.now() / 1000);
@@ -101,7 +102,7 @@ export const GET = withRequestContext(
         });
       } catch (err) {
         logError("check_in.token_generation_failed", err, { userId });
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
     }),
   ),

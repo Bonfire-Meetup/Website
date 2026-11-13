@@ -5,6 +5,7 @@ import { USER_ROLES } from "@/lib/config/roles";
 import { listTalkProposals } from "@/lib/data/forms";
 import { logError } from "@/lib/utils/log";
 
+/** Lists submitted talk proposals, newest first (up to 1,000). */
 export const GET = withRequestContext(
   withRole(
     "admin.talk_proposals",

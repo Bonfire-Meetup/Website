@@ -71,6 +71,7 @@
       "successMessage": "Díky! Jakmile bude další akce nebo nové video, dáme vědět.",
       "error": "Ups, něco se pokazilo. Zkus to prosím později.",
       "rateLimitError": "Chvilku brzdi 🙂 Zkus to za minutku.",
+      "invalidEmailError": "Zadej prosím platnou e-mailovou adresu.",
       "privacyNote": "Občas ti pošleme update. Odhlásit se můžeš kdykoliv.",
       "subscribeAnother": "Přihlásit další e-mail"
     },

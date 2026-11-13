@@ -34,6 +34,7 @@ const requestSchema = z.object({
   name: z.string().max(100).optional(),
 });
 
+/** Verifies a passkey registration and saves the passkey to the account. */
 export const POST = withRequestContext(
   withAuth("passkey.register.verify")(
     withRateLimit<AuthContext>({

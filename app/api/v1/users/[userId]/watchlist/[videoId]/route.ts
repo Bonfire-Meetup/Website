@@ -17,6 +17,7 @@ interface RouteParams {
   params: Promise<{ userId: string; videoId: string }>;
 }
 
+/** Returns whether a video is on your Watch Later list. Always `false` when signed out. */
 export const GET = withRequestContext(
   withOptionalResolvedUserId<RouteParams>("watchlist.check")(
     async (_request: Request, { params, userId }) => {
@@ -25,7 +26,7 @@ export const GET = withRequestContext(
       try {
         const parsed = videoIdSchema.safeParse(videoId);
         if (!parsed.success) {
-          return NextResponse.json({ error: "Invalid video ID" }, { status: 400 });
+          return NextResponse.json({ error: "invalid_id" }, { status: 400 });
         }
 
         if (!userId) {
@@ -41,12 +42,13 @@ export const GET = withRequestContext(
         return NextResponse.json({ inWatchlist: rows.length > 0 });
       } catch (err) {
         logError("watchlist_check_failed", err, { videoId, userId: userIdParam });
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
     },
   ),
 );
 
+/** Adds a video to your Watch Later list. */
 export const PUT = withRequestContext(
   withResolvedUserId<RouteParams>("watchlist.add")(
     async (_request: Request, { params, userId }) => {
@@ -55,7 +57,7 @@ export const PUT = withRequestContext(
       try {
         const parsed = videoIdSchema.safeParse(videoId);
         if (!parsed.success) {
-          return NextResponse.json({ error: "Invalid video ID" }, { status: 400 });
+          return NextResponse.json({ error: "invalid_id" }, { status: 400 });
         }
 
         await db().insert(userWatchlist).values({ userId, videoId }).onConflictDoNothing();
@@ -63,12 +65,13 @@ export const PUT = withRequestContext(
         return NextResponse.json({ added: true, inWatchlist: true });
       } catch (err) {
         logError("watchlist_add_failed", err, { videoId, userId });
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
     },
   ),
 );
 
+/** Removes a video from your Watch Later list. */
 export const DELETE = withRequestContext(
   withResolvedUserId<RouteParams>("watchlist.remove")(
     async (_request: Request, { params, userId }) => {
@@ -77,7 +80,7 @@ export const DELETE = withRequestContext(
       try {
         const parsed = videoIdSchema.safeParse(videoId);
         if (!parsed.success) {
-          return NextResponse.json({ error: "Invalid video ID" }, { status: 400 });
+          return NextResponse.json({ error: "invalid_id" }, { status: 400 });
         }
 
         await db()
@@ -87,7 +90,7 @@ export const DELETE = withRequestContext(
         return NextResponse.json({ removed: true, inWatchlist: false });
       } catch (err) {
         logError("watchlist_remove_failed", err, { videoId, userId });
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
     },
   ),

@@ -42,6 +42,7 @@ function toIsoDateTime(value: string | null): string | null {
   return parsed.toISOString();
 }
 
+/** Returns your Guild membership: tier, status, current period, and last and upcoming charges. */
 export const GET = withRequestContext(
   withAuth("account.subscription")(async (_request: Request, { auth }) => {
     try {

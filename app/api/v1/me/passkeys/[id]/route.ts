@@ -18,6 +18,7 @@ const updateSchema = z.object({
   name: z.string().max(100).nullable(),
 });
 
+/** Renames one of your passkeys. */
 export const PATCH = withRequestContext(
   withAuth<RouteParams>("passkey.update")(async (request: Request, { params, auth }) => {
     const { userId } = auth;
@@ -56,6 +57,7 @@ export const PATCH = withRequestContext(
   }),
 );
 
+/** Removes one of your passkeys. */
 export const DELETE = withRequestContext(
   withAuth<RouteParams>("passkey.delete")(async (_request: Request, { params, auth }) => {
     const { userId } = auth;

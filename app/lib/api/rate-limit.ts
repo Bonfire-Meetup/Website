@@ -47,10 +47,15 @@ const getRateLimitStore = (storeKey: string) => {
   return store;
 };
 
-export const isRateLimited = (storeKey: string, key: string, maxHits: number) => {
+export const isRateLimited = (
+  storeKey: string,
+  key: string,
+  maxHits: number,
+  windowMs = RATE_LIMIT_WINDOW_MS,
+) => {
   const store = getRateLimitStore(storeKey);
   const now = Date.now();
-  const hits = store.get(key)?.filter((time) => now - time < RATE_LIMIT_WINDOW_MS) ?? [];
+  const hits = store.get(key)?.filter((time) => now - time < windowMs) ?? [];
 
   if (hits.length >= maxHits) {
     store.set(key, hits);
@@ -92,7 +97,7 @@ export const validateVideoApiRequest = async (
   if (!isValidVideoId(videoId)) {
     logWarn("video.api.invalid_id", { requestId: getRequestId(), videoId });
 
-    return { error: "Missing videoId", status: 400, valid: false };
+    return { error: "invalid_id", status: 400, valid: false };
   }
 
   const originAllowed = await isOriginAllowed();
@@ -100,7 +105,7 @@ export const validateVideoApiRequest = async (
   if (!originAllowed) {
     logWarn("video.api.invalid_origin", { requestId: getRequestId(), videoId });
 
-    return { error: "Invalid origin", status: 403, valid: false };
+    return { error: "invalid_origin", status: 403, valid: false };
   }
 
   const verification = await checkBotId();
@@ -108,7 +113,7 @@ export const validateVideoApiRequest = async (
   if (verification.isBot) {
     logWarn("video.api.bot_blocked", { requestId: getRequestId(), videoId });
 
-    return { error: "Bot traffic blocked", status: 403, valid: false };
+    return { error: "bot_blocked", status: 403, valid: false };
   }
 
   return { valid: true };

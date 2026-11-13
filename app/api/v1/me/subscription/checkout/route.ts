@@ -14,6 +14,7 @@ import {
 } from "@/lib/data/subscriptions";
 import { logError, logWarn } from "@/lib/utils/log";
 
+/** Starts a Stripe Checkout session for a Guild membership tier and returns its URL. */
 export const POST = withRequestContext(
   withAuth("account.subscription.checkout")(async (request: Request, { auth }) => {
     if (!isGuildSubscriptionEnabled()) {

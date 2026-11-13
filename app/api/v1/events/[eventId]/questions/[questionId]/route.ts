@@ -14,6 +14,7 @@ interface RouteParams {
   params: Promise<{ eventId: string; questionId: string }>;
 }
 
+/** Deletes one of your own questions while the question window is open. */
 export const DELETE = withRequestContext(
   withAuth<RouteParams>("events.questions.delete")(
     withRateLimit<RouteParams & { auth: { userId: string } }>({
@@ -62,14 +63,14 @@ export const DELETE = withRequestContext(
           })),
         );
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ ok: true });
       } catch (error) {
         logError("events.questions.delete_failed", error, {
           eventId,
           questionId,
           userId: auth.userId,
         });
-        return NextResponse.json({ error: "Failed to delete question" }, { status: 500 });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
     }),
   ),

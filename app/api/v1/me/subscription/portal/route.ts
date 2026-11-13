@@ -6,6 +6,9 @@ import { createGuildPortalSession } from "@/lib/billing/stripe";
 import { getGuildSubscriptionByUserId } from "@/lib/data/subscriptions";
 import { logError } from "@/lib/utils/log";
 
+/**
+ * Opens a Stripe billing portal session for managing your Guild membership and returns its URL.
+ */
 export const POST = withRequestContext(
   withAuth("account.subscription.portal")(async (request: Request, { auth }) => {
     try {

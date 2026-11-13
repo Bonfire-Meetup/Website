@@ -23,6 +23,12 @@ const revokeSchema = z.object({
   revoke_family: z.boolean().optional().default(false),
 });
 
+/**
+ * Signs out by revoking the session's refresh token.
+ *
+ * Set `revoke_all` to sign out every device, or `revoke_family` to end only the current login
+ * session.
+ */
 export const POST = async (request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
@@ -80,7 +86,7 @@ export const POST = async (request: Request) =>
       });
 
       return NextResponse.json(
-        { success: true, revoked: "all" },
+        { ok: true, revoked: "all" },
         {
           headers: {
             "Set-Cookie": clearCookie,
@@ -108,7 +114,7 @@ export const POST = async (request: Request) =>
           });
 
           return NextResponse.json(
-            { success: true, revoked: "family" },
+            { ok: true, revoked: "family" },
             {
               headers: {
                 "Set-Cookie": clearCookie,
@@ -127,7 +133,7 @@ export const POST = async (request: Request) =>
     }
 
     return NextResponse.json(
-      { success: true, revoked: "current" },
+      { ok: true, revoked: "current" },
       {
         headers: {
           "Set-Cookie": clearCookie,

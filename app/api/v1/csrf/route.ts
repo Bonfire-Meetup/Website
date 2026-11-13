@@ -8,6 +8,7 @@ import { logError, logInfo } from "@/lib/utils/log";
 const CSRF_COOKIE_NAME = "bnf_csrf";
 const CSRF_TTL_SECONDS = 60 * 60;
 
+/** Issues a CSRF token and sets the matching cookie for form submissions. */
 export async function GET() {
   try {
     const token = crypto.randomBytes(32).toString("hex");

@@ -31,6 +31,10 @@ const normalizeTalkIndex = (talkIndex: number | null | undefined): number | null
 const isValidTalkIndex = (talkIndex: number | null, talkCount: number): boolean =>
   talkIndex === null || (talkIndex >= 0 && talkIndex < talkCount);
 
+/**
+ * Lists community questions for an event, with whether the question window is open and how many
+ * boosts you have left.
+ */
 export const GET = withRequestContext(
   withRateLimit<RouteParams>({
     maxHits: MAX_READ_ATTEMPTS,
@@ -88,11 +92,15 @@ export const GET = withRequestContext(
       });
     } catch (error) {
       logError("events.questions.get_failed", error, { eventId, userId });
-      return NextResponse.json({ error: "Failed to load questions" }, { status: 500 });
+      return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   }),
 );
 
+/**
+ * Asks a question for an event, optionally about a specific talk. Only works while the question
+ * window is open.
+ */
 export const POST = withRequestContext(
   withAuth<RouteParams>("events.questions.create")(
     withRateLimit<RouteParams & AuthContext>({
@@ -122,14 +130,14 @@ export const POST = withRequestContext(
         const parsed = eventQuestionCreateSchema.safeParse(body);
 
         if (!parsed.success) {
-          return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+          return NextResponse.json({ error: "invalid_request" }, { status: 400 });
         }
 
         const text = sanitizeUserText(parsed.data.text);
         const talkIndex = normalizeTalkIndex(parsed.data.talkIndex);
 
         if (text.length < 3 || text.length > 600) {
-          return NextResponse.json({ error: "invalid_body" }, { status: 400 });
+          return NextResponse.json({ error: "invalid_request" }, { status: 400 });
         }
 
         if (!isValidTalkIndex(talkIndex, event.speakers.length)) {
@@ -149,10 +157,10 @@ export const POST = withRequestContext(
           userId: auth.userId,
         });
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ ok: true }, { status: 201 });
       } catch (error) {
         logError("events.questions.create_failed", error, { eventId, userId: auth.userId });
-        return NextResponse.json({ error: "Failed to create question" }, { status: 500 });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
     }),
   ),

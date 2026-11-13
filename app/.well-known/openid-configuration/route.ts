@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { API_ROUTES } from "@/lib/api/routes";
 import { serverEnv } from "@/lib/config/env";
 
+/** OpenID Connect discovery document describing the token endpoint and signing keys. */
 export async function GET() {
   const issuer = serverEnv.BNF_JWT_ISSUER;
 

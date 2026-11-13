@@ -22,6 +22,11 @@ const resendSchema = z.object({
   testMode: z.boolean().default(false),
 });
 
+/**
+ * Sends an archived newsletter again to a chosen audience.
+ *
+ * The response streams progress while the emails go out.
+ */
 export const POST = withRequestContext(
   withRole<RouteParams>(
     "newsletter.send",

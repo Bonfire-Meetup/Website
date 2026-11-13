@@ -71,6 +71,7 @@
       "successMessage": "Thanks for subscribing! We'll keep you updated.",
       "error": "Something went wrong. Please try again later.",
       "rateLimitError": "Too many requests. Please try again in a minute.",
+      "invalidEmailError": "Please enter a valid email address.",
       "privacyNote": "By subscribing, you agree to receive occasional emails. Unsubscribe anytime.",
       "subscribeAnother": "Subscribe another email"
     },

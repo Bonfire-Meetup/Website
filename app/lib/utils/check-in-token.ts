@@ -17,13 +17,13 @@ export function parseCheckInToken(token: string): VerifyTokenResult {
   try {
     const parts = token.split(".");
     if (parts.length !== 3) {
-      return { valid: false, error: "Invalid token format" };
+      return { valid: false, error: "invalid_token_format" };
     }
 
     const [version, encodedPayload, _signature] = parts;
 
     if (version !== "v1") {
-      return { valid: false, error: "Unsupported token version" };
+      return { valid: false, error: "unsupported_token_version" };
     }
 
     let base64 = encodedPayload.replace(/-/gu, "+").replace(/_/gu, "/");
@@ -35,7 +35,7 @@ export function parseCheckInToken(token: string): VerifyTokenResult {
 
     const nowSeconds = Math.floor(Date.now() / 1000);
     if (decodedPayload.exp < nowSeconds) {
-      return { valid: false, error: "Token expired" };
+      return { valid: false, error: "token_expired" };
     }
 
     return {

@@ -9,6 +9,9 @@ import { getStripe, syncGuildSubscriptionFromStripe } from "@/lib/billing/stripe
 import { getGuildSubscriptionByUserId } from "@/lib/data/subscriptions";
 import { logError, logWarn } from "@/lib/utils/log";
 
+/**
+ * Refreshes your Guild membership from Stripe, for example right after returning from Checkout.
+ */
 export const POST = withRequestContext(
   withAuth("account.subscription.sync")(async (request: Request, { auth }) => {
     const raw = await request.text();

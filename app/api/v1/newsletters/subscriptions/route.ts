@@ -19,6 +19,7 @@ import { getRequestId, runWithRequestContext } from "@/lib/utils/request-context
 const RATE_LIMIT_STORE = "newsletter";
 const MAX_REQUESTS_PER_MINUTE = 3;
 
+/** Subscribes an email address to the newsletter. */
 export const POST = withRequestContext(
   withRateLimit({
     maxHits: MAX_REQUESTS_PER_MINUTE,
@@ -30,7 +31,7 @@ export const POST = withRequestContext(
         storeKey: RATE_LIMIT_STORE,
       });
 
-      return NextResponse.json({ error: "Rate limited" }, { status: 429 });
+      return NextResponse.json({ error: "rate_limited" }, { status: 429 });
     },
     storeKey: RATE_LIMIT_STORE,
   })(async (request: Request) => {
@@ -39,7 +40,7 @@ export const POST = withRequestContext(
     if (!originAllowed) {
       logWarn("newsletter.invalid_origin", { requestId: getRequestId() });
 
-      return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+      return NextResponse.json({ error: "invalid_origin" }, { status: 403 });
     }
 
     const verification = await checkBotId();
@@ -47,7 +48,7 @@ export const POST = withRequestContext(
     if (verification.isBot) {
       logWarn("newsletter.bot_blocked", { requestId: getRequestId() });
 
-      return NextResponse.json({ error: "Bot traffic blocked" }, { status: 403 });
+      return NextResponse.json({ error: "bot_blocked" }, { status: 403 });
     }
 
     const { ipHash, uaHash } = await getClientHashes();
@@ -62,12 +63,12 @@ export const POST = withRequestContext(
       return NextResponse.json(validated);
     } catch (error) {
       if (error && typeof error === "object" && "issues" in error) {
-        return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+        return NextResponse.json({ error: "invalid_email" }, { status: 400 });
       }
 
       logError("newsletter.subscribe_failed", error);
 
-      return NextResponse.json({ error: "Failed to subscribe" }, { status: 500 });
+      return NextResponse.json({ error: "subscribe_failed" }, { status: 500 });
     }
   }),
 );
@@ -102,6 +103,10 @@ const unsubscribeSchema = z.object({
   token: z.string().min(1),
 });
 
+/**
+ * Checks which address an unsubscribe link's `token` belongs to and whether it's still
+ * subscribed.
+ */
 export const GET = (request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
@@ -135,6 +140,7 @@ export const GET = (request: Request) =>
     }
   });
 
+/** Unsubscribes using the `token` from an email's unsubscribe link. */
 export const DELETE = (request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);

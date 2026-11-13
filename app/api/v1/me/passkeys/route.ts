@@ -4,6 +4,7 @@ import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
 import { getPasskeysByUserId } from "@/lib/data/passkey";
 import { logError } from "@/lib/utils/log";
 
+/** Lists the passkeys registered on your account. */
 export const GET = withRequestContext(
   withAuth("passkey.list")(async (_request: Request, { auth }) => {
     const { userId } = auth;

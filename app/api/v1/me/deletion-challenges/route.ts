@@ -15,6 +15,7 @@ const maxEmailChallenges = 2;
 const maxIpChallenges = 5;
 const rateLimitStore = new Map<string, number[]>();
 
+/** Emails a confirmation code for deleting your account. */
 export const POST = withRequestContext(
   withAuth("account.delete-challenge")(async (request: Request, { auth }) => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);

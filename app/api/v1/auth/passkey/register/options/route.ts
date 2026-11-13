@@ -14,6 +14,7 @@ import { logError, logInfo, logWarn } from "@/lib/utils/log";
 const RATE_LIMIT_STORE = "passkey.register.options";
 const MAX_REQUESTS_PER_MINUTE = 10;
 
+/** Returns WebAuthn options for adding a passkey to the signed-in account. */
 export const POST = withRequestContext(
   withAuth("passkey.register.options")(
     withRateLimit<AuthContext>({

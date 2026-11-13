@@ -50,6 +50,7 @@ const getClientIp = (headers: Headers): string | null => {
   return ip === "0.0.0.0" ? null : ip;
 };
 
+/** Verifies a passkey assertion and signs the user in, returning access and ID tokens. */
 export const POST = withRequestContext(
   withRateLimit({
     maxHits: MAX_REQUESTS_PER_MINUTE,

@@ -4,6 +4,7 @@ import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
 import { getAuthAttemptsByEmailHash, getAuthUserById } from "@/lib/data/auth";
 import { getEmailFingerprint, logError, logWarn } from "@/lib/utils/log";
 
+/** Lists recent sign-in attempts on your account. */
 export const GET = withRequestContext(
   withAuth("account.attempts")(async (_request: Request, { auth }) => {
     try {

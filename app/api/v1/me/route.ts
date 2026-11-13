@@ -36,6 +36,7 @@ import {
   logWarn,
 } from "@/lib/utils/log";
 
+/** Returns your profile, recent sign-in attempts, and boost balance and history. */
 export const GET = withRequestContext(
   withAuth("account.me")(async (_request: Request, { auth }) => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
@@ -109,6 +110,11 @@ const deleteSchema = z.object({
   code: z.string().regex(/^\d{1,6}$/u),
 });
 
+/**
+ * Permanently deletes your account.
+ *
+ * Requires the code emailed by `POST /api/v1/me/deletion-challenges`.
+ */
 export const DELETE = withRequestContext(
   withAuth("account.delete")(async (request: Request, { auth }) => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);

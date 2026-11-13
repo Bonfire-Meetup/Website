@@ -26,6 +26,10 @@ const isAuthorized = (request: NextRequest) => {
   return { ok: true as const };
 };
 
+/**
+ * Deletes expired sign-in challenges, passkey challenges and refresh tokens. Called by the
+ * scheduled cron job.
+ */
 export const GET = async (request: NextRequest) =>
   runWithRequestContext(request, async () => {
     const auth = isAuthorized(request);

@@ -11,6 +11,7 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+/** Returns a video's like count and whether this visitor has liked it. */
 export const GET = withRequestContext(
   withRateLimit<RouteParams>({
     maxHits: 60,
@@ -18,7 +19,7 @@ export const GET = withRequestContext(
       const { id } = await ctx.params;
       return `read:${id}:${ipHash}`;
     },
-    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    onLimit: () => NextResponse.json({ error: "rate_limited" }, { status: 429 }),
     storeKey: "video-api",
   })(async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
@@ -37,11 +38,12 @@ export const GET = withRequestContext(
     } catch (error) {
       logError("video.likes.get_failed", error, { operation: "get", videoId });
 
-      return NextResponse.json({ error: "Failed to load likes" }, { status: 500 });
+      return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   }),
 );
 
+/** Likes a video. No account needed: likes are tied to the visitor. */
 export const POST = withRequestContext(
   withRateLimit<RouteParams>({
     maxHits: 5,
@@ -49,7 +51,7 @@ export const POST = withRequestContext(
       const { id } = await ctx.params;
       return `write:${id}:${ipHash}`;
     },
-    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    onLimit: () => NextResponse.json({ error: "rate_limited" }, { status: 429 }),
     storeKey: "video-api",
   })(async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
@@ -71,11 +73,12 @@ export const POST = withRequestContext(
     } catch (error) {
       logError("video.likes.post_failed", error, { operation: "post", videoId });
 
-      return NextResponse.json({ error: "Failed to save like" }, { status: 500 });
+      return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   }),
 );
 
+/** Removes this visitor's like from a video. */
 export const DELETE = withRequestContext(
   withRateLimit<RouteParams>({
     maxHits: 5,
@@ -83,7 +86,7 @@ export const DELETE = withRequestContext(
       const { id } = await ctx.params;
       return `write:${id}:${ipHash}`;
     },
-    onLimit: () => NextResponse.json({ error: "Rate limited" }, { status: 429 }),
+    onLimit: () => NextResponse.json({ error: "rate_limited" }, { status: 429 }),
     storeKey: "video-api",
   })(async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
     const { id: videoId } = await params;
@@ -105,7 +108,7 @@ export const DELETE = withRequestContext(
     } catch (error) {
       logError("video.likes.delete_failed", error, { operation: "delete", videoId });
 
-      return NextResponse.json({ error: "Failed to remove like" }, { status: 500 });
+      return NextResponse.json({ error: "internal_error" }, { status: 500 });
     }
   }),
 );

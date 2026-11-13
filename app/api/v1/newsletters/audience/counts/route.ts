@@ -6,6 +6,7 @@ import { USER_ROLES } from "@/lib/config/roles";
 import { db } from "@/lib/data/db";
 import { appUser, newsletterSubscription } from "@/lib/data/schema";
 
+/** Returns how many recipients each newsletter audience has. */
 export const GET = withRequestContext(
   withRole(
     "newsletter.audience_counts",

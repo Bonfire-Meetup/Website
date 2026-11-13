@@ -97,3 +97,16 @@ export const eventQuestionCreateSchema = z.object({
   talkIndex: z.number().int().min(0).nullable().optional(),
   text: z.string().min(3).max(600),
 });
+
+export const checkInCreateSchema = z.object({
+  eventId: z.string().trim().min(1).max(100),
+  userId: z.string().trim().min(1).max(100),
+});
+
+export const checkInLookupSchema = z.object({
+  publicId: z.string().trim().min(1).max(100),
+});
+
+export const checkInVerifySchema = z.object({
+  token: z.string().trim().min(1).max(2000),
+});
