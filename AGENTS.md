@@ -19,7 +19,7 @@ Working guide for AI agents in this repository. Keep changes aligned with the cu
 - `bun run dev` starts Next dev with Turbopack
 - `bun run build` builds production output
 - `bun run start` runs the production server
-- `bun run typecheck` runs `tsc --noEmit`
+- `bun run typecheck` runs `next typegen && tsc --noEmit`
 - `bun run check` runs oxlint, oxfmt check, and typecheck
 - `bun run fix` auto-fixes lint issues and writes formatting
 - `bun run email:dev` starts the React Email preview server for `app/components/email`
