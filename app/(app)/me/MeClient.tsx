@@ -15,7 +15,6 @@ import {
   MailIcon,
   ShieldIcon,
 } from "@/components/shared/Icons";
-import { Button } from "@/components/ui/Button";
 import { Link } from "@/i18n/navigation";
 import { ApiError } from "@/lib/api/errors";
 import {
@@ -80,6 +79,12 @@ function getApiErrorReason(err: unknown): string | null {
   const maybe = err.data as { error?: unknown };
   return typeof maybe.error === "string" ? maybe.error : null;
 }
+
+const ACCOUNT_ACTION_CLASS =
+  "group inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border border-neutral-200/70 bg-white/60 px-4 text-base font-semibold whitespace-nowrap text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-10 sm:w-auto sm:px-3.5 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200";
+
+const ACCOUNT_SIGN_OUT_CLASS =
+  "group inline-flex h-10 shrink-0 cursor-pointer items-center gap-2 rounded-xl border border-neutral-200/70 bg-white/60 px-3.5 text-sm font-semibold whitespace-nowrap text-neutral-600 shadow-sm transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-rose-400/30 dark:hover:bg-rose-500/10 dark:hover:text-rose-200";
 
 export function MeClient({ isGuildEnabled }: { isGuildEnabled: boolean }) {
   const t = useTranslations("account");
@@ -328,103 +333,81 @@ export function MeClient({ isGuildEnabled }: { isGuildEnabled: boolean }) {
     ? Math.max(BOOST_CONFIG.MAX_BOOSTS - boostAllocation.availableBoosts, 0)
     : 0;
 
+  const accountLinks = profile
+    ? [
+        {
+          href: PAGE_ROUTES.USER(compressUuid(profile.id)),
+          icon: UserIcon,
+          label: t("viewProfile"),
+        },
+        { href: PAGE_ROUTES.WATCH_LATER, icon: BookmarkIcon, label: t("watchLater") },
+        { href: PAGE_ROUTES.EVENT_CHECK_IN, icon: QrCodeIcon, label: t("checkIn") },
+      ]
+    : [];
+  const toolLinks = [
+    ...(isCrew ? [{ href: PAGE_ROUTES.EVENT_READER, icon: CameraIcon, label: t("reader") }] : []),
+    ...(isEditor
+      ? [{ href: PAGE_ROUTES.NEWSLETTER_EDITOR, icon: MailIcon, label: t("newsletterEditor") }]
+      : []),
+    ...(isAdmin ? [{ href: PAGE_ROUTES.ADMIN, icon: ShieldIcon, label: t("adminInbox") }] : []),
+  ];
+
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
-          {t("title")}
-        </h1>
+      <div className="flex flex-col gap-5">
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
+            {t("title")}
+          </h1>
+
+          {!showSkeletons && (
+            <button type="button" onClick={handleSignOut} className={ACCOUNT_SIGN_OUT_CLASS}>
+              <LogOutIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              {t("signOut")}
+            </button>
+          )}
+        </div>
 
         {showSkeletons ? (
           <HeaderButtonsSkeleton />
         ) : (
-          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-row sm:items-center">
-            {profile && (
-              <>
-                <Link href={PAGE_ROUTES.USER(compressUuid(profile.id))} prefetch={false}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
-                  >
-                    <UserIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
-                    {t("viewProfile")}
-                  </Button>
-                </Link>
-
-                <Link href={PAGE_ROUTES.WATCH_LATER} prefetch={false}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
-                  >
-                    <BookmarkIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
-                    {t("watchLater")}
-                  </Button>
-                </Link>
-
-                <Link href={PAGE_ROUTES.EVENT_CHECK_IN} prefetch={false}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
-                  >
-                    <QrCodeIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
-                    {t("checkIn")}
-                  </Button>
-                </Link>
-
-                {isCrew && (
-                  <Link href={PAGE_ROUTES.EVENT_READER} prefetch={false}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
-                    >
-                      <CameraIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
-                      {t("reader")}
-                    </Button>
-                  </Link>
-                )}
-
-                {isEditor && (
-                  <Link href={PAGE_ROUTES.NEWSLETTER_EDITOR} prefetch={false}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
-                    >
-                      <MailIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
-                      {t("newsletterEditor")}
-                    </Button>
-                  </Link>
-                )}
-
-                {isAdmin && (
-                  <Link href={PAGE_ROUTES.ADMIN} prefetch={false}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
-                    >
-                      <ShieldIcon className="h-4 w-4 transition-transform group-hover:scale-110" />
-                      {t("adminInbox")}
-                    </Button>
-                  </Link>
-                )}
-              </>
-            )}
-
-            <Button
-              onClick={handleSignOut}
-              variant="ghost"
-              size="sm"
-              className="group h-14 w-full justify-center gap-2 border border-neutral-200/70 bg-white/60 px-4 text-base text-neutral-600 shadow-sm transition hover:border-neutral-300 hover:bg-white hover:text-neutral-900 sm:h-auto sm:w-auto sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-neutral-200"
+          profile && (
+            <nav
+              aria-label={t("title")}
+              className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center"
             >
-              <LogOutIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              {t("signOut")}
-            </Button>
-          </div>
+              {accountLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  prefetch={false}
+                  className={ACCOUNT_ACTION_CLASS}
+                >
+                  <link.icon className="h-4 w-4 transition-transform group-hover:scale-110" />
+                  {link.label}
+                </Link>
+              ))}
+
+              {toolLinks.length > 0 && (
+                <span
+                  aria-hidden="true"
+                  className="mx-1 hidden h-6 w-px bg-black/10 sm:block dark:bg-white/12"
+                />
+              )}
+
+              {toolLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  prefetch={false}
+                  className={ACCOUNT_ACTION_CLASS}
+                >
+                  <link.icon className="h-4 w-4 transition-transform group-hover:scale-110" />
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          )
         )}
       </div>
 

@@ -67,10 +67,13 @@ export function GuildSkeleton() {
 
 export function HeaderButtonsSkeleton() {
   return (
-    <div className="flex w-full flex-wrap gap-2 sm:w-auto">
-      <div className="h-9 w-32 animate-pulse rounded-lg border border-neutral-200/70 bg-white/60 dark:border-white/10 dark:bg-white/5" />
-      <div className="h-9 w-32 animate-pulse rounded-lg border border-neutral-200/70 bg-white/60 dark:border-white/10 dark:bg-white/5" />
-      <div className="h-9 w-24 animate-pulse rounded-lg border border-neutral-200/70 bg-white/60 dark:border-white/10 dark:bg-white/5" />
+    <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+      {[1, 2, 3].map((id) => (
+        <div
+          key={id}
+          className="h-14 animate-pulse rounded-xl border border-neutral-200/70 bg-white/60 sm:h-10 sm:w-32 dark:border-white/10 dark:bg-white/5"
+        />
+      ))}
     </div>
   );
 }
