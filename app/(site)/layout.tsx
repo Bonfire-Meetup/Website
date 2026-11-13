@@ -2,11 +2,11 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main className="pb-16 md:pb-0">{children}</main>
+      {children}
       <div className="hidden md:block">
         <Footer />
       </div>

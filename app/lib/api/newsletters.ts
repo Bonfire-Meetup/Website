@@ -1,6 +1,6 @@
 "use client";
 
-import type { AudienceCounts } from "@/(app)/newsletters/editor/compose/types";
+import type { AudienceCounts } from "@/(site)/(app)/newsletters/editor/compose/types";
 import { ApiError } from "@/lib/api/errors";
 import { API_ROUTES } from "@/lib/api/routes";
 import { useAuthScopedQuery } from "@/lib/api/useAuthScopedQuery";

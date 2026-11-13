@@ -27,9 +27,10 @@ Working guide for AI agents in this repository. Keep changes aligned with the cu
 ## Repo Shape
 
 - `app/` is the whole application
-- `app/(app)` holds the main site with shared header/footer/mobile nav
+- `app/(site)` holds the shared header/footer/mobile nav for the two groups below it
+- `app/(site)/(app)` holds the main site
 - `app/(auth)` holds auth pages
-- `app/(media)` holds media-heavy pages such as watch/photos
+- `app/(site)/(media)` holds media-heavy pages such as watch/photos
 - `app/api/v1` holds REST endpoints
 - `app/components` is organized by feature, not by primitive-only design system rules
 - `app/lib` holds business logic: `api`, `auth`, `config`, `data`, `events`, `forms`, `i18n`, `recordings`, `redux`, `rollbar`, `utils`
@@ -41,7 +42,7 @@ Working guide for AI agents in this repository. Keep changes aligned with the cu
 
 - Default to server components. Add `"use client"` only for browser APIs, local interaction, Redux, React Query, or imperative effects.
 - Typical pattern: server `page.tsx` fetches data and passes it into a feature client component.
-- Route groups are meaningful here. Preserve existing `(app)`, `(auth)`, and `(media)` boundaries.
+- Route groups are meaningful here. Preserve existing `(app)`, `(auth)`, and `(media)` boundaries. `(app)` and `(media)` sit under `(site)` so the header, footer and mobile nav stay mounted across them; never give either group its own copy of that chrome.
 - Prefer existing feature modules over adding new top-level utility folders.
 - Use `@/*` for imports from `app/*` and `@/i18n/*` for `i18n/*`.
 - Follow the existing style: 2 spaces, semicolons, double quotes, trailing commas, 100-char width.
@@ -53,7 +54,7 @@ Working guide for AI agents in this repository. Keep changes aligned with the cu
 - Root wiring lives in `app/layout.tsx` and `app/AppProviders.tsx`.
 - Provider order matters: i18n sync -> locale sync -> Redux -> auth init -> React Query -> motion -> theme -> global player.
 - The root layout also mounts Rollbar, navigation loading, Vercel analytics, and speed insights.
-- Main app chrome comes from `app/(app)/layout.tsx`.
+- Main app chrome comes from `app/(site)/layout.tsx` (shared by the `(app)` and `(media)` groups).
 
 ## i18n
 
@@ -66,7 +67,7 @@ Working guide for AI agents in this repository. Keep changes aligned with the cu
 - When adding UI text, update both `en` and `cs` namespace files in the relevant folder under `app/locales`.
 - Server components use `getTranslations`; client components use `useTranslations`.
 - Long-form text (legal documents and similar) does not belong in locale JSON. It lives as per-locale markdown in `app/content/**/<name>.<locale>.md`, compiled by `@next/mdx` and styled through `mdx-components.tsx`.
-- Render every locale on the server and wrap them in `LocalizedContent` (`app/components/shared/markdown`) so the client shows the active one. See `app/(app)/legal/page.tsx`.
+- Render every locale on the server and wrap them in `LocalizedContent` (`app/components/shared/markdown`) so the client shows the active one. See `app/(site)/(app)/legal/page.tsx`.
 - Use `## Heading {#custom-id}` in markdown when an anchor must stay the same across languages.
 - Guides are MDX: `app/content/guides/<slug>.<locale>.mdx` with YAML frontmatter (hero and card copy) and named blocks such as `<Section>`, `<Steps>`, `<Callout>` and `<Cta>` from `app/components/guides/mdx`. Register a new guide in `app/content/guides/index.ts`; frontmatter is validated there.
 
