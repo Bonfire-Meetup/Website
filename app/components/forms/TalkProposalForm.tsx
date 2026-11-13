@@ -546,7 +546,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
 
   if (state.success) {
     return (
-      <div className="glass-card no-hover-pop mx-auto max-w-3xl rounded-[32px] p-8 text-center sm:p-12">
+      <div className="glass-card no-hover-pop mx-auto max-w-3xl rounded-2xl p-8 text-center sm:p-12">
         <div className="form-success-icon">
           <CheckIcon className="h-8 w-8 text-white" />
         </div>
@@ -591,7 +591,7 @@ function TalkProposalFormInner({ onReset }: TalkProposalFormInnerProps) {
     <form
       ref={formRef}
       onSubmit={handleSubmit}
-      className="mx-auto max-w-3xl rounded-[24px] border border-black/8 bg-white p-4 shadow-[0_18px_50px_-40px_rgba(15,23,42,0.28)] sm:p-7 dark:border-white/10 dark:bg-white/4 dark:shadow-[0_18px_50px_-40px_rgba(0,0,0,0.55)]"
+      className="mx-auto max-w-3xl rounded-2xl border border-black/8 bg-white p-4 shadow-[0_18px_50px_-40px_rgba(15,23,42,0.28)] sm:p-7 dark:border-white/10 dark:bg-white/4 dark:shadow-[0_18px_50px_-40px_rgba(0,0,0,0.55)]"
     >
       <div className="mb-7 border-b border-black/6 pb-5 dark:border-white/10">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">

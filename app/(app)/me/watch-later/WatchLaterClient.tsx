@@ -30,7 +30,7 @@ import { formatDateTimeUTC, formatLongDateUTC } from "@/lib/utils/locale";
 import { type WatchLaterTagCloudItem, WatchLaterTagCloud } from "./WatchLaterTagCloud";
 
 const HERO_PANEL_CLASS =
-  "rounded-[28px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,248,240,0.72)_0%,rgba(255,244,232,0.56)_100%)] shadow-[0_28px_60px_-36px_rgba(15,23,42,0.34)] ring-1 ring-white/35 backdrop-blur-xl backdrop-saturate-150 dark:border-white/20 dark:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:shadow-[0_20px_48px_-32px_rgba(0,0,0,0.7)] dark:ring-white/10";
+  "rounded-2xl border border-white/70 bg-[linear-gradient(180deg,rgba(255,248,240,0.72)_0%,rgba(255,244,232,0.56)_100%)] shadow-[0_28px_60px_-36px_rgba(15,23,42,0.34)] ring-1 ring-white/35 backdrop-blur-xl backdrop-saturate-150 dark:border-white/20 dark:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:shadow-[0_20px_48px_-32px_rgba(0,0,0,0.7)] dark:ring-white/10";
 
 const HERO_WATCHLATER_BUTTON_CLASS =
   "rounded-xl border border-white/75 bg-white/52 px-3 py-2 text-sm text-neutral-950 shadow-[0_18px_34px_-24px_rgba(15,23,42,0.28)] hover:bg-white/68 dark:border-white/20 dark:bg-white/10 dark:text-white dark:hover:bg-white/16";
@@ -191,7 +191,7 @@ export function WatchLaterClient() {
 
   if (error) {
     return (
-      <section className="relative overflow-hidden rounded-[32px] border border-rose-200 bg-white/75 p-6 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)] backdrop-blur-xl sm:p-8 dark:border-rose-500/30 dark:bg-white/5 dark:shadow-[0_30px_80px_-36px_rgba(0,0,0,0.85)]">
+      <section className="relative overflow-hidden rounded-2xl border border-rose-200 bg-white/75 p-6 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)] backdrop-blur-xl sm:p-8 dark:border-rose-500/30 dark:bg-white/5 dark:shadow-[0_30px_80px_-36px_rgba(0,0,0,0.85)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.12),transparent_32%),radial-gradient(circle_at_bottom_left,rgba(249,115,22,0.12),transparent_28%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.2),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(249,115,22,0.16),transparent_30%)]" />
         <div className="relative flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
@@ -224,7 +224,7 @@ export function WatchLaterClient() {
 
   if (isEmpty) {
     return (
-      <section className="relative overflow-hidden rounded-[32px] border border-white/70 bg-white/75 p-6 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)] backdrop-blur-xl sm:p-8 lg:p-10 dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_-36px_rgba(0,0,0,0.85)]">
+      <section className="relative overflow-hidden rounded-2xl border border-white/70 bg-white/75 p-6 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.35)] backdrop-blur-xl sm:p-8 lg:p-10 dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_-36px_rgba(0,0,0,0.85)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(244,63,94,0.12),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(249,115,22,0.14),transparent_28%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(244,63,94,0.18),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(249,115,22,0.18),transparent_28%)]" />
         <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_20rem] lg:items-end">
           <div className="max-w-3xl">
@@ -247,7 +247,7 @@ export function WatchLaterClient() {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-dashed border-neutral-300/80 bg-white/70 p-6 backdrop-blur-xl dark:border-white/10 dark:bg-black/20">
+          <div className="rounded-2xl border border-dashed border-neutral-300/80 bg-white/70 p-6 backdrop-blur-xl dark:border-white/10 dark:bg-black/20">
             <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-[20px] bg-gradient-to-br from-rose-500 to-orange-400 text-white shadow-lg shadow-orange-500/25">
               <BookmarkIcon className="h-7 w-7" />
             </div>
@@ -265,7 +265,7 @@ export function WatchLaterClient() {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-[28px] border border-black/15 shadow-[0_28px_65px_-32px_rgba(15,23,42,0.65)] sm:rounded-[32px] dark:border-white/10 dark:shadow-[0_28px_70px_-30px_rgba(0,0,0,0.85)]">
+      <section className="relative overflow-hidden rounded-2xl border border-black/15 shadow-[0_28px_65px_-32px_rgba(15,23,42,0.65)] sm:rounded-2xl dark:border-white/10 dark:shadow-[0_28px_70px_-30px_rgba(0,0,0,0.85)]">
         {featuredRecording ? (
           <div className="pointer-events-none absolute inset-0">
             <div

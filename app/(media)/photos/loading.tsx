@@ -31,7 +31,7 @@ export default function Loading() {
                 { length: 4 },
                 (_, skeletonIndex) => `photo-skeleton-${skeletonIndex}`,
               ).map((skeletonId) => (
-                <Skeleton key={skeletonId} className="aspect-[3/4] rounded-2xl sm:rounded-3xl" />
+                <Skeleton key={skeletonId} className="aspect-[3/4] rounded-2xl sm:rounded-2xl" />
               ))}
             </div>
           </div>
@@ -68,7 +68,7 @@ export default function Loading() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }, (_, skeletonIndex) => `grid-skeleton-${skeletonIndex}`).map(
               (skeletonId) => (
-                <div key={skeletonId} className="overflow-hidden rounded-[24px] bg-white/80">
+                <div key={skeletonId} className="overflow-hidden rounded-2xl bg-white/80">
                   <Skeleton className="aspect-[16/10] w-full !rounded-none" />
                   <div className="space-y-3 p-5">
                     <Skeleton className="h-5 w-3/4" />

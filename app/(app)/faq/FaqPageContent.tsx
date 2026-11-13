@@ -126,7 +126,7 @@ export function FaqPageContent() {
                     <div
                       key={qKey}
                       id={anchorId}
-                      className="group hover:border-brand-500/30 dark:hover:border-brand-500/20 scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:bg-white/10"
+                      className="group hover:border-brand-500/30 dark:hover:border-brand-500/20 scroll-mt-32 rounded-2xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:bg-white/10"
                     >
                       <h3 className="group-hover:text-brand-600 dark:group-hover:text-brand-400 mb-3 flex items-center text-lg font-bold text-neutral-900 transition-colors dark:text-neutral-100">
                         {t(`questions.${qKey}.title`)}
@@ -167,7 +167,7 @@ export function FaqPageContent() {
             <div className="grid gap-6">
               <div
                 id="sparks"
-                className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-rose-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-rose-500/20 dark:hover:bg-white/10"
+                className="group scroll-mt-32 rounded-2xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-rose-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-rose-500/20 dark:hover:bg-white/10"
               >
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <h3 className="flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-rose-600 dark:text-neutral-100 dark:group-hover:text-rose-400">
@@ -186,7 +186,7 @@ export function FaqPageContent() {
 
               <div
                 id="boosts"
-                className="group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-emerald-500/20 dark:hover:bg-white/10"
+                className="group scroll-mt-32 rounded-2xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white sm:p-8 dark:border-white/5 dark:bg-white/5 dark:hover:border-emerald-500/20 dark:hover:bg-white/10"
               >
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <h3 className="flex items-center text-lg font-bold text-neutral-900 transition-colors group-hover:text-emerald-600 dark:text-neutral-100 dark:group-hover:text-emerald-400">
@@ -211,7 +211,7 @@ export function FaqPageContent() {
 
               <div
                 id="guild"
-                className={`group scroll-mt-32 rounded-3xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 ${ENGAGEMENT_BRANDING.guild.classes.cardHover} sm:p-8 dark:border-white/5 dark:bg-white/5`}
+                className={`group scroll-mt-32 rounded-2xl border border-neutral-200/70 bg-white/50 p-6 transition-all duration-300 ${ENGAGEMENT_BRANDING.guild.classes.cardHover} sm:p-8 dark:border-white/5 dark:bg-white/5`}
               >
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <h3

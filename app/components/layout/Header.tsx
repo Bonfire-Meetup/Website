@@ -318,7 +318,7 @@ function HeaderInner() {
             className={`rounded-lg px-2 py-1 text-[11px] font-semibold transition-all duration-200 md:rounded-full md:px-4 md:py-2.5 md:text-sm ${
               isLibraryContext
                 ? "shadow-md ring-1 shadow-orange-500/20 ring-white/60 dark:ring-white/25"
-                : "shadow-sm shadow-orange-500/15 md:hover:scale-[1.02]"
+                : "shadow-sm shadow-orange-500/15"
             }`}
           >
             <FilmIcon className="h-3 w-3 md:h-4 md:w-4" />

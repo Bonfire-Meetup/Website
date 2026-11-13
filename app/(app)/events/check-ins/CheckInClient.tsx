@@ -20,11 +20,11 @@ const TICKET_GRADIENT_CLASS = "bg-gradient-to-br from-rose-700 via-orange-500 to
 const TICKET_HEADER_PANEL_CLASS =
   "mx-auto w-full max-w-[14rem] rounded-[1.15rem] border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.08)_100%)] px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_18px_40px_-28px_rgba(120,53,15,0.45)] backdrop-blur-md sm:max-w-[17rem] sm:rounded-[1.5rem] sm:px-5 sm:py-4 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_18px_40px_-28px_rgba(0,0,0,0.5)]";
 const TICKET_SHELL_CLASS =
-  "relative overflow-hidden rounded-[2rem] border border-white/45 bg-white/28 shadow-[0_40px_120px_-52px_rgba(15,23,42,0.58)] ring-1 ring-white/55 backdrop-blur-2xl dark:border-white/8 dark:bg-neutral-950/24 dark:ring-white/8";
+  "relative overflow-hidden rounded-2xl border border-white/45 bg-white/28 shadow-[0_40px_120px_-52px_rgba(15,23,42,0.58)] ring-1 ring-white/55 backdrop-blur-2xl dark:border-white/8 dark:bg-neutral-950/24 dark:ring-white/8";
 const TICKET_SURFACE_CLASS =
   "bg-[linear-gradient(180deg,rgba(255,255,255,0.5)_0%,rgba(255,248,240,0.34)_45%,rgba(255,255,255,0.22)_100%)] dark:bg-[linear-gradient(180deg,rgba(24,24,28,0.3)_0%,rgba(12,12,14,0.2)_48%,rgba(6,6,8,0.14)_100%)] backdrop-blur-2xl";
 const QR_FRAME_CLASS =
-  "relative rounded-[1.75rem] border border-white/45 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.78),rgba(255,255,255,0.56)_34%,rgba(255,244,238,0.44)_62%,rgba(255,255,255,0.28)_100%)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(255,255,255,0.42),0_24px_55px_-34px_rgba(15,23,42,0.38)] backdrop-blur-xl dark:border-white/12 dark:bg-[radial-gradient(circle_at_top,rgba(80,80,88,0.34),rgba(34,34,38,0.3)_38%,rgba(14,14,18,0.22)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(255,255,255,0.03),0_24px_55px_-34px_rgba(0,0,0,0.55)]";
+  "relative rounded-2xl border border-white/45 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.78),rgba(255,255,255,0.56)_34%,rgba(255,244,238,0.44)_62%,rgba(255,255,255,0.28)_100%)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(255,255,255,0.42),0_24px_55px_-34px_rgba(15,23,42,0.38)] backdrop-blur-xl dark:border-white/12 dark:bg-[radial-gradient(circle_at_top,rgba(80,80,88,0.34),rgba(34,34,38,0.3)_38%,rgba(14,14,18,0.22)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(255,255,255,0.03),0_24px_55px_-34px_rgba(0,0,0,0.55)]";
 const QR_META_BAR_CLASS =
   "mb-3 flex items-center justify-between rounded-full border border-white/45 bg-white/36 px-3 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] backdrop-blur-xl dark:border-white/10 dark:bg-white/8 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]";
 const QR_CODE_SURFACE_CLASS =
@@ -236,7 +236,7 @@ export function CheckInClient() {
   if (tokenQuery.isError) {
     return (
       <div className="mx-auto max-w-md">
-        <div className="overflow-hidden rounded-3xl border border-red-200/70 bg-gradient-to-b from-red-50 to-red-100/50 p-8 shadow-lg dark:border-red-500/30 dark:from-red-950/30 dark:to-red-900/20">
+        <div className="overflow-hidden rounded-2xl border border-red-200/70 bg-gradient-to-b from-red-50 to-red-100/50 p-8 shadow-lg dark:border-red-500/30 dark:from-red-950/30 dark:to-red-900/20">
           <div className="mb-6 flex justify-center">
             <div className="rounded-full bg-red-100 p-4 dark:bg-red-900/50">
               <QrCodeIcon className="h-12 w-12 text-red-600 dark:text-red-400" />
@@ -256,10 +256,10 @@ export function CheckInClient() {
   return (
     <div className="mx-auto max-w-md">
       <div className={TICKET_SHELL_CLASS}>
-        <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.72),transparent_34%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.3),transparent_22%),linear-gradient(135deg,rgba(255,255,255,0.24),transparent_46%,rgba(255,255,255,0.08)_68%,transparent_82%)] dark:bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.08),transparent_26%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.04),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.04),transparent_44%,rgba(255,255,255,0.015)_70%,transparent_84%)]" />
-        <div className="pointer-events-none absolute inset-[1px] rounded-[calc(2rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.26),transparent_18%,transparent_78%,rgba(255,255,255,0.12)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_18%,transparent_82%,rgba(255,255,255,0.02)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.72),transparent_34%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.3),transparent_22%),linear-gradient(135deg,rgba(255,255,255,0.24),transparent_46%,rgba(255,255,255,0.08)_68%,transparent_82%)] dark:bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.08),transparent_26%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.04),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.04),transparent_44%,rgba(255,255,255,0.015)_70%,transparent_84%)]" />
+        <div className="pointer-events-none absolute inset-[1px] rounded-[calc(1rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.26),transparent_18%,transparent_78%,rgba(255,255,255,0.12)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_18%,transparent_82%,rgba(255,255,255,0.02)_100%)]" />
         <div
-          className={`relative overflow-hidden rounded-[calc(2rem-1px)] ${TICKET_SURFACE_CLASS}`}
+          className={`relative overflow-hidden rounded-[calc(1rem-1px)] ${TICKET_SURFACE_CLASS}`}
         >
           <div className={`relative h-30 sm:h-36 ${TICKET_GRADIENT_CLASS}`}>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.35),transparent_32%),radial-gradient(circle_at_85%_15%,rgba(255,255,255,0.22),transparent_24%)]" />
@@ -379,7 +379,7 @@ export function CheckInClient() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-3 rounded-[1.35rem] border border-white/28 bg-white/18 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-xl dark:border-white/10 dark:bg-white/4 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+            <div className="flex items-center justify-between gap-3 rounded-xl border border-white/28 bg-white/18 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-xl dark:border-white/10 dark:bg-white/4 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
               <div className="flex min-w-0 flex-1 items-center gap-2.5">
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-500/14 text-orange-700 dark:text-orange-300">
                   <RefreshIcon className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />

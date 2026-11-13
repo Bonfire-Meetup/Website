@@ -34,14 +34,14 @@ export function ShouldersOfGiants() {
 
   return (
     <section
-      className="relative overflow-hidden rounded-[2rem] border border-neutral-200/80 bg-[radial-gradient(circle_at_top_right,rgba(236,72,153,0.14),transparent_44%),radial-gradient(circle_at_bottom_left,rgba(251,113,133,0.12),transparent_45%),linear-gradient(140deg,#ffffff,rgba(250,250,250,0.98)_52%,#ffffff)] p-5 shadow-[0_32px_90px_-44px_rgba(0,0,0,0.38)] sm:p-8 md:p-10 dark:border-white/10 dark:bg-[radial-gradient(circle_at_top_right,rgba(236,72,153,0.22),transparent_44%),radial-gradient(circle_at_bottom_left,rgba(251,113,133,0.18),transparent_45%),linear-gradient(140deg,#09090b,#111113_55%,#09090b)]"
+      className="relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-[radial-gradient(circle_at_top_right,rgba(236,72,153,0.14),transparent_44%),radial-gradient(circle_at_bottom_left,rgba(251,113,133,0.12),transparent_45%),linear-gradient(140deg,#ffffff,rgba(250,250,250,0.98)_52%,#ffffff)] p-5 shadow-[0_32px_90px_-44px_rgba(0,0,0,0.38)] sm:p-8 md:p-10 dark:border-white/10 dark:bg-[radial-gradient(circle_at_top_right,rgba(236,72,153,0.22),transparent_44%),radial-gradient(circle_at_bottom_left,rgba(251,113,133,0.18),transparent_45%),linear-gradient(140deg,#09090b,#111113_55%,#09090b)]"
       aria-labelledby="giants-heading"
     >
-      <div className="absolute inset-0 overflow-hidden rounded-[2rem]">
-        <div className="from-brand-500/8 to-accent-rose/8 dark:from-brand-400/14 dark:to-accent-rose/14 absolute inset-0 rounded-[2rem] bg-gradient-to-br via-transparent" />
+      <div className="absolute inset-0 overflow-hidden rounded-2xl">
+        <div className="from-brand-500/8 to-accent-rose/8 dark:from-brand-400/14 dark:to-accent-rose/14 absolute inset-0 rounded-2xl bg-gradient-to-br via-transparent" />
         <div className="bg-brand-500/12 dark:bg-brand-400/22 absolute -top-28 -right-28 h-56 w-56 rounded-full blur-3xl" />
         <div className="bg-accent-rose/12 dark:bg-accent-rose/22 absolute -bottom-24 -left-24 h-48 w-48 rounded-full blur-3xl" />
-        <div className="pointer-events-none absolute inset-0 rounded-[2rem] ring-1 ring-white/45 dark:ring-white/8" />
+        <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-white/45 dark:ring-white/8" />
       </div>
 
       <div className="relative space-y-7 sm:space-y-8">
@@ -65,7 +65,7 @@ export function ShouldersOfGiants() {
             </p>
           </div>
 
-          <div className="group relative isolate overflow-hidden rounded-2xl border border-white/60 bg-white/40 px-4 py-3.5 shadow-[0_22px_48px_-34px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-transform duration-300 motion-safe:hover:-translate-y-0.5 sm:px-5 sm:py-4 dark:border-white/16 dark:bg-white/8">
+          <div className="group relative isolate overflow-hidden rounded-2xl border border-white/60 bg-white/40 px-4 py-3.5 shadow-[0_22px_48px_-34px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-transform duration-300 sm:px-5 sm:py-4 dark:border-white/16 dark:bg-white/8">
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.72),rgba(255,255,255,0.1)_58%,rgba(255,255,255,0.03))] dark:bg-[linear-gradient(145deg,rgba(255,255,255,0.2),rgba(255,255,255,0.05)_58%,rgba(255,255,255,0.02))]" />
             <div className="bg-brand-400/28 dark:bg-brand-400/30 pointer-events-none absolute -top-8 -right-8 h-24 w-24 rounded-full blur-2xl" />
             <div className="pointer-events-none absolute inset-x-5 top-0 h-px bg-white/80 dark:bg-white/30" />
@@ -93,7 +93,7 @@ export function ShouldersOfGiants() {
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group focus-visible:ring-brand-400/65 focus-visible:ring-offset-background hover:border-brand-300 hover:shadow-brand-500/10 dark:hover:border-brand-500/40 dark:hover:shadow-brand-500/10 flex items-start justify-between gap-3 rounded-2xl border border-neutral-200/80 bg-white/88 p-4 shadow-[0_10px_22px_-18px_rgba(0,0,0,0.5)] transition-all duration-300 hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none motion-safe:hover:-translate-y-0.5 dark:border-white/10 dark:bg-white/6 dark:hover:bg-white/12"
+              className="group focus-visible:ring-brand-400/65 focus-visible:ring-offset-background hover:border-brand-300 hover:shadow-brand-500/10 dark:hover:border-brand-500/40 dark:hover:shadow-brand-500/10 flex items-start justify-between gap-3 rounded-2xl border border-neutral-200/80 bg-white/88 p-4 shadow-[0_10px_22px_-18px_rgba(0,0,0,0.5)] transition-all duration-300 hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none dark:border-white/10 dark:bg-white/6 dark:hover:bg-white/12"
             >
               <div className="min-w-0">
                 <span className="text-[11px] font-semibold tracking-wide text-neutral-500 uppercase dark:text-neutral-400">

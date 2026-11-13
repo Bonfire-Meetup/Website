@@ -127,7 +127,7 @@ export function HelpPageContent() {
                 as={Link}
                 key={tile.key}
                 href={tile.href}
-                className={`fire-glow group relative h-full overflow-hidden p-5 transition-all duration-300 hover:-translate-y-0.5 sm:p-6 lg:p-8 ${chrome.borderClassName}`}
+                className={`fire-glow group relative h-full overflow-hidden p-5 transition-all duration-300 sm:p-6 lg:p-8 ${chrome.borderClassName}`}
               >
                 <div
                   className={`pointer-events-none absolute top-0 right-0 h-32 w-32 translate-x-9 -translate-y-9 rounded-full blur-3xl sm:h-36 sm:w-36 sm:translate-x-10 sm:-translate-y-10 ${chrome.orbClassName}`}

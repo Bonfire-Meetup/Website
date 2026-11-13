@@ -218,7 +218,7 @@ export function PastEventsPageContent() {
           <div className="space-y-10">
             {groups.map((group) => (
               <section key={group.key} className="grid gap-4 lg:grid-cols-[190px_1fr] lg:gap-6">
-                <div className="self-start rounded-3xl border border-neutral-200/80 bg-white/70 p-4 backdrop-blur-sm lg:sticky lg:top-24 dark:border-white/10 dark:bg-white/5">
+                <div className="self-start rounded-2xl border border-neutral-200/80 bg-white/70 p-4 backdrop-blur-sm lg:sticky lg:top-24 dark:border-white/10 dark:bg-white/5">
                   <p className="text-[11px] font-bold tracking-[0.16em] text-neutral-500 uppercase dark:text-neutral-400">
                     {t("pastSectionEyebrow")}
                   </p>
@@ -248,7 +248,7 @@ export function PastEventsPageContent() {
                     return (
                       <article
                         key={event.id}
-                        className="group relative grid grid-cols-[78px_1fr] gap-3 overflow-hidden rounded-3xl border border-neutral-200/80 bg-white/75 p-4 transition-colors hover:bg-white sm:grid-cols-[88px_1fr] sm:gap-4 sm:p-5 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+                        className="group relative grid grid-cols-[78px_1fr] gap-3 overflow-hidden rounded-2xl border border-neutral-200/80 bg-white/75 p-4 transition-colors hover:bg-white sm:grid-cols-[88px_1fr] sm:gap-4 sm:p-5 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
                       >
                         <div
                           className={`pointer-events-none absolute inset-y-0 left-0 w-1 opacity-65 ${theme.rail}`}
@@ -340,7 +340,7 @@ export function PastEventsPageContent() {
             ))}
           </div>
         ) : (
-          <div className="rounded-3xl border border-dashed border-neutral-300/80 bg-white/70 p-10 text-center text-neutral-600 dark:border-white/15 dark:bg-white/5 dark:text-neutral-300">
+          <div className="rounded-2xl border border-dashed border-neutral-300/80 bg-white/70 p-10 text-center text-neutral-600 dark:border-white/15 dark:bg-white/5 dark:text-neutral-300">
             {t("pastPageEmpty")}
           </div>
         )}

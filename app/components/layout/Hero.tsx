@@ -114,7 +114,7 @@ function ActiveVideoCard({ recording, text }: { recording: HeroRecording; text: 
 
   return (
     <div
-      className={`group relative block w-full overflow-hidden rounded-[24px] border border-black/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.54)_100%)] shadow-[0_28px_52px_-30px_rgba(17,24,39,0.6)] transition-[border-color,box-shadow] duration-500 hover:border-black/22 hover:shadow-[0_38px_64px_-30px_rgba(17,24,39,0.72)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(18,18,20,0.9)_0%,rgba(10,10,11,0.9)_100%)] dark:shadow-[0_30px_56px_-24px_rgba(0,0,0,0.96)] dark:hover:border-white/18 ${CARD_TILT_CLASS}`}
+      className={`group relative block w-full overflow-hidden rounded-2xl border border-black/12 bg-[linear-gradient(180deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.54)_100%)] shadow-[0_28px_52px_-30px_rgba(17,24,39,0.6)] transition-[border-color,box-shadow] duration-500 hover:border-black/22 hover:shadow-[0_38px_64px_-30px_rgba(17,24,39,0.72)] dark:border-white/12 dark:bg-[linear-gradient(180deg,rgba(18,18,20,0.9)_0%,rgba(10,10,11,0.9)_100%)] dark:shadow-[0_30px_56px_-24px_rgba(0,0,0,0.96)] dark:hover:border-white/18 ${CARD_TILT_CLASS}`}
       style={CARD_TILT_STYLE}
       {...tiltHandlers}
     >
@@ -456,7 +456,7 @@ export function Hero({ images, trendingRecordings = EMPTY_TRENDING_RECORDINGS }:
                   className="group relative px-6 py-3 sm:px-8 sm:py-3.5 sm:text-base"
                 >
                   <span className="relative z-10">{t("cta.events")}</span>
-                  <div className="pointer-events-none absolute -inset-3 -z-10 rounded-[1.35rem] bg-gradient-to-r from-orange-500/24 to-rose-500/20 opacity-65 blur-2xl transition-opacity duration-300 group-hover:opacity-85" />
+                  <div className="pointer-events-none absolute -inset-3 -z-10 rounded-xl bg-gradient-to-r from-orange-500/24 to-rose-500/20 opacity-65 blur-2xl transition-opacity duration-300 group-hover:opacity-85" />
                 </Button>
 
                 <Button

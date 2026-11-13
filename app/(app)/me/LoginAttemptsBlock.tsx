@@ -78,7 +78,7 @@ export function LoginAttemptsBlock({ items, loading, error }: LoginAttemptsBlock
           {items.map((attempt) => (
             <AccountPanelRow
               key={attempt.id}
-              className="hover:-translate-y-px hover:border-neutral-300/80 hover:shadow-neutral-200/50 dark:hover:border-white/12"
+              className="hover:border-neutral-300/80 hover:shadow-neutral-200/50 dark:hover:border-white/12"
             >
               <div className="min-w-0">
                 <div className="text-sm font-medium text-neutral-900 dark:text-white">

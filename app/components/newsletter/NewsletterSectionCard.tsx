@@ -59,7 +59,7 @@ export function NewsletterSectionCard({
   }
 
   return (
-    <article className="glass-card no-hover-pop overflow-hidden rounded-[24px]">
+    <article className="glass-card no-hover-pop overflow-hidden rounded-2xl">
       <div className={`h-1.5 w-full shrink-0 ${GRADIENT}`} />
 
       {section.imageUrl && (

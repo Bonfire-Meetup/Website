@@ -146,7 +146,7 @@ export function EventCard({
               prefixClassName="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500"
             />
           </h3>
-          {episode && (
+          {episode && episode !== title && (
             <p className="mb-2.5 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
               {t("episodeLabel")}: {episode}
             </p>
@@ -284,7 +284,7 @@ export function EventCard({
             prefixClassName="mb-1 block text-[11px] font-bold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500"
           />
         </h3>
-        {episode && (
+        {episode && episode !== title && (
           <p className="mb-4 text-xs font-semibold tracking-[0.28em] text-neutral-500 uppercase dark:text-neutral-400">
             {t("episodeLabel")}: {episode}
           </p>

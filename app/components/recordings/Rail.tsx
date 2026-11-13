@@ -147,12 +147,12 @@ export function Rail<T>({
         </div>
         {gradients.left && (
           <div
-            className={`pointer-events-none absolute inset-y-0 left-0 w-10 rounded-[28px] bg-gradient-to-r ${gradients.left}`}
+            className={`pointer-events-none absolute inset-y-0 left-0 w-10 rounded-2xl bg-gradient-to-r ${gradients.left}`}
           />
         )}
         {gradients.right && (
           <div
-            className={`pointer-events-none absolute inset-y-0 right-0 w-10 rounded-[28px] bg-gradient-to-l ${gradients.right}`}
+            className={`pointer-events-none absolute inset-y-0 right-0 w-10 rounded-2xl bg-gradient-to-l ${gradients.right}`}
           />
         )}
       </div>

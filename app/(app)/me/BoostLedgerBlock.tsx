@@ -84,7 +84,7 @@ export function BoostLedgerBlock({
           onClick={onRefresh}
           disabled={refreshing}
           aria-label={refreshing ? t("refreshing") : t("refresh")}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-200/80 bg-white/90 text-neutral-500 shadow-sm shadow-neutral-200/50 transition hover:-translate-y-px hover:border-neutral-300 hover:text-neutral-900 disabled:translate-y-0 disabled:cursor-default disabled:opacity-70 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:shadow-none dark:hover:border-white/20 dark:hover:text-white"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-200/80 bg-white/90 text-neutral-500 shadow-sm shadow-neutral-200/50 transition hover:border-neutral-300 hover:text-neutral-900 disabled:translate-y-0 disabled:cursor-default disabled:opacity-70 dark:border-white/10 dark:bg-white/5 dark:text-neutral-400 dark:shadow-none dark:hover:border-white/20 dark:hover:text-white"
         >
           {refreshing ? (
             <LoadingSpinner size="sm" ariaLabel={t("refreshing")} />
@@ -169,7 +169,7 @@ export function BoostLedgerBlock({
                     className={`items-start gap-2 py-2 ${
                       entry.isBackfill
                         ? "border-neutral-200/50 bg-neutral-50/75 opacity-80 dark:border-white/6 dark:bg-white/5 dark:opacity-75"
-                        : "hover:-translate-y-px hover:border-neutral-300/80 hover:shadow-neutral-200/50 dark:hover:border-white/12"
+                        : "hover:border-neutral-300/80 hover:shadow-neutral-200/50 dark:hover:border-white/12"
                     }`}
                   >
                     <span

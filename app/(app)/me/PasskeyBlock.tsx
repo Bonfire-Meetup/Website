@@ -106,7 +106,7 @@ export function PasskeyBlock() {
           size="sm"
           onClick={handleRegister}
           disabled={isRegistering || loading}
-          className="h-8 gap-1.5 border border-neutral-200/80 bg-white/90 px-2.5 text-xs text-neutral-700 shadow-sm shadow-neutral-200/50 hover:-translate-y-px hover:border-neutral-300 hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-neutral-200 dark:shadow-none dark:hover:border-white/20 dark:hover:bg-white/8"
+          className="h-8 gap-1.5 border border-neutral-200/80 bg-white/90 px-2.5 text-xs text-neutral-700 shadow-sm shadow-neutral-200/50 hover:border-neutral-300 hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-neutral-200 dark:shadow-none dark:hover:border-white/20 dark:hover:bg-white/8"
         >
           {isRegistering ? <LoadingSpinner size="sm" /> : <PlusIcon className="h-3.5 w-3.5" />}
           {t("addButton")}
@@ -147,7 +147,7 @@ export function PasskeyBlock() {
           {passkeys.map((passkey) => (
             <AccountPanelRow
               key={passkey.id}
-              className="hover:-translate-y-px hover:border-neutral-300/80 hover:shadow-neutral-200/50 dark:hover:border-white/12"
+              className="hover:border-neutral-300/80 hover:shadow-neutral-200/50 dark:hover:border-white/12"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">

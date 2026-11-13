@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/shared/Skeleton";
 
 const WATCH_LATER_HERO_PANEL_CLASS =
-  "rounded-[28px] border border-white/70 bg-[linear-gradient(180deg,rgba(255,248,240,0.72)_0%,rgba(255,244,232,0.56)_100%)] shadow-[0_28px_60px_-36px_rgba(15,23,42,0.34)] ring-1 ring-white/35 backdrop-blur-xl backdrop-saturate-150 dark:border-white/20 dark:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:shadow-[0_20px_48px_-32px_rgba(0,0,0,0.7)] dark:ring-white/10";
+  "rounded-2xl border border-white/70 bg-[linear-gradient(180deg,rgba(255,248,240,0.72)_0%,rgba(255,244,232,0.56)_100%)] shadow-[0_28px_60px_-36px_rgba(15,23,42,0.34)] ring-1 ring-white/35 backdrop-blur-xl backdrop-saturate-150 dark:border-white/20 dark:bg-[linear-gradient(180deg,rgba(16,16,18,0.78)_0%,rgba(10,10,12,0.62)_100%)] dark:shadow-[0_20px_48px_-32px_rgba(0,0,0,0.7)] dark:ring-white/10";
 
 export function RecordingsRailSkeleton() {
   return (
@@ -75,7 +75,7 @@ export function RecordingsGridSkeleton() {
 export function WatchLaterLoadingSkeleton({ label }: { label: string }) {
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-[28px] border border-black/15 shadow-[0_28px_65px_-32px_rgba(15,23,42,0.65)] sm:rounded-[32px] dark:border-white/10 dark:shadow-[0_28px_70px_-30px_rgba(0,0,0,0.85)]">
+      <section className="relative overflow-hidden rounded-2xl border border-black/15 shadow-[0_28px_65px_-32px_rgba(15,23,42,0.65)] sm:rounded-2xl dark:border-white/10 dark:shadow-[0_28px_70px_-30px_rgba(0,0,0,0.85)]">
         <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(15,23,42,0.92)_0%,rgba(30,41,59,0.7)_50%,rgba(15,23,42,0.92)_100%)] dark:bg-[linear-gradient(110deg,rgba(0,0,0,0.82)_0%,rgba(22,22,24,0.64)_50%,rgba(0,0,0,0.82)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_20%,rgba(255,255,255,0.14),transparent_36%),radial-gradient(circle_at_85%_16%,rgba(249,115,22,0.16),transparent_30%)] dark:bg-[radial-gradient(circle_at_22%_20%,rgba(255,255,255,0.06),transparent_36%),radial-gradient(circle_at_85%_16%,rgba(249,115,22,0.12),transparent_30%)]" />
 
@@ -104,7 +104,7 @@ export function WatchLaterLoadingSkeleton({ label }: { label: string }) {
             <div className={`${WATCH_LATER_HERO_PANEL_CLASS} hidden p-6 sm:block`}>
               <div className="space-y-4">
                 <div className="h-3 w-20 animate-pulse rounded-full bg-white/12" />
-                <div className="h-10 animate-pulse rounded-3xl bg-white/12" />
+                <div className="h-10 animate-pulse rounded-2xl bg-white/12" />
                 <div className="h-5 w-2/3 animate-pulse rounded-full bg-white/12" />
                 <div className="space-y-2 pt-2">
                   <div className="h-4 w-3/4 animate-pulse rounded-full bg-white/12" />

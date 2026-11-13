@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { allEvents, getEventById } from "@/data/events-calendar";
+import { getSpeakerRecord, speakerAssetUrl } from "@/lib/events/speaker-records";
 import { buildNotFoundTitleMetadata, getMetaTitleSuffix } from "@/lib/metadata";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -61,6 +62,9 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
   );
   const speakers = event.speakers.map((speaker) => ({
     ...speaker,
+    photoUrls: speaker.speakerIds?.map((speakerId) =>
+      speakerAssetUrl(getSpeakerRecord(speakerId)?.photo),
+    ),
     recordingHref: speaker.recordingId ? recordingsById.get(speaker.recordingId) : undefined,
   }));
 

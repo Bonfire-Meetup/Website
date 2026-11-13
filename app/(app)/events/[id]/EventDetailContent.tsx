@@ -27,6 +27,7 @@ import {
   QrCodeIcon,
   SparklesIcon,
 } from "@/components/shared/Icons";
+import { SpeakerPhoto } from "@/components/speakers/SpeakerPhoto";
 import { Button } from "@/components/ui/Button";
 import { isEventPast, isTbaDate, parseEventDateTimeParts } from "@/data/events-calendar";
 import { getLocationPartners } from "@/data/location-partners";
@@ -42,7 +43,6 @@ import { getDaysUntilEventDate } from "@/lib/events/datetime";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
 import { parseEventTitle } from "@/lib/events/presentation";
 import {
-  formatSpeakerNameWithCompany,
   formatSpeakerNames,
   hasRenderableSpeakerName,
   isTbaSpeakerName,
@@ -56,6 +56,7 @@ import { formatEventDateUTC } from "@/lib/utils/locale";
 
 interface Speaker {
   speakerIds?: string[];
+  photoUrls?: (string | undefined)[];
   name: string | string[];
   company?: string | string[];
   topic: string;
@@ -90,107 +91,6 @@ interface EventDetailContentProps {
 
 const DEFAULT_EVENT_DURATION_MINUTES = 120;
 
-const SPEAKER_PALETTES = [
-  {
-    card: "border-rose-200/70 from-rose-50/90 to-red-50/70 dark:border-rose-500/20 dark:from-rose-500/12 dark:to-red-500/10",
-    icon: "from-rose-500 to-red-600 shadow-rose-500/25 dark:shadow-rose-500/20",
-    topic: "text-rose-700 dark:text-rose-200",
-    rail: "from-rose-500 to-red-500",
-    orb: "bg-rose-300/45 dark:bg-rose-400/30",
-    glow: "hover:shadow-rose-500/20 dark:hover:shadow-rose-500/15",
-    watermark: "text-rose-200/30 dark:text-rose-400/10",
-    ring: "ring-rose-500/20 dark:ring-rose-400/15",
-  },
-  {
-    card: "border-orange-200/70 from-orange-50/90 to-rose-50/70 dark:border-orange-500/20 dark:from-orange-500/12 dark:to-rose-500/10",
-    icon: "from-orange-500 to-rose-600 shadow-orange-500/25 dark:shadow-orange-500/20",
-    topic: "text-orange-700 dark:text-orange-200",
-    rail: "from-orange-500 to-rose-500",
-    orb: "bg-orange-300/45 dark:bg-orange-400/30",
-    glow: "hover:shadow-orange-500/20 dark:hover:shadow-orange-500/15",
-    watermark: "text-orange-200/30 dark:text-orange-400/10",
-    ring: "ring-orange-500/20 dark:ring-orange-400/15",
-  },
-  {
-    card: "border-amber-200/70 from-amber-50/90 to-orange-50/70 dark:border-amber-500/20 dark:from-amber-500/12 dark:to-orange-500/10",
-    icon: "from-amber-500 to-orange-600 shadow-amber-500/25 dark:shadow-amber-500/20",
-    topic: "text-amber-700 dark:text-amber-200",
-    rail: "from-amber-500 to-orange-500",
-    orb: "bg-amber-300/45 dark:bg-amber-400/30",
-    glow: "hover:shadow-amber-500/20 dark:hover:shadow-amber-500/15",
-    watermark: "text-amber-200/30 dark:text-amber-400/10",
-    ring: "ring-amber-500/20 dark:ring-amber-400/15",
-  },
-  {
-    card: "border-red-200/70 from-red-50/90 to-orange-50/70 dark:border-red-500/20 dark:from-red-500/12 dark:to-orange-500/10",
-    icon: "from-red-500 to-orange-600 shadow-red-500/25 dark:shadow-red-500/20",
-    topic: "text-red-700 dark:text-red-200",
-    rail: "from-red-500 to-orange-500",
-    orb: "bg-red-300/45 dark:bg-red-400/30",
-    glow: "hover:shadow-red-500/20 dark:hover:shadow-red-500/15",
-    watermark: "text-red-200/30 dark:text-red-400/10",
-    ring: "ring-red-500/20 dark:ring-red-400/15",
-  },
-  {
-    card: "border-rose-200/70 from-rose-50/90 to-amber-50/70 dark:border-rose-500/20 dark:from-rose-500/12 dark:to-amber-500/10",
-    icon: "from-rose-500 to-amber-500 shadow-rose-500/25 dark:shadow-rose-500/20",
-    topic: "text-rose-700 dark:text-rose-200",
-    rail: "from-rose-500 to-amber-500",
-    orb: "bg-rose-300/45 dark:bg-rose-400/30",
-    glow: "hover:shadow-rose-500/20 dark:hover:shadow-rose-500/15",
-    watermark: "text-rose-200/30 dark:text-rose-400/10",
-    ring: "ring-rose-500/20 dark:ring-rose-400/15",
-  },
-] as const;
-
-const SPEAKER_CARD_DIRECTIONS = [
-  "bg-gradient-to-br",
-  "bg-gradient-to-r",
-  "bg-gradient-to-bl",
-] as const;
-const SPEAKER_ICON_DIRECTIONS = [
-  "bg-gradient-to-br",
-  "bg-gradient-to-tr",
-  "bg-gradient-to-r",
-] as const;
-const SPEAKER_ICON_SHAPES = ["rounded-xl", "rounded-2xl", "rounded-[14px]"] as const;
-
-function hashSpeakerSeed(value: string) {
-  let hash = 2166136261;
-  for (let i = 0; i < value.length; i += 1) {
-    hash ^= value.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function getSpeakerAccent(speaker: Speaker, location: LocationValue) {
-  const seed = `${primarySpeakerName(speaker.name).trim().toLowerCase()}|${speaker.topic.trim().toLowerCase()}|${location}`;
-  const hash = hashSpeakerSeed(seed);
-  const palette = SPEAKER_PALETTES[hash % SPEAKER_PALETTES.length] ?? SPEAKER_PALETTES[0];
-  const cardDirection =
-    SPEAKER_CARD_DIRECTIONS[(hash >>> 3) % SPEAKER_CARD_DIRECTIONS.length] ??
-    SPEAKER_CARD_DIRECTIONS[0];
-  const iconDirection =
-    SPEAKER_ICON_DIRECTIONS[(hash >>> 6) % SPEAKER_ICON_DIRECTIONS.length] ??
-    SPEAKER_ICON_DIRECTIONS[0];
-  const iconShape =
-    SPEAKER_ICON_SHAPES[(hash >>> 9) % SPEAKER_ICON_SHAPES.length] ?? SPEAKER_ICON_SHAPES[0];
-
-  return {
-    cardClassName: `relative overflow-hidden border ${cardDirection} ${palette.card}`,
-    iconClassName: `flex h-14 w-14 flex-none items-center justify-center ${iconShape} ${iconDirection} ${palette.icon} text-base font-black text-white shadow-lg`,
-    iconLargeClassName: `flex h-20 w-20 flex-none items-center justify-center rounded-2xl ${iconDirection} ${palette.icon} text-2xl font-black text-white shadow-xl ring-4 ${palette.ring}`,
-    topicClassName: `text-sm ${palette.topic}`,
-    topicHeadingClassName: `text-xl font-extrabold leading-tight sm:text-2xl ${palette.topic}`,
-    topicFeaturedClassName: `text-2xl font-extrabold leading-tight sm:text-3xl md:text-4xl ${palette.topic}`,
-    railClassName: `bg-gradient-to-r ${palette.rail}`,
-    orbClassName: palette.orb,
-    glowClassName: palette.glow,
-    watermarkClassName: palette.watermark,
-  };
-}
-
 function getSurveyCtaPresentation(
   color: string,
   mode: "solid" | "soft",
@@ -216,20 +116,6 @@ function getSurveyCtaPresentation(
       boxShadow: `0 12px 24px -18px ${color}66`,
     },
   };
-}
-
-function getSpeakerInitials(name: string) {
-  const parts = name
-    .trim()
-    .split(/\s+/u)
-    .filter((part) => part.length > 0);
-  if (parts.length === 0) {
-    return "?";
-  }
-  if (parts.length === 1) {
-    return parts[0].slice(0, 2).toUpperCase();
-  }
-  return `${parts[0].charAt(0)}${parts[1].charAt(0)}`.toUpperCase();
 }
 
 function formatCalendarDate({
@@ -379,7 +265,9 @@ export function EventDetailContent({
           "0 0 40px rgba(59, 130, 246, 0.25), 0 0 80px rgba(59, 130, 246, 0.1)" as string,
       };
   const shouldShowEpisodeBadge =
-    Boolean(episode) && parsedTitle?.prefix.trim().toLowerCase() !== episode?.trim().toLowerCase();
+    Boolean(episode) &&
+    episode !== title &&
+    parsedTitle?.prefix.trim().toLowerCase() !== episode?.trim().toLowerCase();
   const wrapUpSurveyCta = getSurveyCtaPresentation(loc.color, "solid");
   const closedSurveyCta = getSurveyCtaPresentation(loc.color, "soft");
 
@@ -526,7 +414,7 @@ export function EventDetailContent({
             {isPastEvent && (
               <div className="mx-auto mt-8 max-w-3xl">
                 <div
-                  className="relative overflow-hidden rounded-3xl border bg-white/75 p-6 text-left backdrop-blur-sm sm:p-8 dark:bg-neutral-900/40"
+                  className="relative overflow-hidden rounded-2xl border bg-white/75 p-6 text-left backdrop-blur-sm sm:p-8 dark:bg-neutral-900/40"
                   style={{ borderColor: `${loc.color}40` }}
                 >
                   <div
@@ -550,7 +438,7 @@ export function EventDetailContent({
                     style={{ background: `${loc.color}20` }}
                   />
                   <div
-                    className="pointer-events-none absolute inset-0 rounded-3xl ring-1"
+                    className="pointer-events-none absolute inset-0 rounded-2xl ring-1"
                     style={{ boxShadow: `inset 0 0 0 1px ${loc.color}25` }}
                   />
 
@@ -637,176 +525,141 @@ export function EventDetailContent({
 
         <div className="mx-auto max-w-5xl px-4 pb-16">
           {hasSpeakers && (
-            <div className="relative">
-              <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-xl ${loc.sectionIcon}`}
+            <section aria-labelledby="event-programme-heading">
+              <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
+                    {t("eventFlow")}
+                  </p>
+                  <h2
+                    id="event-programme-heading"
+                    className="mt-1 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white"
                   >
-                    <MicIcon className="h-5 w-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase dark:text-neutral-400">
-                      {t("eventFlow")}
-                    </p>
-                    <h2 className="text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl dark:text-white">
-                      {t("speakers")}
-                    </h2>
-                  </div>
+                    {t("speakers")}
+                  </h2>
                 </div>
-                <span className="inline-flex items-center rounded-full border border-neutral-200/70 bg-white/70 px-3.5 py-1.5 text-xs font-semibold text-neutral-700 dark:border-white/10 dark:bg-white/10 dark:text-neutral-200">
+                <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
                   {t("talkCount", { count: visibleSpeakers.length })}
                 </span>
               </div>
 
-              {visibleSpeakers.length > 0 && (
-                <div
-                  className={`grid gap-5 ${visibleSpeakers.length === 1 ? "mx-auto max-w-xl" : "sm:grid-cols-2"}`}
-                >
-                  {visibleSpeakers.map((speaker, index) => {
-                    const accent = getSpeakerAccent(speaker, location);
-                    const slotTime = speaker.startTime?.trim() ?? "";
-                    const displayIndex = index + 1;
+              <ol>
+                {visibleSpeakers.map((speaker, index) => {
+                  const slotTime = speaker.startTime?.trim() ?? "";
+                  const isLast = index === visibleSpeakers.length - 1;
+                  const people = resolveSpeakerLinks(speaker);
 
-                    return (
-                      <div
-                        key={`${formatSpeakerNames(speaker.name)}-${speaker.topic}`}
-                        className={`group rounded-3xl p-5 sm:p-6 ${accent.cardClassName}`}
-                      >
-                        <div
-                          className={`absolute inset-x-0 top-0 h-1 rounded-t-3xl ${accent.railClassName}`}
+                  return (
+                    <li
+                      key={`${formatSpeakerNames(speaker.name)}-${speaker.topic}`}
+                      className="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-x-4 sm:grid-cols-[4.5rem_1.25rem_minmax(0,1fr)] sm:gap-x-5"
+                    >
+                      <p className="hidden pt-0.5 text-right font-mono text-lg font-bold text-neutral-900 tabular-nums sm:block dark:text-white">
+                        {slotTime}
+                      </p>
+
+                      <div className="relative flex justify-center" aria-hidden="true">
+                        <span
+                          className={`absolute top-3 w-px ${isLast ? "h-12 bg-gradient-to-b from-neutral-300 to-transparent dark:from-white/20" : "bottom-0 bg-neutral-300 dark:bg-white/20"}`}
                         />
-
-                        <div
-                          className={`pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full blur-2xl ${accent.orbClassName}`}
+                        <span
+                          className="relative mt-2 h-3 w-3 rounded-full ring-4 ring-neutral-50 dark:ring-neutral-950"
+                          style={{ background: loc.color }}
                         />
+                      </div>
 
-                        <div
-                          className={`pointer-events-none absolute -right-2 -bottom-4 text-[120px] leading-none font-black select-none ${accent.watermarkClassName}`}
-                        >
-                          {displayIndex.toString().padStart(2, "0")}
-                        </div>
-                        <div className="relative mb-4 flex flex-wrap items-center justify-between gap-2.5">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="inline-flex items-center rounded-lg bg-black/5 px-2.5 py-1 text-[10px] font-bold tracking-[0.12em] text-neutral-700 uppercase dark:bg-white/10 dark:text-neutral-200">
-                              #{displayIndex.toString().padStart(2, "0")}
-                            </span>
-                            {slotTime.length > 0 && (
-                              <span className="inline-flex items-center gap-1.5 rounded-lg bg-white/70 px-2.5 py-1 text-[10px] font-semibold text-neutral-700 dark:bg-black/25 dark:text-neutral-200">
-                                <ClockIcon className="h-2.5 w-2.5" />
-                                {slotTime}
-                              </span>
-                            )}
-                          </div>
-                          {isPastEvent && speaker.recordingHref && (
-                            <a
-                              href={speaker.recordingHref}
-                              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300/70 bg-white/70 px-2.5 py-1 text-[10px] font-semibold tracking-[0.06em] text-neutral-700 transition-all hover:border-neutral-400 hover:bg-white hover:text-neutral-900 dark:border-white/15 dark:bg-white/10 dark:text-neutral-200 dark:hover:border-white/25 dark:hover:bg-white/15 dark:hover:text-white"
-                              style={{ boxShadow: `0 0 0 1px ${loc.color}22 inset` }}
-                            >
-                              <PlayIcon className="h-3 w-3" style={{ color: loc.color }} />
-                              <span>{t("watchNow")}</span>
-                            </a>
-                          )}
-                        </div>
-
-                        <p className={`relative ${accent.topicHeadingClassName}`}>
+                      <div className={isLast ? "pb-2" : "pb-10"}>
+                        {slotTime.length > 0 && (
+                          <p className="mb-1 font-mono text-sm font-bold text-neutral-500 tabular-nums sm:hidden dark:text-neutral-400">
+                            {slotTime}
+                          </p>
+                        )}
+                        <h3 className="text-xl font-bold tracking-tight text-balance text-neutral-900 sm:text-2xl dark:text-white">
                           {speaker.topic}
-                        </p>
+                        </h3>
 
                         {speaker.description?.trim() && (
-                          <div className="relative mt-3 overflow-hidden rounded-2xl border border-amber-200/70 bg-linear-to-br from-amber-50/95 via-white to-orange-50/80 px-3.5 py-3.5 shadow-[0_14px_30px_-24px_rgba(180,83,9,0.45)] ring-1 ring-white/60 dark:border-amber-400/20 dark:from-amber-500/12 dark:via-neutral-950 dark:to-orange-500/10 dark:ring-white/5">
-                            <div className="pointer-events-none absolute top-3 right-3 h-6 w-6 rounded-full bg-white/70 blur-md dark:bg-amber-100/10" />
-                            <p className="relative max-w-[58ch] text-[13px] leading-5 text-neutral-700 sm:text-sm dark:text-neutral-200">
-                              {speaker.description}
-                            </p>
-                          </div>
+                          <p className="mt-2 max-w-[62ch] text-sm leading-6 text-neutral-600 dark:text-neutral-300">
+                            {speaker.description}
+                          </p>
                         )}
 
-                        <div className="relative mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-black/5 pt-4 dark:border-white/10">
+                        <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
                           {speaker.group && (
                             <Link
                               href={PAGE_ROUTES.SPEAKER(
                                 speakerPathSegment(speaker.group.name, speaker.group.id),
                               )}
-                              className="w-full text-base font-bold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
+                              className="text-sm font-bold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
                             >
                               {speaker.group.name}
                             </Link>
                           )}
-                          {resolveSpeakerLinks(speaker).map((resolved) => {
+                          {people.map((person, personIndex) => {
                             const speakerHref =
-                              resolved.slug && !isTbaSpeakerName(resolved.name)
-                                ? PAGE_ROUTES.SPEAKER(resolved.slug)
+                              person.slug && !isTbaSpeakerName(person.name)
+                                ? PAGE_ROUTES.SPEAKER(person.slug)
                                 : undefined;
-                            const domain = resolved.url
-                              ? new URL(resolved.url).hostname.replace(/^www\./u, "")
-                              : undefined;
+                            const body = (
+                              <>
+                                <SpeakerPhoto
+                                  name={person.name}
+                                  photoUrl={speaker.photoUrls?.[personIndex]}
+                                  sizes="40px"
+                                  className="w-10 shrink-0"
+                                  initialsClassName="text-xs"
+                                />
+                                <span className="min-w-0">
+                                  <span className="block text-sm font-semibold text-neutral-900 group-hover:underline dark:text-white">
+                                    {person.name}
+                                  </span>
+                                  {person.company && (
+                                    <span className="block text-xs text-neutral-500 dark:text-neutral-400">
+                                      {person.company}
+                                    </span>
+                                  )}
+                                </span>
+                              </>
+                            );
 
-                            return (
-                              <div key={resolved.name} className="flex items-center gap-2.5">
-                                <div className={accent.iconClassName}>
-                                  {getSpeakerInitials(resolved.name)}
-                                </div>
-                                <div>
-                                  {speakerHref ? (
-                                    <Link
-                                      href={speakerHref}
-                                      className="block font-semibold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
-                                    >
-                                      {formatSpeakerNameWithCompany(
-                                        resolved.name,
-                                        resolved.company,
-                                      )}
-                                    </Link>
-                                  ) : (
-                                    <p className="font-semibold text-neutral-900 dark:text-white">
-                                      {formatSpeakerNameWithCompany(
-                                        resolved.name,
-                                        resolved.company,
-                                      )}
-                                    </p>
-                                  )}
-                                  {domain && (
-                                    <a
-                                      href={resolved.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="mt-0.5 flex items-center gap-1 text-[11px] text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
-                                    >
-                                      <ExternalLinkIcon className="h-2.5 w-2.5" />
-                                      {domain}
-                                    </a>
-                                  )}
-                                </div>
+                            return speakerHref ? (
+                              <Link
+                                key={person.name}
+                                href={speakerHref}
+                                className="group flex items-center gap-3"
+                              >
+                                {body}
+                              </Link>
+                            ) : (
+                              <div key={person.name} className="flex items-center gap-3">
+                                {body}
                               </div>
                             );
                           })}
+                          {isPastEvent && speaker.recordingHref && (
+                            <a
+                              href={speaker.recordingHref}
+                              className="inline-flex items-center gap-1.5 text-sm font-semibold transition-opacity hover:opacity-75"
+                              style={{ color: loc.color }}
+                            >
+                              <PlayIcon className="h-4 w-4" />
+                              {t("watchNow")}
+                            </a>
+                          )}
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {visibleSpeakers.length === 0 && (
-                <div className="glass rounded-3xl border-2 border-dashed border-neutral-200 p-16 text-center dark:border-neutral-700">
-                  <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-100 to-orange-100 dark:from-rose-500/15 dark:to-orange-500/10">
-                    <MicIcon className="h-8 w-8 text-rose-400 dark:text-rose-300" />
-                  </div>
-                  <p className="text-xl font-bold text-neutral-500 dark:text-neutral-400">
-                    {t("speakersTba")}
-                  </p>
-                </div>
-              )}
-            </div>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
           )}
         </div>
 
         {!isTba && (
           <div className="mx-auto max-w-5xl px-4 pb-10">
             {isCrew && (
-              <div className="mb-4 rounded-3xl border border-orange-200/60 bg-[linear-gradient(180deg,rgba(255,248,242,0.96)_0%,rgba(255,244,236,0.9)_100%)] p-4 shadow-[0_18px_55px_-42px_rgba(15,23,42,0.24)] sm:p-5 dark:border-orange-300/12 dark:bg-[linear-gradient(180deg,rgba(28,22,18,0.72)_0%,rgba(18,15,13,0.58)_100%)] dark:shadow-[0_18px_44px_-34px_rgba(0,0,0,0.42)]">
+              <div className="mb-4 rounded-2xl border border-orange-200/60 bg-[linear-gradient(180deg,rgba(255,248,242,0.96)_0%,rgba(255,244,236,0.9)_100%)] p-4 shadow-[0_18px_55px_-42px_rgba(15,23,42,0.24)] sm:p-5 dark:border-orange-300/12 dark:bg-[linear-gradient(180deg,rgba(28,22,18,0.72)_0%,rgba(18,15,13,0.58)_100%)] dark:shadow-[0_18px_44px_-34px_rgba(0,0,0,0.42)]">
                 <p className="text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
                   {t("crewToolsEyebrow")}
                 </p>
@@ -851,7 +704,7 @@ export function EventDetailContent({
           <div className="grid items-start gap-6 lg:grid-cols-5 lg:gap-8">
             <div className="lg:col-span-3">
               <div
-                className="relative overflow-hidden rounded-3xl p-6 sm:p-8"
+                className="relative overflow-hidden rounded-2xl p-6 sm:p-8"
                 style={{
                   background: `linear-gradient(135deg, ${loc.color}08 0%, ${loc.color}04 100%)`,
                 }}
@@ -859,16 +712,7 @@ export function EventDetailContent({
                 <div className={`absolute inset-x-0 top-0 h-1.5 ${loc.rail}`} />
 
                 <div
-                  className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full blur-3xl"
-                  style={{ background: `${loc.color}12` }}
-                />
-                <div
-                  className="pointer-events-none absolute -bottom-12 -left-12 h-36 w-36 rounded-full blur-3xl"
-                  style={{ background: `${loc.color}08` }}
-                />
-
-                <div
-                  className="pointer-events-none absolute inset-0 rounded-3xl ring-1"
+                  className="pointer-events-none absolute inset-0 rounded-2xl ring-1"
                   style={{ boxShadow: `inset 0 0 0 1px ${loc.color}18` }}
                 />
 
@@ -908,7 +752,7 @@ export function EventDetailContent({
 
                   <div className="mt-8">
                     {isPastEvent ? (
-                      <div className="rounded-2xl border border-neutral-200/70 bg-neutral-100/70 px-4 py-4 dark:border-white/10 dark:bg-white/5">
+                      <div className="border-l-2 pl-4" style={{ borderColor: `${loc.color}55` }}>
                         <p className="text-sm font-semibold text-neutral-900 dark:text-white">
                           {t("rsvpClosedTitle")}
                         </p>
@@ -1013,7 +857,7 @@ export function EventDetailContent({
             </div>
 
             <div className="lg:sticky lg:top-24 lg:col-span-2">
-              <div className="glass self-start rounded-3xl p-5 sm:p-6">
+              <div className="self-start lg:pt-2">
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <h3 className="text-lg font-bold text-neutral-900 dark:text-white">
                     {t("venueTitle")}
@@ -1056,65 +900,37 @@ export function EventDetailContent({
                   </div>
                 </a>
 
-                <div className="mt-5 grid grid-cols-2 gap-2 border-t border-neutral-200/50 pt-5 dark:border-neutral-700/50">
-                  <div className="rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
-                    <div className="mb-1 flex items-center gap-1.5">
-                      <CalendarIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
-                      <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-                        {t("dateLabel")}
-                      </span>
-                    </div>
-                    <p className="text-sm font-semibold text-neutral-900 dark:text-white">
+                <dl className="mt-5 divide-y divide-neutral-200/60 border-t border-neutral-200/60 text-sm dark:divide-white/10 dark:border-white/10">
+                  <div className="flex items-center justify-between gap-4 py-3">
+                    <dt className="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+                      <CalendarIcon className="h-4 w-4" style={{ color: loc.color }} />
+                      {t("dateLabel")}
+                    </dt>
+                    <dd className="text-right font-semibold text-neutral-900 dark:text-white">
                       {formattedDate}
-                    </p>
+                    </dd>
                   </div>
-                  <div className="rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
-                    <div className="mb-1 flex items-center gap-1.5">
-                      <ClockIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
-                      <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-                        {t("timeLabel")}
-                      </span>
-                    </div>
-                    <p className="text-sm font-semibold text-neutral-900 dark:text-white">{time}</p>
+                  <div className="flex items-center justify-between gap-4 py-3">
+                    <dt className="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+                      <ClockIcon className="h-4 w-4" style={{ color: loc.color }} />
+                      {t("timeLabel")}
+                    </dt>
+                    <dd className="font-semibold text-neutral-900 dark:text-white">{time}</dd>
                   </div>
-                </div>
-
-                {visibleSpeakers.length > 0 && (
-                  <div className="mt-2 rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <MicIcon className="h-3.5 w-3.5" style={{ color: loc.color }} />
-                        <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-                          {t("speakers")}
-                        </span>
-                      </div>
-                      <span className="text-sm font-semibold text-neutral-900 dark:text-white">
+                  {visibleSpeakers.length > 0 && (
+                    <div className="flex items-center justify-between gap-4 py-3">
+                      <dt className="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
+                        <MicIcon className="h-4 w-4" style={{ color: loc.color }} />
+                        {t("speakers")}
+                      </dt>
+                      <dd className="font-semibold text-neutral-900 dark:text-white">
                         {t("talkCount", { count: visibleSpeakers.length })}
-                      </span>
+                      </dd>
                     </div>
-                  </div>
-                )}
+                  )}
+                </dl>
 
-                {episode && (
-                  <div className="mt-2 rounded-xl border border-neutral-200/60 bg-neutral-50/50 p-3 dark:border-white/10 dark:bg-white/5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-bold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
-                        {t("episodeLabel")}
-                      </span>
-                      <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-                        {episode}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                <div
-                  className="mt-5 overflow-hidden rounded-xl border p-4"
-                  style={{
-                    borderColor: `${loc.color}40`,
-                    background: `linear-gradient(135deg, ${loc.color}10 0%, ${loc.color}06 100%)`,
-                  }}
-                >
+                <div className="border-t border-neutral-200/60 pt-5 dark:border-white/10">
                   <p className="mb-3 text-sm font-bold tracking-wide" style={{ color: loc.color }}>
                     {t("goodToKnow")}
                   </p>

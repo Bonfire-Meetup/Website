@@ -453,7 +453,7 @@ export function LoginClient() {
             <span>{t("brand", { brandName: tCommon("brandName") })}</span>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_20px_60px_var(--color-shadow-dark-light)] backdrop-blur sm:rounded-3xl md:grid md:grid-cols-[1.35fr_1fr] dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_var(--color-shadow-dark-strong)]">
+          <div className="overflow-hidden rounded-2xl border border-white/60 bg-white/80 shadow-[0_20px_60px_var(--color-shadow-dark-light)] backdrop-blur sm:rounded-2xl md:grid md:grid-cols-[1.35fr_1fr] dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_var(--color-shadow-dark-strong)]">
             <div className="hidden flex-col gap-6 bg-gradient-to-br from-white to-neutral-50 p-8 md:flex lg:p-10 dark:from-neutral-900 dark:to-neutral-950">
               <div>
                 <h1 className="text-2xl font-semibold tracking-tight lg:text-3xl">{t("title")}</h1>

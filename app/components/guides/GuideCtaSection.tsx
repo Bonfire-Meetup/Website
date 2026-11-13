@@ -26,8 +26,8 @@ export function GuideCtaSection({
 }: GuideCtaSectionProps) {
   const sectionClassName =
     variant === "rose"
-      ? "mt-8 rounded-3xl border border-rose-300/40 bg-gradient-to-br from-white/80 via-rose-50/50 to-white px-5 py-6 sm:px-7 sm:py-7 dark:border-rose-300/20 dark:from-white/8 dark:via-rose-500/10 dark:to-white/5"
-      : "to-brand-100/30 dark:to-brand-500/10 mt-8 rounded-3xl border border-neutral-200/80 bg-gradient-to-br from-white/85 via-white/65 px-5 py-6 sm:px-7 sm:py-7 dark:border-white/10 dark:from-white/8 dark:via-white/5";
+      ? "mt-8 rounded-2xl border border-rose-300/40 bg-gradient-to-br from-white/80 via-rose-50/50 to-white px-5 py-6 sm:px-7 sm:py-7 dark:border-rose-300/20 dark:from-white/8 dark:via-rose-500/10 dark:to-white/5"
+      : "to-brand-100/30 dark:to-brand-500/10 mt-8 rounded-2xl border border-neutral-200/80 bg-gradient-to-br from-white/85 via-white/65 px-5 py-6 sm:px-7 sm:py-7 dark:border-white/10 dark:from-white/8 dark:via-white/5";
 
   return (
     <section className={sectionClassName}>

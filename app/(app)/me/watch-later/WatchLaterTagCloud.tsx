@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 
 const TAG_CLOUD_PANEL_CLASS =
-  "sm:rounded-[24px] sm:border sm:border-white/65 sm:bg-white/70 sm:p-4 sm:shadow-[0_18px_42px_-30px_rgba(15,23,42,0.28)] sm:ring-1 sm:ring-white/35 sm:backdrop-blur-xl dark:sm:border-white/10 dark:sm:bg-white/5 dark:sm:ring-white/10 dark:sm:shadow-[0_22px_48px_-32px_rgba(0,0,0,0.78)]";
+  "sm:rounded-2xl sm:border sm:border-white/65 sm:bg-white/70 sm:p-4 sm:shadow-[0_18px_42px_-30px_rgba(15,23,42,0.28)] sm:ring-1 sm:ring-white/35 sm:backdrop-blur-xl dark:sm:border-white/10 dark:sm:bg-white/5 dark:sm:ring-white/10 dark:sm:shadow-[0_22px_48px_-32px_rgba(0,0,0,0.78)]";
 
 const TAG_CLOUD_BUTTON_BASE_CLASS =
   "inline-flex items-center gap-2 rounded-full border font-medium tracking-[-0.01em] transition-[background-color,border-color,color,box-shadow] duration-200";

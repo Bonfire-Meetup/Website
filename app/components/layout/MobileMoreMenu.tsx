@@ -240,7 +240,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
               }}
             >
               <div
-                className="mx-4 mb-6 overflow-hidden rounded-3xl border border-white/30 bg-white/60 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-neutral-900/55"
+                className="mx-4 mb-6 overflow-hidden rounded-2xl border border-white/30 bg-white/60 shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-neutral-900/55"
                 style={{
                   transform: isOpen ? "scale(1)" : "scale(0.92)",
                   opacity: isOpen ? 1 : 0,

@@ -104,7 +104,7 @@ export function TimelinePageContent() {
                           : "md:col-start-1 md:col-end-3 md:row-start-1 md:justify-self-end"
                       }
                     >
-                      <div className="glass-card group relative w-full max-w-[680px] overflow-hidden rounded-[28px] border border-orange-500/10 bg-white/80 shadow-[0_25px_60px_-35px_var(--color-fire-mid-glow-6)] backdrop-blur lg:max-w-[760px] dark:border-orange-400/15 dark:bg-neutral-950/70">
+                      <div className="glass-card group relative w-full max-w-[680px] overflow-hidden rounded-2xl border border-orange-500/10 bg-white/80 shadow-[0_25px_60px_-35px_var(--color-fire-mid-glow-6)] backdrop-blur lg:max-w-[760px] dark:border-orange-400/15 dark:bg-neutral-950/70">
                         <span
                           className={`pointer-events-none absolute -top-6 text-[90px] font-black tracking-tight text-neutral-900/5 sm:text-[130px] dark:text-white/5 ${
                             isRight ? "-right-4" : "-left-4"

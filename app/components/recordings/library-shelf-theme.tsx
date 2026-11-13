@@ -42,8 +42,7 @@ export const LIBRARY_SHELF_THEMES = {
       iconClassName: "h-5 w-5 text-amber-500 dark:text-amber-300",
       accentClassName:
         "flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-amber-400 to-rose-500",
-      containerClassName:
-        "rounded-[28px] px-4 py-3 ring-1 ring-amber-500/20 dark:ring-amber-300/20",
+      containerClassName: "rounded-2xl px-4 py-3 ring-1 ring-amber-500/20 dark:ring-amber-300/20",
       gradientFrom: "from-rose-500/5",
       gradientTo: "to-orange-500/10",
     },
@@ -67,7 +66,7 @@ export const LIBRARY_SHELF_THEMES = {
       iconClassName: "h-5 w-5 text-red-500 dark:text-red-300",
       accentClassName:
         "flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-red-500 to-rose-500",
-      containerClassName: "rounded-[28px] px-4 py-3 ring-1 ring-red-500/20 dark:ring-red-300/20",
+      containerClassName: "rounded-2xl px-4 py-3 ring-1 ring-red-500/20 dark:ring-red-300/20",
       gradientFrom: "from-red-500/5",
       gradientTo: "to-rose-500/10",
     },
@@ -90,7 +89,7 @@ export const LIBRARY_SHELF_THEMES = {
     rail: {
       iconClassName: `h-5 w-5 text-${boostColors.gradientFrom}`,
       accentClassName: `flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-${boostColors.gradientFrom} to-${boostColors.gradientTo}`,
-      containerClassName: "rounded-[28px] px-4 py-3",
+      containerClassName: "rounded-2xl px-4 py-3",
       gradientFrom: `from-${boostColors.railLight}`,
       gradientTo: `to-${boostColors.railLightSecondary}`,
     },
@@ -114,7 +113,7 @@ export const LIBRARY_SHELF_THEMES = {
     rail: {
       iconClassName: `h-5 w-5 text-${likeColors.gradientTo}`,
       accentClassName: `flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-${likeColors.gradientFrom} to-${likeColors.gradientTo}`,
-      containerClassName: "rounded-[28px] px-4 py-3",
+      containerClassName: "rounded-2xl px-4 py-3",
       gradientFrom: `from-${likeColors.railLight}`,
       gradientTo: `to-${likeColors.railLightSecondary}`,
     },
@@ -139,7 +138,7 @@ export const LIBRARY_SHELF_THEMES = {
       iconClassName: "h-5 w-5 text-purple-500",
       accentClassName:
         "flex h-8 w-1.5 items-center justify-center rounded-full bg-gradient-to-b from-purple-500 to-indigo-500",
-      containerClassName: "rounded-[28px] px-4 py-3",
+      containerClassName: "rounded-2xl px-4 py-3",
       gradientFrom: "from-purple-500/5",
       gradientTo: "to-indigo-500/5",
     },

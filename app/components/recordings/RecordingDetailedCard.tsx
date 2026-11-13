@@ -98,7 +98,7 @@ export function RecordingDetailedCard({
         prefetch={false}
         ariaLabel={title}
         className={className ?? "glass-card group flex h-full cursor-pointer flex-col"}
-        imageClassName="video-overlay relative shrink-0 overflow-hidden rounded-t-3xl"
+        imageClassName="video-overlay relative shrink-0 overflow-hidden rounded-t-2xl"
         image={
           <>
             <RecordingImage

@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/shared/Skeletons";
 export function UpcomingRsvpsSkeleton() {
   return (
     <section className="relative">
-      <div className="glass-card relative rounded-[28px] border border-black/5 bg-white/80 hover:[transform:none]! dark:border-white/10 dark:bg-neutral-950/70">
+      <div className="glass-card relative rounded-2xl border border-black/5 bg-white/80 dark:border-white/10 dark:bg-neutral-950/70">
         <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-rose-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">

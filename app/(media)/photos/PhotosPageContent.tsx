@@ -103,7 +103,7 @@ export function PhotosPageContent({
                   type="button"
                   onClick={() => openLightbox(index)}
                   aria-label={t("openPhoto", { title: album.title })}
-                  className="group aspect-[3/4] overflow-hidden rounded-2xl border border-black/8 bg-neutral-100 shadow-[0_24px_50px_-26px_rgba(15,23,42,0.45)] ring-1 ring-white/45 transition-all hover:-translate-y-0.5 hover:shadow-[0_28px_56px_-24px_rgba(15,23,42,0.5)] sm:cursor-zoom-in sm:rounded-3xl dark:border-white/10 dark:bg-neutral-900 dark:shadow-[0_24px_50px_-24px_rgba(0,0,0,0.8)] dark:ring-white/10"
+                  className="group aspect-[3/4] overflow-hidden rounded-2xl border border-black/8 bg-neutral-100 shadow-[0_24px_50px_-26px_rgba(15,23,42,0.45)] ring-1 ring-white/45 transition-all hover:shadow-[0_28px_56px_-24px_rgba(15,23,42,0.5)] sm:cursor-zoom-in sm:rounded-2xl dark:border-white/10 dark:bg-neutral-900 dark:shadow-[0_24px_50px_-24px_rgba(0,0,0,0.8)] dark:ring-white/10"
                 >
                   <AlbumImage
                     src={album.highlightSrc}
@@ -148,7 +148,7 @@ export function PhotosPageContent({
                 key={album.id}
                 href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
                 prefetch={false}
-                className="group relative overflow-hidden rounded-[1.75rem] border border-black/10 bg-neutral-900 shadow-[0_32px_70px_-36px_rgba(15,23,42,0.65)] ring-1 ring-white/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_36px_80px_-34px_rgba(15,23,42,0.72)] dark:border-white/10 dark:ring-white/10"
+                className="group relative overflow-hidden rounded-2xl border border-black/10 bg-neutral-900 shadow-[0_32px_70px_-36px_rgba(15,23,42,0.65)] ring-1 ring-white/30 transition-all duration-500 hover:shadow-[0_36px_80px_-34px_rgba(15,23,42,0.72)] dark:border-white/10 dark:ring-white/10"
               >
                 <div className="aspect-[5/4] overflow-hidden">
                   <AlbumImage
@@ -174,8 +174,7 @@ export function PhotosPageContent({
           </div>
 
           {archiveAlbums.length > 0 && (
-            <div className="relative overflow-hidden rounded-3xl border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.86)_0%,rgba(255,244,231,0.82)_100%)] p-4 shadow-[0_28px_62px_-38px_rgba(15,23,42,0.52)] ring-1 ring-white/40 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(26,26,28,0.82)_0%,rgba(14,14,15,0.9)_100%)] dark:ring-white/10">
-              <div className="pointer-events-none absolute top-0 right-0 h-24 w-24 rounded-bl-[3rem] bg-orange-500/12 blur-2xl dark:bg-orange-400/10" />
+            <div>
               <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
                 <div className="space-y-1">
                   <h3 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
@@ -195,7 +194,7 @@ export function PhotosPageContent({
                     key={album.id}
                     href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
                     prefetch={false}
-                    className="group grid h-full overflow-hidden rounded-2xl border border-black/10 bg-white/75 shadow-[0_22px_42px_-30px_rgba(15,23,42,0.46)] ring-1 ring-white/50 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_30px_58px_-30px_rgba(15,23,42,0.54)] sm:grid-cols-[180px_minmax(0,1fr)] dark:border-white/10 dark:bg-neutral-950/70 dark:ring-white/10"
+                    className="group grid h-full overflow-hidden rounded-2xl border border-black/10 bg-white/75 shadow-[0_22px_42px_-30px_rgba(15,23,42,0.46)] ring-1 ring-white/50 transition-all duration-300 hover:shadow-[0_30px_58px_-30px_rgba(15,23,42,0.54)] sm:grid-cols-[180px_minmax(0,1fr)] dark:border-white/10 dark:bg-neutral-950/70 dark:ring-white/10"
                   >
                     <div className="aspect-[16/10] overflow-hidden sm:aspect-auto sm:h-full">
                       <AlbumImage

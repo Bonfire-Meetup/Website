@@ -65,7 +65,7 @@ export function RecordingsSectionClient({ recordings }: { recordings: HomepageRe
           className="group relative inline-flex items-center gap-3 px-6 py-3 sm:px-8 sm:py-3.5 sm:text-base"
         >
           {t("viewAll")}
-          <div className="pointer-events-none absolute -inset-3 -z-10 rounded-[1.35rem] bg-gradient-to-r from-orange-500/24 to-rose-500/20 opacity-65 blur-2xl transition-opacity duration-300 group-hover:opacity-85" />
+          <div className="pointer-events-none absolute -inset-3 -z-10 rounded-xl bg-gradient-to-r from-orange-500/24 to-rose-500/20 opacity-65 blur-2xl transition-opacity duration-300 group-hover:opacity-85" />
         </Button>
       </div>
     </>

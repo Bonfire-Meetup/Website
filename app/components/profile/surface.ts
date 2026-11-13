@@ -2,8 +2,7 @@
  * Shared card surface for the speaker and community profile pages, so both sit
  * in the site's glass style. Each page adds its own tone on top.
  */
-export const PROFILE_SURFACE =
-  "glass-card rounded-[28px] border bg-white/80 hover:[transform:none]! dark:bg-neutral-950/70";
+export const PROFILE_SURFACE = "glass-card rounded-2xl border bg-white/80 dark:bg-neutral-950/70";
 
 export const PROFILE_TONE = {
   community: "border-black/5 dark:border-white/10",

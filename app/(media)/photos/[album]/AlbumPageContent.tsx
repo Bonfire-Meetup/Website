@@ -43,7 +43,7 @@ export function AlbumPageContent({ album, baseUrl }: AlbumPageContentProps) {
       </div>
       <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6 lg:px-8">
         <section className="space-y-4">
-          <div className="relative overflow-hidden rounded-[1.75rem] border border-black/10 shadow-[0_32px_70px_-36px_rgba(15,23,42,0.62)] ring-1 ring-white/30 dark:border-white/10 dark:shadow-[0_30px_66px_-30px_rgba(0,0,0,0.84)] dark:ring-white/10">
+          <div className="relative overflow-hidden rounded-2xl border border-black/10 shadow-[0_32px_70px_-36px_rgba(15,23,42,0.62)] ring-1 ring-white/30 dark:border-white/10 dark:shadow-[0_30px_66px_-30px_rgba(0,0,0,0.84)] dark:ring-white/10">
             <div className="relative aspect-[16/9] overflow-hidden">
               <AlbumImage
                 src={`${baseUrl}/${album.cover.src}`}
@@ -64,7 +64,7 @@ export function AlbumPageContent({ album, baseUrl }: AlbumPageContentProps) {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.86)_0%,rgba(255,244,231,0.82)_100%)] p-5 shadow-[0_24px_54px_-36px_rgba(15,23,42,0.52)] ring-1 ring-white/45 sm:p-6 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(30,30,32,0.78)_0%,rgba(15,15,17,0.9)_100%)] dark:ring-white/10">
+          <div className="rounded-2xl border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.86)_0%,rgba(255,244,231,0.82)_100%)] p-5 shadow-[0_24px_54px_-36px_rgba(15,23,42,0.52)] ring-1 ring-white/45 sm:p-6 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(30,30,32,0.78)_0%,rgba(15,15,17,0.9)_100%)] dark:ring-white/10">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="space-y-2">
                 <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">

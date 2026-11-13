@@ -243,7 +243,7 @@ export function RecordingPlayer({
       <div className="relative mx-auto px-4 py-6 sm:px-6 lg:px-8" style={{ maxWidth: "85rem" }}>
         <div className="flex flex-col gap-12 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
           <div className="min-w-0 space-y-8">
-            <div className="relative overflow-hidden rounded-[2rem] border border-black/10 bg-white/80 shadow-[0_28px_70px_-34px_rgba(17,24,39,0.45)] ring-1 ring-white/50 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/85 dark:shadow-[0_34px_84px_-34px_rgba(0,0,0,0.8)] dark:ring-white/10">
+            <div className="relative overflow-hidden rounded-2xl border border-black/10 bg-white/80 shadow-[0_28px_70px_-34px_rgba(17,24,39,0.45)] ring-1 ring-white/50 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/85 dark:shadow-[0_34px_84px_-34px_rgba(0,0,0,0.8)] dark:ring-white/10">
               <div className="hidden items-center justify-between border-b border-neutral-200/40 px-5 py-4 lg:flex dark:border-neutral-700/30">
                 <BackLink
                   href={PAGE_ROUTES.LIBRARY}
@@ -256,7 +256,7 @@ export function RecordingPlayer({
               </div>
 
               <div className="relative z-10 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.2),transparent_62%)] p-2 transition-all duration-300 sm:p-3">
-                <div className="overflow-hidden rounded-[1.35rem] bg-black shadow-[0_30px_62px_-30px_rgba(15,23,42,0.48)] ring-1 ring-black/40 dark:shadow-[0_24px_54px_-28px_rgba(0,0,0,0.85)]">
+                <div className="overflow-hidden rounded-xl bg-black shadow-[0_30px_62px_-30px_rgba(15,23,42,0.48)] ring-1 ring-black/40 dark:shadow-[0_24px_54px_-28px_rgba(0,0,0,0.85)]">
                   {hasPlaybackAccess ? (
                     <div ref={inlinePlayerRef} className="relative aspect-video w-full bg-black" />
                   ) : (

@@ -320,7 +320,7 @@ function SurveySection({
 }: SurveySectionProps) {
   return (
     <section
-      className={`relative overflow-visible rounded-[24px] border border-neutral-200/80 bg-white/70 shadow-[0_24px_60px_-42px_rgba(15,23,42,0.32)] backdrop-blur-sm sm:rounded-[28px] dark:border-white/10 dark:bg-white/[0.04] dark:shadow-none ${borderClassName} ${className ?? ""}`}
+      className={`relative overflow-visible rounded-2xl border border-neutral-200/80 bg-white/70 shadow-[0_24px_60px_-42px_rgba(15,23,42,0.32)] backdrop-blur-sm sm:rounded-2xl dark:border-white/10 dark:bg-white/[0.04] dark:shadow-none ${borderClassName} ${className ?? ""}`}
     >
       <div
         className={`pointer-events-none absolute top-0 right-0 h-32 w-32 translate-x-9 -translate-y-9 rounded-full blur-3xl sm:h-36 sm:w-36 sm:translate-x-10 sm:-translate-y-10 ${orbClassName}`}

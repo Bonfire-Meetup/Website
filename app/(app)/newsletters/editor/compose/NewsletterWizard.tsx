@@ -329,7 +329,7 @@ export function NewsletterWizard({ resendSlug, resendData }: NewsletterWizardPro
         )}
       </div>
 
-      <div className="glass-card no-hover-pop overflow-hidden rounded-[24px] p-6 sm:p-8">
+      <div className="glass-card no-hover-pop overflow-hidden rounded-2xl p-6 sm:p-8">
         {currentStep === "editor" && !isResend && (
           <EditorStep
             data={data}

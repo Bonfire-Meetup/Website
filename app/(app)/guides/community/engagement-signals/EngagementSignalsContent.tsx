@@ -28,7 +28,7 @@ export function EngagementSignalsContent() {
       contentClassName="max-w-4xl"
     >
       {/* Outer card has two distinct regions so GuideSectionCard doesn't fit here */}
-      <div className="overflow-hidden rounded-3xl border border-neutral-200/80 bg-white/75 shadow-sm dark:border-white/10 dark:bg-white/5">
+      <div className="overflow-hidden rounded-2xl border border-neutral-200/80 bg-white/75 shadow-sm dark:border-white/10 dark:bg-white/5">
         <div className="px-5 py-7 sm:px-7 sm:py-8">
           <section className="grid gap-5 md:grid-cols-2">
             <article className="rounded-2xl border border-rose-300/40 bg-gradient-to-br from-rose-50/80 to-white p-5 dark:border-rose-400/20 dark:from-rose-500/10 dark:to-white/5">

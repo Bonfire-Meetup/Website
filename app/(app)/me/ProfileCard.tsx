@@ -194,7 +194,7 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
                 type="button"
                 onClick={() => setIsEditingName(true)}
                 title={t("name.edit")}
-                className="rounded-lg border border-neutral-200/80 bg-white/85 px-2 py-1 text-xs font-medium text-neutral-500 transition hover:-translate-y-px hover:border-neutral-300 hover:text-neutral-800 dark:border-white/10 dark:bg-white/6 dark:text-neutral-400 dark:hover:border-white/15 dark:hover:text-white"
+                className="rounded-lg border border-neutral-200/80 bg-white/85 px-2 py-1 text-xs font-medium text-neutral-500 transition hover:border-neutral-300 hover:text-neutral-800 dark:border-white/10 dark:bg-white/6 dark:text-neutral-400 dark:hover:border-white/15 dark:hover:text-white"
               >
                 {t("name.edit")}
               </button>
@@ -240,7 +240,7 @@ export function ProfileCard({ profile, onProfileUpdate }: ProfileCardProps) {
                     ? t("copyError")
                     : t("copyIdLabel")
               }
-              className="rounded-lg border border-neutral-200/80 bg-white/85 px-2 py-1 text-xs font-medium text-neutral-500 transition hover:-translate-y-px hover:border-neutral-300 hover:text-neutral-800 dark:border-white/10 dark:bg-white/6 dark:text-neutral-400 dark:hover:border-white/15 dark:hover:text-white"
+              className="rounded-lg border border-neutral-200/80 bg-white/85 px-2 py-1 text-xs font-medium text-neutral-500 transition hover:border-neutral-300 hover:text-neutral-800 dark:border-white/10 dark:bg-white/6 dark:text-neutral-400 dark:hover:border-white/15 dark:hover:text-white"
             >
               {copyStatus === "success" ? t("copySuccess") : t("copyIdLabel")}
             </button>

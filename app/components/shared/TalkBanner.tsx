@@ -37,7 +37,7 @@ export function TalkBanner() {
               >
                 <span className="text-lg font-bold">{t("cta")}</span>
                 <ArrowRightIcon className="h-6 w-6 transition-transform duration-300 group-hover:translate-x-1" />
-                <div className="pointer-events-none absolute -inset-3 -z-10 rounded-[1.35rem] bg-gradient-to-r from-orange-500/24 to-rose-500/20 opacity-65 blur-2xl transition-opacity duration-300 group-hover:opacity-85" />
+                <div className="pointer-events-none absolute -inset-3 -z-10 rounded-xl bg-gradient-to-r from-orange-500/24 to-rose-500/20 opacity-65 blur-2xl transition-opacity duration-300 group-hover:opacity-85" />
               </Button>
             </div>
           </div>

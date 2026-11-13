@@ -52,7 +52,7 @@ const MOBILE_SHEET_PANEL =
 
 function CommunityQuestionsPanelSkeleton() {
   return (
-    <div className="mt-6 animate-pulse space-y-4 rounded-3xl border border-neutral-200/80 bg-gradient-to-b from-white/90 to-neutral-50/70 p-3.5 sm:p-5 dark:border-white/10 dark:from-white/8 dark:to-white/[0.03]">
+    <div className="mt-6 animate-pulse space-y-4">
       <div className="flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
           <div className="h-2 w-10 rounded-full bg-neutral-200 dark:bg-white/15" />
@@ -89,7 +89,7 @@ function CommunityQuestionsPanelSkeleton() {
       </div>
 
       <div className="sticky bottom-3 z-20 -mx-1 mt-2 md:hidden">
-        <div className="flex items-center gap-2 rounded-[1.4rem] border border-neutral-200/80 bg-white/92 p-2 dark:border-white/12 dark:bg-neutral-950/88">
+        <div className="flex items-center gap-2 rounded-xl border border-neutral-200/80 bg-white/92 p-2 dark:border-white/12 dark:bg-neutral-950/88">
           <div className="h-11 flex-1 rounded-full bg-neutral-200 dark:bg-white/10" />
           <div className="h-11 w-28 rounded-full bg-neutral-200 dark:bg-white/10" />
           <div className="h-11 w-11 rounded-full bg-neutral-200 dark:bg-white/10" />
@@ -426,7 +426,7 @@ export function CommunityQuestionsPanel({
   }
 
   return (
-    <div className="mt-6 space-y-4 rounded-3xl border border-neutral-200/80 bg-gradient-to-b from-white/90 to-neutral-50/70 p-3.5 shadow-[0_18px_55px_-42px_rgba(15,23,42,0.45)] sm:p-5 dark:border-white/10 dark:from-white/8 dark:to-white/[0.03]">
+    <div className="mt-6 space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <p className="text-[10px] font-semibold tracking-[0.14em] text-neutral-500 uppercase dark:text-neutral-400">
@@ -520,7 +520,7 @@ export function CommunityQuestionsPanel({
       )}
 
       {isUpcomingMode && (
-        <div className={`rounded-2xl border px-4 py-5 ${theme.card}`}>
+        <div className="py-1">
           <div className="flex items-start gap-3">
             <div
               className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${theme.blockBorder} bg-white shadow-sm dark:bg-white/[0.07]`}
@@ -583,13 +583,13 @@ export function CommunityQuestionsPanel({
             )}
 
             {!panel.isLoading && panel.isWindowOpen && panel.visibleQuestions.length === 0 && (
-              <div className="rounded-xl border border-dashed border-neutral-200 px-3 py-4 text-sm text-neutral-500 dark:border-white/10 dark:text-neutral-400">
+              <div className="py-2 text-sm text-neutral-500 dark:text-neutral-400">
                 {panel.t("questions.empty")}
               </div>
             )}
 
             {!panel.isLoading && panel.isReplayMode && panel.visibleQuestions.length === 0 && (
-              <div className="rounded-xl border border-dashed border-neutral-200/80 bg-neutral-50/60 px-3 py-4 text-sm text-neutral-700 dark:border-white/10 dark:bg-white/[0.03] dark:text-neutral-300">
+              <div className="py-2 text-sm text-neutral-500 dark:text-neutral-400">
                 {panel.t("questions.replayEmpty")}
               </div>
             )}
@@ -691,7 +691,7 @@ export function CommunityQuestionsPanel({
             </div>
           )}
 
-          <div className="flex items-center gap-1.5 rounded-[1.4rem] border border-neutral-200/80 bg-white/92 p-1.5 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.45)] backdrop-blur dark:border-white/12 dark:bg-neutral-950/88">
+          <div className="flex items-center gap-1.5 rounded-xl border border-neutral-200/80 bg-white/92 p-1.5 shadow-[0_18px_44px_-28px_rgba(15,23,42,0.45)] backdrop-blur dark:border-white/12 dark:bg-neutral-950/88">
             {!isLiveView && panel.isAuthHydrated && !panel.isAuthenticated ? (
               <button
                 type="button"

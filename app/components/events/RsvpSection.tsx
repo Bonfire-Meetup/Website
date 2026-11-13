@@ -19,7 +19,7 @@ interface RsvpSectionProps {
 
 const CANCEL_CONFIRM_TIMEOUT_MS = 3000;
 const SPLIT_BUTTON_CLASS =
-  "group relative cursor-pointer overflow-hidden rounded-xl px-4 py-4 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60";
+  "group relative cursor-pointer overflow-hidden rounded-xl px-4 py-4 font-bold text-white shadow-lg transition-all duration-300 hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60";
 
 interface ResponsiveLabelProps {
   desktop: string;
@@ -221,7 +221,7 @@ export function RsvpSection({ eventId }: RsvpSectionProps) {
         <button
           onClick={handleClick}
           disabled={isLoading}
-          className={`group relative w-full cursor-pointer overflow-hidden rounded-xl px-6 py-4 font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 ${
+          className={`group relative w-full cursor-pointer overflow-hidden rounded-xl px-6 py-4 font-bold text-white shadow-lg transition-all duration-300 hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 ${
             isRsvped
               ? "bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 shadow-emerald-500/30"
               : "bg-gradient-to-r from-rose-600 via-orange-500 to-red-600 shadow-orange-500/30"

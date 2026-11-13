@@ -128,8 +128,8 @@ export function QuestionRow({
         <div
           className={`px-3.5 py-2.5 text-sm leading-relaxed ${
             useThemedBubble
-              ? `rounded-[18px] ${isOwn ? "rounded-br-[5px]" : "rounded-bl-[5px]"} bg-gradient-to-br text-white shadow-md ${ownBubbleGradient}`
-              : "rounded-[18px] rounded-bl-[5px] border border-neutral-200/90 bg-white text-neutral-900 shadow-sm dark:border-white/10 dark:bg-white/8 dark:text-neutral-100"
+              ? `rounded-xl ${isOwn ? "rounded-br-[5px]" : "rounded-bl-[5px]"} bg-gradient-to-br text-white shadow-md ${ownBubbleGradient}`
+              : "rounded-xl rounded-bl-[5px] border border-neutral-200/90 bg-white text-neutral-900 shadow-sm dark:border-white/10 dark:bg-white/8 dark:text-neutral-100"
           }`}
         >
           {question.text}

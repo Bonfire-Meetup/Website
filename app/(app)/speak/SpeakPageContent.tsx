@@ -35,7 +35,7 @@ export function SpeakPageContent() {
         <div className="relative mx-auto max-w-4xl px-4 pb-20 sm:pb-24">
           <TalkProposalForm />
 
-          <section className="mt-8 rounded-3xl border border-orange-200/60 bg-gradient-to-r from-orange-50 via-rose-50 to-white px-5 py-6 shadow-[0_24px_60px_-42px_rgba(249,115,22,0.28)] sm:mt-10 sm:px-6 sm:py-7 dark:border-orange-300/10 dark:from-orange-500/12 dark:via-rose-500/10 dark:to-white/4 dark:shadow-[0_24px_60px_-42px_rgba(0,0,0,0.45)]">
+          <section className="mt-8 rounded-2xl border border-orange-200/60 bg-gradient-to-r from-orange-50 via-rose-50 to-white px-5 py-6 shadow-[0_24px_60px_-42px_rgba(249,115,22,0.28)] sm:mt-10 sm:px-6 sm:py-7 dark:border-orange-300/10 dark:from-orange-500/12 dark:via-rose-500/10 dark:to-white/4 dark:shadow-[0_24px_60px_-42px_rgba(0,0,0,0.45)]">
             <div className="flex items-center gap-3">
               <div className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 via-orange-500 to-rose-500 text-white shadow-[0_18px_34px_-20px_rgba(244,63,94,0.35)]">
                 <SparklesIcon className="h-4 w-4" />

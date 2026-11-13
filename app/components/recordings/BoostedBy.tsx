@@ -34,16 +34,7 @@ export function BoostedBy({ boostedBy: boostedByProp, shortId }: BoostedByProps)
   const remainingPublicCount = Math.max(0, usersWithPublicId.length - 5);
 
   return (
-    <div
-      className={`flex h-10 w-full items-center gap-2 rounded-lg border px-3 py-2 transition-all duration-300 ${
-        loading
-          ? "border-neutral-200/30 bg-neutral-50/30 dark:border-neutral-700/20 dark:bg-neutral-800/20"
-          : hasBoosts
-            ? "border-neutral-200/30 bg-neutral-50/30 dark:border-neutral-700/20 dark:bg-neutral-800/20"
-            : "border-neutral-200/30 bg-neutral-50/20 dark:border-neutral-700/20 dark:bg-neutral-800/10"
-      }`}
-      aria-hidden={loading}
-    >
+    <div className="flex h-9 w-full items-center gap-2 px-1" aria-hidden={loading}>
       {loading ? (
         <>
           <div className="flex shrink-0 items-center gap-1.5">

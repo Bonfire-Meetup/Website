@@ -19,7 +19,7 @@ export function RailScrollWrapper({
   children,
   headerContent,
   itemCount,
-  containerClassName = "rounded-[28px] bg-white/60 px-5 py-3 dark:bg-neutral-950/60",
+  containerClassName = "rounded-2xl bg-white/60 px-5 py-3 dark:bg-neutral-950/60",
   gradientLeft,
   gradientRight,
   scrollLeftLabel,
@@ -111,12 +111,12 @@ export function RailScrollWrapper({
         </div>
         {gradientLeft && (
           <div
-            className={`pointer-events-none absolute inset-y-0 left-0 w-10 rounded-[28px] bg-gradient-to-r ${gradientLeft}`}
+            className={`pointer-events-none absolute inset-y-0 left-0 w-10 rounded-2xl bg-gradient-to-r ${gradientLeft}`}
           />
         )}
         {gradientRight && (
           <div
-            className={`pointer-events-none absolute inset-y-0 right-0 w-10 rounded-[28px] bg-gradient-to-l ${gradientRight}`}
+            className={`pointer-events-none absolute inset-y-0 right-0 w-10 rounded-2xl bg-gradient-to-l ${gradientRight}`}
           />
         )}
       </div>

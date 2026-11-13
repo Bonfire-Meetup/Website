@@ -174,7 +174,7 @@ html.smooth-scroll {
   );
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
-  border-radius: 24px;
+  border-radius: 16px;
   border: 1px solid transparent;
   background-clip: padding-box;
   box-shadow:
@@ -192,7 +192,7 @@ html.smooth-scroll {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 24px;
+  border-radius: 16px;
   padding: 1px;
   background: linear-gradient(
     135deg,
@@ -212,12 +212,11 @@ html.smooth-scroll {
 }
 
 .glass-card:hover {
-  transform: translateY(-6px) scale(1.01);
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.08),
-    0 8px 20px rgba(0, 0, 0, 0.04),
-    0 0 0 1px rgba(255, 255, 255, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 1);
+    0 8px 30px rgba(0, 0, 0, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.02);
 }
 
 .glass-card.no-hover-pop:hover {
@@ -254,18 +253,16 @@ html.smooth-scroll {
 
 .dark .glass-card:hover {
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.6),
-    0 8px 20px rgba(0, 0, 0, 0.4),
-    0 0 60px rgba(230, 57, 98, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 10px 34px rgba(0, 0, 0, 0.5),
+    0 0 28px rgba(230, 57, 98, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .dark .glass-card[data-glow="zlin"]:hover {
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.6),
-    0 8px 20px rgba(0, 0, 0, 0.4),
-    0 0 60px rgba(37, 99, 235, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 10px 34px rgba(0, 0, 0, 0.5),
+    0 0 28px rgba(37, 99, 235, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .dark .glass-card.no-hover-pop:hover {
@@ -682,7 +679,7 @@ html.smooth-scroll {
 
 .border-gradient {
   position: relative;
-  border-radius: 24px;
+  border-radius: 16px;
 }
 
 .border-gradient::before {

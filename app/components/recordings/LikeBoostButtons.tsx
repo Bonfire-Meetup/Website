@@ -283,11 +283,7 @@ export function LikeBoostButtons({
           </>
         ) : null}
 
-        <div
-          className={`relative z-10 transition-transform ${
-            likeCount === null ? "" : "hover:-translate-y-0.5"
-          }`}
-        >
+        <div className={`relative z-10 transition-transform ${likeCount === null ? "" : ""}`}>
           <button
             type="button"
             onClick={handleLike}
@@ -350,9 +346,7 @@ export function LikeBoostButtons({
           </button>
         </div>
 
-        <div
-          className={`relative z-10 transition-transform ${boostCount === null ? "" : "hover:-translate-y-0.5"}`}
-        >
+        <div className={`relative z-10 transition-transform ${boostCount === null ? "" : ""}`}>
           <button
             type="button"
             onClick={handleBoost}

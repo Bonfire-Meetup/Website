@@ -293,7 +293,7 @@ export function GuildJoinPage({
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_420px] lg:items-start lg:gap-10">
           {/* Left: heading + perks */}
           <div className="space-y-6">
-            <section className="relative overflow-hidden rounded-[32px] border border-white/70 bg-[linear-gradient(145deg,rgba(255,255,255,0.95),rgba(255,250,245,0.88)_52%,rgba(255,246,237,0.92))] p-6 shadow-[0_24px_80px_-40px_rgba(15,23,42,0.32)] sm:p-8 dark:border-white/10 dark:bg-[linear-gradient(145deg,rgba(24,24,24,0.94),rgba(18,18,18,0.98)_56%,rgba(36,24,18,0.92))] dark:shadow-[0_24px_90px_-44px_rgba(0,0,0,0.55)]">
+            <section className="relative overflow-hidden rounded-2xl border border-white/70 bg-[linear-gradient(145deg,rgba(255,255,255,0.95),rgba(255,250,245,0.88)_52%,rgba(255,246,237,0.92))] p-6 shadow-[0_24px_80px_-40px_rgba(15,23,42,0.32)] sm:p-8 dark:border-white/10 dark:bg-[linear-gradient(145deg,rgba(24,24,24,0.94),rgba(18,18,18,0.98)_56%,rgba(36,24,18,0.92))] dark:shadow-[0_24px_90px_-44px_rgba(0,0,0,0.55)]">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.16),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(244,63,94,0.08),transparent_30%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(251,191,36,0.09),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(244,63,94,0.05),transparent_28%)]" />
               <div className="relative">
                 <div className="mb-6 flex flex-wrap items-center gap-3">
@@ -328,7 +328,7 @@ export function GuildJoinPage({
                   ))}
                 </div>
 
-                <div className="mt-8 overflow-hidden rounded-[28px] border border-neutral-200/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(250,250,249,0.62))] backdrop-blur-sm dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.03))]">
+                <div className="mt-8 overflow-hidden rounded-2xl border border-neutral-200/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(250,250,249,0.62))] backdrop-blur-sm dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.03))]">
                   <div className="flex gap-4 px-5 py-5 sm:px-6">
                     <div className="w-px shrink-0 rounded-full bg-gradient-to-b from-amber-400/80 via-orange-400/55 to-transparent dark:from-amber-400/50 dark:via-orange-400/30" />
                     <div className="min-w-0">
@@ -375,7 +375,7 @@ export function GuildJoinPage({
 
           {/* Right: tier selector + CTA */}
           <div className="w-full lg:sticky lg:top-24">
-            <div className="overflow-hidden rounded-[32px] border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(250,250,249,0.9))] p-5 shadow-[0_24px_80px_-36px_rgba(15,23,42,0.28)] backdrop-blur-xl sm:p-6 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(19,19,19,0.96),rgba(10,10,10,0.98))] dark:shadow-[0_24px_80px_-36px_rgba(0,0,0,0.55)]">
+            <div className="overflow-hidden rounded-2xl border border-white/75 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(250,250,249,0.9))] p-5 shadow-[0_24px_80px_-36px_rgba(15,23,42,0.28)] backdrop-blur-xl sm:p-6 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(19,19,19,0.96),rgba(10,10,10,0.98))] dark:shadow-[0_24px_80px_-36px_rgba(0,0,0,0.55)]">
               <div className="mb-5 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-[11px] font-semibold tracking-[0.24em] text-neutral-500 uppercase dark:text-neutral-400">
@@ -484,7 +484,7 @@ export function GuildJoinPage({
                     type="button"
                     disabled={isSubmitting || isActivationLocked}
                     onClick={handlePrimaryAction}
-                    className={`w-full rounded-2xl bg-gradient-to-r py-4 text-sm font-bold text-white transition-[filter,transform,box-shadow] duration-200 hover:-translate-y-px hover:brightness-105 disabled:pointer-events-none disabled:opacity-60 ${colors.ctaGradient} ${colors.ctaGlow}`}
+                    className={`w-full rounded-2xl bg-gradient-to-r py-4 text-sm font-bold text-white transition-[filter,transform,box-shadow] duration-200 hover:brightness-105 disabled:pointer-events-none disabled:opacity-60 ${colors.ctaGradient} ${colors.ctaGlow}`}
                   >
                     {showManageButton ? (
                       <AsyncButtonContent isPending={portalMutation.isPending}>

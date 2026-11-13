@@ -90,7 +90,7 @@ function TierCard({
             className={`guild-tier-glow-ambient pointer-events-none absolute inset-[-1px] rounded-[1.08rem] ${tier.selectedGlow} blur-sm`}
           />
           <div
-            className={`guild-tier-glow-ambient pointer-events-none absolute inset-[-6px] rounded-[1.35rem] ${tier.selectedGlow} blur-xl [animation-delay:0.35s]`}
+            className={`guild-tier-glow-ambient pointer-events-none absolute inset-[-6px] rounded-xl ${tier.selectedGlow} blur-xl [animation-delay:0.35s]`}
           />
         </>
       ) : null}
@@ -166,7 +166,7 @@ function TierCard({
                   onClick={tier.handleAction}
                   variant="plain"
                   size="sm"
-                  className={`w-full rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_-18px_rgba(15,23,42,0.3)] transition-[transform,box-shadow,filter] duration-300 hover:-translate-y-px hover:brightness-105 ${tier.actionClassName}`}
+                  className={`w-full rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_-18px_rgba(15,23,42,0.3)] transition-[transform,box-shadow,filter] duration-300 hover:brightness-105 ${tier.actionClassName}`}
                 >
                   {tier.actionLabel}
                 </Button>

@@ -25,7 +25,7 @@ export function RecordingFeaturedContent({
 
   return (
     <div
-      className={`flex max-w-2xl flex-col gap-2 rounded-3xl px-4 py-4 sm:px-5 sm:py-4 ${
+      className={`flex max-w-2xl flex-col gap-2 rounded-2xl px-4 py-4 sm:px-5 sm:py-4 ${
         hasFeaturedHero
           ? featuredHeroPanelClass
           : "bg-white/85 text-neutral-900 ring-1 ring-black/5 dark:bg-black/60 dark:text-white dark:ring-white/10"

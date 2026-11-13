@@ -20,7 +20,7 @@ export function EventsSectionSkeleton() {
         </div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="space-y-4 rounded-3xl bg-white/50 p-6 dark:bg-white/5">
+            <div key={i} className="space-y-4 rounded-2xl bg-white/50 p-6 dark:bg-white/5">
               <Skeleton className="h-6 w-24" />
               <Skeleton className="h-8 w-3/4" />
               <Skeleton className="h-4 w-1/2" />
@@ -118,7 +118,7 @@ export function HeroSkeleton() {
           <div className="min-w-0">
             <div className="relative min-w-0 overflow-hidden rounded-[30px] border border-black/10 bg-white/40 p-3 backdrop-blur-xl sm:p-4 dark:border-white/10 dark:bg-black/30">
               <div className="space-y-3">
-                <div className="overflow-hidden rounded-[24px] border border-black/12 dark:border-white/12">
+                <div className="overflow-hidden rounded-2xl border border-black/12 dark:border-white/12">
                   <Skeleton className="aspect-[16/9] w-full !rounded-none" />
                   <div className="border-t border-black/10 bg-white/66 px-3 py-2.5 sm:px-4 dark:border-white/10 dark:bg-black/28">
                     <div className="flex items-center justify-between">
@@ -169,7 +169,7 @@ export function LocationsSectionSkeleton() {
         </div>
         <div className="grid gap-8 md:grid-cols-2">
           {[1, 2].map((i) => (
-            <div key={i} className="space-y-4 rounded-3xl bg-white/50 p-8 dark:bg-white/5">
+            <div key={i} className="space-y-4 rounded-2xl bg-white/50 p-8 dark:bg-white/5">
               <Skeleton className="h-6 w-32" />
               <Skeleton className="h-8 w-48" />
               <Skeleton className="h-4 w-full" />

@@ -29,7 +29,7 @@ export function EmptyStateMessage({
       : notRecordedEpisode.title;
 
     return (
-      <div className="recording-card-enter mx-auto max-w-2xl rounded-[28px] bg-white/90 p-10 text-center shadow-xl ring-1 shadow-black/5 ring-black/5 dark:bg-neutral-950 dark:shadow-black/20 dark:ring-white/10">
+      <div className="recording-card-enter mx-auto max-w-2xl rounded-2xl bg-white/90 p-10 text-center shadow-xl ring-1 shadow-black/5 ring-black/5 dark:bg-neutral-950 dark:shadow-black/20 dark:ring-white/10">
         <div className="bg-brand-500/10 text-brand-500 dark:bg-brand-500/20 dark:text-brand-300 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">
           <InfoIcon className="h-6 w-6" />
         </div>

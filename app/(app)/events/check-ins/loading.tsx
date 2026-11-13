@@ -6,7 +6,7 @@ const TICKET_HEADER_PANEL_CLASS =
 
 function TicketQrSkeleton() {
   return (
-    <div className="relative rounded-[1.75rem] border border-white/45 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.78),rgba(255,255,255,0.56)_34%,rgba(255,244,238,0.44)_62%,rgba(255,255,255,0.28)_100%)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(255,255,255,0.42),0_24px_55px_-34px_rgba(15,23,42,0.38)] backdrop-blur-xl dark:border-white/12 dark:bg-[radial-gradient(circle_at_top,rgba(80,80,88,0.34),rgba(34,34,38,0.3)_38%,rgba(14,14,18,0.22)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(255,255,255,0.03),0_24px_55px_-34px_rgba(0,0,0,0.55)]">
+    <div className="relative rounded-2xl border border-white/45 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.78),rgba(255,255,255,0.56)_34%,rgba(255,244,238,0.44)_62%,rgba(255,255,255,0.28)_100%)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(255,255,255,0.42),0_24px_55px_-34px_rgba(15,23,42,0.38)] backdrop-blur-xl dark:border-white/12 dark:bg-[radial-gradient(circle_at_top,rgba(80,80,88,0.34),rgba(34,34,38,0.3)_38%,rgba(14,14,18,0.22)_100%)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-1px_0_rgba(255,255,255,0.03),0_24px_55px_-34px_rgba(0,0,0,0.55)]">
       <div className="mb-3 flex items-center justify-between rounded-full border border-white/45 bg-white/36 px-3 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] backdrop-blur-xl dark:border-white/10 dark:bg-white/8 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
         <Skeleton className="h-2 w-10 rounded-full" />
         <QrCodeIcon className="h-4 w-4 text-neutral-400 dark:text-neutral-500" />
@@ -36,10 +36,10 @@ export default function CheckInLoading() {
     <main className="gradient-bg-static min-h-screen px-4 pt-20 pb-20 sm:pt-32">
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-md">
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/45 bg-white/28 shadow-[0_40px_120px_-52px_rgba(15,23,42,0.58)] ring-1 ring-white/55 backdrop-blur-2xl dark:border-white/8 dark:bg-neutral-950/24 dark:ring-white/8">
-            <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.72),transparent_34%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.3),transparent_22%),linear-gradient(135deg,rgba(255,255,255,0.24),transparent_46%,rgba(255,255,255,0.08)_68%,transparent_82%)] dark:bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.08),transparent_26%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.04),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.04),transparent_44%,rgba(255,255,255,0.015)_70%,transparent_84%)]" />
-            <div className="pointer-events-none absolute inset-[1px] rounded-[calc(2rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.26),transparent_18%,transparent_78%,rgba(255,255,255,0.12)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_18%,transparent_82%,rgba(255,255,255,0.02)_100%)]" />
-            <div className="relative overflow-hidden rounded-[calc(2rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.5)_0%,rgba(255,248,240,0.34)_45%,rgba(255,255,255,0.22)_100%)] backdrop-blur-2xl dark:bg-[linear-gradient(180deg,rgba(24,24,28,0.3)_0%,rgba(12,12,14,0.2)_48%,rgba(6,6,8,0.14)_100%)]">
+          <div className="relative overflow-hidden rounded-2xl border border-white/45 bg-white/28 shadow-[0_40px_120px_-52px_rgba(15,23,42,0.58)] ring-1 ring-white/55 backdrop-blur-2xl dark:border-white/8 dark:bg-neutral-950/24 dark:ring-white/8">
+            <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.72),transparent_34%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.3),transparent_22%),linear-gradient(135deg,rgba(255,255,255,0.24),transparent_46%,rgba(255,255,255,0.08)_68%,transparent_82%)] dark:bg-[radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.08),transparent_26%),radial-gradient(circle_at_88%_12%,rgba(255,255,255,0.04),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.04),transparent_44%,rgba(255,255,255,0.015)_70%,transparent_84%)]" />
+            <div className="pointer-events-none absolute inset-[1px] rounded-[calc(1rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.26),transparent_18%,transparent_78%,rgba(255,255,255,0.12)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent_18%,transparent_82%,rgba(255,255,255,0.02)_100%)]" />
+            <div className="relative overflow-hidden rounded-[calc(1rem-1px)] bg-[linear-gradient(180deg,rgba(255,255,255,0.5)_0%,rgba(255,248,240,0.34)_45%,rgba(255,255,255,0.22)_100%)] backdrop-blur-2xl dark:bg-[linear-gradient(180deg,rgba(24,24,28,0.3)_0%,rgba(12,12,14,0.2)_48%,rgba(6,6,8,0.14)_100%)]">
               <div className="relative h-30 bg-gradient-to-br from-rose-700 via-orange-500 to-red-600 sm:h-32">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.35),transparent_32%),radial-gradient(circle_at_85%_15%,rgba(255,255,255,0.22),transparent_24%)]" />
                 <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.18)_35%,transparent_52%,rgba(255,255,255,0.08)_68%,transparent_100%)]" />
@@ -86,7 +86,7 @@ export default function CheckInLoading() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-3 rounded-[1.35rem] border border-white/28 bg-white/18 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-xl dark:border-white/10 dark:bg-white/4 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-white/28 bg-white/18 px-3 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-xl dark:border-white/10 dark:bg-white/4 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                   <div className="flex min-w-0 items-center gap-2.5">
                     <Skeleton className="h-7 w-7 rounded-full" />
                     <Skeleton className="h-4 w-24" />

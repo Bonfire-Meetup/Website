@@ -69,7 +69,7 @@ export function ShareEventButton({
   };
 
   return (
-    <div className="glass rounded-3xl p-6">
+    <div className="px-1 pt-2">
       <p className="mb-4 text-sm font-semibold text-neutral-900 dark:text-white">{sectionTitle}</p>
       <div className="grid gap-2 sm:grid-cols-2">
         {nativeShareSupported && (
