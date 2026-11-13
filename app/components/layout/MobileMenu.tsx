@@ -39,7 +39,7 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
       return false;
     }
 
-    return pathname.startsWith(href);
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   useEffect(() => {
@@ -128,7 +128,7 @@ export function MobileMenu({ links, menuLabel, closeLabel }: MobileMenuProps) {
                       <Link
                         href={link.href}
                         onClick={closeMenu}
-                        prefetch={link.prefetch ?? isOpen}
+                        prefetch={link.prefetch ?? (isOpen ? undefined : false)}
                         className={`block rounded-lg px-3 py-2.5 text-sm font-medium ${
                           isActiveLink(link.href)
                             ? "bg-rose-500/10 text-rose-600 dark:bg-rose-400/10 dark:text-rose-400"

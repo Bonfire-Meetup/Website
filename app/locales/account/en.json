@@ -169,7 +169,15 @@
       "disabled": "Public profile disabled"
     },
     "userProfile": {
+      "eyebrow": "Bonfire community member",
       "title": "User Profile",
+      "speaker": {
+        "eyebrow": "Bonfire speaker",
+        "talkCount": "{count, plural, one {# talk at Bonfire} other {# talks at Bonfire}}",
+        "viewPage": "View speaker page",
+        "upcomingEyebrow": "Upcoming talk",
+        "viewEvent": "View event"
+      },
       "memberSince": "Member since",
       "anonymousMember": "Community Member",
       "memberBadge": "Member",

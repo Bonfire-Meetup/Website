@@ -40,7 +40,7 @@ export function Pill({
         className={classes}
         aria-label={ariaLabel}
         title={title}
-        prefetch={!hasQueryParams && !isLibraryLink}
+        prefetch={hasQueryParams || isLibraryLink ? false : undefined}
       >
         {children}
       </Link>

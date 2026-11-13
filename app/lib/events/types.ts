@@ -1,6 +1,14 @@
 import { type LocationValue } from "@/lib/config/constants";
 
+export interface EventSpeakerGroup {
+  id: string;
+  name: string;
+  url?: string;
+}
+
 export interface EventSpeaker {
+  /** Ids into app/data/speakers.json, in the same order as `name`. */
+  speakerIds?: string[];
   name: string | string[];
   company?: string | string[];
   topic: string;
@@ -9,6 +17,8 @@ export interface EventSpeaker {
   profileId?: string | string[];
   url?: string | string[];
   recordingId?: string;
+  /** A podcast crew or similar that appears as one act; `name` still lists its members. */
+  group?: EventSpeakerGroup;
 }
 
 export interface EventLinks {

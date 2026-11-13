@@ -143,3 +143,4 @@ public/vendor/
 scripts/socials/
 .agents/
 .claude/
+.dev-fixtures.json

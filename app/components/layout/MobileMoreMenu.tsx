@@ -177,7 +177,7 @@ export function MobileMoreMenu({ onOpenChange }: MobileMoreMenuProps) {
       return false;
     }
     const itemPath = href.split(/[?#]/u, 1)[0];
-    return pathname === itemPath || pathname.startsWith(itemPath);
+    return pathname === itemPath || pathname.startsWith(`${itemPath}/`);
   };
 
   useEffect(() => {

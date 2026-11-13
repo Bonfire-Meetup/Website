@@ -33,6 +33,7 @@
     "privateProfileTitle": "Soukromý profil | {brandName}",
     "privateProfileDescription": "Tento komunitní profil je soukromý.",
     "eventNotFound": "Akce nenalezena | {brandName}",
+    "speakerNotFound": "Řečník nenalezen | {brandName}",
     "recordingNotFound": "Záznam nenalezen | {brandName}",
     "siteName": "{brandName}",
     "author": "{brandName}",

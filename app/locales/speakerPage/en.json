@@ -1,0 +1,46 @@
+{
+  "speakerPage": {
+    "eyebrow": "Bonfire speaker",
+    "metaDescription": "Talks by {name} at Bonfire game dev meetups.",
+    "talkCount": "{count, plural, one {# talk at Bonfire} other {# talks at Bonfire}}",
+    "talksHeading": "Talks",
+    "prague": "Prague",
+    "zlin": "Zlín",
+    "withSpeakers": "With",
+    "viewEvent": "View event",
+    "watchRecording": "Watch recording",
+    "viewImage": "View {label}",
+    "download": "Download",
+    "formats": {
+      "instagramPost": "Instagram post",
+      "instagramStory": "Instagram story",
+      "facebookPost": "Facebook post",
+      "facebookStory": "Facebook story",
+      "linkedinPost": "LinkedIn post"
+    },
+    "upcoming": "Upcoming",
+    "eventPhotos": "{count, plural, one {# photo} other {# photos}}",
+    "community": {
+      "title": "Bonfire community member",
+      "memberSince": "Member since {date}",
+      "eventsAttended": "Events attended",
+      "boostsGiven": "Boosts given",
+      "viewProfile": "View community profile"
+    },
+    "groupEyebrow": "Bonfire guests",
+    "members": "Members",
+    "partOf": "As part of",
+    "shareImages": "Images for sharing ({count})",
+    "socials": {
+      "title": "Images for sharing",
+      "intro": "Ready-made images for announcing the talk. Open one to see it at full size, or download it.",
+      "metaDescription": "Images for sharing the talk “{topic}” by {name}.",
+      "platforms": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "linkedin": "LinkedIn"
+      }
+    },
+    "talkCountLabel": "{count, plural, one {talk at Bonfire} other {talks at Bonfire}}"
+  }
+}

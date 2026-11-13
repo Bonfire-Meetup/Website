@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/shared/Skeletons";
 export function CheckedInEventsSkeleton() {
   return (
     <section className="relative">
-      <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-white/5 dark:bg-neutral-900/50">
+      <div className="glass-card relative rounded-[28px] border border-black/5 bg-white/80 hover:[transform:none]! dark:border-white/10 dark:bg-neutral-950/70">
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
           <div className="flex items-center gap-4">
             <Skeleton className="h-12 w-12 rounded-xl" />

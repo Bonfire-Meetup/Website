@@ -70,6 +70,8 @@ export const PAGE_ROUTES = {
   SUPPORT: "/support",
   SHORT_LINK: (id: string) => `/l/${id}`,
   SPEAK: "/speak",
+  SPEAKER: (slug: string) => `/speakers/${slug}`,
+  SPEAKER_SOCIALS: (slug: string, eventId: string) => `/speakers/${slug}/socials/${eventId}`,
   THIRD_PARTY: "/third-party",
   TIMELINE: "/timeline",
   USER: (publicId: string) => `/users/${publicId}`,

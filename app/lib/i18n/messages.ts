@@ -27,6 +27,7 @@ import enPressMessages from "@/locales/press/en.json";
 import enReaderMessages from "@/locales/reader/en.json";
 import enRecordingsMessages from "@/locales/recordings/en.json";
 import enSectionsMessages from "@/locales/sections/en.json";
+import enSpeakerPageMessages from "@/locales/speakerPage/en.json";
 import enTalkProposalPageMessages from "@/locales/talkProposalPage/en.json";
 import enTeamPageMessages from "@/locales/teamPage/en.json";
 import enTimelineMessages from "@/locales/timeline/en.json";
@@ -63,6 +64,7 @@ const moduleLoaders = [
   (locale: Locale) => import(`@/locales/reader/${locale}.json`),
   (locale: Locale) => import(`@/locales/recordings/${locale}.json`),
   (locale: Locale) => import(`@/locales/sections/${locale}.json`),
+  (locale: Locale) => import(`@/locales/speakerPage/${locale}.json`),
   (locale: Locale) => import(`@/locales/talkProposalPage/${locale}.json`),
   (locale: Locale) => import(`@/locales/teamPage/${locale}.json`),
   (locale: Locale) => import(`@/locales/timeline/${locale}.json`),
@@ -102,6 +104,7 @@ const enMessages = mergeMessages(
   enReaderMessages,
   enRecordingsMessages,
   enSectionsMessages,
+  enSpeakerPageMessages,
   enTalkProposalPageMessages,
   enTeamPageMessages,
   enTimelineMessages,

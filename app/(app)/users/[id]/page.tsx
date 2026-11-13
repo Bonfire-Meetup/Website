@@ -13,6 +13,9 @@ import {
 } from "@/lib/data/boosts";
 import { getUserCheckIns } from "@/lib/data/check-in";
 import { getUserQuestionActivityLevel } from "@/lib/data/event-questions";
+import { getDevAccountFixture } from "@/lib/dev/local-fixtures";
+import { getSpeakerProfileByUserId, type SpeakerProfile } from "@/lib/events/speaker-profiles";
+import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { decompressUuid, compressUuid } from "@/lib/utils/uuid-compress";
 
 import { BoostedVideos } from "./BoostedVideos";
@@ -22,6 +25,25 @@ import { CheckedInEventsSkeleton } from "./CheckedInEventsSkeleton";
 import { UpcomingRsvps } from "./UpcomingRsvps";
 import { UpcomingRsvpsSkeleton } from "./UpcomingRsvpsSkeleton";
 import { PrivateProfileContent, UserProfileContent } from "./UserProfileContent";
+
+function toSpeakerSummary(profile: SpeakerProfile | undefined) {
+  if (!profile || profile.talks.length === 0) {
+    return undefined;
+  }
+
+  return {
+    href: PAGE_ROUTES.SPEAKER(profile.slug),
+    name: profile.name,
+    photoUrl: profile.photoUrl,
+    // Newest first, as on the speaker page.
+    talks: profile.talks.map((talk) => ({
+      date: talk.date,
+      eventId: talk.eventId,
+      eventTitle: talk.eventTitle,
+      topic: talk.topic,
+    })),
+  };
+}
 
 export async function generateMetadata({
   params,
@@ -33,6 +55,11 @@ export async function generateMetadata({
   const t = await getTranslations("meta");
   const tCommon = await getTranslations("common");
   const userId = decompressUuid(id);
+  const fixture = getDevAccountFixture(id);
+
+  if (fixture) {
+    return { title: fixture.name };
+  }
 
   if (!userId) {
     return { title: t("userProfileNotFound", { brandName: tCommon("brandName") }) };
@@ -90,6 +117,37 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
     notFound();
   }
 
+  const fixture = getDevAccountFixture(id);
+  if (fixture) {
+    const speakerProfile = getSpeakerProfileByUserId(id);
+
+    return (
+      <UserProfileContent
+        user={{
+          publicId: id,
+          name: fixture.name,
+          memberSince: new Intl.DateTimeFormat(locale, {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }).format(new Date(fixture.createdAt)),
+          roles: fixture.roles,
+          membershipTier: fixture.membershipTier,
+          isMember: hasMembership(fixture.membershipTier),
+          questionActivityLevel: null,
+          boostCount: fixture.boostCount,
+          boostsThisMonth: 0,
+          boostStreak: 0,
+        }}
+        speaker={toSpeakerSummary(speakerProfile)}
+        stats={{ lastBoostedAt: null, lastCheckedInAt: null }}
+        upcomingRsvpsSlot={null}
+        boostedVideosSlot={null}
+        checkedInEventsSlot={null}
+      />
+    );
+  }
+
   const user = await getAuthUserById(userId);
   if (!user) {
     notFound();
@@ -105,6 +163,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
     year: "numeric",
   }).format(new Date(user.createdAt));
   const isMember = hasMembership(user.membershipTier);
+  const speakerProfile = getSpeakerProfileByUserId(id);
   const [boosts, checkIns, boostCount, boostsThisMonth, boostStreak, questionActivityLevel] =
     await Promise.all([
       getUserBoosts(userId),
@@ -129,6 +188,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
         boostsThisMonth,
         boostStreak,
       }}
+      speaker={toSpeakerSummary(speakerProfile)}
       stats={{
         lastBoostedAt: boosts[0]?.createdAt ?? null,
         lastCheckedInAt: checkIns[0]?.createdAt ?? null,

@@ -33,6 +33,7 @@
     "privateProfileTitle": "Private Profile | {brandName}",
     "privateProfileDescription": "This community profile is private.",
     "eventNotFound": "Event Not Found | {brandName}",
+    "speakerNotFound": "Speaker Not Found | {brandName}",
     "recordingNotFound": "Recording Not Found | {brandName}",
     "siteName": "{brandName}",
     "author": "{brandName}",

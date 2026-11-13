@@ -1,4 +1,4 @@
-import episodesData from "../../data/episodes.json";
+import eventsCalendarData from "../../data/events-calendar.json";
 
 export interface Episode {
   id: string;
@@ -21,7 +21,32 @@ export interface EpisodeEntry {
   photosHref?: string;
 }
 
-export const episodes = episodesData.episodes as Episode[];
+const EVENT_TITLE_PATTERN = /^Bonfire@(?<city>Prague|Zlin) #(?<number>\d+)(?: - (?<name>.+))?$/u;
+
+/** "Bonfire@Prague #9 - Architects of the Unseen" -> "Bonfire@Prague #9". */
+export function eventEpisodeLabel(eventTitle: string): string | undefined {
+  return eventTitle.match(/^Bonfire@\w+ #\d+/u)?.[0];
+}
+
+// An event becomes an episode (timeline, library, photos) once it has its
+// Edition name, the part of the title after the dash. Read straight from the
+// JSON so this module stays independent of events-calendar.ts.
+export const episodes: Episode[] = eventsCalendarData.events.flatMap((event) => {
+  const match = EVENT_TITLE_PATTERN.exec(event.title)?.groups;
+  if (!match?.name) {
+    return [];
+  }
+
+  return [
+    {
+      city: match.city === "Prague" ? ("prague" as const) : ("zlin" as const),
+      date: event.date,
+      id: event.id,
+      number: Number(match.number),
+      title: match.name,
+    },
+  ];
+});
 
 const episodeMap = new Map<string, Episode>(episodes.map((episode) => [episode.id, episode]));
 

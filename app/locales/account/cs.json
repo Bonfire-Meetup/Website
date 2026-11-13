@@ -169,7 +169,15 @@
       "disabled": "Veřejný profil vypnut"
     },
     "userProfile": {
+      "eyebrow": "Součást komunity Bonfire",
       "title": "Profil uživatele",
+      "speaker": {
+        "eyebrow": "Vystoupení na Bonfire",
+        "talkCount": "{count, plural, one {# přednáška na Bonfire} few {# přednášky na Bonfire} other {# přednášek na Bonfire}}",
+        "viewPage": "Zobrazit stránku řečníka",
+        "upcomingEyebrow": "Chystaná přednáška",
+        "viewEvent": "Zobrazit akci"
+      },
       "memberSince": "Člen od",
       "anonymousMember": "Člen komunity",
       "memberBadge": "Člen",

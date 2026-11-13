@@ -100,7 +100,9 @@ export function Button({
 
     const isDynamicRoute =
       DYNAMIC_ROUTE_PREFIXES.some((prefix) => href.startsWith(prefix)) || href.includes("?");
-    const shouldPrefetch = prefetch ?? !isDynamicRoute;
+    // Leave static routes on Next's default prefetch (the page shell). Forcing
+    // `true` requests a full prefetch, which also renders request-time content.
+    const shouldPrefetch = prefetch ?? (isDynamicRoute ? false : undefined);
 
     return (
       <Link

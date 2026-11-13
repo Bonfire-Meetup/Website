@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 
 import { AlbumImage } from "@/components/shared/AlbumImage";
+import { Lightbox } from "@/components/shared/Lightbox";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
-import { Lightbox } from "./[album]/Lightbox";
 import { HeroSlideshow } from "./HeroSlideshow";
 
 interface PhotosPageContentProps {

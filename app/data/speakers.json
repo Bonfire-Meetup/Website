@@ -1,0 +1,319 @@
+{
+  "baseUrl": "https://cdn.bnf.events/speakers",
+  "speakers": [
+    {
+      "id": "5wJLsqF7N2o-ExyVW9n4DLx",
+      "name": "David Konečný",
+      "photo": "photos/david-konecny.webp",
+      "talks": [
+        {
+          "eventId": "zlin-7",
+          "image": {
+            "src": "talks/zlin-7/david-konecny.webp",
+            "width": 460,
+            "height": 215
+          },
+          "socials": [
+            "socials/zlin-7/david-konecny/ig-post.png",
+            "socials/zlin-7/david-konecny/ig-story.png",
+            "socials/zlin-7/david-konecny/fb-post.png",
+            "socials/zlin-7/david-konecny/fb-story.png",
+            "socials/zlin-7/david-konecny/linkedin-post.png"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "VQfMgPV3qZ6-UCRRFwEc93T",
+      "name": "David Vávra"
+    },
+    {
+      "id": "BQrG1XVfCyV-DRFWViQ7BTu",
+      "name": "David Wurczel"
+    },
+    {
+      "id": "9ZrjpbLxT1J-3idH9bTS2qF",
+      "name": "Dominik Regec"
+    },
+    {
+      "id": "9n2rKogQHWJ-KTB11mdbxhF",
+      "name": "Filip Ondráš",
+      "company": "Vector Virtuoso s.r.o.",
+      "url": "https://www.vectorvirtuoso.com/"
+    },
+    {
+      "id": "JouTEoQ9Cit-2PeUw7C3swC",
+      "name": "Jakub Hubáček",
+      "company": "Flying Rat"
+    },
+    {
+      "id": "5yBGsdojfuG-G6Gb1VVt4bD",
+      "name": "Jakub Javora"
+    },
+    {
+      "id": "3JEBmTvAZrp-aQ7p9ieqyoY",
+      "name": "Jan Hrušovský"
+    },
+    {
+      "id": "R1oLbxo1DdM-yk1qeKRUT8m",
+      "name": "Jan Mesarč"
+    },
+    {
+      "id": "1PzVwXtQAiv-fKBWpRWaMCV",
+      "name": "Jan Modrák",
+      "url": "https://modrak.opinio.cz/"
+    },
+    {
+      "id": "MM9YoKF5Y6d-1cTgLovCNxs",
+      "name": "Jan Valta"
+    },
+    {
+      "id": "NeDnf4gx2JA-yPeJQqCZzdX",
+      "name": "Jarek Kolář",
+      "company": "INGAME STUDIOS",
+      "url": "https://www.ingamestudios.com/"
+    },
+    {
+      "id": "3gMR9RYShYc-cPZjfqeRzDC",
+      "name": "Jaromír Möwald"
+    },
+    {
+      "id": "5HN2ovGdJQD-76BMGEYhpK6",
+      "name": "Jindřich Skeldal",
+      "company": "Skeldal Immersive",
+      "url": "https://www.actorsgame.com/"
+    },
+    {
+      "id": "5GZewykviMc-FmmDKyhmyYu",
+      "name": "Jiří Bigas",
+      "url": "https://jiribigas.substack.com/"
+    },
+    {
+      "id": "G8X97YPjc3y-XKuSgFfrcxF",
+      "name": "Jiří Dočkal"
+    },
+    {
+      "id": "6BvyE5dFjvG-5ptf2mgFSNx",
+      "name": "Karel Matějka",
+      "company": "KO.DLL"
+    },
+    {
+      "id": "VsKeAmRv77y-y85QGe9Pdao",
+      "name": "Kateřina Šumová"
+    },
+    {
+      "id": "36pA5MexDfR-SX6o7Tc6dXL",
+      "name": "Kristýna Böhmová"
+    },
+    {
+      "id": "HX154FMwPHh-fgi1uuUWy2Z",
+      "name": "Kryštof Klestil"
+    },
+    {
+      "id": "5ULmzJFC8Nw-1oqXm8Jf8NG",
+      "name": "Lucie Tvarohová",
+      "photo": "photos/lucie-tvarohova.webp",
+      "company": "Scholastika",
+      "url": "https://scholastika.cz/",
+      "talks": [
+        {
+          "eventId": "prague-9",
+          "socials": [
+            "socials/prague-9/lucie-tvarohova/ig-post.png",
+            "socials/prague-9/lucie-tvarohova/ig-story.png",
+            "socials/prague-9/lucie-tvarohova/fb-post.png",
+            "socials/prague-9/lucie-tvarohova/fb-story.png",
+            "socials/prague-9/lucie-tvarohova/linkedin-post.png"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6oVwuBS2Ufr-wNENNFR1dkw",
+      "name": "Lukáš Grygar"
+    },
+    {
+      "id": "5Cf7ydgXSNy-fP3fHwidVGj",
+      "name": "Lukáš Kunce",
+      "company": "Amanita Design"
+    },
+    {
+      "id": "8MfSSaYHkKd-EjAaZiy83NW",
+      "name": "Lukáš Macura",
+      "company": "CINEMAX"
+    },
+    {
+      "id": "NAzfNk5RHef-nfs3SuX5py9",
+      "name": "Marek Zeman"
+    },
+    {
+      "id": "1cuYJa3pq4u-z1bWfBfX8tn",
+      "name": "Martin Pelikán",
+      "photo": "photos/martin-pelikan.webp",
+      "company": "Flying Rat Studio",
+      "url": "https://www.flying-rat.studio/",
+      "talks": [
+        {
+          "eventId": "prague-10",
+          "image": {
+            "src": "talks/prague-10/martin-pelikan.webp",
+            "width": 460,
+            "height": 215
+          },
+          "socials": [
+            "socials/prague-10/martin-pelikan/fb-post.png",
+            "socials/prague-10/martin-pelikan/fb-story.png",
+            "socials/prague-10/martin-pelikan/ig-post.png",
+            "socials/prague-10/martin-pelikan/ig-story.png",
+            "socials/prague-10/martin-pelikan/linkedin-post.png"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TmKQf5uo1KC-J3kWR6j2Mwc",
+      "name": "Martin Pernica"
+    },
+    {
+      "id": "VJXyNhSfBtV-xsLwsVe59aE",
+      "name": "Martin Pohl",
+      "photo": "photos/martin-pohl.webp",
+      "company": "ZNK",
+      "url": "https://znk.cz/",
+      "talks": [
+        {
+          "eventId": "prague-9",
+          "socials": [
+            "socials/prague-9/martin-pohl/ig-post.png",
+            "socials/prague-9/martin-pohl/ig-story.png",
+            "socials/prague-9/martin-pohl/fb-post.png",
+            "socials/prague-9/martin-pohl/fb-story.png",
+            "socials/prague-9/martin-pohl/linkedin-post.png"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Rn8PnLxQ4Jt-fkMaefRXLzS",
+      "name": "Matěj Gargula"
+    },
+    {
+      "id": "G7Rq58qNKGB-LSpntnE4wgC",
+      "name": "Michael Petr"
+    },
+    {
+      "id": "UTy89CRN4iA-iHoYAZx5Cbr",
+      "name": "Michal Ščuglík"
+    },
+    {
+      "id": "GkjSasfWaBz-1snpmZu86ch",
+      "name": "Ondřej Purchart",
+      "company": "Flying Rat"
+    },
+    {
+      "id": "CtgNLHgTYuE-EybxFyvYnGK",
+      "name": "Patrik Smělý",
+      "company": "Apparently Studio",
+      "url": "https://apparently.studio/",
+      "communityId": "CtPK2iptd1f-ALRfyXnni4e"
+    },
+    {
+      "id": "HYsLi592Tfk-FJrfhMairdu",
+      "name": "Pavel Dobrovský",
+      "company": "Retro Nation, Level, ABC"
+    },
+    {
+      "id": "HaDFBNXp8KB-W4X8dMmL4nq",
+      "name": "Pavel Novák"
+    },
+    {
+      "id": "8zx2KDFY6ek-dEHmDi34as6",
+      "name": "Pavel Pilař"
+    },
+    {
+      "id": "UQ94UgiVLCH-oUQY7muEfdu",
+      "name": "Petr Kolář"
+    },
+    {
+      "id": "Nsdno1vvGrV-8u8WcH5ZRLS",
+      "kind": "group",
+      "name": "Quest"
+    },
+    {
+      "id": "Xknn8vENbru-gpGUpsxaD5a",
+      "name": "Šárka Tmějová"
+    },
+    {
+      "id": "87gxx923XEt-h9siL1yChDf",
+      "name": "Tadeáš Anděl"
+    },
+    {
+      "id": "4GEocQ31JAC-jDzCZDiM7MM",
+      "name": "Tadeáš Kříbek"
+    },
+    {
+      "id": "MdMnuMxb4Ao-8Tn3g6D75ys",
+      "name": "Tobias Stolz-Zwilling"
+    },
+    {
+      "id": "FcBbr4DNajg-UBowSDuy1MX",
+      "name": "Tomáš Bubeníček"
+    },
+    {
+      "id": "DYfCkipuSbg-awZrD8gqrBD",
+      "name": "Tomáš Rampas"
+    },
+    {
+      "id": "BgKdKZ13AuB-bFwCsbxchqR",
+      "name": "Tomáš Vrba",
+      "photo": "photos/tomas-vrba.webp",
+      "company": "Aerift Games",
+      "url": "https://aeriftgames.com/",
+      "talks": [
+        {
+          "eventId": "prague-9",
+          "socials": [
+            "socials/prague-9/tomas-vrba_tomas-vresky/fb-post.png",
+            "socials/prague-9/tomas-vrba_tomas-vresky/fb-story.png",
+            "socials/prague-9/tomas-vrba_tomas-vresky/ig-post.png",
+            "socials/prague-9/tomas-vrba_tomas-vresky/ig-story.png",
+            "socials/prague-9/tomas-vrba_tomas-vresky/linkedin-post.png"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "45xVQYhL6Ur-GFXdR9xMNew",
+      "name": "Tomáš Vřeský",
+      "photo": "photos/tomas-vresky.webp",
+      "company": "Aerift Games",
+      "url": "https://aeriftgames.com/",
+      "talks": [
+        {
+          "eventId": "prague-9",
+          "socials": [
+            "socials/prague-9/tomas-vrba_tomas-vresky/fb-post.png",
+            "socials/prague-9/tomas-vrba_tomas-vresky/fb-story.png",
+            "socials/prague-9/tomas-vrba_tomas-vresky/ig-post.png",
+            "socials/prague-9/tomas-vrba_tomas-vresky/ig-story.png",
+            "socials/prague-9/tomas-vrba_tomas-vresky/linkedin-post.png"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7eJXFL4C5hw-N2xtWN9Y9sg",
+      "name": "Tomislav Čečka"
+    },
+    {
+      "id": "UXCp5owzaK5-FU5UnBG26k1",
+      "name": "Viktor Bocan"
+    },
+    {
+      "id": "VhMAB8wAyJu-8MfGHCNor5g",
+      "name": "Xuan Hung Do",
+      "company": "Flying Rat Studio",
+      "url": "https://www.flying-rat.studio/"
+    }
+  ]
+}

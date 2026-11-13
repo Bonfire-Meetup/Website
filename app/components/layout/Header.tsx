@@ -70,7 +70,8 @@ const DESKTOP_NAV_ITEMS: DesktopNavItem[] = [
     href: PAGE_ROUTES.SPEAK,
     label: "speak",
     prefetch: false,
-    matches: (pathname) => pathname.startsWith(PAGE_ROUTES.SPEAK),
+    matches: (pathname) =>
+      pathname === PAGE_ROUTES.SPEAK || pathname.startsWith(`${PAGE_ROUTES.SPEAK}/`),
   },
   {
     href: PAGE_ROUTES.SUPPORT,
@@ -173,7 +174,7 @@ function getMobileSectionMarker(
     };
   }
 
-  if (pathname.startsWith("/speak")) {
+  if (pathname === PAGE_ROUTES.SPEAK || pathname.startsWith(`${PAGE_ROUTES.SPEAK}/`)) {
     return {
       dotClassName: "bg-orange-500/80 dark:bg-orange-400/85",
       label: t("speak"),

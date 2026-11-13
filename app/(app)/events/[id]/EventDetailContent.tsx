@@ -45,14 +45,17 @@ import {
   formatSpeakerNameWithCompany,
   formatSpeakerNames,
   hasRenderableSpeakerName,
+  isTbaSpeakerName,
   primarySpeakerName,
   resolveSpeakerLinks,
+  speakerPathSegment,
 } from "@/lib/events/speakers";
 import { useIsRole } from "@/lib/redux/hooks/useIsRole";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
 
 interface Speaker {
+  speakerIds?: string[];
   name: string | string[];
   company?: string | string[];
   topic: string;
@@ -62,6 +65,7 @@ interface Speaker {
   url?: string | string[];
   recordingId?: string;
   recordingHref?: string;
+  group?: { id: string; name: string; url?: string };
 }
 
 interface EventLinks {
@@ -720,53 +724,41 @@ export function EventDetailContent({
                         )}
 
                         <div className="relative mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-black/5 pt-4 dark:border-white/10">
+                          {speaker.group && (
+                            <Link
+                              href={PAGE_ROUTES.SPEAKER(
+                                speakerPathSegment(speaker.group.name, speaker.group.id),
+                              )}
+                              className="w-full text-base font-bold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
+                            >
+                              {speaker.group.name}
+                            </Link>
+                          )}
                           {resolveSpeakerLinks(speaker).map((resolved) => {
-                            const profileHref = resolved.profileId
-                              ? PAGE_ROUTES.USER(resolved.profileId)
-                              : undefined;
+                            const speakerHref =
+                              resolved.slug && !isTbaSpeakerName(resolved.name)
+                                ? PAGE_ROUTES.SPEAKER(resolved.slug)
+                                : undefined;
                             const domain = resolved.url
                               ? new URL(resolved.url).hostname.replace(/^www\./u, "")
                               : undefined;
 
                             return (
                               <div key={resolved.name} className="flex items-center gap-2.5">
-                                {profileHref ? (
-                                  <a
-                                    href={profileHref}
-                                    className="transition-opacity hover:opacity-80"
-                                  >
-                                    <div className={accent.iconClassName}>
-                                      {getSpeakerInitials(resolved.name)}
-                                    </div>
-                                  </a>
-                                ) : (
-                                  <div className={accent.iconClassName}>
-                                    {getSpeakerInitials(resolved.name)}
-                                  </div>
-                                )}
+                                <div className={accent.iconClassName}>
+                                  {getSpeakerInitials(resolved.name)}
+                                </div>
                                 <div>
-                                  {profileHref ? (
-                                    <a
-                                      href={profileHref}
+                                  {speakerHref ? (
+                                    <Link
+                                      href={speakerHref}
                                       className="block font-semibold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
                                     >
                                       {formatSpeakerNameWithCompany(
                                         resolved.name,
                                         resolved.company,
                                       )}
-                                    </a>
-                                  ) : resolved.url ? (
-                                    <a
-                                      href={resolved.url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="block font-semibold text-neutral-900 underline decoration-neutral-300 underline-offset-2 transition-colors hover:decoration-neutral-500 dark:text-white dark:decoration-neutral-600 dark:hover:decoration-neutral-400"
-                                    >
-                                      {formatSpeakerNameWithCompany(
-                                        resolved.name,
-                                        resolved.company,
-                                      )}
-                                    </a>
+                                    </Link>
                                   ) : (
                                     <p className="font-semibold text-neutral-900 dark:text-white">
                                       {formatSpeakerNameWithCompany(

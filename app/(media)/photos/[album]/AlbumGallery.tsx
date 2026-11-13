@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { AlbumImage } from "@/components/shared/AlbumImage";
-
-import { Lightbox } from "./Lightbox";
+import { Lightbox } from "@/components/shared/Lightbox";
 
 interface Image {
   src: string;

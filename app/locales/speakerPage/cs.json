@@ -1,0 +1,46 @@
+{
+  "speakerPage": {
+    "eyebrow": "Vystoupení na Bonfire",
+    "metaDescription": "{name} – přednášky na herních meetupech Bonfire.",
+    "talkCount": "{count, plural, one {# přednáška na Bonfire} few {# přednášky na Bonfire} other {# přednášek na Bonfire}}",
+    "talksHeading": "Přednášky",
+    "prague": "Praha",
+    "zlin": "Zlín",
+    "withSpeakers": "Společně s",
+    "viewEvent": "Zobrazit akci",
+    "watchRecording": "Pustit záznam",
+    "viewImage": "Zobrazit: {label}",
+    "download": "Stáhnout",
+    "formats": {
+      "instagramPost": "Příspěvek na Instagram",
+      "instagramStory": "Instagram story",
+      "facebookPost": "Příspěvek na Facebook",
+      "facebookStory": "Facebook story",
+      "linkedinPost": "Příspěvek na LinkedIn"
+    },
+    "upcoming": "Chystá se",
+    "eventPhotos": "{count, plural, one {# fotka} few {# fotky} other {# fotek}}",
+    "community": {
+      "title": "Součást komunity Bonfire",
+      "memberSince": "V komunitě od: {date}",
+      "eventsAttended": "Navštívené akce",
+      "boostsGiven": "Udělené boosty",
+      "viewProfile": "Zobrazit komunitní profil"
+    },
+    "groupEyebrow": "Hosté Bonfire",
+    "members": "Členové",
+    "partOf": "V rámci",
+    "shareImages": "Obrázky ke sdílení ({count})",
+    "socials": {
+      "title": "Obrázky ke sdílení",
+      "intro": "Hotové obrázky pro oznámení přednášky. Otevři si je v plné velikosti, nebo si je stáhni.",
+      "metaDescription": "Obrázky ke sdílení přednášky „{topic}“ ({name}).",
+      "platforms": {
+        "instagram": "Instagram",
+        "facebook": "Facebook",
+        "linkedin": "LinkedIn"
+      }
+    },
+    "talkCountLabel": "{count, plural, one {přednáška na Bonfire} few {přednášky na Bonfire} other {přednášek na Bonfire}}"
+  }
+}

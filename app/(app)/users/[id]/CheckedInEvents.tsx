@@ -38,15 +38,12 @@ export async function CheckedInEvents({ userId, profileUserId }: CheckedInEvents
       aria-labelledby="profile-checkedin-events-heading"
       aria-describedby="profile-checkedin-events-count"
     >
-      <div className="pointer-events-none absolute -inset-4 rounded-3xl bg-gradient-to-b from-blue-500/5 to-transparent" />
-
-      <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-white/5 dark:bg-neutral-900/50">
+      <div className="glass-card relative flex h-full flex-col rounded-[28px] border border-black/5 bg-white/80 hover:[transform:none]! dark:border-white/10 dark:bg-neutral-950/70">
         <div className="absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
         <div className="px-6 pt-6 pb-2 sm:px-8 sm:pt-8">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-blue-500/30 blur-lg" />
               <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-400 to-indigo-600 shadow-lg shadow-blue-500/25">
                 <CheckIcon className="h-6 w-6 text-white" aria-hidden="true" />
               </div>

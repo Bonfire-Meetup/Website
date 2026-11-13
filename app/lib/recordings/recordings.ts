@@ -3,6 +3,7 @@ import { cache } from "react";
 import pragueRecordingsData from "@/data/prague-recordings.json";
 import zlinRecordingsData from "@/data/zlin-recordings.json";
 import { LOCATIONS, type LocationValue } from "@/lib/config/constants";
+import { getSpeakerRecord } from "@/lib/events/speaker-records";
 
 import {
   type RecordingAccessPolicy,
@@ -22,6 +23,8 @@ export interface Recording {
   slug: string;
   title: string;
   speaker: string[];
+  /** Ids into speakers.json, in the same order as `speaker`. */
+  speakerIds: string[];
   date: string;
   thumbnail: string;
   featureHeroThumbnail?: string;
@@ -53,24 +56,60 @@ function withEpisode(recording: Recording) {
   };
 }
 
+/** A recording as stored in the data files; speakers are ids into speakers.json. */
+interface RecordingJson {
+  access?: unknown;
+  date: string;
+  description: string | null;
+  earlyAccess?: unknown;
+  episodeId?: string;
+  featureHeroThumbnail?: string;
+  shortId: string;
+  slug: string;
+  speakers: string[];
+  tags: string[];
+  /** Only set when the default YouTube thumbnail is not the right one. */
+  thumbnail?: string;
+  title: string;
+  url?: string;
+  youtubeId: string;
+}
+
+function speakerName(id: string, recording: RecordingJson): string {
+  const record = getSpeakerRecord(id);
+  if (!record) {
+    throw new Error(
+      `Recording "${recording.shortId}" refers to speaker "${id}", which is not in speakers.json.`,
+    );
+  }
+  return record.name;
+}
+
+function toRecording(recording: RecordingJson, location: LocationValue): Recording {
+  const { speakers, earlyAccess, ...rest } = recording;
+
+  return {
+    ...rest,
+    access:
+      normalizeRecordingAccessPolicy(recording.access) ?? normalizeLegacyEarlyAccess(earlyAccess),
+    location,
+    speaker: speakers.map((id) => speakerName(id, recording)),
+    speakerIds: speakers,
+    tags: recording.tags.map((tag) => tag.toLowerCase()),
+    thumbnail:
+      recording.thumbnail ?? `https://img.youtube.com/vi/${recording.youtubeId}/maxresdefault.jpg`,
+    url: recording.url ?? `https://www.youtube.com/watch?v=${recording.youtubeId}`,
+  };
+}
+
 export const getAllRecordings = cache((): Recording[] =>
   [
-    ...pragueRecordingsData.recordings.map((recording) => ({
-      ...recording,
-      access:
-        normalizeRecordingAccessPolicy((recording as { access?: unknown }).access) ??
-        normalizeLegacyEarlyAccess((recording as { earlyAccess?: unknown }).earlyAccess),
-      location: LOCATIONS.PRAGUE,
-      tags: recording.tags.map((tag) => tag.toLowerCase()),
-    })),
-    ...zlinRecordingsData.recordings.map((recording) => ({
-      ...recording,
-      access:
-        normalizeRecordingAccessPolicy((recording as { access?: unknown }).access) ??
-        normalizeLegacyEarlyAccess((recording as { earlyAccess?: unknown }).earlyAccess),
-      location: LOCATIONS.ZLIN,
-      tags: recording.tags.map((tag) => tag.toLowerCase()),
-    })),
+    ...(pragueRecordingsData.recordings as RecordingJson[]).map((recording) =>
+      toRecording(recording, LOCATIONS.PRAGUE),
+    ),
+    ...(zlinRecordingsData.recordings as RecordingJson[]).map((recording) =>
+      toRecording(recording, LOCATIONS.ZLIN),
+    ),
   ]
     .map((recording) => withEpisode(recording))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
