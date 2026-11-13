@@ -23,6 +23,7 @@ export function EventsSectionClient({
   hideHeader = false,
   hideEpisodeFilter = false,
   cardVariant = "full",
+  speakerPhotos,
 }: {
   events: EventItem[];
   initialEpisode?: string;
@@ -30,6 +31,7 @@ export function EventsSectionClient({
   hideHeader?: boolean;
   hideEpisodeFilter?: boolean;
   cardVariant?: "full" | "compact";
+  speakerPhotos?: Record<string, string>;
 }) {
   const t = useTranslations("sections.events");
   const tEvents = useTranslations("events");
@@ -106,6 +108,7 @@ export function EventsSectionClient({
               <UpcomingEventCompactCard
                 key={event.id}
                 id={event.id}
+                announcementStatus={event.announcementStatus}
                 title={event.title}
                 location={event.location}
                 date={event.date}
@@ -113,6 +116,7 @@ export function EventsSectionClient({
                 venue={event.venue}
                 description={event.description}
                 speakers={event.speakers}
+                speakerPhotos={speakerPhotos}
                 locale={locale}
                 now={now}
                 t={tEvents}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { HomeContent } from "@/HomeContent";
 import { getHomeEvents } from "@/lib/events/event-views";
+import { buildSpeakerMedia } from "@/lib/events/speaker-media";
 import { buildMetaPageMetadata } from "@/lib/metadata";
 import { getHeroImages } from "@/lib/recordings/data";
 import { getTrendingRecordingsSafe } from "@/lib/recordings/trending";
@@ -72,6 +73,7 @@ export default async function HomePage() {
     <HomeContent
       hostedCounts={hostedCounts}
       upcoming={upcoming}
+      speakerPhotos={buildSpeakerMedia(upcoming).photos}
       heroImages={heroImages}
       heroTrendingRecordings={heroTrendingRecordings}
       trendingRecordings={nonHeroTrendingRecordings.slice(0, TRENDING_SECTION_LIMIT)}

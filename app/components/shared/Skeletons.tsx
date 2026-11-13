@@ -15,17 +15,19 @@ export function EventsSectionSkeleton() {
           <Skeleton className="mx-auto mb-4 h-10 w-64" />
           <Skeleton className="mx-auto h-6 w-full max-w-lg" />
         </div>
-        <div className="mb-12 flex justify-center gap-2">
-          <Skeleton className="h-10 w-28 rounded-xl" />
-          <Skeleton className="h-10 w-28 rounded-xl" />
-        </div>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="space-y-4 rounded-2xl bg-white/50 p-6 dark:bg-white/5">
-              <Skeleton className="h-6 w-24" />
-              <Skeleton className="h-8 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-              <Skeleton className="h-20 w-full rounded-xl" />
+        <div className="grid gap-8 sm:grid-cols-2 sm:max-md:gap-5">
+          {[1, 2].map((i) => (
+            <div key={i} className="rounded-2xl bg-white/50 p-5 lg:p-7 dark:bg-white/5">
+              <div className="flex items-start gap-4">
+                <Skeleton className="h-21 w-18 shrink-0 rounded-2xl" />
+                <div className="min-w-0 flex-1 space-y-3">
+                  <Skeleton className="h-6 w-20 rounded-full" />
+                  <Skeleton className="h-7 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              </div>
+              <Skeleton className="mt-6 h-36 w-full rounded-xl" />
+              <Skeleton className="mt-6 h-11 w-full rounded-xl" />
             </div>
           ))}
         </div>

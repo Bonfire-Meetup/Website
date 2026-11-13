@@ -17,6 +17,7 @@ import type { TrendingRecording } from "./lib/recordings/trending";
 interface HomeContentProps {
   hostedCounts: HostedEventCounts;
   upcoming: EventItem[];
+  speakerPhotos: Record<string, string>;
   heroImages: {
     src: string;
     alt: string;
@@ -31,6 +32,7 @@ export function HomeContent({
   heroImages,
   hostedCounts,
   upcoming,
+  speakerPhotos,
   heroTrendingRecordings,
   trendingRecordings,
 }: HomeContentProps) {
@@ -52,7 +54,7 @@ export function HomeContent({
         hasUpcomingEvent={hasUpcomingEvent}
       />
 
-      <EventsSection events={upcomingEvents} cardVariant="compact" />
+      <EventsSection events={upcomingEvents} cardVariant="compact" speakerPhotos={speakerPhotos} />
 
       <div className="section-divider mx-auto max-w-4xl" />
 
