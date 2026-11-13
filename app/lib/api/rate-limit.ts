@@ -12,6 +12,23 @@ import { getRequestId } from "@/lib/utils/request-context";
 const RATE_LIMIT_WINDOW_MS = 60_000;
 
 const rateLimitStores = new Map<string, Map<string, number[]>>();
+const lastSweepAt = new Map<string, number>();
+
+const sweepExpiredKeys = (storeKey: string, store: Map<string, number[]>, windowMs: number) => {
+  const now = Date.now();
+
+  if (now - (lastSweepAt.get(storeKey) ?? 0) < windowMs) {
+    return;
+  }
+
+  lastSweepAt.set(storeKey, now);
+
+  for (const [key, hits] of store) {
+    if ((hits.at(-1) ?? 0) <= now - windowMs) {
+      store.delete(key);
+    }
+  }
+};
 
 const hashValue = (value: string) => {
   const salt = serverEnv.BNF_HEARTS_SALT;
@@ -54,6 +71,7 @@ export const isRateLimited = (
   windowMs = RATE_LIMIT_WINDOW_MS,
 ) => {
   const store = getRateLimitStore(storeKey);
+  sweepExpiredKeys(storeKey, store, windowMs);
   const now = Date.now();
   const hits = store.get(key)?.filter((time) => now - time < windowMs) ?? [];
 
