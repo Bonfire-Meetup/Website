@@ -1,23 +1,19 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 
 import { StaticPageHero } from "@/components/layout/StaticPageHero";
-import { formatLongDateUTC } from "@/lib/utils/locale";
 
-import { CodeOfConductSection } from "./components/CodeOfConductSection";
-import { PrivacyPolicySection } from "./components/PrivacyPolicySection";
 import { TableOfContents } from "./components/TableOfContents";
-import { TermsOfServiceSection } from "./components/TermsOfServiceSection";
 
-export function LegalPageContent() {
+interface LegalPageContentProps {
+  children: ReactNode;
+}
+
+export function LegalPageContent({ children }: LegalPageContentProps) {
   const t = useTranslations("legal");
-  const tPrivacy = useTranslations("legal.privacy");
-  const tTerms = useTranslations("legal.terms");
   const tToc = useTranslations("legal.toc");
-  const locale = useLocale();
-
-  const lastUpdated = formatLongDateUTC("2025-01-01", locale);
 
   return (
     <main className="gradient-bg min-h-screen pb-20">
@@ -39,9 +35,7 @@ export function LegalPageContent() {
         <div className="mx-auto max-w-3xl">
           <div className="glass-card no-hover-pop space-y-12 p-8 sm:p-12">
             <TableOfContents tToc={tToc} />
-            <CodeOfConductSection t={t} tToc={tToc} />
-            <PrivacyPolicySection tPrivacy={tPrivacy} currentDate={lastUpdated} />
-            <TermsOfServiceSection tTerms={tTerms} currentDate={lastUpdated} />
+            {children}
           </div>
         </div>
       </div>
