@@ -15,6 +15,7 @@ import {
   uniqueIndex,
   inet,
   serial,
+  check,
 } from "drizzle-orm/pg-core";
 
 export const appUser = pgTable(
@@ -635,3 +636,63 @@ export const eventQuestionBoost = pgTable(
     }).onDelete("cascade"),
   ],
 );
+
+export const eventSurveyResponse = pgTable(
+  "event_survey_response",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    eventId: text("event_id"),
+    eventTitle: text("event_title").notNull(),
+    overallRating: smallint("overall_rating"),
+    favoriteParts: text("favorite_parts").array().default([]).notNull(),
+    favoritePartsOther: text("favorite_parts_other"),
+    futureTopics: text("future_topics").array().default([]).notNull(),
+    futureTopicsOther: text("future_topics_other"),
+    talkFormat: text("talk_format"),
+    talkFormatOther: text("talk_format_other"),
+    nextEventLikelihood: smallint("next_event_likelihood"),
+    suggestions: text("suggestions"),
+    talkFeedbackEnabled: boolean("talk_feedback_enabled").default(false).notNull(),
+    talksOverallRating: smallint("talks_overall_rating"),
+    talkFeedback: jsonb("talk_feedback").$type<EventSurveyTalkFeedback[]>().default([]).notNull(),
+    legacyMessage: text("legacy_message"),
+    ipHash: text("ip_hash").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("event_survey_response_event_id_idx").using(
+      "btree",
+      table.eventId.asc().nullsLast().op("text_ops"),
+    ),
+    index("event_survey_response_created_at_idx").using(
+      "btree",
+      table.createdAt.desc().nullsFirst().op("timestamptz_ops"),
+    ),
+    index("event_survey_response_ip_hash_idx").using(
+      "btree",
+      table.ipHash.asc().nullsLast().op("text_ops"),
+    ),
+    check(
+      "event_survey_response_overall_rating_check",
+      sql`${table.overallRating} BETWEEN 0 AND 5`,
+    ),
+    check(
+      "event_survey_response_next_event_likelihood_check",
+      sql`${table.nextEventLikelihood} BETWEEN 0 AND 5`,
+    ),
+    check(
+      "event_survey_response_talks_overall_rating_check",
+      sql`${table.talksOverallRating} BETWEEN 0 AND 5`,
+    ),
+  ],
+);
+
+export interface EventSurveyTalkFeedback {
+  talkIndex: number | null;
+  topic: string;
+  speaker: string;
+  rating: number | null;
+  comment: string | null;
+}

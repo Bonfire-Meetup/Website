@@ -4,16 +4,16 @@ import { checkBotId } from "botid/server";
 import { cookies, headers } from "next/headers";
 import { z } from "zod";
 
-import {
-  allEvents,
-  getEventById,
-  isTbaDate,
-  parseEventDateTimeParts,
-} from "@/data/events-calendar";
+import { allEvents, getEventById } from "@/data/events-calendar";
 
 import { WEBSITE_URLS } from "../config/constants";
 import { serverEnv } from "../config/env";
-import { insertContactSubmission, insertTalkProposal } from "../data/forms";
+import {
+  insertContactSubmission,
+  insertEventSurveyResponse,
+  insertTalkProposal,
+} from "../data/forms";
+import type { EventSurveyTalkFeedback } from "../data/schema";
 import { sha256WithSalt } from "../utils/hash";
 import { logError, logInfo, logWarn } from "../utils/log";
 
@@ -102,7 +102,6 @@ const surveyTalkFormatSchema = z.enum([
 
 const EVENT_ID_SET = new Set(allEvents.map((event) => event.id));
 const SCALE_VALUE_SCHEMA = z.enum(["0", "1", "2", "3", "4", "5"]);
-const NO_ANSWER = "No answer";
 
 const eventSurveySchema = z
   .object({
@@ -391,33 +390,6 @@ export async function submitTalkProposal(
   }
 }
 
-const SURVEY_FAVORITE_PART_LABELS: Record<z.infer<typeof surveyFavoritePartSchema>, string> = {
-  technology_talk: "Technology talk",
-  art_audio_management_talk: "Art / Audio / Management talk",
-  interview_or_live_podcast: "Interview or live podcast",
-  networking_social_time: "Networking / social time",
-  other: "Other",
-};
-
-const SURVEY_FUTURE_TOPIC_LABELS: Record<z.infer<typeof surveyFutureTopicSchema>, string> = {
-  technology: "Technology (engines, tools, coding)",
-  art_animation_workflows: "Art & animation workflows",
-  game_audio_sound_design_music: "Game audio & sound design & music",
-  game_production_project_management: "Game production & project management",
-  game_marketing_community: "Game marketing & community",
-  behind_the_scenes_interviews: "Behind-the-scenes interviews",
-  live_podcasts_panels: "Live podcasts or panels",
-  other: "Other",
-};
-
-const SURVEY_TALK_FORMAT_LABELS: Record<z.infer<typeof surveyTalkFormatSchema>, string> = {
-  perfect_as_is: "Perfect as is",
-  talks_should_be_shorter: "Talks should be shorter",
-  talks_could_go_deeper: "Talks could go deeper / be longer",
-  more_time_for_qna: "More time for Q&A",
-  other: "Other",
-};
-
 function requireOtherAnswer(
   ctx: z.RefinementCtx,
   isRequired: boolean,
@@ -457,120 +429,35 @@ function parseTalkFeedbackJson(value: FormDataEntryValue | null) {
   }
 }
 
-function formatSpeakerName(name: string | string[]): string {
-  return Array.isArray(name) ? name.join(", ") : name;
+function toRating(value: string | undefined): number | null {
+  return value === undefined ? null : Number(value);
 }
 
-function formatEventDateTimeForSurvey(eventId: string): string {
-  const event = getEventById(eventId);
-  const eventDateParts =
-    event && !isTbaDate(event.date) ? parseEventDateTimeParts(event.date, event.time) : null;
-
-  return eventDateParts
-    ? [
-        `${eventDateParts.year}-${eventDateParts.month.toString().padStart(2, "0")}-${eventDateParts.day.toString().padStart(2, "0")}`,
-        `${eventDateParts.hour.toString().padStart(2, "0")}:${eventDateParts.minute.toString().padStart(2, "0")}`,
-      ].join(" ")
-    : event?.date || "Unknown";
+function toOptionalText(value: string | undefined): string | null {
+  return value?.trim() || null;
 }
 
-function formatTalkFeedbackBlock(
-  eventId: string,
-  talkFeedbackEnabled: boolean,
-  talksOverallRating: string | undefined,
-  talkFeedback: { talkKey: string; rating?: string; comment?: string }[],
-): string[] {
-  if (!talkFeedbackEnabled) {
-    return ["Talk feedback: Not provided"];
-  }
-
-  const event = getEventById(eventId);
-  const meaningfulEntries = talkFeedback.filter((entry) => entry.rating || entry.comment?.trim());
-
-  if (!event || meaningfulEntries.length === 0) {
-    return [
-      "Talk feedback: Enabled",
-      `Talk quality overall: ${talksOverallRating ?? NO_ANSWER}`,
-      "Per-talk feedback: No answer",
-    ];
-  }
-
-  return [
-    "Talk feedback: Enabled",
-    `Talk quality overall: ${talksOverallRating ?? NO_ANSWER}`,
-    ...meaningfulEntries.map((entry) => {
-      const speaker = event.speakers[Number(entry.talkKey)];
-      if (!speaker) {
-        return `Talk ${entry.talkKey}: Invalid`;
-      }
-
-      return [
-        `${speaker.topic} (${formatSpeakerName(speaker.name)})`,
-        `Rating: ${entry.rating ?? NO_ANSWER}`,
-        `Comment: ${entry.comment?.trim() || NO_ANSWER}`,
-      ].join(" | ");
-    }),
-  ];
-}
-
-function withOtherLabel(value: string, otherValue?: string) {
-  if (value !== "Other") {
-    return value;
-  }
-
-  const trimmedOtherValue = otherValue?.trim();
-  return trimmedOtherValue ? `Other: ${trimmedOtherValue}` : value;
-}
-
-function formatSurveyMultiSelect(
-  values: string[],
-  labels: Record<string, string>,
-  otherValue?: string,
-): string {
-  if (values.length === 0) {
-    return NO_ANSWER;
-  }
-
-  return values
-    .map((value) =>
-      withOtherLabel(labels[value] || value, value === "other" ? otherValue : undefined),
-    )
-    .join("; ");
-}
-
-function formatSurveySingleSelect(
-  value: string | undefined,
-  labels: Record<string, string>,
-  otherValue?: string,
-): string {
-  if (!value) {
-    return NO_ANSWER;
-  }
-
-  return withOtherLabel(labels[value] || value, value === "other" ? otherValue : undefined);
-}
-
-function buildEventSurveyMessage(data: z.infer<typeof eventSurveySchema>): string {
+function buildTalkFeedback(data: z.infer<typeof eventSurveySchema>): EventSurveyTalkFeedback[] {
   const event = getEventById(data.eventId);
-  return [
-    "Event survey submission",
-    "",
-    `Event: ${event?.title || data.eventId}`,
-    `Event date: ${formatEventDateTimeForSurvey(data.eventId)}`,
-    `Overall enjoyment: ${data.overallRating ?? NO_ANSWER}`,
-    `Favorite parts: ${formatSurveyMultiSelect(data.favoriteParts, SURVEY_FAVORITE_PART_LABELS, data.favoritePartsOther)}`,
-    `Future topics: ${formatSurveyMultiSelect(data.futureTopics, SURVEY_FUTURE_TOPIC_LABELS, data.futureTopicsOther)}`,
-    `Talk length and format: ${formatSurveySingleSelect(data.talkFormat, SURVEY_TALK_FORMAT_LABELS, data.talkFormatOther)}`,
-    `Likelihood to attend next event: ${data.nextEventLikelihood ?? NO_ANSWER}`,
-    `Suggestions: ${data.suggestions?.trim() || NO_ANSWER}`,
-    "",
-    ...formatTalkFeedbackBlock(
-      data.eventId,
-      data.talkFeedbackEnabled,
-      data.talksOverallRating,
-      data.talkFeedback,
-    ),
-  ].join("\n");
+
+  if (!data.talkFeedbackEnabled || !event) {
+    return [];
+  }
+
+  return data.talkFeedback
+    .filter((entry) => entry.rating || entry.comment?.trim())
+    .map((entry) => {
+      const talkIndex = Number(entry.talkKey);
+      const speaker = event.speakers[talkIndex];
+
+      return {
+        comment: toOptionalText(entry.comment),
+        rating: toRating(entry.rating),
+        speaker: Array.isArray(speaker.name) ? speaker.name.join(", ") : speaker.name,
+        talkIndex,
+        topic: speaker.topic,
+      };
+    });
 }
 
 export async function submitEventSurvey(
@@ -635,15 +522,26 @@ export async function submitEventSurvey(
   }
 
   try {
-    const event = getEventById(result.data.eventId);
+    const { data } = result;
+    const hasFavoriteOther = data.favoriteParts.includes("other");
+    const hasFutureTopicOther = data.futureTopics.includes("other");
 
-    await insertContactSubmission({
-      email: "events-survey@bnf.events",
-      inquiryType: "event_survey",
+    await insertEventSurveyResponse({
+      eventId: data.eventId,
+      eventTitle: getEventById(data.eventId)?.title ?? data.eventId,
+      favoriteParts: data.favoriteParts,
+      favoritePartsOther: hasFavoriteOther ? toOptionalText(data.favoritePartsOther) : null,
+      futureTopics: data.futureTopics,
+      futureTopicsOther: hasFutureTopicOther ? toOptionalText(data.futureTopicsOther) : null,
       ipHash,
-      message: buildEventSurveyMessage(result.data),
-      name: "Event survey respondent",
-      subject: event ? `Event survey response: ${event.title}` : "Event survey response",
+      nextEventLikelihood: toRating(data.nextEventLikelihood),
+      overallRating: toRating(data.overallRating),
+      suggestions: toOptionalText(data.suggestions),
+      talkFeedback: buildTalkFeedback(data),
+      talkFeedbackEnabled: data.talkFeedbackEnabled,
+      talkFormat: data.talkFormat ?? null,
+      talkFormatOther: data.talkFormat === "other" ? toOptionalText(data.talkFormatOther) : null,
+      talksOverallRating: data.talkFeedbackEnabled ? toRating(data.talksOverallRating) : null,
     });
 
     logInfo("form.event_survey_submitted", { ipHash });

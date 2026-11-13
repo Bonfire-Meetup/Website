@@ -35,10 +35,6 @@
           {
             "name": "Pavel Pilař",
             "role": "operations, bodyguard"
-          },
-          {
-            "name": "Matouš Márai",
-            "role": "operations"
           }
         ]
       },
@@ -65,6 +61,18 @@
         ]
       }
     ],
+    "alumni": {
+      "eyebrow": "Former crew",
+      "name": "Hall of Fame",
+      "tagline": "They helped build Bonfire along the way.",
+      "members": [
+        {
+          "name": "Matouš Márai",
+          "role": "operations",
+          "city": "prague"
+        }
+      ]
+    },
     "joinCallout": "Want to lend a hand? Reach out at",
     "joinCalloutOr": "or use the",
     "joinCalloutContact": "contact form",

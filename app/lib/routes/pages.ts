@@ -71,7 +71,7 @@ export const PAGE_ROUTES = {
   SHORT_LINK: (id: string) => `/l/${id}`,
   SPEAK: "/speak",
   SPEAKER: (slug: string) => `/speakers/${slug}`,
-  SPEAKER_SOCIALS: (slug: string, eventId: string) => `/speakers/${slug}/socials/${eventId}`,
+  SPEAKER_SOCIALS: (slug: string, eventId: string) => `/speakers/${slug}/share/${eventId}`,
   THIRD_PARTY: "/third-party",
   TIMELINE: "/timeline",
   USER: (publicId: string) => `/users/${publicId}`,

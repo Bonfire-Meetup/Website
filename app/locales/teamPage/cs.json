@@ -35,10 +35,6 @@
           {
             "name": "Pavel Pilař",
             "role": "produkce, bodyguard"
-          },
-          {
-            "name": "Matouš Márai",
-            "role": "produkce"
           }
         ]
       },
@@ -65,6 +61,18 @@
         ]
       }
     ],
+    "alumni": {
+      "eyebrow": "Bývalí členové",
+      "name": "Síň slávy",
+      "tagline": "Pomáhali Bonfire stavět.",
+      "members": [
+        {
+          "name": "Matouš Márai",
+          "role": "produkce",
+          "city": "prague"
+        }
+      ]
+    },
     "joinCallout": "Chceš pomoct? Napiš na",
     "joinCalloutOr": "nebo použij",
     "joinCalloutContact": "kontaktní formulář",

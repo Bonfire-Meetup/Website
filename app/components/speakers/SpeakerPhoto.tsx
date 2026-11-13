@@ -27,6 +27,8 @@ function maskStyle(svg: string) {
 
 interface SpeakerPhotoProps {
   className?: string;
+  /** Fill behind the initials when there is no photo. */
+  gradientClassName?: string;
   initialsClassName?: string;
   kind?: keyof typeof FRAMES;
   name: string;
@@ -37,6 +39,7 @@ interface SpeakerPhotoProps {
 
 export function SpeakerPhoto({
   className = "",
+  gradientClassName = "from-orange-500 to-rose-600",
   initialsClassName = "text-5xl",
   kind = "person",
   name,
@@ -46,7 +49,7 @@ export function SpeakerPhoto({
 }: SpeakerPhotoProps) {
   return (
     <div
-      className={`relative bg-gradient-to-br from-orange-500 to-rose-600 ${FRAMES[kind].aspect} ${className}`}
+      className={`relative bg-gradient-to-br ${gradientClassName} ${FRAMES[kind].aspect} ${className}`}
       style={maskStyle(FRAMES[kind].svg)}
     >
       {photoUrl ? (

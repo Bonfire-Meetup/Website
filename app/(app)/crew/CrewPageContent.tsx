@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 
 import { StaticPageHero } from "@/components/layout/StaticPageHero";
@@ -14,11 +15,13 @@ import {
   ShieldIcon,
   VideoIcon,
 } from "@/components/shared/Icons";
+import { SpeakerPhoto } from "@/components/speakers/SpeakerPhoto";
 import { WEBSITE_URLS } from "@/lib/config/constants";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { getInitials } from "@/lib/utils/initials";
 
 interface TeamMember {
+  /** Only set in the Hall of Fame: the chapter the person helped at. */
+  city?: "prague" | "zlin";
   name: string;
   role: string;
 }
@@ -75,7 +78,7 @@ function renderWithBold(text: string) {
       return (
         <strong
           key={`bold-${partOffset}-${content.slice(0, 10)}`}
-          className="font-semibold text-neutral-700 dark:text-neutral-200"
+          className="font-semibold text-neutral-900 dark:text-white"
         >
           {content}
         </strong>
@@ -85,58 +88,23 @@ function renderWithBold(text: string) {
   });
 }
 
-function MemberCard({
-  member,
-  cityTheme,
-  index,
-}: {
-  member: TeamMember;
-  cityTheme: "prague" | "zlin";
-  index: number;
-}) {
-  const themeClasses =
-    cityTheme === "prague"
-      ? "from-rose-500/20 via-orange-500/10 to-transparent hover:from-rose-500/30 hover:via-orange-500/20 border-rose-500/20 hover:border-rose-500/40"
-      : "from-blue-500/20 via-cyan-500/10 to-transparent hover:from-blue-500/30 hover:via-cyan-500/20 border-blue-500/20 hover:border-blue-500/40";
-  const avatarTheme =
-    cityTheme === "prague"
-      ? "from-rose-500 to-orange-500 shadow-rose-500/30"
-      : "from-blue-500 to-cyan-500 shadow-blue-500/30";
-  const glowTheme =
-    cityTheme === "prague"
-      ? "group-hover:shadow-[0_0_40px_var(--color-prague-glow)]"
-      : "group-hover:shadow-[0_0_40px_var(--color-zlin-glow)]";
-
-  return (
-    <div
-      className={`group recording-card-enter relative stagger-${Math.min(index + 1, 8)}`}
-      style={{ opacity: 0 }}
-    >
-      <div
-        className={`relative overflow-hidden rounded-2xl border bg-gradient-to-br p-4 transition-all duration-300 ${themeClasses} ${glowTheme}`}
-      >
-        <div className="relative flex items-center gap-4">
-          <div
-            className={`relative flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${avatarTheme} shadow-lg transition-transform duration-300 group-hover:scale-110`}
-          >
-            <span className="text-lg font-bold text-white">{getInitials(member.name)}</span>
-            <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-neutral-900 text-white shadow-lg dark:bg-white/10">
-              <RoleIcon role={member.role} className="h-3.5 w-3.5" />
-            </span>
-          </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="group-hover:text-brand-600 dark:group-hover:text-brand-400 truncate text-lg font-bold text-neutral-900 transition-colors dark:text-white">
-              {member.name}
-            </h3>
-            <p className="truncate text-sm font-medium tracking-wider text-neutral-500 uppercase dark:text-neutral-400">
-              {member.role}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+const CITY_THEME = {
+  prague: {
+    avatar: "from-orange-500 to-rose-600",
+    color: "var(--color-prague)",
+    title: "from-rose-500 via-orange-500 to-amber-500",
+  },
+  alumni: {
+    avatar: "from-neutral-400 to-neutral-600",
+    color: "var(--color-neutral-500)",
+    title: "from-neutral-500 to-neutral-400",
+  },
+  zlin: {
+    avatar: "from-sky-500 to-indigo-600",
+    color: "var(--color-zlin)",
+    title: "from-blue-500 via-cyan-500 to-teal-500",
+  },
+} as const;
 
 function CitySection({
   city,
@@ -144,45 +112,66 @@ function CitySection({
   crewEyebrow,
 }: {
   city: TeamCity;
-  theme: "prague" | "zlin";
+  theme: keyof typeof CITY_THEME;
   crewEyebrow: string;
 }) {
-  const headerGradient =
-    theme === "prague"
-      ? "from-rose-500 via-orange-500 to-amber-500"
-      : "from-blue-500 via-cyan-500 to-teal-500";
+  const tone = CITY_THEME[theme];
+  const tCommon = useTranslations("common");
+  const members = [...city.members].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <section className="relative">
-      <div className="relative">
-        <div className="mb-8 flex items-end gap-4">
-          <div className="flex-1">
-            <p className="text-brand-600 dark:text-brand-300 tracking-label-lg mb-2 text-xs font-bold uppercase">
-              {crewEyebrow}
-            </p>
-            <h2
-              className={`bg-gradient-to-r bg-clip-text text-4xl font-black tracking-tight text-transparent sm:text-5xl ${headerGradient}`}
-            >
-              {city.name}
-            </h2>
-          </div>
-          <p className="hidden pb-2 text-sm text-neutral-500 italic sm:block dark:text-neutral-400">
-            &ldquo;{city.tagline}&rdquo;
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[...city.members]
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((member, index) => (
-              <MemberCard
-                key={`${city.name}-${member.name}`}
-                member={member}
-                cityTheme={theme}
-                index={index}
-              />
-            ))}
-        </div>
+    <section className="grid gap-x-12 gap-y-8 lg:grid-cols-[18rem_minmax(0,1fr)]">
+      <div className="lg:sticky lg:top-28 lg:self-start">
+        <p className="eyebrow text-xs" style={{ color: tone.color }}>
+          {crewEyebrow}
+        </p>
+        <h2
+          className={`mt-2 bg-gradient-to-r bg-clip-text pb-1 leading-none font-black tracking-tighter text-transparent ${theme === "alumni" ? "text-4xl sm:text-5xl" : "text-6xl sm:text-7xl"} ${tone.title}`}
+        >
+          {city.name}
+        </h2>
+        <p className="mt-4 text-neutral-600 dark:text-neutral-300">{city.tagline}</p>
       </div>
+
+      <ul className="border-t border-neutral-200 dark:border-white/10">
+        {members.map((member) => (
+          <li
+            key={`${city.name}-${member.name}`}
+            className="flex items-center gap-4 border-b border-neutral-200 py-4 sm:gap-5 dark:border-white/10"
+          >
+            <SpeakerPhoto
+              name={member.name}
+              sizes="44px"
+              className="w-11 shrink-0"
+              initialsClassName="text-sm"
+              gradientClassName={member.city ? CITY_THEME[member.city].avatar : tone.avatar}
+            />
+            <div className="min-w-0 flex-1">
+              <p className="text-xl font-bold tracking-tight text-neutral-900 sm:text-2xl dark:text-white">
+                {member.name}
+              </p>
+              {member.city && (
+                <p
+                  className="eyebrow text-2xs mt-1 flex items-center gap-1.5"
+                  style={{ color: CITY_THEME[member.city].color }}
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                  {tCommon(member.city)}
+                </p>
+              )}
+              <p className="tracking-label-sm text-2xs mt-0.5 font-mono text-neutral-500 uppercase sm:hidden dark:text-neutral-400">
+                {member.role}
+              </p>
+            </div>
+            <p className="tracking-label-sm flex shrink-0 items-center gap-2 text-right font-mono text-xs text-neutral-500 uppercase dark:text-neutral-400">
+              <span className="hidden sm:inline">{member.role}</span>
+              <span style={{ color: tone.color }}>
+                <RoleIcon role={member.role} className="h-4 w-4" />
+              </span>
+            </p>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -196,6 +185,7 @@ export function CrewPageContent() {
     name: city.name.replace("{prague}", tCommon("prague")).replace("{zlin}", tCommon("zlin")),
     tagline: city.tagline.replace("{prague}", tCommon("prague")).replace("{zlin}", tCommon("zlin")),
   }));
+  const alumni = t.raw("alumni") as TeamCity & { eyebrow: string };
   const uniquePeopleCount = new Set(
     citiesRaw.flatMap((city) => city.members.map((member) => member.name)),
   ).size;
@@ -232,27 +222,19 @@ export function CrewPageContent() {
             <span className="block">{t("titlePart2")}</span>
           </h1>
         }
-      >
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <div className="hidden flex-col items-center gap-2 text-neutral-500 sm:flex">
-            <span className="text-xs tracking-widest uppercase">scroll</span>
-            <div className="from-brand-500 h-8 w-px bg-gradient-to-b to-transparent" />
-          </div>
-        </div>
-      </StaticPageHero>
+      />
 
-      <div className="relative mx-auto max-w-6xl space-y-24 px-4 pb-24">
+      <div className="relative mx-auto max-w-5xl space-y-24 px-4 pb-24 sm:px-6">
         {cities[0] && (
           <CitySection city={cities[0]} theme="prague" crewEyebrow={t("crewEyebrow")} />
         )}
-        <div className="relative py-8">
-          <div className="via-brand-500/30 absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent to-transparent" />
-          <div className="bg-brand-500/50 absolute top-1/2 left-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-sm" />
-        </div>
         {cities[1] && <CitySection city={cities[1]} theme="zlin" crewEyebrow={t("crewEyebrow")} />}
+        {alumni.members.length > 0 && (
+          <CitySection city={alumni} theme="alumni" crewEyebrow={alumni.eyebrow} />
+        )}
 
-        <div className="text-center">
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        <div>
+          <p className="text-neutral-600 dark:text-neutral-300">
             {t("joinCallout")}{" "}
             <a
               href={`mailto:${WEBSITE_URLS.CONTACT_EMAIL_CREW}`}
@@ -270,24 +252,47 @@ export function CrewPageContent() {
           </p>
         </div>
 
-        <section className="relative mx-auto max-w-3xl">
-          <div className="border-brand-500/10 from-brand-500/5 relative overflow-hidden rounded-2xl border bg-gradient-to-br via-transparent to-rose-500/5 px-6 py-8">
-            <div className="relative text-center">
-              <p className="text-brand-600/70 dark:text-brand-400/70 mb-2 text-xs font-medium tracking-widest uppercase">
-                {t("founderEyebrow")}
-              </p>
-              <h2 className="mb-4 text-xl font-semibold text-neutral-900 dark:text-white">
-                {t("founderTitle")}
-              </h2>
-              <blockquote className="mx-auto max-w-2xl">
-                <p className="text-base leading-relaxed text-neutral-500 italic sm:text-lg dark:text-neutral-400">
-                  &ldquo;{renderWithBold(t("founderNote"))}&rdquo;
-                </p>
-                <p className="mt-4 text-right text-sm font-medium text-neutral-600 dark:text-neutral-300">
-                  - {t("founderSignature")}
-                </p>
-              </blockquote>
-            </div>
+        <section
+          aria-labelledby="founder-note-heading"
+          className="shadow-floating relative mx-auto max-w-2xl rounded-sm bg-white px-7 py-10 ring-1 ring-black/5 sm:px-14 sm:py-14 dark:bg-neutral-900 dark:ring-white/10"
+        >
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-orange-500 via-rose-500 to-red-500" />
+
+          <div className="flex items-center justify-between gap-4 border-b border-neutral-200 pb-6 dark:border-white/10">
+            <Image
+              src="/assets/brand/RGB_SVG_01_bonfire_black_gradient.svg"
+              alt="Bonfire"
+              width={120}
+              height={63}
+              className="h-9 w-auto dark:hidden"
+            />
+            <Image
+              src="/assets/brand/RGB_SVG_03_bonfire_white_gradient.svg"
+              alt="Bonfire"
+              width={120}
+              height={63}
+              className="hidden h-9 w-auto dark:block"
+            />
+            <p className="tracking-label-sm text-2xs text-right font-mono text-neutral-500 uppercase dark:text-neutral-400">
+              {t("founderEyebrow")}
+            </p>
+          </div>
+
+          <h2
+            id="founder-note-heading"
+            className="mt-8 text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl dark:text-white"
+          >
+            {t("founderTitle")},
+          </h2>
+          <p className="mt-5 text-lg leading-8 text-neutral-700 dark:text-neutral-300">
+            {renderWithBold(t("founderNote"))}
+          </p>
+
+          <div className="mt-10">
+            <p className="text-2xl font-black tracking-tight text-neutral-900 italic dark:text-white">
+              {t("founderSignature")}
+            </p>
+            <span className="mt-2 block h-0.5 w-16 bg-gradient-to-r from-orange-500 to-rose-500" />
           </div>
         </section>
       </div>

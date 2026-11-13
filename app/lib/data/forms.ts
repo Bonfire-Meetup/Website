@@ -1,7 +1,12 @@
 import "server-only";
 
 import { db } from "@/lib/data/db";
-import { contactSubmissions, talkProposals } from "@/lib/data/schema";
+import {
+  contactSubmissions,
+  eventSurveyResponse,
+  talkProposals,
+  type EventSurveyTalkFeedback,
+} from "@/lib/data/schema";
 import { logError } from "@/lib/utils/log";
 
 interface ContactSubmission {
@@ -43,6 +48,33 @@ export const insertContactSubmission = async ({
     });
   } catch (error) {
     logError("data.contact_insert_failed", error, { ipHash });
+    throw error;
+  }
+};
+
+interface EventSurveySubmission {
+  eventId: string;
+  eventTitle: string;
+  overallRating: number | null;
+  favoriteParts: string[];
+  favoritePartsOther: string | null;
+  futureTopics: string[];
+  futureTopicsOther: string | null;
+  talkFormat: string | null;
+  talkFormatOther: string | null;
+  nextEventLikelihood: number | null;
+  suggestions: string | null;
+  talkFeedbackEnabled: boolean;
+  talksOverallRating: number | null;
+  talkFeedback: EventSurveyTalkFeedback[];
+  ipHash: string;
+}
+
+export const insertEventSurveyResponse = async (submission: EventSurveySubmission) => {
+  try {
+    await db().insert(eventSurveyResponse).values(submission);
+  } catch (error) {
+    logError("data.event_survey_insert_failed", error, { ipHash: submission.ipHash });
     throw error;
   }
 };
