@@ -14,7 +14,7 @@ import {
 
 import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
 import { useCsrfToken } from "@/lib/api/csrf";
-import { type ContactFormState, submitContactForm } from "@/lib/forms/form-actions";
+import { type ContactFormState, submitContactForm } from "@/lib/api/forms";
 import { contactQueryParsers } from "@/lib/routes/app-search-params-client";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { useHaptics } from "@/lib/utils/haptics";

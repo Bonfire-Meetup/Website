@@ -12,7 +12,7 @@ import {
 } from "react";
 
 import { useCsrfToken } from "@/lib/api/csrf";
-import { type TalkProposalFormState, submitTalkProposal } from "@/lib/forms/form-actions";
+import { type TalkProposalFormState, submitTalkProposal } from "@/lib/api/forms";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { useHaptics } from "@/lib/utils/haptics";
 import {

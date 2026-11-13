@@ -14,9 +14,9 @@ import {
 } from "react";
 
 import { useCsrfToken } from "@/lib/api/csrf";
+import { type EventSurveyFormState, submitEventSurvey } from "@/lib/api/forms";
 import { pastEventsOf, upcomingEventsOf } from "@/lib/events/event-lists";
 import type { EventItem } from "@/lib/events/types";
-import { type EventSurveyFormState, submitEventSurvey } from "@/lib/forms/form-actions";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { useHaptics } from "@/lib/utils/haptics";
 import {
