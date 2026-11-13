@@ -3,8 +3,9 @@
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { getEventById } from "@/data/events-calendar";
 import { useAdminSurveyResponses, type AdminSurveyResponse } from "@/lib/api/admin";
+import { useEventsCatalog } from "@/lib/api/events";
+import type { EventItem } from "@/lib/events/types";
 
 import {
   AdminCard,
@@ -22,6 +23,9 @@ import {
 } from "./AdminPrimitives";
 
 const ALL_EVENTS = "all";
+const EMPTY_CATALOG: EventCatalog = new Map();
+
+type EventCatalog = Map<string, EventItem>;
 
 type RatingField = "overallRating" | "nextEventLikelihood" | "talksOverallRating";
 
@@ -48,7 +52,7 @@ function countValues(values: string[]) {
   return [...counts.entries()].sort((a, b) => b[1] - a[1]);
 }
 
-function buildEventOptions(responses: AdminSurveyResponse[]) {
+function buildEventOptions(responses: AdminSurveyResponse[], catalog: EventCatalog) {
   const events = new Map<string, { title: string; date: string; count: number }>();
 
   for (const response of responses) {
@@ -57,7 +61,7 @@ function buildEventOptions(responses: AdminSurveyResponse[]) {
 
     events.set(key, {
       count: (current?.count ?? 0) + 1,
-      date: (response.eventId && getEventById(response.eventId)?.date) || "",
+      date: (response.eventId && catalog.get(response.eventId)?.date) || "",
       title: response.eventTitle,
     });
   }
@@ -67,8 +71,12 @@ function buildEventOptions(responses: AdminSurveyResponse[]) {
     .map(([value, event]) => ({ label: `${event.title} (${event.count})`, value }));
 }
 
-function buildTalkSummary(eventId: string, responses: AdminSurveyResponse[]) {
-  const event = getEventById(eventId);
+function buildTalkSummary(
+  eventId: string,
+  responses: AdminSurveyResponse[],
+  catalog: EventCatalog,
+) {
+  const event = catalog.get(eventId);
 
   if (!event) {
     return [];
@@ -107,6 +115,7 @@ export function AdminSurveyResponses() {
   const tCommon = useTranslations("admin.common");
   const tOptions = useTranslations("eventsSurveyPage.form.options");
   const query = useAdminSurveyResponses();
+  const catalog = useEventsCatalog().data ?? EMPTY_CATALOG;
   const [eventFilter, setEventFilter] = useState(ALL_EVENTS);
   const [search, setSearch] = useState("");
 
@@ -133,7 +142,9 @@ export function AdminSurveyResponses() {
   const toRows = (values: string[]) =>
     countValues(values).map(([key, count]) => ({ count, key, label: optionLabel(key) }));
   const selectedEventId = eventFilter === ALL_EVENTS ? null : eventResponses[0]?.eventId;
-  const talkSummary = selectedEventId ? buildTalkSummary(selectedEventId, eventResponses) : [];
+  const talkSummary = selectedEventId
+    ? buildTalkSummary(selectedEventId, eventResponses, catalog)
+    : [];
 
   return (
     <AdminListState
@@ -148,7 +159,10 @@ export function AdminSurveyResponses() {
           value={eventFilter}
           onChange={setEventFilter}
           label={t("filterEvent")}
-          options={[{ label: t("allEvents"), value: ALL_EVENTS }, ...buildEventOptions(responses)]}
+          options={[
+            { label: t("allEvents"), value: ALL_EVENTS },
+            ...buildEventOptions(responses, catalog),
+          ]}
         />
         <AdminSearchField value={search} onChange={setSearch} />
       </AdminToolbar>

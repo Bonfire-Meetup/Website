@@ -1,7 +1,6 @@
 import { useTranslations } from "next-intl";
 
 import { UNRECORDED_EPISODES } from "@/lib/recordings/catalog-types";
-import { getEpisodeById } from "@/lib/recordings/episodes";
 
 import { InfoIcon } from "../shared/Icons";
 import { EmptyState } from "../ui/EmptyState";
@@ -10,24 +9,22 @@ import { ResetFiltersButton } from "./ResetFiltersButton";
 
 export function EmptyStateMessage({
   activeEpisode,
+  episodeGroups,
   onReset,
 }: {
   activeEpisode: string;
+  episodeGroups: { options: { label: string; value: string }[] }[];
   onReset: () => void;
 }) {
-  const t = useTranslations("recordings");
   const tLibrary = useTranslations("libraryPage");
   const tNotRecorded = useTranslations("libraryPage.notRecorded");
-  const notRecordedEpisode =
-    activeEpisode !== "all" && UNRECORDED_EPISODES.has(activeEpisode)
-      ? getEpisodeById(activeEpisode)
-      : undefined;
+  const episodeLabel = UNRECORDED_EPISODES.has(activeEpisode)
+    ? episodeGroups
+        .flatMap((group) => group.options)
+        .find((option) => option.value === activeEpisode)?.label
+    : undefined;
 
-  if (notRecordedEpisode) {
-    const episodeLabel = notRecordedEpisode.number
-      ? `${t("epShort")} ${notRecordedEpisode.number} - ${notRecordedEpisode.title}`
-      : notRecordedEpisode.title;
-
+  if (episodeLabel) {
     return (
       <div className="recording-card-enter mx-auto max-w-2xl rounded-2xl bg-white/90 p-10 text-center shadow-xl ring-1 shadow-black/5 ring-black/5 dark:bg-neutral-950 dark:shadow-black/20 dark:ring-white/10">
         <div className="bg-brand-500/10 text-brand-500 dark:bg-brand-500/20 dark:text-brand-300 mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full">

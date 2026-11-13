@@ -1,11 +1,12 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ApiError } from "@/lib/api/errors";
 import { ensureFreshToken, shouldRetryMutation } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { useAuthScopedQuery } from "@/lib/api/useAuthScopedQuery";
+import type { EventItem } from "@/lib/events/types";
 import { createAuthHeaders } from "@/lib/utils/http";
 import { logError } from "@/lib/utils/log-client";
 import { compressUuid } from "@/lib/utils/uuid-compress";
@@ -129,6 +130,24 @@ async function fetchEventQuestions(
   }
 
   return response.json() as Promise<EventQuestionsData>;
+}
+
+export function useEventsCatalog() {
+  return useQuery({
+    queryFn: async () => {
+      const response = await fetch(API_ROUTES.EVENTS.LIST);
+
+      if (!response.ok) {
+        throw new ApiError("Events fetch failed", response.status);
+      }
+
+      const body = (await response.json()) as { items: EventItem[] };
+
+      return new Map(body.items.map((event) => [event.id, event]));
+    },
+    queryKey: ["events-catalog"],
+    staleTime: 5 * 60 * 1000,
+  });
 }
 
 export function useEventRsvps(eventId: string) {

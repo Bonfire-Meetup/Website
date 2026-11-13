@@ -1,7 +1,7 @@
 import type { ComponentType } from "react";
 
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
-import { LIBRARY_SHELVES, type LibraryShelf } from "@/lib/recordings/library-filter";
+import { LIBRARY_SHELVES, type LibraryShelf } from "@/lib/recordings/library-query";
 
 import { BoltIcon, EarlyAccessIcon, FireIcon, GuildIcon, SparklesIcon } from "../shared/Icons";
 

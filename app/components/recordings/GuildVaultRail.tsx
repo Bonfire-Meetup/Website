@@ -1,7 +1,7 @@
 "use client";
 
 import type { CatalogRecording } from "@/lib/recordings/catalog-types";
-import { LIBRARY_SHELVES } from "@/lib/recordings/library-filter";
+import { LIBRARY_SHELVES } from "@/lib/recordings/library-query";
 
 import { getLibraryShelfTheme } from "./library-shelf-theme";
 import { Rail } from "./Rail";

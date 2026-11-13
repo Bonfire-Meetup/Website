@@ -3,6 +3,7 @@ import { cacheLife } from "next/cache";
 
 import { CACHE_LIFETIMES } from "@/lib/config/cache-lifetimes";
 import { buildMetaPageMetadata } from "@/lib/metadata";
+import { toPhotoAlbumSummaryResource } from "@/lib/photos/photo-album-resource";
 import { PHOTO_ALBUM_BASE_URL } from "@/lib/photos/photo-album-summary";
 import { getAllFullPhotoAlbums } from "@/lib/photos/photo-albums-data";
 import {
@@ -11,7 +12,6 @@ import {
   pickSeededSubset,
 } from "@/lib/photos/photos-page-hero";
 import { sortPhotoAlbumsByEpisodeDateDesc } from "@/lib/photos/photos-page-order";
-import { buildAlbumSlug, formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 
 import { PhotosPageContent } from "./PhotosPageContent";
 
@@ -28,15 +28,16 @@ async function getPhotosPageData() {
   const slideshowImages = pickSeededSubset(landscapeImages, 10, buildSeed);
 
   const preparedAlbums = albums.map((album) => {
-    const episode = getEpisodeById(album.episodeId);
+    const { id, slug, title, count, cover } = toPhotoAlbumSummaryResource(album);
     const highlight = pickDailyRandomAlbumImage(album, buildSeed);
+
     return {
-      id: album.id,
-      slug: buildAlbumSlug(album.id, album.episodeId),
-      title: episode ? formatEpisodeTitle(episode) : album.id,
-      count: album.count,
-      coverSrc: `${cdnBase}/${album.cover.src}`,
+      count,
+      coverSrc: cover.url,
       highlightSrc: `${cdnBase}/${highlight.src}`,
+      id,
+      slug,
+      title,
     };
   });
 

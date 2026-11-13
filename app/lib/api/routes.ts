@@ -17,13 +17,19 @@ export const API_ROUTES = {
     },
   },
   JWKS: "/.well-known/jwks.json",
+  CONTACT_MESSAGES: "/api/v1/contact-messages",
   CSRF: "/api/v1/csrf",
   CHECK_IN: {
     BASE: "/api/v1/check-ins",
     LOOKUP: "/api/v1/check-ins/lookup",
     VERIFY: "/api/v1/check-ins/verify",
   },
-  LIBRARY: "/api/v1/library",
+  RECORDINGS: {
+    BASE: "/api/v1/recordings",
+    FACETS: "/api/v1/recordings/facets",
+    ITEM: (shortId: string) => `/api/v1/recordings/${shortId}`,
+  },
+  TALK_PROPOSALS: "/api/v1/talk-proposals",
   ME: {
     AUTH_ATTEMPTS: "/api/v1/me/auth-attempts",
     BASE: "/api/v1/me",
@@ -64,6 +70,8 @@ export const API_ROUTES = {
     },
   },
   EVENTS: {
+    LIST: "/api/v1/events",
+    ITEM: (eventId: string) => `/api/v1/events/${eventId}`,
     RSVPS: (eventId: string) => `/api/v1/events/${eventId}/rsvps`,
     RSVPS_PATTERN: "/api/v1/events/*/rsvps",
     QUESTIONS: (eventId: string) => `/api/v1/events/${eventId}/questions`,
@@ -74,6 +82,15 @@ export const API_ROUTES = {
     QUESTION_BOOSTS: (eventId: string, questionId: string) =>
       `/api/v1/events/${eventId}/questions/${questionId}/boosts`,
     QUESTION_BOOSTS_PATTERN: "/api/v1/events/*/questions/*/boosts",
+    SURVEY_RESPONSES: (eventId: string) => `/api/v1/events/${eventId}/survey-responses`,
+  },
+  PHOTOS: {
+    ALBUMS: "/api/v1/photos/albums",
+    ALBUM: (album: string) => `/api/v1/photos/albums/${album}`,
+  },
+  SPEAKERS: {
+    LIST: "/api/v1/speakers",
+    ITEM: (slug: string) => `/api/v1/speakers/${slug}`,
   },
   STRIPE: {
     WEBHOOKS: "/api/v1/stripe/webhooks",

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import type { CatalogRecording } from "@/lib/recordings/catalog-types";
-import { LIBRARY_SHELVES } from "@/lib/recordings/library-filter";
+import { LIBRARY_SHELVES } from "@/lib/recordings/library-query";
 
 import { BoltIcon, FireIcon } from "../shared/Icons";
 

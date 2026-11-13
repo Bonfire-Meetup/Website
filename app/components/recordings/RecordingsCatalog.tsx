@@ -23,11 +23,8 @@ import {
 } from "@/lib/recordings/catalog-types";
 import { getRecordingAccessState } from "@/lib/recordings/early-access";
 import { getFeaturedCandidates } from "@/lib/recordings/library-featured";
-import {
-  LIBRARY_SHELVES,
-  type LibraryApiPayload,
-  type LibraryRowsPayload,
-} from "@/lib/recordings/library-filter";
+import type { LibraryApiPayload, LibraryRowsPayload } from "@/lib/recordings/library-filter";
+import { LIBRARY_SHELVES } from "@/lib/recordings/library-query";
 import { createLibraryUrl } from "@/lib/recordings/library-search-params-client";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { logError } from "@/lib/utils/log-client";
@@ -40,7 +37,11 @@ import { GridView } from "./GridView";
 import { GuildVaultRail } from "./GuildVaultRail";
 import { HiddenGemsRail } from "./HiddenGemsRail";
 import { HotPicksRail } from "./HotPicksRail";
-import { buildLibrarySearchParams, fetchLibraryApiPayload } from "./library-client-utils";
+import {
+  buildLibrarySearchParams,
+  fetchLibraryApiPayload,
+  useLibraryFilterTranslators,
+} from "./library-client-utils";
 import { MemberPicksRail } from "./MemberPicksRail";
 import { RecordingsGridSkeleton, RecordingsRailSkeleton } from "./RecordingLoadingSkeletons";
 import { RecordingRail } from "./RecordingRail";
@@ -76,6 +77,7 @@ export function RecordingsCatalog({
   };
 }) {
   const tCommon = useTranslations("common");
+  const filterTranslators = useLibraryFilterTranslators();
   const tLibrary = useTranslations("libraryPage");
   const tRows = useTranslations("libraryPage.rows");
   const tView = useTranslations("libraryPage.view");
@@ -133,56 +135,58 @@ export function RecordingsCatalog({
     router.prefetch(PAGE_ROUTES.LIBRARY_BROWSE);
   }, [router]);
 
-  const fetchPayload = useCallback(async (params: URLSearchParams) => {
-    requestIdRef.current += 1;
-    const requestId = requestIdRef.current;
-    if (activeRequestRef.current) {
-      activeRequestRef.current.abort();
-    }
-    const controller = new AbortController();
-    activeRequestRef.current = controller;
+  const fetchPayload = useCallback(
+    async (params: URLSearchParams) => {
+      requestIdRef.current += 1;
+      const requestId = requestIdRef.current;
+      if (activeRequestRef.current) {
+        activeRequestRef.current.abort();
+      }
+      const controller = new AbortController();
+      activeRequestRef.current = controller;
 
-    setIsFiltering(true);
-    try {
-      const result = await fetchLibraryApiPayload(params, controller.signal);
-      if (!result.data) {
-        if (requestId === requestIdRef.current) {
-          if (!controller.signal.aborted) {
-            setIsFiltering(false);
+      setIsFiltering(true);
+      try {
+        const result = await fetchLibraryApiPayload(params, controller.signal, filterTranslators);
+        if (!result.data) {
+          if (requestId === requestIdRef.current) {
+            if (!controller.signal.aborted) {
+              setIsFiltering(false);
+            }
           }
+          return;
         }
-        return;
+        const data = result.data as LibraryApiPayload;
+        if (requestId !== requestIdRef.current) {
+          return;
+        }
+        if (controller.signal.aborted) {
+          return;
+        }
+        setPayload((prev) => ({
+          ...prev,
+          recordings: data.recordings,
+          activeLocation: data.filter.activeLocation,
+          activeTag: data.filter.activeTag,
+          activeEpisode: data.filter.activeEpisode,
+          activeShelf: data.filter.activeShelf,
+          searchQuery: data.filter.searchQuery,
+          tagDropdownOptions: data.filter.tagDropdownOptions,
+          episodeDropdownOptions: data.filter.episodeDropdownOptions,
+          episodeDropdownGroups: data.filter.episodeDropdownGroups,
+          locationAvailability: data.filter.locationAvailability,
+        }));
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          logError("library.fetch_failed", error);
+        }
       }
-      const data = result.data as LibraryApiPayload;
-      if (requestId !== requestIdRef.current) {
-        return;
+      if (requestId === requestIdRef.current && !controller.signal.aborted) {
+        setIsFiltering(false);
       }
-      if (controller.signal.aborted) {
-        return;
-      }
-      setPayload((prev) => ({
-        ...prev,
-        recordings: data.recordings,
-        featuredShortIdOrder: data.filter.featuredShortIdOrder,
-        activeLocation: data.filter.activeLocation,
-        activeTag: data.filter.activeTag,
-        activeEpisode: data.filter.activeEpisode,
-        activeShelf: data.filter.activeShelf,
-        searchQuery: data.filter.searchQuery,
-        tagDropdownOptions: data.filter.tagDropdownOptions,
-        episodeDropdownOptions: data.filter.episodeDropdownOptions,
-        episodeDropdownGroups: data.filter.episodeDropdownGroups,
-        locationAvailability: data.filter.locationAvailability,
-      }));
-    } catch (error) {
-      if (!controller.signal.aborted) {
-        logError("library.fetch_failed", error);
-      }
-    }
-    if (requestId === requestIdRef.current && !controller.signal.aborted) {
-      setIsFiltering(false);
-    }
-  }, []);
+    },
+    [filterTranslators],
+  );
 
   const updateFilters = useCallback(
     (
@@ -339,6 +343,7 @@ export function RecordingsCatalog({
           {recordings.length === 0 ? (
             <EmptyStateMessage
               activeEpisode={activeEpisode}
+              episodeGroups={payload.episodeDropdownGroups}
               onReset={() => updateFilters("all", "all", "all", "")}
             />
           ) : (

@@ -15,11 +15,8 @@ import {
 
 import { CloseIcon, InfoIcon } from "@/components/shared/Icons";
 import { type LocationFilter, UNRECORDED_EPISODES } from "@/lib/recordings/catalog-types";
-import {
-  LIBRARY_SHELVES,
-  type LibraryApiPayload,
-  type LibraryBasePayload,
-} from "@/lib/recordings/library-filter";
+import type { LibraryApiPayload, LibraryBasePayload } from "@/lib/recordings/library-filter";
+import { LIBRARY_SHELVES } from "@/lib/recordings/library-query";
 import {
   libraryQueryParsers,
   type LibraryQueryState,
@@ -32,7 +29,11 @@ import { EmptyState } from "../ui/EmptyState";
 import { EmptyStateMessage } from "./EmptyStateMessage";
 import { GridFiltersBar } from "./GridFiltersBar";
 import { GridView } from "./GridView";
-import { buildLibrarySearchParams, fetchLibraryApiPayload } from "./library-client-utils";
+import {
+  buildLibrarySearchParams,
+  fetchLibraryApiPayload,
+  useLibraryFilterTranslators,
+} from "./library-client-utils";
 import { getLibraryShelfTheme } from "./library-shelf-theme";
 import { RecordingsGridSkeleton } from "./RecordingLoadingSkeletons";
 
@@ -40,6 +41,7 @@ const MIN_SEARCH_LENGTH = 2;
 
 export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBasePayload }) {
   const tCommon = useTranslations("common");
+  const filterTranslators = useLibraryFilterTranslators();
   const tLibrary = useTranslations("libraryPage");
   const tRows = useTranslations("libraryPage.rows");
   const locale = useLocale();
@@ -106,65 +108,68 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
     };
   })();
 
-  const fetchPayload = useCallback(async (params: URLSearchParams) => {
-    requestIdRef.current += 1;
-    const requestId = requestIdRef.current;
-    if (activeRequestRef.current) {
-      activeRequestRef.current.abort();
-    }
-    const controller = new AbortController();
-    activeRequestRef.current = controller;
+  const fetchPayload = useCallback(
+    async (params: URLSearchParams) => {
+      requestIdRef.current += 1;
+      const requestId = requestIdRef.current;
+      if (activeRequestRef.current) {
+        activeRequestRef.current.abort();
+      }
+      const controller = new AbortController();
+      activeRequestRef.current = controller;
 
-    setIsFiltering(true);
-    setRateLimitError(false);
-    try {
-      const result = await fetchLibraryApiPayload(params, controller.signal);
-      if (result.status === 429) {
-        if (requestId === requestIdRef.current) {
-          if (!controller.signal.aborted) {
-            setRateLimitError(true);
-            setIsFiltering(false);
+      setIsFiltering(true);
+      setRateLimitError(false);
+      try {
+        const result = await fetchLibraryApiPayload(params, controller.signal, filterTranslators);
+        if (result.status === 429) {
+          if (requestId === requestIdRef.current) {
+            if (!controller.signal.aborted) {
+              setRateLimitError(true);
+              setIsFiltering(false);
+            }
           }
+          return;
         }
-        return;
-      }
-      if (!result.data) {
-        if (requestId === requestIdRef.current) {
-          if (!controller.signal.aborted) {
-            setIsFiltering(false);
+        if (!result.data) {
+          if (requestId === requestIdRef.current) {
+            if (!controller.signal.aborted) {
+              setIsFiltering(false);
+            }
           }
+          return;
         }
-        return;
+        const data = result.data as LibraryApiPayload;
+        if (requestId !== requestIdRef.current) {
+          return;
+        }
+        if (controller.signal.aborted) {
+          return;
+        }
+        setPayload((prev) => ({
+          ...prev,
+          recordings: data.recordings,
+          activeLocation: data.filter.activeLocation,
+          activeTag: data.filter.activeTag,
+          activeEpisode: data.filter.activeEpisode,
+          activeShelf: data.filter.activeShelf,
+          searchQuery: data.filter.searchQuery,
+          tagDropdownOptions: data.filter.tagDropdownOptions,
+          episodeDropdownOptions: data.filter.episodeDropdownOptions,
+          episodeDropdownGroups: data.filter.episodeDropdownGroups,
+          locationAvailability: data.filter.locationAvailability,
+        }));
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          logError("library.fetch_failed", error);
+        }
       }
-      const data = result.data as LibraryApiPayload;
-      if (requestId !== requestIdRef.current) {
-        return;
+      if (requestId === requestIdRef.current && !controller.signal.aborted) {
+        setIsFiltering(false);
       }
-      if (controller.signal.aborted) {
-        return;
-      }
-      setPayload((prev) => ({
-        ...prev,
-        recordings: data.recordings,
-        activeLocation: data.filter.activeLocation,
-        activeTag: data.filter.activeTag,
-        activeEpisode: data.filter.activeEpisode,
-        activeShelf: data.filter.activeShelf,
-        searchQuery: data.filter.searchQuery,
-        tagDropdownOptions: data.filter.tagDropdownOptions,
-        episodeDropdownOptions: data.filter.episodeDropdownOptions,
-        episodeDropdownGroups: data.filter.episodeDropdownGroups,
-        locationAvailability: data.filter.locationAvailability,
-      }));
-    } catch (error) {
-      if (!controller.signal.aborted) {
-        logError("library.fetch_failed", error);
-      }
-    }
-    if (requestId === requestIdRef.current && !controller.signal.aborted) {
-      setIsFiltering(false);
-    }
-  }, []);
+    },
+    [filterTranslators],
+  );
 
   const syncUrlState = useCallback(
     (nextState: Partial<LibraryQueryState>) => {
@@ -372,6 +377,7 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
           ) : recordings.length === 0 ? (
             <EmptyStateMessage
               activeEpisode={activeEpisode}
+              episodeGroups={payload.episodeDropdownGroups}
               onReset={() => updateFilters("all", "all", "all", "", activeShelf)}
             />
           ) : isFiltering ? (
