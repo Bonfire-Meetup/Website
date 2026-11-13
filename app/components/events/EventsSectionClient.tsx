@@ -100,7 +100,7 @@ export function EventsSectionClient({
       )}
 
       {filteredEvents.length > 0 ? (
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-8 sm:grid-cols-2 sm:max-md:gap-5">
           {filteredEvents.map((event) =>
             cardVariant === "compact" ? (
               <UpcomingEventCompactCard

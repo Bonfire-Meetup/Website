@@ -27,7 +27,7 @@ export function LocationsSection({ hostedCounts }: { hostedCounts: HostedEventCo
           })}
         />
 
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-8 sm:grid-cols-2 sm:max-md:gap-5">
           <LocationCard
             name={t("prague.name", { prague: tCommon("prague") })}
             city={LOCATIONS.PRAGUE}
