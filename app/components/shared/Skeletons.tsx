@@ -86,7 +86,7 @@ export function RecordingsSectionSkeleton() {
 
 function HeroTalkSelectSkeleton() {
   return (
-    <section className="relative overflow-clip bg-neutral-50 px-4 pt-24 pb-14 sm:px-6 sm:pt-32 sm:pb-16 lg:px-8 lg:pt-[clamp(8.5rem,16vh,16rem)] lg:pb-[clamp(5rem,9vh,8rem)] dark:bg-neutral-950">
+    <section className="relative overflow-clip bg-neutral-50 px-4 pt-[5.5rem] pb-14 sm:px-6 sm:pt-32 sm:pb-16 lg:px-8 lg:pt-[clamp(7.5rem,16vh,16rem)] lg:pb-[clamp(5rem,9vh,8rem)] dark:bg-neutral-950">
       <div className="relative mx-auto w-full max-w-7xl">
         <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
           <div>

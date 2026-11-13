@@ -4,10 +4,11 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { useHaptics } from "@/lib/utils/haptics";
+import { prefersReducedMotion } from "@/lib/utils/prefers-reduced-motion";
 
 import { AuthNavButton } from "../auth/AuthNavButton";
 import { FilmIcon } from "../shared/Icons";
@@ -28,22 +29,24 @@ interface DesktopNavItem {
 }
 
 const DESKTOP_NAV_WRAPPER_CLASS =
-  "glass flex items-center gap-1.5 rounded-full border border-white/55 px-3 py-1.5 shadow-raised dark:border-white/10 dark:shadow-raised";
+  "glass relative flex items-center gap-1.5 rounded-full border border-white/55 px-2.5 py-1 shadow-raised dark:border-white/10 dark:shadow-raised";
 
 const DESKTOP_NAV_ITEM_BASE_CLASS =
-  "min-w-[5rem] rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-200";
+  "relative z-10 min-w-[5rem] rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-200";
 
-const DESKTOP_NAV_ITEM_ACTIVE_CLASS =
-  "bg-white/80 text-neutral-950 shadow-[inset_0_0_0_1px_rgba(251,146,60,0.22),0_10px_22px_-18px_rgba(244,63,94,0.28)] dark:bg-white/8 dark:text-white dark:shadow-[inset_0_0_0_1px_rgba(251,146,60,0.18),0_10px_22px_-18px_rgba(244,63,94,0.34)]";
+const DESKTOP_NAV_ACTIVE_TEXT_CLASS = "text-neutral-950 dark:text-white";
+
+const DESKTOP_NAV_ACTIVE_GLASS_CLASS =
+  "bg-gradient-to-b from-orange-950/[0.035] to-orange-950/[0.085] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_0_0_1px_rgba(124,45,18,0.1),0_5px_12px_-7px_rgba(124,45,18,0.35)] dark:from-white/14 dark:to-white/6 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.16),inset_0_0_0_1px_rgba(251,146,60,0.18),0_10px_22px_-18px_rgba(244,63,94,0.34)]";
 
 const DESKTOP_NAV_ITEM_INACTIVE_CLASS =
   "text-neutral-600 hover:bg-white/70 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-white/7 dark:hover:text-white";
 
 const DESKTOP_UTILS_WRAPPER_CLASS =
-  "glass hidden md:flex md:items-center md:gap-0.5 md:rounded-full md:border md:border-white/55 md:px-1.5 md:py-1.5 md:shadow-raised dark:border-white/10 dark:shadow-raised";
+  "glass hidden md:flex md:items-center md:gap-0.5 md:rounded-full md:border md:border-white/55 md:px-1.5 md:py-1 md:shadow-raised dark:border-white/10 dark:shadow-raised";
 
 const DESKTOP_UTIL_BUTTON_CLASS =
-  "h-8.5 w-8.5 rounded-full text-neutral-500 transition-[background-color,color] duration-200 hover:bg-white/70 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-white/8 dark:hover:text-white";
+  "h-8 w-8 rounded-full text-neutral-500 transition-[background-color,color] duration-200 hover:bg-white/70 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-white/8 dark:hover:text-white";
 
 const DESKTOP_NAV_ITEMS: DesktopNavItem[] = [
   {
@@ -222,13 +225,71 @@ function HeaderInner() {
   const mobileSectionMarker = getMobileSectionMarker(pathname, t);
   const isLibraryContext =
     pathname.startsWith("/watch") || pathname.startsWith(PAGE_ROUTES.LIBRARY);
+  const activeNavIndex = DESKTOP_NAV_ITEMS.findIndex((item) => item.matches(pathname));
+
+  const navRef = useRef<HTMLDivElement | null>(null);
+  const indicatorRef = useRef<HTMLSpanElement | null>(null);
+  const previousIndicatorLeftRef = useRef<number | null>(null);
+  const [indicator, setIndicator] = useState<{ left: number; width: number } | null>(null);
+
+  useEffect(() => {
+    const nav = navRef.current;
+
+    if (!nav) {
+      return;
+    }
+
+    const measure = () => {
+      const item =
+        activeNavIndex >= 0
+          ? nav.querySelectorAll<HTMLElement>(":scope > a")[activeNavIndex]
+          : undefined;
+
+      setIndicator(
+        item && item.offsetWidth > 0 ? { left: item.offsetLeft, width: item.offsetWidth } : null,
+      );
+    };
+
+    measure();
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(nav);
+
+    return () => observer.disconnect();
+  }, [activeNavIndex]);
+
+  const indicatorLeft = indicator?.left ?? null;
+
+  useEffect(() => {
+    const previousLeft = previousIndicatorLeftRef.current;
+    previousIndicatorLeftRef.current = indicatorLeft;
+
+    if (
+      indicatorLeft === null ||
+      previousLeft === null ||
+      previousLeft === indicatorLeft ||
+      prefersReducedMotion()
+    ) {
+      return;
+    }
+
+    indicatorRef.current?.animate(
+      [
+        { scale: "1 1" },
+        { offset: 0.35, scale: "1.16 0.84" },
+        { offset: 0.75, scale: "0.97 1.04" },
+        { scale: "1 1" },
+      ],
+      { duration: 560, easing: "ease-out" },
+    );
+  }, [indicatorLeft]);
 
   return (
     <header
       className="glass mobile-nav-glass fixed top-0 right-0 left-0 z-50 border-b border-black/3 shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.06)] transition-[box-shadow] duration-300 dark:border-white/4 dark:shadow-[0_1px_3px_rgba(0,0,0,0.25),0_1px_2px_rgba(0,0,0,0.2)]"
       style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
     >
-      <div className="relative mx-auto flex h-14 max-w-7xl items-center justify-between px-2.5 sm:px-6 md:h-20 lg:px-8">
+      <div className="relative mx-auto flex h-12 max-w-7xl items-center justify-between px-2.5 sm:px-6 md:h-16 lg:px-8">
         <div className="relative z-10 flex items-center gap-3 md:justify-self-start">
           <Link
             href={PAGE_ROUTES.HOME}
@@ -265,9 +326,20 @@ function HeaderInner() {
 
         <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 hidden -translate-x-1/2 -translate-y-1/2 md:block">
           <nav className="pointer-events-auto">
-            <div className={DESKTOP_NAV_WRAPPER_CLASS}>
-              {DESKTOP_NAV_ITEMS.map((item) => {
-                const isActive = item.matches(pathname);
+            <div ref={navRef} className={DESKTOP_NAV_WRAPPER_CLASS}>
+              {indicator && (
+                <span
+                  ref={indicatorRef}
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute top-1 bottom-1 left-0 rounded-full transition-[translate,width] duration-500 ease-[cubic-bezier(0.3,1.3,0.5,1)] will-change-transform motion-reduce:transition-none ${DESKTOP_NAV_ACTIVE_GLASS_CLASS}`}
+                  style={{ translate: `${indicator.left}px 0`, width: indicator.width }}
+                />
+              )}
+              {DESKTOP_NAV_ITEMS.map((item, index) => {
+                const isActive = index === activeNavIndex;
+                const activeClass = indicator
+                  ? DESKTOP_NAV_ACTIVE_TEXT_CLASS
+                  : `${DESKTOP_NAV_ACTIVE_TEXT_CLASS} ${DESKTOP_NAV_ACTIVE_GLASS_CLASS}`;
 
                 return (
                   <Button
@@ -277,7 +349,7 @@ function HeaderInner() {
                     size="sm"
                     prefetch={item.prefetch}
                     className={`${DESKTOP_NAV_ITEM_BASE_CLASS} ${
-                      isActive ? DESKTOP_NAV_ITEM_ACTIVE_CLASS : DESKTOP_NAV_ITEM_INACTIVE_CLASS
+                      isActive ? activeClass : DESKTOP_NAV_ITEM_INACTIVE_CLASS
                     }`}
                     ariaLabel={t(item.label)}
                   >
@@ -315,7 +387,7 @@ function HeaderInner() {
             }}
             variant="primary"
             size="sm"
-            className={`text-2xs rounded-lg px-2 py-1 font-semibold transition-all duration-200 md:rounded-full md:px-4 md:py-2.5 md:text-sm ${
+            className={`text-2xs rounded-lg px-2 py-1 font-semibold transition-all duration-200 md:rounded-full md:px-4 md:py-2 md:text-sm ${
               isLibraryContext
                 ? "shadow-md ring-1 shadow-orange-500/20 ring-white/60 dark:ring-white/25"
                 : "shadow-sm shadow-orange-500/15"

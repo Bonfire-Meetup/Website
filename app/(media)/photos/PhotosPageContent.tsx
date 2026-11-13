@@ -148,7 +148,7 @@ export function PhotosPageContent({
                 key={album.id}
                 href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
                 prefetch={false}
-                className="group shadow-floating hover:shadow-floating relative overflow-hidden rounded-2xl border border-black/10 bg-neutral-900 ring-1 ring-white/30 transition-all duration-500 dark:border-white/10 dark:ring-white/10"
+                className="group shadow-floating hover:shadow-floating relative overflow-hidden rounded-2xl bg-neutral-200 ring-1 ring-black/8 transition-all duration-500 dark:bg-neutral-900 dark:ring-white/12"
               >
                 <div className="aspect-[5/4] overflow-hidden">
                   <AlbumImage
