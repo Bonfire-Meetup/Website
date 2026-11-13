@@ -1,8 +1,13 @@
+import createMDX from "@next/mdx";
 import { withBotId } from "botid/next/config";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+const withMDX = createMDX({
+  extension: /\.mdx?$/u,
+  options: { remarkPlugins: ["remark-frontmatter", "remark-mdx-frontmatter"] },
+});
 
 const CDN_HOSTNAME = "cdn.bnf.events";
 const LEGACY_CDN_HOSTNAME = "cdn-img.bnf.events";
@@ -81,4 +86,4 @@ const nextConfig = {
   reactStrictMode: true,
 } satisfies NextConfig;
 
-export default withBotId(withNextIntl(nextConfig));
+export default withBotId(withNextIntl(withMDX(nextConfig)));
