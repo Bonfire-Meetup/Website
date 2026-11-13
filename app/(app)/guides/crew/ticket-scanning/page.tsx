@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 
-import { buildSimplePageMetadata } from "@/lib/metadata";
-
-import { TicketScanningContent } from "./TicketScanningContent";
+import { buildGuideMetadata, GuidePage } from "@/components/guides/GuidePage";
 
 export default function TicketScanningGuidePage() {
-  return <TicketScanningContent />;
+  return <GuidePage guide="ticketScanning" />;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "ticketScanningGuide" });
+export function generateMetadata(): Promise<Metadata> {
+  return buildGuideMetadata("ticketScanning");
 }

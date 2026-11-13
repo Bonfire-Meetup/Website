@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 
-import { buildSimplePageMetadata } from "@/lib/metadata";
-
-import { ProfilePrivacyContent } from "./ProfilePrivacyContent";
+import { buildGuideMetadata, GuidePage } from "@/components/guides/GuidePage";
 
 export default function ProfilePrivacyGuidePage() {
-  return <ProfilePrivacyContent />;
+  return <GuidePage guide="profilePrivacy" />;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "profilePrivacyGuide" });
+export function generateMetadata(): Promise<Metadata> {
+  return buildGuideMetadata("profilePrivacy");
 }

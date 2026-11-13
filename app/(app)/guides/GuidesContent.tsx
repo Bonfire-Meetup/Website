@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import type { ComponentType } from "react";
 
@@ -17,6 +17,8 @@ import {
   TicketIcon,
   TrashIcon,
 } from "@/components/shared/Icons";
+import type { GuideCardCopy, GuideKey } from "@/content/guides";
+import { DEFAULT_LOCALE, isValidLocale, type Locale } from "@/lib/i18n/locales";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 interface GuideCard {
@@ -33,8 +35,14 @@ interface GuideGroup {
   cards: GuideCard[];
 }
 
-export function GuidesContent() {
+interface GuidesContentProps {
+  cards: Record<GuideKey, Record<Locale, GuideCardCopy>>;
+}
+
+export function GuidesContent({ cards }: GuidesContentProps) {
   const t = useTranslations("guidesPage");
+  const locale = useLocale();
+  const copy = (guide: GuideKey) => cards[guide][isValidLocale(locale) ? locale : DEFAULT_LOCALE];
 
   const groups: GuideGroup[] = [
     {
@@ -43,14 +51,12 @@ export function GuidesContent() {
         {
           href: PAGE_ROUTES.GUIDES_CHECK_IN,
           icon: BadgeCheckIcon,
-          title: t("guides.checkIn.title"),
-          description: t("guides.checkIn.description"),
+          ...copy("checkIn"),
         },
         {
           href: PAGE_ROUTES.GUIDES_EVENT_RSVP,
           icon: TicketIcon,
-          title: t("guides.eventRsvp.title"),
-          description: t("guides.eventRsvp.description"),
+          ...copy("eventRsvp"),
         },
       ],
     },
@@ -60,26 +66,22 @@ export function GuidesContent() {
         {
           href: PAGE_ROUTES.GUIDES_REGISTRATION,
           icon: FingerprintIcon,
-          title: t("guides.registration.title"),
-          description: t("guides.registration.description"),
+          ...copy("registration"),
         },
         {
           href: PAGE_ROUTES.GUIDES_GUILD_SUBSCRIPTION,
           icon: GuildIcon,
-          title: t("guides.guildSubscription.title"),
-          description: t("guides.guildSubscription.description"),
+          ...copy("guildSubscription"),
         },
         {
           href: PAGE_ROUTES.GUIDES_PROFILE_PRIVACY,
           icon: ShieldIcon,
-          title: t("guides.profilePrivacy.title"),
-          description: t("guides.profilePrivacy.description"),
+          ...copy("profilePrivacy"),
         },
         {
           href: PAGE_ROUTES.GUIDES_ACCOUNT_DELETION,
           icon: TrashIcon,
-          title: t("guides.accountDeletion.title"),
-          description: t("guides.accountDeletion.description"),
+          ...copy("accountDeletion"),
           danger: true,
         },
       ],
@@ -90,14 +92,12 @@ export function GuidesContent() {
         {
           href: PAGE_ROUTES.GUIDES_SPEAKING,
           icon: MicIcon,
-          title: t("guides.speaking.title"),
-          description: t("guides.speaking.description"),
+          ...copy("speaking"),
         },
         {
           href: PAGE_ROUTES.GUIDES_ENGAGEMENT_SIGNALS,
           icon: BoltIcon,
-          title: t("guides.engagementSignals.title"),
-          description: t("guides.engagementSignals.description"),
+          ...copy("engagementSignals"),
         },
       ],
     },
@@ -107,8 +107,7 @@ export function GuidesContent() {
         {
           href: PAGE_ROUTES.GUIDES_TICKET_SCANNING,
           icon: QrCodeIcon,
-          title: t("guides.ticketScanning.title"),
-          description: t("guides.ticketScanning.description"),
+          ...copy("ticketScanning"),
           crew: true,
         },
       ],

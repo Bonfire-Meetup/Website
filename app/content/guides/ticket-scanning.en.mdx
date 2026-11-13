@@ -1,0 +1,81 @@
+---
+title: Ticket scanning guide
+description: Crew guide for scanning attendee tickets and using backup IDs.
+cardTitle: Ticket scanning
+cardDescription: How to scan attendee QR codes and handle backup IDs at the door.
+eyebrow: Crew Guide
+heading: Ticket scanning guide
+subtitle: How to scan attendee QR codes and handle backup IDs at the door.
+heroLead: You are the first point of contact for every attendee.
+heroSublead: A smooth scan means a great first impression of the event.
+---
+
+<Sections>
+
+<Section title="QR code scanning" icon="qr-code">
+
+1. Open the Event Reader page from your crew tools.
+2. Select the current event from the tiles and start the reader.
+3. Point your camera at the attendee's QR code displayed on their check-in pass.
+4. The scanner detects the code automatically and verifies the token. No tap needed.
+
+</Section>
+
+<Section title="Backup ID path" icon="ticket">
+
+If the QR code cannot be scanned (broken screen, low brightness, etc.), use the backup ID printed on the attendee's ticket.
+
+1. Tap "Use backup ID" below the scanner to expand the manual entry form.
+2. Ask the attendee to show the backup ID on their check-in pass.
+3. Type the ID exactly as shown. Letters and numbers only, characters like 0, O, I, and l are never used.
+4. Tap "Find user" to look up the attendee, then confirm check-in.
+
+</Section>
+
+<Section title="Camera tips" icon="camera">
+
+1. Grant camera permission when prompted. The scanner needs it to read QR codes.
+2. If the camera won't start, check that no other app is using it and refresh the page.
+3. Hold the phone steady about 15–20 cm from the QR code for fastest detection.
+
+</Section>
+
+<Section title="Scan results" icon="info">
+
+<CardGrid>
+
+<StatusCard tone="emerald" icon="check-circle" title="Valid">
+
+The attendee is verified and you can confirm check-in.
+
+</StatusCard>
+
+<StatusCard tone="blue" icon="badge-check" title="Already checked in">
+
+The attendee was scanned earlier, no action needed.
+
+</StatusCard>
+
+<StatusCard tone="amber" icon="clock" title="Expired">
+
+The token has expired. Ask the attendee to regenerate their check-in pass.
+
+</StatusCard>
+
+<StatusCard tone="red" icon="close" title="Invalid">
+
+The QR code is not a valid check-in token. Ask the attendee to open the correct page.
+
+</StatusCard>
+
+</CardGrid>
+
+</Section>
+
+</Sections>
+
+<Cta title="Good to know" primaryHref="/events/reader" primaryLabel="Open event reader" secondaryHref="/guides/events/check-in" secondaryLabel="Open check-in guide">
+
+If anything goes wrong, the scanner diagnostics panel can help troubleshoot. Tap "Show" at the bottom of the reader to see camera and detection details.
+
+</Cta>

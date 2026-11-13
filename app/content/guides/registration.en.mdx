@@ -1,0 +1,66 @@
+---
+title: Registration and sign-in guide
+description: How Bonfire registration works with email codes and passkeys.
+cardTitle: Registration and sign-in
+cardDescription: Understand email codes, passkeys, and why first sign-in creates your account.
+eyebrow: How-To
+heading: Registration and sign-in
+subtitle: No separate signup form. Your first successful sign-in creates your account.
+heroLead: Registration equals first sign-in.
+heroSublead: You verify ownership of your email, then your account is created automatically.
+---
+
+<Sections>
+
+<Section title="Email + code flow" icon="mail">
+
+1. Open login and enter your email.
+2. Complete the human check and request a one-time code.
+3. Check your inbox and enter the code on the same login screen.
+4. Codes are short-lived and one-time; if it expires, request a new one.
+
+</Section>
+
+<Section title="When registration happens" icon="user">
+
+1. There is no separate registration page.
+2. After a valid email code is confirmed, your account is created (or reused if it already exists).
+3. Then you are signed in and redirected to your account page.
+
+</Section>
+
+<Section title="We value your privacy" icon="lock">
+
+Out of the gate, you're opted out of comms and your profile stays private. No rush, you can change both whenever you're ready.
+
+</Section>
+
+<Section title="How passkeys fit in" icon="fingerprint">
+
+1. First, sign in with email code at least once.
+2. Open Account and add a passkey in Security.
+3. Next time, use the passkey button on login for faster sign-in on supported devices.
+
+<InfoPanel icon="shield" title="Why passkeys are safer">
+
+Passkeys reduce common account-takeover risks compared to one-time codes and passwords.
+
+<Steps variant="emerald-dot" size="sm">
+
+- No shared secret to type, so phishing pages cannot steal your password.
+- Cryptographic login is bound to your device and verified against the real domain.
+- Biometrics or device PIN add local user verification before sign-in.
+
+</Steps>
+
+</InfoPanel>
+
+</Section>
+
+</Sections>
+
+<Cta title="Good to know" primaryHref="/login" primaryLabel="Open login" secondaryHref="/me" secondaryLabel="Open account">
+
+If login fails, request a fresh code. You can always continue with email code even if passkey is unavailable on a device.
+
+</Cta>

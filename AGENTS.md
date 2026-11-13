@@ -65,6 +65,10 @@ Working guide for AI agents in this repository. Keep changes aligned with the cu
 - Messages are merged from many namespace files in `app/lib/i18n/messages.ts`.
 - When adding UI text, update both `en` and `cs` namespace files in the relevant folder under `app/locales`.
 - Server components use `getTranslations`; client components use `useTranslations`.
+- Long-form text (legal documents and similar) does not belong in locale JSON. It lives as per-locale markdown in `app/content/**/<name>.<locale>.md`, compiled by `@next/mdx` and styled through `mdx-components.tsx`.
+- Render every locale on the server and wrap them in `LocalizedContent` (`app/components/shared/markdown`) so the client shows the active one. See `app/(app)/legal/page.tsx`.
+- Use `## Heading {#custom-id}` in markdown when an anchor must stay the same across languages.
+- Guides are MDX: `app/content/guides/<slug>.<locale>.mdx` with YAML frontmatter (hero and card copy) and named blocks such as `<Section>`, `<Steps>`, `<Callout>` and `<Cta>` from `app/components/guides/mdx`. Register a new guide in `app/content/guides/index.ts`; frontmatter is validated there.
 
 ## State And Data
 

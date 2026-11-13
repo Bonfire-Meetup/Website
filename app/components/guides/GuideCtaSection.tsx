@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { ArrowRightIcon } from "@/components/shared/Icons";
 
@@ -9,8 +10,8 @@ interface CtaButton {
 
 interface GuideCtaSectionProps {
   title?: string;
-  description?: string;
-  secondDescription?: string;
+  description?: ReactNode;
+  secondDescription?: ReactNode;
   primary: CtaButton;
   secondary: CtaButton;
   variant?: "default" | "rose";

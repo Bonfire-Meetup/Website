@@ -1,0 +1,81 @@
+---
+title: "Návod: skenování vstupenek"
+description: Crew návod pro skenování QR kódů účastníků a práci se záložním ID.
+cardTitle: Skenování vstupenek
+cardDescription: Jak skenovat QR kódy účastníků a pracovat se záložním ID u vstupu.
+eyebrow: Crew návod
+heading: Návod ke skenování vstupenek
+subtitle: Jak skenovat QR kódy účastníků a pracovat se záložním ID u vstupu.
+heroLead: Jsi první kontakt pro každého účastníka.
+heroSublead: Hladký scan znamená skvělý první dojem z akce.
+---
+
+<Sections>
+
+<Section title="Skenování QR kódu" icon="qr-code">
+
+1. Otevři stránku Event Reader z crew nástrojů.
+2. Vyber aktuální akci z dlaždic a spusť čtečku.
+3. Namiř kameru na QR kód účastníka zobrazený na jeho check-in pasu.
+4. Skener kód rozpozná automaticky a ověří token. Bez klikání.
+
+</Section>
+
+<Section title="Záložní ID cesta" icon="ticket">
+
+Pokud QR kód nelze naskenovat (rozbitý displej, nízký jas atd.), použij záložní ID vytištěné na vstupence.
+
+1. Pod skenerem klikni na „Použít záložní ID“ pro rozbalení formuláře.
+2. Požádej účastníka, aby ukázal záložní ID na svém check-in pasu.
+3. Zadej ID přesně jak je zobrazeno. Jen písmena a čísla, znaky jako 0, O, I a l se nikdy nepoužívají.
+4. Klikni na „Najít uživatele“ pro vyhledání účastníka a potvrď check-in.
+
+</Section>
+
+<Section title="Tipy pro kameru" icon="camera">
+
+1. Povol přístup ke kameře po výzvě. Skener ji potřebuje ke čtení QR kódů.
+2. Pokud se kamera nespustí, zkontroluj, že ji nepoužívá jiná aplikace, a obnov stránku.
+3. Drž telefon stabilně asi 15–20 cm od QR kódu pro nejrychlejší detekci.
+
+</Section>
+
+<Section title="Výsledky skenování" icon="info">
+
+<CardGrid>
+
+<StatusCard tone="emerald" icon="check-circle" title="Platný">
+
+Účastník je ověřen a můžeš potvrdit check-in.
+
+</StatusCard>
+
+<StatusCard tone="blue" icon="badge-check" title="Již zkontrolován">
+
+Účastník byl naskenován dříve, žádná akce potřeba.
+
+</StatusCard>
+
+<StatusCard tone="amber" icon="clock" title="Vypršel">
+
+Token vypršel. Požádej účastníka, aby si znovu vygeneroval check-in pas.
+
+</StatusCard>
+
+<StatusCard tone="red" icon="close" title="Neplatný">
+
+QR kód není platný check-in token. Požádej účastníka, aby otevřel správnou stránku.
+
+</StatusCard>
+
+</CardGrid>
+
+</Section>
+
+</Sections>
+
+<Cta title="Dobré vědět" primaryHref="/events/reader" primaryLabel="Otevřít čtečku" secondaryHref="/guides/events/check-in" secondaryLabel="Otevřít návod na check-in">
+
+Když se něco pokazí, panel diagnostiky skeneru pomůže s řešením. Klikni na „Zobrazit“ dole ve čtečce pro zobrazení detailů kamery a detekce.
+
+</Cta>

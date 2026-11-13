@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 
-import { buildSimplePageMetadata } from "@/lib/metadata";
-
-import { EventRsvpContent } from "./EventRsvpContent";
+import { buildGuideMetadata, GuidePage } from "@/components/guides/GuidePage";
 
 export default function EventRsvpGuidePage() {
-  return <EventRsvpContent />;
+  return <GuidePage guide="eventRsvp" />;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "eventRsvpGuide" });
+export function generateMetadata(): Promise<Metadata> {
+  return buildGuideMetadata("eventRsvp");
 }

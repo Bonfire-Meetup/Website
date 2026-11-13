@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 
-import { buildSimplePageMetadata } from "@/lib/metadata";
-
-import { EngagementSignalsContent } from "./EngagementSignalsContent";
+import { buildGuideMetadata, GuidePage } from "@/components/guides/GuidePage";
 
 export default function EngagementSignalsGuidePage() {
-  return <EngagementSignalsContent />;
+  return <GuidePage guide="engagementSignals" />;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "engagementSignalsGuide" });
+export function generateMetadata(): Promise<Metadata> {
+  return buildGuideMetadata("engagementSignals");
 }

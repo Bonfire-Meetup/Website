@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 
-import { isGuildSubscriptionEnabled } from "@/lib/config/guild-subscription-feature";
-import { buildSimplePageMetadata } from "@/lib/metadata";
-
-import { GuildSubscriptionContent } from "./GuildSubscriptionContent";
+import { buildGuideMetadata, GuidePage } from "@/components/guides/GuidePage";
 
 export default function GuildSubscriptionGuidePage() {
-  return <GuildSubscriptionContent subscriptionEnabled={isGuildSubscriptionEnabled()} />;
+  return <GuidePage guide="guildSubscription" />;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return buildSimplePageMetadata({ ns: "guildSubscriptionGuide" });
+export function generateMetadata(): Promise<Metadata> {
+  return buildGuideMetadata("guildSubscription");
 }
