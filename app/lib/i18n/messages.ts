@@ -1,4 +1,5 @@
 import enAccountMessages from "@/locales/account/en.json";
+import enAdminMessages from "@/locales/admin/en.json";
 import enAttributionsMessages from "@/locales/attributions/en.json";
 import enAuthLoginMessages from "@/locales/authLogin/en.json";
 import enCheckInMessages from "@/locales/checkIn/en.json";
@@ -37,6 +38,7 @@ import { DEFAULT_LOCALE, type Locale } from "./locales";
 
 const moduleLoaders = [
   (locale: Locale) => import(`@/locales/account/${locale}.json`),
+  (locale: Locale) => import(`@/locales/admin/${locale}.json`),
   (locale: Locale) => import(`@/locales/attributions/${locale}.json`),
   (locale: Locale) => import(`@/locales/authLogin/${locale}.json`),
   (locale: Locale) => import(`@/locales/checkIn/${locale}.json`),
@@ -77,6 +79,7 @@ const mergeMessages = (...chunks: Record<string, unknown>[]) =>
 const enMessages = mergeMessages(
   enRootMessages,
   enAccountMessages,
+  enAdminMessages,
   enAttributionsMessages,
   enAuthLoginMessages,
   enCheckInMessages,

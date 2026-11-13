@@ -17,6 +17,7 @@ const AUTH_OWNED_QUERY_KEYS = [
   ["event-questions"],
   ["passkeys"],
   ["check-in-token"],
+  ["admin"],
 ] as const;
 
 export function clearAuthOwnedQueries(queryClient: QueryClient) {

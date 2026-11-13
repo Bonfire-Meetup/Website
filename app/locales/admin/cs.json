@@ -1,0 +1,84 @@
+{
+  "admin": {
+    "meta": {
+      "surveys": {
+        "title": "Odpovědi z dotazníků | Administrace | {brandName}",
+        "description": "Odpovědi na dotazník po akcích."
+      },
+      "talkProposals": {
+        "title": "Návrhy přednášek | Administrace | {brandName}",
+        "description": "Návrhy přednášek od komunity."
+      },
+      "contact": {
+        "title": "Zprávy z kontaktního formuláře | Administrace | {brandName}",
+        "description": "Zprávy odeslané přes kontaktní formulář."
+      }
+    },
+    "eyebrow": "Administrace",
+    "title": "Komunitní schránka",
+    "subtitle": "Zpětná vazba z akcí, návrhy přednášek a zprávy odeslané přes web.",
+    "tabs": {
+      "surveys": "Dotazníky",
+      "talkProposals": "Návrhy přednášek",
+      "contact": "Kontakt"
+    },
+    "common": {
+      "loadError": "Seznam se nepodařilo načíst.",
+      "retry": "Zkusit znovu",
+      "noMatches": "Těmto filtrům nic neodpovídá.",
+      "noAnswer": "Bez odpovědi",
+      "searchPlaceholder": "Hledat…",
+      "showMore": "Zobrazit více",
+      "showLess": "Zobrazit méně",
+      "count": "{count, plural, one {# záznam} few {# záznamy} other {# záznamů}}"
+    },
+    "surveys": {
+      "empty": "Zatím žádné odpovědi z dotazníků.",
+      "filterEvent": "Filtrovat podle akce",
+      "allEvents": "Všechny akce",
+      "responses": "Odpovědi",
+      "avgOverall": "Celkový dojem",
+      "avgNextEvent": "Účast na další akci",
+      "avgTalks": "Program přednášek",
+      "ratingsCount": "{count, plural, =0 {Bez hodnocení} one {# hodnocení} few {# hodnocení} other {# hodnocení}}",
+      "favoriteParts": "Nejoblíbenější části",
+      "futureTopics": "Témata do budoucna",
+      "talkFormat": "Délka a formát přednášek",
+      "talkRatings": "Přednášku po přednášce",
+      "talkRatingsHint": "Vyberte jednu akci a uvidíte hodnocení jednotlivých přednášek.",
+      "comments": "{count, plural, one {# komentář} few {# komentáře} other {# komentářů}}",
+      "overall": "Celkově",
+      "nextEvent": "Další akce",
+      "talks": "Přednášky",
+      "suggestions": "Návrhy",
+      "talkFeedback": "Hodnocení přednášek",
+      "other": "Jiné: {text}"
+    },
+    "talkProposals": {
+      "empty": "Zatím žádné návrhy přednášek.",
+      "filterLocation": "Filtrovat podle místa",
+      "allLocations": "Všechna místa",
+      "locations": {
+        "prague": "Praha",
+        "zlin": "Zlín",
+        "either": "Praha nebo Zlín"
+      },
+      "duration": "{minutes} min",
+      "abstract": "Anotace",
+      "experience": "Zkušenosti s přednášením"
+    },
+    "contact": {
+      "empty": "Zatím žádné zprávy.",
+      "filterType": "Filtrovat podle typu",
+      "allTypes": "Všechny typy",
+      "types": {
+        "general": "Obecné",
+        "feature": "Návrh funkce",
+        "support": "Technická podpora",
+        "press": "Média",
+        "crew": "Crew",
+        "coc": "Kodex chování"
+      }
+    }
+  }
+}

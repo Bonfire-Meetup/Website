@@ -20,6 +20,10 @@ export const LOGIN_REASON = {
 export type LoginReason = (typeof LOGIN_REASON)[keyof typeof LOGIN_REASON];
 
 export const PAGE_ROUTES = {
+  ADMIN: "/admin",
+  ADMIN_CONTACT_SUBMISSIONS: "/admin/contact",
+  ADMIN_SURVEY_RESPONSES: "/admin/surveys",
+  ADMIN_TALK_PROPOSALS: "/admin/talk-proposals",
   ANCHOR: {
     EVENTS: "/#events",
     TOP: "/#top",
@@ -89,4 +93,5 @@ export const DYNAMIC_ROUTE_PREFIXES = [
   "/events/",
   "/photos/",
   "/me/",
+  "/admin",
 ] as const;

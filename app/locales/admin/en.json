@@ -1,0 +1,84 @@
+{
+  "admin": {
+    "meta": {
+      "surveys": {
+        "title": "Survey Responses | Admin | {brandName}",
+        "description": "Event feedback survey responses."
+      },
+      "talkProposals": {
+        "title": "Talk Proposals | Admin | {brandName}",
+        "description": "Talk proposals submitted by the community."
+      },
+      "contact": {
+        "title": "Contact Messages | Admin | {brandName}",
+        "description": "Messages sent through the contact form."
+      }
+    },
+    "eyebrow": "Admin",
+    "title": "Community Inbox",
+    "subtitle": "Event feedback, talk proposals, and messages sent through the website.",
+    "tabs": {
+      "surveys": "Surveys",
+      "talkProposals": "Talk proposals",
+      "contact": "Contact"
+    },
+    "common": {
+      "loadError": "Could not load this list.",
+      "retry": "Try again",
+      "noMatches": "Nothing matches these filters.",
+      "noAnswer": "No answer",
+      "searchPlaceholder": "Search…",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "count": "{count, plural, one {# entry} other {# entries}}"
+    },
+    "surveys": {
+      "empty": "No survey responses yet.",
+      "filterEvent": "Filter by event",
+      "allEvents": "All events",
+      "responses": "Responses",
+      "avgOverall": "Overall enjoyment",
+      "avgNextEvent": "Next event likelihood",
+      "avgTalks": "Talk lineup",
+      "ratingsCount": "{count, plural, =0 {No ratings} one {# rating} other {# ratings}}",
+      "favoriteParts": "Favorite parts",
+      "futureTopics": "Future topics",
+      "talkFormat": "Talk length & format",
+      "talkRatings": "Talk by talk",
+      "talkRatingsHint": "Pick a single event to see per-talk ratings.",
+      "comments": "{count, plural, one {# comment} other {# comments}}",
+      "overall": "Overall",
+      "nextEvent": "Next event",
+      "talks": "Talks",
+      "suggestions": "Suggestions",
+      "talkFeedback": "Talk feedback",
+      "other": "Other: {text}"
+    },
+    "talkProposals": {
+      "empty": "No talk proposals yet.",
+      "filterLocation": "Filter by location",
+      "allLocations": "All locations",
+      "locations": {
+        "prague": "Prague",
+        "zlin": "Zlín",
+        "either": "Prague or Zlín"
+      },
+      "duration": "{minutes} min",
+      "abstract": "Abstract",
+      "experience": "Speaking experience"
+    },
+    "contact": {
+      "empty": "No contact messages yet.",
+      "filterType": "Filter by type",
+      "allTypes": "All types",
+      "types": {
+        "general": "General",
+        "feature": "Feature request",
+        "support": "Technical support",
+        "press": "Press",
+        "crew": "Crew",
+        "coc": "Code of Conduct"
+      }
+    }
+  }
+}

@@ -23,6 +23,7 @@ import {
   LogOutIcon,
   MailIcon,
   QrCodeIcon,
+  ShieldIcon,
   UserIcon,
 } from "../shared/Icons";
 import { IconButton } from "../ui/IconButton";
@@ -69,6 +70,7 @@ function AuthNavButtonInner({
   const authRoles = auth.decodedToken?.rol ?? [];
   const isCrew = authRoles.includes(USER_ROLES.CREW);
   const isEditor = authRoles.includes(USER_ROLES.EDITOR);
+  const isAdmin = authRoles.includes(USER_ROLES.ADMIN);
   const href = isAuthed ? PAGE_ROUTES.ME : PAGE_ROUTES.LOGIN;
   const authUserId = auth.decodedToken?.sub ?? auth.decodedIdToken?.sub;
   const avatarSeed = authUserId ? makeAvatarSeedFromId(hashToU64(authUserId)) : null;
@@ -185,6 +187,18 @@ function AuthNavButtonInner({
               href: PAGE_ROUTES.NEWSLETTER_EDITOR,
               icon: MailIcon,
               label: tAccount("newsletterEditor"),
+            },
+          ],
+        }
+      : null,
+    isAdmin
+      ? {
+          title: t("adminTools"),
+          items: [
+            {
+              href: PAGE_ROUTES.ADMIN,
+              icon: ShieldIcon,
+              label: tAccount("adminInbox"),
             },
           ],
         }

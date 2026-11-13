@@ -1,5 +1,7 @@
 import "server-only";
 
+import { desc } from "drizzle-orm";
+
 import { db } from "@/lib/data/db";
 import {
   contactSubmissions,
@@ -105,3 +107,76 @@ export const insertTalkProposal = async ({
     throw error;
   }
 };
+
+const ADMIN_LIST_LIMIT = 1000;
+
+const toIsoTimestamp = (value: string) => new Date(value).toISOString();
+
+export const listEventSurveyResponses = async () => {
+  const rows = await db()
+    .select({
+      createdAt: eventSurveyResponse.createdAt,
+      eventId: eventSurveyResponse.eventId,
+      eventTitle: eventSurveyResponse.eventTitle,
+      favoriteParts: eventSurveyResponse.favoriteParts,
+      favoritePartsOther: eventSurveyResponse.favoritePartsOther,
+      futureTopics: eventSurveyResponse.futureTopics,
+      futureTopicsOther: eventSurveyResponse.futureTopicsOther,
+      id: eventSurveyResponse.id,
+      nextEventLikelihood: eventSurveyResponse.nextEventLikelihood,
+      overallRating: eventSurveyResponse.overallRating,
+      suggestions: eventSurveyResponse.suggestions,
+      talkFeedback: eventSurveyResponse.talkFeedback,
+      talkFeedbackEnabled: eventSurveyResponse.talkFeedbackEnabled,
+      talkFormat: eventSurveyResponse.talkFormat,
+      talkFormatOther: eventSurveyResponse.talkFormatOther,
+      talksOverallRating: eventSurveyResponse.talksOverallRating,
+    })
+    .from(eventSurveyResponse)
+    .orderBy(desc(eventSurveyResponse.createdAt))
+    .limit(ADMIN_LIST_LIMIT);
+
+  return rows.map((row) => ({ ...row, createdAt: toIsoTimestamp(row.createdAt) }));
+};
+
+export const listTalkProposals = async () => {
+  const rows = await db()
+    .select({
+      abstract: talkProposals.abstract,
+      createdAt: talkProposals.createdAt,
+      duration: talkProposals.duration,
+      email: talkProposals.email,
+      experience: talkProposals.experience,
+      id: talkProposals.id,
+      preferredLocation: talkProposals.preferredLocation,
+      speakerName: talkProposals.speakerName,
+      talkTitle: talkProposals.talkTitle,
+    })
+    .from(talkProposals)
+    .orderBy(desc(talkProposals.createdAt))
+    .limit(ADMIN_LIST_LIMIT);
+
+  return rows.map((row) => ({ ...row, createdAt: toIsoTimestamp(row.createdAt) }));
+};
+
+export const listContactSubmissions = async () => {
+  const rows = await db()
+    .select({
+      createdAt: contactSubmissions.createdAt,
+      email: contactSubmissions.email,
+      id: contactSubmissions.id,
+      inquiryType: contactSubmissions.inquiryType,
+      message: contactSubmissions.message,
+      name: contactSubmissions.name,
+      subject: contactSubmissions.subject,
+    })
+    .from(contactSubmissions)
+    .orderBy(desc(contactSubmissions.createdAt))
+    .limit(ADMIN_LIST_LIMIT);
+
+  return rows.map((row) => ({ ...row, createdAt: toIsoTimestamp(row.createdAt) }));
+};
+
+export type AdminSurveyResponse = Awaited<ReturnType<typeof listEventSurveyResponses>>[number];
+export type AdminTalkProposal = Awaited<ReturnType<typeof listTalkProposals>>[number];
+export type AdminContactSubmission = Awaited<ReturnType<typeof listContactSubmissions>>[number];

@@ -24,6 +24,7 @@
     "dashboard": "Dashboard",
     "crewTools": "Crew tools",
     "editorTools": "Editor tools",
+    "adminTools": "Admin tools",
     "session": "Session",
     "checkIn": "Check-in",
     "login": "Sign in",

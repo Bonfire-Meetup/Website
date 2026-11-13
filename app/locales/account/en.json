@@ -9,6 +9,7 @@
     "checkIn": "Check-in",
     "reader": "Reader",
     "newsletterEditor": "Newsletter Editor",
+    "adminInbox": "Community Inbox",
     "name": {
       "label": "Name",
       "empty": "Not set",

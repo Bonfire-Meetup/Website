@@ -1,4 +1,9 @@
 export const API_ROUTES = {
+  ADMIN: {
+    CONTACT_SUBMISSIONS: "/api/v1/admin/contact-submissions",
+    SURVEY_RESPONSES: "/api/v1/admin/survey-responses",
+    TALK_PROPOSALS: "/api/v1/admin/talk-proposals",
+  },
   AUTH: {
     BASE: "/api/v1/auth",
     CHALLENGES: "/api/v1/auth/challenges",

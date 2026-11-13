@@ -4,6 +4,7 @@ export const USER_ROLES = {
   VERIFIED: "verified",
   SPEAKER: "speaker",
   EDITOR: "editor",
+  ADMIN: "admin",
 } as const;
 
 export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
