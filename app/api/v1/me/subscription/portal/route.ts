@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
+import {
+  RATE_LIMITS,
+  withAuth,
+  withRequestContext,
+  withUserRateLimit,
+} from "@/lib/api/route-wrappers";
 import { guildSubscriptionLinkResponseSchema } from "@/lib/api/schemas";
 import { createGuildPortalSession } from "@/lib/billing/stripe";
 import { getGuildSubscriptionByUserId } from "@/lib/data/subscriptions";
@@ -10,20 +15,25 @@ import { logError } from "@/lib/utils/log";
  * Opens a Stripe billing portal session for managing your Guild membership and returns its URL.
  */
 export const POST = withRequestContext(
-  withAuth("account.subscription.portal")(async (request: Request, { auth }) => {
-    try {
-      const subscription = await getGuildSubscriptionByUserId(auth.userId);
+  withAuth("account.subscription.portal")(
+    withUserRateLimit(
+      "payments",
+      RATE_LIMITS.PAYMENT,
+    )(async (request: Request, { auth }) => {
+      try {
+        const subscription = await getGuildSubscriptionByUserId(auth.userId);
 
-      if (!subscription?.stripeCustomerId) {
-        return NextResponse.json({ error: "not_found" }, { status: 404 });
+        if (!subscription?.stripeCustomerId) {
+          return NextResponse.json({ error: "not_found" }, { status: 404 });
+        }
+
+        const session = await createGuildPortalSession(subscription.stripeCustomerId, request);
+
+        return NextResponse.json(guildSubscriptionLinkResponseSchema.parse({ url: session.url }));
+      } catch (error) {
+        logError("account.subscription.portal.failed", error, { userId: auth.userId });
+        return NextResponse.json({ error: "portal_failed" }, { status: 500 });
       }
-
-      const session = await createGuildPortalSession(subscription.stripeCustomerId, request);
-
-      return NextResponse.json(guildSubscriptionLinkResponseSchema.parse({ url: session.url }));
-    } catch (error) {
-      logError("account.subscription.portal.failed", error, { userId: auth.userId });
-      return NextResponse.json({ error: "portal_failed" }, { status: 500 });
-    }
-  }),
+    }),
+  ),
 );

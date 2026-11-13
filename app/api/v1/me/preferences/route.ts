@@ -2,7 +2,12 @@ import { getLocale } from "next-intl/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
+import {
+  RATE_LIMITS,
+  withAuth,
+  withRequestContext,
+  withUserRateLimit,
+} from "@/lib/api/route-wrappers";
 import { updateAuthUserPreferences, updateAuthUserName } from "@/lib/data/auth";
 import { logError, logWarn } from "@/lib/utils/log";
 import { containsProfanity } from "@/lib/utils/profanity-filter";
@@ -17,94 +22,99 @@ const preferencesSchema = z.object({
 
 /** Updates your display name, public profile visibility, or community email preference. */
 export const PATCH = withRequestContext(
-  withAuth("account.preferences")(async (request: Request, { auth }) => {
-    const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
+  withAuth("account.preferences")(
+    withUserRateLimit(
+      "account-write",
+      RATE_LIMITS.ACCOUNT_WRITE,
+    )(async (request: Request, { auth }) => {
+      const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
 
-    let payload: unknown;
+      let payload: unknown;
 
-    try {
-      payload = await request.json();
-    } catch (error) {
-      logError("account.preferences.parse_failed", error);
+      try {
+        payload = await request.json();
+      } catch (error) {
+        logError("account.preferences.parse_failed", error);
 
-      return respond({ error: "invalid_request" }, { status: 400 });
-    }
+        return respond({ error: "invalid_request" }, { status: 400 });
+      }
 
-    const result = preferencesSchema.safeParse(payload);
+      const result = preferencesSchema.safeParse(payload);
 
-    if (!result.success) {
-      logWarn("account.preferences.invalid_schema", { errors: result.error.issues });
+      if (!result.success) {
+        logWarn("account.preferences.invalid_schema", { errors: result.error.issues });
 
-      return respond({ error: "invalid_request" }, { status: 400 });
-    }
+        return respond({ error: "invalid_request" }, { status: 400 });
+      }
 
-    try {
-      const locale = (await getLocale()) as "en" | "cs";
+      try {
+        const locale = (await getLocale()) as "en" | "cs";
 
-      if (result.data.name !== undefined) {
-        const nameValue =
-          result.data.name === null || result.data.name.trim() === ""
-            ? null
-            : result.data.name.trim();
+        if (result.data.name !== undefined) {
+          const nameValue =
+            result.data.name === null || result.data.name.trim() === ""
+              ? null
+              : result.data.name.trim();
 
-        if (nameValue) {
-          if (nameValue.length > NAME_MAX_LENGTH) {
-            return respond({ error: "name_too_long" }, { status: 400 });
-          }
+          if (nameValue) {
+            if (nameValue.length > NAME_MAX_LENGTH) {
+              return respond({ error: "name_too_long" }, { status: 400 });
+            }
 
-          if (containsProfanity(nameValue, locale)) {
-            logWarn("account.preferences.profanity_detected", {
-              locale,
-              nameLength: nameValue.length,
-              userId: auth.userId,
-            });
+            if (containsProfanity(nameValue, locale)) {
+              logWarn("account.preferences.profanity_detected", {
+                locale,
+                nameLength: nameValue.length,
+                userId: auth.userId,
+              });
 
-            return respond({ error: "profanity_detected" }, { status: 400 });
+              return respond({ error: "profanity_detected" }, { status: 400 });
+            }
           }
         }
+
+        const updates: Promise<void>[] = [];
+
+        const preferencesUpdate: Record<string, boolean> = {};
+
+        if (result.data.allowCommunityEmails !== undefined) {
+          preferencesUpdate.allowCommunityEmails = result.data.allowCommunityEmails;
+        }
+
+        if (result.data.publicProfile !== undefined) {
+          preferencesUpdate.publicProfile = result.data.publicProfile;
+        }
+
+        if (Object.keys(preferencesUpdate).length > 0) {
+          updates.push(
+            updateAuthUserPreferences({
+              preferences: preferencesUpdate,
+              userId: auth.userId,
+            }),
+          );
+        }
+
+        if (result.data.name !== undefined) {
+          const nameValue =
+            result.data.name === null || result.data.name.trim() === ""
+              ? null
+              : result.data.name.trim();
+          updates.push(
+            updateAuthUserName({
+              name: nameValue,
+              userId: auth.userId,
+            }),
+          );
+        }
+
+        await Promise.all(updates);
+
+        return respond({ ok: true });
+      } catch (error) {
+        logError("account.preferences.update_failed", error, { userId: auth.userId });
+
+        return respond({ error: "update_failed" }, { status: 500 });
       }
-
-      const updates: Promise<void>[] = [];
-
-      const preferencesUpdate: Record<string, boolean> = {};
-
-      if (result.data.allowCommunityEmails !== undefined) {
-        preferencesUpdate.allowCommunityEmails = result.data.allowCommunityEmails;
-      }
-
-      if (result.data.publicProfile !== undefined) {
-        preferencesUpdate.publicProfile = result.data.publicProfile;
-      }
-
-      if (Object.keys(preferencesUpdate).length > 0) {
-        updates.push(
-          updateAuthUserPreferences({
-            preferences: preferencesUpdate,
-            userId: auth.userId,
-          }),
-        );
-      }
-
-      if (result.data.name !== undefined) {
-        const nameValue =
-          result.data.name === null || result.data.name.trim() === ""
-            ? null
-            : result.data.name.trim();
-        updates.push(
-          updateAuthUserName({
-            name: nameValue,
-            userId: auth.userId,
-          }),
-        );
-      }
-
-      await Promise.all(updates);
-
-      return respond({ ok: true });
-    } catch (error) {
-      logError("account.preferences.update_failed", error, { userId: auth.userId });
-
-      return respond({ error: "update_failed" }, { status: 500 });
-    }
-  }),
+    }),
+  ),
 );

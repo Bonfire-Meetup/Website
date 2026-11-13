@@ -3,9 +3,11 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import {
+  RATE_LIMITS,
   withOptionalResolvedUserId,
   withRequestContext,
   withResolvedUserId,
+  withUserRateLimit,
 } from "@/lib/api/route-wrappers";
 import { db } from "@/lib/data/db";
 import { userWatchlist } from "@/lib/data/schema";
@@ -20,7 +22,10 @@ interface RouteParams {
 /** Returns whether a video is on your Watch Later list. Always `false` when signed out. */
 export const GET = withRequestContext(
   withOptionalResolvedUserId<RouteParams>("watchlist.check")(
-    async (_request: Request, { params, userId }) => {
+    withUserRateLimit(
+      "account-read",
+      RATE_LIMITS.ACCOUNT_READ,
+    )(async (_request: Request, { params, userId }) => {
       const { userId: userIdParam, videoId } = await params;
 
       try {
@@ -44,14 +49,17 @@ export const GET = withRequestContext(
         logError("watchlist_check_failed", err, { videoId, userId: userIdParam });
         return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
-    },
+    }),
   ),
 );
 
 /** Adds a video to your Watch Later list. */
 export const PUT = withRequestContext(
   withResolvedUserId<RouteParams>("watchlist.add")(
-    async (_request: Request, { params, userId }) => {
+    withUserRateLimit(
+      "account-write",
+      RATE_LIMITS.ACCOUNT_WRITE,
+    )(async (_request: Request, { params, userId }) => {
       const { videoId } = await params;
 
       try {
@@ -67,14 +75,17 @@ export const PUT = withRequestContext(
         logError("watchlist_add_failed", err, { videoId, userId });
         return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
-    },
+    }),
   ),
 );
 
 /** Removes a video from your Watch Later list. */
 export const DELETE = withRequestContext(
   withResolvedUserId<RouteParams>("watchlist.remove")(
-    async (_request: Request, { params, userId }) => {
+    withUserRateLimit(
+      "account-write",
+      RATE_LIMITS.ACCOUNT_WRITE,
+    )(async (_request: Request, { params, userId }) => {
       const { videoId } = await params;
 
       try {
@@ -92,6 +103,6 @@ export const DELETE = withRequestContext(
         logError("watchlist_remove_failed", err, { videoId, userId });
         return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
-    },
+    }),
   ),
 );

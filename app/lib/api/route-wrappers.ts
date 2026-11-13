@@ -74,6 +74,29 @@ export const withRateLimit =
     return handler(request, ctx);
   };
 
+export const RATE_LIMITS = {
+  ACCOUNT_READ: 60,
+  ACCOUNT_WRITE: 20,
+  PAYMENT: 5,
+} as const;
+
+const signedInKey = (ctx: unknown) => {
+  const value = ctx as { auth?: { userId?: string }; userId?: string | null } | undefined;
+
+  return value?.auth?.userId ?? value?.userId ?? null;
+};
+
+export const withUserRateLimit =
+  (storeKey: string, maxHits: number) =>
+  <Ctx, Req extends Request = NextRequest>(
+    handler: RouteHandler<Ctx, Req>,
+  ): RouteHandler<Ctx, Req> =>
+    withRateLimit<Ctx, Req>({
+      keyFn: ({ ctx, ipHash }) => signedInKey(ctx) ?? ipHash,
+      maxHits,
+      storeKey,
+    })(handler);
+
 export interface AuthContext {
   auth: {
     userId: string;

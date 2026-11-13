@@ -2,7 +2,12 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
+import {
+  RATE_LIMITS,
+  withAuth,
+  withRequestContext,
+  withUserRateLimit,
+} from "@/lib/api/route-wrappers";
 import { timingGuardHash, verifyOtpChallenge } from "@/lib/auth/challenge";
 import {
   getAuthAttemptsByEmailHash,
@@ -38,71 +43,76 @@ import {
 
 /** Returns your profile, recent sign-in attempts, and boost balance and history. */
 export const GET = withRequestContext(
-  withAuth("account.me")(async (_request: Request, { auth }) => {
-    const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
+  withAuth("account.me")(
+    withUserRateLimit(
+      "account-read",
+      RATE_LIMITS.ACCOUNT_READ,
+    )(async (_request: Request, { auth }) => {
+      const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
 
-    try {
-      const user = await getAuthUserById(auth.userId);
+      try {
+        const user = await getAuthUserById(auth.userId);
 
-      if (!user) {
-        return respond({ error: "not_found" }, { status: 404 });
+        if (!user) {
+          return respond({ error: "not_found" }, { status: 404 });
+        }
+
+        const fingerprint = getEmailFingerprint(user.email);
+        const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+        const [boostLedgerItems, attempts, boostAllocation] = await Promise.all([
+          getUserBoostLedgerItems(auth.userId),
+          fingerprint.emailHash
+            ? getAuthAttemptsByEmailHash({
+                accountCreatedAt: user.createdAt,
+                emailHash: fingerprint.emailHash,
+                limit: 50,
+                since,
+                userId: auth.userId,
+              })
+            : Promise.resolve([]),
+          getUserBoostAllocation(auth.userId),
+        ]);
+
+        const attemptItems = attempts.map((attempt) => ({
+          createdAt: new Date(attempt.createdAt).toISOString(),
+          id: attempt.id,
+          method: attempt.method,
+          outcome: attempt.outcome,
+          userAgentSummary: attempt.userAgentSummary,
+        }));
+
+        const lastAllocationDateObj = new Date(boostAllocation.lastAllocationDate);
+        const nextMonth = new Date(
+          lastAllocationDateObj.getFullYear(),
+          lastAllocationDateObj.getMonth() + 1,
+          1,
+        );
+
+        return respond({
+          attempts: { items: attemptItems },
+          boostAllocation: {
+            availableBoosts: boostAllocation.availableBoosts,
+            nextAllocationDate: nextMonth.toISOString(),
+          },
+          boostLedger: { items: boostLedgerItems },
+          profile: {
+            allowCommunityEmails: user.preferences.allowCommunityEmails ?? false,
+            createdAt: new Date(user.createdAt).toISOString(),
+            email: user.email,
+            id: user.id,
+            lastLoginAt: user.lastLoginAt ? new Date(user.lastLoginAt).toISOString() : null,
+            name: user.name,
+            publicProfile: user.preferences.publicProfile ?? false,
+          },
+        });
+      } catch (error) {
+        logError("account.me.failed", error);
+
+        return respond({ error: "internal_error" }, { status: 500 });
       }
-
-      const fingerprint = getEmailFingerprint(user.email);
-      const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-
-      const [boostLedgerItems, attempts, boostAllocation] = await Promise.all([
-        getUserBoostLedgerItems(auth.userId),
-        fingerprint.emailHash
-          ? getAuthAttemptsByEmailHash({
-              accountCreatedAt: user.createdAt,
-              emailHash: fingerprint.emailHash,
-              limit: 50,
-              since,
-              userId: auth.userId,
-            })
-          : Promise.resolve([]),
-        getUserBoostAllocation(auth.userId),
-      ]);
-
-      const attemptItems = attempts.map((attempt) => ({
-        createdAt: new Date(attempt.createdAt).toISOString(),
-        id: attempt.id,
-        method: attempt.method,
-        outcome: attempt.outcome,
-        userAgentSummary: attempt.userAgentSummary,
-      }));
-
-      const lastAllocationDateObj = new Date(boostAllocation.lastAllocationDate);
-      const nextMonth = new Date(
-        lastAllocationDateObj.getFullYear(),
-        lastAllocationDateObj.getMonth() + 1,
-        1,
-      );
-
-      return respond({
-        attempts: { items: attemptItems },
-        boostAllocation: {
-          availableBoosts: boostAllocation.availableBoosts,
-          nextAllocationDate: nextMonth.toISOString(),
-        },
-        boostLedger: { items: boostLedgerItems },
-        profile: {
-          allowCommunityEmails: user.preferences.allowCommunityEmails ?? false,
-          createdAt: new Date(user.createdAt).toISOString(),
-          email: user.email,
-          id: user.id,
-          lastLoginAt: user.lastLoginAt ? new Date(user.lastLoginAt).toISOString() : null,
-          name: user.name,
-          publicProfile: user.preferences.publicProfile ?? false,
-        },
-      });
-    } catch (error) {
-      logError("account.me.failed", error);
-
-      return respond({ error: "internal_error" }, { status: 500 });
-    }
-  }),
+    }),
+  ),
 );
 
 const deleteSchema = z.object({
@@ -116,98 +126,104 @@ const deleteSchema = z.object({
  * Requires the code emailed by `POST /api/v1/me/deletion-challenges`.
  */
 export const DELETE = withRequestContext(
-  withAuth("account.delete")(async (request: Request, { auth }) => {
-    const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
-    const invalidResponse = () => respond({ error: "invalid_code" }, { status: 400 });
-    const expiredResponse = () => respond({ error: "expired" }, { status: 410 });
-    const tooManyAttemptsResponse = () => respond({ error: "too_many_attempts" }, { status: 429 });
+  withAuth("account.delete")(
+    withUserRateLimit(
+      "account-write",
+      RATE_LIMITS.ACCOUNT_WRITE,
+    )(async (request: Request, { auth }) => {
+      const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
+      const invalidResponse = () => respond({ error: "invalid_code" }, { status: 400 });
+      const expiredResponse = () => respond({ error: "expired" }, { status: 410 });
+      const tooManyAttemptsResponse = () =>
+        respond({ error: "too_many_attempts" }, { status: 429 });
 
-    let payload: unknown;
+      let payload: unknown;
 
-    try {
-      payload = await request.json();
-    } catch {
-      return respond({ error: "invalid_request" }, { status: 400 });
-    }
-
-    const result = deleteSchema.safeParse(payload);
-
-    if (!result.success) {
-      return respond({ error: "invalid_request" }, { status: 400 });
-    }
-
-    const user = await getAuthUserById(auth.userId);
-
-    if (!user) {
-      return respond({ error: "not_found" }, { status: 404 });
-    }
-
-    const email = user.email.trim().toLowerCase();
-    const { headers } = request;
-    const ip =
-      headers.get("x-real-ip") || headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
-    const userAgent = headers.get("user-agent");
-    const emailFingerprint = getEmailFingerprint(email);
-    const clientFingerprint = getClientFingerprint({ ip, userAgent });
-    const verification = await verifyOtpChallenge({
-      challengeToken: result.data.challenge_token,
-      code: result.data.code,
-      email,
-      timingGuard: timingGuardHash,
-    });
-
-    if (!verification.ok) {
-      logWarn("account.delete.invalid_code", {
-        ...emailFingerprint,
-        ...clientFingerprint,
-        reason: verification.reason,
-      });
-
-      if (verification.reason === "expired") {
-        return expiredResponse();
+      try {
+        payload = await request.json();
+      } catch {
+        return respond({ error: "invalid_request" }, { status: 400 });
       }
 
-      if (verification.reason === "max_attempts") {
-        return tooManyAttemptsResponse();
+      const result = deleteSchema.safeParse(payload);
+
+      if (!result.success) {
+        return respond({ error: "invalid_request" }, { status: 400 });
       }
 
-      return invalidResponse();
-    }
+      const user = await getAuthUserById(auth.userId);
 
-    await markAuthChallengeUsed(verification.id);
+      if (!user) {
+        return respond({ error: "not_found" }, { status: 404 });
+      }
 
-    try {
-      const { boostRefunds } = await deleteAllEventQuestionsByUser(auth.userId);
-      const refundEntries = boostRefunds.filter((entry) => entry.userId !== auth.userId);
+      const email = user.email.trim().toLowerCase();
+      const { headers } = request;
+      const ip =
+        headers.get("x-real-ip") || headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
+      const userAgent = headers.get("user-agent");
+      const emailFingerprint = getEmailFingerprint(email);
+      const clientFingerprint = getClientFingerprint({ ip, userAgent });
+      const verification = await verifyOtpChallenge({
+        challengeToken: result.data.challenge_token,
+        code: result.data.code,
+        email,
+        timingGuard: timingGuardHash,
+      });
 
-      await refundEventQuestionBoosts(refundEntries);
+      if (!verification.ok) {
+        logWarn("account.delete.invalid_code", {
+          ...emailFingerprint,
+          ...clientFingerprint,
+          reason: verification.reason,
+        });
 
-      await db().delete(authToken).where(eq(authToken.userId, auth.userId));
-      await db().delete(authRefreshToken).where(eq(authRefreshToken.userId, auth.userId));
-      await db().delete(authChallenge).where(eq(authChallenge.email, email));
-      await db().delete(authAttempt).where(eq(authAttempt.userId, auth.userId));
-      await db().delete(userWatchlist).where(eq(userWatchlist.userId, auth.userId));
-      await db().delete(userBoostAllocation).where(eq(userBoostAllocation.userId, auth.userId));
-      await db().delete(videoBoosts).where(eq(videoBoosts.userId, auth.userId));
-      await db().delete(guildSubscription).where(eq(guildSubscription.userId, auth.userId));
-      await db().delete(newsletterSubscription).where(eq(newsletterSubscription.email, email));
-      await db().delete(contactSubmissions).where(eq(contactSubmissions.email, email));
-      await db().delete(talkProposals).where(eq(talkProposals.email, email));
-      await db().delete(appUser).where(eq(appUser.id, auth.userId));
-    } catch (error) {
-      logError("account.delete.failed", error, {
+        if (verification.reason === "expired") {
+          return expiredResponse();
+        }
+
+        if (verification.reason === "max_attempts") {
+          return tooManyAttemptsResponse();
+        }
+
+        return invalidResponse();
+      }
+
+      await markAuthChallengeUsed(verification.id);
+
+      try {
+        const { boostRefunds } = await deleteAllEventQuestionsByUser(auth.userId);
+        const refundEntries = boostRefunds.filter((entry) => entry.userId !== auth.userId);
+
+        await refundEventQuestionBoosts(refundEntries);
+
+        await db().delete(authToken).where(eq(authToken.userId, auth.userId));
+        await db().delete(authRefreshToken).where(eq(authRefreshToken.userId, auth.userId));
+        await db().delete(authChallenge).where(eq(authChallenge.email, email));
+        await db().delete(authAttempt).where(eq(authAttempt.userId, auth.userId));
+        await db().delete(userWatchlist).where(eq(userWatchlist.userId, auth.userId));
+        await db().delete(userBoostAllocation).where(eq(userBoostAllocation.userId, auth.userId));
+        await db().delete(videoBoosts).where(eq(videoBoosts.userId, auth.userId));
+        await db().delete(guildSubscription).where(eq(guildSubscription.userId, auth.userId));
+        await db().delete(newsletterSubscription).where(eq(newsletterSubscription.email, email));
+        await db().delete(contactSubmissions).where(eq(contactSubmissions.email, email));
+        await db().delete(talkProposals).where(eq(talkProposals.email, email));
+        await db().delete(appUser).where(eq(appUser.id, auth.userId));
+      } catch (error) {
+        logError("account.delete.failed", error, {
+          ...emailFingerprint,
+          ...clientFingerprint,
+        });
+
+        return respond({ error: "delete_failed" }, { status: 500 });
+      }
+
+      logInfo("account.delete.completed", {
         ...emailFingerprint,
         ...clientFingerprint,
       });
 
-      return respond({ error: "delete_failed" }, { status: 500 });
-    }
-
-    logInfo("account.delete.completed", {
-      ...emailFingerprint,
-      ...clientFingerprint,
-    });
-
-    return respond({ ok: true });
-  }),
+      return respond({ ok: true });
+    }),
+  ),
 );

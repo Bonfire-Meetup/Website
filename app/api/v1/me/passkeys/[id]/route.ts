@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { withAuth, withRequestContext } from "@/lib/api/route-wrappers";
+import {
+  RATE_LIMITS,
+  withAuth,
+  withRequestContext,
+  withUserRateLimit,
+} from "@/lib/api/route-wrappers";
 import {
   deletePasskey,
   getPasskeyById,
@@ -20,74 +25,84 @@ const updateSchema = z.object({
 
 /** Renames one of your passkeys. */
 export const PATCH = withRequestContext(
-  withAuth<RouteParams>("passkey.update")(async (request: Request, { params, auth }) => {
-    const { userId } = auth;
-    const { id } = await params;
+  withAuth<RouteParams>("passkey.update")(
+    withUserRateLimit(
+      "account-write",
+      RATE_LIMITS.ACCOUNT_WRITE,
+    )(async (request: Request, { params, auth }) => {
+      const { userId } = auth;
+      const { id } = await params;
 
-    let payload: unknown;
+      let payload: unknown;
 
-    try {
-      payload = await request.json();
-    } catch {
-      return NextResponse.json({ error: "invalid_request" }, { status: 400 });
-    }
-
-    const result = updateSchema.safeParse(payload);
-
-    if (!result.success) {
-      return NextResponse.json({ error: "invalid_request" }, { status: 400 });
-    }
-
-    try {
-      const passkey = await getPasskeyById(id);
-
-      if (!passkey || passkey.userId !== userId) {
-        return NextResponse.json({ error: "not_found" }, { status: 404 });
+      try {
+        payload = await request.json();
+      } catch {
+        return NextResponse.json({ error: "invalid_request" }, { status: 400 });
       }
 
-      await updatePasskeyName(id, userId, result.data.name);
+      const result = updateSchema.safeParse(payload);
 
-      logInfo("passkey.update.success", { userId, passkeyId: id });
+      if (!result.success) {
+        return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+      }
 
-      return NextResponse.json({ ok: true });
-    } catch (error) {
-      logError("passkey.update.error", error, { userId, passkeyId: id });
-      return NextResponse.json({ error: "internal_error" }, { status: 500 });
-    }
-  }),
+      try {
+        const passkey = await getPasskeyById(id);
+
+        if (!passkey || passkey.userId !== userId) {
+          return NextResponse.json({ error: "not_found" }, { status: 404 });
+        }
+
+        await updatePasskeyName(id, userId, result.data.name);
+
+        logInfo("passkey.update.success", { userId, passkeyId: id });
+
+        return NextResponse.json({ ok: true });
+      } catch (error) {
+        logError("passkey.update.error", error, { userId, passkeyId: id });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
+      }
+    }),
+  ),
 );
 
 /** Removes one of your passkeys. */
 export const DELETE = withRequestContext(
-  withAuth<RouteParams>("passkey.delete")(async (_request: Request, { params, auth }) => {
-    const { userId } = auth;
-    const { id } = await params;
+  withAuth<RouteParams>("passkey.delete")(
+    withUserRateLimit(
+      "account-write",
+      RATE_LIMITS.ACCOUNT_WRITE,
+    )(async (_request: Request, { params, auth }) => {
+      const { userId } = auth;
+      const { id } = await params;
 
-    try {
-      const passkey = await getPasskeyById(id);
+      try {
+        const passkey = await getPasskeyById(id);
 
-      if (!passkey || passkey.userId !== userId) {
-        return NextResponse.json({ error: "not_found" }, { status: 404 });
+        if (!passkey || passkey.userId !== userId) {
+          return NextResponse.json({ error: "not_found" }, { status: 404 });
+        }
+
+        const passkeyCount = await getPasskeyCountByUserId(userId);
+
+        if (passkeyCount <= 1) {
+          logWarn("passkey.delete.last_passkey", { userId, passkeyId: id });
+        }
+
+        const deleted = await deletePasskey(id, userId);
+
+        if (!deleted) {
+          return NextResponse.json({ error: "not_found" }, { status: 404 });
+        }
+
+        logInfo("passkey.delete.success", { userId, passkeyId: id });
+
+        return NextResponse.json({ ok: true });
+      } catch (error) {
+        logError("passkey.delete.error", error, { userId, passkeyId: id });
+        return NextResponse.json({ error: "internal_error" }, { status: 500 });
       }
-
-      const passkeyCount = await getPasskeyCountByUserId(userId);
-
-      if (passkeyCount <= 1) {
-        logWarn("passkey.delete.last_passkey", { userId, passkeyId: id });
-      }
-
-      const deleted = await deletePasskey(id, userId);
-
-      if (!deleted) {
-        return NextResponse.json({ error: "not_found" }, { status: 404 });
-      }
-
-      logInfo("passkey.delete.success", { userId, passkeyId: id });
-
-      return NextResponse.json({ ok: true });
-    } catch (error) {
-      logError("passkey.delete.error", error, { userId, passkeyId: id });
-      return NextResponse.json({ error: "internal_error" }, { status: 500 });
-    }
-  }),
+    }),
+  ),
 );
