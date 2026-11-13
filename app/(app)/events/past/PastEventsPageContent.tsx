@@ -14,20 +14,20 @@ import { Link } from "@/i18n/navigation";
 import { LOCATIONS } from "@/lib/config/constants";
 import { isTbaDate } from "@/lib/events/datetime";
 import { pastEventsOf } from "@/lib/events/event-lists";
+import type { PastEventSummary } from "@/lib/events/event-views";
 import { parseEventTitle } from "@/lib/events/presentation";
 import { getEventLocationTheme } from "@/lib/events/theme";
-import type { EventItem } from "@/lib/events/types";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 interface CalendarGroupItem {
   key: string;
   label: string;
-  events: EventItem[];
+  events: PastEventSummary[];
 }
 
 type PastLocationFilter = "all" | typeof LOCATIONS.PRAGUE | typeof LOCATIONS.ZLIN;
 
-export function PastEventsPageContent({ events }: { events: EventItem[] }) {
+export function PastEventsPageContent({ events }: { events: PastEventSummary[] }) {
   const t = useTranslations("sections.events");
   const locale = useLocale();
   const pastEvents = pastEventsOf(events, new Date());

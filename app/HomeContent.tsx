@@ -9,12 +9,14 @@ import { NewsletterSection } from "./components/newsletter/NewsletterSection";
 import { RecordingsSection } from "./components/recordings/RecordingsSection";
 import { TalkBanner } from "./components/shared/TalkBanner";
 import { upcomingEventsWithFallbackOf } from "./lib/events/event-lists";
+import type { HostedEventCounts } from "./lib/events/event-views";
 import type { EventItem } from "./lib/events/types";
 import type { Recording } from "./lib/recordings/recordings";
 import type { TrendingRecording } from "./lib/recordings/trending";
 
 interface HomeContentProps {
-  events: EventItem[];
+  hostedCounts: HostedEventCounts;
+  upcoming: EventItem[];
   heroImages: {
     src: string;
     alt: string;
@@ -26,8 +28,9 @@ interface HomeContentProps {
 }
 
 export function HomeContent({
-  events,
   heroImages,
+  hostedCounts,
+  upcoming,
   heroTrendingRecordings,
   trendingRecordings,
 }: HomeContentProps) {
@@ -38,7 +41,7 @@ export function HomeContent({
     ...img,
     alt: photoAlt,
   }));
-  const upcomingEvents = upcomingEventsWithFallbackOf(events, new Date());
+  const upcomingEvents = upcomingEventsWithFallbackOf(upcoming, new Date());
 
   return (
     <main id="top" className="relative">
@@ -56,7 +59,7 @@ export function HomeContent({
 
       <div className="section-divider mx-auto max-w-4xl" />
 
-      <LocationsSection events={events} />
+      <LocationsSection hostedCounts={hostedCounts} />
 
       <div className="section-divider mx-auto max-w-4xl" />
 

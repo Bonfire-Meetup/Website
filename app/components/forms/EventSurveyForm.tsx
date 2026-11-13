@@ -16,7 +16,7 @@ import {
 import { useCsrfToken } from "@/lib/api/csrf";
 import { type EventSurveyFormState, submitEventSurvey } from "@/lib/api/forms";
 import { pastEventsOf, upcomingEventsOf } from "@/lib/events/event-lists";
-import type { EventItem } from "@/lib/events/types";
+import type { SurveyEvent } from "@/lib/events/event-views";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { useHaptics } from "@/lib/utils/haptics";
 import {
@@ -144,7 +144,7 @@ function getStoredDraft(): EventSurveyDraft | null {
   return readLocalStorage(STORAGE_KEYS.DRAFT_EVENT_SURVEY);
 }
 
-function getPreselectedEventId(searchParams: URLSearchParams, events: EventItem[]): string {
+function getPreselectedEventId(searchParams: URLSearchParams, events: SurveyEvent[]): string {
   const eventId = searchParams.get("eventId")?.trim();
   return eventId && events.some((event) => event.id === eventId) ? eventId : "";
 }
@@ -356,7 +356,7 @@ function SurveySection({
 }
 
 interface EventSurveyFormInnerProps {
-  events: EventItem[];
+  events: SurveyEvent[];
   onReset: () => void;
 }
 
@@ -395,7 +395,7 @@ function EventSurveyFormInner({ events, onReset }: EventSurveyFormInnerProps) {
 
   const eventGroups = useMemo<DropdownGroup[]>(() => {
     const now = new Date();
-    const toOption = (event: EventItem) => ({
+    const toOption = (event: SurveyEvent) => ({
       label: `${event.title} · ${formatEventDateUTC(event.date, locale)}`,
       value: event.id,
     });
@@ -1064,7 +1064,7 @@ function EventSurveyFormInner({ events, onReset }: EventSurveyFormInnerProps) {
   );
 }
 
-export function EventSurveyForm({ events }: { events: EventItem[] }) {
+export function EventSurveyForm({ events }: { events: SurveyEvent[] }) {
   const [instanceKey, setInstanceKey] = useState(0);
 
   return (

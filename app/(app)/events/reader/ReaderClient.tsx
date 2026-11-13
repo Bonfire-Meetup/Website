@@ -31,7 +31,7 @@ import { authFetch } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { USER_ROLES } from "@/lib/config/roles";
 import { upcomingEventsOf } from "@/lib/events/event-lists";
-import type { EventItem } from "@/lib/events/types";
+import type { EventTiming } from "@/lib/events/event-views";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { selectAuthRoles } from "@/lib/redux/selectors/authSelectors";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
@@ -102,7 +102,7 @@ function joinPublicId(parts: PublicIdParts): string {
   return `${parts.first}-${parts.second}`;
 }
 
-export function ReaderClient({ events: allEvents }: { events: EventItem[] }) {
+export function ReaderClient({ events: allEvents }: { events: EventTiming[] }) {
   const t = useTranslations("reader");
   const locale = useLocale();
   const pathname = usePathname();

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
-import { allEvents } from "@/data/events-calendar";
 import { HomeContent } from "@/HomeContent";
+import { getHomeEvents } from "@/lib/events/event-views";
 import { buildMetaPageMetadata } from "@/lib/metadata";
 import { getHeroImages } from "@/lib/recordings/data";
 import { getTrendingRecordingsSafe } from "@/lib/recordings/trending";
@@ -52,9 +52,10 @@ function getDailySeed(date = new Date()): string {
 }
 
 export default async function HomePage() {
-  const [heroImages, trendingRecordings] = await Promise.all([
+  const [heroImages, trendingRecordings, { hostedCounts, upcoming }] = await Promise.all([
     getHeroImages(""),
     getTrendingRecordingsSafe(TRENDING_FETCH_LIMIT),
+    getHomeEvents(),
   ]);
 
   const heroTrendingRecordings = pickHeroTrendingRecordings(
@@ -69,7 +70,8 @@ export default async function HomePage() {
 
   return (
     <HomeContent
-      events={allEvents}
+      hostedCounts={hostedCounts}
+      upcoming={upcoming}
       heroImages={heroImages}
       heroTrendingRecordings={heroTrendingRecordings}
       trendingRecordings={nonHeroTrendingRecordings.slice(0, TRENDING_SECTION_LIMIT)}

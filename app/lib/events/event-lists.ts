@@ -29,11 +29,13 @@ const UPCOMING_FALLBACK_EVENTS: EventItem[] = [
   },
 ];
 
-export function upcomingEventsOf(events: EventItem[], now: Date): EventItem[] {
+type Timed = Pick<EventItem, "date" | "time">;
+
+export function upcomingEventsOf<T extends Timed>(events: T[], now: Date): T[] {
   return events.filter((event) => !isEventPast(event, now));
 }
 
-export function pastEventsOf(events: EventItem[], now: Date): EventItem[] {
+export function pastEventsOf<T extends Timed>(events: T[], now: Date): T[] {
   return events.filter((event) => isEventPast(event, now)).reverse();
 }
 
@@ -47,7 +49,11 @@ export function upcomingEventsWithFallbackOf(events: EventItem[], now: Date): Ev
   ];
 }
 
-export function hostedEventCountOf(events: EventItem[], location: LocationValue, now: Date) {
+export function hostedEventCountOf(
+  events: Pick<EventItem, "date" | "time" | "location" | "title">[],
+  location: LocationValue,
+  now: Date,
+) {
   return events.filter(
     (event) =>
       event.location === location &&

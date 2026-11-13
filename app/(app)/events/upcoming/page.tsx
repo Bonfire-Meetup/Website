@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { allEvents } from "@/data/events-calendar";
+import { getUpcomingPageEvents } from "@/lib/events/event-views";
 import { buildSpeakerMedia } from "@/lib/events/speaker-media";
 import { buildMetaPageMetadata } from "@/lib/metadata";
 
@@ -10,8 +10,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetaPageMetadata("upcomingEvents");
 }
 
-export default function UpcomingEventsPage() {
+export default async function UpcomingEventsPage() {
+  const { recentPast, upcoming } = await getUpcomingPageEvents();
+
   return (
-    <UpcomingEventsPageContent events={allEvents} speakerMedia={buildSpeakerMedia(allEvents)} />
+    <UpcomingEventsPageContent
+      recentPast={recentPast}
+      speakerMedia={buildSpeakerMedia(upcoming)}
+      upcoming={upcoming}
+    />
   );
 }

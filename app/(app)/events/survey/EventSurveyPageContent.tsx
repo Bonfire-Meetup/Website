@@ -5,9 +5,9 @@ import { useTranslations } from "next-intl";
 import { EventSurveyForm } from "@/components/forms/EventSurveyForm";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { StaticPageHero } from "@/components/layout/StaticPageHero";
-import type { EventItem } from "@/lib/events/types";
+import type { SurveyEvent } from "@/lib/events/event-views";
 
-export function EventSurveyPageContent({ events }: { events: EventItem[] }) {
+export function EventSurveyPageContent({ events }: { events: SurveyEvent[] }) {
   const t = useTranslations("eventsSurveyPage");
 
   return (

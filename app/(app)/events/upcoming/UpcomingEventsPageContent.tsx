@@ -10,6 +10,7 @@ import { SpeakerPhoto } from "@/components/speakers/SpeakerPhoto";
 import { Link } from "@/i18n/navigation";
 import { getDaysUntilEventDate, isTbaDate } from "@/lib/events/datetime";
 import { pastEventsOf, upcomingEventsWithFallbackOf } from "@/lib/events/event-lists";
+import type { EventTiming } from "@/lib/events/event-views";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
 import type { SpeakerMedia } from "@/lib/events/speaker-media";
 import {
@@ -216,18 +217,20 @@ function UpcomingEvent({
 }
 
 export function UpcomingEventsPageContent({
-  events,
+  recentPast,
   speakerMedia,
+  upcoming,
 }: {
-  events: EventItem[];
+  recentPast: EventTiming[];
   speakerMedia: SpeakerMedia;
+  upcoming: EventItem[];
 }) {
   const t = useTranslations("sections.events");
   const locale = useLocale();
   const renderNow = useRenderNow();
   const now = new Date();
-  const upcomingEvents = upcomingEventsWithFallbackOf(events, now);
-  const pastEvents = pastEventsOf(events, now);
+  const upcomingEvents = upcomingEventsWithFallbackOf(upcoming, now);
+  const pastEvents = pastEventsOf<EventTiming>([...recentPast, ...upcoming], now);
   const recentPastEvents = pastEvents.slice(0, 4);
 
   return (
