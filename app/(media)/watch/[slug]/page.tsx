@@ -17,6 +17,8 @@ const RecordingPlayer = dynamic(() =>
   import("@/components/recordings/RecordingPlayer").then((mod) => mod.RecordingPlayer),
 );
 
+const RELATED_LIMIT = 7;
+
 function parseShortId(slug: string) {
   return slug.slice(-6);
 }
@@ -101,7 +103,7 @@ async function WatchPageContent({ params }: { params: Promise<{ slug: string }> 
   redirectIfNonCanonicalWatchUrl(slug, recording);
 
   const allRecordings = getAllRecordings();
-  const relatedRecordings = getRelatedRecordings(recording, allRecordings);
+  const relatedRecordings = getRelatedRecordings(recording, allRecordings, RELATED_LIMIT);
 
   return <RecordingPlayer recording={recording} relatedRecordings={relatedRecordings} />;
 }

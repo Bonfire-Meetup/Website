@@ -23,7 +23,7 @@ import { LikeBoostButtons } from "./LikeBoostButtons";
 import { RecordingAccessNotice } from "./RecordingAccessNotice";
 import { RelatedVideosSection } from "./RelatedVideosSection";
 import { ShareMenu } from "./ShareMenu";
-import { VideoMetadata } from "./VideoMetadata";
+import { VideoDetails, VideoMetadata } from "./VideoMetadata";
 import { WatchLaterButton } from "./WatchLaterButton";
 
 const getGuildLevelName = (tier?: number | null) => {
@@ -242,19 +242,19 @@ export function RecordingPlayer({
       </div>
       <div className="relative mx-auto px-4 py-6 sm:px-6 lg:px-8" style={{ maxWidth: "85rem" }}>
         <div className="flex flex-col gap-12 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10">
-          <div className="min-w-0 space-y-8">
-            <div className="surface shadow-floating dark:shadow-floating relative overflow-hidden">
-              <div className="hidden items-center justify-between border-b border-neutral-200/40 px-5 py-4 lg:flex dark:border-neutral-700/30">
-                <BackLink
-                  href={PAGE_ROUTES.LIBRARY}
-                  className="hover:bg-brand-100/60 hover:text-brand-700 dark:hover:bg-brand-500/10 dark:hover:text-brand-400"
-                  prefetch={false}
-                >
-                  {t("backToLibrary")}
-                </BackLink>
-                {hasPlaybackAccess && <AccessStatusPill status={accessStatus} />}
-              </div>
+          <div className="min-w-0 space-y-4">
+            <div className="hidden items-center justify-between gap-3 lg:flex">
+              <BackLink
+                href={PAGE_ROUTES.LIBRARY}
+                className="hover:bg-brand-100/60 hover:text-brand-700 dark:hover:bg-brand-500/10 dark:hover:text-brand-400"
+                prefetch={false}
+              >
+                {t("backToLibrary")}
+              </BackLink>
+              {hasPlaybackAccess && <AccessStatusPill status={accessStatus} />}
+            </div>
 
+            <div className="surface shadow-floating dark:shadow-floating relative overflow-hidden">
               <div className="relative z-10 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.2),transparent_62%)] p-2 transition-all duration-300 sm:p-3">
                 <div className="shadow-floating dark:shadow-floating overflow-hidden rounded-xl bg-black ring-1 ring-black/40">
                   {hasPlaybackAccess ? (
@@ -278,8 +278,14 @@ export function RecordingPlayer({
                 </div>
               </div>
 
-              <div className="relative z-0 border-b border-neutral-200/50 bg-white/60 dark:border-neutral-700/40 dark:bg-white/[0.02]">
-                <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-4 sm:gap-3 sm:px-6">
+              <VideoMetadata
+                recording={recording}
+                formattedDate={formattedDate}
+                hideEarlyAccessBadge={!hasPlaybackAccess}
+              />
+
+              <div className="relative z-0 border-y border-neutral-200/50 bg-white/60 dark:border-neutral-700/40 dark:bg-white/[0.02]">
+                <div className="flex flex-wrap items-center justify-between gap-2 px-4 pt-4 sm:gap-3 sm:px-6">
                   <LikeBoostButtons
                     gatedBoostActionHref={boostInteractionGateHref}
                     gatedLikeActionHref={likeInteractionGateHref}
@@ -309,21 +315,12 @@ export function RecordingPlayer({
                   </div>
                 </div>
 
-                <div className="px-5 pb-4 sm:px-6">
-                  <div className="h-10">
-                    <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
-                  </div>
-                  <p className="text-2xs mt-3 leading-tight text-neutral-500 dark:text-neutral-500">
-                    {t("youtubeNotice")}
-                  </p>
+                <div className="h-10 px-5 pt-1 pb-2 sm:px-6">
+                  <BoostedBy boostedBy={boostedBy} shortId={recording.shortId} />
                 </div>
               </div>
 
-              <VideoMetadata
-                recording={recording}
-                formattedDate={formattedDate}
-                hideEarlyAccessBadge={!hasPlaybackAccess}
-              />
+              <VideoDetails recording={recording} footnote={t("youtubeNotice")} />
             </div>
           </div>
 

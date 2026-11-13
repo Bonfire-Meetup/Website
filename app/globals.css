@@ -895,155 +895,237 @@ html.smooth-scroll {
   animation: boostGlowExpand 0.5s cubic-bezier(0.26, 1.85, 0.42, 1) !important;
 }
 
-@keyframes engagementHit {
+@keyframes engagePress {
   0% {
-    transform: translateY(0) scale(1);
+    transform: scale(1);
   }
 
-  28% {
-    transform: translateY(-1px) scale(1.045);
+  18% {
+    transform: scale(0.94);
   }
 
-  62% {
-    transform: translateY(0.5px) scale(0.992);
+  52% {
+    transform: scale(1.05);
+  }
+
+  78% {
+    transform: scale(0.99);
   }
 
   100% {
-    transform: translateY(0) scale(1);
+    transform: scale(1);
   }
 }
 
-@keyframes likePopImpact {
+@keyframes engagePressAlt {
   0% {
-    transform: scale(0.72) rotate(-14deg);
-    filter: brightness(1);
+    transform: scale(1);
+  }
+
+  18% {
+    transform: scale(0.94);
+  }
+
+  52% {
+    transform: scale(1.05);
+  }
+
+  78% {
+    transform: scale(0.99);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes engageIconIgnite {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+
+  20% {
+    transform: scale(0.7) rotate(-12deg);
+  }
+
+  50% {
+    transform: scale(1.6) rotate(8deg);
+  }
+
+  76% {
+    transform: scale(0.94) rotate(-3deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes engageIconRelease {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+
+  40% {
+    transform: scale(0.78) rotate(-8deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes engageBloom {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
   }
 
   30% {
-    transform: scale(1.9) rotate(8deg);
-    filter: brightness(1.5);
-  }
-
-  62% {
-    transform: scale(1.14) rotate(-3deg);
+    opacity: 0.95;
   }
 
   100% {
-    transform: scale(1) rotate(0deg);
-    filter: brightness(1);
-  }
-}
-
-@keyframes boostPopImpact {
-  0% {
-    transform: scale(0.7) rotate(-18deg);
-    filter: brightness(0.95);
-  }
-
-  32% {
-    transform: scale(2) rotate(14deg);
-    filter: brightness(1.55);
-  }
-
-  64% {
-    transform: scale(1.16) rotate(-5deg);
-  }
-
-  100% {
-    transform: scale(1) rotate(0deg);
-    filter: brightness(1);
-  }
-}
-
-@keyframes likeImpactRing {
-  0% {
-    transform: scale(0.92);
-    opacity: 0.55;
-    border-color: rgba(251, 146, 60, 0.95);
-  }
-
-  100% {
-    transform: scale(1.17);
     opacity: 0;
-    border-color: rgba(251, 146, 60, 0);
+    transform: scale(1.7);
   }
 }
 
-@keyframes boostImpactRing {
+@keyframes engageRing {
   0% {
-    transform: scale(0.92);
-    opacity: 0.55;
-    border-color: rgba(16, 185, 129, 0.95);
+    opacity: 0.7;
+    transform: scale(0.96);
   }
 
   100% {
-    transform: scale(1.18);
     opacity: 0;
-    border-color: rgba(16, 185, 129, 0);
+    transform: scale(1.3, 1.75);
   }
 }
 
-@keyframes countBump {
+@keyframes engageSpark {
   0% {
-    transform: scale(0.85) translateY(2px);
-    opacity: 0.82;
+    opacity: 0;
+    transform: translate(0, 0) rotate(var(--spark-r, 0deg)) scale(0.3);
   }
 
-  35% {
-    transform: scale(1.22) translateY(-2px);
+  15% {
     opacity: 1;
   }
 
-  68% {
-    transform: scale(1.04) translateY(0);
+  65% {
+    opacity: 1;
   }
 
   100% {
-    transform: scale(1) translateY(0);
-    opacity: 1;
+    opacity: 0;
+    transform: translate(var(--spark-x), var(--spark-y)) rotate(var(--spark-r, 0deg)) scale(0.15);
   }
 }
 
-.like-hit,
-.boost-hit {
-  animation: engagementHit 0.58s cubic-bezier(0.2, 1, 0.2, 1) !important;
-  transform-origin: center;
+@keyframes engageSheen {
+  0% {
+    opacity: 0;
+    transform: translateX(-130%) skewX(-18deg);
+  }
+
+  20% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(330%) skewX(-18deg);
+  }
 }
 
-.like-pop-impact {
-  animation: likePopImpact 0.62s cubic-bezier(0.16, 1, 0.3, 1) !important;
+@keyframes engageCount {
+  0% {
+    opacity: 0;
+    transform: translateY(70%) scale(0.8);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(-12%) scale(1.18);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-.boost-pop-impact {
-  animation: boostPopImpact 0.66s cubic-bezier(0.16, 1, 0.3, 1) !important;
+@keyframes engageFadeIn {
+  from {
+    opacity: 0;
+  }
 }
 
-.like-glow-impact {
-  animation: likeGlowExpand 0.62s cubic-bezier(0.16, 1, 0.3, 1) !important;
+.engage-press-a {
+  animation: engagePress 0.62s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.boost-glow-impact {
-  animation: boostGlowExpand 0.66s cubic-bezier(0.16, 1, 0.3, 1) !important;
+.engage-press-b {
+  animation: engagePressAlt 0.62s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.like-impact-ring,
-.boost-impact-ring {
-  border-width: 1.5px;
-  border-style: solid;
+.engage-icon-ignite {
+  animation: engageIconIgnite 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.engage-icon-release {
+  animation: engageIconRelease 0.4s ease-out;
+}
+
+.engage-bloom {
+  animation: engageBloom 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: transform, opacity;
 }
 
-.like-impact-ring {
-  animation: likeImpactRing 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.engage-ring {
+  animation: engageRing 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
 }
 
-.boost-impact-ring {
-  animation: boostImpactRing 0.66s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.engage-ring-late {
+  animation-delay: 0.12s;
 }
 
-.like-count-bump,
-.boost-count-bump {
-  animation: countBump 0.52s cubic-bezier(0.16, 1, 0.3, 1) !important;
+.engage-spark {
+  animation: engageSpark 0.85s cubic-bezier(0.12, 0.8, 0.3, 1) both;
+  will-change: transform, opacity;
+}
+
+.engage-sheen {
+  animation: engageSheen 0.8s cubic-bezier(0.3, 0.7, 0.2, 1) 0.08s both;
+}
+
+.engage-count {
+  animation: engageCount 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.engage-fade-in {
+  animation: engageFadeIn 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .engage-press-a,
+  .engage-press-b,
+  .engage-icon-ignite,
+  .engage-icon-release,
+  .engage-count,
+  .engage-fade-in {
+    animation: none;
+  }
+
+  .engage-bloom,
+  .engage-ring,
+  .engage-spark,
+  .engage-sheen {
+    display: none;
+  }
 }
 
 .both-active-aura {
@@ -1210,17 +1292,7 @@ html.smooth-scroll {
   .like-pop,
   .like-glow,
   .boost-pop,
-  .boost-glow,
-  .like-hit,
-  .boost-hit,
-  .like-pop-impact,
-  .boost-pop-impact,
-  .like-glow-impact,
-  .boost-glow-impact,
-  .like-impact-ring,
-  .boost-impact-ring,
-  .like-count-bump,
-  .boost-count-bump {
+  .boost-glow {
     animation: none;
   }
 

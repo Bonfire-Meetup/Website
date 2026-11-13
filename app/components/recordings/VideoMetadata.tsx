@@ -45,7 +45,7 @@ export function VideoMetadata({
     : accessLabelPrefix;
 
   return (
-    <div className="px-5 py-5 sm:px-6 sm:py-6">
+    <div className="px-5 pt-4 pb-5 sm:px-6 sm:pt-5">
       <div className="mb-4 flex gap-3">
         <div className="flex h-7 items-center sm:h-8 lg:h-9">
           <AccentBar />
@@ -58,7 +58,7 @@ export function VideoMetadata({
       <RecordingHeaderMetaRow
         location={recording.location}
         formattedDate={formattedDate}
-        className="mb-5 flex flex-wrap items-center justify-between gap-2 text-xs text-neutral-600 dark:text-neutral-300"
+        className="flex flex-wrap items-center justify-between gap-2 text-xs text-neutral-600 dark:text-neutral-300"
         leftGroupClassName="flex flex-wrap items-center gap-2"
         metaGroupClassName="flex flex-wrap items-center gap-2"
         leftContent={
@@ -113,25 +113,33 @@ export function VideoMetadata({
           ) : null
         }
       />
+    </div>
+  );
+}
 
-      <div className="border-t border-neutral-200/40 pt-5 dark:border-neutral-700/40">
-        <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
+export function VideoDetails({ recording, footnote }: { recording: Recording; footnote: string }) {
+  return (
+    <div className="px-5 py-5 sm:px-6">
+      {recording.description && (
+        <p className="mb-4 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">
           {recording.description}
         </p>
+      )}
 
-        {recording.tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {recording.tags.map((tag) => (
-              <RecordingTagPill
-                key={tag}
-                tag={tag}
-                href={`${PAGE_ROUTES.LIBRARY_BROWSE}?tag=${encodeURIComponent(tag)}`}
-                size="xxs"
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {recording.tags.length > 0 && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          {recording.tags.map((tag) => (
+            <RecordingTagPill
+              key={tag}
+              tag={tag}
+              href={`${PAGE_ROUTES.LIBRARY_BROWSE}?tag=${encodeURIComponent(tag)}`}
+              size="xxs"
+            />
+          ))}
+        </div>
+      )}
+
+      <p className="text-2xs leading-tight text-neutral-500 dark:text-neutral-500">{footnote}</p>
     </div>
   );
 }
