@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { getClientHashes, isOriginAllowed } from "@/lib/api/rate-limit";
-import { withRateLimit, withRequestContext } from "@/lib/api/route-wrappers";
+import { withRateLimit, withRequestContext, type RouteContext } from "@/lib/api/route-wrappers";
 import {
   newsletterSubscribeRequestSchema,
   newsletterSubscribeResponseSchema,
@@ -107,7 +107,10 @@ const unsubscribeSchema = z.object({
  * Checks which address an unsubscribe link's `token` belongs to and whether it's still
  * subscribed.
  */
-export const GET = (request: Request) =>
+export const GET = withRateLimit<RouteContext, Request>({
+  maxHits: 20,
+  storeKey: "newsletter-unsubscribe",
+})((request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
 
@@ -138,10 +141,14 @@ export const GET = (request: Request) =>
 
       return respond({ error: "check_failed" }, { status: 500 });
     }
-  });
+  }),
+);
 
 /** Unsubscribes using the `token` from an email's unsubscribe link. */
-export const DELETE = (request: Request) =>
+export const DELETE = withRateLimit<RouteContext, Request>({
+  maxHits: 20,
+  storeKey: "newsletter-unsubscribe",
+})((request: Request) =>
   runWithRequestContext(request, async () => {
     const respond = (body: unknown, init?: ResponseInit) => NextResponse.json(body, init);
 
@@ -201,4 +208,5 @@ export const DELETE = (request: Request) =>
 
       return respond({ error: "unsubscribe_failed" }, { status: 500 });
     }
-  });
+  }),
+);
