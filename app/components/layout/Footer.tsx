@@ -118,6 +118,14 @@ export function Footer() {
             </Link>
             <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <Link
+              href={PAGE_ROUTES.DEVELOPER}
+              prefetch={false}
+              className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"
+            >
+              {t("developersLabel")}
+            </Link>
+            <span className="text-neutral-300 dark:text-neutral-700">·</span>
+            <Link
               href={PAGE_ROUTES.LEGAL}
               prefetch={false}
               className="transition-colors hover:text-neutral-900 dark:hover:text-neutral-300"

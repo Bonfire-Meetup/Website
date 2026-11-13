@@ -1,0 +1,77 @@
+{
+  "developerPage": {
+    "meta": {
+      "title": "Developers",
+      "subtitle": "Reference for the Bonfire API, generated from the code that serves it."
+    },
+    "eyebrow": "Developers",
+    "title": "Bonfire API",
+    "subtitle": "The API behind bnf.events, documented straight from its own code.",
+    "chips": {
+      "endpoints": "{count} endpoints",
+      "groups": "{count} groups",
+      "generated": "Generated from source"
+    },
+    "quickRef": {
+      "title": "Quick reference",
+      "baseUrl": "Base URL",
+      "auth": "Auth",
+      "authNote": "valid 15 min",
+      "errors": "Errors",
+      "success": "Success"
+    },
+    "searchPlaceholder": "Search endpoints, paths or error codes…",
+    "filters": {
+      "label": "Filter by access",
+      "all": "All",
+      "public": "Public",
+      "signedIn": "Signed in",
+      "roles": "Roles",
+      "machine": "Machine"
+    },
+    "nav": "Groups",
+    "noResults": "No endpoints match your search.",
+    "access": {
+      "public": "Public",
+      "optional-user": "Public · personalized when signed in",
+      "user": "Signed in",
+      "self": "Signed in · own data",
+      "role": "Role: {role}",
+      "secret": "Cron secret",
+      "signature": "Stripe signature"
+    },
+    "rateLimited": "Rate limited",
+    "sections": {
+      "pathParams": "Path parameters",
+      "query": "Query parameters",
+      "body": "Request body",
+      "responses": "Responses"
+    },
+    "response": {
+      "stream": "Streamed response",
+      "empty": "JSON body"
+    },
+    "selfHint": "Use me for your own account.",
+    "source": "Source",
+    "showDetails": "Details",
+    "groups": {
+      "admin": "Admin",
+      "auth": "Authentication",
+      "check-ins": "Check-ins",
+      "contact-messages": "Contact",
+      "cron": "Scheduled jobs",
+      "csrf": "CSRF",
+      "events": "Events",
+      "me": "Your account",
+      "newsletters": "Newsletters",
+      "photos": "Photos",
+      "recordings": "Recordings",
+      "speakers": "Speakers",
+      "stripe": "Stripe",
+      "system": "System",
+      "talk-proposals": "Talk proposals",
+      "users": "Users",
+      "videos": "Videos"
+    }
+  }
+}

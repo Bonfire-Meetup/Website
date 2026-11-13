@@ -1,0 +1,77 @@
+{
+  "developerPage": {
+    "meta": {
+      "title": "Pro vývojáře",
+      "subtitle": "Dokumentace Bonfire API generovaná přímo z kódu, který ho obsluhuje."
+    },
+    "eyebrow": "Pro vývojáře",
+    "title": "Bonfire API",
+    "subtitle": "API, na kterém běží bnf.events, zdokumentované přímo z jeho kódu.",
+    "chips": {
+      "endpoints": "{count, plural, one {# endpoint} few {# endpointy} other {# endpointů}}",
+      "groups": "{count, plural, one {# skupina} few {# skupiny} other {# skupin}}",
+      "generated": "Generováno ze zdrojového kódu"
+    },
+    "quickRef": {
+      "title": "Rychlý přehled",
+      "baseUrl": "Základní URL",
+      "auth": "Přihlášení",
+      "authNote": "platí 15 min",
+      "errors": "Chyby",
+      "success": "Úspěch"
+    },
+    "searchPlaceholder": "Hledat endpointy, cesty nebo chybové kódy…",
+    "filters": {
+      "label": "Filtrovat podle přístupu",
+      "all": "Vše",
+      "public": "Veřejné",
+      "signedIn": "Přihlášení",
+      "roles": "Role",
+      "machine": "Strojové"
+    },
+    "nav": "Skupiny",
+    "noResults": "Hledání neodpovídá žádný endpoint.",
+    "access": {
+      "public": "Veřejné",
+      "optional-user": "Veřejné · po přihlášení personalizované",
+      "user": "Přihlášení",
+      "self": "Přihlášení · vlastní data",
+      "role": "Role: {role}",
+      "secret": "Cron secret",
+      "signature": "Podpis Stripe"
+    },
+    "rateLimited": "Omezený počet požadavků",
+    "sections": {
+      "pathParams": "Parametry cesty",
+      "query": "Query parametry",
+      "body": "Tělo požadavku",
+      "responses": "Odpovědi"
+    },
+    "response": {
+      "stream": "Streamovaná odpověď",
+      "empty": "JSON tělo"
+    },
+    "selfHint": "Pro vlastní účet použijte me.",
+    "source": "Zdroj",
+    "showDetails": "Detaily",
+    "groups": {
+      "admin": "Administrace",
+      "auth": "Přihlášení",
+      "check-ins": "Check-in",
+      "contact-messages": "Kontakt",
+      "cron": "Plánované úlohy",
+      "csrf": "CSRF",
+      "events": "Akce",
+      "me": "Váš účet",
+      "newsletters": "Newslettery",
+      "photos": "Fotky",
+      "recordings": "Záznamy",
+      "speakers": "Řečníci",
+      "stripe": "Stripe",
+      "system": "Systém",
+      "talk-proposals": "Návrhy přednášek",
+      "users": "Uživatelé",
+      "videos": "Videa"
+    }
+  }
+}

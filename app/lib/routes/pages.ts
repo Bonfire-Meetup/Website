@@ -31,6 +31,7 @@ export const PAGE_ROUTES = {
   CONTACT: "/contact",
   CONTACT_WITH_TYPE: (type: string) => createContactUrl(type),
   CREW: "/crew",
+  DEVELOPER: "/developer",
   FAQ: "/faq",
   FEED_VIDEOS: "/feed/videos.xml",
   GUIDES: "/guides",

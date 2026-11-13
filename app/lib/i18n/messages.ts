@@ -6,6 +6,7 @@ import enCheckInMessages from "@/locales/checkIn/en.json";
 import enCommonMessages from "@/locales/common/en.json";
 import enContactPageMessages from "@/locales/contactPage/en.json";
 import enCookieConsentMessages from "@/locales/cookieConsent/en.json";
+import enDeveloperPageMessages from "@/locales/developerPage/en.json";
 import enEmailMessages from "@/locales/email/en.json";
 import enRootMessages from "@/locales/en.json";
 import enErrorMessages from "@/locales/error/en.json";
@@ -44,6 +45,7 @@ const moduleLoaders = [
   (locale: Locale) => import(`@/locales/checkIn/${locale}.json`),
   (locale: Locale) => import(`@/locales/common/${locale}.json`),
   (locale: Locale) => import(`@/locales/contactPage/${locale}.json`),
+  (locale: Locale) => import(`@/locales/developerPage/${locale}.json`),
   (locale: Locale) => import(`@/locales/cookieConsent/${locale}.json`),
   (locale: Locale) => import(`@/locales/email/${locale}.json`),
   (locale: Locale) => import(`@/locales/error/${locale}.json`),
@@ -85,6 +87,7 @@ const enMessages = mergeMessages(
   enCheckInMessages,
   enCommonMessages,
   enContactPageMessages,
+  enDeveloperPageMessages,
   enCookieConsentMessages,
   enEmailMessages,
   enErrorMessages,
