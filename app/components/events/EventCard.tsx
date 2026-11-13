@@ -1,6 +1,5 @@
-import { isTbaDate } from "@/data/events-calendar";
 import { LOCATIONS } from "@/lib/config/constants";
-import { getDaysUntilEventDate } from "@/lib/events/datetime";
+import { getDaysUntilEventDate, isTbaDate } from "@/lib/events/datetime";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
 import {
   formatSpeakerNameWithCompany,

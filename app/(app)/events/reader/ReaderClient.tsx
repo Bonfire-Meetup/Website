@@ -26,11 +26,12 @@ import {
 } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
 import { UserAvatar } from "@/components/user/UserAvatar";
-import { getUpcomingEvents } from "@/data/events-calendar";
 import { ApiError } from "@/lib/api/errors";
 import { authFetch } from "@/lib/api/query-utils";
 import { API_ROUTES } from "@/lib/api/routes";
 import { USER_ROLES } from "@/lib/config/roles";
+import { upcomingEventsOf } from "@/lib/events/event-lists";
+import type { EventItem } from "@/lib/events/types";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { selectAuthRoles } from "@/lib/redux/selectors/authSelectors";
 import { LOGIN_REASON, PAGE_ROUTES } from "@/lib/routes/pages";
@@ -101,7 +102,7 @@ function joinPublicId(parts: PublicIdParts): string {
   return `${parts.first}-${parts.second}`;
 }
 
-export function ReaderClient() {
+export function ReaderClient({ events: allEvents }: { events: EventItem[] }) {
   const t = useTranslations("reader");
   const locale = useLocale();
   const pathname = usePathname();
@@ -131,7 +132,7 @@ export function ReaderClient() {
   const firstPublicIdInputRef = useRef<HTMLInputElement | null>(null);
   const secondPublicIdInputRef = useRef<HTMLInputElement | null>(null);
 
-  const events = getUpcomingEvents(new Date());
+  const events = upcomingEventsOf(allEvents, new Date());
   const isCrew = userRoles.includes(USER_ROLES.CREW);
   const requestedEventId = searchParams.get("eventId");
   const preselectedEventId =

@@ -30,7 +30,6 @@ import {
 import { SpeakerPhoto } from "@/components/speakers/SpeakerPhoto";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
-import { isEventPast, isTbaDate, parseEventDateTimeParts } from "@/data/events-calendar";
 import { getLocationPartners } from "@/data/location-partners";
 import { Link } from "@/i18n/navigation";
 import {
@@ -40,7 +39,12 @@ import {
   type LocationValue,
 } from "@/lib/config/constants";
 import { USER_ROLES } from "@/lib/config/roles";
-import { getDaysUntilEventDate } from "@/lib/events/datetime";
+import {
+  getDaysUntilEventDate,
+  isEventPast,
+  isTbaDate,
+  parseEventDateTimeParts,
+} from "@/lib/events/datetime";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
 import { parseEventTitle } from "@/lib/events/presentation";
 import {

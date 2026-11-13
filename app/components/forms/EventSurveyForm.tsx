@@ -13,8 +13,9 @@ import {
   useTransition,
 } from "react";
 
-import { getEventById, getPastEvents, getUpcomingEvents } from "@/data/events-calendar";
 import { useCsrfToken } from "@/lib/api/csrf";
+import { pastEventsOf, upcomingEventsOf } from "@/lib/events/event-lists";
+import type { EventItem } from "@/lib/events/types";
 import { type EventSurveyFormState, submitEventSurvey } from "@/lib/forms/form-actions";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { useHaptics } from "@/lib/utils/haptics";
@@ -143,9 +144,9 @@ function getStoredDraft(): EventSurveyDraft | null {
   return readLocalStorage(STORAGE_KEYS.DRAFT_EVENT_SURVEY);
 }
 
-function getPreselectedEventId(searchParams: URLSearchParams): string {
+function getPreselectedEventId(searchParams: URLSearchParams, events: EventItem[]): string {
   const eventId = searchParams.get("eventId")?.trim();
-  return eventId && getEventById(eventId) ? eventId : "";
+  return eventId && events.some((event) => event.id === eventId) ? eventId : "";
 }
 
 function isDraftEmpty(draft: EventSurveyDraft): boolean {
@@ -355,10 +356,11 @@ function SurveySection({
 }
 
 interface EventSurveyFormInnerProps {
+  events: EventItem[];
   onReset: () => void;
 }
 
-function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
+function EventSurveyFormInner({ events, onReset }: EventSurveyFormInnerProps) {
   const t = useTranslations("eventsSurveyPage.form");
   const locale = useLocale();
   const searchParams = useSearchParams();
@@ -372,8 +374,8 @@ function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
   const csrfToken = useCsrfToken();
   const [draft, setDraft] = useState<EventSurveyDraft>(EMPTY_DRAFT);
   const selectedEvent = useMemo(
-    () => (draft.eventId ? getEventById(draft.eventId) : undefined),
-    [draft.eventId],
+    () => (draft.eventId ? events.find((event) => event.id === draft.eventId) : undefined),
+    [draft.eventId, events],
   );
   const eventTalks = useMemo(() => selectedEvent?.speakers ?? [], [selectedEvent]);
   const ratedTalkCount = useMemo(
@@ -393,13 +395,13 @@ function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
 
   const eventGroups = useMemo<DropdownGroup[]>(() => {
     const now = new Date();
-    const toOption = (event: ReturnType<typeof getUpcomingEvents>[number]) => ({
+    const toOption = (event: EventItem) => ({
       label: `${event.title} · ${formatEventDateUTC(event.date, locale)}`,
       value: event.id,
     });
     const groups: DropdownGroup[] = [];
-    const upcomingOptions = getUpcomingEvents(now).map(toOption);
-    const pastOptions = getPastEvents(now).map(toOption);
+    const upcomingOptions = upcomingEventsOf(events, now).map(toOption);
+    const pastOptions = pastEventsOf(events, now).map(toOption);
 
     if (upcomingOptions.length > 0) {
       groups.push({ label: t("eventGroups.upcoming"), options: upcomingOptions });
@@ -410,11 +412,11 @@ function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
     }
 
     return groups;
-  }, [locale, t]);
+  }, [events, locale, t]);
 
   useEffect(() => {
     const storedDraft = getStoredDraft();
-    const preselectedEventId = getPreselectedEventId(searchParams);
+    const preselectedEventId = getPreselectedEventId(searchParams, events);
 
     if (storedDraft) {
       setDraft(storedDraft.eventId ? storedDraft : { ...storedDraft, eventId: preselectedEventId });
@@ -424,7 +426,7 @@ function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
     if (preselectedEventId) {
       setDraft((current) => ({ ...current, eventId: preselectedEventId }));
     }
-  }, [searchParams]);
+  }, [events, searchParams]);
 
   useEffect(() => {
     if (state.message === "captchaFailed") {
@@ -1062,11 +1064,12 @@ function EventSurveyFormInner({ onReset }: EventSurveyFormInnerProps) {
   );
 }
 
-export function EventSurveyForm() {
+export function EventSurveyForm({ events }: { events: EventItem[] }) {
   const [instanceKey, setInstanceKey] = useState(0);
 
   return (
     <EventSurveyFormInner
+      events={events}
       key={instanceKey}
       onReset={() => {
         removeFromLocalStorage(STORAGE_KEYS.DRAFT_EVENT_SURVEY);

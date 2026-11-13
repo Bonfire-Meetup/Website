@@ -5,8 +5,9 @@ import { useTranslations } from "next-intl";
 import { EventSurveyForm } from "@/components/forms/EventSurveyForm";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { StaticPageHero } from "@/components/layout/StaticPageHero";
+import type { EventItem } from "@/lib/events/types";
 
-export function EventSurveyPageContent() {
+export function EventSurveyPageContent({ events }: { events: EventItem[] }) {
   const t = useTranslations("eventsSurveyPage");
 
   return (
@@ -27,7 +28,7 @@ export function EventSurveyPageContent() {
         />
 
         <div className="relative mx-auto max-w-5xl px-4 pb-16 sm:pb-24">
-          <EventSurveyForm />
+          <EventSurveyForm events={events} />
         </div>
       </main>
     </>

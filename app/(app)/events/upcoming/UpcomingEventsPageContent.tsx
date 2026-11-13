@@ -7,15 +7,11 @@ import { EventsPageHero } from "@/components/events/EventsPageHero";
 import { useRenderNow } from "@/components/events/useRenderNow";
 import { ArrowRightIcon, MapPinIcon } from "@/components/shared/Icons";
 import { SpeakerPhoto } from "@/components/speakers/SpeakerPhoto";
-import { getPastEvents, getUpcomingEventsWithFallback, isTbaDate } from "@/data/events-calendar";
 import { Link } from "@/i18n/navigation";
-import { getDaysUntilEventDate } from "@/lib/events/datetime";
+import { getDaysUntilEventDate, isTbaDate } from "@/lib/events/datetime";
+import { pastEventsOf, upcomingEventsWithFallbackOf } from "@/lib/events/event-lists";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
-import {
-  getSpeakerRecord,
-  getSpeakerTalkRecord,
-  speakerAssetUrl,
-} from "@/lib/events/speaker-records";
+import type { SpeakerMedia } from "@/lib/events/speaker-media";
 import {
   hasRenderableSpeakerName,
   isTbaSpeakerName,
@@ -32,7 +28,15 @@ function formatWeekdayUTC(date: string, locale: string) {
   );
 }
 
-function UpcomingEvent({ event, now }: { event: EventItem; now: Date | null }) {
+function UpcomingEvent({
+  event,
+  media,
+  now,
+}: {
+  event: EventItem;
+  media: SpeakerMedia;
+  now: Date | null;
+}) {
   const t = useTranslations("events");
   const locale = useLocale();
   const theme = getEventLocationTheme(event.location);
@@ -54,15 +58,14 @@ function UpcomingEvent({ event, now }: { event: EventItem; now: Date | null }) {
   const talkRows = talks.map((talk) => {
     const people = resolveSpeakerLinks(talk).map((person) => ({
       ...person,
-      photoUrl: person.id ? speakerAssetUrl(getSpeakerRecord(person.id)?.photo) : undefined,
+      photoUrl: person.id ? media.photos[person.id] : undefined,
     }));
-    const record = people
-      .map((person) => (person.id ? getSpeakerTalkRecord(person.id, event.id) : undefined))
-      .find((item) => item?.image);
-    const imageUrl = speakerAssetUrl(record?.image?.src);
+    const image = people
+      .map((person) => (person.id ? media.talkImages[`${person.id}:${event.id}`] : undefined))
+      .find(Boolean);
 
     return {
-      image: record?.image && imageUrl ? { ...record.image, url: imageUrl } : undefined,
+      image,
       people,
       talk,
     };
@@ -212,13 +215,19 @@ function UpcomingEvent({ event, now }: { event: EventItem; now: Date | null }) {
   );
 }
 
-export function UpcomingEventsPageContent() {
+export function UpcomingEventsPageContent({
+  events,
+  speakerMedia,
+}: {
+  events: EventItem[];
+  speakerMedia: SpeakerMedia;
+}) {
   const t = useTranslations("sections.events");
   const locale = useLocale();
   const renderNow = useRenderNow();
   const now = new Date();
-  const upcomingEvents = getUpcomingEventsWithFallback(now);
-  const pastEvents = getPastEvents(now);
+  const upcomingEvents = upcomingEventsWithFallbackOf(events, now);
+  const pastEvents = pastEventsOf(events, now);
   const recentPastEvents = pastEvents.slice(0, 4);
 
   return (
@@ -241,7 +250,7 @@ export function UpcomingEventsPageContent() {
           <p className="text-center text-neutral-500 dark:text-neutral-400">{t("noEvents")}</p>
         ) : (
           upcomingEvents.map((event) => (
-            <UpcomingEvent key={event.id} event={event} now={renderNow} />
+            <UpcomingEvent key={event.id} event={event} media={speakerMedia} now={renderNow} />
           ))
         )}
 

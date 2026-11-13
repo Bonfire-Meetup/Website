@@ -10,25 +10,27 @@ import { BackLink } from "@/components/ui/BackLink";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
 import { type DropdownOption, SelectDropdown } from "@/components/ui/SelectDropdown";
-import { getPastEvents, isTbaDate } from "@/data/events-calendar";
 import { Link } from "@/i18n/navigation";
 import { LOCATIONS } from "@/lib/config/constants";
+import { isTbaDate } from "@/lib/events/datetime";
+import { pastEventsOf } from "@/lib/events/event-lists";
 import { parseEventTitle } from "@/lib/events/presentation";
 import { getEventLocationTheme } from "@/lib/events/theme";
+import type { EventItem } from "@/lib/events/types";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 interface CalendarGroupItem {
   key: string;
   label: string;
-  events: ReturnType<typeof getPastEvents>;
+  events: EventItem[];
 }
 
 type PastLocationFilter = "all" | typeof LOCATIONS.PRAGUE | typeof LOCATIONS.ZLIN;
 
-export function PastEventsPageContent() {
+export function PastEventsPageContent({ events }: { events: EventItem[] }) {
   const t = useTranslations("sections.events");
   const locale = useLocale();
-  const pastEvents = getPastEvents(new Date());
+  const pastEvents = pastEventsOf(events, new Date());
   const [activeLocation, setActiveLocation] = useState<PastLocationFilter>("all");
   const [activeYear, setActiveYear] = useState<string>("all");
   const monthFormatter = useMemo(

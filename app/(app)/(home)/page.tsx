@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { allEvents } from "@/data/events-calendar";
 import { HomeContent } from "@/HomeContent";
 import { buildMetaPageMetadata } from "@/lib/metadata";
 import { getHeroImages } from "@/lib/recordings/data";
@@ -68,6 +69,7 @@ export default async function HomePage() {
 
   return (
     <HomeContent
+      events={allEvents}
       heroImages={heroImages}
       heroTrendingRecordings={heroTrendingRecordings}
       trendingRecordings={nonHeroTrendingRecordings.slice(0, TRENDING_SECTION_LIMIT)}

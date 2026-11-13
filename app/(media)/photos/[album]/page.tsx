@@ -71,5 +71,14 @@ export default async function AlbumPage({ params }: PageProps) {
 
   redirectIfNonCanonicalAlbumUrl(albumId, album);
 
-  return <AlbumPageContent album={album} baseUrl={PHOTO_ALBUM_BASE_URL} />;
+  const episode = getEpisodeById(album.episodeId);
+
+  return (
+    <AlbumPageContent
+      album={album}
+      baseUrl={PHOTO_ALBUM_BASE_URL}
+      slug={photoAlbumUrlSlug(album)}
+      title={episode ? formatEpisodeTitle(episode) : album.id}
+    />
+  );
 }

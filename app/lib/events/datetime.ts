@@ -50,3 +50,11 @@ export function getDaysUntilEventDate(date: string, now: Date = new Date()): num
 
   return diffDays >= 0 ? diffDays : null;
 }
+
+const PAST_GRACE_PERIOD_MS = 24 * 60 * 60 * 1000;
+
+export function isEventPast(event: { date: string; time: string }, now: Date): boolean {
+  const startMs = parseEventDateTimeMs(event.date, event.time);
+
+  return startMs !== null && now.getTime() > startMs + PAST_GRACE_PERIOD_MS;
+}

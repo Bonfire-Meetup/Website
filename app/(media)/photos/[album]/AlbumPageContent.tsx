@@ -6,9 +6,7 @@ import { AlbumImage } from "@/components/shared/AlbumImage";
 import { ExternalLinkIcon } from "@/components/shared/Icons";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { WEBSITE_URLS } from "@/lib/config/constants";
-import { photoAlbumUrlSlug } from "@/lib/photos/photo-albums-resolve";
 import type { PhotoAlbum } from "@/lib/photos/types";
-import { formatEpisodeTitle, getEpisodeById } from "@/lib/recordings/episodes";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { AlbumGallery } from "./AlbumGallery";
@@ -16,15 +14,15 @@ import { AlbumShareButton } from "./AlbumShareButton";
 
 interface AlbumPageContentProps {
   album: PhotoAlbum;
+  slug: string;
+  title: string;
   baseUrl: string;
 }
 
-export function AlbumPageContent({ album, baseUrl }: AlbumPageContentProps) {
+export function AlbumPageContent({ album, baseUrl, slug, title }: AlbumPageContentProps) {
   const t = useTranslations("photos");
   const tCommon = useTranslations("common");
 
-  const episode = getEpisodeById(album.episodeId);
-  const title = episode ? formatEpisodeTitle(episode) : album.id;
   const photographers =
     album.photographers
       ?.map((photographer) => ({
@@ -32,7 +30,7 @@ export function AlbumPageContent({ album, baseUrl }: AlbumPageContentProps) {
         url: photographer.url?.trim(),
       }))
       .filter((photographer) => photographer.name.length > 0) ?? [];
-  const shareUrl = `${WEBSITE_URLS.BASE}${PAGE_ROUTES.PHOTOS_ALBUM(photoAlbumUrlSlug(album))}`;
+  const shareUrl = `${WEBSITE_URLS.BASE}${PAGE_ROUTES.PHOTOS_ALBUM(slug)}`;
   const shareText = `${title} - ${tCommon("brandName")}`;
 
   return (

@@ -2,15 +2,16 @@
 
 import { useTranslations } from "next-intl";
 
-import { getHostedEventCount } from "@/data/events-calendar";
 import { getLocationPartners } from "@/data/location-partners";
 import { LOCATIONS } from "@/lib/config/constants";
+import { hostedEventCountOf } from "@/lib/events/event-lists";
+import type { EventItem } from "@/lib/events/types";
 
 import { SectionHeader } from "../ui/SectionHeader";
 
 import { LocationCard } from "./LocationCard";
 
-export function LocationsSection() {
+export function LocationsSection({ events }: { events: EventItem[] }) {
   const t = useTranslations("sections.locations");
   const tCommon = useTranslations("common");
   const now = new Date();
@@ -33,7 +34,7 @@ export function LocationsSection() {
             name={t("prague.name", { prague: tCommon("prague") })}
             city={LOCATIONS.PRAGUE}
             description={t("prague.description", { prague: tCommon("prague") })}
-            eventCount={getHostedEventCount(LOCATIONS.PRAGUE, now)}
+            eventCount={hostedEventCountOf(events, LOCATIONS.PRAGUE, now)}
             sponsorsTitle={t("sponsorsTitle")}
             sponsors={getLocationPartners(LOCATIONS.PRAGUE)}
           />
@@ -41,7 +42,7 @@ export function LocationsSection() {
             name={t("zlin.name", { zlin: tCommon("zlin") })}
             city={LOCATIONS.ZLIN}
             description={t("zlin.description", { zlin: tCommon("zlin") })}
-            eventCount={getHostedEventCount(LOCATIONS.ZLIN, now)}
+            eventCount={hostedEventCountOf(events, LOCATIONS.ZLIN, now)}
             sponsorsTitle={t("sponsorsTitle")}
             sponsors={getLocationPartners(LOCATIONS.ZLIN)}
           />

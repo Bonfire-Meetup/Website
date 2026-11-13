@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { allEvents } from "@/data/events-calendar";
 import { buildMetaPageMetadata } from "@/lib/metadata";
 
 import { PastEventsPageContent } from "./PastEventsPageContent";
@@ -9,5 +10,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function PastEventsPage() {
-  return <PastEventsPageContent />;
+  return <PastEventsPageContent events={allEvents} />;
 }
