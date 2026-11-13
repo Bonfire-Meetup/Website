@@ -2,7 +2,13 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Phone-sized landscape: any phone on its side, including a folded iPhone Duo (594x368). */
+@custom-variant short (@media (orientation: landscape) and (max-height: 30rem) and (width < 54rem));
+
 @theme {
+  /* An unfolded iPhone Duo on its side is 871-951px wide, between md and lg. */
+  --breakpoint-fold: 54rem;
+
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 

@@ -29,10 +29,10 @@ interface DesktopNavItem {
 }
 
 const DESKTOP_NAV_WRAPPER_CLASS =
-  "glass relative flex items-center gap-1.5 rounded-full border border-white/55 px-2.5 py-1 shadow-raised dark:border-white/10 dark:shadow-raised";
+  "glass relative flex items-center gap-0.5 rounded-full border border-white/55 px-1.5 py-1 shadow-raised fold:gap-1 fold:px-2 xl:gap-1.5 xl:px-2.5 dark:border-white/10 dark:shadow-raised";
 
 const DESKTOP_NAV_ITEM_BASE_CLASS =
-  "relative z-10 min-w-[5rem] rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-200";
+  "relative z-10 rounded-full py-1.5 text-sm font-medium whitespace-nowrap transition-[background-color,color,box-shadow] duration-200 md:px-2 fold:px-3 xl:min-w-[5rem] xl:px-4";
 
 const DESKTOP_NAV_ACTIVE_TEXT_CLASS = "text-neutral-950 dark:text-white";
 
@@ -289,7 +289,7 @@ function HeaderInner() {
       className="glass mobile-nav-glass fixed top-0 right-0 left-0 z-50 border-b border-black/3 shadow-[0_1px_3px_rgba(0,0,0,0.08),0_1px_2px_rgba(0,0,0,0.06)] transition-[box-shadow] duration-300 dark:border-white/4 dark:shadow-[0_1px_3px_rgba(0,0,0,0.25),0_1px_2px_rgba(0,0,0,0.2)]"
       style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
     >
-      <div className="relative mx-auto flex h-12 max-w-7xl items-center justify-between px-2.5 sm:px-6 md:h-16 lg:px-8">
+      <div className="relative mx-auto flex h-12 max-w-7xl items-center justify-between px-2.5 sm:px-6 md:grid md:h-16 md:grid-cols-[1fr_auto_1fr] md:gap-2 lg:px-8">
         <div className="relative z-10 flex items-center gap-3 md:justify-self-start">
           <Link
             href={PAGE_ROUTES.HOME}
@@ -324,44 +324,42 @@ function HeaderInner() {
           </div>
         </div>
 
-        <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-          <nav className="pointer-events-auto">
-            <div ref={navRef} className={DESKTOP_NAV_WRAPPER_CLASS}>
-              {indicator && (
-                <span
-                  ref={indicatorRef}
-                  aria-hidden="true"
-                  className={`pointer-events-none absolute top-1 bottom-1 left-0 rounded-full transition-[translate,width] duration-500 ease-[cubic-bezier(0.3,1.3,0.5,1)] will-change-transform motion-reduce:transition-none ${DESKTOP_NAV_ACTIVE_GLASS_CLASS}`}
-                  style={{ translate: `${indicator.left}px 0`, width: indicator.width }}
-                />
-              )}
-              {DESKTOP_NAV_ITEMS.map((item, index) => {
-                const isActive = index === activeNavIndex;
-                const activeClass = indicator
-                  ? DESKTOP_NAV_ACTIVE_TEXT_CLASS
-                  : `${DESKTOP_NAV_ACTIVE_TEXT_CLASS} ${DESKTOP_NAV_ACTIVE_GLASS_CLASS}`;
+        <nav className="hidden md:block">
+          <div ref={navRef} className={DESKTOP_NAV_WRAPPER_CLASS}>
+            {indicator && (
+              <span
+                ref={indicatorRef}
+                aria-hidden="true"
+                className={`pointer-events-none absolute top-1 bottom-1 left-0 rounded-full transition-[translate,width] duration-500 ease-[cubic-bezier(0.3,1.3,0.5,1)] will-change-transform motion-reduce:transition-none ${DESKTOP_NAV_ACTIVE_GLASS_CLASS}`}
+                style={{ translate: `${indicator.left}px 0`, width: indicator.width }}
+              />
+            )}
+            {DESKTOP_NAV_ITEMS.map((item, index) => {
+              const isActive = index === activeNavIndex;
+              const activeClass = indicator
+                ? DESKTOP_NAV_ACTIVE_TEXT_CLASS
+                : `${DESKTOP_NAV_ACTIVE_TEXT_CLASS} ${DESKTOP_NAV_ACTIVE_GLASS_CLASS}`;
 
-                return (
-                  <Button
-                    key={item.href}
-                    href={item.href}
-                    variant="plain"
-                    size="sm"
-                    prefetch={item.prefetch}
-                    className={`${DESKTOP_NAV_ITEM_BASE_CLASS} ${
-                      isActive ? activeClass : DESKTOP_NAV_ITEM_INACTIVE_CLASS
-                    }`}
-                    ariaLabel={t(item.label)}
-                  >
-                    <span>{t(item.label)}</span>
-                  </Button>
-                );
-              })}
-            </div>
-          </nav>
-        </div>
+              return (
+                <Button
+                  key={item.href}
+                  href={item.href}
+                  variant="plain"
+                  size="sm"
+                  prefetch={item.prefetch}
+                  className={`${DESKTOP_NAV_ITEM_BASE_CLASS} ${
+                    isActive ? activeClass : DESKTOP_NAV_ITEM_INACTIVE_CLASS
+                  }`}
+                  ariaLabel={t(item.label)}
+                >
+                  <span>{t(item.label)}</span>
+                </Button>
+              );
+            })}
+          </div>
+        </nav>
 
-        <div className="relative z-10 flex items-center gap-2 md:ml-auto">
+        <div className="relative z-10 flex items-center gap-2 md:justify-self-end">
           <div className={DESKTOP_UTILS_WRAPPER_CLASS}>
             <LanguageToggle
               variant="plain"
@@ -394,7 +392,7 @@ function HeaderInner() {
             }`}
           >
             <FilmIcon className="h-3 w-3 md:h-4 md:w-4" />
-            <span>{t("watchNow")}</span>
+            <span className="md:max-fold:sr-only">{t("watchNow")}</span>
           </Button>
         </div>
       </div>

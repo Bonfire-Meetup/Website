@@ -10,9 +10,9 @@ export const HERO_WORD_SIZE_CLASS = {
 export type HeroWordSize = keyof typeof HERO_WORD_SIZE_CLASS;
 
 export const HERO_SECTION_CLASS = {
-  compact: "relative px-4 pt-28 pb-10 text-center sm:pt-32 sm:pb-12",
+  compact: "relative px-4 pt-28 pb-10 text-center sm:pt-32 sm:pb-12 short:pt-20 short:pb-6",
   default:
-    "relative flex min-h-[56vh] items-center justify-center overflow-hidden px-4 pt-28 pb-10 sm:min-h-[60vh] sm:pt-32 sm:pb-12",
+    "relative flex min-h-[56vh] items-center justify-center overflow-hidden px-4 pt-28 pb-10 sm:min-h-[60vh] sm:pt-32 sm:pb-12 short:pt-20 short:pb-6",
   inline: "relative mb-10 text-center sm:mb-12",
   detail: "relative mb-16 text-center",
 } as const;

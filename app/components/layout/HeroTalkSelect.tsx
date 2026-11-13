@@ -108,8 +108,8 @@ function TalkTile({
 
   return (
     <li
-      className={`group/tile relative aspect-video w-[86%] shrink-0 snap-center motion-safe:animate-[heroTileEnter_640ms_cubic-bezier(0.2,0.85,0.2,1)_both] sm:w-[64%] lg:aspect-auto lg:h-full lg:w-auto lg:min-w-0 lg:transition-[flex-basis,flex-grow] lg:duration-500 ${TILE_EASING} ${
-        isActive ? "z-10 lg:flex-[0_1_calc(var(--shelf-h)*16/9)]" : "lg:flex-[1_1_0%]"
+      className={`group/tile fold:aspect-auto fold:h-full fold:w-auto fold:min-w-0 fold:transition-[flex-basis,flex-grow] fold:duration-500 short:w-[52%] relative aspect-video w-[86%] shrink-0 snap-center motion-safe:animate-[heroTileEnter_640ms_cubic-bezier(0.2,0.85,0.2,1)_both] sm:w-[64%] ${TILE_EASING} ${
+        isActive ? "fold:flex-[0_1_calc(var(--shelf-h)*16/9)] z-10" : "fold:flex-[1_1_0%]"
       }`}
       style={{ animationDelay: `${120 + index * 70}ms` }}
     >
@@ -130,21 +130,21 @@ function TalkTile({
           imgClassName={`object-[95%_32%] ${
             isActive
               ? ""
-              : "lg:brightness-[0.62] lg:saturate-[0.7] lg:group-hover/tile:brightness-90 lg:group-hover/tile:saturate-100"
+              : "fold:brightness-[0.62] fold:saturate-[0.7] fold:group-hover/tile:brightness-90 fold:group-hover/tile:saturate-100"
           }`}
-          sizes={isActive ? "(max-width: 1024px) 86vw, 760px" : "(max-width: 1024px) 86vw, 420px"}
+          sizes={isActive ? "(max-width: 863px) 86vw, 760px" : "(max-width: 863px) 86vw, 420px"}
           loading="eager"
           fetchPriority={index === 0 ? "high" : "low"}
         />
 
         <div
-          className={`pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-black/85 via-black/20 via-50% to-transparent transition-opacity duration-500 lg:block ${
+          className={`fold:block pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-black/85 via-black/20 via-50% to-transparent transition-opacity duration-500 ${
             isActive ? "opacity-0" : "opacity-100"
           }`}
         />
 
         <div
-          className={`pointer-events-none absolute inset-0 hidden items-end justify-center px-2 pb-4 transition-opacity duration-300 lg:flex ${
+          className={`fold:flex pointer-events-none absolute inset-0 hidden items-end justify-center px-2 pb-4 transition-opacity duration-300 ${
             isActive ? "opacity-0" : "opacity-100 delay-150"
           }`}
         >
@@ -409,7 +409,7 @@ export function HeroTalkSelect({
   const activeSpeakers = activeTalk?.speaker.join(", ") ?? "";
 
   return (
-    <section className="relative overflow-clip bg-neutral-50 px-4 pt-[5.5rem] pb-14 transition-colors duration-500 sm:px-6 sm:pt-32 sm:pb-16 lg:px-8 lg:pt-[clamp(7.5rem,16vh,16rem)] lg:pb-[clamp(5rem,9vh,8rem)] dark:bg-neutral-950">
+    <section className="fold:pt-[clamp(6.25rem,16vh,16rem)] fold:pb-[clamp(5rem,9vh,8rem)] short:pb-10 short:max-md:pt-[4.25rem] short:md:pt-[5.25rem] relative overflow-clip bg-neutral-50 px-4 pt-[5.5rem] pb-14 transition-colors duration-500 sm:px-6 sm:pt-32 sm:pb-16 lg:px-8 dark:bg-neutral-950">
       <style>{`
         .hero-neon.neon-active {
           -webkit-text-stroke: 2px rgba(139, 92, 246, 0.8);
@@ -439,32 +439,34 @@ export function HeroTalkSelect({
       <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-20 h-24 bg-gradient-to-t from-neutral-50 to-transparent dark:from-neutral-950" />
 
       <div className="relative z-30 mx-auto w-full max-w-7xl">
-        <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
-          <div className="min-w-0">
-            <p className="text-2xs tracking-label-lg mb-5 font-semibold text-neutral-500 uppercase dark:text-neutral-400">
+        <div className="fold:flex-row fold:items-end fold:justify-between fold:gap-10 short:flex-row short:items-center short:justify-between short:gap-6 flex flex-col gap-7 lg:gap-16">
+          <div className="short:shrink-0 min-w-0">
+            <p className="text-2xs tracking-label-lg short:mb-2 mb-5 font-semibold text-neutral-500 uppercase dark:text-neutral-400">
               {t("eyebrow")}
             </p>
 
-            <h1 className="flex flex-col items-start text-[clamp(2.8rem,13vw,6rem)] leading-[1.02] font-black tracking-tighter uppercase lg:text-[clamp(3.5rem,min(6.6vw,9.6vh),6.5rem)] lg:leading-[0.91]">
+            <h1 className="fold:text-[clamp(3.5rem,min(6.6vw,9.6vh),6.5rem)] fold:leading-[0.91] short:text-[clamp(1.9rem,10.5vh,3rem)] short:leading-[0.95] flex flex-col items-start text-[clamp(2.8rem,13vw,6rem)] leading-[1.02] font-black tracking-tighter uppercase">
               <span className="text-outline-bold hero-neon neon-active">{t("title.part1")}</span>
-              <span className="text-gradient sm:whitespace-nowrap">{t("title.highlight")}</span>
+              <span className="text-gradient short:whitespace-nowrap sm:whitespace-nowrap">
+                {t("title.highlight")}
+              </span>
               <NeonText className="text-outline-bold hero-neon">{t("title.part2")}</NeonText>
             </h1>
           </div>
 
-          <div className="lg:w-[27rem] lg:shrink-0 lg:pb-1.5">
-            <p className="max-w-lg text-sm leading-relaxed text-neutral-700 sm:text-base lg:text-lg dark:text-neutral-300">
+          <div className="fold:w-[27rem] fold:shrink-0 fold:pb-1.5 short:max-w-[23rem] short:min-w-0 short:flex-1">
+            <p className="short:text-sm max-w-lg text-sm leading-relaxed text-neutral-700 sm:text-base lg:text-lg dark:text-neutral-300">
               {t("subtitle", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
             </p>
 
-            <div className="mt-5 flex w-full flex-col gap-4 sm:w-fit">
+            <div className="short:mt-3 short:w-full short:gap-3 mt-5 flex w-full flex-col gap-4 sm:w-fit">
               <dl className="surface flex w-full divide-x divide-black/8 dark:divide-white/10">
                 {stats.map((stat) => (
                   <div
                     key={stat.label}
-                    className="flex min-w-0 flex-auto items-center justify-center gap-1.5 px-1.5 py-2 sm:gap-2 sm:px-3.5"
+                    className="short:gap-1.5 short:px-2 flex min-w-0 flex-auto items-center justify-center gap-1.5 px-1.5 py-2 sm:gap-2 sm:px-3.5"
                   >
-                    <stat.icon className="h-4 w-4 shrink-0 text-orange-500 dark:text-orange-400" />
+                    <stat.icon className="short:hidden h-4 w-4 shrink-0 text-orange-500 dark:text-orange-400" />
                     <dd className="text-sm leading-none font-black tracking-tight text-neutral-900 sm:text-base dark:text-white">
                       {stat.value}
                     </dd>
@@ -475,7 +477,7 @@ export function HeroTalkSelect({
                 ))}
               </dl>
 
-              <div className="flex items-center gap-3">
+              <div className="short:gap-2 flex items-center gap-3">
                 <span className="group/cta relative flex flex-1 transition-transform duration-300 hover:-translate-y-0.5">
                   {hasUpcomingEvent && (
                     <span
@@ -488,7 +490,7 @@ export function HeroTalkSelect({
                     variant="hero-primary"
                     size="lg"
                     external
-                    className="relative w-full gap-2 px-4 py-3 whitespace-nowrap sm:gap-2.5 sm:px-7 sm:py-3.5 sm:text-base"
+                    className="short:gap-2 short:px-3.5 short:py-2.5 short:text-sm relative w-full gap-2 px-4 py-3 whitespace-nowrap sm:gap-2.5 sm:px-7 sm:py-3.5 sm:text-base"
                   >
                     {hasUpcomingEvent ? (
                       <FireIcon className="h-5 w-5 shrink-0 origin-bottom motion-safe:animate-[heroCtaFlicker_2.6s_ease-in-out_1.2s_infinite]" />
@@ -502,10 +504,10 @@ export function HeroTalkSelect({
                   href={PAGE_ROUTES.LIBRARY}
                   variant="hero-secondary"
                   size="lg"
-                  className="shrink-0 gap-1.5 px-5 py-3 sm:px-6 sm:py-3.5 sm:text-base"
+                  className="short:px-4 short:py-2.5 short:text-sm shrink-0 gap-1.5 px-5 py-3 sm:px-6 sm:py-3.5 sm:text-base"
                 >
                   {tHeader("library")}
-                  <ArrowRightIcon className="h-4 w-4" />
+                  <ArrowRightIcon className="short:hidden h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -515,7 +517,7 @@ export function HeroTalkSelect({
         {activeTalk && (
           <div
             ref={stageRef}
-            className="shadow-floating relative mt-10 overflow-hidden rounded-[30px] border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.66)_0%,rgba(255,255,255,0.36)_100%)] p-3 backdrop-blur-xl sm:p-4 lg:mt-[clamp(2.75rem,6vh,6.5rem)] dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(20,20,22,0.82)_0%,rgba(10,10,11,0.62)_100%)]"
+            className="shadow-floating fold:mt-[clamp(2.75rem,6vh,6.5rem)] short:mt-6 relative mt-10 overflow-hidden rounded-[30px] border border-black/10 bg-[linear-gradient(160deg,rgba(255,255,255,0.66)_0%,rgba(255,255,255,0.36)_100%)] p-3 backdrop-blur-xl sm:p-4 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(20,20,22,0.82)_0%,rgba(10,10,11,0.62)_100%)]"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onFocus={() => setIsPaused(true)}
@@ -533,7 +535,7 @@ export function HeroTalkSelect({
               <ul
                 ref={listRef}
                 aria-label={t("select.label")}
-                className="no-scrollbar relative -mx-3 flex snap-x snap-mandatory gap-2.5 overflow-x-auto overflow-y-hidden overscroll-x-contain px-3 pb-3 sm:-mx-4 sm:px-4 lg:mx-0 lg:h-(--shelf-h) lg:snap-none lg:overflow-visible lg:px-0 lg:pb-0"
+                className="no-scrollbar fold:mx-0 fold:h-(--shelf-h) fold:snap-none fold:overflow-visible fold:px-0 fold:pb-0 relative -mx-3 flex snap-x snap-mandatory gap-2.5 overflow-x-auto overflow-y-hidden overscroll-x-contain px-3 pb-3 sm:-mx-4 sm:px-4"
                 style={SHELF_STYLE}
                 onScroll={syncIndexFromScroll}
                 onTouchStart={takeOverScroll}
@@ -559,7 +561,7 @@ export function HeroTalkSelect({
               </ul>
 
               {talkCount > 1 && (
-                <div aria-hidden="true" className="flex justify-center gap-1.5 lg:hidden">
+                <div aria-hidden="true" className="fold:hidden flex justify-center gap-1.5">
                   {talks.map((recording, index) => (
                     <span
                       key={recording.shortId}
