@@ -7,6 +7,8 @@ const baseConfig = {
 export const clientConfig = {
   ...baseConfig,
   accessToken: process.env.NEXT_PUBLIC_BNF_ROLLBAR_CLIENT_TOKEN ?? "",
+  ignoreBrowserExtensions: true,
+  ignoredMessages: [/^Script error\.?$/u],
   payload: {
     client: {
       javascript: {

@@ -355,6 +355,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetHandle, Props>(
         <Script
           src={WEBSITE_URLS.SERVICES.TURNSTILE_SCRIPT}
           strategy="afterInteractive"
+          crossOrigin="anonymous"
           onReady={handleScriptReady}
           onError={handleWidgetError}
         />
