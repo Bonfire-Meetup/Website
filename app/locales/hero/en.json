@@ -9,7 +9,8 @@
     },
     "subtitle": "Join the Czech game development community at our meetups in {prague} and {zlin} for talks and networking.",
     "cta": {
-      "events": "Join the next meetup"
+      "events": "Join the next meetup",
+      "notify": "Get meetup updates"
     },
     "stats": {
       "locations": "Locations",

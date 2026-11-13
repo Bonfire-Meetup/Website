@@ -42,10 +42,15 @@ export function HomeContent({
     alt: photoAlt,
   }));
   const upcomingEvents = upcomingEventsWithFallbackOf(upcoming, new Date());
+  const hasUpcomingEvent = upcomingEvents.some((event) => !event.isPlaceholder);
 
   return (
     <main id="top" className="relative">
-      <HeroWrapper images={imagesWithAlt} trendingRecordings={heroTrendingRecordings} />
+      <HeroWrapper
+        images={imagesWithAlt}
+        trendingRecordings={heroTrendingRecordings}
+        hasUpcomingEvent={hasUpcomingEvent}
+      />
 
       <EventsSection events={upcomingEvents} cardVariant="compact" />
 

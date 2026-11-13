@@ -5,6 +5,7 @@ import { HeroTalkSelect } from "./HeroTalkSelect";
 export function HeroWrapper({
   images,
   trendingRecordings,
+  hasUpcomingEvent = true,
 }: {
   images: {
     src: string;
@@ -13,10 +14,17 @@ export function HeroWrapper({
     fallbackType?: "image/jpeg" | "image/png";
   }[];
   trendingRecordings?: HeroRecording[];
+  hasUpcomingEvent?: boolean;
 }) {
   if (HERO_VARIANT === "classic") {
     return <Hero images={images} trendingRecordings={trendingRecordings} />;
   }
 
-  return <HeroTalkSelect images={images} trendingRecordings={trendingRecordings} />;
+  return (
+    <HeroTalkSelect
+      images={images}
+      trendingRecordings={trendingRecordings}
+      hasUpcomingEvent={hasUpcomingEvent}
+    />
+  );
 }

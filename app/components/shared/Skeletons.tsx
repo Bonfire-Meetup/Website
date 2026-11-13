@@ -99,11 +99,7 @@ function HeroTalkSelectSkeleton() {
           </div>
           <div className="w-full lg:w-[27rem] lg:shrink-0 lg:pb-1.5">
             <Skeleton className="h-12 w-full max-w-lg lg:h-20" />
-            <div className="mt-6 hidden grid-cols-3 gap-3 sm:grid">
-              {[1, 2, 3].map((id) => (
-                <Skeleton key={id} className="h-16 rounded-2xl" />
-              ))}
-            </div>
+            <Skeleton className="mt-5 h-9 w-full rounded-2xl sm:w-80" />
             <div className="mt-6 flex gap-3">
               <Skeleton className="h-12 w-52 rounded-2xl" />
               <Skeleton className="h-12 w-32 rounded-2xl" />

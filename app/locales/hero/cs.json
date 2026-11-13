@@ -9,7 +9,8 @@
     },
     "subtitle": "Přednášky, pivo a networking. Potkej českou gamedev komunitu na meetupech v Praze a Zlíně.",
     "cta": {
-      "events": "Doraž na další meetup"
+      "events": "Doraž na další meetup",
+      "notify": "Odebírat novinky"
     },
     "stats": {
       "locations": "Lokace",

@@ -4,7 +4,16 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 
-import { ArrowRightIcon, BoltIcon, FireIcon, PlayIcon } from "@/components/shared/Icons";
+import {
+  ArrowRightIcon,
+  BoltIcon,
+  FireIcon,
+  MailIcon,
+  MapPinIcon,
+  MicIcon,
+  PlayIcon,
+  UsersIcon,
+} from "@/components/shared/Icons";
 import { LOCATIONS } from "@/lib/config/constants";
 import { ENGAGEMENT_BRANDING } from "@/lib/config/engagement-branding";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
@@ -20,6 +29,7 @@ import { HeroBackground } from "./HeroBackground";
 
 interface HeroTalkSelectProps {
   images: { src: string; alt: string }[];
+  hasUpcomingEvent?: boolean;
   trendingRecordings?: HeroRecording[];
 }
 
@@ -176,20 +186,6 @@ function TalkTile({
   );
 }
 
-function HeroStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="surface group relative overflow-hidden px-3.5 py-3 transition-colors hover:border-black/18 dark:hover:border-white/16">
-      <span className="text-2xs block font-semibold tracking-wider text-neutral-500 uppercase dark:text-white/54">
-        {label}
-      </span>
-      <span className="mt-1 block text-xl leading-none font-black tracking-tight text-neutral-900 dark:text-white">
-        {value}
-      </span>
-      <div className="pointer-events-none absolute -right-4 -bottom-5 h-12 w-12 rounded-full bg-gradient-to-br from-fuchsia-500/20 to-orange-500/20 blur-lg transition-opacity group-hover:opacity-100 dark:opacity-70" />
-    </div>
-  );
-}
-
 function EngagementCounts({ recording }: { recording: HeroRecording }) {
   const likes = recording.likeCount ?? 0;
   const boosts = recording.boostCount ?? 0;
@@ -222,6 +218,7 @@ function EngagementCounts({ recording }: { recording: HeroRecording }) {
 
 export function HeroTalkSelect({
   images,
+  hasUpcomingEvent = true,
   trendingRecordings = EMPTY_RECORDINGS,
 }: HeroTalkSelectProps) {
   const t = useTranslations("hero");
@@ -404,9 +401,9 @@ export function HeroTalkSelect({
   }, [talkCount]);
 
   const stats = [
-    { label: t("stats.locations"), value: t("stats.locationsValue") },
-    { label: t("stats.talks"), value: t("stats.talksValue") },
-    { label: t("stats.attendees"), value: t("stats.attendeesValue") },
+    { icon: MapPinIcon, label: t("stats.locations"), value: t("stats.locationsValue") },
+    { icon: MicIcon, label: t("stats.talks"), value: t("stats.talksValue") },
+    { icon: UsersIcon, label: t("stats.attendees"), value: t("stats.attendeesValue") },
   ];
   const watchPath = activeTalk ? PAGE_ROUTES.WATCH(activeTalk.slug, activeTalk.shortId) : "";
   const activeSpeakers = activeTalk?.speaker.join(", ") ?? "";
@@ -425,6 +422,15 @@ export function HeroTalkSelect({
         @keyframes heroCaptionIn {
           from { opacity: 0; translate: 0 8px; }
           to { opacity: 1; translate: 0 0; }
+        }
+        @keyframes heroCtaPulse {
+          0% { opacity: 0.5; scale: 1; }
+          70%, 100% { opacity: 0; scale: 1.1 1.38; }
+        }
+        @keyframes heroCtaFlicker {
+          0%, 100% { scale: 1; rotate: 0deg; }
+          35% { scale: 1.14; rotate: -5deg; }
+          65% { scale: 1.06; rotate: 4deg; }
         }
       `}</style>
       <HeroBackground images={images.slice(0, 3)} />
@@ -451,31 +457,57 @@ export function HeroTalkSelect({
               {t("subtitle", { prague: tCommon("prague"), zlin: tCommon("zlin") })}
             </p>
 
-            <div className="mt-6 hidden grid-cols-3 gap-3 sm:grid">
-              {stats.map((stat) => (
-                <HeroStat key={stat.label} label={stat.label} value={stat.value} />
-              ))}
-            </div>
+            <div className="mt-5 flex w-full flex-col gap-4 sm:w-fit">
+              <dl className="surface flex w-full divide-x divide-black/8 dark:divide-white/10">
+                {stats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="flex min-w-0 flex-auto items-center justify-center gap-1.5 px-1.5 py-2 sm:gap-2 sm:px-3.5"
+                  >
+                    <stat.icon className="h-4 w-4 shrink-0 text-orange-500 dark:text-orange-400" />
+                    <dd className="text-sm leading-none font-black tracking-tight text-neutral-900 sm:text-base dark:text-white">
+                      {stat.value}
+                    </dd>
+                    <dt className="text-2xs truncate leading-none font-medium text-neutral-600 sm:text-xs dark:text-white/60">
+                      {stat.label}
+                    </dt>
+                  </div>
+                ))}
+              </dl>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <Button
-                href="#events"
-                variant="hero-primary"
-                size="lg"
-                external
-                className="px-6 py-3 sm:px-8 sm:py-3.5 sm:text-base"
-              >
-                {t("cta.events")}
-              </Button>
-              <Button
-                href={PAGE_ROUTES.LIBRARY}
-                variant="hero-secondary"
-                size="lg"
-                className="gap-1.5 px-5 py-3 sm:px-6 sm:py-3.5 sm:text-base"
-              >
-                {tHeader("library")}
-                <ArrowRightIcon className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-3">
+                <span className="group/cta relative flex flex-1 transition-transform duration-300 hover:-translate-y-0.5">
+                  {hasUpcomingEvent && (
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 to-rose-500 opacity-0 will-change-transform group-hover/cta:[animation-play-state:paused] motion-safe:animate-[heroCtaPulse_2.6s_cubic-bezier(0.2,0.7,0.3,1)_1.2s_infinite]"
+                    />
+                  )}
+                  <Button
+                    href={hasUpcomingEvent ? "#events" : "#newsletter"}
+                    variant="hero-primary"
+                    size="lg"
+                    external
+                    className="relative w-full gap-2 px-4 py-3 whitespace-nowrap sm:gap-2.5 sm:px-7 sm:py-3.5 sm:text-base"
+                  >
+                    {hasUpcomingEvent ? (
+                      <FireIcon className="h-5 w-5 shrink-0 origin-bottom motion-safe:animate-[heroCtaFlicker_2.6s_ease-in-out_1.2s_infinite]" />
+                    ) : (
+                      <MailIcon className="h-5 w-5 shrink-0" />
+                    )}
+                    {hasUpcomingEvent ? t("cta.events") : t("cta.notify")}
+                  </Button>
+                </span>
+                <Button
+                  href={PAGE_ROUTES.LIBRARY}
+                  variant="hero-secondary"
+                  size="lg"
+                  className="shrink-0 gap-1.5 px-5 py-3 sm:px-6 sm:py-3.5 sm:text-base"
+                >
+                  {tHeader("library")}
+                  <ArrowRightIcon className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
