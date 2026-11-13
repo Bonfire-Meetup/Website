@@ -1,3 +1,4 @@
+import { HERO_VARIANT } from "@/components/layout/hero-variant";
 import { RecordingsRailSkeleton } from "@/components/recordings/RecordingLoadingSkeletons";
 import { Skeleton } from "@/components/shared/Skeleton";
 export { Skeleton };
@@ -83,7 +84,61 @@ export function RecordingsSectionSkeleton() {
   );
 }
 
+function HeroTalkSelectSkeleton() {
+  return (
+    <section className="relative overflow-clip bg-neutral-50 px-4 pt-24 pb-14 sm:px-6 sm:pt-32 sm:pb-16 lg:px-8 lg:pt-[clamp(8.5rem,16vh,16rem)] lg:pb-[clamp(5rem,9vh,8rem)] dark:bg-neutral-950">
+      <div className="relative mx-auto w-full max-w-7xl">
+        <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
+          <div>
+            <Skeleton className="mb-5 h-3 w-36" />
+            <div className="flex flex-col items-start gap-2">
+              <Skeleton className="h-12 w-44 sm:h-20 sm:w-72" />
+              <Skeleton className="h-12 w-64 sm:h-20 sm:w-[28rem]" />
+              <Skeleton className="h-12 w-40 sm:h-20 sm:w-60" />
+            </div>
+          </div>
+          <div className="w-full lg:w-[27rem] lg:shrink-0 lg:pb-1.5">
+            <Skeleton className="h-12 w-full max-w-lg lg:h-20" />
+            <div className="mt-6 hidden grid-cols-3 gap-3 sm:grid">
+              {[1, 2, 3].map((id) => (
+                <Skeleton key={id} className="h-16 rounded-2xl" />
+              ))}
+            </div>
+            <div className="mt-6 flex gap-3">
+              <Skeleton className="h-12 w-52 rounded-2xl" />
+              <Skeleton className="h-12 w-32 rounded-2xl" />
+            </div>
+          </div>
+        </div>
+        <div className="mt-10 rounded-[30px] border border-black/10 bg-white/40 p-3 backdrop-blur-xl sm:p-4 lg:mt-[clamp(2.75rem,6vh,6.5rem)] dark:border-white/10 dark:bg-black/30">
+          <Skeleton className="mb-3 ml-1 h-3.5 w-32" />
+          <div className="flex gap-2.5 overflow-hidden pb-3 lg:h-[clamp(15rem,min(30vw,44vh),23rem)] lg:pb-0">
+            <Skeleton className="aspect-video w-[86%] shrink-0 rounded-2xl sm:w-[64%] lg:aspect-auto lg:h-full lg:w-auto lg:flex-[0_1_calc(clamp(15rem,min(30vw,44vh),23rem)*16/9)]" />
+            {Array.from({ length: 4 }, (_, i) => `hero-tile-skeleton-${i}`).map((id) => (
+              <Skeleton
+                key={id}
+                className="aspect-video w-[86%] shrink-0 rounded-2xl sm:w-[64%] lg:aspect-auto lg:h-full lg:w-auto lg:flex-1"
+              />
+            ))}
+          </div>
+          <div className="surface mt-3 flex flex-col gap-4 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-40" />
+              <Skeleton className="h-6 w-64 sm:w-96" />
+            </div>
+            <Skeleton className="h-10 w-32 rounded-full" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function HeroSkeleton() {
+  if (HERO_VARIANT === "talk-select") {
+    return <HeroTalkSelectSkeleton />;
+  }
+
   return (
     <section className="relative overflow-hidden bg-neutral-50 px-4 pt-[4.9rem] pb-[4.8rem] sm:px-6 sm:pt-[11rem] sm:pb-[5.4rem] lg:px-8 lg:pt-[16.2rem] lg:pb-[8.8rem] dark:bg-neutral-950">
       <div className="relative z-10 mx-auto w-full max-w-7xl">

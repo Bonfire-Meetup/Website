@@ -25,6 +25,10 @@
       "seeAll": "More trending talks",
       "watchNow": "Watch now",
       "tapHint": "Tap to preview"
+    },
+    "select": {
+      "label": "Trending talks",
+      "controller": "Controller connected"
     }
   }
 }

@@ -25,6 +25,10 @@
       "seeAll": "Další žhavé přednášky",
       "watchNow": "Pustit teď",
       "tapHint": "Klepni pro náhled"
+    },
+    "select": {
+      "label": "Žhavé přednášky",
+      "controller": "Ovladač připojen"
     }
   }
 }

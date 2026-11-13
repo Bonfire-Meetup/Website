@@ -5,7 +5,7 @@ import { buildMetaPageMetadata } from "@/lib/metadata";
 import { getHeroImages } from "@/lib/recordings/data";
 import { getTrendingRecordingsSafe } from "@/lib/recordings/trending";
 
-const HERO_TRENDING_LIMIT = 3;
+const HERO_TRENDING_LIMIT = 5;
 const TRENDING_SECTION_LIMIT = 6;
 const TRENDING_FETCH_LIMIT = HERO_TRENDING_LIMIT + TRENDING_SECTION_LIMIT;
 

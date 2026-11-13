@@ -1,4 +1,6 @@
 import { type HeroRecording, Hero } from "./Hero";
+import { HERO_VARIANT } from "./hero-variant";
+import { HeroTalkSelect } from "./HeroTalkSelect";
 
 export function HeroWrapper({
   images,
@@ -12,5 +14,9 @@ export function HeroWrapper({
   }[];
   trendingRecordings?: HeroRecording[];
 }) {
-  return <Hero images={images} trendingRecordings={trendingRecordings} />;
+  if (HERO_VARIANT === "classic") {
+    return <Hero images={images} trendingRecordings={trendingRecordings} />;
+  }
+
+  return <HeroTalkSelect images={images} trendingRecordings={trendingRecordings} />;
 }
