@@ -12,6 +12,7 @@ import { getDaysUntilEventDate, isTbaDate } from "@/lib/events/datetime";
 import { pastEventsOf, upcomingEventsWithFallbackOf } from "@/lib/events/event-lists";
 import type { EventTiming } from "@/lib/events/event-views";
 import { getGoogleMapsSearchUrl } from "@/lib/events/links";
+import { parseEventTitle } from "@/lib/events/presentation";
 import type { SpeakerMedia } from "@/lib/events/speaker-media";
 import {
   hasRenderableSpeakerName,
@@ -72,6 +73,17 @@ function UpcomingEvent({
     };
   });
   const visuals = talkRows.filter((row) => row.image || row.people.some((p) => p.photoUrl));
+  const parsedTitle = parseEventTitle(event.title);
+  const title = parsedTitle ? (
+    <>
+      <span className="eyebrow mb-2 block text-xs text-neutral-500 dark:text-neutral-400">
+        {parsedTitle.prefix}
+      </span>
+      <span className="block text-4xl sm:text-5xl">{parsedTitle.subtitle}</span>
+    </>
+  ) : (
+    event.title
+  );
 
   return (
     <article className="grid gap-x-10 gap-y-8 border-t border-neutral-200 py-14 first:border-t-0 first:pt-0 lg:grid-cols-[9rem_minmax(0,1fr)_20rem] dark:border-white/10">
@@ -106,10 +118,10 @@ function UpcomingEvent({
       <div className="order-3 min-w-0 lg:order-none">
         <h2 className="text-3xl font-black tracking-tight text-balance text-neutral-900 sm:text-4xl dark:text-white">
           {event.isPlaceholder ? (
-            event.title
+            title
           ) : (
             <Link href={PAGE_ROUTES.EVENT(event.id)} className="hover:underline">
-              {event.title}
+              {title}
             </Link>
           )}
         </h2>
