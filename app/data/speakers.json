@@ -102,6 +102,25 @@
       "name": "Kateřina Šumová"
     },
     {
+      "id": "MCNVsZgTZJj-1WP2JH3WAV5",
+      "name": "Kateřina Vejdělková",
+      "photo": "photos/katerina-vejdelkova.webp",
+      "company": "Flying Rat Studio",
+      "url": "https://www.flying-rat.studio/",
+      "talks": [
+        {
+          "eventId": "prague-10",
+          "socials": [
+            "socials/prague-10/katerina-vejdelkova/fb-post.png",
+            "socials/prague-10/katerina-vejdelkova/fb-story.png",
+            "socials/prague-10/katerina-vejdelkova/ig-post.png",
+            "socials/prague-10/katerina-vejdelkova/ig-story.png",
+            "socials/prague-10/katerina-vejdelkova/linkedin-post.png"
+          ]
+        }
+      ]
+    },
+    {
       "id": "36pA5MexDfR-SX6o7Tc6dXL",
       "name": "Kristýna Böhmová"
     },
