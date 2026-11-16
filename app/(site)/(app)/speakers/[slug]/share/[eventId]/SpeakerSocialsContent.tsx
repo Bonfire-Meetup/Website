@@ -16,6 +16,7 @@ import {
   type SocialPlatform,
 } from "@/lib/events/speaker-socials";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
+import { downloadHref } from "@/lib/utils/download";
 import { formatLongDateUTC } from "@/lib/utils/locale";
 
 interface SpeakerSocialsContentProps {
@@ -41,6 +42,8 @@ export function SpeakerSocialsContent({ speaker, talk }: SpeakerSocialsContentPr
     return {
       ...image,
       ...format,
+      // Talks share file names, so the saved one adds the event and speaker folders.
+      downloadName: `bonfire-${image.url.split("?")[0].split("/").slice(-3).join("-")}`,
       index,
       isWide: format.width > format.height,
       label: t(`formats.${format.labelKey}`),
@@ -157,10 +160,8 @@ export function SpeakerSocialsContent({ speaker, talk }: SpeakerSocialsContentPr
                         </p>
                       </div>
                       <a
-                        href={image.url}
-                        download
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={downloadHref(image.url)}
+                        download={image.downloadName}
                         className="btn-outline gap-1.5 rounded-full px-3 py-1.5 text-xs"
                       >
                         <DownloadIcon className="h-3.5 w-3.5" />
@@ -177,7 +178,11 @@ export function SpeakerSocialsContent({ speaker, talk }: SpeakerSocialsContentPr
 
       {openIndex !== null && (
         <Lightbox
-          images={images.map((image) => ({ alt: `${image.label}: ${talk.topic}`, src: image.url }))}
+          images={images.map((image) => ({
+            alt: `${image.label}: ${talk.topic}`,
+            downloadName: image.downloadName,
+            src: image.url,
+          }))}
           initialIndex={openIndex}
           onClose={() => setOpenIndex(null)}
           onIndexChange={setOpenIndex}

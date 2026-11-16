@@ -25,7 +25,16 @@ const nextConfig = {
     { source: "/newsletter", destination: "/newsletters", permanent: true },
     { source: "/l/:id([\\w-]+)", destination: "/go/:id", permanent: true },
   ],
+  // Same-origin path to CDN files: the `download` attribute is ignored on cross-origin links.
+  rewrites: () => [{ source: "/download/:path*", destination: `https://${CDN_HOSTNAME}/:path*` }],
   headers: () => [
+    {
+      headers: [
+        { key: "Content-Disposition", value: "attachment" },
+        { key: "X-Robots-Tag", value: "noindex" },
+      ],
+      source: "/download/:path*",
+    },
     {
       headers: [
         {

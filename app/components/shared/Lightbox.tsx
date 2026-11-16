@@ -18,9 +18,10 @@ import {
   DownloadIcon,
 } from "@/components/shared/Icons";
 import { useBodyScrollLock } from "@/components/shared/useBodyScrollLock";
+import { downloadFileName, downloadHref } from "@/lib/utils/download";
 
 interface LightboxProps {
-  images: { src: string; alt: string }[];
+  images: { src: string; alt: string; downloadName?: string }[];
   initialIndex: number;
   onClose: () => void;
   onIndexChange?: (index: number) => void;
@@ -483,10 +484,8 @@ export function Lightbox({
 
   const handleDownload = () => {
     const a = document.createElement("a");
-    a.href = current.src;
-    a.download = current.src.split("/").pop() || "photo.jpg";
-    a.target = "_blank";
-    a.rel = "noopener";
+    a.href = downloadHref(current.src);
+    a.download = current.downloadName ?? downloadFileName(current.src, "photo.jpg");
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
