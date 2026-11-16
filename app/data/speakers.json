@@ -4,21 +4,21 @@
     {
       "id": "5wJLsqF7N2o-ExyVW9n4DLx",
       "name": "David Konečný",
-      "photo": "photos/david-konecny.webp",
+      "photo": "photos/david-konecny.webp?v=f103c142",
       "talks": [
         {
           "eventId": "zlin-7",
           "image": {
-            "src": "talks/zlin-7/david-konecny.webp",
+            "src": "talks/zlin-7/david-konecny.webp?v=a0c3254b",
             "width": 460,
             "height": 215
           },
           "socials": [
-            "socials/zlin-7/david-konecny/ig-post.png",
-            "socials/zlin-7/david-konecny/ig-story.png",
-            "socials/zlin-7/david-konecny/fb-post.png",
-            "socials/zlin-7/david-konecny/fb-story.png",
-            "socials/zlin-7/david-konecny/linkedin-post.png"
+            "socials/zlin-7/david-konecny/fb-post.png?v=4cf927bc",
+            "socials/zlin-7/david-konecny/fb-story.png?v=7f8faefb",
+            "socials/zlin-7/david-konecny/ig-post.png?v=0ff272ce",
+            "socials/zlin-7/david-konecny/ig-story.png?v=011c05c5",
+            "socials/zlin-7/david-konecny/linkedin-post.png?v=6120f487"
           ]
         }
       ]
@@ -104,18 +104,23 @@
     {
       "id": "MCNVsZgTZJj-1WP2JH3WAV5",
       "name": "Kateřina Vejdělková",
-      "photo": "photos/katerina-vejdelkova.webp",
+      "photo": "photos/katerina-vejdelkova.webp?v=15f555a8",
       "company": "Flying Rat Studio",
       "url": "https://www.flying-rat.studio/",
       "talks": [
         {
           "eventId": "zlin-7",
+          "image": {
+            "src": "talks/zlin-7/katerina-vejdelkova.webp?v=636b6e9e",
+            "width": 460,
+            "height": 215
+          },
           "socials": [
-            "socials/zlin-7/katerina-vejdelkova/fb-post.png",
-            "socials/zlin-7/katerina-vejdelkova/fb-story.png",
-            "socials/zlin-7/katerina-vejdelkova/ig-post.png",
-            "socials/zlin-7/katerina-vejdelkova/ig-story.png",
-            "socials/zlin-7/katerina-vejdelkova/linkedin-post.png"
+            "socials/zlin-7/katerina-vejdelkova/fb-post.png?v=a92c5f30",
+            "socials/zlin-7/katerina-vejdelkova/fb-story.png?v=c6e24c7a",
+            "socials/zlin-7/katerina-vejdelkova/ig-post.png?v=34a436f1",
+            "socials/zlin-7/katerina-vejdelkova/ig-story.png?v=e768a13a",
+            "socials/zlin-7/katerina-vejdelkova/linkedin-post.png?v=15d11783"
           ]
         }
       ]
@@ -168,23 +173,23 @@
     {
       "id": "1cuYJa3pq4u-z1bWfBfX8tn",
       "name": "Martin Pelikán",
-      "photo": "photos/martin-pelikan.webp",
+      "photo": "photos/martin-pelikan.webp?v=2a926bfb",
       "company": "Flying Rat Studio",
       "url": "https://www.flying-rat.studio/",
       "talks": [
         {
           "eventId": "prague-10",
           "image": {
-            "src": "talks/prague-10/martin-pelikan.webp",
+            "src": "talks/prague-10/martin-pelikan.webp?v=636b6e9e",
             "width": 460,
             "height": 215
           },
           "socials": [
-            "socials/prague-10/martin-pelikan/fb-post.png",
-            "socials/prague-10/martin-pelikan/fb-story.png",
-            "socials/prague-10/martin-pelikan/ig-post.png",
-            "socials/prague-10/martin-pelikan/ig-story.png",
-            "socials/prague-10/martin-pelikan/linkedin-post.png"
+            "socials/prague-10/martin-pelikan/fb-post.png?v=e72f7788",
+            "socials/prague-10/martin-pelikan/fb-story.png?v=2c7671d7",
+            "socials/prague-10/martin-pelikan/ig-post.png?v=4b8a8470",
+            "socials/prague-10/martin-pelikan/ig-story.png?v=0d88229f",
+            "socials/prague-10/martin-pelikan/linkedin-post.png?v=aab553e7"
           ]
         }
       ]

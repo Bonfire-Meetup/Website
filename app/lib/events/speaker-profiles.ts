@@ -53,11 +53,12 @@ export interface SpeakerProfile {
   url?: string;
 }
 
-// A social image's format is its file name: ".../ig-post.png" is the "ig-post" format.
+// A social image's format is its file name: ".../ig-post.png?v=1a2b3c4d" is the "ig-post" format.
 function toSocials(record: SpeakerTalkRecord | undefined): SpeakerSocialImage[] {
   const byFormat = new Map(
     (record?.socials ?? []).map((src) => [
       src
+        .split("?")[0]
         .split("/")
         .pop()
         ?.replace(/\.\w+$/u, ""),
