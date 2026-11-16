@@ -19,6 +19,8 @@ import * as profilePrivacyCs from "./profile-privacy.cs.mdx";
 import * as profilePrivacyEn from "./profile-privacy.en.mdx";
 import * as registrationCs from "./registration.cs.mdx";
 import * as registrationEn from "./registration.en.mdx";
+import * as speakerPrepCs from "./speaker-prep.cs.mdx";
+import * as speakerPrepEn from "./speaker-prep.en.mdx";
 import * as speakingCs from "./speaking.cs.mdx";
 import * as speakingEn from "./speaking.en.mdx";
 import * as ticketScanningCs from "./ticket-scanning.cs.mdx";
@@ -81,6 +83,7 @@ export const GUIDES = {
     { cs: profilePrivacyCs, en: profilePrivacyEn },
   ),
   registration: defineGuide({ heroWord: "SIGN-IN" }, { cs: registrationCs, en: registrationEn }),
+  speakerPrep: defineGuide({ heroWord: "STAGE" }, { cs: speakerPrepCs, en: speakerPrepEn }),
   speaking: defineGuide({ heroWord: "SPEAK" }, { cs: speakingCs, en: speakingEn }),
   ticketScanning: defineGuide({ heroWord: "SCAN" }, { cs: ticketScanningCs, en: ticketScanningEn }),
 };

@@ -14,6 +14,7 @@ import {
   MicIcon,
   QrCodeIcon,
   ShieldIcon,
+  SystemIcon,
   TicketIcon,
   TrashIcon,
 } from "@/components/shared/Icons";
@@ -93,6 +94,11 @@ export function GuidesContent({ cards }: GuidesContentProps) {
           href: PAGE_ROUTES.GUIDES_SPEAKING,
           icon: MicIcon,
           ...copy("speaking"),
+        },
+        {
+          href: PAGE_ROUTES.GUIDES_SPEAKER_PREP,
+          icon: SystemIcon,
+          ...copy("speakerPrep"),
         },
         {
           href: PAGE_ROUTES.GUIDES_ENGAGEMENT_SIGNALS,

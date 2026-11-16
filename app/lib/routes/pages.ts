@@ -42,6 +42,7 @@ export const PAGE_ROUTES = {
   GUIDES_GUILD_SUBSCRIPTION: "/guides/account/guild-subscription",
   GUIDES_PROFILE_PRIVACY: "/guides/account/profile-privacy",
   GUIDES_REGISTRATION: "/guides/account/registration",
+  GUIDES_SPEAKER_PREP: "/guides/community/speaker-prep",
   GUIDES_SPEAKING: "/guides/community/speaking",
   GUIDES_TICKET_SCANNING: "/guides/crew/ticket-scanning",
   GUILD: "/guild",

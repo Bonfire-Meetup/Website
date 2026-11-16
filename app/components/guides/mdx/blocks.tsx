@@ -29,6 +29,41 @@ export function Surface({ children }: BlockProps) {
   return <div className="surface overflow-hidden">{blockChildren(children)}</div>;
 }
 
+/** Vertical stack of top-level blocks, e.g. several cards in a row. */
+export function Stack({ children }: BlockProps) {
+  return <div className="space-y-6">{blockChildren(children)}</div>;
+}
+
+/** Row of `<Fact>` tiles for the numbers a reader should remember. */
+export function Facts({ children }: BlockProps) {
+  return <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{blockChildren(children)}</div>;
+}
+
+interface FactProps extends BlockProps {
+  icon: GuideIconName;
+  label: string;
+  value: string;
+}
+
+export function Fact({ children, icon, label, value }: FactProps) {
+  const Icon = GUIDE_ICONS[icon];
+
+  return (
+    <div className="surface flex flex-col p-4 sm:p-5">
+      <span className="eyebrow text-brand-700 dark:text-brand-300 flex items-center gap-1.5 text-xs">
+        <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+        {label}
+      </span>
+      <span className="mt-3 text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
+        {value}
+      </span>
+      <span className="mt-1 text-sm leading-snug text-neutral-600 dark:text-neutral-400">
+        {paragraphContents(children)[0]}
+      </span>
+    </div>
+  );
+}
+
 /** Stack of `<Section>` blocks separated by divider lines. */
 export function SectionList({ children }: BlockProps) {
   return (

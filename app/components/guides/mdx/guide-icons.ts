@@ -8,6 +8,7 @@ import {
   CheckCircleIcon,
   ClockIcon,
   CloseIcon,
+  DocumentTextIcon,
   ExternalLinkIcon,
   FingerprintIcon,
   FireIcon,
@@ -21,10 +22,12 @@ import {
   RefreshIcon,
   SearchIcon,
   ShieldIcon,
+  SystemIcon,
   TicketIcon,
   TrashIcon,
   UserIcon,
   UsersIcon,
+  VideoIcon,
 } from "@/components/shared/Icons";
 
 export type GuideIcon = ComponentType<{ className?: string; "aria-hidden"?: "true" }>;
@@ -38,6 +41,7 @@ export const GUIDE_ICONS = {
   "check-circle": CheckCircleIcon,
   clock: ClockIcon,
   close: CloseIcon,
+  document: DocumentTextIcon,
   "external-link": ExternalLinkIcon,
   fingerprint: FingerprintIcon,
   fire: FireIcon,
@@ -47,6 +51,7 @@ export const GUIDE_ICONS = {
   "log-in": LogInIcon,
   mail: MailIcon,
   mic: MicIcon,
+  monitor: SystemIcon,
   "qr-code": QrCodeIcon,
   refresh: RefreshIcon,
   search: SearchIcon,
@@ -55,6 +60,7 @@ export const GUIDE_ICONS = {
   trash: TrashIcon,
   user: UserIcon,
   users: UsersIcon,
+  video: VideoIcon,
 } satisfies Record<string, GuideIcon>;
 
 export type GuideIconName = keyof typeof GUIDE_ICONS;
