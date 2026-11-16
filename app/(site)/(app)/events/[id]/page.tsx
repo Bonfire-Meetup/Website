@@ -78,6 +78,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
         venue={event.venue}
         description={event.description}
         speakers={speakers}
+        announcementStatus={event.announcementStatus}
         links={event.links}
         shortPath={PAGE_ROUTES.SHORT_LINK(event.id)}
       />

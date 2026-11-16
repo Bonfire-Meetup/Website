@@ -55,6 +55,7 @@ import {
   resolveSpeakerLinks,
   speakerPathSegment,
 } from "@/lib/events/speakers";
+import type { EventAnnouncementStatus } from "@/lib/events/types";
 import { useIsRole } from "@/lib/redux/hooks/useIsRole";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 import { formatEventDateUTC } from "@/lib/utils/locale";
@@ -90,6 +91,7 @@ interface EventDetailContentProps {
   venue: string;
   description: string;
   speakers: Speaker[];
+  announcementStatus?: EventAnnouncementStatus;
   links?: EventLinks;
   shortPath?: string;
 }
@@ -198,6 +200,7 @@ export function EventDetailContent({
   venue,
   description,
   speakers,
+  announcementStatus,
   links,
   shortPath,
 }: EventDetailContentProps) {
@@ -309,6 +312,10 @@ export function EventDetailContent({
 
   const visibleSpeakers = speakers.filter((speaker) => hasRenderableSpeakerName(speaker.name));
   const hasSpeakers = visibleSpeakers.length > 0;
+  const hasMoreToAnnounce = announcementStatus === "partial" && !isPastEvent;
+  const talkCountLabel = t(hasMoreToAnnounce ? "talkCountSoFar" : "talkCount", {
+    count: visibleSpeakers.length,
+  });
   const talkOptions = speakers
     .map((speaker, index) => ({
       key: speaker.recordingId ?? `${primarySpeakerName(speaker.name)}-${index}`,
@@ -544,14 +551,14 @@ export function EventDetailContent({
                   </h2>
                 </div>
                 <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-                  {t("talkCount", { count: visibleSpeakers.length })}
+                  {talkCountLabel}
                 </span>
               </div>
 
               <ol>
                 {visibleSpeakers.map((speaker, index) => {
                   const slotTime = speaker.startTime?.trim() ?? "";
-                  const isLast = index === visibleSpeakers.length - 1;
+                  const isLast = !hasMoreToAnnounce && index === visibleSpeakers.length - 1;
                   const people = resolveSpeakerLinks(speaker);
 
                   return (
@@ -656,6 +663,33 @@ export function EventDetailContent({
                     </li>
                   );
                 })}
+                {hasMoreToAnnounce && (
+                  <li className="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-x-4 sm:grid-cols-[4.5rem_1.25rem_minmax(0,1fr)] sm:gap-x-5">
+                    <p
+                      className="hidden pt-0.5 text-right font-mono text-lg font-bold text-neutral-400 sm:block dark:text-neutral-500"
+                      aria-hidden="true"
+                    >
+                      ··:··
+                    </p>
+
+                    <div className="relative flex justify-center" aria-hidden="true">
+                      <span
+                        className="relative mt-2 h-3 w-3 rounded-full border-2 border-dashed bg-neutral-50 dark:bg-neutral-950"
+                        style={{ borderColor: loc.color }}
+                      />
+                    </div>
+
+                    <div className="pb-2">
+                      <h3 className="flex items-center gap-2 text-xl font-bold tracking-tight text-balance text-neutral-500 sm:text-2xl dark:text-neutral-400">
+                        {t("moreTalksTitle")}
+                        <SparklesIcon className="h-5 w-5 shrink-0" style={{ color: loc.color }} />
+                      </h3>
+                      <p className="mt-2 max-w-[62ch] text-sm leading-6 text-neutral-600 dark:text-neutral-300">
+                        {t("moreTalksDescription")}
+                      </p>
+                    </div>
+                  </li>
+                )}
               </ol>
             </section>
           )}
@@ -932,7 +966,7 @@ export function EventDetailContent({
                         {t("speakers")}
                       </dt>
                       <dd className="font-semibold text-neutral-900 dark:text-white">
-                        {t("talkCount", { count: visibleSpeakers.length })}
+                        {talkCountLabel}
                       </dd>
                     </div>
                   )}
