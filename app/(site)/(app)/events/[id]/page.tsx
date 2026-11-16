@@ -6,7 +6,6 @@ import { getSpeakerRecord, speakerAssetUrl } from "@/lib/events/speaker-records"
 import { buildNotFoundTitleMetadata, getMetaTitleSuffix } from "@/lib/metadata";
 import { getAllRecordings } from "@/lib/recordings/recordings";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
-import { getShortPath } from "@/lib/routes/short-links";
 
 import { EventDetailContent } from "./EventDetailContent";
 
@@ -53,7 +52,6 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
     notFound();
   }
 
-  const shortPath = getShortPath(`/events/${id}`);
   const recordingsById = new Map(
     getAllRecordings().map((recording) => [
       recording.shortId,
@@ -81,7 +79,7 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
         description={event.description}
         speakers={speakers}
         links={event.links}
-        shortPath={shortPath}
+        shortPath={PAGE_ROUTES.SHORT_LINK(event.id)}
       />
     </div>
   );

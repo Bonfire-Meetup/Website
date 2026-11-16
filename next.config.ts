@@ -23,6 +23,7 @@ const nextConfig = {
     { source: "/newsletter/unsubscribe", destination: "/newsletters/unsubscribe", permanent: true },
     { source: "/newsletter/:slug([\\w-]+)", destination: "/newsletters/:slug", permanent: true },
     { source: "/newsletter", destination: "/newsletters", permanent: true },
+    { source: "/l/:id([\\w-]+)", destination: "/go/:id", permanent: true },
   ],
   headers: () => [
     {

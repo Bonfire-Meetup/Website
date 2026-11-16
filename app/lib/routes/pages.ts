@@ -73,7 +73,7 @@ export const PAGE_ROUTES = {
   PHOTOS_ALBUM: (album: string) => `/photos/${album}`,
   PRESS: "/press",
   SUPPORT: "/support",
-  SHORT_LINK: (id: string) => `/l/${id}`,
+  SHORT_LINK: (id: string) => `/go/${id}`,
   SPEAK: "/speak",
   SPEAKER: (slug: string) => `/speakers/${slug}`,
   SPEAKER_SOCIALS: (slug: string, eventId: string) => `/speakers/${slug}/share/${eventId}`,
