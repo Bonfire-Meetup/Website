@@ -53,7 +53,6 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
   const [payload, setPayload] = useState<LibraryBasePayload>(initialPayload);
   const [prevInitialPayload, setPrevInitialPayload] = useState(initialPayload);
   const [localSearchQuery, setLocalSearchQuery] = useState(initialPayload.searchQuery);
-  const [prevPayloadSearchQuery, setPrevPayloadSearchQuery] = useState(payload.searchQuery);
   const deferredSearchQuery = useDeferredValue(payload.searchQuery);
   const [isFiltering, setIsFiltering] = useState(false);
   const [rateLimitError, setRateLimitError] = useState(false);
@@ -75,20 +74,15 @@ export function BrowseCatalog({ initialPayload }: { initialPayload: LibraryBaseP
     setLocalSearchQuery(initialPayload.searchQuery);
   }
 
-  if (prevPayloadSearchQuery !== payload.searchQuery) {
-    setPrevPayloadSearchQuery(payload.searchQuery);
-    setLocalSearchQuery(payload.searchQuery);
-  }
-
   useLayoutEffect(() => {
     lastCommittedSearchRef.current = payload.searchQuery;
   }, [payload.searchQuery]);
 
   useEffect(() => {
-    if (localSearchQuery !== querySearch) {
+    if (querySearch !== lastCommittedSearchRef.current) {
       setLocalSearchQuery(querySearch);
     }
-  }, [localSearchQuery, querySearch]);
+  }, [querySearch]);
 
   const { activeLocation } = payload;
   const { activeTag } = payload;
