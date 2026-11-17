@@ -1,0 +1,46 @@
+{
+  "venue": {
+    "name": "The Pitchers",
+    "address": "Náplavka, Hořejší nábř., kobka č. 15, Praha 5-Smíchov"
+  },
+  "tba": ["19:15", "20:00"],
+  "photos": {
+    "backdrop": {
+      "album": "prague-9",
+      "index": 2,
+      "focal": {
+        "x": 0.5,
+        "y": 0.45
+      }
+    },
+    "flame": {
+      "album": "prague-9",
+      "index": 0,
+      "focal": {
+        "x": 0.52,
+        "y": 0.42
+      }
+    },
+    "left": {
+      "album": "prague-9",
+      "index": 7,
+      "focal": {
+        "x": 0.45,
+        "y": 0.45
+      }
+    },
+    "bottom": {
+      "album": "prague-9",
+      "index": 29,
+      "focal": {
+        "x": 0.72,
+        "y": 0.5
+      }
+    }
+  },
+  "partners": [
+    "partners/flyingrat_light.png",
+    "partners/visiongame_light.png",
+    "partners/the_pitchers_light.png"
+  ]
+}

@@ -14,7 +14,8 @@
     "clean": "bun pm cache rm && rm -rf node_modules bun.lock && bun install",
     "email:dev": "email dev --dir app/components/email",
     "photos:refresh-data": "node scripts/refresh-photo-albums-data.mjs",
-    "socials:generate": "node scripts/socials/generate.mjs"
+    "socials:generate": "node scripts/socials/generate.mjs",
+    "fliers:generate": "node scripts/fliers/generate.mjs"
   },
   "dependencies": {
     "@babel/parser": "^8.1.2",

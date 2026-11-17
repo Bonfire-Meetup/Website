@@ -23,6 +23,7 @@ Working guide for AI agents in this repository. Keep changes aligned with the cu
 - `bun run check` runs oxlint, oxfmt check, and typecheck
 - `bun run fix` auto-fixes lint issues and writes formatting
 - `bun run email:dev` starts the React Email preview server for `app/components/email`
+- `bun run fliers:generate <event-id>` renders print fliers (A4/A3/A2, en/cs, PNG + PDF) into `scripts/fliers/output`; run `bun install` in `scripts/fliers` first and see `scripts/fliers/events/` for per-event photo and partner choices
 
 ## Repo Shape
 

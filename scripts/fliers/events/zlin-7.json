@@ -1,0 +1,65 @@
+{
+  "venue": {
+    "name": "Studentský klub U7",
+    "address": "Štefánikova 150, Zlín"
+  },
+  "talks": {
+    "David Konečný": {
+      "button": "bottom"
+    },
+    "Kateřina Vejdělková": {
+      "button": "flame"
+    },
+    "Filip Ondráš": {
+      "button": "left",
+      "album": "zlin-6",
+      "index": 37,
+      "focal": {
+        "x": 0.5,
+        "y": 0.42
+      },
+      "zoom": 1.7
+    }
+  },
+  "photos": {
+    "backdrop": {
+      "album": "zlin-6",
+      "index": 32,
+      "focal": {
+        "x": 0.2,
+        "y": 0.5
+      }
+    },
+    "flame": {
+      "album": "zlin-6",
+      "index": 15,
+      "focal": {
+        "x": 0.6,
+        "y": 0.45
+      }
+    },
+    "left": {
+      "album": "zlin-6",
+      "index": 30,
+      "focal": {
+        "x": 0.4,
+        "y": 0.45
+      }
+    },
+    "bottom": {
+      "album": "zlin-6",
+      "index": 37,
+      "focal": {
+        "x": 0.45,
+        "y": 0.5
+      }
+    }
+  },
+  "partners": [
+    "partners/flyingrat_light.png",
+    "partners/visiongame_light.png",
+    "partners/polyperfect_light.png",
+    "partners/tomas_bata_university_light.png",
+    "partners/upper_light.png"
+  ]
+}
