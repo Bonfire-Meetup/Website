@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 import { AlbumImage } from "@/components/shared/AlbumImage";
 import { Lightbox } from "@/components/shared/Lightbox";
 import { AccentBar } from "@/components/ui/AccentBar";
+import { parseEventTitle } from "@/lib/events/presentation";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
 import { HeroSlideshow } from "./HeroSlideshow";
@@ -143,34 +144,48 @@ export function PhotosPageContent({
         </div>
         <section className="space-y-8">
           <div className="grid gap-6 lg:grid-cols-2">
-            {featuredAlbums.map((album) => (
-              <Link
-                key={album.id}
-                href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
-                prefetch={false}
-                className="group shadow-floating hover:shadow-floating relative overflow-hidden rounded-2xl bg-neutral-200 ring-1 ring-black/8 transition-all duration-500 dark:bg-neutral-900 dark:ring-white/12"
-              >
-                <div className="aspect-[5/4] overflow-hidden">
-                  <AlbumImage
-                    src={album.coverSrc}
-                    alt={album.title}
-                    imgClassName="scale-105 transition-transform duration-700 group-hover:scale-110"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
-                </div>
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
-                <div className="absolute right-4 bottom-4 left-4">
-                  <div className="space-y-2">
-                    <p className="eyebrow inline-flex items-center rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs text-white/85 backdrop-blur-md">
-                      {t("albumPhotos", { count: album.count })}
-                    </p>
-                    <h3 className="text-xl leading-tight font-black text-white sm:text-2xl">
-                      {album.title}
-                    </h3>
+            {featuredAlbums.map((album) => {
+              const parsedTitle = parseEventTitle(album.title);
+              return (
+                <Link
+                  key={album.id}
+                  href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
+                  prefetch={false}
+                  className="group shadow-floating hover:shadow-floating relative overflow-hidden rounded-2xl bg-neutral-200 ring-1 ring-black/8 transition-all duration-500 dark:bg-neutral-900 dark:ring-white/12"
+                >
+                  <div className="aspect-[5/4] overflow-hidden">
+                    <AlbumImage
+                      src={album.coverSrc}
+                      alt={album.title}
+                      imgClassName="scale-105 transition-transform duration-700 group-hover:scale-110"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                    />
                   </div>
-                </div>
-              </Link>
-            ))}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
+                  <div className="absolute right-4 bottom-4 left-4">
+                    <div className="space-y-2">
+                      <p className="eyebrow inline-flex items-center rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs text-white/85 backdrop-blur-md">
+                        {t("albumPhotos", { count: album.count })}
+                      </p>
+                      <h3 className="text-xl leading-tight font-black text-white sm:text-2xl">
+                        {parsedTitle ? (
+                          <>
+                            <span className="tracking-label-sm mb-1 block text-xs font-bold text-white/70 uppercase">
+                              {parsedTitle.prefix}
+                            </span>
+                            <span className="block text-2xl sm:text-4xl">
+                              {parsedTitle.subtitle}
+                            </span>
+                          </>
+                        ) : (
+                          album.title
+                        )}
+                      </h3>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
           {archiveAlbums.length > 0 && (
@@ -189,47 +204,50 @@ export function PhotosPageContent({
                 </p>
               </div>
               <div className="grid gap-3 sm:gap-4 lg:grid-cols-2 2xl:grid-cols-3">
-                {archiveAlbums.map((album, index) => (
-                  <Link
-                    key={album.id}
-                    href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
-                    prefetch={false}
-                    className="surface group hover:shadow-floating grid h-full overflow-hidden transition-all duration-300 sm:grid-cols-[180px_minmax(0,1fr)]"
-                  >
-                    <div className="aspect-[16/10] overflow-hidden sm:aspect-auto sm:h-full">
-                      <AlbumImage
-                        src={album.coverSrc}
-                        alt={album.title}
-                        imgClassName="transition-transform duration-500 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, 180px"
-                      />
-                    </div>
-                    <div className="flex items-center justify-between gap-4 p-4">
-                      <div className="space-y-1">
-                        <p className="tracking-label-sm text-xs font-semibold text-neutral-500 uppercase dark:text-neutral-400">
-                          #{index + 3}
-                        </p>
-                        <h3 className="line-clamp-2 text-base font-semibold text-neutral-900 transition-colors group-hover:text-orange-700 dark:text-white dark:group-hover:text-orange-300">
-                          {album.title}
-                        </h3>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                          {t("albumPhotos", { count: album.count })}
-                        </p>
+                {archiveAlbums.map((album, index) => {
+                  const parsedTitle = parseEventTitle(album.title);
+                  return (
+                    <Link
+                      key={album.id}
+                      href={PAGE_ROUTES.PHOTOS_ALBUM(album.slug)}
+                      prefetch={false}
+                      className="surface group hover:shadow-floating grid h-full overflow-hidden transition-all duration-300 sm:grid-cols-[180px_minmax(0,1fr)]"
+                    >
+                      <div className="aspect-[16/10] overflow-hidden sm:aspect-auto sm:h-full">
+                        <AlbumImage
+                          src={album.coverSrc}
+                          alt={album.title}
+                          imgClassName="transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width: 640px) 100vw, 180px"
+                        />
                       </div>
-                      <div className="h-8 w-8 shrink-0 rounded-full border border-black/10 bg-white/70 p-2 text-neutral-500 transition-colors group-hover:text-orange-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:group-hover:text-orange-300">
-                        <svg viewBox="0 0 24 24" fill="none" className="h-full w-full">
-                          <path
-                            d="M7 17L17 7M17 7H9M17 7V15"
-                            stroke="currentColor"
-                            strokeWidth="1.8"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                      <div className="flex items-center justify-between gap-4 p-4">
+                        <div className="space-y-1">
+                          <p className="tracking-label-sm text-xs font-semibold text-neutral-500 uppercase dark:text-neutral-400">
+                            {parsedTitle?.prefix ?? `#${index + 3}`}
+                          </p>
+                          <h3 className="line-clamp-2 text-lg leading-snug font-black tracking-tight text-neutral-900 transition-colors group-hover:text-orange-700 dark:text-white dark:group-hover:text-orange-300">
+                            {parsedTitle?.subtitle ?? album.title}
+                          </h3>
+                          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                            {t("albumPhotos", { count: album.count })}
+                          </p>
+                        </div>
+                        <div className="h-8 w-8 shrink-0 rounded-full border border-black/10 bg-white/70 p-2 text-neutral-500 transition-colors group-hover:text-orange-700 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:group-hover:text-orange-300">
+                          <svg viewBox="0 0 24 24" fill="none" className="h-full w-full">
+                            <path
+                              d="M7 17L17 7M17 7H9M17 7V15"
+                              stroke="currentColor"
+                              strokeWidth="1.8"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           )}

@@ -6,6 +6,7 @@ import { AlbumImage } from "@/components/shared/AlbumImage";
 import { ExternalLinkIcon } from "@/components/shared/Icons";
 import { AccentBar } from "@/components/ui/AccentBar";
 import { WEBSITE_URLS } from "@/lib/config/constants";
+import { parseEventTitle } from "@/lib/events/presentation";
 import type { PhotoAlbum } from "@/lib/photos/types";
 import { PAGE_ROUTES } from "@/lib/routes/pages";
 
@@ -31,6 +32,7 @@ export function AlbumPageContent({ album, baseUrl, slug, title }: AlbumPageConte
       }))
       .filter((photographer) => photographer.name.length > 0) ?? [];
   const shareUrl = `${WEBSITE_URLS.BASE}${PAGE_ROUTES.PHOTOS_ALBUM(slug)}`;
+  const parsedTitle = parseEventTitle(title);
   const shareText = `${title} - ${tCommon("brandName")}`;
 
   return (
@@ -56,7 +58,16 @@ export function AlbumPageContent({ album, baseUrl, slug, title }: AlbumPageConte
               </div>
               <div className="absolute right-4 bottom-4 left-4 sm:right-6 sm:bottom-6 sm:left-6">
                 <h1 className="max-w-3xl text-3xl leading-tight font-black text-white sm:text-4xl lg:text-5xl">
-                  {title}
+                  {parsedTitle ? (
+                    <>
+                      <span className="tracking-label-sm mb-2 block text-xs font-bold text-white/70 uppercase sm:text-sm">
+                        {parsedTitle.prefix}
+                      </span>
+                      <span className="block">{parsedTitle.subtitle}</span>
+                    </>
+                  ) : (
+                    title
+                  )}
                 </h1>
               </div>
             </div>
