@@ -38,8 +38,21 @@
     {
       "id": "9n2rKogQHWJ-KTB11mdbxhF",
       "name": "Filip Ondráš",
+      "photo": "photos/filip-ondras.webp?v=5eac2acb",
       "company": "Vector Virtuoso s.r.o.",
-      "url": "https://www.vectorvirtuoso.com/"
+      "url": "https://www.vectorvirtuoso.com/",
+      "talks": [
+        {
+          "eventId": "zlin-7",
+          "socials": [
+            "socials/zlin-7/filip-ondras/fb-post.png?v=d8b775d3",
+            "socials/zlin-7/filip-ondras/fb-story.png?v=be953e3a",
+            "socials/zlin-7/filip-ondras/ig-post.png?v=8db266fe",
+            "socials/zlin-7/filip-ondras/ig-story.png?v=b247591a",
+            "socials/zlin-7/filip-ondras/linkedin-post.png?v=9874adcf"
+          ]
+        }
+      ]
     },
     {
       "id": "JouTEoQ9Cit-2PeUw7C3swC",
