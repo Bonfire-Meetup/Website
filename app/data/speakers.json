@@ -334,6 +334,23 @@
       "name": "Viktor Bocan"
     },
     {
+      "id": "NHLTjD13aae-Kx2tUksTY9r",
+      "name": "Vojtěch Tragan",
+      "photo": "photos/vojtech-tragan.webp?v=88bbe28f",
+      "talks": [
+        {
+          "eventId": "prague-10",
+          "socials": [
+            "socials/prague-10/vojtech-tragan/fb-post.png?v=005ab76b",
+            "socials/prague-10/vojtech-tragan/fb-story.png?v=da6bce77",
+            "socials/prague-10/vojtech-tragan/ig-post.png?v=adf03d76",
+            "socials/prague-10/vojtech-tragan/ig-story.png?v=ec0f0493",
+            "socials/prague-10/vojtech-tragan/linkedin-post.png?v=1c3517c8"
+          ]
+        }
+      ]
+    },
+    {
       "id": "VhMAB8wAyJu-8MfGHCNor5g",
       "name": "Xuan Hung Do",
       "company": "Flying Rat Studio",
