@@ -8,7 +8,12 @@
       "button": "bottom"
     },
     "Kateřina Vejdělková": {
-      "button": "flame"
+      "button": "flame",
+      "focal": {
+        "x": 0.5,
+        "y": 0.3
+      },
+      "zoom": 0.85
     },
     "Filip Ondráš": {
       "button": "left",

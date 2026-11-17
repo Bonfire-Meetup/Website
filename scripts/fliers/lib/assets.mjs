@@ -81,8 +81,11 @@ export async function loadPhoto(photo) {
   if (photo.album) {
     return loadAlbumPhoto(photo);
   }
-  const { pathname } = new URL(photo.url);
-  return download(photo.url, path.join(cacheDir, "..", "remote", pathname));
+  // The ?v= content hash goes into the name, so a replaced photo is fetched again.
+  const { pathname, searchParams } = new URL(photo.url);
+  const version = searchParams.get("v");
+  const name = version ? pathname.replace(/(\.\w+)$/, `-${version}$1`) : pathname;
+  return download(photo.url, path.join(cacheDir, "..", "remote", name));
 }
 
 /** Fetches an album photo from the CDN once and keeps it in .cache. */
@@ -102,17 +105,47 @@ export async function loadAlbumPhoto({ album, index }) {
   );
 }
 
-/** Crops a photo to w×h so that the focal point stays in view; zoom > 1 crops tighter. */
+/**
+ * Crops a photo to w×h around the focal point. zoom > 1 crops tighter; zoom < 1 shows more
+ * than the photo holds, continuing its edges as a soft blur.
+ */
 export async function coverPhoto(file, { w, h, focal = { x: 0.5, y: 0.5 }, zoom = 1 }) {
   const meta = await sharp(file).metadata();
-  const scale = Math.max(w / meta.width, h / meta.height) * Math.max(1, zoom);
-  const cropW = Math.min(meta.width, Math.round(w / scale));
-  const cropH = Math.min(meta.height, Math.round(h / scale));
-  const clamp = (value, max) => Math.round(Math.min(Math.max(value, 0), max));
-  const left = clamp(focal.x * meta.width - cropW / 2, meta.width - cropW);
-  const top = clamp(focal.y * meta.height - cropH / 2, meta.height - cropH);
+  const scale = Math.max(w / meta.width, h / meta.height) * Math.min(Math.max(zoom, 0.5), 3);
+  const cropW = Math.round(w / scale);
+  const cropH = Math.round(h / scale);
+  const place = (wanted, crop, size) =>
+    Math.round(
+      crop <= size
+        ? Math.min(Math.max(wanted, 0), size - crop)
+        : Math.min(Math.max(wanted, size - crop), 0),
+    );
+  let left = place(focal.x * meta.width - cropW / 2, cropW, meta.width);
+  let top = place(focal.y * meta.height - cropH / 2, cropH, meta.height);
 
-  return sharp(file)
+  let source = sharp(file);
+  const pad = {
+    left: Math.max(0, -left),
+    top: Math.max(0, -top),
+    right: Math.max(0, left + cropW - meta.width),
+    bottom: Math.max(0, top + cropH - meta.height),
+  };
+  if (pad.left || pad.top || pad.right || pad.bottom) {
+    const blurred = await sharp(file)
+      .extend({ ...pad, extendWith: "copy" })
+      .blur(Math.max(4, Math.min(meta.width, meta.height) / 30))
+      .toBuffer();
+    source = sharp(
+      await sharp(blurred)
+        .composite([{ input: await sharp(file).toBuffer(), left: pad.left, top: pad.top }])
+        .png()
+        .toBuffer(),
+    );
+    left += pad.left;
+    top += pad.top;
+  }
+
+  return source
     .extract({ left, top, width: cropW, height: cropH })
     .resize(Math.round(w), Math.round(h), { fit: "fill", kernel: "lanczos3" });
 }

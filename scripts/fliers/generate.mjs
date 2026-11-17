@@ -22,7 +22,7 @@ scripts/fliers/events/<event-id>.json picks the photos and partners for the flie
              a button without a talk photo shows its album photo
   partners   logo paths under public/, e.g. "partners/flyingrat_light.png"
   talks      per talk, keyed by speaker name (or group name), all optional:
-             { button: "flame" | "left" | "bottom", focal: { x, y }, zoom, title,
+             { button: "flame" | "left" | "bottom", focal: { x, y }, zoom (<1 adds room), title,
                album + index | file (from the repo root) | photo: false }
              Without a source, the speaker's photo from speakers.json is used.
   tba        start times shown as "to be announced" until the lineup is full
