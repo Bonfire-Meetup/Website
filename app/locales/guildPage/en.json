@@ -14,7 +14,6 @@
       "comingSoon": "Coming soon",
       "live": "Subscriptions are live"
     },
-    "openNoteLabel": "A note",
     "openNote": "Bonfire events are <bold>open to everyone</bold> - no membership required. Guild is simply an optional way for those who want to support what we do and help the community grow.",
     "newsletter": {
       "subtitle": "Get notified when Bonfire Guild begins its rollout."
@@ -32,7 +31,8 @@
         "loading": "Loading account…",
         "manage": "Manage your plan",
         "comingSoon": "Coming soon",
-        "preview": "Preview"
+        "preview": "Preview",
+        "previewing": "Previewing"
       },
       "scout": {
         "name": "Scout",

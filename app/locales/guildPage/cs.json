@@ -14,7 +14,6 @@
       "comingSoon": "Brzy",
       "live": "Předplatné je spuštěné"
     },
-    "openNoteLabel": "Poznámka",
     "openNote": "Akce Bonfire jsou <bold>otevřené všem</bold> - členství v Guildu není potřeba. Guild je jen dobrovolná možnost pro ty, kdo chtějí podpořit, co děláme, a pomoct komunitě růst.",
     "newsletter": {
       "subtitle": "Nechte si poslat zprávu, až Bonfire Guild spustíme."
@@ -32,7 +31,8 @@
         "loading": "Načítám účet…",
         "manage": "Spravovat tarif",
         "comingSoon": "Brzy",
-        "preview": "Náhled"
+        "preview": "Náhled",
+        "previewing": "V náhledu"
       },
       "scout": {
         "name": "Scout",

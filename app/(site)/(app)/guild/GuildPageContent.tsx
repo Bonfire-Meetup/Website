@@ -9,8 +9,8 @@ import {
   CheckIcon,
   FilmIcon,
   GuildIcon,
+  InfoIcon,
   SparklesIcon,
-  StarFilledIcon,
   UsersIcon,
 } from "@/components/shared/Icons";
 import { Button } from "@/components/ui/Button";
@@ -19,6 +19,7 @@ import { getGuildTierCopy } from "@/lib/billing/guild-tier-copy";
 import {
   GUILD_TIER_MARKETING_CARD_STYLES,
   GUILD_TIER_PREVIEW_TINTS,
+  type GuildTierMarketingCardStyle,
 } from "@/lib/billing/guild-tier-styles";
 import type { GuildMembershipTier } from "@/lib/config/guild-membership";
 import { useAuthStatus } from "@/lib/redux/hooks";
@@ -52,138 +53,81 @@ function generateGuildEmbers() {
   }));
 }
 
-function TierCard({
-  tier,
-}: {
-  tier: {
-    actionHref?: string;
-    actionLabel: string;
-    actionClassName: string;
-    handleAction?: () => void;
-    price: string;
-    name: string;
-    tagline: string;
-    features: string[];
-    accent: string;
-    glow: string;
-    selectedGlow: string;
-    gradient: string;
-    border: string;
-    iconBg: string;
-    badge: string;
-    badgeText: string;
-    showPrice: boolean;
-    selected?: boolean;
-  };
-}) {
+interface GuildTierCardData extends GuildTierMarketingCardStyle {
+  actionHref?: string;
+  actionLabel: string;
+  badgeText: string;
+  features: string[];
+  handleAction?: () => void;
+  name: string;
+  price: string;
+  primary: boolean;
+  selected: boolean;
+  showPrice: boolean;
+  tagline: string;
+}
+
+function TierCard({ tier }: { tier: GuildTierCardData }) {
   return (
     <div
-      className={`guild-tier-card group relative flex h-full flex-col overflow-hidden rounded-2xl border ${tier.border} bg-white/80 shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.12)] dark:bg-neutral-950/80 dark:shadow-none dark:hover:shadow-[0_8px_40px_-8px_rgba(0,0,0,0.35)] ${
-        tier.selected
-          ? "guild-tier-card--selected shadow-floating dark:shadow-floating"
-          : "guild-tier-card--idle"
+      className={`surface relative flex h-full flex-col overflow-hidden p-6 transition-colors duration-500 sm:p-7 ${
+        tier.selected ? tier.selectedBorder : "hover:border-black/15 dark:hover:border-white/20"
       }`}
     >
-      {tier.selected ? (
-        <>
-          <div
-            className={`guild-tier-glow-ambient pointer-events-none absolute inset-[-1px] rounded-[1.08rem] ${tier.selectedGlow} blur-sm`}
-          />
-          <div
-            className={`guild-tier-glow-ambient pointer-events-none absolute inset-[-6px] rounded-xl ${tier.selectedGlow} blur-xl [animation-delay:0.35s]`}
-          />
-        </>
-      ) : null}
-      <div className={`relative flex h-full ${tier.gradient} p-px`}>
-        <div className="relative flex h-full w-full flex-col rounded-[15px] bg-white/95 p-6 backdrop-blur-sm sm:p-7 dark:bg-neutral-950/95">
-          {tier.selected ? (
-            <>
-              <div className="pointer-events-none absolute inset-0 rounded-[15px] ring-1 ring-white/70 dark:ring-white/12" />
-              <div className="pointer-events-none absolute inset-[1px] rounded-[14px] shadow-[inset_0_1px_0_rgba(255,255,255,0.55),inset_0_0_0_1px_rgba(255,255,255,0.12)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),inset_0_0_0_1px_rgba(255,255,255,0.06)]" />
-              <div
-                className={`pointer-events-none absolute -inset-8 ${tier.selectedGlow} opacity-60 blur-3xl`}
-              />
-              <div
-                className={`pointer-events-none absolute -top-16 -right-12 h-40 w-40 rounded-full ${tier.selectedGlow} opacity-70 blur-3xl`}
-              />
-              <div
-                className={`pointer-events-none absolute -bottom-14 -left-10 h-36 w-36 rounded-full ${tier.selectedGlow} opacity-65 blur-3xl`}
-              />
-            </>
-          ) : null}
-          <div
-            className={`pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full ${tier.glow} opacity-80 blur-3xl`}
-          />
-          <div
-            className={`pointer-events-none absolute -bottom-20 -left-20 h-40 w-40 rounded-full ${tier.glow} opacity-40 blur-3xl`}
-          />
+      <div
+        className={`pointer-events-none absolute inset-0 bg-gradient-to-b to-transparent to-60% transition-opacity duration-500 ${tier.selectedWash} ${
+          tier.selected ? "opacity-100" : "opacity-0"
+        }`}
+      />
+      <div
+        className={`pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent to-transparent transition-opacity duration-500 ${tier.selectedLine} ${
+          tier.selected ? "opacity-100" : "opacity-0"
+        }`}
+      />
 
-          <div className="relative flex h-full flex-col">
-            <div className="min-h-[150px]">
-              <div className="mb-4">
-                <span
-                  className={`text-2xs inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-semibold tracking-widest uppercase ${tier.badge}`}
-                >
-                  <StarFilledIcon className="h-2.5 w-2.5" />
-                  {tier.badgeText}
-                </span>
-              </div>
+      <div className="relative flex h-full flex-col">
+        <p className={`eyebrow text-2xs ${tier.accent}`}>{tier.badgeText}</p>
+        <h3 className="mt-3 text-2xl font-black tracking-tight text-neutral-900 dark:text-white">
+          {tier.name}
+        </h3>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-600 md:min-h-[2.75rem] dark:text-neutral-400">
+          {tier.tagline}
+        </p>
+        {tier.showPrice ? (
+          <p className="mt-5 text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
+            {tier.price}
+          </p>
+        ) : null}
 
-              <h3 className={`mb-2 text-xl font-black tracking-tight sm:text-2xl ${tier.accent}`}>
-                {tier.name}
-              </h3>
-              {tier.showPrice ? (
-                <p className="mb-1 text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
-                  {tier.price}
-                </p>
-              ) : null}
-              <p className="text-sm leading-[1.55] text-neutral-500 dark:text-neutral-400">
-                {tier.tagline}
-              </p>
-            </div>
+        <div className="my-6 h-px bg-black/8 dark:bg-white/8" />
 
-            <div className="my-5 h-px w-full bg-gradient-to-r from-transparent via-neutral-200/80 to-transparent dark:via-neutral-700/60" />
-
-            <ul className="flex-1 space-y-3.5">
-              {tier.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-3">
-                  <span
-                    className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${tier.iconBg} shadow-sm`}
-                  >
-                    <CheckIcon className="h-3 w-3 text-white" />
-                  </span>
-                  <span className="text-sm leading-[1.5] text-neutral-700 dark:text-neutral-300">
-                    {feature}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-6 pt-1">
-              <span className="block">
-                <Button
-                  href={tier.actionHref}
-                  onClick={tier.handleAction}
-                  variant="plain"
-                  size="sm"
-                  className={`w-full rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_-18px_rgba(15,23,42,0.3)] transition-[transform,box-shadow,filter] duration-300 hover:brightness-105 ${tier.actionClassName}`}
-                >
-                  {tier.actionLabel}
-                </Button>
+        <ul className="flex-1 space-y-3">
+          {tier.features.map((feature) => (
+            <li key={feature} className="flex items-start gap-3">
+              <CheckIcon className={`mt-0.5 h-4 w-4 shrink-0 ${tier.accent}`} aria-hidden="true" />
+              <span className="text-sm leading-[1.5] text-neutral-700 dark:text-neutral-300">
+                {feature}
               </span>
-            </div>
-          </div>
-        </div>
-      </div>
+            </li>
+          ))}
+        </ul>
 
-      {tier.selected ? (
-        <div
-          className="guild-tier-shimmer pointer-events-none absolute inset-0 z-[5] overflow-hidden rounded-2xl"
-          aria-hidden
+        <Button
+          href={tier.actionHref}
+          onClick={tier.handleAction}
+          variant={tier.primary ? "primary" : "plain"}
+          size="md"
+          className={`mt-8 w-full duration-300 ${
+            tier.primary
+              ? ""
+              : tier.selected
+                ? "bg-neutral-900 text-white hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+                : "btn-outline rounded-xl"
+          }`}
         >
-          <div className="guild-tier-shimmer-beam" />
-        </div>
-      ) : null}
+          {tier.actionLabel}
+        </Button>
+      </div>
     </div>
   );
 }
@@ -195,59 +139,38 @@ const PERK_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>>
   users: UsersIcon,
 };
 
-const PERK_ACCENT = [
-  "text-rose-500 dark:text-rose-400",
-  "text-amber-500 dark:text-amber-400",
-  "text-rose-500 dark:text-rose-400",
-  "text-emerald-500 dark:text-emerald-400",
-];
+const DEFAULT_PERK_CHROME = {
+  accent: "text-orange-600 dark:text-orange-300",
+  iconSurface: "bg-orange-100 dark:bg-orange-500/12",
+};
 
 function PerkCard({
-  accentClassName,
+  chrome,
   item,
-  index,
 }: {
-  accentClassName?: string;
-  item: { eyebrow?: string; title: string; description?: string; icon: string };
-  index: number;
+  chrome: { accent: string; iconSurface: string };
+  item: { title: string; description?: string; icon: string };
 }) {
   const Icon = PERK_ICON_MAP[item.icon] ?? SparklesIcon;
-  const accent = accentClassName ?? PERK_ACCENT[index % PERK_ACCENT.length] ?? PERK_ACCENT[0];
 
   return (
-    <div className="surface relative overflow-hidden p-6 sm:p-7">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-neutral-50/50 via-transparent to-neutral-100/30 dark:from-neutral-900/30 dark:to-neutral-800/20" />
-
-      <div className="relative flex gap-5">
-        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
-          <div className={`absolute inset-0 ${accent} opacity-18 blur-xl`}>
-            <Icon className="h-full w-full opacity-90" />
-          </div>
-          <div className="absolute inset-0 rounded-2xl bg-white/70 dark:bg-white/5" />
-          <Icon className={`relative h-5 w-5 ${accent}`} />
-        </div>
-
-        <div className="min-w-0 flex-1">
-          {item.eyebrow ? (
-            <p className="eyebrow text-2xs mb-1 text-neutral-500 dark:text-neutral-400">
-              {item.eyebrow}
-            </p>
-          ) : null}
-          <h3 className="mb-1.5 text-lg font-semibold tracking-tight text-neutral-900 dark:text-white">
-            {item.title}
-          </h3>
-          {item.description ? (
-            <p className="max-w-[34ch] text-sm leading-[1.65] text-neutral-600 dark:text-neutral-400">
-              {item.description}
-            </p>
-          ) : null}
-        </div>
+    <div className="surface h-full p-6 sm:p-7">
+      <div
+        className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${chrome.iconSurface} ${chrome.accent}`}
+      >
+        <Icon className="h-5 w-5" />
       </div>
+      <h3 className="mt-5 text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
+        {item.title}
+      </h3>
+      {item.description ? (
+        <p className="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+          {item.description}
+        </p>
+      ) : null}
     </div>
   );
 }
-
-const PREVIEW_ICONS = ["film", "sparkles", "bolt", "users"] as const;
 
 export function GuildPageContent({
   isEnabled,
@@ -272,17 +195,15 @@ export function GuildPageContent({
     isEnabled ? t("tiers.priceWithInterval", { amount: prices[tier] }) : prices[tier];
   const activePreviewTier = !isEnabled && !hasActiveSubscription ? previewTier : null;
   const previewDetails = activePreviewTier ? tierCopy[activePreviewTier] : null;
-  const previewTint = activePreviewTier ? GUILD_TIER_PREVIEW_TINTS[activePreviewTier] : null;
-  const previewPerkItems = previewDetails
+  const previewPerkItems = activePreviewTier
     ? previewPerks[
         activePreviewTier === 1 ? "scout" : activePreviewTier === 2 ? "explorer" : "trailblazer"
-      ].map((item, index) => ({
-        ...item,
-        eyebrow: previewDetails.name,
-        icon: item.icon || PREVIEW_ICONS[index % PREVIEW_ICONS.length],
-      }))
+      ]
     : ((t.raw("perksSection.items") as { title: string; description: string; icon: string }[]) ??
       []);
+  const perkChrome = activePreviewTier
+    ? GUILD_TIER_MARKETING_CARD_STYLES[activePreviewTier]
+    : DEFAULT_PERK_CHROME;
 
   useEffect(() => {
     setEmbers(generateGuildEmbers());
@@ -311,6 +232,10 @@ export function GuildPageContent({
   };
 
   const getTierActionLabel = (tier: 1 | 2 | 3, name: string) => {
+    if (activePreviewTier === tier) {
+      return t("tiers.actions.previewing");
+    }
+
     if (isPending) {
       return t("tiers.actions.loading");
     }
@@ -343,6 +268,7 @@ export function GuildPageContent({
     badgeText: tierCopy[tierKey].badge,
     showPrice: isEnabled,
     selected: activePreviewTier === tierKey,
+    primary: isEnabled,
   }));
 
   const tiersWithActions = tiers.map((tier, index) => ({
@@ -352,20 +278,33 @@ export function GuildPageContent({
 
   return (
     <div className="relative overflow-hidden">
-      {previewTint ? (
+      {!isEnabled ? (
         <div className="pointer-events-none absolute inset-0">
-          <div
-            className="absolute inset-0 dark:hidden"
-            style={{
-              background: `radial-gradient(circle at 16% 18%, ${previewTint.glowStrong}, transparent 28%), radial-gradient(circle at 84% 12%, ${previewTint.glow}, transparent 30%), radial-gradient(circle at 50% 72%, ${previewTint.glow}, transparent 34%)`,
-            }}
-          />
-          <div
-            className="absolute inset-0 hidden dark:block"
-            style={{
-              background: `radial-gradient(circle at 16% 18%, ${previewTint.darkGlowStrong}, transparent 30%), radial-gradient(circle at 84% 12%, ${previewTint.darkGlow}, transparent 34%), radial-gradient(circle at 50% 72%, ${previewTint.darkGlow}, transparent 38%)`,
-            }}
-          />
+          {([1, 2, 3] as const).map((tierKey) => {
+            const tint = GUILD_TIER_PREVIEW_TINTS[tierKey];
+
+            return (
+              <div
+                key={tierKey}
+                className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+                  activePreviewTier === tierKey ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <div
+                  className="absolute inset-0 dark:hidden"
+                  style={{
+                    background: `radial-gradient(circle at 16% 18%, ${tint.glowStrong}, transparent 28%), radial-gradient(circle at 84% 12%, ${tint.glow}, transparent 30%), radial-gradient(circle at 50% 72%, ${tint.glow}, transparent 34%)`,
+                  }}
+                />
+                <div
+                  className="absolute inset-0 hidden dark:block"
+                  style={{
+                    background: `radial-gradient(circle at 16% 18%, ${tint.darkGlowStrong}, transparent 30%), radial-gradient(circle at 84% 12%, ${tint.darkGlow}, transparent 34%), radial-gradient(circle at 50% 72%, ${tint.darkGlow}, transparent 38%)`,
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
       ) : null}
       <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-20 pb-24 sm:pt-24 sm:pb-28">
@@ -439,7 +378,10 @@ export function GuildPageContent({
           <div className="guild-flame-tongue guild-flame-tongue-3" />
         </div>
 
-        <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden>
+        <div
+          className="pointer-events-none absolute inset-0 z-[1] overflow-hidden [mask-image:linear-gradient(to_top,transparent,black_160px)]"
+          aria-hidden
+        >
           {embers.map((style) => (
             <GuildEmber
               key={`guild-ember-${String(style.left)}-${String(style.animationDelay)}-${String(style.animationDuration)}`}
@@ -448,125 +390,67 @@ export function GuildPageContent({
             />
           ))}
         </div>
-
-        <div
-          className="pointer-events-none absolute right-0 bottom-[-50px] left-0 z-[2] h-40 dark:hidden"
-          style={{
-            background:
-              "linear-gradient(to top, rgb(250 250 250) 0%, rgba(250, 250, 250, 0.85) 15%, rgba(250, 250, 250, 0.6) 35%, rgba(250, 250, 250, 0.3) 55%, rgba(250, 250, 250, 0.1) 75%, transparent 100%)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute right-0 bottom-[-50px] left-0 z-[2] hidden h-40 dark:block"
-          style={{
-            background:
-              "linear-gradient(to top, rgb(10 10 10) 0%, rgba(10, 10, 10, 0.85) 15%, rgba(10, 10, 10, 0.6) 35%, rgba(10, 10, 10, 0.3) 55%, rgba(10, 10, 10, 0.1) 75%, transparent 100%)",
-          }}
-        />
       </section>
 
-      <section className="relative px-4 pt-20 pb-20 sm:pt-28 sm:pb-24">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(220,38,38,0.03),transparent_70%)] dark:bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(220,38,38,0.015),transparent_70%)]" />
-
-        <div className="relative mx-auto max-w-6xl">
-          <div className="mb-14 text-center sm:mb-16">
-            <p className="text-2xs tracking-label-lg mb-3 font-semibold text-neutral-500 uppercase dark:text-neutral-400">
+      <section className="relative px-4 pt-16 pb-20 sm:pt-24 sm:pb-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="mx-auto mb-12 max-w-xl text-center sm:mb-14">
+            <p className="eyebrow text-2xs mb-3 text-neutral-500 dark:text-neutral-400">
               {t("tiersSection.kicker")}
             </p>
-            <h2 className="mb-3 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl md:text-4xl dark:text-white">
+            <h2 className="mb-3 text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
               {t("tiersSection.title")}
             </h2>
-            <p className="mx-auto max-w-lg text-sm leading-[1.6] text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm leading-relaxed text-neutral-600 sm:text-base dark:text-neutral-400">
               {t("tiersSection.subtitle")}
             </p>
           </div>
 
-          <div className="grid gap-5 sm:gap-6 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-3 md:gap-5">
             {tiersWithActions.map((tier) => (
               <TierCard key={tier.name} tier={tier} />
             ))}
           </div>
+
+          <p className="mx-auto mt-8 flex max-w-2xl items-start justify-center gap-2.5 text-sm leading-relaxed text-neutral-600 sm:mt-10 dark:text-neutral-400">
+            <InfoIcon className="mt-0.5 h-4 w-4 shrink-0 text-neutral-400 dark:text-neutral-500" />
+            <span>{t.rich("openNote", { bold: guildRichBold })}</span>
+          </p>
         </div>
       </section>
 
-      <section className="relative px-4 py-20 sm:py-24">
-        <div className="relative mx-auto max-w-2xl">
-          <article className="relative overflow-hidden rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-neutral-50/90 via-white to-neutral-50/90 px-8 py-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-10 sm:py-10 dark:border-neutral-700/40 dark:from-neutral-900/80 dark:via-neutral-900 dark:to-neutral-900/80 dark:shadow-[0_1px_0_rgba(255,255,255,0.03)_inset]">
-            <div className="absolute top-0 left-0 h-full w-1 bg-gradient-to-b from-amber-400/60 via-rose-400/50 to-red-400/40 dark:from-amber-500/40 dark:via-rose-500/30 dark:to-red-500/30" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(251,191,36,0.04),transparent_60%)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_at_50%_0%,rgba(251,191,36,0.02),transparent_60%)]" />
-            <div className="relative pl-5 sm:pl-6">
-              <p className="eyebrow text-2xs mb-3 text-neutral-500 dark:text-neutral-400">
-                {t("openNoteLabel")}
-              </p>
-              <p className="text-base leading-[1.75] text-neutral-700 sm:text-[1.0625rem] sm:leading-[1.8] dark:text-neutral-200">
-                {t.rich("openNote", {
-                  bold: guildRichBold,
-                })}
-              </p>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section className="relative px-4 pt-20 pb-20 sm:pt-24 sm:pb-28">
-        <div
-          className={`pointer-events-none absolute inset-0 ${
-            previewTint
-              ? ""
-              : "bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,63,94,0.03),transparent_60%)] dark:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,63,94,0.015),transparent_60%)]"
-          }`}
-          style={
-            previewTint
-              ? {
-                  background: `radial-gradient(ellipse 70% 50% at 50% 0%, ${previewTint.glowStrong}, transparent 60%)`,
-                }
-              : undefined
-          }
-        />
-        {previewTint ? (
+      <section className="relative px-4 pt-8 pb-20 sm:pt-12 sm:pb-28">
+        <div className="mx-auto max-w-5xl">
           <div
-            className="pointer-events-none absolute inset-0 hidden dark:block"
-            style={{
-              background: `radial-gradient(ellipse 72% 54% at 50% 0%, ${previewTint.darkGlowStrong}, transparent 62%)`,
-            }}
-          />
-        ) : null}
-
-        <div className="relative mx-auto max-w-5xl">
-          <div className="mb-12 text-center sm:mb-16">
-            <p className="text-2xs tracking-label-lg mb-3 font-semibold text-neutral-500 uppercase dark:text-neutral-400">
-              {t("perksSection.kicker")}
+            key={`perks-head-${activePreviewTier ?? 0}`}
+            className="guild-swap-enter mx-auto mb-12 max-w-xl text-center sm:mb-14"
+          >
+            <p
+              className={`eyebrow text-2xs mb-3 ${
+                previewDetails ? perkChrome.accent : "text-neutral-500 dark:text-neutral-400"
+              }`}
+            >
+              {previewDetails?.name ?? t("perksSection.kicker")}
             </p>
-            <h2 className="mb-3 text-2xl font-black tracking-tight text-neutral-900 sm:text-3xl md:text-4xl dark:text-white">
+            <h2 className="mb-3 text-3xl font-black tracking-tight text-neutral-900 sm:text-4xl dark:text-white">
               {t("perksSection.title")}
             </h2>
-            <p className="mx-auto max-w-xl text-sm leading-[1.6] text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm leading-relaxed text-neutral-600 sm:text-base dark:text-neutral-400">
               {previewDetails?.tagline ?? t("perksSection.subtitle")}
             </p>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 sm:gap-6">
-            {previewPerkItems.map((item, i) => (
-              <PerkCard
-                key={item.title}
-                item={item}
-                index={i}
-                accentClassName={previewTint?.iconAccent}
-              />
+          <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+            {previewPerkItems.map((item, index) => (
+              <div
+                key={`${activePreviewTier ?? 0}-${item.title}`}
+                className="guild-swap-enter"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <PerkCard item={item} chrome={perkChrome} />
+              </div>
             ))}
           </div>
-
-          {previewDetails ? (
-            <div className="mt-8 flex justify-center">
-              <div
-                className={`rounded-full border px-4 py-2 text-sm font-medium text-neutral-700 backdrop-blur-sm dark:text-neutral-200 ${
-                  previewTint?.ring ?? "border-neutral-200/70 dark:border-neutral-700/60"
-                } bg-gradient-to-r ${previewTint?.card ?? "from-white/80 via-white/70 to-white/80"}`}
-              >
-                {previewDetails.name}
-              </div>
-            </div>
-          ) : null}
         </div>
       </section>
 

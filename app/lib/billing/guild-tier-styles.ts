@@ -44,13 +44,10 @@ export function resolveGuildTierPillStyle(tier: number | null | undefined): Guil
 }
 
 export interface GuildTierPreviewTint {
-  card: string;
   darkGlow: string;
   darkGlowStrong: string;
   glow: string;
   glowStrong: string;
-  iconAccent: string;
-  ring: string;
 }
 
 export const GUILD_TIER_PREVIEW_TINTS: Record<GuildMembershipTier, GuildTierPreviewTint> = {
@@ -59,39 +56,27 @@ export const GUILD_TIER_PREVIEW_TINTS: Record<GuildMembershipTier, GuildTierPrev
     glowStrong: "rgba(59,130,246,0.10)",
     darkGlow: "rgba(56,189,248,0.18)",
     darkGlowStrong: "rgba(96,165,250,0.24)",
-    ring: "border-sky-200/70 dark:border-sky-500/20",
-    card: "from-sky-50/70 via-white to-blue-50/60 dark:from-sky-500/10 dark:via-neutral-950 dark:to-blue-500/8",
-    iconAccent: "text-sky-500 dark:text-sky-400",
   },
   2: {
     glow: "rgba(245,158,11,0.08)",
     glowStrong: "rgba(249,115,22,0.10)",
     darkGlow: "rgba(251,191,36,0.18)",
     darkGlowStrong: "rgba(249,115,22,0.24)",
-    ring: "border-amber-200/70 dark:border-amber-500/20",
-    card: "from-amber-50/70 via-white to-orange-50/60 dark:from-amber-500/10 dark:via-neutral-950 dark:to-orange-500/8",
-    iconAccent: "text-amber-500 dark:text-amber-400",
   },
   3: {
     glow: "rgba(244,63,94,0.08)",
     glowStrong: "rgba(236,72,153,0.10)",
     darkGlow: "rgba(251,113,133,0.18)",
     darkGlowStrong: "rgba(244,114,182,0.24)",
-    ring: "border-rose-200/70 dark:border-rose-500/20",
-    card: "from-rose-50/70 via-white to-pink-50/60 dark:from-rose-500/10 dark:via-neutral-950 dark:to-pink-500/8",
-    iconAccent: "text-rose-500 dark:text-rose-400",
   },
 };
 
 export interface GuildTierMarketingCardStyle {
   accent: string;
-  actionClassName: string;
-  badge: string;
-  border: string;
-  glow: string;
-  gradient: string;
-  iconBg: string;
-  selectedGlow: string;
+  iconSurface: string;
+  selectedBorder: string;
+  selectedLine: string;
+  selectedWash: string;
 }
 
 export const GUILD_TIER_MARKETING_CARD_STYLES: Record<
@@ -99,43 +84,25 @@ export const GUILD_TIER_MARKETING_CARD_STYLES: Record<
   GuildTierMarketingCardStyle
 > = {
   1: {
-    accent: "text-sky-600 dark:text-sky-400",
-    glow: "bg-sky-500/10 dark:bg-sky-500/5",
-    selectedGlow: "bg-sky-400/20 dark:bg-sky-400/28",
-    gradient:
-      "bg-gradient-to-br from-sky-200/60 via-transparent to-blue-200/40 dark:from-sky-500/20 dark:to-blue-500/10",
-    border: "border-sky-200/60 dark:border-sky-500/20",
-    iconBg: "bg-gradient-to-br from-sky-500 to-blue-600",
-    actionClassName:
-      "bg-gradient-to-r from-sky-500 via-sky-500 to-blue-600 hover:shadow-[0_18px_34px_-18px_rgba(14,165,233,0.42)]",
-    badge:
-      "border border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-300",
+    accent: "text-sky-600 dark:text-sky-300",
+    iconSurface: "bg-sky-100 dark:bg-sky-500/12",
+    selectedBorder: "border-sky-400/50 dark:border-sky-300/30",
+    selectedLine: "via-sky-400/80 dark:via-sky-300/60",
+    selectedWash: "from-sky-500/[0.06] dark:from-sky-400/[0.07]",
   },
   2: {
-    accent: "text-amber-600 dark:text-amber-400",
-    glow: "bg-amber-500/10 dark:bg-amber-500/5",
-    selectedGlow: "bg-amber-400/20 dark:bg-amber-400/28",
-    gradient:
-      "bg-gradient-to-br from-amber-200/60 via-transparent to-orange-200/40 dark:from-amber-500/20 dark:to-orange-500/10",
-    border: "border-amber-200/60 dark:border-amber-500/20",
-    iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
-    actionClassName:
-      "bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600 hover:shadow-[0_20px_36px_-18px_rgba(249,115,22,0.45)]",
-    badge:
-      "border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300",
+    accent: "text-amber-600 dark:text-amber-300",
+    iconSurface: "bg-amber-100 dark:bg-amber-500/12",
+    selectedBorder: "border-amber-400/55 dark:border-amber-300/30",
+    selectedLine: "via-amber-400/80 dark:via-amber-300/60",
+    selectedWash: "from-amber-500/[0.07] dark:from-amber-400/[0.07]",
   },
   3: {
-    accent: "text-rose-600 dark:text-rose-400",
-    glow: "bg-rose-500/10 dark:bg-rose-500/5",
-    selectedGlow: "bg-rose-400/20 dark:bg-rose-400/28",
-    gradient:
-      "bg-gradient-to-br from-rose-200/60 via-transparent to-red-200/40 dark:from-rose-500/20 dark:to-red-500/10",
-    border: "border-rose-200/60 dark:border-rose-500/20",
-    iconBg: "bg-gradient-to-br from-rose-500 to-red-600",
-    actionClassName:
-      "bg-gradient-to-r from-rose-500 via-red-500 to-pink-600 shadow-[0_18px_34px_-18px_rgba(244,63,94,0.42)] hover:shadow-[0_22px_38px_-18px_rgba(244,63,94,0.5)]",
-    badge:
-      "border border-rose-200 bg-rose-50/90 text-rose-700 shadow-sm shadow-rose-100/70 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300 dark:shadow-none",
+    accent: "text-rose-600 dark:text-rose-300",
+    iconSurface: "bg-rose-100 dark:bg-rose-500/12",
+    selectedBorder: "border-rose-400/50 dark:border-rose-300/30",
+    selectedLine: "via-rose-400/80 dark:via-rose-300/60",
+    selectedWash: "from-rose-500/[0.06] dark:from-rose-400/[0.07]",
   },
 };
 
