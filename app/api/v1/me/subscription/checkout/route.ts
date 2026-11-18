@@ -63,17 +63,21 @@ export const POST = withRequestContext(
           return NextResponse.json({ error: "subscription_managed_in_portal" }, { status: 409 });
         }
 
-        const session = await createGuildCheckoutSession({
+        const checkout = await createGuildCheckoutSession({
           request,
           tier: parsed.data.tier,
           userId: auth.userId,
         });
 
-        if (!session.url) {
-          throw new Error("Stripe checkout session missing URL");
+        if (checkout.status === "existing_subscription") {
+          logWarn("account.subscription.checkout.existing_stripe_subscription", {
+            requestedTier: parsed.data.tier,
+            userId: auth.userId,
+          });
+          return NextResponse.json({ error: "subscription_managed_in_portal" }, { status: 409 });
         }
 
-        return NextResponse.json(guildSubscriptionLinkResponseSchema.parse({ url: session.url }));
+        return NextResponse.json(guildSubscriptionLinkResponseSchema.parse({ url: checkout.url }));
       } catch (error) {
         logError("account.subscription.checkout.failed", error, {
           requestedTier: parsed.data.tier,

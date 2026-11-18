@@ -12,9 +12,9 @@ import {
 } from "@/lib/config/subscriptions";
 import { getAuthUserById } from "@/lib/data/auth";
 import {
+  claimGuildSubscriptionCustomer,
   findGuildUserIdByStripeReferences,
   getGuildSubscriptionByUserId,
-  markGuildSubscriptionCustomer,
   syncGuildEntitlementState,
   updateGuildSubscriptionInvoiceFields,
 } from "@/lib/data/subscriptions";
@@ -24,6 +24,10 @@ import { logInfo, logWarn } from "@/lib/utils/log";
 let stripeClient: Stripe | null = null;
 
 const ACTIVE_SUBSCRIPTION_STATUSES = new Set(["active", "trialing"]);
+const ENDED_SUBSCRIPTION_STATUSES = new Set(["canceled", "incomplete_expired"]);
+
+const isStripeResourceMissing = (error: unknown): boolean =>
+  error instanceof Stripe.errors.StripeInvalidRequestError && error.code === "resource_missing";
 
 export const getStripe = (): Stripe => {
   if (stripeClient) {
@@ -88,59 +92,54 @@ export const ensureStripeCustomerForUser = async (userId: string): Promise<strin
     throw new Error("User not found for Stripe customer creation");
   }
 
-  const customer = await getStripe().customers.create({
-    email: user.email,
-    metadata: {
-      userId,
+  const customer = await getStripe().customers.create(
+    {
+      email: user.email,
+      metadata: {
+        userId,
+      },
+      name: user.name ?? undefined,
     },
-    name: user.name ?? undefined,
-  });
+    { idempotencyKey: `guild-customer-${userId}` },
+  );
 
-  await markGuildSubscriptionCustomer({
+  return claimGuildSubscriptionCustomer({
     userId,
     stripeCustomerId: customer.id,
   });
-
-  return customer.id;
 };
 
-export const createGuildCheckoutSession = async ({
-  request,
-  tier,
-  userId,
-}: {
-  request: Request;
-  tier: GuildMembershipTier;
-  userId: string;
-}) => {
-  const customerId = await ensureStripeCustomerForUser(userId);
-  const priceId = getGuildTierPriceId(tier);
-  const baseUrl = getStripeAppBaseUrl(request);
+const findLiveStripeSubscription = async (
+  customerId: string,
+): Promise<Stripe.Subscription | null> => {
+  const subscriptions = await getStripe().subscriptions.list({ customer: customerId, limit: 10 });
 
-  return getStripe().checkout.sessions.create({
-    mode: "subscription",
+  return (
+    subscriptions.data.find(
+      (subscription) => !ENDED_SUBSCRIPTION_STATUSES.has(subscription.status),
+    ) ?? null
+  );
+};
+
+const expireOpenCheckoutSessions = async (customerId: string) => {
+  const sessions = await getStripe().checkout.sessions.list({
     customer: customerId,
-    client_reference_id: userId,
-    line_items: [
-      {
-        price: priceId,
-        quantity: 1,
-      },
-    ],
-    success_url: `${baseUrl}/me?checkout-state=success&guild-checkout-session-id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${baseUrl}${createMeGuildJoinUrl({ tier, checkout: "canceled" })}`,
-    allow_promotion_codes: true,
-    metadata: {
-      tier: String(tier),
-      userId,
-    },
-    subscription_data: {
-      metadata: {
-        tier: String(tier),
-        userId,
-      },
-    },
+    status: "open",
+    limit: 20,
   });
+
+  await Promise.all(
+    sessions.data.map(async (session) => {
+      try {
+        await getStripe().checkout.sessions.expire(session.id);
+      } catch (error) {
+        logWarn("stripe.checkout.expire_failed", {
+          checkoutSessionId: session.id,
+          error: error instanceof Error ? error.message : "unknown_error",
+        });
+      }
+    }),
+  );
 };
 
 export const createGuildPortalSession = (customerId: string, request: Request) =>
@@ -179,6 +178,14 @@ export const syncGuildSubscriptionFromStripe = async ({
     return;
   }
 
+  if (!(await getAuthUserById(resolvedUserId))) {
+    logWarn("stripe.subscription.user_deleted", {
+      stripeSubscriptionId: subscription.id,
+      userId: resolvedUserId,
+    });
+    return;
+  }
+
   const customerId =
     typeof subscription.customer === "string" ? subscription.customer : subscription.customer?.id;
   const { currentPeriodEnd, currentPeriodStart } = getSubscriptionPeriodBounds(subscription);
@@ -187,7 +194,7 @@ export const syncGuildSubscriptionFromStripe = async ({
     throw new Error("Stripe subscription missing customer id");
   }
 
-  await syncGuildEntitlementState({
+  const applied = await syncGuildEntitlementState({
     userId: resolvedUserId,
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscription.id,
@@ -199,10 +206,102 @@ export const syncGuildSubscriptionFromStripe = async ({
     currentPeriodEnd,
   });
 
+  if (!applied) {
+    logWarn("stripe.subscription.kept_active_subscription", {
+      userId: resolvedUserId,
+      stripeSubscriptionId: subscription.id,
+      status: subscription.status,
+    });
+    return;
+  }
+
   logInfo("stripe.subscription.synced", {
     userId: resolvedUserId,
     stripeSubscriptionId: subscription.id,
     status: subscription.status,
+  });
+};
+
+/**
+ * Starts Checkout for a tier. Refuses when Stripe already has a live subscription for the user,
+ * and expires their other open Checkout sessions so only the newest one can be paid.
+ */
+export const createGuildCheckoutSession = async ({
+  request,
+  tier,
+  userId,
+}: {
+  request: Request;
+  tier: GuildMembershipTier;
+  userId: string;
+}): Promise<{ status: "existing_subscription" } | { status: "created"; url: string }> => {
+  const customerId = await ensureStripeCustomerForUser(userId);
+  const liveSubscription = await findLiveStripeSubscription(customerId);
+
+  if (liveSubscription) {
+    await syncGuildSubscriptionFromStripe({ subscription: liveSubscription, userId });
+    return { status: "existing_subscription" };
+  }
+
+  await expireOpenCheckoutSessions(customerId);
+
+  const priceId = getGuildTierPriceId(tier);
+  const baseUrl = getStripeAppBaseUrl(request);
+
+  const session = await getStripe().checkout.sessions.create({
+    mode: "subscription",
+    customer: customerId,
+    client_reference_id: userId,
+    line_items: [
+      {
+        price: priceId,
+        quantity: 1,
+      },
+    ],
+    success_url: `${baseUrl}/me?checkout-state=success&guild-checkout-session-id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${baseUrl}${createMeGuildJoinUrl({ tier, checkout: "canceled" })}`,
+    allow_promotion_codes: true,
+    metadata: {
+      tier: String(tier),
+      userId,
+    },
+    subscription_data: {
+      metadata: {
+        tier: String(tier),
+        userId,
+      },
+    },
+  });
+
+  if (!session.url) {
+    throw new Error("Stripe checkout session missing URL");
+  }
+
+  return { status: "created", url: session.url };
+};
+
+/**
+ * Deletes the user's Stripe customer, which also cancels its subscriptions immediately. Run it
+ * before deleting the account so nobody keeps paying for an account that no longer exists.
+ */
+export const deleteStripeCustomerForUser = async (userId: string) => {
+  const row = await getGuildSubscriptionByUserId(userId);
+
+  if (!row?.stripeCustomerId) {
+    return;
+  }
+
+  try {
+    await getStripe().customers.del(row.stripeCustomerId);
+  } catch (error) {
+    if (!isStripeResourceMissing(error)) {
+      throw error;
+    }
+  }
+
+  logInfo("stripe.customer.deleted_with_account", {
+    stripeCustomerId: row.stripeCustomerId,
+    userId,
   });
 };
 

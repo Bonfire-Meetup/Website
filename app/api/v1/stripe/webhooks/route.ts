@@ -74,8 +74,9 @@ export const POST = (request: Request) =>
         case "customer.subscription.created":
         case "customer.subscription.updated":
         case "customer.subscription.deleted": {
+          const subscription = await getStripe().subscriptions.retrieve(event.data.object.id);
           await syncGuildSubscriptionFromStripe({
-            subscription: event.data.object,
+            subscription,
             userId: getUserIdFromMetadata(event),
           });
           break;

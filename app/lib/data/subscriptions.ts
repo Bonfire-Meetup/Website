@@ -1,6 +1,6 @@
 import "server-only";
 
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 import type { GuildMembershipTier } from "@/lib/config/subscriptions";
 import { db, runTransaction } from "@/lib/data/db";
@@ -23,23 +23,6 @@ export interface GuildSubscriptionRow {
   lastChargeAt: string | null;
   createdAt: string;
   updatedAt: string;
-}
-
-interface UpsertGuildSubscriptionInput {
-  userId: string;
-  stripeCustomerId: string;
-  stripeSubscriptionId?: string | null;
-  stripePriceId?: string | null;
-  membershipTier?: GuildMembershipTier | null;
-  status?: string | null;
-  cancelAtPeriodEnd?: boolean;
-  currentPeriodStart?: string | null;
-  currentPeriodEnd?: string | null;
-  lastInvoiceId?: string | null;
-  lastInvoiceStatus?: string | null;
-  lastChargeAmount?: number | null;
-  lastChargeCurrency?: string | null;
-  lastChargeAt?: string | null;
 }
 
 const GUILD_ACTIVE_STATUSES = new Set(["active", "trialing"]);
@@ -83,51 +66,6 @@ export const getGuildSubscriptionByStripeSubscriptionId = async (
   return rows[0] ?? null;
 };
 
-export const upsertGuildSubscription = async (
-  input: UpsertGuildSubscriptionInput,
-): Promise<void> => {
-  const now = new Date().toISOString();
-
-  await db()
-    .insert(guildSubscription)
-    .values({
-      userId: input.userId,
-      stripeCustomerId: input.stripeCustomerId,
-      stripeSubscriptionId: input.stripeSubscriptionId ?? null,
-      stripePriceId: input.stripePriceId ?? null,
-      membershipTier: input.membershipTier ?? null,
-      status: input.status ?? null,
-      cancelAtPeriodEnd: input.cancelAtPeriodEnd ?? false,
-      currentPeriodStart: input.currentPeriodStart ?? null,
-      currentPeriodEnd: input.currentPeriodEnd ?? null,
-      lastInvoiceId: input.lastInvoiceId ?? null,
-      lastInvoiceStatus: input.lastInvoiceStatus ?? null,
-      lastChargeAmount: input.lastChargeAmount ?? null,
-      lastChargeCurrency: input.lastChargeCurrency ?? null,
-      lastChargeAt: input.lastChargeAt ?? null,
-      updatedAt: now,
-    })
-    .onConflictDoUpdate({
-      target: guildSubscription.userId,
-      set: {
-        stripeCustomerId: input.stripeCustomerId,
-        stripeSubscriptionId: input.stripeSubscriptionId ?? null,
-        stripePriceId: input.stripePriceId ?? null,
-        membershipTier: input.membershipTier ?? null,
-        status: input.status ?? null,
-        cancelAtPeriodEnd: input.cancelAtPeriodEnd ?? false,
-        currentPeriodStart: input.currentPeriodStart ?? null,
-        currentPeriodEnd: input.currentPeriodEnd ?? null,
-        lastInvoiceId: input.lastInvoiceId ?? null,
-        lastInvoiceStatus: input.lastInvoiceStatus ?? null,
-        lastChargeAmount: input.lastChargeAmount ?? null,
-        lastChargeCurrency: input.lastChargeCurrency ?? null,
-        lastChargeAt: input.lastChargeAt ?? null,
-        updatedAt: now,
-      },
-    });
-};
-
 export const updateGuildSubscriptionInvoiceFields = async ({
   stripeSubscriptionId,
   lastInvoiceId,
@@ -156,7 +94,13 @@ export const updateGuildSubscriptionInvoiceFields = async ({
     .where(eq(guildSubscription.stripeSubscriptionId, stripeSubscriptionId));
 };
 
-export const syncGuildEntitlementState = async ({
+/**
+ * Stores the given Stripe subscription as the user's Guild subscription and updates their
+ * membership tier. A subscription that grants no access never replaces a different one that
+ * still does, so events for an old or duplicate subscription cannot revoke a paying member.
+ * Returns false when the stored subscription was kept.
+ */
+export const syncGuildEntitlementState = ({
   userId,
   stripeCustomerId,
   stripeSubscriptionId,
@@ -176,12 +120,13 @@ export const syncGuildEntitlementState = async ({
   cancelAtPeriodEnd: boolean;
   currentPeriodStart: string | null;
   currentPeriodEnd: string | null;
-}) => {
-  const entitledTier = isGuildSubscriptionEntitled(status) ? membershipTier : null;
+}): Promise<boolean> => {
+  const isEntitled = isGuildSubscriptionEntitled(status);
+  const entitledTier = isEntitled ? membershipTier : null;
   const now = new Date().toISOString();
 
-  await runTransaction(async (tx) => {
-    await tx
+  return runTransaction(async (tx) => {
+    const written = await tx
       .insert(guildSubscription)
       .values({
         userId,
@@ -208,9 +153,19 @@ export const syncGuildEntitlementState = async ({
           currentPeriodEnd,
           updatedAt: now,
         },
-      });
+        setWhere: isEntitled
+          ? undefined
+          : sql`${guildSubscription.stripeSubscriptionId} is null or ${guildSubscription.stripeSubscriptionId} = ${stripeSubscriptionId} or ${guildSubscription.status} is null or ${guildSubscription.status} not in ('active', 'trialing')`,
+      })
+      .returning({ userId: guildSubscription.userId });
+
+    if (written.length === 0) {
+      return false;
+    }
 
     await tx.update(appUser).set({ membershipTier: entitledTier }).where(eq(appUser.id, userId));
+
+    return true;
   });
 };
 
@@ -283,29 +238,32 @@ export const touchGuildSubscriptionTimestamp = async (userId: string) => {
     .where(eq(guildSubscription.userId, userId));
 };
 
-export const markGuildSubscriptionCustomer = async ({
+/**
+ * Records the user's Stripe customer unless one is already stored, and returns the stored one so
+ * concurrent callers agree on a single customer.
+ */
+export const claimGuildSubscriptionCustomer = async ({
   userId,
   stripeCustomerId,
 }: {
   userId: string;
   stripeCustomerId: string;
-}) => {
+}): Promise<string> => {
+  const inserted = await db()
+    .insert(guildSubscription)
+    .values({ userId, stripeCustomerId, updatedAt: new Date().toISOString() })
+    .onConflictDoNothing({ target: guildSubscription.userId })
+    .returning({ stripeCustomerId: guildSubscription.stripeCustomerId });
+
+  if (inserted[0]) {
+    return inserted[0].stripeCustomerId;
+  }
+
   const existing = await getGuildSubscriptionByUserId(userId);
 
-  await upsertGuildSubscription({
-    userId,
-    stripeCustomerId,
-    stripeSubscriptionId: existing?.stripeSubscriptionId ?? null,
-    stripePriceId: existing?.stripePriceId ?? null,
-    membershipTier: (existing?.membershipTier as GuildMembershipTier | null | undefined) ?? null,
-    status: existing?.status ?? null,
-    cancelAtPeriodEnd: existing?.cancelAtPeriodEnd ?? false,
-    currentPeriodStart: existing?.currentPeriodStart ?? null,
-    currentPeriodEnd: existing?.currentPeriodEnd ?? null,
-    lastInvoiceId: existing?.lastInvoiceId ?? null,
-    lastInvoiceStatus: existing?.lastInvoiceStatus ?? null,
-    lastChargeAmount: existing?.lastChargeAmount ?? null,
-    lastChargeCurrency: existing?.lastChargeCurrency ?? null,
-    lastChargeAt: existing?.lastChargeAt ?? null,
-  });
+  if (!existing) {
+    throw new Error("Guild subscription row missing after customer claim");
+  }
+
+  return existing.stripeCustomerId;
 };

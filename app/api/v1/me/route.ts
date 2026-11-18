@@ -9,6 +9,7 @@ import {
   withUserRateLimit,
 } from "@/lib/api/route-wrappers";
 import { timingGuardHash, verifyOtpChallenge } from "@/lib/auth/challenge";
+import { deleteStripeCustomerForUser } from "@/lib/billing/stripe";
 import {
   getAuthAttemptsByEmailHash,
   getAuthUserById,
@@ -192,6 +193,8 @@ export const DELETE = withRequestContext(
       await markAuthChallengeUsed(verification.id);
 
       try {
+        await deleteStripeCustomerForUser(auth.userId);
+
         const { boostRefunds } = await deleteAllEventQuestionsByUser(auth.userId);
         const refundEntries = boostRefunds.filter((entry) => entry.userId !== auth.userId);
 
