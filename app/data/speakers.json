@@ -49,11 +49,11 @@
         {
           "eventId": "zlin-7",
           "socials": [
-            "socials/zlin-7/filip-ondras/fb-post.png?v=29945751",
-            "socials/zlin-7/filip-ondras/fb-story.png?v=305f0e92",
-            "socials/zlin-7/filip-ondras/ig-post.png?v=f760ea6d",
-            "socials/zlin-7/filip-ondras/ig-story.png?v=6fd89cf9",
-            "socials/zlin-7/filip-ondras/linkedin-post.png?v=caea01c4"
+            "socials/zlin-7/filip-ondras_martin-hatas/fb-post.png?v=8a0866e0",
+            "socials/zlin-7/filip-ondras_martin-hatas/fb-story.png?v=17d1b0dc",
+            "socials/zlin-7/filip-ondras_martin-hatas/ig-post.png?v=d8eb1210",
+            "socials/zlin-7/filip-ondras_martin-hatas/ig-story.png?v=20a118eb",
+            "socials/zlin-7/filip-ondras_martin-hatas/linkedin-post.png?v=38e36f26"
           ]
         }
       ]
@@ -186,6 +186,24 @@
     {
       "id": "NAzfNk5RHef-nfs3SuX5py9",
       "name": "Marek Zeman"
+    },
+    {
+      "id": "29neNaLy6zE-Y2GoVqeEt7Z",
+      "name": "Martin Hatas",
+      "photo": "photos/martin-hatas.webp?v=101e7776",
+      "company": "2Frogs",
+      "talks": [
+        {
+          "eventId": "zlin-7",
+          "socials": [
+            "socials/zlin-7/filip-ondras_martin-hatas/fb-post.png?v=8a0866e0",
+            "socials/zlin-7/filip-ondras_martin-hatas/fb-story.png?v=17d1b0dc",
+            "socials/zlin-7/filip-ondras_martin-hatas/ig-post.png?v=d8eb1210",
+            "socials/zlin-7/filip-ondras_martin-hatas/ig-story.png?v=20a118eb",
+            "socials/zlin-7/filip-ondras_martin-hatas/linkedin-post.png?v=38e36f26"
+          ]
+        }
+      ]
     },
     {
       "id": "1cuYJa3pq4u-z1bWfBfX8tn",

@@ -15,15 +15,26 @@
       },
       "zoom": 0.85
     },
-    "Filip Ondráš": {
+    "Filip Ondráš & Martin Hatas": {
       "button": "left",
-      "album": "zlin-6",
-      "index": 37,
-      "focal": {
-        "x": 0.5,
-        "y": 0.42
-      },
-      "zoom": 1.7
+      "people": {
+        "Filip Ondráš": {
+          "album": "zlin-6",
+          "index": 37,
+          "focal": {
+            "x": 0.5,
+            "y": 0.4
+          },
+          "zoom": 1.5
+        },
+        "Martin Hatas": {
+          "focal": {
+            "x": 0.45,
+            "y": 0.4
+          },
+          "zoom": 0.88
+        }
+      }
     }
   },
   "photos": {

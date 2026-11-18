@@ -70,25 +70,40 @@ export async function loadFlierConfig(file) {
     const group = slot.group ? record(slot.group) : undefined;
     const label = group?.name ?? people.map((person) => person.name).join(" & ");
     const override = flier.talks?.[label] ?? {};
-    const pictured = [group, ...people].find((item) => item?.photo);
+    // A source for one picture: a local file or album photo from the config, else the
+    // speaker's own photo from speakers.json.
+    const source = (person, choice) => {
+      if (choice.file) {
+        return { file: path.resolve(repoRoot, choice.file) };
+      }
+      if (choice.album) {
+        return { album: choice.album, index: choice.index };
+      }
+      const src = person && (talkOf(person)?.photo ?? person.photo);
+      return src ? { url: `${speakerData.baseUrl}/${src}` } : undefined;
+    };
+    const framing = (choice) => ({ focal: choice.focal ?? DEFAULT_FOCAL, zoom: choice.zoom });
+
+    // Per-speaker choices sit under "people"; a talk with one speaker may set them directly.
+    const choiceFor = (person) =>
+      override.people?.[person.name] ?? (people.length === 1 ? override : {});
+    const portraits = people.flatMap((person) => {
+      const choice = choiceFor(person);
+      const found = source(person, choice);
+      return found ? [{ ...found, ...framing(choice) }] : [];
+    });
 
     let photo;
     if (override.photo !== false) {
-      const source =
-        override.file || override.album
-          ? {}
-          : pictured && {
-              url: `${speakerData.baseUrl}/${talkOf(pictured)?.photo ?? pictured.photo}`,
-            };
-      if (source) {
-        photo = {
-          ...source,
-          ...(override.file && { file: path.resolve(repoRoot, override.file) }),
-          ...(override.album && { album: override.album, index: override.index }),
-          button: override.button,
-          focal: override.focal ?? DEFAULT_FOCAL,
-          zoom: override.zoom,
-        };
+      if (!group && portraits.length > 1) {
+        // Several speakers share one button, each in a slice of it.
+        photo = { button: override.button, people: portraits };
+      } else {
+        const groupSource = group && source(group, override);
+        const single = groupSource ? { ...groupSource, ...framing(override) } : portraits[0];
+        if (single) {
+          photo = { ...single, button: override.button };
+        }
       }
     }
 

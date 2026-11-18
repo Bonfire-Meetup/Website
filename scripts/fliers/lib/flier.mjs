@@ -433,6 +433,61 @@ function fitPartners(logos, area) {
   });
 }
 
+/**
+ * Several speakers in one button: each gets a slice, cut on a slant like a duo card, with a
+ * thin fire-coloured seam between them so the slices read as one picture.
+ */
+async function splitPortraits(people, { w, h }) {
+  const slant = w * 0.07;
+  const step = w / people.length;
+  const edge = (index) => ({ top: step * index + slant, bottom: step * index - slant });
+  const layers = await Promise.all(
+    people.map(async (person, index) => {
+      const cellW = Math.round(Math.min(w, step + slant * 2 + w * 0.04));
+      const cellX = Math.round(Math.min(Math.max(step * index - slant, 0), w - cellW));
+      const left = index === 0 ? { top: 0, bottom: 0 } : edge(index);
+      const right = index === people.length - 1 ? { top: w, bottom: w } : edge(index + 1);
+      const slice = Buffer.from(
+        `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg"><polygon points="${left.top},0 ${right.top},0 ${right.bottom},${h} ${left.bottom},${h}" fill="#fff"/></svg>`,
+      );
+      const photo = await (
+        await coverPhoto(await loadPhoto(person), {
+          w: cellW,
+          h,
+          focal: person.focal,
+          zoom: person.zoom,
+        })
+      )
+        .png()
+        .toBuffer();
+      return sharp({ create: { width: w, height: h, channels: 4, background: "#0000" } })
+        .composite([
+          { input: photo, left: cellX, top: 0 },
+          { input: slice, blend: "dest-in" },
+        ])
+        .png()
+        .toBuffer();
+    }),
+  );
+
+  const seamW = Math.max(3, w * 0.012);
+  const seams = people
+    .slice(1)
+    .map((_, index) => {
+      const { top, bottom } = edge(index + 1);
+      return `<line x1="${top}" y1="0" x2="${bottom}" y2="${h}" stroke="#000" stroke-opacity="0.35" stroke-width="${seamW * 3}"/><line x1="${top}" y1="0" x2="${bottom}" y2="${h}" stroke="url(#seam)" stroke-width="${seamW}"/>`;
+    })
+    .join("");
+  const seam = Buffer.from(
+    `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="seam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${COLORS.fireStart}"/><stop offset="0.55" stop-color="${COLORS.fireMid}"/><stop offset="1" stop-color="${COLORS.fireEnd}"/></linearGradient></defs>${seams}</svg>`,
+  );
+
+  return sharp({ create: { width: w, height: h, channels: 4, background: "#0000" } })
+    .composite([...layers.map((input) => ({ input })), { input: seam }])
+    .png()
+    .toBuffer();
+}
+
 /** Buttons of the symbol, in the order of the talks they stand for. */
 const BUTTON_ORDER = ["flame", "left", "bottom"];
 
@@ -538,7 +593,6 @@ export async function renderFlier(rawConfig, sizeKey, lang = "en") {
     // one, a photo from the last meetup stands in.
     const slotPhoto = talkPhotos.get(name);
     const photo = slotPhoto ?? config.photos[name];
-    const photoFile = await loadPhoto(photo);
     const rect = {
       x: px(symbol.x + button.box.x * symbolScale),
       y: px(symbol.y + button.box.y * symbolScale),
@@ -549,9 +603,15 @@ export async function renderFlier(rawConfig, sizeKey, lang = "en") {
     const mask = Buffer.from(
       `<svg width="${rect.w}" height="${rect.h}" xmlns="http://www.w3.org/2000/svg"><path d="${button.d}" transform="scale(${s} ${rect.h / button.box.h}) translate(${-button.box.x} ${-button.box.y})" fill="#fff"/></svg>`,
     );
-    const framed = await (
-      await coverPhoto(photoFile, { w: rect.w, h: rect.h, focal: photo.focal, zoom: photo.zoom })
-    )
+    const filled = photo.people
+      ? sharp(await splitPortraits(photo.people, rect))
+      : await coverPhoto(await loadPhoto(photo), {
+          w: rect.w,
+          h: rect.h,
+          focal: photo.focal,
+          zoom: photo.zoom,
+        });
+    const framed = await filled
       .modulate({ brightness: 1.04, saturation: 1.05 })
       .composite([{ input: mask, blend: "dest-in" }])
       .png()

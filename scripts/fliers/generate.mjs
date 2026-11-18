@@ -21,10 +21,12 @@ scripts/fliers/events/<event-id>.json picks the photos and partners for the flie
   photos     backdrop, flame, left, bottom: { album, index, focal } from app/data/photo-albums;
              a button without a talk photo shows its album photo
   partners   logo paths under public/, e.g. "partners/flyingrat_light.png"
-  talks      per talk, keyed by speaker name (or group name), all optional:
+  talks      per talk, keyed by speaker names joined with " & " (or group name), all optional:
              { button: "flame" | "left" | "bottom", focal: { x, y }, zoom (<1 adds room), title,
                album + index | file (from the repo root) | photo: false }
-             Without a source, the speaker's photo from speakers.json is used.
+             Without a source, the speaker's photo from speakers.json is used. A talk with
+             several speakers splits its button into slanted slices, one per speaker; set
+             their source and framing under people: { "<name>": { album, focal, zoom, ... } }
   tba        start times shown as "to be announced" until the lineup is full
   venue      { name, address } when the calendar's venue line reads badly in print
   kicker, tagline, intro, badge, cta, url    { en, cs } overrides of the default wording
