@@ -83,12 +83,17 @@
       "talks": [
         {
           "eventId": "prague-10",
+          "image": {
+            "src": "talks/prague-10/jan-modrak.webp?v=e59577d8",
+            "width": 1200,
+            "height": 628
+          },
           "socials": [
-            "socials/prague-10/jan-modrak/fb-post.png?v=fed529cf",
-            "socials/prague-10/jan-modrak/fb-story.png?v=80049689",
-            "socials/prague-10/jan-modrak/ig-post.png?v=7d75933f",
-            "socials/prague-10/jan-modrak/ig-story.png?v=816062e1",
-            "socials/prague-10/jan-modrak/linkedin-post.png?v=9b86b44f"
+            "socials/prague-10/jan-modrak/fb-post.png?v=7a3966cf",
+            "socials/prague-10/jan-modrak/fb-story.png?v=53dbfba4",
+            "socials/prague-10/jan-modrak/ig-post.png?v=4ab64f71",
+            "socials/prague-10/jan-modrak/ig-story.png?v=0638ce4e",
+            "socials/prague-10/jan-modrak/linkedin-post.png?v=33ed9057"
           ]
         }
       ]
