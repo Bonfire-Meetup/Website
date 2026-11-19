@@ -78,7 +78,20 @@
     {
       "id": "1PzVwXtQAiv-fKBWpRWaMCV",
       "name": "Jan Modrák",
-      "url": "https://modrak.opinio.cz/"
+      "photo": "photos/jan-modrak.webp?v=d03c20c4",
+      "url": "https://modrak.opinio.cz/",
+      "talks": [
+        {
+          "eventId": "prague-10",
+          "socials": [
+            "socials/prague-10/jan-modrak/fb-post.png?v=fed529cf",
+            "socials/prague-10/jan-modrak/fb-story.png?v=80049689",
+            "socials/prague-10/jan-modrak/ig-post.png?v=7d75933f",
+            "socials/prague-10/jan-modrak/ig-story.png?v=816062e1",
+            "socials/prague-10/jan-modrak/linkedin-post.png?v=9b86b44f"
+          ]
+        }
+      ]
     },
     {
       "id": "MM9YoKF5Y6d-1cTgLovCNxs",
